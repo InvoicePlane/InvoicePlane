@@ -1,4 +1,4 @@
-CREATE TABLE `fi_quotes` (
+CREATE TABLE `ip_quotes` (
   `quote_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE `fi_quotes` (
   KEY `user_id` (`user_id`,`client_id`,`invoice_group_id`,`quote_date_created`,`quote_date_expires`,`quote_number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_quote_amounts` (
+CREATE TABLE `ip_quote_amounts` (
   `quote_amount_id` int(11) NOT NULL AUTO_INCREMENT,
   `quote_id` int(11) NOT NULL,
   `quote_total` decimal(10,2) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE `fi_quote_amounts` (
   KEY `quote_id` (`quote_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_quote_items` (
+CREATE TABLE `ip_quote_items` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
   `quote_id` int(11) NOT NULL,
   `item_date_added` date NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE `fi_quote_items` (
   KEY `quote_id` (`quote_id`,`item_date_added`,`item_order`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_quote_item_amounts` (
+CREATE TABLE `ip_quote_item_amounts` (
   `item_amount_id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) NOT NULL,
   `item_total` decimal(10,2) NOT NULL,

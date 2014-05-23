@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -35,12 +35,12 @@ class Setup extends MX_Controller {
 
         $this->load->module('layout');
 
-        if (!$this->session->userdata('fi_lang'))
+        if (!$this->session->userdata('ip_lang'))
         {
-            $this->session->set_userdata('fi_lang', 'english');
+            $this->session->set_userdata('ip_lang', 'english');
         }
 
-        $this->lang->load('fi', $this->session->userdata('fi_lang'));
+        $this->lang->load('fi', $this->session->userdata('ip_lang'));
     }
 
     public function index()
@@ -52,7 +52,7 @@ class Setup extends MX_Controller {
     {
         if ($this->input->post('btn_continue'))
         {
-            $this->session->set_userdata('fi_lang', $this->input->post('fi_lang'));
+            $this->session->set_userdata('ip_lang', $this->input->post('ip_lang'));
             $this->session->set_userdata('install_step', 'prerequisites');
             redirect('setup/prerequisites');
         }
@@ -109,7 +109,7 @@ class Setup extends MX_Controller {
             $this->load_ci_database();
 
             // This might be an upgrade - check if it is
-            if (!$this->db->table_exists('fi_versions'))
+            if (!$this->db->table_exists('ip_versions'))
             {
                 // This appears to be an install
                 $this->session->set_userdata('install_step', 'install_tables');

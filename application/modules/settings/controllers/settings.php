@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -34,7 +34,7 @@ class Settings extends Admin_Controller {
             // Only execute if the setting is different
             if ($settings['tax_rate_decimal_places'] <> $this->mdl_settings->setting('tax_rate_decimal_places'))
             {
-                $this->db->query("ALTER TABLE `fi_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
             }
 
             // Save the submitted settings

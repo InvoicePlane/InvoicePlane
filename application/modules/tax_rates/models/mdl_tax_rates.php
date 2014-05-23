@@ -4,22 +4,22 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
 class Mdl_Tax_Rates extends Response_Model {
 
-	public $table = 'fi_tax_rates';
-	public $primary_key = 'fi_tax_rates.tax_rate_id';
+	public $table = 'ip_tax_rates';
+	public $primary_key = 'ip_tax_rates.tax_rate_id';
     
     public function default_select()
     {
@@ -28,7 +28,7 @@ class Mdl_Tax_Rates extends Response_Model {
 	
 	public function default_order_by()
 	{
-		$this->db->order_by('fi_tax_rates.tax_rate_percent');
+		$this->db->order_by('ip_tax_rates.tax_rate_percent');
 	}
 
 	public function validation_rules()

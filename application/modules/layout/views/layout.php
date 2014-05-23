@@ -12,7 +12,7 @@
 		<!-- Use the .htaccess and remove these lines to avoid edge case issues -->
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-		<title>FusionInvoice</title>
+		<title>InvoicePlane</title>
 		<meta name="description" content="">
 		<meta name="author" content="William G. Rivera">
 
@@ -145,7 +145,7 @@
 					<ul class="nav pull-right settings">
                         <li><a href="#"><?php echo lang('welcome') . ' ' . $this->session->userdata('user_name'); ?></a></li>
                         <li class="divider-vertical"></li>
-                        <li><a href="http://docs.fusioninvoice.com/1.3/" target="_blank" class="tip icon" data-original-title="Documentation" data-placement="bottom"><i class="icon-question-sign"></i></a></li>
+                        <li><a href="http://docs.invoiceplane.com/1.3/" target="_blank" class="tip icon" data-original-title="Documentation" data-placement="bottom"><i class="icon-question-sign"></i></a></li>
 						<li class="divider-vertical"></li>
 						<li class="dropdown">
 							<a href="#" class="tip icon dropdown-toggle" data-toggle="dropdown" data-original-title="<?php echo lang('settings'); ?>" data-placement="bottom"><i class="icon-cog"></i></a>

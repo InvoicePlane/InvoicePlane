@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -110,7 +110,7 @@ class Quotes extends Admin_Controller {
                 'quote_id'        => $quote_id,
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'custom_fields'   => $this->mdl_custom_fields->by_table('fi_quote_custom')->get()->result(),
+                'custom_fields'   => $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result(),
                 'custom_js_vars'  => array(
                     'currency_symbol'           => $this->mdl_settings->setting('currency_symbol'),
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
@@ -176,7 +176,7 @@ class Quotes extends Admin_Controller {
     public function recalculate_all_quotes()
     {
         $this->db->select('quote_id');
-        $quote_ids = $this->db->get('fi_quotes')->result();
+        $quote_ids = $this->db->get('ip_quotes')->result();
 
         $this->load->model('mdl_quote_amounts');
 

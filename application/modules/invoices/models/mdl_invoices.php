@@ -4,22 +4,22 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
 class Mdl_Invoices extends Response_Model {
 
-    public $table               = 'fi_invoices';
-    public $primary_key         = 'fi_invoices.invoice_id';
+    public $table               = 'ip_invoices';
+    public $primary_key         = 'ip_invoices.invoice_id';
     public $date_modified_field = 'invoice_date_modified';
 
     public function statuses()
@@ -51,49 +51,49 @@ class Mdl_Invoices extends Response_Model {
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS fi_invoice_custom.*,
-            fi_client_custom.*,
-            fi_user_custom.*,
-            fi_users.user_name, 
-			fi_users.user_company,
-			fi_users.user_address_1,
-			fi_users.user_address_2,
-			fi_users.user_city,
-			fi_users.user_state,
-			fi_users.user_zip,
-			fi_users.user_country,
-			fi_users.user_phone,
-			fi_users.user_fax,
-			fi_users.user_mobile,
-			fi_users.user_email,
-			fi_users.user_web,
-			fi_clients.*,
-			fi_invoice_amounts.invoice_amount_id,
-			IFNULL(fi_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
-			IFNULL(fi_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
-			IFNULL(fi_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
-			IFNULL(fi_invoice_amounts.invoice_total, '0.00') AS invoice_total,
-			IFNULL(fi_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
-			IFNULL(fi_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
-            (CASE WHEN fi_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
+            SQL_CALC_FOUND_ROWS ip_invoice_custom.*,
+            ip_client_custom.*,
+            ip_user_custom.*,
+            ip_users.user_name,
+			ip_users.user_company,
+			ip_users.user_address_1,
+			ip_users.user_address_2,
+			ip_users.user_city,
+			ip_users.user_state,
+			ip_users.user_zip,
+			ip_users.user_country,
+			ip_users.user_phone,
+			ip_users.user_fax,
+			ip_users.user_mobile,
+			ip_users.user_email,
+			ip_users.user_web,
+			ip_clients.*,
+			ip_invoice_amounts.invoice_amount_id,
+			IFNULL(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
+			IFNULL(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
+			IFNULL(ip_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
+			IFNULL(ip_invoice_amounts.invoice_total, '0.00') AS invoice_total,
+			IFNULL(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
+			IFNULL(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
+            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
 			DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
-            (CASE (SELECT COUNT(*) FROM fi_invoices_recurring WHERE fi_invoices_recurring.invoice_id = fi_invoices.invoice_id and fi_invoices_recurring.recur_next_date <> '0000-00-00') WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
-			fi_invoices.*", FALSE);
+            (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> '0000-00-00') WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
+			ip_invoices.*", FALSE);
     }
 
     public function default_order_by()
     {
-        $this->db->order_by('fi_invoices.invoice_date_created DESC');
+        $this->db->order_by('ip_invoices.invoice_date_created DESC');
     }
 
     public function default_join()
     {
-        $this->db->join('fi_clients', 'fi_clients.client_id = fi_invoices.client_id');
-        $this->db->join('fi_users', 'fi_users.user_id = fi_invoices.user_id');
-        $this->db->join('fi_invoice_amounts', 'fi_invoice_amounts.invoice_id = fi_invoices.invoice_id', 'left');
-        $this->db->join('fi_client_custom', 'fi_client_custom.client_id = fi_clients.client_id', 'left');
-        $this->db->join('fi_user_custom', 'fi_user_custom.user_id = fi_users.user_id', 'left');
-        $this->db->join('fi_invoice_custom', 'fi_invoice_custom.invoice_id = fi_invoices.invoice_id', 'left');
+        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+        $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
+        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
+        $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
+        $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
+        $this->db->join('ip_invoice_custom', 'ip_invoice_custom.invoice_id = ip_invoices.invoice_id', 'left');
     }
 
     public function validation_rules()
@@ -128,7 +128,7 @@ class Mdl_Invoices extends Response_Model {
             'invoice_number'       => array(
                 'field' => 'invoice_number',
                 'label' => lang('invoice_number'),
-                'rules' => 'required|is_unique[fi_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
+                'rules' => 'required|is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
             ),
             'invoice_date_created' => array(
                 'field' => 'invoice_date_created',
@@ -152,7 +152,7 @@ class Mdl_Invoices extends Response_Model {
             'invoice_id' => $invoice_id
         );
 
-        $this->db->insert('fi_invoice_amounts', $db_array);
+        $this->db->insert('ip_invoice_amounts', $db_array);
 
         if ($include_invoice_tax_rates)
         {
@@ -166,7 +166,7 @@ class Mdl_Invoices extends Response_Model {
                     'invoice_tax_rate_amount' => 0
                 );
 
-                $this->db->insert('fi_invoice_tax_rates', $db_array);
+                $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
         }
 
@@ -311,7 +311,7 @@ class Mdl_Invoices extends Response_Model {
 
     public function by_client($client_id)
     {
-        $this->filter_where('fi_invoices.client_id', $client_id);
+        $this->filter_where('ip_invoices.client_id', $client_id);
         return $this;
     }
 
@@ -320,7 +320,7 @@ class Mdl_Invoices extends Response_Model {
         $this->db->select('invoice_status_id');
         $this->db->where('invoice_id', $invoice_id);
 
-        $invoice = $this->db->get('fi_invoices');
+        $invoice = $this->db->get('ip_invoices');
 
         if ($invoice->num_rows())
         {
@@ -328,7 +328,7 @@ class Mdl_Invoices extends Response_Model {
             {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 3);
-                $this->db->update('fi_invoices');
+                $this->db->update('ip_invoices');
             }
         }
     }
@@ -338,7 +338,7 @@ class Mdl_Invoices extends Response_Model {
         $this->db->select('invoice_status_id');
         $this->db->where('invoice_id', $invoice_id);
 
-        $invoice = $this->db->get('fi_invoices');
+        $invoice = $this->db->get('ip_invoices');
 
         if ($invoice->num_rows())
         {
@@ -346,7 +346,7 @@ class Mdl_Invoices extends Response_Model {
             {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 2);
-                $this->db->update('fi_invoices');
+                $this->db->update('ip_invoices');
             }
         }
     }

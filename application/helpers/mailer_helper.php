@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -37,7 +37,7 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
 
     $invoice = generate_invoice_pdf($invoice_id, FALSE, $invoice_template);
 
-    $db_invoice = $CI->mdl_invoices->where('fi_invoices.invoice_id', $invoice_id)->get()->row();
+    $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
     $message = nl2br(parse_template($db_invoice, $body));
 
@@ -54,7 +54,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
 
     $quote = generate_quote_pdf($quote_id, FALSE, $quote_template);
 
-    $db_quote = $CI->mdl_quotes->where('fi_quotes.quote_id', $quote_id)->get()->row();
+    $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
     $message = nl2br(parse_template($db_quote, $body));
 

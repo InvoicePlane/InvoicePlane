@@ -4,22 +4,22 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
 class Mdl_Item_Lookups extends MY_Model {
 
-    public $table       = 'fi_item_lookups';
-    public $primary_key = 'fi_item_lookups.item_lookup_id';
+    public $table       = 'ip_item_lookups';
+    public $primary_key = 'ip_item_lookups.item_lookup_id';
 
     public function default_select()
     {
@@ -28,7 +28,7 @@ class Mdl_Item_Lookups extends MY_Model {
 
     public function default_order_by()
     {
-        $this->db->order_by('fi_item_lookups.item_name');
+        $this->db->order_by('ip_item_lookups.item_name');
     }
 
     public function validation_rules()

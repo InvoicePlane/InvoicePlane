@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -27,7 +27,7 @@ class Payments extends Guest_Controller {
 
 	public function index($page = 0)
 	{
-        $this->mdl_payments->where('(fi_payments.invoice_id IN (SELECT invoice_id FROM fi_invoices WHERE client_id IN (' . implode(',', $this->user_clients) . ')))');
+        $this->mdl_payments->where('(ip_payments.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE client_id IN (' . implode(',', $this->user_clients) . ')))');
         $this->mdl_payments->paginate(site_url('guest/payments/index'), $page);
         $payments = $this->mdl_payments->result();
             

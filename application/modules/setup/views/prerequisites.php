@@ -2,7 +2,7 @@
 
 	<div class="install-step">
 
-		<h1>FusionInvoice</h1>
+		<h1>InvoicePlane</h1>
 		
 		<legend><?php echo lang('setup_prerequisites'); ?></legend>
 

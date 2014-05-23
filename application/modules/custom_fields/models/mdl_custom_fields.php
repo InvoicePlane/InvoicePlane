@@ -4,22 +4,22 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
 class Mdl_Custom_Fields extends MY_Model {
 
-    public $table       = 'fi_custom_fields';
-    public $primary_key = 'fi_custom_fields.custom_field_id';
+    public $table       = 'ip_custom_fields';
+    public $primary_key = 'ip_custom_fields.custom_field_id';
 
     public function default_select()
     {
@@ -29,11 +29,11 @@ class Mdl_Custom_Fields extends MY_Model {
     public function custom_tables()
     {
         return array(
-            'fi_client_custom'  => lang('client'),
-            'fi_invoice_custom' => lang('invoice'),
-            'fi_payment_custom' => lang('payment'),
-            'fi_quote_custom'   => lang('quote'),
-            'fi_user_custom'    => lang('user')
+            'ip_client_custom'  => lang('client'),
+            'ip_invoice_custom' => lang('invoice'),
+            'ip_payment_custom' => lang('payment'),
+            'ip_quote_custom'   => lang('quote'),
+            'ip_user_custom'    => lang('user')
         );
     }
 
@@ -82,7 +82,7 @@ class Mdl_Custom_Fields extends MY_Model {
         // Create the record
         $db_array = ($db_array) ? $db_array : $this->db_array();
 
-        // Save the record to fi_custom_fields
+        // Save the record to ip_custom_fields
         $id = parent::save($id, $db_array);
 
         if (isset($original_record))

@@ -4,33 +4,33 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
 class Mdl_Quote_Tax_Rates extends Response_Model {
 
-    public $table       = 'fi_quote_tax_rates';
-    public $primary_key = 'fi_quote_tax_rates.quote_tax_rate_id';
+    public $table       = 'ip_quote_tax_rates';
+    public $primary_key = 'ip_quote_tax_rates.quote_tax_rate_id';
 
     public function default_select()
     {
-        $this->db->select('fi_tax_rates.tax_rate_name AS quote_tax_rate_name');
-        $this->db->select('fi_tax_rates.tax_rate_percent AS quote_tax_rate_percent');
-        $this->db->select('fi_quote_tax_rates.*');
+        $this->db->select('ip_tax_rates.tax_rate_name AS quote_tax_rate_name');
+        $this->db->select('ip_tax_rates.tax_rate_percent AS quote_tax_rate_percent');
+        $this->db->select('ip_quote_tax_rates.*');
     }
 
     public function default_join()
     {
-        $this->db->join('fi_tax_rates', 'fi_tax_rates.tax_rate_id = fi_quote_tax_rates.tax_rate_id');
+        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_quote_tax_rates.tax_rate_id');
     }
 
     public function save($quote_id, $id = NULL, $db_array = NULL)

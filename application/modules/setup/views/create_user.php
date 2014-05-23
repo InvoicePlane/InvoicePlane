@@ -1,6 +1,6 @@
 <div class="install-step">
 
-	<h1>FusionInvoice</h1>
+	<h1>InvoicePlane</h1>
 
 	<form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>" class="form-horizontal">
         

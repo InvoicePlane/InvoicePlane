@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -63,7 +63,7 @@ class Mailer extends Admin_Controller {
             $this->load->model('invoices/mdl_invoices');
             $this->load->model('email_templates/mdl_email_templates');
 
-            $invoice = $this->mdl_invoices->where('fi_invoices.invoice_id', $invoice_id)->get()->row();
+            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
             
             $this->load->helper('template');
             $selected_pdf_template = select_pdf_invoice_template($invoice);
@@ -155,7 +155,7 @@ class Mailer extends Admin_Controller {
             }
 
             $this->layout->set('email_templates', $this->mdl_email_templates->get()->result());
-            $this->layout->set('quote', $this->mdl_quotes->where('fi_quotes.quote_id', $quote_id)->get()->row());
+            $this->layout->set('quote', $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row());
             $this->layout->set('quote_templates', $this->mdl_templates->get_quote_templates());
             $this->layout->buffer('content', 'mailer/quote');
             $this->layout->render();

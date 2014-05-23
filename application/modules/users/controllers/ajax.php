@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -39,7 +39,7 @@ class Ajax extends Admin_Controller {
             {
                 // Existing user - go ahead and save the entries
 
-                $user_client = $this->mdl_user_clients->where('fi_user_clients.user_id', $user_id)->where('fi_user_clients.client_id', $client_id)->get();
+                $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->where('ip_user_clients.client_id', $client_id)->get();
 
                 if (!$user_client->num_rows())
                 {
@@ -66,7 +66,7 @@ class Ajax extends Admin_Controller {
             
             $data = array(
                 'id'           => NULL,
-                'user_clients' => $this->mdl_clients->where_in('fi_clients.client_id', $session_user_clients)->get()->result()
+                'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id', $session_user_clients)->get()->result()
             );
         }
         else
@@ -75,7 +75,7 @@ class Ajax extends Admin_Controller {
             
             $data = array(
                 'id'           => $this->input->post('user_id'),
-                'user_clients' => $this->mdl_user_clients->where('fi_user_clients.user_id', $this->input->post('user_id'))->get()->result()
+                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $this->input->post('user_id'))->get()->result()
             );
         }
 

@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -84,9 +84,9 @@ class Import extends Admin_Controller {
                 {
                     if ($file == 'clients.csv')
                     {
-                        $ids = $this->mdl_import->import_data($file, 'fi_clients');
+                        $ids = $this->mdl_import->import_data($file, 'ip_clients');
 
-                        $this->mdl_import->record_import_details($import_id, 'fi_clients', 'clients', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'ip_clients', 'clients', $ids);
                     }
                     elseif ($file == 'invoices.csv')
                     {
@@ -94,7 +94,7 @@ class Import extends Admin_Controller {
 
                         $ids = $this->mdl_import->import_invoices();
 
-                        $this->mdl_import->record_import_details($import_id, 'fi_invoices', 'invoices', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'ip_invoices', 'invoices', $ids);
                     }
                     elseif ($file == 'invoice_items.csv')
                     {
@@ -102,7 +102,7 @@ class Import extends Admin_Controller {
 
                         $ids = $this->mdl_import->import_invoice_items();
 
-                        $this->mdl_import->record_import_details($import_id, 'fi_invoice_items', 'invoice_items', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'ip_invoice_items', 'invoice_items', $ids);
                     }
                     elseif ($file == 'payments.csv')
                     {
@@ -110,7 +110,7 @@ class Import extends Admin_Controller {
 
                         $ids = $this->mdl_import->import_payments();
 
-                        $this->mdl_import->record_import_details($import_id, 'fi_payments', 'payments', $ids);
+                        $this->mdl_import->record_import_details($import_id, 'ip_payments', 'payments', $ids);
                     }
                 }
             }

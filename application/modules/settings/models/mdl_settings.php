@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -24,7 +24,7 @@ class Mdl_Settings extends CI_Model {
 	{
 		$this->db->select('setting_value');
 		$this->db->where('setting_key', $key);
-		$query = $this->db->get('fi_settings');
+		$query = $this->db->get('ip_settings');
 
 		if ($query->row())
 		{
@@ -46,25 +46,25 @@ class Mdl_Settings extends CI_Model {
 		if ($this->get($key) !== NULL)
 		{
 			$this->db->where('setting_key', $key);
-			$this->db->update('fi_settings', $db_array);
+			$this->db->update('ip_settings', $db_array);
 		}
 		else
 		{
-			$this->db->insert('fi_settings', $db_array);
+			$this->db->insert('ip_settings', $db_array);
 		}
 	}
 
 	public function delete($key)
 	{
 		$this->db->where('setting_key', $key);
-		$this->db->delete('fi_settings');
+		$this->db->delete('ip_settings');
 	}
 
 	public function load_settings()
 	{
-		$fi_settings = $this->db->get('fi_settings')->result();
+		$ip_settings = $this->db->get('ip_settings')->result();
 
-		foreach ($fi_settings as $data)
+		foreach ($ip_settings as $data)
 		{
 			$this->settings[$data->setting_key] = $data->setting_value;
 		}

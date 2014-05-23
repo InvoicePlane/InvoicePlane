@@ -4,48 +4,48 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
 class Mdl_Payments extends Response_Model {
 
-    public $table            = 'fi_payments';
-    public $primary_key      = 'fi_payments.payment_id';
+    public $table            = 'ip_payments';
+    public $primary_key      = 'ip_payments.payment_id';
     public $validation_rules = 'validation_rules';
 
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS fi_payment_custom.*,
-            fi_payment_methods.*,
-            fi_invoice_amounts.*,
-            fi_clients.client_name,
-            fi_invoices.invoice_number,
-            fi_invoices.invoice_date_created,
-            fi_payments.*", FALSE);
+            SQL_CALC_FOUND_ROWS ip_payment_custom.*,
+            ip_payment_methods.*,
+            ip_invoice_amounts.*,
+            ip_clients.client_name,
+            ip_invoices.invoice_number,
+            ip_invoices.invoice_date_created,
+            ip_payments.*", FALSE);
     }
 
     public function default_order_by()
     {
-        $this->db->order_by('fi_payments.payment_date DESC');
+        $this->db->order_by('ip_payments.payment_date DESC');
     }
 
     public function default_join()
     {
-        $this->db->join('fi_invoices', 'fi_invoices.invoice_id = fi_payments.invoice_id');
-        $this->db->join('fi_clients', 'fi_clients.client_id = fi_invoices.client_id');
-        $this->db->join('fi_invoice_amounts', 'fi_invoice_amounts.invoice_id = fi_invoices.invoice_id');
-        $this->db->join('fi_payment_methods', 'fi_payment_methods.payment_method_id = fi_payments.payment_method_id', 'left');
-        $this->db->join('fi_payment_custom', 'fi_payment_custom.payment_id = fi_payments.payment_id', 'left');
+        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id');
+        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id');
+        $this->db->join('ip_payment_methods', 'ip_payment_methods.payment_method_id = ip_payments.payment_method_id', 'left');
+        $this->db->join('ip_payment_custom', 'ip_payment_custom.payment_id = ip_payments.payment_id', 'left');
     }
 
     public function validation_rules()
@@ -82,11 +82,11 @@ class Mdl_Payments extends Response_Model {
         $invoice_id = $this->input->post('invoice_id');
         $payment_id = $this->input->post('payment_id');
 
-        $invoice_balance = $this->db->where('invoice_id', $invoice_id)->get('fi_invoice_amounts')->row()->invoice_balance;
+        $invoice_balance = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row()->invoice_balance;
 
         if ($payment_id)
         {
-            $payment = $this->db->where('payment_id', $payment_id)->get('fi_payments')->row();
+            $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
 
             $invoice_balance = $invoice_balance + $payment->payment_amount;
         }
@@ -119,7 +119,7 @@ class Mdl_Payments extends Response_Model {
         // Get the invoice id before deleting payment
         $this->db->select('invoice_id');
         $this->db->where('payment_id', $id);
-        $invoice_id = $this->db->get('fi_payments')->row()->invoice_id;
+        $invoice_id = $this->db->get('ip_payments')->row()->invoice_id;
 
         // Delete the payment
         parent::delete($id);
@@ -131,13 +131,13 @@ class Mdl_Payments extends Response_Model {
         // Change invoice status back to sent
         $this->db->select('invoice_status_id');
         $this->db->where('invoice_id', $invoice_id);
-        $invoice = $this->db->get('fi_invoices')->row();
+        $invoice = $this->db->get('ip_invoices')->row();
         
         if ($invoice->invoice_status_id == 4)
         {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_status_id', 2);
-            $this->db->update('fi_invoices');
+            $this->db->update('ip_invoices');
         }
         
         $this->load->helper('orphan');

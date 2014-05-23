@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -109,7 +109,7 @@ class Clients extends Admin_Controller {
 
         $this->load->model('custom_fields/mdl_custom_fields');
 
-        $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('fi_client_custom')->get()->result());
+        $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result());
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
     }
@@ -121,7 +121,7 @@ class Clients extends Admin_Controller {
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('custom_fields/mdl_custom_fields');
 
-        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('fi_clients.client_id', $client_id)->get()->row();
+        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
 
         if (!$client)
         {
@@ -134,7 +134,7 @@ class Clients extends Admin_Controller {
                 'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
                 'invoices'         => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
                 'quotes'           => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
-                'custom_fields'    => $this->mdl_custom_fields->by_table('fi_client_custom')->get()->result(),
+                'custom_fields'    => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
                 'quote_statuses'   => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
             )

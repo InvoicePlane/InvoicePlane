@@ -1,1 +1,1 @@
-ALTER TABLE `fi_email_templates` DROP `email_template_footer`;
+ALTER TABLE `ip_email_templates` DROP `email_template_footer`;

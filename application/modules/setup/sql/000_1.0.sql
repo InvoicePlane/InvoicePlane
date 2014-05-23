@@ -1,4 +1,4 @@
-CREATE TABLE `fi_clients` (
+CREATE TABLE `ip_clients` (
   `client_id` int(11) NOT NULL AUTO_INCREMENT,
   `client_date_created` date NOT NULL,
   `client_date_modified` date NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE `fi_clients` (
   KEY `client_active` (`client_active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_invoices` (
+CREATE TABLE `ip_invoices` (
   `invoice_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE `fi_invoices` (
   KEY `user_id` (`user_id`,`client_id`,`invoice_group_id`,`invoice_date_created`,`invoice_date_due`,`invoice_number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_invoice_amounts` (
+CREATE TABLE `ip_invoice_amounts` (
   `invoice_amount_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
   `invoice_tax_rate` decimal(10,2) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `fi_invoice_amounts` (
   KEY `invoice_paid` (`invoice_paid`,`invoice_balance`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_invoice_groups` (
+CREATE TABLE `ip_invoice_groups` (
   `invoice_group_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_group_name` varchar(50) NOT NULL DEFAULT '',
   `invoice_group_prefix` varchar(10) NOT NULL DEFAULT '',
@@ -59,7 +59,7 @@ CREATE TABLE `fi_invoice_groups` (
   KEY `invoice_group_left_pad` (`invoice_group_left_pad`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_invoice_items` (
+CREATE TABLE `ip_invoice_items` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
   `item_tax_rate_id` int(11) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE `fi_invoice_items` (
   KEY `invoice_id` (`invoice_id`,`item_tax_rate_id`,`item_date_added`,`item_order`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_invoice_item_amounts` (
+CREATE TABLE `ip_invoice_item_amounts` (
   `item_amount_id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) NOT NULL,
   `item_subtotal` decimal(10,2) NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `fi_invoice_item_amounts` (
   KEY `item_id` (`item_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_payments` (
+CREATE TABLE `ip_payments` (
   `payment_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
   `payment_method_id` int(11) NOT NULL,
@@ -97,13 +97,13 @@ CREATE TABLE `fi_payments` (
   KEY `payment_amount` (`payment_amount`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_payment_methods` (
+CREATE TABLE `ip_payment_methods` (
   `payment_method_id` int(11) NOT NULL AUTO_INCREMENT,
   `payment_method_name` varchar(35) NOT NULL,
   PRIMARY KEY (`payment_method_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_settings` (
+CREATE TABLE `ip_settings` (
   `setting_id` int(11) NOT NULL AUTO_INCREMENT,
   `setting_key` varchar(50) NOT NULL,
   `setting_value` longtext NOT NULL,
@@ -111,14 +111,14 @@ CREATE TABLE `fi_settings` (
   KEY `setting_key` (`setting_key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_tax_rates` (
+CREATE TABLE `ip_tax_rates` (
   `tax_rate_id` int(11) NOT NULL AUTO_INCREMENT,
   `tax_rate_name` varchar(25) NOT NULL,
   `tax_rate_percent` decimal(5,2) NOT NULL,
   PRIMARY KEY (`tax_rate_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_users` (
+CREATE TABLE `ip_users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_type` int(1) NOT NULL DEFAULT '0',
   `user_date_created` date NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE `fi_users` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `fi_versions` (
+CREATE TABLE `ip_versions` (
   `version_id` int(11) NOT NULL AUTO_INCREMENT,
   `version_date_applied` varchar(14) NOT NULL,
   `version_file` varchar(45) NOT NULL,

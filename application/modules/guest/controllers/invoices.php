@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -37,10 +37,10 @@ class Invoices extends Guest_Controller {
         switch ($status)
         {
             case 'paid':
-                $this->mdl_invoices->is_paid()->where_in('fi_invoices.client_id', $this->user_clients);
+                $this->mdl_invoices->is_paid()->where_in('ip_invoices.client_id', $this->user_clients);
                 break;
             default:
-                $this->mdl_invoices->is_open()->where_in('fi_invoices.client_id', $this->user_clients);
+                $this->mdl_invoices->is_open()->where_in('ip_invoices.client_id', $this->user_clients);
                 break;
 
         }
@@ -64,7 +64,7 @@ class Invoices extends Guest_Controller {
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
         
-        $invoice = $this->mdl_invoices->where('fi_invoices.invoice_id', $invoice_id)->where_in('fi_invoices.client_id', $this->user_clients)->get()->row();
+        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
         
         if (!$invoice)
         {

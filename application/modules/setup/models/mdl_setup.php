@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -58,8 +58,8 @@ class Mdl_Setup extends CI_Model {
             {
                 // $this->db->select('COUNT(*) AS update_applied');
                 $this->db->where('version_file', $sql_file);
-                // $update_applied = $this->db->get('fi_versions')->row()->update_applied;
-                $update_applied = $this->db->get('fi_versions');
+                // $update_applied = $this->db->get('ip_versions')->row()->update_applied;
+                $update_applied = $this->db->get('ip_versions');
 
                 // if (!$update_applied)
                 if (!$update_applied->num_rows())
@@ -109,8 +109,8 @@ class Mdl_Setup extends CI_Model {
 
     public function install_default_data()
     {
-        $this->db->insert('fi_invoice_groups', array('invoice_group_name'    => 'Invoice Default', 'invoice_group_next_id' => 1));
-        $this->db->insert('fi_invoice_groups', array('invoice_group_name'    => 'Quote Default', 'invoice_group_prefix'  => 'QUO', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Invoice Default', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Quote Default', 'invoice_group_prefix'  => 'QUO', 'invoice_group_next_id' => 1));
     }
 
     private function install_default_settings()
@@ -118,7 +118,7 @@ class Mdl_Setup extends CI_Model {
         $this->load->helper('string');
 
         $default_settings = array(
-            'default_language'             => $this->session->userdata('fi_lang'),
+            'default_language'             => $this->session->userdata('ip_lang'),
             'date_format'                  => 'm/d/Y',
             'currency_symbol'              => '$',
             'currency_symbol_placement'    => 'before',
@@ -142,14 +142,14 @@ class Mdl_Setup extends CI_Model {
         {
             $this->db->where('setting_key', $setting_key);
 
-            if (!$this->db->get('fi_settings')->num_rows())
+            if (!$this->db->get('ip_settings')->num_rows())
             {
                 $db_array = array(
                     'setting_key'   => $setting_key,
                     'setting_value' => $setting_value
                 );
 
-                $this->db->insert('fi_settings', $db_array);
+                $this->db->insert('ip_settings', $db_array);
             }
         }
     }
@@ -162,7 +162,7 @@ class Mdl_Setup extends CI_Model {
             'version_sql_errors'   => count($this->errors)
         );
 
-        $this->db->insert('fi_versions', $version_db_array);
+        $this->db->insert('ip_versions', $version_db_array);
     }
 
     public function upgrade_013_1_1_3()
@@ -170,26 +170,26 @@ class Mdl_Setup extends CI_Model {
         // Assign unique url key to any existing invoices
         $this->load->helper('string');
 
-        $invoices = $this->db->select('invoice_id')->get('fi_invoices')->result();
+        $invoices = $this->db->select('invoice_id')->get('ip_invoices')->result();
 
         foreach ($invoices as $invoice)
         {
             $this->db->where('invoice_id', $invoice->invoice_id);
             $this->db->set('invoice_url_key', random_string('unique'));
-            $this->db->update('fi_invoices');
+            $this->db->update('ip_invoices');
         }
 
         // Add a unique key to the url key column
-        $this->db->query("ALTER TABLE `fi_invoices` ADD UNIQUE (`invoice_url_key`)");
+        $this->db->query("ALTER TABLE `ip_invoices` ADD UNIQUE (`invoice_url_key`)");
     }
 
     public function upgrade_030_1_3_0()
     {
         $this->db->where('setting_key', 'default_invoice_template');
-        $this->db->delete('fi_settings');
+        $this->db->delete('ip_settings');
 
         $this->db->where('setting_key', 'default_quote_template');
-        $this->db->delete('fi_settings');
+        $this->db->delete('ip_settings');
 
         // Update paid invoices with the new paid status
         $this->load->model('invoices/mdl_invoices');
@@ -202,7 +202,7 @@ class Mdl_Setup extends CI_Model {
         {
             $this->db->set('invoice_status_id', 4);
             $this->db->where('invoice_id', $invoice->invoice_id);
-            $this->db->update('fi_invoices');
+            $this->db->update('ip_invoices');
         }
     }
 

@@ -1,4 +1,4 @@
-CREATE TABLE `fi_merchant_responses` (
+CREATE TABLE `ip_merchant_responses` (
   `merchant_response_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
   `merchant_response_date` date NOT NULL,

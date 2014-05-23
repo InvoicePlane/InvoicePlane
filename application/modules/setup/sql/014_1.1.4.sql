@@ -1,4 +1,4 @@
-CREATE TABLE `fi_user_clients` (
+CREATE TABLE `ip_user_clients` (
 `user_client_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `user_id` INT NOT NULL ,
 `client_id` INT NOT NULL ,

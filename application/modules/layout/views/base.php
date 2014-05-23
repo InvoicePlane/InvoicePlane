@@ -12,9 +12,8 @@
 	<!-- Use the .htaccess and remove these lines to avoid edge case issues -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<title>FusionInvoice</title>
+	<title>InvoicePlane</title>
 	<meta name="description" content="">
-	<meta name="author" content="William G. Rivera">
 
 	<!-- Mobile viewport optimized: j.mp/bplateviewport -->
 	<meta name="viewport" content="width=device-width">

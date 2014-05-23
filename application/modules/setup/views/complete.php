@@ -1,6 +1,6 @@
 <div class="install-step">
 	
-	<h1>FusionInvoice</h1>
+	<h1>InvoicePlane</h1>
 
 	<h2><?php echo lang('setup_complete'); ?></h2>
 	

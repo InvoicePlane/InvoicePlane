@@ -1,1 +1,1 @@
-ALTER TABLE `fi_invoices` ADD `invoice_terms` LONGTEXT NOT NULL;
+ALTER TABLE `ip_invoices` ADD `invoice_terms` LONGTEXT NOT NULL;

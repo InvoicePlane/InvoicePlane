@@ -1,4 +1,4 @@
-CREATE TABLE `fi_invoices_recurring` (
+CREATE TABLE `ip_invoices_recurring` (
   `invoice_recurring_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
   `recur_start_date` date NOT NULL,

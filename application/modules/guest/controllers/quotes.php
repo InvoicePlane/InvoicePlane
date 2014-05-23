@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -39,14 +39,14 @@ class Quotes extends Guest_Controller {
         switch ($status)
         {
             case 'approved':
-                $this->mdl_quotes->is_approved()->where_in('fi_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes->is_approved()->where_in('ip_quotes.client_id', $this->user_clients);
                 break;
             case 'rejected':
-                $this->mdl_quotes->is_rejected()->where_in('fi_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes->is_rejected()->where_in('ip_quotes.client_id', $this->user_clients);
                 $this->layout->set('show_invoice_column', TRUE);
                 break;
             default:
-                $this->mdl_quotes->is_open()->where_in('fi_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes->is_open()->where_in('ip_quotes.client_id', $this->user_clients);
                 break;
         }
 
@@ -66,7 +66,7 @@ class Quotes extends Guest_Controller {
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('fi_quotes.quote_id', $quote_id)->where_in('fi_quotes.client_id', $this->user_clients)->get()->row();
+        $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
         if (!$quote)
         {
@@ -94,7 +94,7 @@ class Quotes extends Guest_Controller {
 
         $this->mdl_quotes->mark_viewed($quote_id);
 
-        $quote = $this->mdl_quotes->guest_visible()->where('fi_quotes.quote_id', $quote_id)->where_in('fi_quotes.client_id', $this->user_clients)->get()->row();
+        $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
         if (!$quote)
         {

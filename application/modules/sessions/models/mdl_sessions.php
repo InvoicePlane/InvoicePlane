@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -22,7 +22,7 @@ class Mdl_Sessions extends CI_Model {
     {
         $this->db->where('user_email', $email);
 
-        $query = $this->db->get('fi_users');
+        $query = $this->db->get('ip_users');
 
         if ($query->num_rows())
         {
@@ -55,10 +55,10 @@ class Mdl_Sessions extends CI_Model {
                     );
                     
                     $this->db->where('user_id', $user->user_id);
-                    $this->db->update('fi_users', $db_array);
+                    $this->db->update('ip_users', $db_array);
                     
                     $this->db->where('user_email', $email);
-                    $user = $this->db->get('fi_users')->row();
+                    $user = $this->db->get('ip_users')->row();
                     
                 }
                 else

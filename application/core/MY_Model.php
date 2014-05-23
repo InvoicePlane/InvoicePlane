@@ -7,7 +7,7 @@
  * Install this file as application/core/MY_Model.php
  * 
  * @package	CodeIgniter
- * @author		Jesse Terry
+ * @author		Kovah (www.kovah.de)
  * @copyright	Copyright (c) 2012, Jesse Terry
  * @link		http://developer13.com
  * 

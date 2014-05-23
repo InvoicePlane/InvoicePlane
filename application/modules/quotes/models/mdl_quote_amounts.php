@@ -4,15 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
@@ -42,7 +42,7 @@ class Mdl_Quote_Amounts extends CI_Model {
         $query = $this->db->query("SELECT SUM(item_subtotal) AS quote_item_subtotal,	
 		SUM(item_tax_total) AS quote_item_tax_total,
 		SUM(item_subtotal) + SUM(item_tax_total) AS quote_total
-		FROM fi_quote_item_amounts WHERE item_id IN (SELECT item_id FROM fi_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")");
+		FROM ip_quote_item_amounts WHERE item_id IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")");
 
         $quote_amounts = $query->row();
 
@@ -55,16 +55,16 @@ class Mdl_Quote_Amounts extends CI_Model {
         );
 
         $this->db->where('quote_id', $quote_id);
-        if ($this->db->get('fi_quote_amounts')->num_rows())
+        if ($this->db->get('ip_quote_amounts')->num_rows())
         {
             // The record already exists; update it
             $this->db->where('quote_id', $quote_id);
-            $this->db->update('fi_quote_amounts', $db_array);
+            $this->db->update('ip_quote_amounts', $db_array);
         }
         else
         {
             // The record does not yet exist; insert it
-            $this->db->insert('fi_quote_amounts', $db_array);
+            $this->db->insert('ip_quote_amounts', $db_array);
         }
 
         // Calculate the quote taxes
@@ -81,7 +81,7 @@ class Mdl_Quote_Amounts extends CI_Model {
         {
             // There are quote taxes applied
             // Get the current quote amount record
-            $quote_amount = $this->db->where('quote_id', $quote_id)->get('fi_quote_amounts')->row();
+            $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
 
             // Loop through the quote taxes and update the amount for each of the applied quote taxes
             foreach ($quote_tax_rates as $quote_tax_rate)
@@ -102,14 +102,14 @@ class Mdl_Quote_Amounts extends CI_Model {
                     'quote_tax_rate_amount' => $quote_tax_rate_amount
                 );
                 $this->db->where('quote_tax_rate_id', $quote_tax_rate->quote_tax_rate_id);
-                $this->db->update('fi_quote_tax_rates', $db_array);
+                $this->db->update('ip_quote_tax_rates', $db_array);
             }
 
             // Update the quote amount record with the total quote tax amount
-            $this->db->query("UPDATE fi_quote_amounts SET quote_tax_total = (SELECT SUM(quote_tax_rate_amount) FROM fi_quote_tax_rates WHERE quote_id = " . $this->db->escape($quote_id) . ") WHERE quote_id = " . $this->db->escape($quote_id));
+            $this->db->query("UPDATE ip_quote_amounts SET quote_tax_total = (SELECT SUM(quote_tax_rate_amount) FROM ip_quote_tax_rates WHERE quote_id = " . $this->db->escape($quote_id) . ") WHERE quote_id = " . $this->db->escape($quote_id));
 
             // Get the updated quote amount record
-            $quote_amount = $this->db->where('quote_id', $quote_id)->get('fi_quote_amounts')->row();
+            $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
 
             // Recalculate the quote total
             $quote_total = $quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total + $quote_amount->quote_tax_total;
@@ -120,7 +120,7 @@ class Mdl_Quote_Amounts extends CI_Model {
             );
 
             $this->db->where('quote_id', $quote_id);
-            $this->db->update('fi_quote_amounts', $db_array);
+            $this->db->update('ip_quote_amounts', $db_array);
         }
         else
         {
@@ -131,7 +131,7 @@ class Mdl_Quote_Amounts extends CI_Model {
             );
 
             $this->db->where('quote_id', $quote_id);
-            $this->db->update('fi_quote_amounts', $db_array);
+            $this->db->update('ip_quote_amounts', $db_array);
         }
     }
 
@@ -142,42 +142,42 @@ class Mdl_Quote_Amounts extends CI_Model {
             case 'month':
                 return $this->db->query("
 					SELECT SUM(quote_total) AS total_quoted 
-					FROM fi_quote_amounts 
+					FROM ip_quote_amounts
 					WHERE quote_id IN 
-					(SELECT quote_id FROM fi_quotes 
+					(SELECT quote_id FROM ip_quotes
 					WHERE MONTH(quote_date_created) = MONTH(NOW()) 
 					AND YEAR(quote_date_created) = YEAR(NOW()))")->row()->total_quoted;
             case 'last_month':
                 return $this->db->query("
 					SELECT SUM(quote_total) AS total_quoted 
-					FROM fi_quote_amounts 
+					FROM ip_quote_amounts
 					WHERE quote_id IN 
-					(SELECT quote_id FROM fi_quotes 
+					(SELECT quote_id FROM ip_quotes
 					WHERE MONTH(quote_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
 					AND YEAR(quote_date_created) = YEAR(NOW() - INTERVAL 1 MONTH))")->row()->total_quoted;
             case 'year':
                 return $this->db->query("
 					SELECT SUM(quote_total) AS total_quoted 
-					FROM fi_quote_amounts 
+					FROM ip_quote_amounts
 					WHERE quote_id IN 
-					(SELECT quote_id FROM fi_quotes WHERE YEAR(quote_date_created) = YEAR(NOW()))")->row()->total_quoted;
+					(SELECT quote_id FROM ip_quotes WHERE YEAR(quote_date_created) = YEAR(NOW()))")->row()->total_quoted;
             case 'last_year':
                 return $this->db->query("
 					SELECT SUM(quote_total) AS total_quoted 
-					FROM fi_quote_amounts 
+					FROM ip_quote_amounts
 					WHERE quote_id IN 
-					(SELECT quote_id FROM fi_quotes WHERE YEAR(quote_date_created) = YEAR(NOW() - INTERVAL 1 YEAR))")->row()->total_quoted;
+					(SELECT quote_id FROM ip_quotes WHERE YEAR(quote_date_created) = YEAR(NOW() - INTERVAL 1 YEAR))")->row()->total_quoted;
             default:
-                return $this->db->query("SELECT SUM(quote_total) AS total_quoted FROM fi_quote_amounts")->row()->total_quoted;
+                return $this->db->query("SELECT SUM(quote_total) AS total_quoted FROM ip_quote_amounts")->row()->total_quoted;
         }
     }
 
     public function get_status_totals()
     {
         $this->db->select("quote_status_id, SUM(quote_total) AS sum_total, COUNT(*) AS num_total");
-        $this->db->join('fi_quotes', 'fi_quotes.quote_id = fi_quote_amounts.quote_id');
+        $this->db->join('ip_quotes', 'ip_quotes.quote_id = ip_quote_amounts.quote_id');
         $this->db->group_by('quote_status_id');
-        $results = $this->db->get('fi_quote_amounts')->result_array();
+        $results = $this->db->get('ip_quote_amounts')->result_array();
 
         $return = array();
 

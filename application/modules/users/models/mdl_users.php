@@ -4,22 +4,22 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * FusionInvoice
+ * InvoicePlane
  * 
  * A free and open source web based invoicing system
  *
- * @package		FusionInvoice
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012 - 2013 FusionInvoice, LLC
- * @license		http://www.fusioninvoice.com/license.txt
- * @link		http://www.fusioninvoice.com
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  * 
  */
 
 class Mdl_Users extends Response_Model {
 
-    public $table               = 'fi_users';
-    public $primary_key         = 'fi_users.user_id';
+    public $table               = 'ip_users';
+    public $primary_key         = 'ip_users.user_id';
     public $date_created_field  = 'user_date_created';
     public $date_modified_field = 'user_date_modified';
 
@@ -33,17 +33,17 @@ class Mdl_Users extends Response_Model {
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS fi_user_custom.*, fi_users.*', FALSE);
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_users.*', FALSE);
     }
 
     public function default_join()
     {
-        $this->db->join('fi_user_custom', 'fi_user_custom.user_id = fi_users.user_id', 'left');
+        $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
     }
 
     public function default_order_by()
     {
-        $this->db->order_by('fi_users.user_name');
+        $this->db->order_by('ip_users.user_name');
     }
 
     public function validation_rules()
@@ -206,7 +206,7 @@ class Mdl_Users extends Response_Model {
         );
 
         $this->db->where('user_id', $user_id);
-        $this->db->update('fi_users', $db_array);
+        $this->db->update('ip_users', $db_array);
 
         $this->session->set_flashdata('alert_success', 'Password Successfully Changed');
     }

@@ -2,13 +2,13 @@
 
 	<div class="install-step">
 
-		<h1>FusionInvoice</h1>
+		<h1>InvoicePlane</h1>
 		
 		<legend><?php echo lang('setup_choose_language'); ?></legend>
 
 		<p><?php echo lang('setup_choose_language_message'); ?></p> 
 
-		<select name="fi_lang">
+		<select name="ip_lang">
 			<?php foreach ($languages as $language) { ?>
 			<option value="<?php echo $language; ?>" <?php if ($language == 'english') { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
 			<?php } ?>
