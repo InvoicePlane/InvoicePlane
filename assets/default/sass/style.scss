@@ -1,0 +1,644 @@
+@import "base";
+
+/* =============================================================================
+   Base Styles
+   ========================================================================== */
+
+   html, body, .sidebar { 
+      height: 100%;
+   }
+
+   // overflow-x fix white space at the right when browser window is resized
+   html, body { 
+      overflow-y:hidden;
+   }
+
+   body {
+      background-color: #f7f7f6;
+   }
+
+   img {
+      vertical-align: middle;
+   }
+
+   p, ul, ol { 
+      @include margin-trailer(1); 
+   } // Review Needed
+
+   a:hover, a:active, a:focus {
+      outline: 0;
+   }
+
+   h1, h2, h3, h4, h5, h6 { 
+      margin: 0;
+   } // Review Needed
+
+
+
+/* =============================================================================
+   Components
+   ========================================================================== */
+
+   // Bootstrap Datepicker
+   
+   // Fix input alingment
+   .controls.date { 
+     margin-left: 10px;
+     padding: 0; 
+   }
+
+   // Fix datepicker icon alingment
+   .input-append.date .add-on i,
+   .input-prepend.date .add-on i { 
+      width: auto;
+      height: auto;
+      display: inline;
+    }
+
+   // Display datepicker over modal box
+   .datepicker.dropdown-menu {
+      z-index: 9999;
+   }
+
+   // Reset padding on Date Picker
+   .datepicker table th:first-child,
+   .datepicker table td:first-child  { 
+      padding-left:5px;
+   }
+
+
+
+/* =============================================================================
+   Row
+   ========================================================================== */
+   .row-fluid:after { clear: none !important; } // Fix rows getting large height
+
+
+
+
+/* =============================================================================
+   Forms
+   ========================================================================== */
+
+   form                       { margin: 0; }
+   fieldset                   { @include border-radius(5px); border: 1px solid #ddd; margin-bottom: 20px; padding: 20px; }
+   fieldset legend            { padding: 0 20px; font-size: 16px; width: auto; border: none; margin: 0;}
+   label                      { margin-right: 10px; }
+   label,
+   input[type="text"]         { height: 20px; line-height: 20px; }
+   textarea                   { margin-bottom: 20px; resize: vertical; cursor: text !important; }
+
+   // Select Field Styles - Not being used right now
+   // .chzn-container-single .chzn-single       { height: 30px; line-height: 30px; } // Keep visual consitency
+   // .chzn-container-single .chzn-single div b { margin-top: 4px; }
+   // .chzn-container-single .chzn-search { @extend .hidden; }
+
+
+/* =============================================================================
+   Tables
+   ========================================================================== */
+
+   .table    { margin: 0 0 40px; }
+   .table td { vertical-align: middle; }
+
+   .table.no-margin { margin: 0 0 0 0; } // Review Needed
+
+   table th:first-child,
+   table td:first-child { padding-left: 20px; }
+
+/* =============================================================================
+   Install, Upgrade and Login
+   ========================================================================== */
+
+   .install-step, #login       { @include border-radius(10px);
+                                 @include rhythm-borders(2px, 3);
+                                 @include box-shadow(rgba(0,0,0, 0.1) 2px 2px 5px);
+                                 border-color: #ddd;
+                                 margin-left: auto;
+                                 margin-right: auto;
+                                 background-color: #fff; }
+
+  .install-step h1, #login h1  { @include margin-trailer(1, 36px); font-family: Arial, sans-serif; text-align: center; letter-spacing: -2px;}
+
+  .install-step                { @include margin-leader(2); width: 660px; }
+
+  .install-step h2             { @extend legend; }
+  .install-step ul             { list-style: none; }
+
+  .install-step .btn           { @include margin-leader(1); }
+
+  #login                       { @include margin-leader(10); width: 404px; }
+  #login label                 { width: 90px; }
+  #login .checkbox             { margin-top: 5px; }
+  #login .controls             { margin-left: 100px; }
+
+  .install-step .alert,
+  #login .alert                { margin-bottom: 20px; }
+
+/* =============================================================================
+   Navigation
+   ========================================================================== */
+
+   .navbar        { line-height: 40px; margin:0; }
+   .navbar .brand { @include text-shadow(rgba(255, 255, 255, 0.1) 0 1px 0, rgba(255, 255, 255, 0.125) 0 0 30px);
+                    font-size: 18px; font-weight: bold; color: #000; margin: 0; padding: 0; }
+   .navbar-inner  { -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; padding: 0; border: none; text-align: right; }
+   .navbar .dropdown-menu { text-align: left; }
+   .navbar-search { margin-top: 0; }
+
+   .navbar .welcome-member { @include text-shadow(rgba(0, 0, 0, 0.25) 0 -1px 0); color: #999; padding-right: 15px; }
+   .navbar .welcome-member:hover { color: white; }
+
+   .navbar .settings .icon { padding-top: 0; padding-bottom: 0; line-height: 40px; height: 40px; }
+   .navbar .settings .icon i { font-size: 24px; width: auto; vertical-align: middle; }
+   .navbar .settings .dropdown-toggle:after { display: none; }
+   .navbar .settings .dropdown-menu         { right: 0; text-align: left; }
+   .navbar .settings > li > .dropdown-menu:after { right: 19px; }
+   .navbar .settings > li > .dropdown-menu:before { right: 19px; }
+   .navbar .settings .divider-vertical { margin: 0; }
+
+   // Options Dropdown
+   .options { 
+      margin: 0;
+
+      .dropdown-menu { 
+         left: -10px; // Align dropdown icons with options icon
+      }
+   }
+
+
+
+/* =============================================================================
+   Pagination
+   ========================================================================== */
+   .pagination { height: auto; margin: 0; }
+   .pagination ul > li > a,
+   .pagination ul > li > span { @extend .gray-gradient; padding: 3px 10px; line-height: 20px; }
+
+/* =============================================================================
+   Sidebar
+   ========================================================================== */
+
+   .sidebar { 
+      background: #eee;
+      float: left;
+      border-right: 1px solid #ddd;
+
+      ul {
+         margin: 0;
+         list-style: none;
+      }
+
+      li a {
+         padding: 10px 20px;
+         display: block;
+         border-top: 1px solid #f5f5f5;
+         border-bottom: 1px solid #ddd;
+      }
+
+      li a:hover {
+         background: #e5e5e5;
+         border-top: 1px solid #e5e5e5;
+      }
+
+   }
+
+
+
+/* =============================================================================
+   Content
+   ========================================================================== */
+
+   .alert { border-radius: 0; padding-left: 20px; }
+   
+
+   // Content Padding
+   .main-area .content,
+   .main-area .tab-info { padding: 20px 20px 94px; } // Add some space on content pages where there is no table
+
+   .main-area { margin-left: 64px; } // Sidebar width
+
+   .main-area .headerbar {
+      @extend .white-gradient;
+      height: 29px;
+      padding: 8px 20px;
+   }
+
+   .main-area .headerbar h1 {
+      font-size: 14px;
+      line-height: 29px;
+      margin: 0;
+      float: left;
+   }
+
+   .main-area .headerbar .nav { margin-bottom: 0; } // Margin was collapsing content
+   .main-area .headerbar .pull-right { margin-left: 15px; } // Separate buttons, pills and pager
+   .main-area .headerbar .index-options { margin-top: -3px; } // Align pills vertically. By default they look more down
+
+   .main-area .container-fluid,
+   .main-area .content,
+   .main-area .table-content,
+   .main-area .tab-content {
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: scroll; }
+
+/* =============================================================================
+   Tabs
+   ========================================================================== */
+
+   .tabbable .table { margin-bottom: 20px; }
+
+   .tabs-below .nav-tabs {
+      margin: 0;
+      border: 0;
+      list-style: none;
+      background-color: #191919;
+      background-repeat: repeat-x;
+      background-image: -khtml-gradient(linear, left top, left bottom, from(#292929), to(#191919));
+      background-image: -moz-linear-gradient(top, #292929, #191919);
+      background-image: -ms-linear-gradient(top, #292929, #191919);
+      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #292929), color-stop(100%, #191919));
+      background-image: -webkit-linear-gradient(top, #292929, #191919);
+      background-image: -o-linear-gradient(top, #292929, #191919);
+      background-image: linear-gradient(top, #292929, #191919);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#292929', endColorstr='#191919', GradientType=0);
+      color: #ffffff;
+      height: 40px;
+      width: 100%;
+   }
+   .tabs-below .nav-tabs > li { margin-top: 0; }
+   .tabs-below .nav-tabs > li > a {
+      border: transparent;
+      font-weight: bold;
+      color: #bfbfbf;
+      margin-right: 0;
+      padding: 10px 20px 11px;
+      border-right: 1px solid #444;
+      border-left: 1px solid #0a0a0a;
+      display: block;
+      line-height: 19px;
+   }
+
+   .tabs-below .nav-tabs > li > a:hover,
+   .tabs-below .nav-tabs .active > a,
+   .tabs-below .nav-tabs .active > a:hover {
+      @include border-radius(0);
+      background: #444;
+      color: #fff;
+      text-decoration: none;
+      border: none;
+      border-right: 1px solid #444 !important;
+      border-left: 1px solid #0a0a0a !important;
+   }
+
+   .tabs-below .nav-tabs > li:first-child > a, 
+   .tabs-below .nav-tabs > li:first-child > a:hover {border-left: none !important; }
+   .tabs-below .nav-tabs > li:last-child > a, 
+   .tabs-below .nav-tabs > li:last-child > a:hover {border-right: 1px solid #0a0a0a !important;}
+
+/* =============================================================================
+   Widgets
+   ========================================================================== */
+
+   .widget { 
+      border: 1px solid #ddd; 
+      margin-top: 20px;
+
+      .widget-title { 
+         @extend .white-gradient; 
+         padding: 8px 20px; 
+         overflow: hidden; 
+
+         h5 { 
+            float: left; 
+         }
+
+         h5 i { 
+            margin-right: 10px; 
+         }
+
+      }
+
+      .content-padding { 
+         padding: 20px; 
+      }
+   }
+
+   // Quick Actions
+   .quick-actions {
+
+      table td {
+        border-top: none;
+        border-left: 1px solid #ddd;
+        text-align: center;
+      }
+
+      table td:first-child {
+        border: none;
+      }
+
+      a {
+
+        &:hover {
+          text-decoration: none;
+
+          i {
+            color: #333;
+            text-decoration: none;
+          }
+        }
+      }
+
+      i {
+        @include single-transition(color, 0.2s, ease-in);
+        font-size: 64px;
+        display: block;
+        color: #ccc;
+      }
+   }
+
+   // Invoices and Quotes Overview
+   .overview table {
+
+      th, td {
+         border: none;
+      }
+
+      th {
+         text-transform: uppercase;
+         font-weight: normal;
+         font-size: 11px;
+         padding-bottom: 0;
+      }
+
+      td {
+         font-size: 16px;
+         font-weight: bold;
+         padding-top: 4px;
+      }
+
+   }
+
+   //Recent Activity
+   .time { font-size: 11px; }
+
+   //Recent News
+   .post h4 { font-size: 14px; }
+   .post-date { @extend .time; color: #bbb; }
+
+
+
+/* =============================================================================
+   Client Profile
+   ========================================================================== */
+
+   .profile {
+      @include border-radius(5px);
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+      overflow: hidden;
+      padding-bottom: 40px;
+      
+      .primaryInfo {
+         padding: 20px 46px 0;
+      }
+
+      dl { 
+         clear: both; 
+         margin-top: 40px;
+      }
+
+      dl dt  {   
+         margin: 40px 0 20px;
+         border-top: 1px solid #ddd;
+         line-height: 0;
+      }
+
+      dl dt span {
+         @include border-radius(5px);
+         background: #fff;
+         border: 1px solid #ddd;
+         padding: 2px 25px;
+         margin-left: 20px;
+      }
+
+      dl dd {
+         clear: both;
+         line-height: 20px;
+         padding-top: 6px;
+         margin: 0;
+      }
+
+      dl dd span {
+         font-weight: bold;
+         float: left;
+         text-align: right;
+         width: 70px;
+         margin-right: 10px;
+      }
+   }
+
+   .notes textarea {
+      resize: both;
+      width: 100%;
+   }
+
+/* =============================================================================
+   Invoice and Quotes Global Styles
+   ========================================================================== */
+
+   // Invoices and Quotes Status Colors
+   .draft { color: #999999; }
+   .sent { color: #3A87AD; }
+   .viewed { color: #F89406; }
+   .paid { color: #468847; }
+   .approved { color: #468847; }
+   .rejected, .overdue { color: #B94A48; }
+   .canceled { color: #333333; }
+
+   // Invoices and Quotes Status
+   .label {
+
+      color: white !important; // override status text color on labels
+
+      &.draft { background-color: #999999; }
+      &.sent { background-color: #3A87AD; }
+      &.viewed { background-color: #F89406; }
+      &.paid { background-color: #468847; }
+      &.approved { background-color: #468847; }
+      &.rejected,
+      &.overdue { background-color: #B94A48; }
+      &.canceled { background-color: #333333; }
+
+   }
+
+/* =============================================================================
+   Quotes
+   ========================================================================== */
+   .quote .cf { margin-bottom: 40px; }
+
+/* =============================================================================
+   Invoice
+   ========================================================================== */
+
+   .invoice {
+      .items { 
+         margin-top: 40px; 
+      }
+
+      .total td:first-child,
+      .total:hover td:first-child { 
+         background: none !important; 
+      }
+
+      .total td:last-child { 
+         border-left: none; 
+      }
+
+      .subtotal, .tax, .total, 
+      th.align-right, td.align-right { 
+         text-align: right;
+      }
+
+      .tax { 
+         background: none; 
+      }
+   }
+
+
+
+/* =============================================================================
+   Random Styles - NEEDS TO BE DISCUSSED WITH JESSE
+   ========================================================================== */
+.index-options { margin-top: -3px; margin-bottom: 0px; }
+
+.headerbar .pull-right { margin-left: 15px; }
+
+.alert { border-radius: 0px 0px 0px 0px; }
+
+/* Dashboard */
+
+.padded {
+  padding: 15px;
+}
+
+.main-area .content-padding {
+    padding: 20px 20px 94px;
+}
+
+#login {
+    margin-top: 15em;
+    width: 404px;
+}
+
+.install-step {
+    margin-top: 3em;
+    width: 660px;
+}
+
+.install-step, #login {
+    background-color: #FFFFFF;
+    border-color: #DDDDDD;
+    border-radius: 10px 10px 10px 10px;
+    border-style: solid;
+    border-width: 0.0625em;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2.9375em;
+}
+
+.install-step h1, #login h1 {
+    font-family: 'ColaborateLightRegular',Arial,sans-serif;
+    letter-spacing: -2px;
+    margin-bottom: 0.66667em;
+    text-align: center;
+}
+
+legend, .install-step h2 {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color #E5E5E5;
+    border-image: none;
+    border-style: none none solid;
+    border-width: 0 0 1px;
+    color: #333333;
+    display: block;
+    font-size: 18px;
+    line-height: 40px;
+    margin-bottom: 20px;
+    padding: 0;
+    width: 100%;
+}
+
+.login-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+}
+
+.form-horizontal .control-group.invoice-properties {
+    margin-bottom: 10px;
+}
+
+.invoice-properties select {
+    width: 90px;
+}
+
+
+
+.font-overdue {
+    color: #B94A48;
+    font-weight: bold;
+}
+
+/* =============================================================================
+   Responsive Media Queries
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+
+  // Make all grid-sized elements block level again
+  [class*="span"],
+  .row-fluid [class*="span"] {
+    float: none;
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    @include box-sizing(border-box);
+  }
+  .span12,
+  .row-fluid .span12 {
+    width: 100%;
+    @include box-sizing(border-box);
+  }
+
+
+}
+
+@media (max-width: 767px) {
+
+  // Remove default padding set in bootstrap/_responsive-767px-max.scss
+  body {
+    padding: 0; 
+  }
+
+  .container-fluid { padding: 0 20px; }
+
+}
+
+   /* ==|== non-semantic helper classes ========================================
+   Please define your styles before this section.
+   ========================================================================== */
+
+   /* Contain floats: h5bp.com/q */ 
+   .cf:before, .cf:after { content: ""; display: table; }
+   .cf:after { clear: both; }
+   .cf { zoom: 1; }
+
+   .no-padding { padding: 0; }

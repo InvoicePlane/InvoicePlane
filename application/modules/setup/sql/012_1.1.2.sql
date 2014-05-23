@@ -1,0 +1,1 @@
+ALTER TABLE `fi_invoices` ADD `invoice_terms` LONGTEXT NOT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE `fi_quotes` ADD `quote_url_key` CHAR( 32 ) NOT NULL;
