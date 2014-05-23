@@ -1,1 +1,0 @@
-ALTER TABLE `ip_invoices` ADD `invoice_terms` LONGTEXT NOT NULL;

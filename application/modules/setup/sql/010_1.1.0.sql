@@ -1,1 +1,0 @@
- RENAME TABLE `client_notes` TO `ip_client_notes` ;

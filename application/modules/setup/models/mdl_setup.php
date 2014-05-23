@@ -22,11 +22,11 @@ class Mdl_Setup extends CI_Model {
 
     public function install_tables()
     {
-        $file_contents = read_file(APPPATH . 'modules/setup/sql/000_1.0.sql');
+        $file_contents = read_file(APPPATH . 'modules/setup/sql/000_0.9.sql');
 
         $this->execute_contents($file_contents);
 
-        $this->save_version('000_1.0.sql');
+        $this->save_version('000_0.9.sql');
 
         if ($this->errors)
         {
@@ -165,46 +165,10 @@ class Mdl_Setup extends CI_Model {
         $this->db->insert('ip_versions', $version_db_array);
     }
 
-    public function upgrade_013_1_1_3()
-    {
-        // Assign unique url key to any existing invoices
-        $this->load->helper('string');
-
-        $invoices = $this->db->select('invoice_id')->get('ip_invoices')->result();
-
-        foreach ($invoices as $invoice)
-        {
-            $this->db->where('invoice_id', $invoice->invoice_id);
-            $this->db->set('invoice_url_key', random_string('unique'));
-            $this->db->update('ip_invoices');
-        }
-
-        // Add a unique key to the url key column
-        $this->db->query("ALTER TABLE `ip_invoices` ADD UNIQUE (`invoice_url_key`)");
-    }
-
-    public function upgrade_030_1_3_0()
-    {
-        $this->db->where('setting_key', 'default_invoice_template');
-        $this->db->delete('ip_settings');
-
-        $this->db->where('setting_key', 'default_quote_template');
-        $this->db->delete('ip_settings');
-
-        // Update paid invoices with the new paid status
-        $this->load->model('invoices/mdl_invoices');
-        $this->mdl_invoices->where('invoice_total >', 0);
-        $this->mdl_invoices->where('invoice_paid', 'invoice_total', FALSE);
-        $this->mdl_invoices->where('invoice_balance', 0);
-        $invoices = $this->mdl_invoices->get()->result();
-
-        foreach ($invoices as $invoice)
-        {
-            $this->db->set('invoice_status_id', 4);
-            $this->db->where('invoice_id', $invoice->invoice_id);
-            $this->db->update('ip_invoices');
-        }
-    }
+    /*
+     * Place upgrade functions here
+     * public function upgrade_010_1_0_1() { ... }
+     */
 
 }
 

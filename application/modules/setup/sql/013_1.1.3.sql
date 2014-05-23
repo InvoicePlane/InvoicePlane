@@ -1,1 +1,0 @@
-ALTER TABLE `ip_invoices` ADD `invoice_url_key` CHAR( 32 ) NOT NULL;
