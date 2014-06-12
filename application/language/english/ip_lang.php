@@ -58,6 +58,7 @@ $lang['delete_client_warning'] = 'If you delete this client you will also delete
 $lang['delete_client'] = 'Delete Client';
 $lang['delete_invoice_warning'] = 'If you delete this invoice you will not be able to recover it later. Are you sure you want to permanently delete this invoice?';
 $lang['delete_invoice'] = 'Delete Invoice';
+$lang['confirm_deletion'] = 'Confirm deletion';
 $lang['delete_quote_warning'] = 'If you delete this quote you will not be able to recover it later. Are you sure you want to permanently delete this quote?';
 $lang['delete_quote'] = 'Delete Quote';
 $lang['delete_record_warning'] = 'Are you sure you wish to delete this record?';
@@ -138,7 +139,6 @@ $lang['merchant_test_mode'] = 'Test Mode';
 $lang['mobile_number'] = 'Mobile Number';
 $lang['mobile'] = 'Mobile';
 $lang['month_prefix'] = 'Month Prefix';
-// $lang['my_profile'] = 'My Profile'; - Removed for 1.3.3
 $lang['name'] = 'Name';
 $lang['new'] = 'New';
 $lang['next_id'] = 'Next ID';
@@ -147,10 +147,10 @@ $lang['no'] = 'No';
 $lang['none'] = 'None';
 $lang['note'] = 'Note';
 $lang['open_invoices'] = 'Open Invoices';
-// $lang['open_pdf'] = 'Open PDF'; - Removed for 1.3.3
 $lang['open'] = 'Open';
 $lang['options'] = 'Options';
 $lang['overdue_invoices'] = 'Overdue Invoices';
+$lang['no_overdue_invoices'] = 'No overdue Invoices';
 $lang['overdue'] = 'Overdue';
 $lang['paid'] = 'Paid';
 $lang['password'] = 'Password';
@@ -249,15 +249,12 @@ $lang['tax_rate'] = 'Tax Rate';
 $lang['tax_rates'] = 'Tax Rates';
 $lang['tax'] = 'Tax';
 $lang['terms'] = 'Terms';
-// $lang['this_month'] = 'This Month'; - Removed for 1.3.3
-// $lang['this_year'] = 'This Year'; - Removed for 1.3.3
 $lang['title'] = 'Title';
 $lang['to_date'] = 'To Date';
 $lang['to_email'] = 'To Email';
 $lang['total'] = 'Total';
 $lang['try_again'] = 'Try Again';
 $lang['unknown'] = 'Unknown';
-// $lang['unpaid'] = 'Unpaid'; - Removed for 1.3.3
 $lang['user_accounts'] = 'User Accounts';
 $lang['user_form'] = 'User Form';
 $lang['user_type'] = 'User Type';
@@ -277,7 +274,6 @@ $lang['year_prefix'] = 'Year Prefix';
 $lang['yes'] = 'Yes';
 $lang['zip_code'] = 'Zip Code';
 
-/** New or changed for 1.1.9 release **/
 $lang['column'] = 'Column';
 $lang['custom_fields'] = 'Custom Fields';
 $lang['custom_field_form'] = 'Custom Field Form';
@@ -290,17 +286,8 @@ $lang['php_version_success'] = 'PHP appears to meet the installation requirement
 $lang['setup_prerequisites_message'] = 'Welcome to InvoicePlane! Any issue listed below must be resolved before the installation can continue.';
 $lang['table'] = 'Table';
 
-/** New or changed for 1.2.0 release **/
 $lang['base_invoice'] = 'Base Invoice';
-// $lang['calendar_day'] = 'Day'; - Removed for 1.3.3
-// $lang['calendar_days_short'] = array("Sun","Mon","Tue","Wed","Thu","Fri","Sat"); - Removed for 1.3.3
-// $lang['calendar_days'] = array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"); - Removed for 1.3.3
 $lang['calendar_month'] = 'Month';
-// $lang['calendar_months_short'] = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); - Removed for 1.3.3
-// $lang['calendar_months'] = array("January","February","March","April","May","June","July","August","September","October","November","December"); - Removed for 1.3.3
-// $lang['calendar_overview'] = 'Calendar Overview'; - Removed for 1.3.3
-// $lang['calendar_today'] = 'Today'; - Removed for 1.3.3
-// $lang['calendar_view'] = 'Calendar View'; - Removed for 1.3.3
 $lang['calendar_week'] = 'Week';
 $lang['create_recurring'] = 'Create Recurring';
 $lang['cron_key'] = 'CRON Key';
@@ -309,7 +296,6 @@ $lang['decimal_point'] = 'Decimal Point';
 $lang['end_date'] = 'End Date';
 $lang['every'] = 'Every';
 $lang['generate'] = 'Generate';
-// $lang['list_view'] = 'List View'; - Removed for 1.3.3
 $lang['month'] = 'Month';
 $lang['next_date'] = 'Next Date';
 $lang['optional'] = 'Optional';
@@ -327,23 +313,17 @@ $lang['view_recurring_invoices'] = 'View Recurring Invoices';
 $lang['year'] = 'Year';
 $lang['years'] = 'Years';
 
-/** New or changed for 1.2.1 release **/
 $lang['bill_to'] = 'Bill To';
 
-/** New or changed for 1.2.2 release **/
 $lang['current_version'] = 'Current Version';
 $lang['view_client'] = 'View Client';
 
-/** New or changed for 1.2.3 release **/
 $lang['notes'] = 'Notes';
 $lang['tax_rate_decimal_places'] = 'Tax Rate Decimal Places';
 
-/** New or changed for 1.2.4 release **/
 $lang['invoice_logo'] = 'Invoice Logo';
-// $lang['invoice_logo_removed'] = 'Invoice logo removed'; - Removed for 1.3.3
 $lang['remove_logo'] = 'Remove Logo';
 
-/** New or changed for 1.2.5 release **/
 $lang['company'] = 'Company';
 $lang['email_send_method'] = 'Email Sending Method';
 $lang['email_send_method_phpmail'] = 'PHP Mail';
@@ -352,32 +332,25 @@ $lang['email_send_method_smtp'] = 'SMTP';
 $lang['email_successfully_sent'] = 'Email successfully sent';
 $lang['email_template_tags'] = 'Email Template Tags';
 $lang['login_logo'] = 'Login Logo';
-// $lang['login_logo_removed'] = 'Login logo removed'; - Removed for 1.3.3
 $lang['online_payment_method'] = 'Online Payment Method';
 
-/** New or changed for 1.2.6 release **/
 $lang['add_quote_tax'] = 'Add Quote Tax';
 $lang['copy_quote'] = 'Copy Quote';
 $lang['filter_quotes'] = 'Filter Quotes';
 $lang['quote_tax'] = 'Quote Tax';
 
-/** New or changed for 1.2.7 release **/
 $lang['download_pdf'] = 'Download PDF';
 $lang['guest_account_denied'] = 'This account is not configured. Please contact the system administrator.';
-// $lang['no_records'] = 'There are no records to display'; - Removed for 1.3.3
 $lang['open_quotes'] = 'Open Quotes';
 $lang['pdf'] = 'PDF';
 $lang['welcome'] = 'Welcome';
 
-/** New or changed for 1.2.8 tag **/
 $lang['automatic_email_on_recur'] = 'Automatically email recurring invoices';
 
-/** New or changed for 1.2.9 tag **/
 $lang['default_pdf_template'] = 'Default PDF Template';
 $lang['default_public_template'] = 'Default Public Template';
 $lang['taxes'] = 'Taxes';
 
-/** New or changed for 1.3.0 tag **/
 $lang['approve'] = 'Approve';
 $lang['approved'] = 'Approved';
 $lang['approve_this_quote'] = 'Approve This Quote';
@@ -410,7 +383,10 @@ $lang['sent'] = 'Sent';
 $lang['viewed'] = 'Viewed';
 $lang['view_all'] = 'View All';
 
-/** New or changed for 1.3.3 tag **/
 $lang['documentation'] = 'Documentation';
 
-?>
+$lang['aftersetup_heading'] = 'Just one more question...';
+$lang['aftersetup_question'] = 'Would you agree to send an anonymized info to the project website invoiceplane.com so we know that an awesome person installed InvoicePlane?';
+$lang['aftersetup_hint'] = 'The info includes only an encrypted string of the exact date and time when you finished installing InvoicePlane.<br/>
+Nothing more. No IP. No name. We hate the NSA too.';
+$lang['aftersetup_no_thanks'] = 'No thanks';
