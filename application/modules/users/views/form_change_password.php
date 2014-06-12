@@ -12,17 +12,25 @@
 			<fieldset>
 				<legend><?php echo lang('change_password'); ?></legend>
 
-				<div class="control-group">
-					<label class="control-label"><?php echo lang('password'); ?>: </label>
-					<div class="controls">
-						<input type="password" name="user_password" id="user_password">
+				<div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+					    <label class="control-label"><?php echo lang('password'); ?>: </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+						<input type="password" name="user_password" id="user_password"
+                            class="form-control">
 					</div>
 				</div>
 
-				<div class="control-group">
-					<label class="control-label"><?php echo lang('verify_password'); ?>: </label>
-					<div class="controls">
-						<input type="password" name="user_passwordv" id="user_passwordv">
+				<div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+					    <label class="control-label">
+                            <?php echo lang('verify_password'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+						<input type="password" name="user_passwordv" id="user_passwordv"
+                            class="form-control">
 					</div>
 				</div>
 

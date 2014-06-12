@@ -45,47 +45,71 @@
             <fieldset>
                 <legend><?php echo lang('account_information'); ?></legend>
 
-                <div class="control-group">
-                    <label class="control-label"><?php echo lang('name'); ?>: </label>
-                    <div class="controls">
-                        <input type="text" name="user_name" id="user_name" value="<?php echo $this->mdl_users->form_value('user_name'); ?>">
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label><?php echo lang('name'); ?>: </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <input type="text" name="user_name" id="user_name" class="form-control"
+                               value="<?php echo $this->mdl_users->form_value('user_name'); ?>">
                     </div>
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label"><?php echo lang('email_address'); ?>: </label>
-                    <div class="controls">
-                        <input type="text" name="user_email" id="user_email" value="<?php echo $this->mdl_users->form_value('user_email'); ?>">
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label class="control-label">
+                            <?php echo lang('email_address'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <input type="text" name="user_email" id="user_email" class="form-control"
+                               value="<?php echo $this->mdl_users->form_value('user_email'); ?>">
                     </div>
                 </div>
 
                 <?php if (!$id) { ?>
-                <div class="control-group">
-                    <label class="control-label"><?php echo lang('password'); ?>: </label>
-                    <div class="controls">
-                        <input type="password" name="user_password" id="user_password">
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label class="control-label">
+                            <?php echo lang('password'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <input type="password" name="user_password" id="user_password" class="form-control">
                     </div>
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label"><?php echo lang('verify_password'); ?>: </label>
-                    <div class="controls">
-                        <input type="password" name="user_passwordv" id="user_passwordv">
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label class="control-label">
+                            <?php echo lang('verify_password'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <input type="password" name="user_passwordv" id="user_passwordv" class="form-control">
                     </div>
                 </div>
                 <?php } else { ?>
-                <div class="control-group">
-                    <label><?php echo lang('change_password'); ?>: </label>
-                    <div class="controls">
-                    <?php echo anchor('users/change_password/' . $id, lang('change_password')); ?>
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label>
+                            <?php echo lang('change_password'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <?php echo anchor('users/change_password/' . $id, lang('change_password')); ?>
                     </div>
                 </div>
                 <?php } ?>
 
-                <div class="control-group">
-                    <label class="control-label"><?php echo lang('user_type'); ?></label>
-                    <div class="controls">
-                        <select name="user_type" id="user_type">
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label class="control-label">
+                            <?php echo lang('user_type'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <select name="user_type" id="user_type" class="form-control">
                             <option value=""></option>
                             <?php foreach ($user_types as $key => $type) { ?>
                             <option value="<?php echo $key; ?>" <?php if ($this->mdl_users->form_value('user_type') == $key) { ?>selected="selected"<?php } ?>><?php echo $type; ?></option>
@@ -100,45 +124,75 @@
                 <fieldset>
                     <legend><?php echo lang('address'); ?></legend>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('street_address'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_address_1" id="user_address_1" value="<?php echo $this->mdl_users->form_value('user_address_1'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('street_address'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6" >
+                            <input type="text" name="user_address_1" id="user_address_1" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_address_1'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('street_address_2'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_address_2" id="user_address_2" value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('street_address_2'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_address_2" id="user_address_2" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('city'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_city" id="user_city" value="<?php echo $this->mdl_users->form_value('user_city'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('city'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_city" id="user_city" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_city'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('state'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_state" id="user_state" value="<?php echo $this->mdl_users->form_value('user_state'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('state'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_state" id="user_state" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_state'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('zip_code'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_zip" id="user_zip" value="<?php echo $this->mdl_users->form_value('user_zip'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('zip_code'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_zip" id="user_zip" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_zip'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('country'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_country" id="user_country" value="<?php echo $this->mdl_users->form_value('user_country'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('country'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_country" id="user_country" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_country'); ?>">
                         </div>
                     </div>
                 </fieldset>
@@ -147,31 +201,51 @@
 
                     <legend><?php echo lang('contact_information'); ?></legend>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('phone_number'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_phone" id="user_phone" value="<?php echo $this->mdl_users->form_value('user_phone'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('phone_number'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_phone" id="user_phone" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_phone'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('fax_number'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_fax" id="user_fax" value="<?php echo $this->mdl_users->form_value('user_fax'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('fax_number'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_fax" id="user_fax" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_fax'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('mobile_number'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_mobile" id="user_mobile" value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('mobile_number'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_mobile" id="user_mobile" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label"><?php echo lang('web_address'); ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="user_web" id="user_web" value="<?php echo $this->mdl_users->form_value('user_web'); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('web_address'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_web" id="user_web" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_web'); ?>">
                         </div>
                     </div>
 
@@ -182,10 +256,17 @@
                     <legend><?php echo lang('custom_fields'); ?></legend>
 
                     <?php foreach ($custom_fields as $custom_field) { ?>
-                    <div class="control-group">
-                        <label class="control-label"><?php echo $custom_field->custom_field_label; ?>: </label>
-                        <div class="controls">
-                            <input type="text" name="custom[<?php echo $custom_field->custom_field_column; ?>]" id="<?php echo $custom_field->custom_field_column; ?>" value="<?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo $custom_field->custom_field_label; ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" class="form-control"
+                                   name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                   id="<?php echo $custom_field->custom_field_column; ?>"
+                                   value="<?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
                         </div>
                     </div>
                     <?php } ?>
@@ -200,12 +281,15 @@
                     <div class="widget-title">
                         <h5 style="float: left;"><?php echo lang('client_access'); ?></h5>
                         <div class="pull-right">
-                            <a href="#add-user-client" class="btn" style="margin-right: 5px;" data-toggle="modal"><i class="icon-plus-sign"></i> <?php echo lang('add_client'); ?></a>
+                            <a href="#add-user-client" class="btn btn-default" data-toggle="modal">
+                                <i class="fa fa-plus"></i>
+                                <?php echo lang('add_client'); ?>
+                            </a>
                         </div>
                     </div>
                     
                     <div id="div_user_client_table">
-                    <?php echo $user_client_table; ?>
+                        <?php echo $user_client_table; ?>
                     </div>
 
 				</div>

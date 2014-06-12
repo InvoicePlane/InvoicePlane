@@ -1,9 +1,10 @@
+<div class="table-responsive">
 <table class="table table-striped no-margin">
 
     <thead>
         <tr>
-            <th style="width: 90%;"><?php echo lang('client'); ?></th>
-            <th style="width: 10%;"><?php echo lang('options'); ?></th>
+            <th><?php echo lang('client'); ?></th>
+            <th><?php echo lang('options'); ?></th>
         </tr>
     </thead>
 
@@ -14,7 +15,7 @@
             <td>
                 <?php if ($id) { ?>
                 <a class="" href="<?php echo site_url('users/delete_user_client/' . $id . '/' . $user_client->user_client_id); ?>">
-                    <i class="icon-remove"></i>
+                    <i class="fa fa-trash-o"></i>
                 </a>
                 <?php } ?>
             </td>
@@ -23,3 +24,4 @@
     </tbody>
 
 </table>
+</div>
