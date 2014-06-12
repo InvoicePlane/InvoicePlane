@@ -209,7 +209,7 @@
     </div>
 </nav>
 
-<div class="sidebar">
+<div class="sidebar hidden-xs">
     <ul>
         <li>
             <a href="<?php echo site_url('dashboard'); ?>">
