@@ -2,99 +2,111 @@
     $(function()
     {
         $('#enter-payment').modal('show');
-        
+
         $('#enter-payment').on('shown', function() {
             $('#payment_amount').focus();
         });
-        
+
         $('.datepicker').datepicker({ format: '<?php echo date_format_datepicker(); ?>'});
 
         $('#btn_modal_payment_submit').click(function()
         {
             $.post("<?php echo site_url('payments/ajax/add'); ?>", {
-                invoice_id: $('#invoice_id').val(),
-                payment_amount: $('#payment_amount').val(),
-                payment_method_id: $('#payment_method_id').val(),
-                payment_date: $('#payment_date').val(),
-                payment_note: $('#payment_note').val()
-            },
-            function(data) {
-                var response = JSON.parse(data);
-                if (response.success == '1')
-                {
-                    // The validation was successful and payment was added
-                    window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
-                }
-                else
-                {
-                    // The validation was not successful
-                    $('.control-group').removeClass('error');
-                    for (var key in response.validation_errors) {
-                        $('#' + key).parent().parent().addClass('error');
-
+                    invoice_id: $('#invoice_id').val(),
+                    payment_amount: $('#payment_amount').val(),
+                    payment_method_id: $('#payment_method_id').val(),
+                    payment_date: $('#payment_date').val(),
+                    payment_note: $('#payment_note').val()
+                },
+                function(data) {
+                    var response = JSON.parse(data);
+                    if (response.success == '1')
+                    {
+                        // The validation was successful and payment was added
+                        window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
                     }
-                }
-            });
+                    else
+                    {
+                        // The validation was not successful
+                        $('.control-group').removeClass('error');
+                        for (var key in response.validation_errors) {
+                            $('#' + key).parent().parent().addClass('error');
+
+                        }
+                    }
+                });
         });
     });
 </script>
 
-<div id="enter-payment" class="modal hide">
-	<div class="modal-header">
-		<a data-dismiss="modal" class="close">×</a>
-		<h3><?php echo lang('enter_payment'); ?></h3>
-	</div>
-	<div class="modal-body">
-		<form class="form-horizontal">
-			
-			<input type="hidden" name="invoice_id" id="invoice_id" value="<?php echo $invoice_id; ?>">
+<div id="enter-payment" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
+     role="dialog" aria-labelledby="modal_enter_payment" aria-hidden="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <a data-dismiss="modal" class="close">x</a>
+            <h3><?php echo lang('enter_payment'); ?></h3>
+        </div>
 
-			<div class="control-group">
+        <div class="modal-body">
+            <form >
 
-				<label class="control-label"><?php echo lang('amount'); ?>: </label>
-				<div class="controls">
-					<input type="text" name="payment_amount" id="payment_amount" value="<?php echo format_amount($invoice_balance); ?>">
-				</div>
+                <input type="hidden" name="invoice_id" id="invoice_id" value="<?php echo $invoice_id; ?>">
 
-			</div>
+                <div class="form-group">
+                    <label for="payment_amount"><?php echo lang('amount'); ?></label>
+                    <div class="controls">
+                        <input type="text" name="payment_amount" id="payment_amount" class="form-control"
+                               value="<?php echo format_amount($invoice_balance); ?>">
+                    </div>
+                </div>
 
-			<div class="control-group">
+                <div class="form-group has-feedback">
 
-				<label class="control-label"><?php echo lang('payment_date'); ?>: </label>
-				<div class="controls input-append date datepicker">
-					<input size="16" type="text" name="payment_date" id="payment_date" value="<?php echo date(date_format_setting()); ?>" readonly>
-					<span class="add-on"><i class="icon-th"></i></span>
-				</div>
+                    <label class="payment_date"><?php echo lang('payment_date'); ?></label>
 
-			</div>
+                    <div class="date datepicker">
+                        <input size="16" type="text" name="payment_date" id="payment_date"
+                               value="<?php echo date(date_format_setting()); ?>"
+                               class="form-control" readonly>
+                        <span class="fa fa-calendar form-control-feedback"></span>
+                    </div>
 
-			<div class="control-group">
+                </div>
 
-				<label class="control-label"><?php echo lang('payment_method'); ?>: </label>
-				<div class="controls">
-					<select name="payment_method_id" id="payment_method_id">
-						<option value=""></option>
-						<?php foreach ($payment_methods as $payment_method) { ?>
-						<option value="<?php echo $payment_method->payment_method_id; ?>"><?php echo $payment_method->payment_method_name; ?></option>
-						<?php } ?>
-					</select>
-				</div>
-			</div>
+                <div class="form-group">
+                    <label for="payment_method_id"><?php echo lang('payment_method'); ?></label>
+                    <div class="controls">
+                        <select name="payment_method_id" id="payment_method_id" class="form-control">
+                            <option value=""></option>
+                            <?php foreach ($payment_methods as $payment_method) { ?>
+                                <option value="<?php echo $payment_method->payment_method_id; ?>">
+                                    <?php echo $payment_method->payment_method_name; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
 
-			<div class="control-group">
+                <div class="form-group">
+                    <label for="payment_note"><?php echo lang('note'); ?></label>
+                    <div class="controls">
+                        <textarea name="payment_note" id="payment_note" class="form-control"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-				<label class="control-label"><?php echo lang('note'); ?>: </label>
-				<div class="controls">
-					<textarea name="payment_note" id="payment_note"></textarea>
-				</div>
-
-			</div>
-		</form>
-	</div>
-
-	<div class="modal-footer">
-        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="icon-white icon-remove"></i> <?php echo lang('cancel'); ?></button>
-		<button class="btn btn-primary" id="btn_modal_payment_submit" type="button"><i class="icon-white icon-ok"></i> <?php echo lang('submit'); ?></button>
-	</div>
-
+        <div class="modal-footer">
+            <div class="btn-group">
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                    <?php echo lang('cancel'); ?>
+                </button>
+                <button class="btn btn-success" id="btn_modal_payment_submit" type="button">
+                    <i class="fa fa-check"></i>
+                    <?php echo lang('submit'); ?>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
