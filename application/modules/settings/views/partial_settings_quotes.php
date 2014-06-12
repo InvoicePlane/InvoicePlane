@@ -1,9 +1,13 @@
-<div class="tab-info">
+<div class="tab-info form-horizontal">
 
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_pdf_template'); ?>: </label>
-		<div class="controls">
-			<select name="settings[pdf_quote_template]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[pdf_quote_template]" class="control-label">
+                <?php echo lang('default_pdf_template'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[pdf_quote_template]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($pdf_quote_templates as $quote_template) { ?>
 				<option value="<?php echo $quote_template; ?>" <?php if ($this->mdl_settings->setting('pdf_quote_template') == $quote_template) { ?>selected="selected"<?php } ?>><?php echo $quote_template; ?></option>
@@ -12,10 +16,14 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_public_template'); ?>: </label>
-		<div class="controls">
-			<select name="settings[public_quote_template]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[public_quote_template]" class="control-label">
+                <?php echo lang('default_public_template'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[public_quote_template]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($public_quote_templates as $quote_template) { ?>
 				<option value="<?php echo $quote_template; ?>" <?php if ($this->mdl_settings->setting('public_quote_template') == $quote_template) { ?>selected="selected"<?php } ?>><?php echo $quote_template; ?></option>
@@ -24,10 +32,14 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_email_template'); ?>: </label>
-		<div class="controls">
-			<select name="settings[email_quote_template]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[email_quote_template]" class="control-label">
+                <?php echo lang('default_email_template'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[email_quote_template]" class="input-sm form-control">
                 <option value=""></option>
                 <?php foreach ($email_templates as $email_template) { ?>
                 <option value="<?php echo $email_template->email_template_id; ?>" <?php if ($this->mdl_settings->setting('email_quote_template') == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
@@ -36,17 +48,26 @@
 		</div>
 	</div>
 
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('quotes_expire_after'); ?>: </label>
-		<div class="controls">
-			<input type="text" name="settings[quotes_expire_after]" class="input-small" value="<?php echo $this->mdl_settings->setting('quotes_expire_after'); ?>">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[quotes_expire_after]" class="control-label">
+                <?php echo lang('quotes_expire_after'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<input type="text" name="settings[quotes_expire_after]" class="input-sm form-control"
+                   value="<?php echo $this->mdl_settings->setting('quotes_expire_after'); ?>">
 		</div>
 	</div>
 
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_quote_group'); ?>: </label>
-		<div class="controls">
-			<select name="settings[default_quote_group]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[default_quote_group]" class="control-label">
+                <?php echo lang('default_quote_group'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[default_quote_group]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($invoice_groups as $invoice_group) { ?>
 				<option value="<?php echo $invoice_group->invoice_group_id; ?>" <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
@@ -54,15 +75,19 @@
 			</select>
 		</div>
 	</div>
-    
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('mark_quotes_sent_pdf'); ?>: </label>
-		<div class="controls">
-			<select name="settings[mark_quotes_sent_pdf]">
+
+    <div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+            <label for="settings[mark_quotes_sent_pdf]" class="control-label">
+                <?php echo lang('mark_quotes_sent_pdf'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <select name="settings[mark_quotes_sent_pdf]" class="input-sm form-control">
                 <option value="0" <?php if (!$this->mdl_settings->setting('mark_quotes_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
                 <option value="1" <?php if ($this->mdl_settings->setting('mark_quotes_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
-			</select>
-		</div>
-	</div>
+            </select>
+        </div>
+    </div>
 
 </div>

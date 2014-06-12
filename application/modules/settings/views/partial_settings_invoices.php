@@ -1,9 +1,13 @@
-<div class="tab-info">
+<div class="tab-info form-horizontal">
 
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_pdf_template'); ?>: </label>
-		<div class="controls">
-			<select name="settings[pdf_invoice_template]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[pdf_invoice_template]" class="control-label">
+                <?php echo lang('default_pdf_template'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[pdf_invoice_template]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
 				<option value="<?php echo $invoice_template; ?>" <?php if ($this->mdl_settings->setting('pdf_invoice_template') == $invoice_template) { ?>selected="selected"<?php } ?>><?php echo $invoice_template; ?></option>
@@ -12,10 +16,14 @@
 		</div>
 	</div>
    
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('pdf_template_paid'); ?>: </label>
-		<div class="controls">
-			<select name="settings[pdf_invoice_template_paid]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[pdf_invoice_template_paid]" class="control-label">
+                <?php echo lang('pdf_template_paid'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[pdf_invoice_template_paid]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
 				<option value="<?php echo $invoice_template; ?>" <?php if ($this->mdl_settings->setting('pdf_invoice_template_paid') == $invoice_template) { ?>selected="selected"<?php } ?>><?php echo $invoice_template; ?></option>
@@ -24,10 +32,14 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('pdf_template_overdue'); ?>: </label>
-		<div class="controls">
-			<select name="settings[pdf_invoice_template_overdue]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[pdf_invoice_template_overdue]" class="control-label">
+                <?php echo lang('pdf_template_overdue'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[pdf_invoice_template_overdue]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
 				<option value="<?php echo $invoice_template; ?>" <?php if ($this->mdl_settings->setting('pdf_invoice_template_overdue') == $invoice_template) { ?>selected="selected"<?php } ?>><?php echo $invoice_template; ?></option>
@@ -36,10 +48,14 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_public_template'); ?>: </label>
-		<div class="controls">
-			<select name="settings[public_invoice_template]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[public_invoice_template]" class="control-label">
+                <?php echo lang('default_public_template'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[public_invoice_template]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($public_invoice_templates as $invoice_template) { ?>
 				<option value="<?php echo $invoice_template; ?>" <?php if ($this->mdl_settings->setting('public_invoice_template') == $invoice_template) { ?>selected="selected"<?php } ?>><?php echo $invoice_template; ?></option>
@@ -48,10 +64,14 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_email_template'); ?>: </label>
-		<div class="controls">
-			<select name="settings[email_invoice_template]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[email_invoice_template]" class="control-label">
+                <?php echo lang('default_email_template'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[email_invoice_template]" class="input-sm form-control">
                 <option value=""></option>
                 <?php foreach ($email_templates as $email_template) { ?>
                 <option value="<?php echo $email_template->email_template_id; ?>" <?php if ($this->mdl_settings->setting('email_invoice_template') == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
@@ -60,10 +80,14 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('email_template_paid'); ?>: </label>
-		<div class="controls">
-			<select name="settings[email_invoice_template_paid]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[email_invoice_template_paid]" class="control-label">
+                <?php echo lang('email_template_paid'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[email_invoice_template_paid]" class="input-sm form-control">
                 <option value=""></option>
                 <?php foreach ($email_templates as $email_template) { ?>
                 <option value="<?php echo $email_template->email_template_id; ?>" <?php if ($this->mdl_settings->setting('email_invoice_template_paid') == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
@@ -72,10 +96,14 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('email_template_overdue'); ?>: </label>
-		<div class="controls">
-			<select name="settings[email_invoice_template_overdue]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[email_invoice_template_overdue]" class="control-label">
+                <?php echo lang('email_template_overdue'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[email_invoice_template_overdue]" class="input-sm form-control">
                 <option value=""></option>
                 <?php foreach ($email_templates as $email_template) { ?>
                 <option value="<?php echo $email_template->email_template_id; ?>" <?php if ($this->mdl_settings->setting('email_invoice_template_overdue') == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
@@ -84,17 +112,26 @@
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('invoices_due_after'); ?>: </label>
-		<div class="controls">
-			<input type="text" name="settings[invoices_due_after]" class="input-small" value="<?php echo $this->mdl_settings->setting('invoices_due_after'); ?>">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[invoices_due_after]" class="control-label">
+                <?php echo lang('invoices_due_after'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<input type="text" name="settings[invoices_due_after]" class="input-sm form-control"
+                   value="<?php echo $this->mdl_settings->setting('invoices_due_after'); ?>">
 		</div>
 	</div>
 	
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_invoice_group'); ?>: </label>
-		<div class="controls">
-			<select name="settings[default_invoice_group]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[default_invoice_group]" class="control-label">
+                <?php echo lang('default_invoice_group'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[default_invoice_group]" class="input-sm form-control">
 				<option value=""></option>
 				<?php foreach ($invoice_groups as $invoice_group) { ?>
 				<option value="<?php echo $invoice_group->invoice_group_id; ?>" <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
@@ -103,38 +140,55 @@
 		</div>
 	</div>
 	
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('default_terms'); ?>: </label>
-		<div class="controls">
-			<textarea name="settings[default_invoice_terms]" style="width: 400px; height: 150px;"><?php echo $this->mdl_settings->setting('default_invoice_terms'); ?></textarea>
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[default_invoice_terms]">
+                <?php echo lang('default_terms'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<textarea name="settings[default_invoice_terms]" rows="3"
+                      class="input-sm form-control"><?php echo $this->mdl_settings->setting('default_invoice_terms'); ?></textarea>
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('invoice_logo'); ?>: </label>
-		<div class="controls">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label class="control-label">
+                <?php echo lang('invoice_logo'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
             <?php if ($this->mdl_settings->setting('invoice_logo')) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('invoice_logo'); ?>"><br>
             <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
             <?php } ?>
-			<input type="file" name="invoice_logo" size="40" />
+			<input type="file" name="invoice_logo" size="40"  class="input-sm form-control"/>
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('automatic_email_on_recur'); ?>: </label>
-		<div class="controls">
-			<select name="settings[automatic_email_on_recur]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[automatic_email_on_recur]" class="control-label">
+                <?php echo lang('automatic_email_on_recur'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[automatic_email_on_recur]" class="input-sm form-control">
                 <option value="0" <?php if (!$this->mdl_settings->setting('automatic_email_on_recur')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
                 <option value="1" <?php if ($this->mdl_settings->setting('automatic_email_on_recur')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
 			</select>
 		</div>
 	</div>
     
-	<div class="control-group">
-		<label class="control-label"><?php echo lang('mark_invoices_sent_pdf'); ?>: </label>
-		<div class="controls">
-			<select name="settings[mark_invoices_sent_pdf]">
+	<div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+		    <label for="settings[mark_invoices_sent_pdf]" class="control-label">
+                <?php echo lang('mark_invoices_sent_pdf'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+			<select name="settings[mark_invoices_sent_pdf]" class="input-sm form-control">
                 <option value="0" <?php if (!$this->mdl_settings->setting('mark_invoices_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
                 <option value="1" <?php if ($this->mdl_settings->setting('mark_invoices_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
 			</select>
