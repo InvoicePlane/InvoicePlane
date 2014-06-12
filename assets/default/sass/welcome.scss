@@ -1,0 +1,93 @@
+/* =============================================================================
+   InvoicePlane
+   Sass Stylesheet
+   v1.0
+   ========================================================================== */
+
+
+/* =============================================================================
+   Import Bootstrap and other assets
+   ========================================================================== */
+
+    // Use compass
+    @import "compass";
+
+    // Bootstrap
+    @import "bootstrap/bootstrap-welcome";
+
+    // Font: Font-Awesome
+    @import "fonts/font-awesome/font-awesome";
+
+
+/* =============================================================================
+   Base Styles
+   ========================================================================== */
+
+    html, body, .sidebar {
+        height: 100%;
+    }
+
+    // overflow-x fix white space at the right when browser window is resized
+    html, body {
+        overflow-y:hidden;
+    }
+
+    body {
+        background-color: #fff;
+    }
+
+    img {
+        vertical-align: middle;
+    }
+
+    p, ul, ol {
+        @include margin-trailer(1);
+    }
+
+    a:hover, a:active, a:focus {
+        outline: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+    }
+
+/* =============================================================================
+   Welcome Styles
+   ========================================================================== */
+
+    .container {
+        max-width: 750px;
+    }
+
+    #content {
+        @extend .panel;
+        @extend .panel-body;
+        @extend .panel-default;
+        margin-top: 50px;
+    }
+
+    #logo {
+        margin: 20px auto;
+        display: block;
+        width: 200px;
+        height: 100px;
+        background: url('/assets/default/img/logo_200x100.png') center center no-repeat;
+
+        span {
+            display: none;
+        }
+    }
+
+    @media only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min-device-pixel-ratio: 2) {
+        #logo {
+            background: url('/assets/default/img/logo_400x200.png') center center no-repeat;
+            background-size: 200px 100px;
+        }
+    }
+
+    .btn {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
