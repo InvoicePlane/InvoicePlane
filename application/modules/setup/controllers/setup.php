@@ -40,7 +40,7 @@ class Setup extends MX_Controller {
             $this->session->set_userdata('ip_lang', 'english');
         }
 
-        $this->lang->load('fi', $this->session->userdata('ip_lang'));
+        $this->lang->load('ip', $this->session->userdata('ip_lang'));
     }
 
     public function index()
@@ -228,8 +228,50 @@ class Setup extends MX_Controller {
             redirect('setup/prerequisites');
         }
 
+        // Check if this is an update or the first install
+        // First get all version entries from the database and format them
+        $this->load_ci_database();
+        $versions = $this->db->query('SELECT * FROM ip_versions');
+        if ($versions->num_rows() > 0) {
+            foreach($versions->result() as $row):
+                $data[] = $row;
+            endforeach;
+        }
+
+        // Then check if the first version entry is less than 30 minutes old
+        // If yes we assume that the user ran the setup a few minutes ago
+        if ( $data[0]->version_date_applied < (time() - 1800) ) {
+            $update = true;
+        } else {
+            $update = false;
+        }
+        $this->layout->set('update', $update);
+
         $this->layout->buffer('content', 'setup/complete');
         $this->layout->render('base');
+    }
+
+    public function ping()
+    {
+        $this->load->helper('url');
+
+        // Ping the InvoicePlane website
+
+        // Create install ID
+        $install_id = base64_encode( time() );
+
+        // Get the current version
+        // @TODO (IP) Hardcoded for now, fix planned for 1.1.0
+        $current_version = base64_encode("1.0");
+
+        $url = 'https://ping.invoiceplane.com/install/'.$install_id.'/version/'.$current_version;
+
+        // Send the ping
+        file_get_contents($url);
+
+        // Redirect to login
+        redirect('sessions/login');
+
     }
 
     private function check_writables()
@@ -350,5 +392,3 @@ class Setup extends MX_Controller {
     }
 
 }
-
-?>

@@ -1,63 +1,74 @@
-<div class="install-step">
+<div class="container">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+        <div class="install-panel">
 
-	<h1>InvoicePlane</h1>
+            <h1><span>InvoicePlane</span></h1>
 
-	<form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>" class="form-horizontal">
+        <form method="post"
+              action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-		<legend><?php echo lang('setup_database_details'); ?></legend>
+            <legend><?php echo lang('setup_database_details'); ?></legend>
 
-		<?php if (!$database['success']) { ?>
-		
-		<?php if ($database['message'] and $_POST) { ?>
-		<p><span class="label label-important"><?php echo lang('failure'); ?></span> <?php echo $database['message']; ?></p>
-		<?php } ?>
+            <?php if (!$database['success']) { ?>
 
-		<p><?php echo lang('setup_database_message'); ?></p>
+            <?php if ($database['message'] and $_POST) { ?>
+            <p><span class="label label-danger"><?php echo lang('failure'); ?></span>
+                <?php echo $database['message']; ?>
+            </p>
+            <?php } ?>
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('hostname'); ?>: </label>
-				<div class="controls">
-					<input type="text" name="db_hostname" id="db_hostname" value="<?php echo $this->input->post('db_hostname'); ?>"><br>
-					<span class="help-block"><?php echo lang('setup_db_hostname_info'); ?></span>
-				</div>
-			</div>
+            <p><?php echo lang('setup_database_message'); ?></p>
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('username'); ?>: </label>
-				<div class="controls">
-					<input type="text" name="db_username" id="db_username" value="<?php echo $this->input->post('db_username'); ?>"><br>
-					<span class="help-block"><?php echo lang('setup_db_username_info'); ?></span>
-				</div>
-			</div>
+                <div class="form-group">
+                    <label for="db_hostname">
+                        <?php echo lang('hostname'); ?>
+                    </label>
+                    <input type="text" name="db_hostname" id="db_hostname" class="form-control"
+                           value="<?php echo $this->input->post('db_hostname'); ?>">
+                    <span class="help-block"><?php echo lang('setup_db_hostname_info'); ?></span>
+                </div>
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('password'); ?>: </label>
-				<div class="controls">
-					<input type="password" name="db_password" id="db_password" value="<?php echo $this->input->post('db_password'); ?>"><br>
-					<span class="help-block"><?php echo lang('setup_db_password_info'); ?></span>
-				</div>
-			</div>
+                <div class="form-group">
+                    <label>
+                        <?php echo lang('username'); ?>
+                    </label>
+                    <input type="text" name="db_username" id="db_username" class="form-control"
+                           value="<?php echo $this->input->post('db_username'); ?>">
+                    <span class="help-block"><?php echo lang('setup_db_username_info'); ?></span>
+                </div>
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('database'); ?>: </label>
-				<div class="controls">
-					<input type="text" name="db_database" id="db_database" value="<?php echo $this->input->post('db_database'); ?>"><br>
-					<span class="help-block"><?php echo lang('setup_db_database_info'); ?></span>
-				</div>
-			</div>
-		<?php } ?>
+                <div class="form-group">
+                    <label>
+                        <?php echo lang('password'); ?>
+                    </label>
+                    <input type="password" name="db_password" id="db_password" class="form-control"
+                           value="<?php echo $this->input->post('db_password'); ?>">
+                    <span class="help-block"><?php echo lang('setup_db_password_info'); ?></span>
+                </div>
 
-		<?php if ($errors) { ?>
-		<div class="control-group">
-			<div class="controls">
-				<input type="submit" class="btn btn-primary" name="btn_try_again" value="<?php echo lang('try_again'); ?>">
-			</div>
-		</div>
-		<?php } else { ?>
-		<p><span class="label label-success"><?php echo lang('success'); ?></span> <?php echo lang('setup_database_configured_message'); ?></p>
-		<input type="submit" class="btn btn-primary" name="btn_continue" value="<?php echo lang('continue'); ?>">
-		<?php } ?>
+                <div class="form-group">
+                    <label>
+                        <?php echo lang('database'); ?>
+                    </label>
+                    <input type="text" name="db_database" id="db_database" class="form-control"
+                           value="<?php echo $this->input->post('db_database'); ?>">
+                    <span class="help-block"><?php echo lang('setup_db_database_info'); ?></span>
+                </div>
+            <?php } ?>
 
-	</form>
+            <?php if ($errors) { ?>
+                <input type="submit" class="btn btn-primary" name="btn_try_again"
+                       value="<?php echo lang('try_again'); ?>">
+            <?php } else { ?>
+                <p><span class="label label-success"><?php echo lang('success'); ?></span>
+                    <?php echo lang('setup_database_configured_message'); ?>
+                </p>
+                <input type="submit" class="btn btn-success" name="btn_continue"
+                       value="<?php echo lang('continue'); ?>">
+            <?php } ?>
 
+        </form>
+
+        </div>
+    </div>
 </div>

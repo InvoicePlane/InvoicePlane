@@ -1,23 +1,29 @@
-<form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+<div class="container">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+        <div class="install-panel">
 
-	<div class="install-step">
+            <h1><span>InvoicePlane</span></h1>
 
-		<h1>InvoicePlane</h1>
-		
-		<legend><?php echo lang('setup_choose_language'); ?></legend>
+            <form method="post"
+                  action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-		<p><?php echo lang('setup_choose_language_message'); ?></p> 
+                <legend><?php echo lang('setup_choose_language'); ?></legend>
 
-		<select name="ip_lang">
-			<?php foreach ($languages as $language) { ?>
-			<option value="<?php echo $language; ?>" <?php if ($language == 'english') { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
-			<?php } ?>
-		</select>
-		
-		<br>
+                <p><?php echo lang('setup_choose_language_message'); ?></p>
 
-		<input class="btn btn-primary" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
+                <select name="ip_lang" class="form-control">
+                    <?php foreach ($languages as $language) { ?>
+                    <option value="<?php echo $language; ?>" <?php if ($language == 'english') { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
+                    <?php } ?>
+                </select>
 
-	</div>
+                <br/>
 
-</form>
+                <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
+
+            </form>
+
+        </div>
+    </div>
+</div>
+

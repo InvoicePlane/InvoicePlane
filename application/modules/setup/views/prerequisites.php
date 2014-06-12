@@ -1,35 +1,41 @@
-<form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+<div class="container">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+        <div class="install-panel">
 
-	<div class="install-step">
+            <h1><span>InvoicePlane</span></h1>
 
-		<h1>InvoicePlane</h1>
-		
-		<legend><?php echo lang('setup_prerequisites'); ?></legend>
+            <form method="post" class="form-horizontal"
+                  action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-		<p><?php echo lang('setup_prerequisites_message'); ?></p> 
-        
-		<?php foreach ($basics as $basic) { ?>
-			<?php if ($basic['success']) { ?>
-			<p><span class="label label-success"><?php echo lang('success'); ?></span> <?php echo $basic['message']; ?></p>
-			<?php } else { ?>
-			<p><span class="label label-important"><?php echo lang('failure'); ?></span> <?php echo $basic['message']; ?></p>
-			<?php } ?>
-		<?php } ?>
+                <legend><?php echo lang('setup_prerequisites'); ?></legend>
 
-		<?php foreach ($writables as $writable) { ?>
-			<?php if ($writable['success']) { ?>
-			<p><span class="label label-success"><?php echo lang('success'); ?></span> <?php echo $writable['message']; ?></p>
-			<?php } else { ?>
-			<p><span class="label label-important"><?php echo lang('failure'); ?></span> <?php echo $writable['message']; ?></p>
-			<?php } ?>
-		<?php } ?>
+                <p><?php echo lang('setup_prerequisites_message'); ?></p>
 
-		<?php if ($errors) { ?>
-		<input class="btn btn-primary" type="submit" name="btn_try_again" value="<?php echo lang('try_again'); ?>">
-		<?php } else { ?>
-		<input class="btn btn-primary" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
-		<?php } ?>
+                <?php foreach ($basics as $basic) { ?>
+                    <?php if ($basic['success']) { ?>
+                    <p><span class="label label-success"><?php echo lang('success'); ?></span> <?php echo $basic['message']; ?></p>
+                    <?php } else { ?>
+                    <p><span class="label label-danger"><?php echo lang('failure'); ?></span> <?php echo $basic['message']; ?></p>
+                    <?php } ?>
+                <?php } ?>
 
-	</div>
+                <?php foreach ($writables as $writable) { ?>
+                    <?php if ($writable['success']) { ?>
+                    <p><span class="label label-success"><?php echo lang('success'); ?></span> <?php echo $writable['message']; ?></p>
+                    <?php } else { ?>
+                    <p><span class="label label-danger"><?php echo lang('failure'); ?></span> <?php echo $writable['message']; ?></p>
+                    <?php } ?>
+                <?php } ?>
 
-</form>
+                <?php if ($errors) { ?>
+                    <button class="btn btn-danger disabled"><?php echo lang('try_again'); ?>
+                    </button>
+                <?php } else { ?>
+                <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
+                <?php } ?>
+
+            </div>
+        </div>
+
+    </form>
+</div>
