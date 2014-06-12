@@ -5,7 +5,7 @@
 	</div>
 	
 	<div class="content">
-		<p><?php echo lang('email_not_configured'); ?></p>
+		<div class="alert alert-warning"><?php echo lang('email_not_configured'); ?></div>
 	</div>
 
 </form>
