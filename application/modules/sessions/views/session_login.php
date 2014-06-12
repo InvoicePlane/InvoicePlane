@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="text" name="email" id="email" class="form-control"
-                           placeholder="<?php echo lang('email'); ?> >
+                           placeholder="<?php echo lang('email'); ?>">
                 </div>
             </div>
             <div class="form-group">
