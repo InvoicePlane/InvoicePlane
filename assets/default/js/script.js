@@ -41,9 +41,21 @@ $(document).ready(function() {
 
 /*Fix Scrollbar on Main Content*/
 $(window).resize(function(){
-    var height = $(this).outerHeight() - $('nav.navbar').outerHeight() - $('.main-area .headerbar').outerHeight() - ($('.main-area .content').outerHeight() - $('.main-area .content').height()) - $('.nav-tabs').outerHeight();
-    var width = $(this).outerWidth() - $('.sidebar').outerWidth();
-    $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').height(height);
+    var height = $(this).outerHeight() - $('nav.navbar').outerHeight();
+    height = height - $('.main-area .headerbar').outerHeight() - $('.nav-tabs').outerHeight();
+
+    if ( $('#form-settings') ) {
+        height = height - 50;
+    }
+
+    if ( $('.main-area').outerWidth() < 800 ) {
+        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').css('margin-top',30,'height',height);
+    } else {
+        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').height(height);
+    }
+
+
+
 });
 
 // Insert text into textarea at Caret Position
