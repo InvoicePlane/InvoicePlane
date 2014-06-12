@@ -9,17 +9,28 @@
 
 		<?php $this->layout->load_view('layout/alerts'); ?>
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('tax_rate_name'); ?>: </label>
-				<div class="controls">
-					<input type="text" name="tax_rate_name" id="tax_rate_name" value="<?php echo $this->mdl_tax_rates->form_value('tax_rate_name'); ?>">
+			<div class="form-group">
+                <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                    <label class="control-label">
+                        <?php echo lang('tax_rate_name'); ?>
+                    </label>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+					<input type="text" name="tax_rate_name" id="tax_rate_name" class="form-control"
+                           value="<?php echo $this->mdl_tax_rates->form_value('tax_rate_name'); ?>">
 				</div>
 			</div>
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('tax_rate_percent'); ?>: </label>
-				<div class="controls">
-					<input type="text" name="tax_rate_percent" id="tax_rate_percent" value="<?php echo $this->mdl_tax_rates->form_value('tax_rate_percent'); ?>">
+			<div class="form-group has-feedback">
+                <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+				    <label class="control-label">
+                        <?php echo lang('tax_rate_percent'); ?>
+                    </label>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+					<input type="text" name="tax_rate_percent" id="tax_rate_percent" class="form-control"
+                           value="<?php echo $this->mdl_tax_rates->form_value('tax_rate_percent'); ?>">
+                    <span class="form-control-feedback">%</span>
 				</div>
 			</div>
 

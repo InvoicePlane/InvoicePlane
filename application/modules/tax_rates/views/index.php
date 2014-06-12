@@ -2,7 +2,9 @@
 	<h1><?php echo lang('tax_rates'); ?></h1>
 
 	<div class="pull-right">
-		<a class="btn btn-primary" href="<?php echo site_url('tax_rates/form'); ?>"><i class="icon-plus icon-white"></i> <?php echo lang('new'); ?></a>
+		<a class="btn btn-sm btn-primary" href="<?php echo site_url('tax_rates/form'); ?>">
+            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+        </a>
 	</div>
 	
 	<div class="pull-right">
@@ -15,6 +17,7 @@
 
 	<?php echo $this->layout->load_view('layout/alerts'); ?>
 
+    <div class="table-responsive">
 	<table class="table table-striped">
 
 		<thead>
@@ -32,16 +35,18 @@
 				<td><?php echo $tax_rate->tax_rate_percent; ?>%</td>
 				<td>
 					<div class="options btn-group">
-						<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog"></i> <?php echo lang('options'); ?></a>
+						<a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-cog"></i> <?php echo lang('options'); ?>
+                        </a>
 						<ul class="dropdown-menu">
 							<li>
 								<a href="<?php echo site_url('tax_rates/form/' . $tax_rate->tax_rate_id); ?>">
-									<i class="icon-pencil"></i> <?php echo lang('edit'); ?>
+									<i class="fa fa-edit fa-margin"></i> <?php echo lang('edit'); ?>
 								</a>
 							</li>
 							<li>
 								<a href="<?php echo site_url('tax_rates/delete/' . $tax_rate->tax_rate_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
-									<i class="icon-trash"></i> <?php echo lang('delete'); ?>
+									<i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
 								</a>
 							</li>
 						</ul>
@@ -52,5 +57,6 @@
 		</tbody>
 
 	</table>
+    </div>
 
 </div>
