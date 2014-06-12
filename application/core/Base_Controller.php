@@ -36,22 +36,31 @@ class Base_Controller extends MX_Controller {
         $this->load->helper('url');
 
         $this->load->database();
-        $this->load->library('form_validation');
-        $this->load->helper('number');
-        $this->load->helper('pager');
-        $this->load->helper('invoice');
-        $this->load->helper('date');
-        $this->load->helper('redirect');
 
-        // Load setting model and load settings
-        $this->load->model('settings/mdl_settings');
-        $this->mdl_settings->load_settings();
+        // Check if database has been configured
+        if ( empty($this->db->hostname) ) {
+            $this->load->helper('redirect');
+            redirect('/welcome');
+        } else {
 
-        $this->lang->load('fi', $this->mdl_settings->setting('default_language'));
+            $this->load->library('form_validation');
+            $this->load->helper('number');
+            $this->load->helper('pager');
+            $this->load->helper('invoice');
+            $this->load->helper('date');
+            $this->load->helper('redirect');
 
-        $this->load->helper('language');
+            // Load setting model and load settings
+            $this->load->model('settings/mdl_settings');
+            $this->mdl_settings->load_settings();
 
-        $this->load->module('layout');
+            $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
+
+            $this->load->helper('language');
+
+            $this->load->module('layout');
+
+        }
     }
 
 }
