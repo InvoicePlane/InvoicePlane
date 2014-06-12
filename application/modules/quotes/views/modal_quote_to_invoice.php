@@ -36,42 +36,56 @@
 	
 </script>
 
-<div id="modal_quote_to_invoice" class="modal hide">
-	<form class="form-horizontal">
+<div id="modal_quote_to_invoice"  class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
+     role="dialog" aria-labelledby="modal_quote_to_invoice" aria-hidden="true">
+	<form class="modal-content">
 		<div class="modal-header">
 			<a data-dismiss="modal" class="close">x</a>
 			<h3><?php echo lang('quote_to_invoice'); ?></h3>
 		</div>
 		<div class="modal-body">
 
-				<input type="hidden" name="client_name" id="client_name" value="<?php echo $quote->client_name; ?>">
-				<input type="hidden" name="user_id" id="user_id" value="<?php echo $quote->user_id; ?>">
+            <input type="hidden" name="client_name" id="client_name"
+                   value="<?php echo $quote->client_name; ?>">
+            <input type="hidden" name="user_id" id="user_id"
+                   value="<?php echo $quote->user_id; ?>">
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('invoice_date'); ?>: </label>
-				<div class="controls input-append date datepicker">
-					<input size="16" type="text" name="invoice_date_created" id="invoice_date_created" readonly>
-					<span class="add-on"><i class="icon-th"></i></span>
-				</div>
+			<div class="form-group has-feedback">
+				<label for="invoice_date_created">
+                    <?php echo lang('invoice_date'); ?>
+                </label>
+
+                <div class="date datepicker">
+                    <input size="16" type="text" name="invoice_date_created"
+                           id="invoice_date_created" readonly class="form-control">
+                    <span class="fa fa-calendar form-control-feedback"></span>
+                </div>
 			</div>
 			
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('invoice_group'); ?>: </label>
-				<div class="controls">
-					<select name="invoice_group_id" id="invoice_group_id">
-						<option value=""></option>
-						<?php foreach ($invoice_groups as $invoice_group) { ?>
-						<option value="<?php echo $invoice_group->invoice_group_id; ?>" <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
-						<?php } ?>
-					</select>
-				</div>
+			<div class="form-group">
+				<label for="invoice_group_id">
+                    <?php echo lang('invoice_group'); ?>
+                </label>
+                <select name="invoice_group_id" id="invoice_group_id" class="form-control">
+                    <option value=""></option>
+                    <?php foreach ($invoice_groups as $invoice_group) { ?>
+                    <option value="<?php echo $invoice_group->invoice_group_id; ?>" <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
+                        <?php echo $invoice_group->invoice_group_name; ?></option>
+                    <?php } ?>
+                </select>
 			</div>
 
 		</div>
 
 		<div class="modal-footer">
-            <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="icon-white icon-remove"></i> <?php echo lang('cancel'); ?></button>
-			<button class="btn btn-primary" id="quote_to_invoice_confirm" type="button"><i class="icon-white icon-ok"></i> <?php echo lang('submit'); ?></button>
+            <div class="btn-group">
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                </button>
+                <button class="btn btn-success" id="invoice_create_confirm" type="button">
+                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                </button>
+            </div>
 		</div>
 
 	</form>

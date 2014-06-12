@@ -9,16 +9,28 @@
 	});
 </script>
 
-<div id="delete-quote" class="modal hide">
-	<div class="modal-header">
-		<a data-dismiss="modal" class="close">×</a>
-		<h3><?php echo lang('delete_quote'); ?></h3>
-	</div>
-	<div class="modal-body">
-		<p><?php echo lang('delete_quote_warning'); ?></p>
-	</div>
-	<div class="modal-footer">
-		<a href="#" id="modal_delete_quote_confirm" class="btn btn-primary" data-quote-id="<?php echo $quote->quote_id; ?>"><?php echo lang('yes'); ?></a>
-		<a href="#" class="btn btn-danger" data-dismiss="modal"><?php echo lang('no'); ?></a>
-	</div>
+<div id="delete-quote" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
+     role="dialog" aria-labelledby="modal_delete_quote" aria-hidden="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <a data-dismiss="modal" class="close">×</a>
+            <h3><?php echo lang('delete_quote'); ?></h3>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger">
+                <?php echo lang('delete_quote_warning'); ?>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group">
+                <a href="#" id="modal_delete_quote_confirm" class="btn btn-danger"
+                   data-quote-id="<?php echo $quote->quote_id; ?>">
+                    <i class="fa fa-trash-o"></i> <?php echo lang('yes'); ?>
+                </a>
+                <a href="#" class="btn btn-success" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo lang('no'); ?>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

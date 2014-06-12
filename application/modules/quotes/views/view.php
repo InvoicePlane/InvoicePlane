@@ -80,24 +80,67 @@
 <div class="headerbar">
 	<h1><?php echo lang('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
 
-	<div class="pull-right">
+	<div class="pull-right btn-group">
 
 		<div class="options btn-group pull-left">
-			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#" style="margin-right: 5px;"><i class="icon-cog"></i> <?php echo lang('options'); ?></a>
+			<a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#" >
+                <?php echo lang('options'); ?> <i class="fa fa-chevron-down"></i>
+            </a>
 			<ul class="dropdown-menu">
-				<li><a href="#add-quote-tax" data-toggle="modal"><i class="icon-plus-sign"></i> <?php echo lang('add_quote_tax'); ?></a></li>
-				<li><a href="#" id="btn_generate_pdf" data-quote-id="<?php echo $quote_id; ?>"><i class="icon-print"></i> <?php echo lang('download_pdf'); ?></a></li>
-				<li><a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>"><i class="icon-envelope"></i> <?php echo lang('send_email'); ?></a></li>
-                <li><a href="#" id="btn_quote_to_invoice" data-quote-id="<?php echo $quote_id; ?>"><i class="icon-upload"></i> <?php echo lang('quote_to_invoice'); ?></a></li>
-				<li><a href="#" id="btn_copy_quote" data-quote-id="<?php echo $quote_id; ?>"><i class="icon-repeat"></i> <?php echo lang('copy_quote'); ?></a></li>
-				<li><a href="#delete-quote" data-toggle="modal"><i class="icon-remove"></i> <?php echo lang('delete'); ?></a></li>
+				<li>
+                    <a href="#add-quote-tax" data-toggle="modal">
+                        <i class="fa fa-plus fa-margin"></i>
+                        <?php echo lang('add_quote_tax'); ?>
+                    </a>
+                </li>
+				<li>
+                    <a href="#" id="btn_generate_pdf"
+                       data-quote-id="<?php echo $quote_id; ?>">
+                        <i class="fa fa-print fa-margin"></i>
+                        <?php echo lang('download_pdf'); ?>
+                    </a>
+                </li>
+				<li>
+                    <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
+                        <i class="fa fa-send fa-margin"></i>
+                        <?php echo lang('send_email'); ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="btn_quote_to_invoice"
+                       data-quote-id="<?php echo $quote_id; ?>">
+                        <i class="fa fa-refresh fa-margin"></i>
+                        <?php echo lang('quote_to_invoice'); ?>
+                    </a>
+                </li>
+				<li>
+                    <a href="#" id="btn_copy_quote"
+                       data-quote-id="<?php echo $quote_id; ?>">
+                        <i class="fa fa-copy fa-margin"></i>
+                        <?php echo lang('copy_quote'); ?>
+                    </a>
+                </li>
+				<li>
+                    <a href="#delete-quote" data-toggle="modal">
+                        <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
+                    </a>
+                </li>
 			</ul>
 		</div>
 		
-		<a href="#" class="btn" id="btn_add_item" style="margin-right: 5px;"><i class="icon-plus-sign"></i> <?php echo lang('add_item'); ?></a>
-        <a href="#" class="btn" id="btn_add_item_from_lookup" style="margin-right: 5px;"><i class="icon-plus-sign"></i> <?php echo lang('add_item_from_lookup'); ?></a>
+		<a href="#" class="btn btn-sm btn-default" id="btn_add_item">
+            <i class="fa fa-plus"></i>
+            <?php echo lang('add_item'); ?>
+        </a>
+        <a href="#" class="btn btn-sm btn-default" id="btn_add_item_from_lookup">
+            <i class="fa fa-database"></i>
+            <?php echo lang('add_item_from_lookup'); ?>
+        </a>
 		
-		<a href="#" class="btn btn-primary" id="btn_save_quote"><i class="icon-ok icon-white"></i> <?php echo lang('save'); ?></a>
+		<a href="#" class="btn btn-sm btn-success" id="btn_save_quote">
+            <i class="fa fa-check"></i>
+            <?php echo lang('save'); ?>
+        </a>
 	</div>
 
 </div>
@@ -106,12 +149,13 @@
     
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 	
-	<form id="quote_form" class="form-horizontal">
+	<form id="quote_form">
 
 		<div class="quote">
 
 			<div class="cf">
 
+                <div class="col-xs-12 col-md-8">
 				<div class="pull-left">
 
                     <h2><a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"><?php echo $quote->client_name; ?></a></h2><br>
@@ -132,56 +176,74 @@
 					<?php } ?>
 
 				</div>
+                </div>
 
-				<table style="width: auto" class="pull-right table table-striped table-bordered">
-                    
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="control-group invoice-properties">
-                                    <label class="control-label"><?php echo lang('quote'); ?> #</label>
-                                    <div class="controls">
-                                        <input type="text" id="quote_number" class="input-small" value="<?php echo $quote->quote_number; ?>" style="margin: 0px;">    
-                                    </div>
-                                </div>
-                                <div class="control-group invoice-properties">
-                                    <label class="control-label"><?php echo lang('date'); ?></label>
-                                    <div class="controls">
-                                        <input type="text" id="quote_date_created" class="input-small" value="<?php echo date_from_mysql($quote->quote_date_created); ?>" style="margin: 0px;">    
-                                    </div>
-                                </div>
-                                <div class="control-group invoice-properties">
-                                    <label class="control-label"><?php echo lang('expires'); ?></label>
-                                    <div class="controls">
-                                        <input type="text" id="quote_date_expires" class="input-small" value="<?php echo date_from_mysql($quote->quote_date_expires); ?>" style="margin: 0px;">
-                                    </div>
-                                </div>
-                                <div class="control-group invoice-properties">
-                                    <label class="control-label"><?php echo lang('status'); ?></label>
-                                    <div class="controls">
-                                        <select name="quote_status_id" id="quote_status_id">
-                                            <?php foreach ($quote_statuses as $key=>$status) { ?>
-                                            <option value="<?php echo $key; ?>" <?php if ($key == $quote->quote_status_id) { ?>selected="selected"<?php } ?>><?php echo $status['label']; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                <div class="col-xs-12 col-md-4">
+                    <div class="panel panel-default panel-body">
 
-				</table>
-
+                        <div class="quote-properties">
+                            <label for="quote_number">
+                                <?php echo lang('quote'); ?> #
+                            </label>
+                            <div class="controls">
+                                <input type="text" id="quote_number" class="form-control input-sm"
+                                       value="<?php echo $quote->quote_number; ?>" >
+                            </div>
+                        </div>
+                        <div class="quote-properties">
+                            <label for="quote_date_created">
+                                <?php echo lang('date'); ?>
+                            </label>
+                            <input type="text" id="quote_date_created"
+                                   class="form-control input-small"
+                                   value="<?php echo date_from_mysql($quote->quote_date_created); ?>">
+                        </div>
+                        <div class="quote-properties">
+                            <label for="quote_date_expires">
+                                <?php echo lang('expires'); ?>
+                            </label>
+                            <input type="text" id="quote_date_expires"
+                                   class="form-control input-sm"
+                                   value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
+                        </div>
+                        <div class="quote-properties">
+                            <label for="quote_status_id">
+                                <?php echo lang('status'); ?>
+                            </label>
+                                <select name="quote_status_id" id="quote_status_id"
+                                    class="form-control input-sm">
+                                    <?php foreach ($quote_statuses as $key=>$status) { ?>
+                                    <option value="<?php echo $key; ?>"
+                                            <?php if ($key == $quote->quote_status_id) { ?>selected="selected"<?php } ?>>
+                                        <?php echo $status['label']; ?>
+                                    </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 
 			<?php $this->layout->load_view('quotes/partial_item_table'); ?>
             
             <?php foreach ($custom_fields as $custom_field) { ?>
-            <p><strong><?php echo $custom_field->custom_field_label; ?></strong></p>
-                    <input type="text" name="custom[<?php echo $custom_field->custom_field_column; ?>]" id="<?php echo $custom_field->custom_field_column; ?>" value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+            <p>
+                <strong>
+                    <?php echo $custom_field->custom_field_label; ?>
+                </strong>
+            </p>
+
+            <input type="text" class="form-control"
+                   name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                   id="<?php echo $custom_field->custom_field_column; ?>"
+                   value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
+                >
             <?php } ?>
 
-            <p class="padded"><?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/quote/' . $quote->quote_url_key)); ?></p>
+            <p>
+                <?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/quote/' . $quote->quote_url_key)); ?>
+            </p>
             
 		</div>
 		

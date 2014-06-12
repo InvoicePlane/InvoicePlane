@@ -1,3 +1,4 @@
+<div class="table-responsive">
 <table id="item_table" class="items table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -18,17 +19,32 @@
 			<td style="vertical-align: top;">
 				<input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
 				<input type="hidden" name="item_id" value="">
-				<input type="text" name="item_name" class="lookup-item-name" style="width: 90%;" data-typeahead=""><br>
-                <label><input type="checkbox" name="save_item_as_lookup" tabindex="999"> <?php echo lang('save_item_as_lookup'); ?></label>
+				<input type="text" name="item_name"
+                       class="form-control lookup-item-name" data-typeahead="">
+                <br/>
+                <label>
+                    <input type="checkbox" name="save_item_as_lookup" tabindex="999">
+                    <?php echo lang('save_item_as_lookup'); ?>
+                </label>
 			</td>
-            <td><textarea name="item_description" style="width: 90%;"></textarea></td>
-			<td style="vertical-align: top;"><input type="text" class="input-mini" name="item_quantity" style="width: 90%;" value=""></td>
-			<td style="vertical-align: top;"><input type="text" class="input-mini" name="item_price" style="width: 90%;" value=""></td>
+            <td>
+                <textarea name="item_description" class="form-control"></textarea>
+            </td>
 			<td style="vertical-align: top;">
-				<select name="item_tax_rate_id" class="input-small">
+                <input type="text" class="input-sm form-control"
+                       name="item_quantity" value="">
+            </td>
+			<td style="vertical-align: top;">
+                <input type="text" class="input-sm form-control"
+                       name="item_price" value="">
+            </td>
+			<td style="vertical-align: top;">
+				<select name="item_tax_rate_id" class="input-sm form-control">
 					<option value="0"><?php echo lang('none'); ?></option>
 					<?php foreach ($tax_rates as $tax_rate) { ?>
-					<option value="<?php echo $tax_rate->tax_rate_id; ?>" <?php if ($tax_rate->tax_rate_id == $this->mdl_settings->setting('default_item_tax_rate')) { ?>selected="selected"<?php } ?>><?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?></option>
+					<option value="<?php echo $tax_rate->tax_rate_id; ?>" <?php if ($tax_rate->tax_rate_id == $this->mdl_settings->setting('default_item_tax_rate')) { ?>selected="selected"<?php } ?>>
+                        <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                    </option>
 					<?php } ?>
 				</select>
 			</td>
@@ -43,25 +59,49 @@
 			<td style="vertical-align: top;">
 				<input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
 				<input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">
-				<input type="text" name="item_name" style="width: 90%;" value="<?php echo $item->item_name; ?>">
+				<input type="text" name="item_name" class="input-sm form-control"
+                       value="<?php echo $item->item_name; ?>">
 			</td>
-            <td><textarea name="item_description" style="width: 90%;"><?php echo $item->item_description; ?></textarea></td>
-			<td style="vertical-align: top;"><input type="text" name="item_quantity" style="width: 90%;" value="<?php echo format_amount($item->item_quantity); ?>"></td>
-			<td style="vertical-align: top;"><input type="text" name="item_price" style="width: 90%;" value="<?php echo format_amount($item->item_price); ?>"></td>
+            <td>
+                <textarea name="item_description" class="input-sm form-control"><?php echo $item->item_description; ?></textarea>
+            </td>
 			<td style="vertical-align: top;">
-				<select name="item_tax_rate_id" name="item_tax_rate_id" style="width: 90%;">
+                <input type="text" name="item_quantity" class="input-sm form-control"
+                       value="<?php echo format_amount($item->item_quantity); ?>">
+            </td>
+			<td style="vertical-align: top;">
+                <input type="text" name="item_price" class="input-sm form-control"
+                       value="<?php echo format_amount($item->item_price); ?>">
+            </td>
+			<td style="vertical-align: top;">
+				<select name="item_tax_rate_id" name="item_tax_rate_id"
+                    class="form-control input-sm">
 					<option value="0"><?php echo lang('none'); ?></option>
 					<?php foreach ($tax_rates as $tax_rate) { ?>
-					<option value="<?php echo $tax_rate->tax_rate_id; ?>" <?php if ($item->item_tax_rate_id == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>><?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?></option>
+					<option value="<?php echo $tax_rate->tax_rate_id; ?>" <?php if ($item->item_tax_rate_id == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
+                        <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                    </option>
 					<?php } ?>
 				</select>
 			</td>
-			<td style="vertical-align: top;"><span name="subtotal"><?php echo format_currency($item->item_subtotal); ?></span></td>
-			<td style="vertical-align: top;"><span name="item_tax_total"><?php echo format_currency($item->item_tax_total); ?></span></td>
-			<td style="vertical-align: top;"><span name="item_total"><?php echo format_currency($item->item_total); ?></span></td>
 			<td style="vertical-align: top;">
-				<a class="" href="<?php echo site_url('quotes/delete_item/' . $quote->quote_id . '/' . $item->item_id); ?>" title="<?php echo lang('delete'); ?>">
-					<i class="icon-remove"></i>
+                <span name="subtotal">
+                    <?php echo format_currency($item->item_subtotal); ?>
+                </span>
+            </td>
+			<td style="vertical-align: top;">
+                <span name="item_tax_total">
+                    <?php echo format_currency($item->item_tax_total); ?>
+                </span>
+            </td>
+			<td style="vertical-align: top;">
+                <span name="item_total">
+                    <?php echo format_currency($item->item_total); ?>
+                </span>
+            </td>
+			<td style="vertical-align: top;">
+				<a href="<?php echo site_url('quotes/delete_item/' . $quote->quote_id . '/' . $item->item_id); ?>" title="<?php echo lang('delete'); ?>">
+					<i class="fa fa-trash-o text-danger"></i>
 				</a>
 			</td>
 		</tr>
@@ -70,7 +110,9 @@
 	</tbody>
 
 </table>
+</div>
 
+<div class="table-responsive">
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -94,3 +136,4 @@
 		</tr>
 	</tbody>
 </table>
+</div>
