@@ -1,66 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>InvoicePlane</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
+<head>
+    <meta charset="utf-8">
+    <title>InvoicePlane</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link href="<?php echo base_url(); ?>assets/default/css/bootstrap.min.css" rel="stylesheet">
-		<link href="<?php echo base_url(); ?>assets/default/css/style.css" rel="stylesheet">
-        <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.7.1.min.js"></script>
-		<style>
-			body {
-				padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-			}
-		</style>
+    <link href="<?php echo base_url(); ?>assets/default/css/style.css" rel="stylesheet">
 
-		<!--[if lt IE 9]>
-		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
-        
-        <script type="text/javascript">
-            $(function() { $('#email').focus(); });
-        </script>
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
 
-	</head>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-	<body>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
 
-	<div id="login">
-        
+    <script type="text/javascript">
+        $(function() { $('#email').focus(); });
+    </script>
+
+</head>
+
+<body>
+<div class="container">
+
+    <div id="login"
+         class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+
         <?php if ($login_logo) { ?>
-        <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo">
+            <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo">
         <?php } else { ?>
-        <h1><?php echo lang('login'); ?></h1>
+            <h1><?php echo lang('login'); ?></h1>
         <?php } ?>
-		
-		<form class="form-horizontal" method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('email'); ?></label>
-				<div class="controls">
-					<input type="text" name="email" id="email" placeholder="<?php echo lang('email'); ?>">
-				</div>
-			</div>
+        <form class="form-horizontal" method="post"
+              action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-			<div class="control-group">
-				<label class="control-label"><?php echo lang('password'); ?></label>
-				<div class="controls">
-					<input type="password" name="password" id="password"  placeholder="<?php echo lang('password'); ?>">
-				</div>
-			</div>
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-3">
+                    <label for="email" class="control-label"><?php echo lang('email'); ?></label>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <input type="text" name="email" id="email" class="form-control"
+                           placeholder="<?php echo lang('email'); ?> >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-3">
+                    <label for="password" class="control-label"><?php echo lang('password'); ?></label>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <input type="password" name="password" id="password" class="form-control"
+                           placeholder="<?php echo lang('password'); ?>" >
+                </div>
+            </div>
 
-			<div class="control-group">
-				<div class="controls">
-					<input type="submit" name="btn_login" value="<?php echo lang('login'); ?>" class="btn btn-primary">
-				</div>
-			</div>
+            <input type="submit" name="btn_login" class="btn btn-block btn-primary"
+                   value="<?php echo lang('login'); ?>" >
 
-		</form>
+        </form>
 
-	</div><!--end.container-->
+    </div>
+</div>
 
-	</body>
+</body>
 </html>
