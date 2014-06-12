@@ -5,87 +5,120 @@
 <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
-	<head>
+<head>
 
-		<meta charset="utf-8">
+    <meta charset="utf-8">
 
-		<!-- Use the .htaccess and remove these lines to avoid edge case issues -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- Use the .htaccess and remove these lines to avoid edge case issues -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-		<title>InvoicePlane</title>
-		<meta name="description" content="">
-		<meta name="author" content="William G. Rivera">
+    <title>InvoicePlane</title>
 
-		<meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 
-		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
 
-		<script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.0.6.js"></script>
-		<script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.7.1.min.js"></script>
-		<script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap.min.js"></script>
+    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        (function ($) {
+            $(document);
+        }(jQuery));
+    </script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.1.1.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.10.3.min.js"></script>
 
-	</head>
+</head>
 
-	<body>
+<body>
 
-		<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle"
+                    data-toggle="collapse" data-target="#ip-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
 
-			<div class="navbar-inner">
+        <div class="collapse navbar-collapse" id="ip-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><?php echo anchor('guest', lang('dashboard')); ?></li>
+                <li><?php echo anchor('guest/quotes/index', lang('quotes')); ?></li>
+                <li><?php echo anchor('guest/invoices/index', lang('invoices')); ?></li>
+                <li><?php echo anchor('guest/payments/index', lang('payments')); ?></li>
+            </ul>
 
-				<div class="container-fluid">
+            <ul class="nav navbar-nav navbar-right settings">
+                <li>
+                    <a href="#">
+                        <?php echo lang('welcome').' '.$this->session->userdata('user_name'); ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo site_url('sessions/logout'); ?>"
+                       class="tip icon logout" data-placement="bottom"
+                       data-original-title="<?php echo lang('logout'); ?>" >
+                        <i class="fa fa-power-off"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-					<ul class="nav">
-						<li><?php echo anchor('guest', lang('dashboard')); ?></li>
-                        <li><?php echo anchor('guest/quotes/index', lang('quotes')); ?></li>
-                        <li><?php echo anchor('guest/invoices/index', lang('invoices')); ?></li>
-                        <li><?php echo anchor('guest/payments/index', lang('payments')); ?></li>
-					</ul>
+<div class="sidebar">
+    <ul>
+        <li>
+            <a href="<?php echo site_url('guest'); ?>">
+                <i class="fa fa-dashboard"></i>
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo site_url('guest/quotes/index'); ?>">
+                <i class="fa fa-file"></i>
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo site_url('guest/invoices/index'); ?>">
+                <i class="fa fa-file-text"></i>
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo site_url('guest/payments/index'); ?>">
+                <i class="fa fa-money"></i>
+            </a>
+        </li>
+    </ul>
+</div>
 
-					<ul class="nav pull-right settings">
-                        <li><a href="#"><?php echo lang('welcome') . ' ' . $this->session->userdata('user_name'); ?></a></li>
-						<li><a href="<?php echo site_url('sessions/logout'); ?>" class="tip icon logout" data-original-title="<?php echo lang('logout'); ?>" data-placement="bottom"><i class="icon-off"></i></a></li>
-					</ul>
+<div class="main-area">
 
-				</div>
+    <div id="modal-placeholder"></div>
 
-			</div>
+    <?php echo $content; ?>
 
-		</nav>
+</div><!--end.content-->
 
-		<div class="sidebar">
+<script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
+<script defer src="<?php echo base_url(); ?>assets/default/js/script.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
 
-			<ul>
-				<li><a href="<?php echo site_url('guest'); ?>"><img alt="" src="<?php echo base_url(); ?>assets/default/img/icons/dashboard24x24.png" title="<?php echo lang('dashboard'); ?>" /></a></li>
-				<li><a href="<?php echo site_url('guest/quotes/index'); ?>"><img alt="" src="<?php echo base_url(); ?>assets/default/img/icons/quotes24x24.png" title="<?php echo lang('quotes'); ?>" /></a></li>
-				<li><a href="<?php echo site_url('guest/invoices/index'); ?>"><img alt="" src="<?php echo base_url(); ?>assets/default/img/icons/invoices24x24.png" title="<?php echo lang('invoices'); ?>" /></a></li>
-				<li><a href="<?php echo site_url('guest/payments/index'); ?>"><img alt="" src="<?php echo base_url(); ?>assets/default/img/icons/payments24x24.png" title="<?php echo lang('payments'); ?>" /></a></li>
-			</ul>
+<!--[if lt IE 7 ]>
+<script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
+<script type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+<![endif]-->
 
-		</div>
+<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+     chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script type="text/javascript">window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->
 
-		<div class="main-area">
-
-			<div id="modal-placeholder"></div>
-			
-			<?php echo $content; ?>
-
-		</div><!--end.content-->
-
-		<script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
-		<script defer src="<?php echo base_url(); ?>assets/default/js/script.js"></script>
-		<script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
-
-		<!--[if lt IE 7 ]>
-			<script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
-			<script type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
-		<![endif]-->
-
-		<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-			 chromium.org/developers/how-tos/chrome-frame-getting-started -->
-		<!--[if lt IE 7 ]>
-		  <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-		  <script type="text/javascript">window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
-		<![endif]-->
-
-	</body>
+</body>
 </html>

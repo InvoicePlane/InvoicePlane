@@ -1,4 +1,8 @@
-<div class="pull-right">
-	<button class="btn btn-primary" id="btn-submit" name="btn_submit" value="1"><i class="icon-ok icon-white"></i> <?php echo lang('save'); ?></button>
-    <button class="btn btn-danger" id="btn-cancel" name="btn_cancel" value="1"><i class="icon-remove icon-white"></i> <?php echo lang('cancel'); ?></button>
+<div class="pull-right btn-group">
+    <button id="btn-submit" name="btn_submit" class="btn btn-success btn-sm" value="1">
+        <i class="fa fa-check"></i> <?php echo lang('save'); ?>
+    </button>
+    <button id="btn-cancel" name="btn_cancel" class="btn btn-danger btn-sm" value="1">
+        <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+    </button>
 </div>

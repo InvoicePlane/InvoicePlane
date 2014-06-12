@@ -1,4 +1,4 @@
-<?php if (validation_errors()) { echo validation_errors('<div class="alert alert-error">', '</div>'); } ?>
+<?php if (validation_errors()) { echo validation_errors('<div class="alert alert-danger">', '</div>'); } ?>
 
 <?php if ($this->session->flashdata('alert_success')) { ?>
 <div class="alert alert-success"><?php echo $this->session->flashdata('alert_success'); ?></div>
@@ -9,5 +9,5 @@
 <?php } ?>
 
 <?php if ($this->session->flashdata('alert_error')) { ?>
-<div class="alert alert-error"><?php echo $this->session->flashdata('alert_error'); ?></div>
+<div class="alert alert-danger"><?php echo $this->session->flashdata('alert_error'); ?></div>
 <?php } ?>

@@ -13,24 +13,23 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 	<title>InvoicePlane</title>
-	<meta name="description" content="">
 
 	<!-- Mobile viewport optimized: j.mp/bplateviewport -->
 	<meta name="viewport" content="width=device-width">
-
-	<!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
 
 	<!-- CSS: implied media=all -->
 	<link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/style.css'; ?>">
 	<!-- end CSS-->
 
-	<!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        (function ($) {
+            $(document);
+        }(jQuery));
+    </script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.1.1.min.js"></script>
 
-	<!-- All JavaScript at the bottom, except for Modernizr / Respond.
-	     Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
-	     For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.0.6.js'; ?>"></script>
-	
 	<style type="text/css">
 		html { overflow-y: visible; }
 	</style>
@@ -41,11 +40,8 @@
 
 	<?php echo $content; ?>
 
-	<script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.7.1.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap.min.js"></script>
-	
-	<script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
-	<script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/script.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/script.js"></script>
 
 	<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
 	     chromium.org/developers/how-tos/chrome-frame-getting-started -->
