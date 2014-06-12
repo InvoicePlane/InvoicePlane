@@ -6,40 +6,47 @@
 
 	<?php $this->layout->load_view('layout/alerts'); ?>
 
-	<div id="report_options" class="widget">
+	<div id="report_options" class="panel panel-default">
 
-		<div class="widget-title">
-			<h5><i class="icon-print"></i> <?php echo lang('report_options'); ?></h5>
+		<div class="panel-heading">
+			<h3 class="panel-title">
+                <i class="fa fa-print"></i>
+                <?php echo lang('report_options'); ?>
+            </h3>
 		</div>
 
-		<div class="padded">
+		<div class="panel-body">
 
-			<form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>" class="form-horizontal">
+			<form method="post"
+                  action="<?php echo site_url($this->uri->uri_string()); ?>" >
 				
-				<div class="control-group">
-					<label class="control-label" for="from_date"><?php echo lang('from_date'); ?></label>
-					<div class="controls input-append date datepicker">
-						<input size="16" type="text" name="from_date" id="from_date" value="" readonly>
-						<span class="add-on"><i class="icon-th"></i></span>
-					</div>
+				<div class="form-group has-feedback">
+					<label for="from_date">
+                        <?php echo lang('from_date'); ?>
+                    </label>
+
+                    <div class="date datepicker">
+                        <input size="16" type="text" name="from_date" class="form-control"
+                               id="from_date" value="" readonly>
+                        <span class="fa fa-calendar form-control-feedback"></span>
+                    </div>
 				</div>
-				
-				<div class="control-group">
-					<label class="control-label" for="to_date"><?php echo lang('to_date'); ?></label>
-					<div class="controls">
-						<div class="controls input-append date datepicker">
-							<input size="16" type="text" name="to_date" id="to_date" value="" readonly>
-							<span class="add-on"><i class="icon-th"></i></span>
-						</div>
-					</div>
-				</div>
-				
-				<div class="control-group">
-					<div class="controls">
-						<input type="submit" class="btn" name="btn_submit" value="<?php echo lang('run_report'); ?>">	
-					</div>
-				</div>
-				
+
+                <div class="form-group has-feedback">
+                    <label for="to_date">
+                        <?php echo lang('to_date'); ?>
+                    </label>
+
+                    <div class="date datepicker">
+                        <input size="16" type="text" name="to_date" class="form-control"
+                               id="to_date" value="" readonly>
+                        <span class="fa fa-calendar form-control-feedback"></span>
+                    </div>
+                </div>
+
+                <input type="submit" class="btn btn-success" name="btn_submit"
+                       value="<?php echo lang('run_report'); ?>">
+
 			</form>
 
 		</div>
