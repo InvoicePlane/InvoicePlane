@@ -12,6 +12,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
+        <div class="table-responsive">
         <table class="table table-striped">
 
             <thead>
@@ -37,6 +38,7 @@
             </tbody>
 
         </table>
+        </div>
     </div>
 
 </div>
