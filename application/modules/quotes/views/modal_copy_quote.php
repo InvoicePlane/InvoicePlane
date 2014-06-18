@@ -96,7 +96,7 @@
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
                     <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
                 </button>
-                <button class="btn btn-success" id="invoice_create_confirm" type="button">
+                <button class="btn btn-success" id="copy_quote_confirm" type="button">
                     <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
                 </button>
             </div>
