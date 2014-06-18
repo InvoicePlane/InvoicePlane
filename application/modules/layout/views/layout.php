@@ -18,11 +18,11 @@
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
 
-    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
+    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.min.js'; ?>"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
 
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.1.1.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.10.3.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.10.4.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-typeahead.js"></script>
     <!-- @TODO (IP) Clean up the scripts (merge them?!) -->
 
