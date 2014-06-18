@@ -72,7 +72,7 @@
 
                 <div class="date datepicker">
                     <input size="16" type="text" name="quote_date_created"
-                           id="quote_date_created" class="form-control"
+                           id="quote_date_created" class="form-control datepicker"
                            value="<?php echo date(date_format_setting()); ?>" readonly>
                     <span class="fa fa-calendar form-control-feedback"></span>
                 </div>

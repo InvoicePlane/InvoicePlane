@@ -67,7 +67,7 @@
                     <div class="date datepicker">
                         <input size="16" type="text" name="payment_date" id="payment_date"
                                value="<?php echo date(date_format_setting()); ?>"
-                               class="form-control" readonly>
+                               class="form-control datepicker" readonly>
                         <span class="fa fa-calendar form-control-feedback"></span>
                     </div>
 

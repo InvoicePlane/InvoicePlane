@@ -56,8 +56,8 @@
                 </label>
 
                 <div class="date datepicker">
-                    <input size="16" type="text" name="invoice_date_created"
-                           id="invoice_date_created" readonly class="form-control">
+                    <input size="16" type="text" name="invoice_date_created" readonly
+                           id="invoice_date_created" class="form-control datepicker">
                     <span class="fa fa-calendar form-control-feedback"></span>
                 </div>
 			</div>

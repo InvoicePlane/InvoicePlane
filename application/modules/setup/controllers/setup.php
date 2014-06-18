@@ -262,7 +262,7 @@ class Setup extends MX_Controller {
 
         // Get the current version
         // @TODO (IP) Hardcoded for now, fix planned for 1.1.0
-        $current_version = base64_encode("1.0.0");
+        $current_version = base64_encode("1.0");
 
         $url = 'https://ping.invoiceplane.com/install/'.$install_id.'/version/'.$current_version;
 

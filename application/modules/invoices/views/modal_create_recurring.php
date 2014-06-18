@@ -80,7 +80,7 @@
                 <div class="date datepicker">
                     <input size="16" type="text" name="recur_start_date"
                            id="recur_start_date"
-                           class="form-control" readonly>
+                           class="form-control datepicker" readonly>
                     <span class="fa fa-calendar form-control-feedback"></span>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                 <div class="date datepicker">
                     <input size="16" type="text" name="recur_end_date"
                            id="recur_end_date"
-                           class="form-control" readonly>
+                           class="form-control datepicker" readonly>
                     <span class="fa fa-calendar form-control-feedback"></span>
                 </div>
             </div>
