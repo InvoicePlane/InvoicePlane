@@ -132,7 +132,11 @@
 					<?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?><br>
 				<?php } } else { echo format_currency('0'); }?>
 			</td>
-			<td><?php echo format_currency($quote->quote_total); ?></td>
+			<td>
+                <strong>
+                    <?php echo format_currency($quote->quote_total); ?>
+                </strong>
+            </td>
 		</tr>
 	</tbody>
 </table>

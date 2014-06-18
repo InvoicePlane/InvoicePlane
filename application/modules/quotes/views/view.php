@@ -232,7 +232,6 @@
                 <strong>
                     <?php echo $custom_field->custom_field_label; ?>
                 </strong>
-            </p>
 
             <input type="text" class="form-control"
                    name="custom[<?php echo $custom_field->custom_field_column; ?>]"
@@ -240,6 +239,8 @@
                    value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
                 >
             <?php } ?>
+
+            </p>
 
             <p>
                 <?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/quote/' . $quote->quote_url_key)); ?>
