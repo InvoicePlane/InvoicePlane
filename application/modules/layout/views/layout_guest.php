@@ -25,7 +25,7 @@
             $(document);
         }(jQuery));
     </script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.1.1.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.2.0.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.10.4.custom.min.js"></script>
 
 </head>

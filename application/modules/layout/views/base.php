@@ -28,7 +28,7 @@
             $(document);
         }(jQuery));
     </script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.1.1.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.2.0.min.js"></script>
 
 	<style type="text/css">
 		html { overflow-y: visible; }
