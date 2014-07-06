@@ -22,7 +22,7 @@
         </div>
         <div class="modal-footer">
             <div class="btn-group">
-                <a href="#" id="modal_delete_invoice_confirm" class="btn btn-danger hide"
+                <a href="#" id="modal_delete_invoice_confirm" class="btn btn-danger"
                    data-invoice-id="<?php echo $invoice->invoice_id; ?>">
                     <i class="fa fa-trash-o"></i>
                     <?php echo lang('confirm_deletion') ?>
