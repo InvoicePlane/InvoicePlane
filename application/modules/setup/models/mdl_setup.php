@@ -22,11 +22,11 @@ class Mdl_Setup extends CI_Model {
 
     public function install_tables()
     {
-        $file_contents = read_file(APPPATH . 'modules/setup/sql/000_0.9.sql');
+        $file_contents = read_file(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
 
         $this->execute_contents($file_contents);
 
-        $this->save_version('000_0.9.sql');
+        $this->save_version('000_1.0.0.sql');
 
         if ($this->errors)
         {
