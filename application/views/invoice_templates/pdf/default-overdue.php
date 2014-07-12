@@ -25,6 +25,8 @@
             .color-n { color: #888; }
             .color-d { color: #555; }
 
+            .color-overdue { color: #e63d26; }
+
             .border-bottom-l {
                 border-bottom-width: 1px;
                 border-style: solid;
@@ -169,18 +171,18 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-right color-n">
+                                    <td class="text-right color-overdue">
                                         <?php echo lang('due_date'); ?>: &nbsp;
                                     </td>
-                                    <td class="text-right color-n">
+                                    <td class="text-right color-overdue">
                                         <?php echo date_from_mysql($invoice->invoice_date_due, TRUE); ?>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-right color-n">
+                                    <td class="text-right color-overdue">
                                         <?php echo lang('amount_due'); ?>: &nbsp;
                                     </td>
-                                    <td class="text-right color-n">
+                                    <td class="text-right color-overdue">
                                         <?php echo format_currency($invoice->invoice_balance); ?>
                                     </td>
                                 </tr>
@@ -266,26 +268,26 @@
                             <?php endforeach ?>
 
                             <tr class="border-top-l amount-total">
-                                <td class="text-right color-d">
+                                <td class="text-right color-overdue">
                                     <?php echo lang('total'); ?>:
                                 </td>
-                                <td class="text-right color-d">
+                                <td class="text-right color-overdue">
                                     <?php echo format_currency($invoice->invoice_total); ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-right color-d">
+                                <td class="text-right color-overdue">
                                     <?php echo lang('paid'); ?>:
                                 </td>
-                                <td class="text-right color-d">
+                                <td class="text-right color-overdue">
                                     <?php echo format_currency($invoice->invoice_paid) ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-right color-d">
+                                <td class="text-right color-overdue">
                                     <b><?php echo lang('balance'); ?>:</b>
                                 </td>
-                                <td class="text-right color-d">
+                                <td class="text-right color-overdue">
                                     <b><?php echo format_currency($invoice->invoice_balance) ?></b>
                                 </td>
                             </tr>

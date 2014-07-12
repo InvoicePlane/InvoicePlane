@@ -21,43 +21,43 @@
                 text-align: right;
             }
 
-            .color-l { color: #aaa; }
-            .color-n { color: #888; }
-            .color-d { color: #555; }
+            .color-l { color: #bbdbcc; }
+            .color-n { color: #6ab69a; }
+            .color-d { color: #00895f; }
 
             .border-bottom-l {
                 border-bottom-width: 1px;
                 border-style: solid;
-                border-color: #aaa;
+                border-color: #bbdbcc;
             }
             .border-bottom-n {
                 border-bottom-width: 1px;
                 border-style: solid;
-                border-color: #888;
+                border-color: #6ab69a;
             }
             .border-bottom-d {
                 border-bottom-width: 1px;
                 border-style: solid;
-                border-color: #555;
+                border-color: #00895f;
             }
 
             .border-top-l {
                 border-top-width: 1px;
                 border-style: solid;
-                border-color: #aaa;
+                border-color: #bbdbcc;
             }
             .border-top-n {
                 border-top-width: 1px;
                 border-style: solid;
-                border-color: #888;
+                border-color: #6ab69a;
             }
             .border-top-d {
                 border-top-width: 1px;
                 border-style: solid;
-                border-color: #555;
+                border-color: #00895f;
             }
 
-            .background-l { background-color: #eee; }
+            .background-l { background-color: #dcede5; }
 
             #header table {
                 width:100%;
@@ -73,7 +73,7 @@
 
             .company-name,
             .invoice-id {
-                color: #333 !important;
+                color: #00895f !important;
             }
             .invoice-details td {
                 padding: 0.2em 0.3em;

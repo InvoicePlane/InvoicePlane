@@ -25,6 +25,8 @@
             .color-n { color: #888; }
             .color-d { color: #555; }
 
+            .color-paid { color: #2a9000; }
+
             .border-bottom-l {
                 border-bottom-width: 1px;
                 border-style: solid;
@@ -177,10 +179,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-right color-n">
+                                    <td class="text-right color-paid">
                                         <?php echo lang('amount_due'); ?>: &nbsp;
                                     </td>
-                                    <td class="text-right color-n">
+                                    <td class="text-right color-paid">
                                         <?php echo format_currency($invoice->invoice_balance); ?>
                                     </td>
                                 </tr>
@@ -274,18 +276,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-right color-d">
+                                <td class="text-right color-paid">
                                     <?php echo lang('paid'); ?>:
                                 </td>
-                                <td class="text-right color-d">
+                                <td class="text-right color-paid">
                                     <?php echo format_currency($invoice->invoice_paid) ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-right color-d">
+                                <td class="text-right color-paid">
                                     <b><?php echo lang('balance'); ?>:</b>
                                 </td>
-                                <td class="text-right color-d">
+                                <td class="text-right color-paid">
                                     <b><?php echo format_currency($invoice->invoice_balance) ?></b>
                                 </td>
                             </tr>

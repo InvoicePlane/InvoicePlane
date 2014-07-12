@@ -21,43 +21,43 @@
                 text-align: right;
             }
 
-            .color-l { color: #aaa; }
-            .color-n { color: #888; }
-            .color-d { color: #555; }
+            .color-l { color: #bbdbcc; }
+            .color-n { color: #6ab69a; }
+            .color-d { color: #00895f; }
 
             .border-bottom-l {
                 border-bottom-width: 1px;
                 border-style: solid;
-                border-color: #aaa;
+                border-color: #bbdbcc;
             }
             .border-bottom-n {
                 border-bottom-width: 1px;
                 border-style: solid;
-                border-color: #888;
+                border-color: #6ab69a;
             }
             .border-bottom-d {
                 border-bottom-width: 1px;
                 border-style: solid;
-                border-color: #555;
+                border-color: #00895f;
             }
 
             .border-top-l {
                 border-top-width: 1px;
                 border-style: solid;
-                border-color: #aaa;
+                border-color: #bbdbcc;
             }
             .border-top-n {
                 border-top-width: 1px;
                 border-style: solid;
-                border-color: #888;
+                border-color: #6ab69a;
             }
             .border-top-d {
                 border-top-width: 1px;
                 border-style: solid;
-                border-color: #555;
+                border-color: #00895f;
             }
 
-            .background-l { background-color: #eee; }
+            .background-l { background-color: #dcede5; }
 
             #header table {
                 width:100%;
@@ -72,8 +72,8 @@
             }
 
             .company-name,
-            .invoice-id {
-                color: #333 !important;
+            .quote-id {
+                color: #00895f !important;
             }
             .invoice-details td {
                 padding: 0.2em 0.3em;
@@ -81,11 +81,6 @@
             .invoice-items td,
             .invoice-items th {
                 padding: 0.2em 0.4em 0.4em;
-            }
-
-            .seperator {
-                height: 25px;
-                margin-bottom: 15px;
             }
 
         </style>
@@ -100,25 +95,25 @@
 
                         <div class="invoice-to">
                             <p><?php echo lang('bill_to'); ?>:</p>
-                            <p><b><?php echo $invoice->client_name; ?></b><br/>
-                                <?php if ($invoice->client_address_1) {
-                                    echo $invoice->client_address_1 . '<br/>';
+                            <p><b><?php echo $quote->client_name; ?></b><br/>
+                                <?php if ($quote->client_address_1) {
+                                    echo $quote->client_address_1 . '<br/>';
                                 } ?>
-                                <?php if ($invoice->client_address_2) {
-                                    echo $invoice->client_address_2 . '<br/>';
+                                <?php if ($quote->client_address_2) {
+                                    echo $quote->client_address_2 . '<br/>';
                                 } ?>
-                                <?php if ($invoice->client_city) {
-                                    echo $invoice->client_city . ' ';
+                                <?php if ($quote->client_city) {
+                                    echo $quote->client_city . ' ';
                                 } ?>
-                                <?php if ($invoice->client_zip) {
-                                    echo $invoice->client_zip . '<br/>';
+                                <?php if ($quote->client_zip) {
+                                    echo $quote->client_zip . '<br/>';
                                 } ?>
-                                <?php if ($invoice->client_state) {
-                                    echo $invoice->client_state . '<br/>';
+                                <?php if ($quote->client_state) {
+                                    echo $quote->client_state . '<br/>';
                                 } ?>
 
-                                <?php if ($invoice->client_phone) { ?>
-                                    <abbr>P:</abbr><?php echo $invoice->client_phone; ?><br/>
+                                <?php if ($quote->client_phone) { ?>
+                                    <abbr>P:</abbr><?php echo $quote->client_phone; ?><br/>
                                 <?php } ?>
                             </p>
                         </div>
@@ -129,30 +124,30 @@
                         <div class="company-details">
                             <?php echo invoice_logo_pdf(); ?>
                             <h3 class="company-name text-right">
-                                <?php echo $invoice->user_name; ?>
+                                <?php echo $quote->user_name; ?>
                             </h3>
                             <p class="text-right">
-                                <?php if ($invoice->user_address_1) {
-                                    echo $invoice->user_address_1 . '<br/>';
+                                <?php if ($quote->user_address_1) {
+                                    echo $quote->user_address_1 . '<br/>';
                                 }?>
-                                <?php if ($invoice->user_address_2) {
-                                    echo $invoice->user_address_2 . '<br/>';
+                                <?php if ($quote->user_address_2) {
+                                    echo $quote->user_address_2 . '<br/>';
                                 } ?>
-                                <?php if ($invoice->user_city) {
-                                    echo $invoice->user_city . ' ';
+                                <?php if ($quote->user_city) {
+                                    echo $quote->user_city . ' ';
                                 } ?>
 
-                                <?php if ($invoice->user_zip) {
-                                    echo $invoice->user_zip . '<br/>';
+                                <?php if ($quote->user_zip) {
+                                    echo $quote->user_zip . '<br/>';
                                 } ?>
-                                <?php if ($invoice->user_state) {
-                                    echo $invoice->user_state . '<br/>';
+                                <?php if ($quote->user_state) {
+                                    echo $quote->user_state . '<br/>';
                                 } ?>
-                                <?php if ($invoice->user_phone) {
-                                    ?><abbr>P:</abbr><?php echo $invoice->user_phone; ?><br><?php
+                                <?php if ($quote->user_phone) {
+                                    ?><abbr>P:</abbr><?php echo $quote->user_phone; ?><br><?php
                                 } ?>
-                                <?php if ($invoice->user_fax) {
-                                    ?><abbr>F:</abbr><?php echo $invoice->user_fax; ?><?php
+                                <?php if ($quote->user_fax) {
+                                    ?><abbr>F:</abbr><?php echo $quote->user_fax; ?><?php
                                 } ?>
                             </p>
                         </div>
@@ -162,26 +157,26 @@
                                 <tbody>
                                 <tr>
                                     <td class="text-right color-n">
-                                        <?php echo lang('invoice_date'); ?>: &nbsp;
+                                        <?php echo lang('quote_date'); ?>: &nbsp;
                                     </td>
                                     <td class="text-right color-n">
-                                        <?php echo date_from_mysql($invoice->invoice_date_created, TRUE); ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right color-n">
-                                        <?php echo lang('due_date'); ?>: &nbsp;
-                                    </td>
-                                    <td class="text-right color-n">
-                                        <?php echo date_from_mysql($invoice->invoice_date_due, TRUE); ?>
+                                        <?php echo date_from_mysql($quote->quote_date_created, TRUE); ?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="text-right color-n">
-                                        <?php echo lang('amount_due'); ?>: &nbsp;
+                                        <?php echo lang('expires'); ?>: &nbsp;
                                     </td>
                                     <td class="text-right color-n">
-                                        <?php echo format_currency($invoice->invoice_balance); ?>
+                                        <?php echo date_from_mysql($quote->quote_date_expires, TRUE); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right color-n">
+                                        <?php echo lang('total'); ?>: &nbsp;
+                                    </td>
+                                    <td class="text-right color-n">
+                                        <?php echo format_currency($quote->quote_total); ?>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -194,7 +189,7 @@
         </div>
 
         <br/>
-        <h2 class="invoice-id"><?php echo lang('invoice'); ?> <?php echo $invoice->invoice_number; ?></h2>
+        <h2 class="quote-id"><?php echo lang('quote'); ?> <?php echo $quote->quote_number; ?></h2>
         <br/>
 
         <div class="invoice-items">
@@ -240,65 +235,43 @@
                                     <?php echo lang('subtotal'); ?>:
                                 </td>
                                 <td class="text-right color-n">
-                                    <?php echo format_currency($invoice->invoice_item_subtotal); ?>
+                                    <?php echo format_currency($quote->quote_item_subtotal); ?>
                                 </td>
                             </tr>
-                            <?php if ($invoice->invoice_item_tax_total > 0) { ?>
-                                <tr>
-                                    <td class="text-right color-n">
-                                        <?php echo lang('item_tax'); ?>
-                                    </td>
-                                    <td class="text-right color-n">
-                                        <?php echo format_currency($invoice->invoice_item_tax_total); ?>
-                                    </td>
-                                </tr>
+                            <?php if ($quote->quote_item_tax_total > 0) { ?>
+                            <tr>
+                                <td class="text-right color-n">
+                                    <?php echo lang('item_tax'); ?>:
+                                </td>
+                                <td class="text-right color-n">
+                                    <?php echo format_currency($quote->quote_item_tax_total); ?>
+                                </td>
+                            </tr>
                             <?php } ?>
 
-                            <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
-                                <tr>
+                            <?php foreach ($quote_tax_rates as $quote_tax_rate) : ?>
+                                <tr>    
                                     <td class="text-right color-n">
-                                        <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%
+                                        <?php echo $quote_tax_rate->quote_tax_rate_name . ' ' . $quote_tax_rate->quote_tax_rate_percent; ?>%
                                     </td>
                                     <td class="text-right color-n">
-                                        <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
+                                        <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
                                     </td>
                                 </tr>
                             <?php endforeach ?>
 
-                            <tr class="border-top-l amount-total">
+                            <tr class="amount-total border-top-n">
                                 <td class="text-right color-d">
-                                    <?php echo lang('total'); ?>:
+                                    <b><?php echo lang('total'); ?>:</b>
                                 </td>
                                 <td class="text-right color-d">
-                                    <?php echo format_currency($invoice->invoice_total); ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right color-d">
-                                    <?php echo lang('paid'); ?>:
-                                </td>
-                                <td class="text-right color-d">
-                                    <?php echo format_currency($invoice->invoice_paid) ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right color-d">
-                                    <b><?php echo lang('balance'); ?>:</b>
-                                </td>
-                                <td class="text-right color-d">
-                                    <b><?php echo format_currency($invoice->invoice_balance) ?></b>
+                                    <b><?php echo format_currency($quote->quote_total); ?></b>
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
             </table>
-
-            <div class="seperator border-bottom-l"></div>
-            <?php if ($invoice->invoice_terms) { ?>
-                <h4><?php echo lang('terms'); ?></h4>
-                <p><?php echo nl2br($invoice->invoice_terms); ?></p>
-            <?php } ?>
             
         </div>
 	</body>
