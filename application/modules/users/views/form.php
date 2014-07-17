@@ -203,7 +203,7 @@
 					
 					<div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        	<label class="control-label"><?php echo lang('it_codice_fiscale'); ?>: </label>
+                        	<label class="control-label"><?php echo lang('it_codice_fiscale'); ?></label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
 	                    	<input type="text" name="user_it_codfisc" id="user_it_codfisc" class="form-control"
@@ -213,7 +213,7 @@
                     
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        	<label class="control-label"><?php echo lang('it_partita_iva'); ?>: </label>
+                        	<label class="control-label"><?php echo lang('it_partita_iva'); ?></label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <input type="text" name="user_it_piva" id="user_it_piva" class="form-control"

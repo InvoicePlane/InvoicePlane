@@ -86,7 +86,7 @@
         </div>
         
 		<?php //---it---inizio ?>	
-		<div class="control-group">
+		<div class="form-group">
 			<div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
 				<label class="control-label"><?php echo lang('it_suffisso_anno'); ?>: </label>
 			</div>
