@@ -24,7 +24,7 @@ function pdf_create($html, $filename, $stream = TRUE)
 	$CI = & get_instance();
 	if ($CI->mdl_settings->setting('it_print_engine') == 'dompdf')
 	{
-		pdf_create_dompdf($html, $filename, $stream);
+		return pdf_create_dompdf($html, $filename, $stream);
 	}
 	// ---it---fine
 	
@@ -48,7 +48,7 @@ function pdf_create($html, $filename, $stream = TRUE)
     }
 }
 
-// ---it---inizio Utilizza ancora dompdf: mpdf dà problemi (test con modello fattura s2 software)
+// ---it---inizio Utilizza ancora dompdf: mpdf dï¿½ problemi (test con modello fattura s2 software)
 /*
  * FusionInvoice
 *

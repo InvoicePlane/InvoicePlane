@@ -6,6 +6,14 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
         
         <style>
+        	<?php //---it---inizio ?>
+         	<?php if (!empty($preview_pdf)): ?>
+         		html, body {
+				  overflow-y: visible;
+				}
+         	<?php endif; ?>
+        	<?php //---it---fine ?>
+        	
             body {
                 color: #555;
                 font-size: 1em;
@@ -100,26 +108,28 @@
 
                         <div class="invoice-to">
                             <p><?php echo lang('bill_to'); ?>:</p>
-                            <p><b><?php echo $invoice->client_name; ?></b><br/>
+                            <p><?php //---it--- indirizzo IT ?>
+                            	<b><?php echo $invoice->client_name; ?></b><br/>
                                 <?php if ($invoice->client_address_1) {
                                     echo $invoice->client_address_1 . '<br/>';
                                 } ?>
                                 <?php if ($invoice->client_address_2) {
                                     echo $invoice->client_address_2 . '<br/>';
                                 } ?>
+                                <?php if ($invoice->client_zip) {
+                                    echo $invoice->client_zip . ' ';
+                                } ?>
                                 <?php if ($invoice->client_city) {
                                     echo $invoice->client_city . ' ';
                                 } ?>
-                                <?php if ($invoice->client_zip) {
-                                    echo $invoice->client_zip . '<br/>';
-                                } ?>
                                 <?php if ($invoice->client_state) {
-                                    echo $invoice->client_state . '<br/>';
+                                    echo '('.$invoice->client_state . ')<br/>';
                                 } ?>
-
                                 <?php if ($invoice->client_phone) { ?>
-                                    <abbr>P:</abbr><?php echo $invoice->client_phone; ?><br/>
+                                    Tel. <?php echo $invoice->client_phone; ?><br/>
                                 <?php } ?>
+								<?php if ($invoice->client_it_codfisc) { echo 'C.F. ' . $invoice->client_it_codfisc . '<br/>'; } ?>
+			                    <?php if ($invoice->client_it_piva) { echo 'P.IVA ' . $invoice->client_it_piva . '<br/>'; } ?>
                             </p>
                         </div>
 
@@ -131,29 +141,30 @@
                             <h3 class="company-name text-right">
                                 <?php echo $invoice->user_name; ?>
                             </h3>
-                            <p class="text-right">
+                            <p class="text-right"><?php //---it--- indirizzo IT ?>
                                 <?php if ($invoice->user_address_1) {
                                     echo $invoice->user_address_1 . '<br/>';
                                 }?>
                                 <?php if ($invoice->user_address_2) {
                                     echo $invoice->user_address_2 . '<br/>';
                                 } ?>
+                                <?php if ($invoice->user_zip) {
+                                    echo $invoice->user_zip . ' ';
+                                } ?>
                                 <?php if ($invoice->user_city) {
                                     echo $invoice->user_city . ' ';
                                 } ?>
-
-                                <?php if ($invoice->user_zip) {
-                                    echo $invoice->user_zip . '<br/>';
-                                } ?>
                                 <?php if ($invoice->user_state) {
-                                    echo $invoice->user_state . '<br/>';
+                                    echo '('.$invoice->user_state . ')<br/>';
                                 } ?>
                                 <?php if ($invoice->user_phone) {
-                                    ?><abbr>P:</abbr><?php echo $invoice->user_phone; ?><br><?php
+                                    ?>Tel. <?php echo $invoice->user_phone; ?><br><?php
                                 } ?>
                                 <?php if ($invoice->user_fax) {
-                                    ?><abbr>F:</abbr><?php echo $invoice->user_fax; ?><?php
+                                    ?>Fax <?php echo $invoice->user_fax; ?><?php
                                 } ?>
+	                            <?php if ($invoice->user_it_codfisc) { echo 'C.F. ' . $invoice->user_it_codfisc . '<br/>'; } ?>
+								<?php if ($invoice->user_it_piva) { echo 'P.IVA ' . $invoice->user_it_piva . '<br/>'; } ?>
                             </p>
                         </div>
                         <br/>
