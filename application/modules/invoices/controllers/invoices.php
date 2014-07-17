@@ -170,7 +170,16 @@ class Invoices extends Admin_Controller {
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template);
     }
-
+    
+    //---it---inizio
+    public function preview_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
+    {
+    	$this->load->helper('pdf');
+    
+    	generate_invoice_pdf($invoice_id, $stream, $invoice_template, TRUE);
+    }
+    //---it---fine
+    
     public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id)
     {
         $this->load->model('mdl_invoice_tax_rates');

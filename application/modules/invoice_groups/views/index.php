@@ -22,10 +22,12 @@
             <tr>
                 <th><?php echo lang('name'); ?></th>
                 <th><?php echo lang('prefix'); ?></th>
+                <th><?php echo lang('it_suffisso'); ?></th>			<?php //---it--- ?>
                 <th><?php echo lang('next_id'); ?></th>
                 <th><?php echo lang('left_pad'); ?></th>
                 <th><?php echo lang('year_prefix'); ?></th>
                 <th><?php echo lang('month_prefix'); ?></th>
+                <th><?php echo lang('it_suffisso_anno'); ?></th>	<?php //---it--- ?>
                 <th><?php echo lang('options'); ?></th>
             </tr>
             </thead>
@@ -35,10 +37,12 @@
                 <tr>
                     <td><?php echo $invoice_group->invoice_group_name; ?></td>
                     <td><?php echo $invoice_group->invoice_group_prefix; ?></td>
+                    <td><?php echo $invoice_group->invoice_it_group_suffix; ?></td>	<?php //---it--- ?>
                     <td><?php echo $invoice_group->invoice_group_next_id; ?></td>
                     <td><?php echo $invoice_group->invoice_group_left_pad; ?></td>
                     <td><?php echo ($invoice_group->invoice_group_prefix_year) ? lang('yes') : lang('no'); ?></td>
                     <td><?php echo ($invoice_group->invoice_group_prefix_month) ? lang('yes') : lang('no'); ?></td>
+                    <td><?php echo ($invoice_group->invoice_it_group_suffix_year) ? lang('yes') : lang('no'); ?></td>	<?php //---it--- ?>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

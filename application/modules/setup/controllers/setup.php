@@ -37,10 +37,16 @@ class Setup extends MX_Controller {
 
         if (!$this->session->userdata('ip_lang'))
         {
-            $this->session->set_userdata('ip_lang', 'english');
+            //$this->session->set_userdata('ip_lang', 'english');	//---it--- ORIGINALE
+            $this->session->set_userdata('ip_lang', 'italian');	//---it---
         }
 
         $this->lang->load('ip', $this->session->userdata('ip_lang'));
+        
+        //---it---inizio
+        if ($this->session->userdata('ip_lang') == 'italian')
+        	$this->lang->load('custom', $this->session->userdata('ip_lang'));
+        //---it---fine
     }
 
     public function index()

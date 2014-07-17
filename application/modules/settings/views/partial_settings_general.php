@@ -154,5 +154,19 @@
 			<input type="file" name="login_logo" size="40" class="form-control control-label"/>
 		</div>
 	</div>
-
+	
+	<?php //---it---inizio ?>
+	<div class="form-group">
+		<div class="col-xs-12 col-sm-3 text-right text-left-xs">
+			<label class="control-label"><?php echo lang('it_motore_stampa'); ?>: </label>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<select name="settings[it_print_engine]" class="form-control">
+				<option value="mpdf" <?php if ($this->mdl_settings->setting('it_print_engine') == 'mpdf') { ?>selected="selected"<?php } ?>><?php echo lang('it_motore_stampa_mpdf'); ?></option>
+				<option value="dompdf" <?php if ($this->mdl_settings->setting('it_print_engine') == 'dompdf') { ?>selected="selected"<?php } ?>><?php echo lang('it_motore_stampa_dompdf'); ?></option>
+			</select>
+		</div>
+	</div>
+	<?php //---it---fine ?>
+	
 </div>

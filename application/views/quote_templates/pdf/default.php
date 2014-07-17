@@ -6,6 +6,14 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
         
         <style>
+       		<?php //---it---inizio ?>
+         	<?php if (!empty($preview_pdf)): ?>
+         		html, body {
+				  overflow-y: visible;
+				}
+         	<?php endif; ?>
+        	<?php //---it---fine ?>
+        	
             body {
                 color: #555;
                 font-size: 1em;
@@ -113,8 +121,13 @@
                                 } ?>
 
                                 <?php if ($quote->client_phone) { ?>
-                                    <abbr>P:</abbr><?php echo $quote->client_phone; ?><br/>
+                                    Tel. <?php echo $quote->client_phone; ?><br/>
                                 <?php } ?>
+                                
+                                <?php //---it---inizio ?>
+	                            <?php if ($quote->client_it_codfisc) { echo 'C.F. ' . $quote->client_it_codfisc . '<br>'; } ?>
+			                    <?php if ($quote->client_it_piva) { echo 'P.IVA ' . $quote->client_it_piva . '<br>'; } ?>
+			                    <?php //---it---fine ?>
                             </p>
                         </div>
 
@@ -144,11 +157,16 @@
                                     echo $quote->user_state . '<br/>';
                                 } ?>
                                 <?php if ($quote->user_phone) {
-                                    ?><abbr>P:</abbr><?php echo $quote->user_phone; ?><br><?php
+                                    ?>Tel. <?php echo $quote->user_phone; ?><br><?php
                                 } ?>
                                 <?php if ($quote->user_fax) {
-                                    ?><abbr>F:</abbr><?php echo $quote->user_fax; ?><?php
+                                    ?>Fax <?php echo $quote->user_fax; ?><?php
                                 } ?>
+                                
+                                <?php //---it---inizio ?>
+	                            <?php if ($quote->user_it_codfisc) { echo 'C.F. ' . $quote->user_it_codfisc . '<br>'; } ?>
+								<?php if ($quote->user_it_piva) { echo 'P.IVA ' . $quote->user_it_piva . '<br>'; } ?>
+								<?php //---it---fine ?>
                             </p>
                         </div>
                         <br/>

@@ -44,6 +44,13 @@
                                     <i class="fa fa-edit fa-margin"></i> <?php echo lang('edit'); ?>
                                 </a>
                             </li>
+                            <?php //---it---inizio ?>
+							<li>
+								<a href="<?php echo site_url('invoices/preview_pdf/' . $invoice->invoice_id); ?>">
+									<i class="fa fa-file fa-margin"></i> Anteprima PDF
+								</a>
+							</li>
+							<?php //---it---fine ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>">
                                     <i class="fa fa-print fa-margin"></i> <?php echo lang('download_pdf'); ?>

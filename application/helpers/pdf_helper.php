@@ -16,7 +16,7 @@ if (!defined('BASEPATH'))
  * 
  */
 
-function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
+function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL, $preview = FALSE/*---it---*/)
 {
     $CI = & get_instance();
 
@@ -39,14 +39,27 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
         'output_type'       => 'pdf'
     );
 
+    global $pdf_preview; $pdf_preview = $preview;	// ---it---
+    $data['preview_pdf'] = $preview;	// ---it--- set preview to override default overflow-y: hidden; in html and body
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, TRUE);
-
-    $CI->load->helper('mpdf');
-
-    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream);
+    
+    //---it---inizio
+    if ($preview)
+    {
+    	echo $html;
+    }
+    else
+    {
+    	//---it---fine
+    	$CI->load->helper('mpdf');
+    
+    	return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream);
+    	//---it---inizio
+    }
+    //---it---fine
 }
 
-function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
+function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL, $preview = FALSE/*---it---*/)
 {
     $CI = & get_instance();
 
@@ -67,10 +80,23 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
         'items'           => $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
         'output_type'     => 'pdf'
     );
-
+    
+    global $pdf_preview; $pdf_preview = $preview;	// ---it---
+    $data['preview_pdf'] = $preview;	// ---it--- set preview to override default overflow-y: hidden; in html and body
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, TRUE);
+    
+    //---it---inizio
+    if ($preview)
+    {
+    	echo $html;
+    }
+    else
+    {
+    	//---it---fine
+    	$CI->load->helper('mpdf');
 
-    $CI->load->helper('mpdf');
-
-    return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream);
+    	return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream);
+    	//---it---inizio
+    }
+    //---it---fine
 }

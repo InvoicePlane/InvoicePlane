@@ -59,4 +59,16 @@ function standardize_amount($amount)
     return $amount;
 }
 
+//---it---inizio
+function format_number($amount, $decimals = 2)
+{
+	global $CI;
+
+	$thousands_separator = $CI->mdl_settings->setting('thousands_separator');
+	$decimal_point = $CI->mdl_settings->setting('decimal_point');
+
+	return number_format($amount, $decimals, $decimal_point, $thousands_separator);
+}
+//---it---fine
+
 ?>

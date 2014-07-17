@@ -6,6 +6,14 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
         
         <style>
+            <?php //---it---inizio ?>
+         	<?php if (!empty($preview_pdf)): ?>
+         		html, body {
+				  overflow-y: visible;
+				}
+         	<?php endif; ?>
+        	<?php //---it---fine ?>
+            
             body {
                 color: #555;
                 font-size: 1em;
@@ -118,8 +126,13 @@
                                 } ?>
 
                                 <?php if ($invoice->client_phone) { ?>
-                                    <abbr>P:</abbr><?php echo $invoice->client_phone; ?><br/>
+                                    Tel. <?php echo $invoice->client_phone; ?><br/>
                                 <?php } ?>
+                                
+                                <?php //---it---inizio ?>
+								<?php if ($invoice->client_it_codfisc) { echo 'C.F. ' . $invoice->client_it_codfisc . '<br/>'; } ?>
+			                    <?php if ($invoice->client_it_piva) { echo 'P.IVA ' . $invoice->client_it_piva . '<br/>'; } ?>
+			                    <?php //---it---fine ?>
                             </p>
                         </div>
 
@@ -149,11 +162,16 @@
                                     echo $invoice->user_state . '<br/>';
                                 } ?>
                                 <?php if ($invoice->user_phone) {
-                                    ?><abbr>P:</abbr><?php echo $invoice->user_phone; ?><br><?php
+                                    ?>Tel. <?php echo $invoice->user_phone; ?><br><?php
                                 } ?>
                                 <?php if ($invoice->user_fax) {
-                                    ?><abbr>F:</abbr><?php echo $invoice->user_fax; ?><?php
+                                    ?>Fax <?php echo $invoice->user_fax; ?><?php
                                 } ?>
+                                
+                                <?php //---it---inizio ?>
+	                            <?php if ($invoice->user_it_codfisc) { echo 'C.F. ' . $invoice->user_it_codfisc . '<br/>'; } ?>
+								<?php if ($invoice->user_it_piva) { echo 'P.IVA ' . $invoice->user_it_piva . '<br/>'; } ?>
+								<?php //---it---fine ?>
                             </p>
                         </div>
                         <br/>

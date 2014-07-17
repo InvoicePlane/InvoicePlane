@@ -94,6 +94,27 @@
                         </div>
                     </div>
                 </fieldset>
+                <?php //---it---inizio ?>
+                <fieldset>
+					<legend>Ditta</legend>
+					
+					<div class="form-group">
+						<label><?php echo lang('it_codice_fiscale'); ?>: </label>
+						<div class="controls">
+							<input type="text" name="client_it_codfisc" id="client_it_codfisc" class="form-control"
+									value="<?php echo $this->mdl_clients->form_value('client_it_codfisc'); ?>">
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label><?php echo lang('it_partita_iva'); ?>: </label>
+						<div class="controls">
+							<input type="text" name="client_it_piva" id="client_it_piva" class="form-control"
+									value="<?php echo $this->mdl_clients->form_value('client_it_piva'); ?>">
+						</div>
+					</div>
+				</fieldset>
+				<?php //---it---fine ?>
             </div>
 
             <div class="col-xs-12 col-sm-6">

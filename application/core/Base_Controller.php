@@ -56,7 +56,12 @@ class Base_Controller extends MX_Controller {
             $this->mdl_settings->load_settings();
 
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
-
+            
+            //---it---inizio
+            if ($this->mdl_settings->setting('default_language') == 'italian')
+            	$this->lang->load('custom', $this->mdl_settings->setting('default_language'));
+            //---it---fine
+            
             $this->load->helper('language');
 
             $this->load->module('layout');

@@ -103,7 +103,15 @@ class Mdl_Users extends Response_Model {
             ),
             'user_web'       => array(
                 'field' => 'user_web'
-            )
+            ),
+        	/*---it---inizio*/
+        	'user_it_codfisc'       => array(
+        			'field' => 'user_it_codfisc'
+        	),
+        	'user_it_piva'       => array(
+        			'field' => 'user_it_piva'
+        	)
+        	/*---it---fine*/
         );
     }
 
@@ -154,7 +162,15 @@ class Mdl_Users extends Response_Model {
             ),
             'user_web'       => array(
                 'field' => 'user_web'
-            )
+            ),
+        	/*---it---inizio*/
+        	'user_it_codfisc'       => array(
+       				'field' => 'user_it_codfisc'
+       		),
+       		'user_it_piva'       => array(
+       				'field' => 'user_it_piva'
+       		)
+       		/*---it---fine*/
         );
     }
 

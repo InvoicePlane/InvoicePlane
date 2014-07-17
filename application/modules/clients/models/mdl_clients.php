@@ -81,7 +81,15 @@ class Mdl_Clients extends Response_Model {
             ),
             'client_web'       => array(
                 'field' => 'client_web'
-            )
+            ),
+        	/*---it---inizio*/
+        	'client_it_codfisc' => array(
+        			'field' => 'client_it_codfisc'
+        	),
+        	'client_it_piva' => array(
+        			'field' => 'client_it_piva'
+        	)
+        	/*---it---fine*/
         );
     }
 

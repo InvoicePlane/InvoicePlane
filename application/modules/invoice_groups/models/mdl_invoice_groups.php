@@ -62,7 +62,18 @@ class Mdl_Invoice_Groups extends Response_Model {
                 'field' => 'invoice_group_prefix_month',
                 'label' => lang('month_prefix'),
                 'rules' => 'required'
-            )
+            ),
+        	/*---it---inizio*/
+        	'invoice_it_group_suffix'       => array(
+        			'field' => 'invoice_it_group_suffix',
+        			'label' => lang('it_suffisso'),
+        	),
+        	'invoice_it_group_suffix_year'  => array(
+        			'field' => 'invoice_it_group_suffix_year',
+        			'label' => lang('it_suffisso_anno'),
+        			'rules' => 'required'
+        	)
+        	/*---it---fine*/
         );
     }
 
@@ -92,7 +103,15 @@ class Mdl_Invoice_Groups extends Response_Model {
         }
 
         $invoice_number .= $invoice_id;
-
+        
+        //---it---inizio
+        $invoice_number .= $invoice_group->invoice_it_group_suffix;
+        if ($invoice_group->invoice_it_group_suffix_year)
+        {
+        	$invoice_number .= date('Y');
+        }
+        //---it---fine
+        
         if ($set_next)
         {
             $this->set_next_invoice_number($invoice_group_id);
