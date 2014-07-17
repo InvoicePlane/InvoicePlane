@@ -5,7 +5,7 @@
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 More Information on __[invoiceplane.com](https://invoiceplane.com)__
 
-If you need support or want to help developing please visit the [official repository](https://repo.invoiceplane.com/ip/invoiceplane/wikis/home).
+If you need support or want to help developing please visit the [official repository](https://github.com/InvoicePlane/InvoicePlane/wiki).
 
 ---
 
