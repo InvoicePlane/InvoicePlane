@@ -9,7 +9,7 @@ $lang['it_suffisso'] = 'Suffisso';
 $lang['it_suffisso_anno'] = 'Suffisso anno';
 
 $lang['it_motore_stampa'] = 'Motore stampa PDF';
-$lang['it_motore_stampa_mpdf'] = 'mPDF (originale)';
-$lang['it_motore_stampa_dompdf'] = 'dompdf (speciale edizione italiana)';
+$lang['it_motore_stampa_mpdf'] = 'mPDF';
+$lang['it_motore_stampa_dompdf'] = 'dompdf (legacy)';
 
 ?>
