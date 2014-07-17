@@ -13,7 +13,7 @@
 
                 <select name="ip_lang" class="form-control">
                     <?php foreach ($languages as $language) { ?>
-                    <option value="<?php echo $language; ?>" <?php if ($language == 'english') { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
+                    <option value="<?php echo $language; ?>" <?php if ($language == /*'english'*/'italian'/*---it---*/) { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
                     <?php } ?>
                 </select>
 
