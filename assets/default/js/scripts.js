@@ -16,7 +16,7 @@ $(document).ready(function() {
         } if (menuVisY < 20) { //If tooltip exceeds the Y coordinate of viewport
             menu.css({
                 'top': 'auto',
-                'bottom': '100%',
+                'bottom': '100%'
             });
         }
     });

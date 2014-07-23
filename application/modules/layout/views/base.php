@@ -41,7 +41,7 @@
 	<?php echo $content; ?>
 
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
-    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/script.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 
 	<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
 	     chromium.org/developers/how-tos/chrome-frame-getting-started -->
