@@ -400,6 +400,27 @@
         margin-right: 15px;
     }
 
+    .tab-content .alert {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #form-settings .tab-content .alert {
+        margin: 15px;
+    }
+
+    #panel-overdue-invoices,
+    #panel-recent-quotes,
+    #panel-recent-invoices {
+        .panel-body {
+            padding: 0;
+        }
+    }
+
+    #panel-overdue-invoices p {
+        margin: 15px;
+    }
+
     .btn .fa,
     .fa.fa-margin {
         margin-right: 7px;
