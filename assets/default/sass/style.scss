@@ -8,9 +8,6 @@
    Import Bootstrap and other assets
    ========================================================================== */
 
-    // Use compass
-    @import "compass";
-
     // Bootstrap
     @import "bootstrap/bootstrap";
 
@@ -28,7 +25,7 @@
 
     // overflow-x fix white space at the right when browser window is resized
     html, body {
-        overflow-y:hidden;
+        overflow-y: hidden;
     }
 
     body {
@@ -37,10 +34,6 @@
 
     img {
         vertical-align: middle;
-    }
-
-    p, ul, ol {
-        @include margin-trailer(1);
     }
 
     a:hover, a:active, a:focus {
@@ -57,7 +50,7 @@
    ========================================================================== */
 
     // Bootstrap Datepicker
-    // Fix input alingment
+    // Fix input alignment
     .controls.date {
         margin-left: 10px;
         padding: 0;
@@ -129,7 +122,11 @@
     }
 
     fieldset {
-        @include border-radius(5px);
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -o-border-radius: 5px;
+        border-radius: 5px;
         border: 1px solid #ddd;
         margin-bottom: 20px;
         padding: 20px;
@@ -216,7 +213,7 @@
         }
 
         .btn {
-            @include margin-leader(1);
+            margin-top: 15px;
         }
 
     }
@@ -421,6 +418,15 @@
         margin: 15px;
     }
 
+    .quick-actions .btn {
+        padding: 5px;
+        border-right-width: 0;
+
+        &:last-child {
+            border-right-width: 1px;
+        }
+    }
+
     .btn .fa,
     .fa.fa-margin {
         margin-right: 7px;
@@ -514,7 +520,7 @@
     .tabs-below .nav-tabs > li > a:hover,
     .tabs-below .nav-tabs .active > a,
     .tabs-below .nav-tabs .active > a:hover {
-        @include border-radius(0);
+        border-radius: 0;
         background-color: #444;
         color: #fff;
         text-decoration: none;
@@ -595,7 +601,11 @@
    ========================================================================== */
 
     .profile {
-        @include border-radius(5px);
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -o-border-radius: 5px;
+        border-radius: 5px;
         background: #f9f9f9;
         border: 1px solid #ddd;
         margin-bottom: 20px;
@@ -618,7 +628,11 @@
         }
 
         dl dt span {
-            @include border-radius(5px);
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            -o-border-radius: 5px;
+            border-radius: 5px;
             background: #fff;
             border: 1px solid #ddd;
             padding: 2px 25px;
@@ -662,6 +676,7 @@
     // Invoices and Quotes Status
     .label {
 
+        font-weight: normal;
         color: white !important; // override status text color on labels
 
         &.draft { background-color: #999999; }
