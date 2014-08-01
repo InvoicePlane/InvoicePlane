@@ -1,7 +1,7 @@
 <?php
 
 $lang['account_information'] = 'Account Information';
-$lang['active_client'] = 'Active Client';
+$lang['active_client'] = 'Active';
 $lang['active'] = 'Active';
 $lang['add_client'] = 'Add Client';
 $lang['add_invoice_tax'] = 'Add Invoice Tax';
