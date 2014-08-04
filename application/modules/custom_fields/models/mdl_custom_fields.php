@@ -61,8 +61,18 @@ class Mdl_Custom_Fields extends MY_Model {
         // Get the array of custom tables
         $custom_tables = $this->custom_tables();
 
+        // Check if the user wants to add 'id' as custom field
+        if ( strtolower($db_array['custom_field_label']) == 'id') {
+            // Replace 'id' with 'field_id' to avoid problems with the primary key
+            $custom_field_label = 'field_id';
+        } else {
+            $custom_field_label = strtolower( str_replace(' ', '_', $db_array['custom_field_label']) );
+        }
+
         // Create the name for the custom field column
-        $custom_field_column = strtolower($custom_tables[$db_array['custom_field_table']]) . '_custom_' . preg_replace('/[^a-zA-Z0-9_\s]/', '', strtolower(str_replace(' ', '_', $db_array['custom_field_label'])));
+        $custom_field_column = strtolower($custom_tables[$db_array['custom_field_table']]) .
+            '_custom_' .
+            preg_replace('/[^a-zA-Z0-9_\s]/', '', $custom_field_label);
 
         // Add the custom field column to the db array
         $db_array['custom_field_column'] = $custom_field_column;
