@@ -212,6 +212,7 @@ class Ajax extends Admin_Controller {
         }
         else
         {
+            $this->load->helper('json_error');
             $response = array(
                 'success'           => 0,
                 'validation_errors' => json_errors()
@@ -294,6 +295,7 @@ class Ajax extends Admin_Controller {
         }
         else
         {
+            $this->load->helper('json_error');
             $response = array(
                 'success'           => 0,
                 'validation_errors' => json_errors()
