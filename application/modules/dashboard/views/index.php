@@ -8,7 +8,7 @@
     <div class="row">
     <div class="col-xs-12 col-md-6">
 
-        <div class="panel panel-default quick-actions">
+        <div id="panel-quick-actions" class="panel panel-default quick-actions">
 
             <div class="panel-heading">
                 <h3 class="panel-title"><?php echo lang('quick_actions'); ?></h3>
@@ -37,7 +37,7 @@
 
         </div>
 
-        <div class="panel panel-default overview">
+        <div id="panel-quote-overview" class="panel panel-default overview">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -65,7 +65,7 @@
 
         </div>
 
-        <div class="panel panel-default overview">
+        <div id="panel-invoice-overview" class="panel panel-default overview">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -98,7 +98,7 @@
 
         <div class="panel panel-default">
 
-            <div class="panel-heading">
+            <div id="panel-overdue-invoices" class="panel-heading">
                 <h3 class="panel-title">
                     <i class="fa fa-warning"></i>
                     <?php echo lang('overdue_invoices'); ?>
@@ -170,7 +170,7 @@
             </div>
         </div>
 
-        <div class="panel panel-default">
+        <div id="panel-recent-quotes" class="panel panel-default">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -229,7 +229,7 @@
             </div>
         </div>
 
-        <div class="panel panel-default">
+        <div id="panel-recent-invoices" class="panel panel-default">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
