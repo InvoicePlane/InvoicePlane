@@ -10,7 +10,7 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 2. Extract the package and copy all files to your webserver / webspace. Don't forget to copy the `.htaccess` file!
 3. Open `http://your-invoiceplane-domain.com/setup` and follow the instructions.
 
----
+===
 
 ### Support / Development
 
@@ -21,9 +21,9 @@ If you need support or want to help developing please visit the [official wiki](
 [![Freenode](https://invoiceplane.com/content/badges/badge_freenode.png)](irc://irc.freenode.net/InvoicePlane)  
 
 
-
+  
 ---
-
+  
 *Please notice: The name (InvoicePlane) and the logo can be used but may not be changed / altered in any way.
 The name and the logo are both original copyright by Kovah.de. For more information visit invoiceplane.com/license-copyright*
 
