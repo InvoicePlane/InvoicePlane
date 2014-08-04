@@ -38,6 +38,10 @@
 
 <body style="overflow-y: visible;height:auto;">
 
+    <noscript>
+        <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
+    </noscript>
+
 	<?php echo $content; ?>
 
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>

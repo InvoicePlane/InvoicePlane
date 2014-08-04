@@ -199,6 +199,7 @@ $lang['settings'] = 'Settings';
 $lang['setup_choose_language_message'] = 'Choose a language to continue the installation.';
 $lang['setup_choose_language'] = 'Choose a Language';
 $lang['setup_complete_message'] = 'InvoicePlane has been successfully installed. You may now log in.';
+$lang['setup_complete_secure_setup'] = 'If you want to secure your site place this code directly after <code></code> in the .htaccess file and replace yourdomain.com:';
 $lang['setup_complete'] = 'Installation Complete';
 $lang['setup_create_user_message'] = 'This is the information you will use to log into InvoicePlane.';
 $lang['setup_create_user'] = 'Create User Account';
@@ -384,6 +385,8 @@ $lang['viewed'] = 'Viewed';
 $lang['view_all'] = 'View All';
 
 $lang['documentation'] = 'Documentation';
+
+$lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';
 
 $lang['aftersetup_heading'] = 'Just one more question...';
 $lang['aftersetup_question'] = 'Would you agree to send an anonymized info to the project website invoiceplane.com so we know that an awesome person installed InvoicePlane?';

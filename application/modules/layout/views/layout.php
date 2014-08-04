@@ -82,6 +82,10 @@
 
 <body>
 
+<noscript>
+    <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
+</noscript>
+
 <nav class="navbar navbar-inverse " role="navigation">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->

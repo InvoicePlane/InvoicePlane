@@ -71,13 +71,19 @@
                 <?php echo lang('setup_complete_message'); ?>
             </p>
 
+            <p>
+                <?php echo lang('setup_complete_secure_setup'); ?>
+                <br/>
+                <code>Redirect /setup http://yourdomain.com/</code>
+            </p>
+
             <?php if ( $update == false ) { ?>
                 <a href="#after-setup" class="btn btn-success" data-toggle="modal">
-                    <i class="fa fa-check fa-margin"></i> <?php echo lang('continue'); ?>
+                    <i class="fa fa-check fa-margin"></i> <?php echo lang('login'); ?>
                 </a>
             <?php } else { ?>
                 <a href="<?php echo site_url('sessions/login'); ?>" class="btn btn-success" >
-                    <i class="fa fa-check fa-margin"></i> <?php echo lang('continue'); ?>
+                    <i class="fa fa-check fa-margin"></i> <?php echo lang('login'); ?>
                 </a>
             <?php } ?>
         </div>
