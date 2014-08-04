@@ -34,7 +34,7 @@
             <span class="text-muted">Por favor, instale InvoicePlane</span><br/>
         </p>
         <div class="btn-group btn-group-justified">
-            <a href="/index.php/setup" class="btn btn-success">
+            <a href="/setup" class="btn btn-success">
                 <i class="fa fa-cogs"></i> Setup
             </a>
             <a href="https://support.invoiceplane.com" class="btn btn-info">
