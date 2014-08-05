@@ -17,27 +17,18 @@
 
         <fieldset>
             <legend><?php echo lang('personal_information'); ?></legend>
-
-            <div class="form-group">
-                <label><?php echo lang('active_client'); ?>: </label>
-                <div>
-                    <input id="client_active" name="client_active" type="checkbox" value="1"
-                           class="form-control"
+            <div class="input-group">
+              <span class="input-group-addon">
+                <?php echo lang('active_client'); ?>: 
+                <input id="client_active" name="client_active" type="checkbox" value="1"
                         <?php if ($this->mdl_clients->form_value('client_active') == 1
                             or !is_numeric($this->mdl_clients->form_value('client_active')))
                         { echo 'checked="checked"'; } ?>
                         >
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>* <?php echo lang('client_name'); ?>: </label>
-                <div>
-                    <input id="client_name" name="client_name" type="text" class="form-control"
+              </span>
+              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="Client Name"
                            value="<?php echo $this->mdl_clients->form_value('client_name'); ?>">
-                </div>
             </div>
-
         </fieldset>
 
         <div class="row">
