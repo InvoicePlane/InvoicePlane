@@ -96,9 +96,9 @@
 
     <div class="col-xs-12 col-md-6">
 
-        <div class="panel panel-default">
+        <div id="panel-overdue-invoices" class="panel panel-default">
 
-            <div id="panel-overdue-invoices" class="panel-heading">
+            <div class="panel-heading">
                 <h3 class="panel-title">
                     <i class="fa fa-warning"></i>
                     <?php echo lang('overdue_invoices'); ?>
