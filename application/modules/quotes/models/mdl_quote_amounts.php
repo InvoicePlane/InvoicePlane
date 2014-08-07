@@ -42,7 +42,10 @@ class Mdl_Quote_Amounts extends CI_Model {
         $query = $this->db->query("SELECT SUM(item_subtotal) AS quote_item_subtotal,	
 		SUM(item_tax_total) AS quote_item_tax_total,
 		SUM(item_subtotal) + SUM(item_tax_total) AS quote_total
-		FROM ip_quote_item_amounts WHERE item_id IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")");
+		FROM ip_quote_item_amounts WHERE item_id IN (SELECT item_id FROM ip_quote_items WHERE quote_id = ?)",
+        array (
+            $this->db->escape($quote_id)
+        ));
 
         $quote_amounts = $query->row();
 
@@ -106,7 +109,11 @@ class Mdl_Quote_Amounts extends CI_Model {
             }
 
             // Update the quote amount record with the total quote tax amount
-            $this->db->query("UPDATE ip_quote_amounts SET quote_tax_total = (SELECT SUM(quote_tax_rate_amount) FROM ip_quote_tax_rates WHERE quote_id = " . $this->db->escape($quote_id) . ") WHERE quote_id = " . $this->db->escape($quote_id));
+            $this->db->query("UPDATE ip_quote_amounts SET quote_tax_total = (SELECT SUM(quote_tax_rate_amount) FROM ip_quote_tax_rates WHERE quote_id = ?) WHERE quote_id = ?",
+            array (
+                $this->db->escape($quote_id),
+                $this->db->escape($quote_id)
+            ));
 
             // Get the updated quote amount record
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();

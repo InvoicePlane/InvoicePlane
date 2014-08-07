@@ -44,12 +44,18 @@ class Mdl_Invoice_Amounts extends CI_Model {
         $query = $this->db->query("SELECT SUM(item_subtotal) AS invoice_item_subtotal,	
 		SUM(item_tax_total) AS invoice_item_tax_total,
 		SUM(item_subtotal) + SUM(item_tax_total) AS invoice_total
-		FROM ip_invoice_item_amounts WHERE item_id IN (SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . ")");
+		FROM ip_invoice_item_amounts WHERE item_id IN (SELECT item_id FROM ip_invoice_items WHERE invoice_id = ?)",
+        array (
+            $this->db->escape($invoice_id)
+        ));
 
         $invoice_amounts = $query->row();
 
         // Get the amount already paid
-        $query = $this->db->query("SELECT SUM(payment_amount) AS invoice_paid FROM ip_payments WHERE invoice_id = " . $this->db->escape($invoice_id));
+        $query = $this->db->query("SELECT SUM(payment_amount) AS invoice_paid FROM ip_payments WHERE invoice_id = ?",
+        array (
+            $this->db->escape($invoice_id)
+        ));
 
         $invoice_paid = $query->row()->invoice_paid;
 
@@ -123,10 +129,15 @@ class Mdl_Invoice_Amounts extends CI_Model {
             }
 
             // Update the invoice amount record with the total invoice tax amount
-            $this->db->query("UPDATE ip_invoice_amounts SET invoice_tax_total = (SELECT SUM(invoice_tax_rate_amount) FROM ip_invoice_tax_rates WHERE invoice_id = " . $this->db->escape($invoice_id) . ") WHERE invoice_id = " . $this->db->escape($invoice_id));
+            $this->db->query("UPDATE ip_invoice_amounts SET invoice_tax_total = (SELECT SUM(invoice_tax_rate_amount) FROM ip_invoice_tax_rates WHERE invoice_id = ?) WHERE invoice_id = ?",
+            array (
+                $this->db->escape($invoice_id),
+                $this->db->escape($invoice_id)
+            ));
 
             // Get the updated invoice amount record
-            $invoice_amount = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+            $invoice_amount = $this->db->where('invoice_id',$invoice_id)
+                ->get('ip_invoice_amounts')->row();
 
             // Recalculate the invoice total and balance
             $invoice_total   = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;

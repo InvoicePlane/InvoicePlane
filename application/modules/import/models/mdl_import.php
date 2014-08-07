@@ -432,7 +432,12 @@ class Mdl_Import extends Response_Model {
         // Loop through details and delete each of the imported records
         foreach ($import_details as $import_detail)
         {
-            $this->db->query("DELETE FROM " . $import_detail->import_table_name . " WHERE " . $this->primary_keys[$import_detail->import_table_name] . ' = ' . $import_detail->import_record_id);
+            $this->db->query("DELETE FROM ? WHERE ? = ?",
+            array(
+                $import_detail->import_table_name,
+                $this->primary_keys[$import_detail->import_table_name],
+                $import_detail->import_record_id
+            ));
         }
 
         // Delete the master import record
