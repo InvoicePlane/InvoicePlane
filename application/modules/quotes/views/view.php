@@ -242,10 +242,11 @@
 
             </p>
 
-            <p>
+        <?php if ($quote->quote_status_id != 1) { ?>
+            <p class="padded">
                 <?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/quote/' . $quote->quote_url_key)); ?>
             </p>
-            
+            <?php } ?>
 		</div>
 		
 	</form>

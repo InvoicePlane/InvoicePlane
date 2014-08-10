@@ -248,8 +248,11 @@
                        value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
             <?php } ?>
 
-            <p class="padded"><?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?></p>
-
+            <?php if ($invoice->invoice_status_id != 1) { ?>
+            <p class="padded">
+                <?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
+            </p>
+            <?php } ?>
         </div>
 
     </form>
