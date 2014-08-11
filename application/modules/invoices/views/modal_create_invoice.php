@@ -68,8 +68,10 @@
                 <input size="16" type="text" name="invoice_date_created"
                        id="invoice_date_created"
                        value="<?php echo date(date_format_setting()); ?>"
-                       class="form-control datepicker" readonly>
-                <span class="fa fa-calendar form-control-feedback"></span>
+                       class="form-control datepicker" readonly="readonly">
+                <span class="form-control-feedback">
+                    <span class="fa fa-calendar "></span>
+                </span>
             </div>
         </div>
 
