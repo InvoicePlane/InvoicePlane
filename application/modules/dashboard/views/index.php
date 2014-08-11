@@ -163,7 +163,7 @@
 
                 <?php } else { ?>
 
-                    <span class="text-success"><?php echo lang('no_overdue_invoices'); ?></span>
+                    <p class="text-success"><?php echo lang('no_overdue_invoices'); ?></p>
 
                 <?php } ?>
 
