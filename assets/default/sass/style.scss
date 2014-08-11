@@ -276,6 +276,11 @@
 
         .navbar-collapse {
             padding: 0;
+
+            &.in .navbar-form {
+                margin: 5px 0;
+                padding: 0;
+            }
         }
 
         .brand {
@@ -341,6 +346,22 @@
     #subnavigation {
         max-height: 50px !important;
         border-top: none;
+    }
+
+    .submenu {
+        .navbar-toggle {
+            margin: 0;
+            background: #bbb;
+            padding: 8px 6px;
+            .icon-bar {
+                background: #eee;
+            }
+        }
+        .navbar-collapse {
+            z-index: 9999;
+            margin-top: 7px;
+            padding: 0;
+        }
     }
 
 
