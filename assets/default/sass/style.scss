@@ -486,6 +486,18 @@
       overflow-y: scroll;
    }
 
+   .details-box {
+       @extend .panel;
+       @extend .panel-default;
+       @extend .panel-body;
+
+       .has-feedback .form-control-feedback {
+           bottom: 0;
+           top: auto;
+           right: 0;
+       }
+   }
+
 
 /* =============================================================================
    Tabs

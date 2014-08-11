@@ -179,7 +179,7 @@
                 </div>
 
                 <div class="col-xs-12 col-md-4">
-                    <div class="panel panel-default panel-body">
+                    <div class="details-box">
 
                         <div class="quote-properties">
                             <label for="quote_number">
@@ -190,21 +190,31 @@
                                        value="<?php echo $quote->quote_number; ?>" >
                             </div>
                         </div>
-                        <div class="quote-properties">
+                        <div class="quote-properties has-feedback">
                             <label for="quote_date_created">
                                 <?php echo lang('date'); ?>
                             </label>
-                            <input type="text" id="quote_date_created"
-                                   class="form-control input-small"
-                                   value="<?php echo date_from_mysql($quote->quote_date_created); ?>">
+                            <div class="date datepicker">
+                                <input type="text" id="quote_date_created"
+                                       class="form-control input-sm datepicker"
+                                       value="<?php echo date_from_mysql($quote->quote_date_created); ?>" readonly="readonly">
+                                <span class="form-control-feedback">
+                                    <span class="fa fa-calendar "></span>
+                                </span>
+                            </div>
                         </div>
-                        <div class="quote-properties">
+                        <div class="quote-properties has-feedback">
                             <label for="quote_date_expires">
                                 <?php echo lang('expires'); ?>
                             </label>
-                            <input type="text" id="quote_date_expires"
-                                   class="form-control input-sm"
-                                   value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
+                            <div class="date datepicker">
+                                <input type="text" id="quote_date_expires"
+                                       class="form-control input-sm datepicker"
+                                       value="<?php echo date_from_mysql($quote->quote_date_expires); ?>" readonly="readonly">
+                                <span class="form-control-feedback">
+                                    <span class="fa fa-calendar "></span>
+                                </span>
+                            </div>
                         </div>
                         <div class="quote-properties">
                             <label for="quote_status_id">

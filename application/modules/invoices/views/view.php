@@ -192,7 +192,7 @@
                 </div>
 
                 <div class="col-xs-12 col-md-4">
-                    <div class="panel panel-default panel-body">
+                    <div class="details-box">
 
                         <div class="invoice-properties">
                             <label><?php echo lang('invoice'); ?> #</label>
@@ -202,20 +202,26 @@
                                        value="<?php echo $invoice->invoice_number; ?>" >
                             </div>
                         </div>
-                        <div class="invoice-properties">
+                        <div class="invoice-properties has-feedback">
                             <label><?php echo lang('date'); ?></label>
-                            <div >
+                            <div class="date datepicker">
                                 <input type="text" id="invoice_date_created"
-                                       class="input-sm form-control"
-                                       value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>">
+                                       class="input-sm form-control datepicker"
+                                       value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>" readonly="readonly">
+                                <span class="form-control-feedback">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
                             </div>
                         </div>
-                        <div class="invoice-properties">
+                        <div class="invoice-properties has-feedback">
                             <label><?php echo lang('due_date'); ?></label>
-                            <div >
+                            <div class="date datepicker">
                                 <input type="text" id="invoice_date_due"
-                                       class="input-sm form-control"
-                                       value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>" >
+                                       class="input-sm form-control datepicker"
+                                       value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>" readonly="readonly">
+                                <span class="form-control-feedback">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
                             </div>
                         </div>
                         <div class="invoice-properties">
