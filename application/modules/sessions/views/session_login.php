@@ -32,7 +32,7 @@
          class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
 
         <?php if ($login_logo) { ?>
-            <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo">
+            <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
         <?php } else { ?>
             <h1><?php echo lang('login'); ?></h1>
         <?php } ?>
