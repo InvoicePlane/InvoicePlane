@@ -63,13 +63,12 @@
                 <div class="form-group has-feedback">
 
                     <label class="payment_date"><?php echo lang('payment_date'); ?></label>
-
-                    <div class="date datepicker">
-                        <input size="16" type="text" name="payment_date" id="payment_date"
-                               value="<?php echo date(date_format_setting()); ?>"
-                               class="form-control datepicker" readonly="readonly">
-                        <span class="form-control-feedback">
-                            <i class="fa fa-calendar"></i>
+                    <div class="input-group">
+                        <input name="payment_date" id="payment_date"
+                               class="form-control datepicker"
+                               value="<?php echo date(date_format_setting()); ?>">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar fa-fw"></i>
                         </span>
                     </div>
 

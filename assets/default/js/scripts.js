@@ -22,7 +22,7 @@ $(document).ready(function() {
     });
 
     $('html').click(function () {
-        $('.dropdown-menu').removeAttr('style'); //Integrate this into the function. Try finding only the element is open and not all dropdown menus
+        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style'); //Integrate this into the function.
     });
 
     // Handle click event for Email Template Tags insertion

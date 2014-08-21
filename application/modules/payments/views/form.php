@@ -49,15 +49,14 @@
                 <label for="payment_date" class="control-label"><?php echo lang('date'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <div class="date datepicker">
-                    <input type="text" name="payment_date" id="payment_date"
-                           class="form-control datepicker"
-                           value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>"
-                           readonly="readonly">
-                    <span class="form-control-feedback">
-                        <i class="fa fa-calendar"></i>
-                    </span>
-                </div>
+              <div class="input-group">
+                  <input name="payment_date" id="payment_date"
+                         class="form-control datepicker"
+                         value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>">
+                  <span class="input-group-addon">
+                      <i class="fa fa-calendar fa-fw"></i>
+                  </span>
+              </div>
             </div>
         </div>
 

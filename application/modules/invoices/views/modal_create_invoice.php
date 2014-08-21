@@ -48,7 +48,7 @@
 
 <div id="create-invoice" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
      role="dialog" aria-labelledby="modal_create_invoice" aria-hidden="true">
-    <form class="modal-content"">
+    <form class="modal-content">
     <div class="modal-header">
         <a data-dismiss="modal" class="close">x</a>
         <h3><?php echo lang('create_invoice'); ?></h3>
@@ -63,14 +63,12 @@
 
         <div class="form-group has-feedback">
             <label><?php echo lang('invoice_date'); ?></label>
-
-            <div class="date datepicker">
-                <input size="16" type="text" name="invoice_date_created"
-                       id="invoice_date_created"
-                       value="<?php echo date(date_format_setting()); ?>"
-                       class="form-control datepicker" readonly="readonly">
-                <span class="form-control-feedback">
-                    <span class="fa fa-calendar "></span>
+            <div class="input-group">
+                <input name="invoice_date_created" id="invoice_date_created"
+                       class="form-control datepicker"
+                       value="<?php echo date(date_format_setting()); ?>">
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar fa-fw"></i>
                 </span>
             </div>
         </div>

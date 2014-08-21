@@ -17,6 +17,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/bootstrap-datepicker.css">
 
     <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.min.js'; ?>"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
@@ -253,7 +254,7 @@
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
