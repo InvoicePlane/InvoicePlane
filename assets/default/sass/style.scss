@@ -130,6 +130,10 @@
         }
     }
 
+    table.items td {
+    	vertical-align: top !important;
+    }
+
 
 /* =============================================================================
    Install, Upgrade and Login
@@ -312,7 +316,6 @@
         }
         .navbar-collapse {
             z-index: 9999;
-            margin-top: 7px;
             padding: 0;
         }
     }
@@ -377,8 +380,11 @@
         margin-right: 0;
     }
 
-    #form-settings .tab-content .alert {
-        margin: 15px;
+    #form-settings .tab-content,
+    div.table-content {
+	    .alert {
+			margin: 15px;
+	    }
     }
 
     #panel-overdue-invoices,
@@ -795,6 +801,10 @@
 
     .text-left-xs {
         text-align: left;
+    }
+
+    .submenu .navbar-collapse {
+    	margin-top: 7px;
     }
 
 }

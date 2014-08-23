@@ -200,7 +200,7 @@ $lang['setup_choose_language_message'] = 'Choose a language to continue the inst
 $lang['setup_choose_language'] = 'Choose a Language';
 $lang['setup_complete_message'] = 'InvoicePlane has been successfully installed. You may now log in.';
 $lang['setup_complete_support_note'] = 'If you encounter any problems or you need help take a look at the <a href="https://github.com/InvoicePlane/InvoicePlane/wiki">official wiki</a> or the <a href="https://forums.invoiceplane.com/">forums</a>.';
-$lang['setup_complete_secure_setup'] = 'If you want to secure your site place this code directly after <code></code> in the .htaccess file and replace yourdomain.com:';
+$lang['setup_complete_secure_setup'] = 'If you want to secure your site place this code directly after <code>RewriteEngine on</code> in the .htaccess file and replace yourdomain.com:';
 $lang['setup_complete'] = 'Installation Complete';
 $lang['setup_create_user_message'] = 'This is the information you will use to log into InvoicePlane.';
 $lang['setup_create_user'] = 'Create User Account';
