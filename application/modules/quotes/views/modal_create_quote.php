@@ -4,24 +4,24 @@
 	$(function()
 	{
 		$('.datepicker').datepicker( {autoclose: true, format: '<?php echo date_format_datepicker(); ?>'} );
-		
+
 		// Display the create quote modal
 		$('#create-quote').modal('show');
-        
+
         $('#create-quote').on('shown', function() {
             $("#client_name").focus();
         });
-        
+
         $('#client_name').typeahead();
-        
+
 		// Creates the quote
 		$('#quote_create_confirm').click(function()
 		{
             console.log('clicked');
-			// Posts the data to validate and create the quote; 
+			// Posts the data to validate and create the quote;
 			// will create the new client if necessary
-			$.post("<?php echo site_url('quotes/ajax/create'); ?>", { 
-				client_name: $('#client_name').val(), 
+			$.post("<?php echo site_url('quotes/ajax/create'); ?>", {
+				client_name: $('#client_name').val(),
 				quote_date_created: $('#quote_date_created').val(),
 				user_id: '<?php echo $this->session->userdata('user_id'); ?>',
 				invoice_group_id: $('#invoice_group_id').val()
@@ -44,7 +44,7 @@
 			});
 		});
 	});
-	
+
 </script>
 
 <div id="create-quote" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
@@ -69,17 +69,16 @@
 				<label for="quote_date_created">
                     <?php echo lang('quote_date'); ?>
                 </label>
-
-                <div class="date datepicker">
-                    <input size="16" type="text" name="quote_date_created"
-                           id="quote_date_created" class="form-control datepicker"
-                           value="<?php echo date(date_format_setting()); ?>" readonly="readonly">
-                    <span class="form-control-feedback">
-                        <i class="fa fa-calendar"></i>
-                    </span>
-                </div>
+								<div class="input-group">
+										<input name="quote_date_created" id="quote_date_created"
+													class="form-control datepicker"
+													value="<?php echo date(date_format_setting()); ?>">
+										<span class="input-group-addon">
+												<i class="fa fa-calendar fa-fw"></i>
+										</span>
+								</div>
 			</div>
-			
+
 			<div class="form-group">
 				<label for="invoice_group_id"><?php echo lang('invoice_group'); ?>: </label>
 				<div class="controls">

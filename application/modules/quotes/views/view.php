@@ -13,7 +13,7 @@
         <?php if (!$items) { ?>
             $('#new_item').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         <?php } ?>
-            
+
         $('#btn_save_quote').click(function() {
             var items = [];
 			var item_order = 1;
@@ -21,7 +21,7 @@
                 var row = {};
                 $(this).find('input,select,textarea').each(function() {
                     if ($(this).is(':checkbox')) {
-                        row[$(this).attr('name')] = $(this).is(':checked');                        
+                        row[$(this).attr('name')] = $(this).is(':checked');
                     } else {
                         row[$(this).attr('name')] = $(this).val();
                     }
@@ -56,7 +56,7 @@
         $('#btn_generate_pdf').click(function() {
             window.location = '<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>';
         });
-        
+
         var fixHelper = function(e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
@@ -127,7 +127,7 @@
                 </li>
 			</ul>
 		</div>
-		
+
 		<a href="#" class="btn btn-sm btn-default" id="btn_add_item">
             <i class="fa fa-plus"></i>
             <?php echo lang('add_item'); ?>
@@ -136,7 +136,7 @@
             <i class="fa fa-database"></i>
             <?php echo lang('add_item_from_lookup'); ?>
         </a>
-		
+
 		<a href="#" class="btn btn-sm btn-success" id="btn_save_quote">
             <i class="fa fa-check"></i>
             <?php echo lang('save'); ?>
@@ -146,9 +146,9 @@
 </div>
 
 <div class="content">
-    
+
     <?php echo $this->layout->load_view('layout/alerts'); ?>
-	
+
 	<form id="quote_form">
 
 		<div class="quote">
@@ -194,12 +194,12 @@
                             <label for="quote_date_created">
                                 <?php echo lang('date'); ?>
                             </label>
-                            <div class="date datepicker">
-                                <input type="text" id="quote_date_created"
+                            <div class="input-group">
+                                <input name="quote_date_created" id="quote_date_created"
                                        class="form-control input-sm datepicker"
-                                       value="<?php echo date_from_mysql($quote->quote_date_created); ?>" readonly="readonly">
-                                <span class="form-control-feedback">
-                                    <span class="fa fa-calendar "></span>
+                                       value="<?php echo date_from_mysql($quote->quote_date_created); ?>">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar fa-fw"></i>
                                 </span>
                             </div>
                         </div>
@@ -207,14 +207,14 @@
                             <label for="quote_date_expires">
                                 <?php echo lang('expires'); ?>
                             </label>
-                            <div class="date datepicker">
-                                <input type="text" id="quote_date_expires"
-                                       class="form-control input-sm datepicker"
-                                       value="<?php echo date_from_mysql($quote->quote_date_expires); ?>" readonly="readonly">
-                                <span class="form-control-feedback">
-                                    <span class="fa fa-calendar "></span>
-                                </span>
-                            </div>
+                          <div class="input-group">
+                              <input name="quote_date_expires" id="quote_date_expires"
+                                     class="form-control input-sm datepicker"
+                                     value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
+                              <span class="input-group-addon">
+                                  <i class="fa fa-calendar fa-fw"></i>
+                              </span>
+                          </div>
                         </div>
                         <div class="quote-properties">
                             <label for="quote_status_id">
@@ -236,7 +236,7 @@
 			</div>
 
 			<?php $this->layout->load_view('quotes/partial_item_table'); ?>
-            
+
             <?php foreach ($custom_fields as $custom_field) { ?>
             <p>
                 <strong>
@@ -258,7 +258,7 @@
             </p>
             <?php } ?>
 		</div>
-		
+
 	</form>
 
 </div>
