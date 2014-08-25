@@ -282,7 +282,8 @@ class Setup extends MX_Controller {
             './uploads',
             './uploads/temp',
             './' . APPPATH . 'config/database.php',
-            './' . APPPATH . 'helpers/mpdf/tmp'
+            './' . APPPATH . 'helpers/mpdf/tmp',
+            './' . APPPATH . 'logs'
         );
 
         foreach ($writables as $writable)
