@@ -26,7 +26,7 @@ class Mdl_Quote_Amounts extends CI_Model {
      * quote_item_tax_total	SUM(item_tax_total)
      * quote_tax_total
      * quote_total			quote_item_subtotal + quote_item_tax_total + quote_tax_total
-     * 
+     *
      * FI_QUOTE_ITEM_AMOUNTS
      * item_amount_id
      * item_id
@@ -34,7 +34,7 @@ class Mdl_Quote_Amounts extends CI_Model {
      * item_subtotal			item_quantity * item_price
      * item_tax_total			item_subtotal * tax_rate_percent
      * item_total				item_subtotal + item_tax_total
-     * 
+     *
      */
     public function calculate($quote_id)
     {
@@ -42,10 +42,7 @@ class Mdl_Quote_Amounts extends CI_Model {
         $query = $this->db->query("SELECT SUM(item_subtotal) AS quote_item_subtotal,	
 		SUM(item_tax_total) AS quote_item_tax_total,
 		SUM(item_subtotal) + SUM(item_tax_total) AS quote_total
-		FROM ip_quote_item_amounts WHERE item_id IN (SELECT item_id FROM ip_quote_items WHERE quote_id = ?)",
-        array (
-            $this->db->escape($quote_id)
-        ));
+		FROM ip_quote_item_amounts WHERE item_id IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")");
 
         $quote_amounts = $query->row();
 
@@ -109,11 +106,7 @@ class Mdl_Quote_Amounts extends CI_Model {
             }
 
             // Update the quote amount record with the total quote tax amount
-            $this->db->query("UPDATE ip_quote_amounts SET quote_tax_total = (SELECT SUM(quote_tax_rate_amount) FROM ip_quote_tax_rates WHERE quote_id = ?) WHERE quote_id = ?",
-            array (
-                $this->db->escape($quote_id),
-                $this->db->escape($quote_id)
-            ));
+            $this->db->query("UPDATE ip_quote_amounts SET quote_tax_total = (SELECT SUM(quote_tax_rate_amount) FROM ip_quote_tax_rates WHERE quote_id = " . $this->db->escape($quote_id) . ") WHERE quote_id = " . $this->db->escape($quote_id));
 
             // Get the updated quote amount record
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
