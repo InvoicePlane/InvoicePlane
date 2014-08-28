@@ -251,29 +251,6 @@ class Setup extends MX_Controller {
         $this->layout->render('base');
     }
 
-    public function ping()
-    {
-        $this->load->helper('url');
-
-        // Ping the InvoicePlane website
-
-        // Create install ID
-        $install_id = base64_encode( time() );
-
-        // Get the current version
-        // @TODO (IP) Hardcoded for now, fix planned for 1.1.0
-        $current_version = base64_encode("1.0.0");
-
-        $url = 'https://ping.invoiceplane.com/install/'.$install_id.'/version/'.$current_version;
-
-        // Send the ping
-        file_get_contents($url);
-
-        // Redirect to login
-        redirect('sessions/login');
-
-    }
-
     private function check_writables()
     {
         $checks = array();

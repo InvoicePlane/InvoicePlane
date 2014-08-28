@@ -174,6 +174,10 @@ class Mdl_Setup extends CI_Model {
         // Nothing to do here
     }
 
+    public function upgrade_002_1_0_1() {
+        // Nothing to do here
+    }
+
 }
 
 ?>
