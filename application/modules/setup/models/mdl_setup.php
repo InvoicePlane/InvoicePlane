@@ -97,7 +97,7 @@ class Mdl_Setup extends CI_Model {
 
         foreach ($commands as $command)
         {
-            if ($command)
+            if (trim($command))
             {
                 if (!$this->db->query(trim($command) . ';'))
                 {
@@ -167,6 +167,7 @@ class Mdl_Setup extends CI_Model {
 
     /*
      * Place upgrade functions here
+     * e.g. if table rows have to be converted
      * public function upgrade_010_1_0_1() { ... }
      */
 
@@ -178,6 +179,8 @@ class Mdl_Setup extends CI_Model {
         // Nothing to do here
     }
 
-}
+    public function upgrade_003_1_1_0() {
+        // Nothing to do here
+    }
 
-?>
+}

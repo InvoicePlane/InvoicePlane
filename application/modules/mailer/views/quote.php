@@ -1,26 +1,25 @@
 <script type="text/javascript">
-    $(function() {
+    $(function () {
+        var template_fields = ["body", "subject", "from_name", "from_email", "cc", "bcc", "pdf_template"];
 
-        $('#email_template').change(function() {
+        $('#email_template').change(function () {
+            var email_template_id = $(this).val();
 
-            email_template_id = $('#email_template').val();
+            if (email_template_id == '') return;
 
-            if (email_template_id != '') {
-
-                $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
-                    email_template_id: $('#email_template').val()
-                }, function(data) {
-
-                    $('#body').val(data);
-
-                });
-            }
+            $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
+                email_template_id: email_template_id
+            }, function (data) {
+                inject_email_template(template_fields, JSON.parse(data));
+            });
         });
 
+        var selected_email_template = <?php echo $email_template ?>;
+        inject_email_template(template_fields, selected_email_template);
     });
 </script>
 
-<form method="post" class="form-horizontal">
+<form method="post" class="form-horizontal" action="<?php echo site_url('mailer/send_quote/'.$quote->quote_id) ?>">
 
     <div class="headerbar">
         <h1><?php echo lang('email_quote'); ?></h1>
@@ -40,6 +39,33 @@
     <div class="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="to_email" class="control-label"><?php echo lang('to_email'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="to_email" id="to_email" class="form-control"
+                       value="<?php echo $quote->client_email; ?>">
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template" class="control-label"><?php echo lang('email_template'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="email_template" id="email_template" class="form-control">
+                    <option value=""></option>
+                    <?php foreach ($email_templates as $email_template): ?>
+                        <option value="<?php echo $email_template->email_template_id; ?>"
+                                <?php if ($selected_email_template == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
@@ -63,29 +89,19 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="to_email" class="control-label"><?php echo lang('to_email'); ?>: </label>
+                <label for="cc" class="control-label"><?php echo lang('cc'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <input type="text" name="to_email" id="to_email" class="form-control"
-                       value="<?php echo $quote->client_email; ?>">
+                <input type="text" name="cc" id="cc" value="" class="form-control">
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="to_cc" class="control-label"><?php echo lang('cc'); ?>: </label>
+                <label for="bcc" class="control-label"><?php echo lang('bcc'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <input type="text" name="to_cc" id="to_cc" value="" class="form-control">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="to_bcc" class="control-label"><?php echo lang('bcc'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <input type="text" name="to_bcc" id="to_bcc" value="" class="form-control">
+                <input type="text" name="bcc" id="bcc" value="" class="form-control">
             </div>
         </div>
 
@@ -101,36 +117,20 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="quote_template" class="control-label">
-                    <?php echo lang('quote_template'); ?>:
+                <label for="pdf_template" class="control-label">
+                    <?php echo lang('pdf_template'); ?>:
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="quote_template" class="form-control">
+                <select name="pdf_template" id="pdf_template" class="form-control">
                     <option value=""></option>
-                    <?php foreach ($quote_templates as $quote_template) { ?>
-                        <option value="<?php echo $quote_template; ?>"
-                                <?php if (
-                                $this->mdl_settings->setting('pdf_quote_template') == $quote_template)
-                                { ?>selected="selected"<?php }
-                        ?>>
-                            <?php echo $quote_template; ?>
+                    <?php foreach ($pdf_templates as $pdf_template): ?>
+                        <option value="<?php echo $pdf_template; ?>"
+                                <?php if ($selected_pdf_template == $pdf_template):
+                                ?>selected="selected"<?php endif; ?>>
+                            <?php echo $pdf_template; ?>
                         </option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="email_template" class="control-label"><?php echo lang('email_template'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <select name="email_template" id="email_template" class="form-control">
-                    <option value=""></option>
-                    <?php foreach ($email_templates as $email_template) { ?>
-                        <option value="<?php echo $email_template->email_template_id; ?>" <?php if ($this->mdl_settings->setting('default_email_template') == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
@@ -140,7 +140,7 @@
                 <label for="body" class="control-label"><?php echo lang('body'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <textarea name="body" id="body" class="form-control" rows="6"><?php echo $body; ?></textarea>
+                <textarea name="body" id="body" class="form-control" rows="6"></textarea>
             </div>
         </div>
 

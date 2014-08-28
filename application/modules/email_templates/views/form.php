@@ -10,29 +10,115 @@
         <?php $this->layout->load_view('layout/alerts'); ?>
 
         <div class="form-group">
-            <div class="col-xs-12 col-sm-1">
-                <label for="email_template_title"><?php echo lang('title'); ?>: </label>
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_title" class="control-label"><?php echo lang('title'); ?>: </label>
             </div>
-            <div class="col-xs-12 col-sm-11">
+            <div class="col-xs-12 col-sm-6">
                 <input type="text" name="email_template_title" id="email_template_title" value="<?php echo $this->mdl_email_templates->form_value('email_template_title'); ?>" class="form-control">
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-xs-12 col-sm-1">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_type" class="control-label"><?php echo "Type"; ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <label class="radio-inline">
+                    <input type="radio" name="email_template_type" id="email_template_type_invoice" value="invoice"> <?php echo lang('invoice'); ?>
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="email_template_type" id="email_template_type_quote" value="quote"> <?php echo lang('quote'); ?>
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_from_name" class="control-label"><?php echo lang('from_name'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="email_template_from_name" id="email_template_from_name" class="form-control taggable"
+                       value="<?php echo $this->mdl_email_templates->form_value('email_template_from_name'); ?>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_from_email" class="control-label"><?php echo lang('from_email'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="email_template_from_email" id="email_template_from_email" class="form-control taggable"
+                       value="<?php echo $this->mdl_email_templates->form_value('email_template_from_email'); ?>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_cc" class="control-label"><?php echo lang('cc'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="email_template_cc" id="email_template_cc" class="form-control taggable"
+                       value="<?php echo $this->mdl_email_templates->form_value('email_template_cc'); ?>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_bcc" class="control-label"><?php echo lang('bcc'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="email_template_bcc" id="email_template_bcc" class="form-control taggable"
+                       value="<?php echo $this->mdl_email_templates->form_value('email_template_bcc'); ?>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_subject" class="control-label"><?php echo lang('subject'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="email_template_subject" id="email_template_subject" class="form-control taggable"
+                       value="<?php echo $this->mdl_email_templates->form_value('email_template_subject'); ?>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_pdf_template" class="control-label">
+                    <?php echo lang('pdf_template'); ?>:
+                </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <select name="email_template_pdf_template" id="email_template_pdf_template" class="form-control">
+                <option value="" class="empty-option"></option>
+                  <?php foreach ($invoice_templates as $template): ?>
+                      <option class="hidden-invoice" value="<?= $template; ?>" <?php if ($selected_pdf_template == $template) { ?>selected="selected"<?php } ?>><?php echo $template; ?></option>
+                  <?php endforeach; ?>
+                  <?php foreach ($quote_templates as $template): ?>
+                      <option class="hidden-quote" value="<?= $template; ?>" <?php if ($selected_pdf_template == $template) { ?>selected="selected"<?php } ?>><?php echo $template; ?></option>
+                  <?php endforeach; ?>
+              </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="email_template_body">
                     <?php echo lang('body'); ?>:
                 </label>
             </div>
 
-            <div class="col-xs-12 col-sm-11">
-                <textarea name="email_template_body" id="email_template_body" style="height: 200px;" class="form-control"><?php echo $this->mdl_email_templates->form_value('email_template_body'); ?></textarea>
+            <div class="col-xs-12 col-sm-6">
+                <textarea name="email_template_body" id="email_template_body" style="height: 200px;" class="form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body'); ?></textarea>
             </div>
         </div>
 
         <div class="row">
             <div class="col-xs-12">
-                <h4><?php echo lang('email_template_tags'); ?></h4><br/>
+                <h4><?php echo lang('email_template_tags'); ?></h4>
+                <p><?php echo lang('email_template_tags_instructions'); ?></p><br/>
             </div>
 
             <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
@@ -69,7 +155,7 @@
                 <?php } ?>
             </div>
 
-            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 hidden-invoice">
                 <strong><?php echo lang('invoices'); ?></strong><br>
                 <a href="#" class="text-tag" data-tag="{{{invoice_guest_url}}}"><?php echo lang('invoice'); ?> <?php echo lang('guest_url'); ?></a><br>
                 <a href="#" class="text-tag" data-tag="{{{invoice_number}}}"><?php echo lang('invoice'); ?> <?php echo lang('id'); ?></a><br>
@@ -85,7 +171,7 @@
                 <?php } ?>
             </div>
 
-            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 hidden-quote">
                 <strong><?php echo lang('quotes'); ?></strong><br>
                 <a href="#" class="text-tag" data-tag="{{{quote_total}}}"><?php echo lang('quote'); ?> <?php echo lang('total'); ?></a><br>
                 <a href="#" class="text-tag" data-tag="{{{quote_date_created}}}"><?php echo lang('quote_date'); ?></a><br>
@@ -102,3 +188,27 @@
     </div>
 
 </form>
+
+<script type="text/javascript">
+    $(function(){
+        var email_template_type = "<?= $this->mdl_email_templates->form_value('email_template_type'); ?>";
+
+
+        $("[name=email_template_type]").click(function(){
+            // remove class "show" and deselect any selected elements.
+            $(".show").removeClass("show").parent("select").each(function(){
+                this.options.selectedIndex = 0;
+            });
+            // add show class to corresponding class
+            $(".hidden-"+$(this).val()).addClass("show");
+        });
+
+        $("[name=email_template_type]").each(function(){
+
+            if($(this).val() == email_template_type) {
+                $(this).click();
+            }
+        });
+
+    });
+</script>
