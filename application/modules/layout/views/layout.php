@@ -253,7 +253,7 @@
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>

@@ -76,26 +76,22 @@
 
             <div class="form-group has-feedback">
                 <label><?php echo lang('start_date'); ?>: </label>
-
-                <div class="date datepicker">
-                    <input size="16" type="text" name="recur_start_date"
-                           id="recur_start_date"
-                           class="form-control datepicker" readonly="readonly">
-                    <span class="form-control-feedback">
-                        <span class="fa fa-calendar "></span>
+                <div class="input-group">
+                    <input name="recur_start_date" id="recur_start_date"
+                           class="form-control datepicker">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar fa-fw"></i>
                     </span>
                 </div>
             </div>
 
             <div class="form-group has-feedback">
                 <label><?php echo lang('end_date'); ?> (<?php echo lang('optional'); ?>): </label>
-
-                <div class="date datepicker">
-                    <input size="16" type="text" name="recur_end_date"
-                           id="recur_end_date"
-                           class="form-control datepicker" readonly="readonly">
-                    <span class="form-control-feedback">
-                        <span class="fa fa-calendar "></span>
+                <div class="input-group">
+                    <input name="recur_end_date" id="recur_end_date"
+                           class="form-control datepicker">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar fa-fw"></i>
                     </span>
                 </div>
             </div>

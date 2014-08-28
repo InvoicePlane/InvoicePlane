@@ -11,6 +11,7 @@ $lang['address'] = 'Address';
 $lang['administrator'] = 'Administrator';
 $lang['after_amount'] = 'After Amount';
 $lang['all'] = 'All';
+$lang['allow_delete_after_send'] = 'Allow deleting invoice after being sent';
 $lang['amount_due'] = 'Amount Due';
 $lang['amount'] = 'Amount';
 $lang['apply_after_item_tax'] = 'Apply After Item Tax';

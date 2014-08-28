@@ -10,7 +10,7 @@
 		// Creates the quote
 		$('#copy_quote_confirm').click(function()
 		{
-			$.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", { 
+			$.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", {
 				quote_id: <?php echo $quote_id; ?>,
 				client_name: $('#client_name').val(),
 				quote_date_created: $('#quote_date_created').val(),
@@ -34,7 +34,7 @@
 			});
 		});
 	});
-	
+
 </script>
 
 <div id="modal_copy_quote" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
@@ -48,7 +48,7 @@
 
 			<input type="hidden" name="user_id" id="user_id"
                    value="<?php echo $quote->user_id; ?>">
-			
+
 			<div class="form-group">
 				<label for="client_name">
                     <?php echo lang('client'); ?>
@@ -65,18 +65,16 @@
 				<label for="quote_date_created">
                     <?php echo lang('quote_date'); ?>
                 </label>
-
-                <div class="date datepicker">
-                    <input size="16" type="text" name="quote_date_created"
-                           id="quote_date_created" class="form-control datepicker"
-                           value="<?php echo date_from_mysql($quote->quote_date_created, TRUE); ?>"
-                           readonly="readonly">
-                    <span class="form-control-feedback">
-                        <i class="fa fa-calendar"></i>
-                    </span>
-                </div>
+								<div class="input-group">
+										<input name="quote_date_created" id="quote_date_created"
+													class="form-control datepicker"
+													value="<?php echo date_from_mysql($quote->quote_date_created, TRUE); ?>">
+										<span class="input-group-addon">
+												<i class="fa fa-calendar fa-fw"></i>
+										</span>
+								</div>
 			</div>
-			
+
 			<div class="form-group">
 				<label for="invoice_group_id">
                     <?php echo lang('invoice_group'); ?>

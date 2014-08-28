@@ -2,14 +2,14 @@
 	$(function()
 	{
 		$('.datepicker').datepicker( {autoclose: true, format: '<?php echo date_format_datepicker(); ?>'} );
-		
+
 		// Display the create quote modal
 		$('#modal_quote_to_invoice').modal('show');
-		
+
 		// Creates the invoice
 		$('#quote_to_invoice_confirm').click(function()
 		{
-			$.post("<?php echo site_url('quotes/ajax/quote_to_invoice'); ?>", { 
+			$.post("<?php echo site_url('quotes/ajax/quote_to_invoice'); ?>", {
 				quote_id: <?php echo $quote_id; ?>,
 				client_name: $('#client_name').val(),
 				invoice_date_created: $('#invoice_date_created').val(),
@@ -33,7 +33,7 @@
 			});
 		});
 	});
-	
+
 </script>
 
 <div id="modal_quote_to_invoice"  class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
@@ -55,15 +55,15 @@
                     <?php echo lang('invoice_date'); ?>
                 </label>
 
-                <div class="date datepicker">
-                    <input size="16" type="text" name="invoice_date_created" readonly="readonly"
-                           id="invoice_date_created" class="form-control datepicker">
-                    <span class="form-control-feedback">
-                        <i class="fa fa-calendar"></i>
-                    </span>
-                </div>
+				<div class="input-group">
+						<input name="invoice_date_created" id="invoice_date_created"
+									class="form-control datepicker">
+						<span class="input-group-addon">
+								<i class="fa fa-calendar fa-fw"></i>
+						</span>
+				</div>
 			</div>
-			
+
 			<div class="form-group">
 				<label for="invoice_group_id">
                     <?php echo lang('invoice_group'); ?>

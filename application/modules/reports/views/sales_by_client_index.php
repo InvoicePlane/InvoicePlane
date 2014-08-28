@@ -24,14 +24,13 @@
                         <?php echo lang('from_date'); ?>
                     </label>
 
-                    <div class="date datepicker">
-                        <input size="16" type="text" name="from_date"
-                               class="form-control datepicker"
-                               id="from_date" value="" readonly="readonly">
-                        <span class="form-control-feedback">
-                            <i class="fa fa-calendar"></i>
-                        </span>
-                    </div>
+									<div class="input-group">
+											<input name="from_date" id="from_date"
+														class="form-control datepicker">
+											<span class="input-group-addon">
+													<i class="fa fa-calendar fa-fw"></i>
+											</span>
+									</div>
                 </div>
 
                 <div class="form-group has-feedback">
@@ -39,19 +38,18 @@
                         <?php echo lang('to_date'); ?>
                     </label>
 
-                    <div class="date datepicker">
-                        <input size="16" type="text" name="to_date"
-                               class="form-control datepicker"
-                               id="to_date" value="" readonly="readonly">
-                        <span class="form-control-feedback">
-                            <i class="fa fa-calendar"></i>
-                        </span>
-                    </div>
+									<div class="input-group">
+											<input name="to_date" id="to_date"
+														class="form-control datepicker">
+											<span class="input-group-addon">
+													<i class="fa fa-calendar fa-fw"></i>
+											</span>
+									</div>
                 </div>
 
                 <input type="submit" class="btn btn-success" name="btn_submit"
                        value="<?php echo lang('run_report'); ?>">
-				
+
 			</form>
 
 		</div>
