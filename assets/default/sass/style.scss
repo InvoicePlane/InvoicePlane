@@ -772,6 +772,13 @@
         font-weight: bold;
     }
 
+    .hidden-quote, .hidden-invoice {
+      display: none;
+    }
+
+    .show {
+      display: block;
+    }
 
 /* =============================================================================
    Responsive Media Queries
