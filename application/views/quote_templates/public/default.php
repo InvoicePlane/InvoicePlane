@@ -114,7 +114,9 @@
                         <td id="company-name">
                             <?php echo invoice_logo(); ?>
                             <h2><?php echo $quote->user_name; ?></h2>
-                            <p><?php if ($quote->user_address_1) { echo $quote->user_address_1 . '<br>'; } ?>
+                            <p><?php if ($quote->user_vat_id) { echo lang("vat_id_short") . ": " . $quote->user_vat_id . '<br>'; } ?>
+                                <?php if ($quote->user_tax_code) { echo lang("tax_code_short") . ": " . $quote->user_tax_code . '<br>'; } ?>
+                                <?php if ($quote->user_address_1) { echo $quote->user_address_1 . '<br>'; } ?>
                                 <?php if ($quote->user_address_2) { echo $quote->user_address_2 . '<br>'; } ?>
                                 <?php if ($quote->user_city) { echo $quote->user_city . ' '; } ?>
                                 <?php if ($quote->user_state) { echo $quote->user_state . ' '; } ?>
@@ -132,7 +134,9 @@
                     <tr>
                         <td>
                             <h2><?php echo $quote->client_name; ?></h2>
-                            <p><?php if ($quote->client_address_1) { echo $quote->client_address_1 . '<br>'; } ?>
+                            <p><?php if ($quote->client_vat_id) { echo lang("vat_id_short") . ": " . $quote->client_vat_id . '<br>'; } ?>
+                                <?php if ($quote->client_tax_code) { echo lang("tax_code_short") . ": " . $quote->client_tax_code . '<br>'; } ?>
+                                <?php if ($quote->client_address_1) { echo $quote->client_address_1 . '<br>'; } ?>
                                 <?php if ($quote->client_address_2) { echo $quote->client_address_2 . '<br>'; } ?>
                                 <?php if ($quote->client_city) { echo $quote->client_city . ' '; } ?>
                                 <?php if ($quote->client_state) { echo $quote->client_state . ' '; } ?>

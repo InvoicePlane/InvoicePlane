@@ -96,6 +96,12 @@
                         <div class="invoice-to">
                             <p><?php echo lang('bill_to'); ?>:</p>
                             <p><b><?php echo $quote->client_name; ?></b><br/>
+                                <?php if ($quote->client_vat_id) {
+                                    echo lang('vat_id_short') . ': ' . $quote->client_vat_id . '<br/>';
+                                } ?>
+                                <?php if ($quote->client_tax_code) {
+                                    echo lang('tax_code_short') . ': ' . $quote->client_tax_code . '<br/>';
+                                } ?>
                                 <?php if ($quote->client_address_1) {
                                     echo $quote->client_address_1 . '<br/>';
                                 } ?>
@@ -127,6 +133,12 @@
                                 <?php echo $quote->user_name; ?>
                             </h3>
                             <p class="text-right">
+                                <?php if ($quote->user_vat_id) {
+                                    echo lang('vat_id_short') . ': ' . $quote->client_vat_id . '<br/>';
+                                } ?>
+                                <?php if ($quote->user_tax_code) {
+                                    echo lang('tax_code_short') . ': ' . $quote->client_tax_code . '<br/>';
+                                } ?>
                                 <?php if ($quote->user_address_1) {
                                     echo $quote->user_address_1 . '<br/>';
                                 }?>
