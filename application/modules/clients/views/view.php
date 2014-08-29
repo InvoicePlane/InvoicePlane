@@ -131,6 +131,16 @@
                     <?php } ?>
                 </dl>
 
+                <dl>
+                    <dt><span><?php echo lang('tax_information'); ?></span></dt>
+                    <?php if ($client->client_vat_id) { ?>
+                        <dd><span><?php echo lang('vat_id'); ?>:</span> <?php echo $client->client_vat_id; ?></dd>
+                    <?php } ?>
+                    <?php if ($client->client_tax_code) { ?>
+                        <dd><span><?php echo lang('tax_code'); ?>:</span> <?php echo $client->client_tax_code; ?></dd>
+                    <?php } ?>
+                </dl>
+
                 <dl class="profile-custom">
                     <dt><span><?php echo lang('custom_fields'); ?></span></dt>
                     <?php foreach ($custom_fields as $custom_field) { ?>

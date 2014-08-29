@@ -199,6 +199,36 @@
 
                 <fieldset>
 
+                    <legend><?php echo lang('tax_information'); ?></legend>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('vat_id'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_vat_id'); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo lang('tax_code'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_tax_code'); ?>">
+                        </div>
+                    </div>
+
+                </fieldset>
+
+                <fieldset>
+
                     <legend><?php echo lang('contact_information'); ?></legend>
 
                     <div class="form-group">

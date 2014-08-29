@@ -30,6 +30,8 @@ CREATE TABLE `ip_clients` (
   `client_mobile` varchar(20) DEFAULT '',
   `client_email` varchar(100) DEFAULT '',
   `client_web` varchar(100) DEFAULT '',
+  `client_vat_id` varchar(100) DEFAULT '',
+  `client_tax_code` varchar(100) DEFAULT '',
   `client_active` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`client_id`),
   KEY `client_active` (`client_active`)
@@ -331,6 +333,8 @@ CREATE TABLE `ip_users` (
   `user_email` varchar(100) NOT NULL,
   `user_password` varchar(60) NOT NULL,
   `user_web` varchar(100) DEFAULT '',
+  `user_vat_id` varchar(100) DEFAULT '',
+  `user_tax_code` varchar(100) DEFAULT '',
   `user_psalt` char(22) NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
