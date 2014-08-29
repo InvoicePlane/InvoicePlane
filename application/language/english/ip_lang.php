@@ -352,6 +352,11 @@ $lang['automatic_email_on_recur'] = 'Automatically email recurring invoices';
 $lang['default_pdf_template'] = 'Default PDF Template';
 $lang['default_public_template'] = 'Default Public Template';
 $lang['taxes'] = 'Taxes';
+$lang['tax_information'] = 'Taxes Information';
+$lang['vat_id'] = 'VAT ID';
+$lang['vat_id_short'] = 'VAT';
+$lang['tax_code'] = 'Taxes Code';
+$lang['tax_code_short'] = 'Tax Code';
 
 $lang['approve'] = 'Approve';
 $lang['approved'] = 'Approved';

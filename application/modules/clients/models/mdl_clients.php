@@ -81,6 +81,12 @@ class Mdl_Clients extends Response_Model {
             ),
             'client_web'       => array(
                 'field' => 'client_web'
+            ),
+            'client_vat_id'       => array(
+                'field' => 'user_vat_id'
+            ),
+            'client_tax_code'       => array(
+                'field' => 'user_tax_code'
             )
         );
     }

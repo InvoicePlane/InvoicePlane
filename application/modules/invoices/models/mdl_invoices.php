@@ -67,6 +67,8 @@ class Mdl_Invoices extends Response_Model {
 			ip_users.user_mobile,
 			ip_users.user_email,
 			ip_users.user_web,
+			ip_users.user_vat_id,
+			ip_users.user_tax_code,
 			ip_clients.*,
 			ip_invoice_amounts.invoice_amount_id,
 			IFNULL(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,

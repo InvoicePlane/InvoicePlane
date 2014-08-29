@@ -103,6 +103,12 @@ class Mdl_Users extends Response_Model {
             ),
             'user_web'       => array(
                 'field' => 'user_web'
+            ),
+            'user_vat_id'       => array(
+                'field' => 'user_vat_id'
+            ),
+            'user_tax_code'       => array(
+                'field' => 'user_tax_code'
             )
         );
     }
@@ -154,6 +160,12 @@ class Mdl_Users extends Response_Model {
             ),
             'user_web'       => array(
                 'field' => 'user_web'
+            ),
+            'user_vat_id'       => array(
+                'field' => 'user_vat_id'
+            ),
+            'user_tax_code'       => array(
+                'field' => 'user_tax_code'
             )
         );
     }

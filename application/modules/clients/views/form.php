@@ -135,6 +135,30 @@
                 </fieldset>
             </div>
 
+            <div class="col-xs-12 col-sm-6">
+                <fieldset>
+
+                    <legend><?php echo lang('tax_information'); ?></legend>
+
+                    <div class="form-group">
+                        <label><?php echo lang('vat_id'); ?>: </label>
+                        <div class="controls">
+                            <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
+                                   value="<?php echo $this->mdl_clients->form_value('client_vat_id'); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo lang('tax_code'); ?>: </label>
+                        <div class="controls">
+                            <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
+                                   value="<?php echo $this->mdl_clients->form_value('client_tax_code'); ?>">
+                        </div>
+                    </div>
+
+                </fieldset>
+            </div>
+
         </div>
 
         <div class="row">
