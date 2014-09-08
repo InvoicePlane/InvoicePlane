@@ -39,10 +39,12 @@ class Mdl_Setup extends CI_Model {
 
         return TRUE;
     }
-
+    
     public function upgrade_tables()
     {
-        // Collect the available SQL files
+        $this->fix_setup_it();	// ---it---
+    	
+    	// Collect the available SQL files
         $sql_files = directory_map(APPPATH . 'modules/setup/sql', TRUE);
 
         // Sort them so they're in natural order
@@ -126,7 +128,7 @@ class Mdl_Setup extends CI_Model {
         $default_settings = array(
             'default_language'             => $this->session->userdata('ip_lang'),
             'date_format'                  => 'd/m/Y',	//---it---
-            'currency_symbol'              => '€',		//---it---
+            'currency_symbol'              => 'ï¿½',		//---it---
             'currency_symbol_placement'    => 'before',
             'invoices_due_after'           => 30,
             'quotes_expire_after'          => 15,
@@ -170,7 +172,18 @@ class Mdl_Setup extends CI_Model {
 
         $this->db->insert('ip_versions', $version_db_array);
     }
-
+    
+    // ---it---inizio
+    public function fix_setup_it()
+    {
+    	// Fix 000_1.0.0_it.sql iniziale non presente in tabella versioni dopo porting ma campi giÃ  presenti in database
+    	if ($this->db->field_exists('user_it_codfisc', 'ip_users') && $this->db->query("SELECT * FROM ip_versions WHERE version_file = '000_1.0.0_it.sql'")->num_rows() == 0)
+    	{
+    		$this->save_version('000_1.0.0_it.sql');
+    	}
+    }
+    // ---it---fine
+    
     /*
      * Place upgrade functions here
      * public function upgrade_010_1_0_1() { ... }
