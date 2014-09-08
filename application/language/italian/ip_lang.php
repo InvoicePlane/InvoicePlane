@@ -1,7 +1,7 @@
 <?php
 
 $lang['account_information'] = 'Informazioni account';
-$lang['active_client'] = 'Cliente attivo';
+$lang['active_client'] = 'Attivo';
 $lang['active'] = 'Attivo';
 $lang['add_client'] = 'Aggiungi cliente';
 $lang['add_invoice_tax'] = 'Aggiungi imposta';
@@ -203,6 +203,8 @@ $lang['settings'] = 'Impostazioni';
 $lang['setup_choose_language_message'] = "Scegli una lingua per continuare l'installazione.";
 $lang['setup_choose_language'] = 'Scegli una lingua';
 $lang['setup_complete_message'] = 'InvoicePlane è stato installato con successo. Ore puoi effettuare il login.';
+$lang['setup_complete_support_note'] = 'Se incontri problemi o hai bisogno di aiuto dai un\'occhiata al <a href="https://github.com/InvoicePlane/InvoicePlane_it/wiki">wiki ufficiale</a> oppure visita il <a href="https://forums.invoiceplane.com/">forum</a>.';
+$lang['setup_complete_secure_setup'] = 'Se vuoi mettere il tuo sito in sicurezza, posiziona questo codice direttamente dopo <code>RewriteEngine on</code> nel file .htaccess e sostituisci yourdomain.com:';
 $lang['setup_complete'] = 'Installazione completata';
 $lang['setup_create_user_message'] = 'Queste sono le informazioni che userai per autenticarti in InvoicePlane.';
 $lang['setup_create_user'] = 'Crea un account utente';
@@ -416,10 +418,6 @@ $lang['view_all'] = 'Mostra tutto';
 
 $lang['documentation'] = 'Documentazione';
 
-$lang['aftersetup_heading'] = 'Solo un\'altra domanda...';
-$lang['aftersetup_question'] = 'Possiamo inviare un\'informazione anonima sul sito web invoiceplane.com così da farci sapere che una grande persona ha installato InvoicePlane?';
-$lang['aftersetup_hint'] = 'L\'info consiste solamente in una stringa crittografata contenente data e ora del momento in cui hai finito l\'installazione di InvoicePlane.<br/>
-Nient\'altro. Nessun IP. Nessun nome. Anche noi odiamo l\'NSA.';
-$lang['aftersetup_no_thanks'] = 'No grazie';
+$lang['please_enable_js'] = 'Per utilizzare InvoicePlane è necessario abilitare Javascript';
 
 ?>
