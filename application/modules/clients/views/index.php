@@ -8,22 +8,38 @@
         </a>
     </div>
 
-    <div class="pull-right">
-        <?php echo pager(site_url('clients/status/' . $this->uri->segment(3)), 'mdl_clients'); ?>
-    </div>
+    <div class="submenu">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#ip-submenu-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
 
-    <div class="pull-right">
-        <ul class="nav nav-pills index-options">
-            <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) { ?>class="active"<?php } ?>>
-                <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo lang('active'); ?></a>
-            </li>
-            <li <?php if ($this->uri->segment(3) == 'inactive') { ?>class="active"<?php } ?>>
-                <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo lang('inactive'); ?></a>
-            </li>
-            <li <?php if ($this->uri->segment(3) == 'all') { ?>class="active"<?php } ?>>
-                <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo lang('all'); ?></a>
-            </li>
-        </ul>
+        <div class="collapse navbar-collapse" id="ip-submenu-collapse">
+
+            <div class="pull-right">
+                <?php echo pager(site_url('clients/status/' . $this->uri->segment(3)), 'mdl_clients'); ?>
+            </div>
+
+            <div class="pull-right">
+                <ul class="nav nav-pills index-options">
+                    <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) { ?>class="active"<?php } ?>>
+                        <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo lang('active'); ?></a>
+                    </li>
+                    <li <?php if ($this->uri->segment(3) == 'inactive') { ?>class="active"<?php } ?>>
+                        <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo lang('inactive'); ?></a>
+                    </li>
+                    <li <?php if ($this->uri->segment(3) == 'all') { ?>class="active"<?php } ?>>
+                        <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo lang('all'); ?></a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
     </div>
 
 </div>

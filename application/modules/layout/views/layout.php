@@ -82,6 +82,10 @@
 
 <body>
 
+<noscript>
+    <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
+</noscript>
+
 <nav class="navbar navbar-inverse " role="navigation">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -248,7 +252,7 @@
 </div><!--end.content-->
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
-<script defer src="<?php echo base_url(); ?>assets/default/js/script.js"></script>
+<script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
 
 <!--[if lt IE 7 ]>

@@ -28,9 +28,9 @@
                     else
                     {
                         // The validation was not successful
-                        $('.control-group').removeClass('error');
+                        $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('error');
+                            $('#' + key).parent().parent().addClass('has-error');
 
                         }
                     }
@@ -67,8 +67,10 @@
                     <div class="date datepicker">
                         <input size="16" type="text" name="payment_date" id="payment_date"
                                value="<?php echo date(date_format_setting()); ?>"
-                               class="form-control datepicker" readonly>
-                        <span class="fa fa-calendar form-control-feedback"></span>
+                               class="form-control datepicker" readonly="readonly">
+                        <span class="form-control-feedback">
+                            <i class="fa fa-calendar"></i>
+                        </span>
                     </div>
 
                 </div>

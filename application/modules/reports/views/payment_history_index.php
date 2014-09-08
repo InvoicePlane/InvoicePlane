@@ -28,8 +28,10 @@
                     <div class="date datepicker">
                         <input size="16" type="text" name="from_date"
                                class="form-control datepicker"
-                               id="from_date" value="" readonly>
-                        <span class="fa fa-calendar form-control-feedback"></span>
+                               id="from_date" value="" readonly="readonly">
+                        <span class="form-control-feedback">
+                            <i class="fa fa-calendar"></i>
+                        </span>
                     </div>
 				</div>
 
@@ -41,8 +43,10 @@
                     <div class="date datepicker">
                         <input size="16" type="text" name="to_date"
                                class="form-control datepicker"
-                               id="to_date" value="" readonly>
-                        <span class="fa fa-calendar form-control-feedback"></span>
+                               id="to_date" value="" readonly="readonly">
+                        <span class="form-control-feedback">
+                            <i class="fa fa-calendar"></i>
+                        </span>
                     </div>
                 </div>
 

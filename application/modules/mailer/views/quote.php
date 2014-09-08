@@ -24,6 +24,7 @@
 
     <div class="headerbar">
         <h1><?php echo lang('email_quote'); ?></h1>
+
         <div class="pull-right btn-group">
             <button class="btn btn-sm btn-primary" name="btn_send" value="1">
                 <i class="fa fa-send"></i>

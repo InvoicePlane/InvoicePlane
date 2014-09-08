@@ -26,7 +26,7 @@ class Mdl_Quote_Amounts extends CI_Model {
      * quote_item_tax_total	SUM(item_tax_total)
      * quote_tax_total
      * quote_total			quote_item_subtotal + quote_item_tax_total + quote_tax_total
-     * 
+     *
      * FI_QUOTE_ITEM_AMOUNTS
      * item_amount_id
      * item_id
@@ -34,7 +34,7 @@ class Mdl_Quote_Amounts extends CI_Model {
      * item_subtotal			item_quantity * item_price
      * item_tax_total			item_subtotal * tax_rate_percent
      * item_total				item_subtotal + item_tax_total
-     * 
+     *
      */
     public function calculate($quote_id)
     {

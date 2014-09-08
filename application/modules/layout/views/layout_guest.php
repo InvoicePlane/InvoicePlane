@@ -105,7 +105,7 @@
 </div><!--end.content-->
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
-<script defer src="<?php echo base_url(); ?>assets/default/js/script.js"></script>
+<script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
 
 <!--[if lt IE 7 ]>

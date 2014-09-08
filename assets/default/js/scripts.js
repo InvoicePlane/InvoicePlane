@@ -16,7 +16,7 @@ $(document).ready(function() {
         } if (menuVisY < 20) { //If tooltip exceeds the Y coordinate of viewport
             menu.css({
                 'top': 'auto',
-                'bottom': '100%',
+                'bottom': '100%'
             });
         }
     });
@@ -49,7 +49,7 @@ $(window).resize(function(){
     }
 
     if ( $('.main-area').outerWidth() < 800 ) {
-        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').css('margin-top',30,'height',height);
+        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').css('margin-top',34,'height',height);
     } else {
         $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').height(height);
     }

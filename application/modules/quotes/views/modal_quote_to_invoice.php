@@ -25,9 +25,9 @@
 				else
 				{
 					// The validation was not successful
-					$('.control-group').removeClass('error');
+					$('.control-group').removeClass('has-error');
 					for (var key in response.validation_errors) {
-						$('#' + key).parent().parent().addClass('error');
+						$('#' + key).parent().parent().addClass('has-error');
 					}
 				}
 			});
@@ -56,9 +56,11 @@
                 </label>
 
                 <div class="date datepicker">
-                    <input size="16" type="text" name="invoice_date_created" readonly
+                    <input size="16" type="text" name="invoice_date_created" readonly="readonly"
                            id="invoice_date_created" class="form-control datepicker">
-                    <span class="fa fa-calendar form-control-feedback"></span>
+                    <span class="form-control-feedback">
+                        <i class="fa fa-calendar"></i>
+                    </span>
                 </div>
 			</div>
 			

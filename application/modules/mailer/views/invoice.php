@@ -24,14 +24,17 @@
 
     <div class="headerbar">
         <h1><?php echo lang('email_invoice'); ?></h1>
-        <button class="btn btn-sm btn-primary" name="btn_send" value="1">
-            <i class="fa fa-send"></i>
-            <?php echo lang('send'); ?>
-        </button>
-        <button class="btn btn-sm btn-danger" name="btn_cancel" value="1">
-            <i class="fa fa-times"></i>
-            <?php echo lang('cancel'); ?>
-        </button>
+
+        <div class="pull-right btn-group">
+            <button class="btn btn-sm btn-primary" name="btn_send" value="1">
+                <i class="fa fa-send"></i>
+                <?php echo lang('send'); ?>
+            </button>
+            <button class="btn btn-sm btn-danger" name="btn_cancel" value="1">
+                <i class="fa fa-times"></i>
+                <?php echo lang('cancel'); ?>
+            </button>
+        </div>
     </div>
 
     <div class="content">

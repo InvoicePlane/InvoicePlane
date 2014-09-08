@@ -28,7 +28,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
      * invoice_total			invoice_item_subtotal + invoice_item_tax_total + invoice_tax_total
      * invoice_paid
      * invoice_balance			invoice_total - invoice_paid
-     * 
+     *
      * FI_INVOICE_ITEM_AMOUNTS
      * item_amount_id
      * item_id
@@ -36,7 +36,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
      * item_subtotal			item_quantity * item_price
      * item_tax_total			item_subtotal * tax_rate_percent
      * item_total				item_subtotal + item_tax_total
-     * 
+     *
      */
     public function calculate($invoice_id)
     {

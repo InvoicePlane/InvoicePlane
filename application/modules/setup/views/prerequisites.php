@@ -28,10 +28,12 @@
                 <?php } ?>
 
                 <?php if ($errors) { ?>
-                    <button class="btn btn-danger disabled"><?php echo lang('try_again'); ?>
-                    </button>
+                    <a href="javascript:history.go(0)" class="btn btn-danger">
+                        <?php echo lang('try_again'); ?>
+                    </a>
                 <?php } else { ?>
-                <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
+                <input class="btn btn-success" type="submit" name="btn_continue"
+                       value="<?php echo lang('continue'); ?>">
                 <?php } ?>
 
             </div>

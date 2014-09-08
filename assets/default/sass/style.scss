@@ -8,9 +8,6 @@
    Import Bootstrap and other assets
    ========================================================================== */
 
-    // Use compass
-    @import "compass";
-
     // Bootstrap
     @import "bootstrap/bootstrap";
 
@@ -28,7 +25,7 @@
 
     // overflow-x fix white space at the right when browser window is resized
     html, body {
-        overflow-y:hidden;
+        overflow-y: hidden;
     }
 
     body {
@@ -37,10 +34,6 @@
 
     img {
         vertical-align: middle;
-    }
-
-    p, ul, ol {
-        @include margin-trailer(1);
     }
 
     a:hover, a:active, a:focus {
@@ -57,7 +50,7 @@
    ========================================================================== */
 
     // Bootstrap Datepicker
-    // Fix input alingment
+    // Fix input alignment
     .controls.date {
         margin-left: 10px;
         padding: 0;
@@ -100,6 +93,7 @@
 
     // Display datepicker over modal box
     .datepicker.dropdown-menu {
+        padding: 5px;
         z-index: 9999;
     }
 
@@ -129,7 +123,11 @@
     }
 
     fieldset {
-        @include border-radius(5px);
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -o-border-radius: 5px;
+        border-radius: 5px;
         border: 1px solid #ddd;
         margin-bottom: 20px;
         padding: 20px;
@@ -171,7 +169,7 @@
         }
 
         td {
-            vertical-align: middle;
+            vertical-align: middle !important;
         }
 
         th:first-child,
@@ -182,6 +180,10 @@
         tr.bold-border td {
             border-bottom-width: 2px;
         }
+    }
+
+    table.items td {
+    	vertical-align: top !important;
     }
 
 
@@ -216,7 +218,12 @@
         }
 
         .btn {
-            @include margin-leader(1);
+            margin-top: 15px;
+        }
+
+        .alert {
+            margin-left: 0;
+            margin-right: 0;
         }
 
     }
@@ -278,6 +285,11 @@
 
         .navbar-collapse {
             padding: 0;
+
+            &.in .navbar-form {
+                margin: 5px 0;
+                padding: 0;
+            }
         }
 
         .brand {
@@ -345,6 +357,21 @@
         border-top: none;
     }
 
+    .submenu {
+        .navbar-toggle {
+            margin: 0;
+            background: #bbb;
+            padding: 8px 6px;
+            .icon-bar {
+                background: #eee;
+            }
+        }
+        .navbar-collapse {
+            z-index: 9999;
+            padding: 0;
+        }
+    }
+
 
 /* =============================================================================
    Pagination
@@ -398,6 +425,39 @@
     .alert {
         margin-left: 15px;
         margin-right: 15px;
+    }
+
+    .tab-content .alert {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #form-settings .tab-content,
+    div.table-content {
+	    .alert {
+			margin: 15px;
+	    }
+    }
+
+    #panel-overdue-invoices,
+    #panel-recent-quotes,
+    #panel-recent-invoices {
+        .panel-body {
+            padding: 0;
+        }
+    }
+
+    #panel-overdue-invoices p {
+        margin: 15px;
+    }
+
+    .quick-actions .btn {
+        padding: 5px;
+        border-right-width: 0;
+
+        &:last-child {
+            border-right-width: 1px;
+        }
     }
 
     .btn .fa,
@@ -458,6 +518,18 @@
       overflow-y: scroll;
    }
 
+   .details-box {
+       @extend .panel;
+       @extend .panel-default;
+       @extend .panel-body;
+
+       .has-feedback .form-control-feedback {
+           bottom: 0;
+           top: auto;
+           right: 0;
+       }
+   }
+
 
 /* =============================================================================
    Tabs
@@ -493,7 +565,7 @@
     .tabs-below .nav-tabs > li > a:hover,
     .tabs-below .nav-tabs .active > a,
     .tabs-below .nav-tabs .active > a:hover {
-        @include border-radius(0);
+        border-radius: 0;
         background-color: #444;
         color: #fff;
         text-decoration: none;
@@ -574,7 +646,11 @@
    ========================================================================== */
 
     .profile {
-        @include border-radius(5px);
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -o-border-radius: 5px;
+        border-radius: 5px;
         background: #f9f9f9;
         border: 1px solid #ddd;
         margin-bottom: 20px;
@@ -597,7 +673,11 @@
         }
 
         dl dt span {
-            @include border-radius(5px);
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            -o-border-radius: 5px;
+            border-radius: 5px;
             background: #fff;
             border: 1px solid #ddd;
             padding: 2px 25px;
@@ -641,6 +721,7 @@
     // Invoices and Quotes Status
     .label {
 
+        font-weight: normal;
         color: white !important; // override status text color on labels
 
         &.draft { background-color: #999999; }
@@ -772,6 +853,10 @@
 
     .text-left-xs {
         text-align: left;
+    }
+
+    .submenu .navbar-collapse {
+    	margin-top: 7px;
     }
 
 }

@@ -53,8 +53,10 @@
                     <input type="text" name="payment_date" id="payment_date"
                            class="form-control datepicker"
                            value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>"
-                           readonly>
-                    <span class="fa fa-calendar form-control-feedback"></span>
+                           readonly="readonly">
+                    <span class="form-control-feedback">
+                        <i class="fa fa-calendar"></i>
+                    </span>
                 </div>
             </div>
         </div>

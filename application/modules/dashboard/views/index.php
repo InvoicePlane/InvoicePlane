@@ -8,7 +8,7 @@
     <div class="row">
     <div class="col-xs-12 col-md-6">
 
-        <div class="panel panel-default quick-actions">
+        <div id="panel-quick-actions" class="panel panel-default quick-actions">
 
             <div class="panel-heading">
                 <h3 class="panel-title"><?php echo lang('quick_actions'); ?></h3>
@@ -19,29 +19,17 @@
                 <div class="btn-group btn-group-justified">
                     <a href="<?php echo site_url('clients/form'); ?>"
                        class="btn btn-default">
-                        <i class="fa fa-user"></i>&nbsp;
-                        <span class="hidden-md hidden-xs">
-                            <?php echo lang('add_client'); ?>
-                        </span>
+                        <i class="fa fa-user"></i><span class="hidden-md hidden-xs"><?php echo lang('add_client'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">
-                        <i class="fa fa-file"></i>&nbsp;
-                        <span class="hidden-md hidden-xs">
-                            <?php echo lang('create_quote'); ?>
-                        </span>
+                        <i class="fa fa-file"></i><span class="hidden-md hidden-xs"><?php echo lang('create_quote'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-invoice btn btn-default">
-                        <i class="fa fa-file-text"></i>&nbsp;
-                        <span class="hidden-md hidden-xs">
-                            <?php echo lang('create_invoice'); ?>
-                        </span>
+                        <i class="fa fa-file-text"></i><span class="hidden-md hidden-xs"><?php echo lang('create_invoice'); ?></span>
                     </a>
                     <a href="<?php echo site_url('payments/form'); ?>"
                        class="btn btn-default">
-                        <i class="fa fa-money"></i>&nbsp;
-                        <span class="hidden-md hidden-xs">
-                            <?php echo lang('enter_payment'); ?>
-                        </span>
+                        <i class="fa fa-money"></i><span class="hidden-md hidden-xs"><?php echo lang('enter_payment'); ?></span>
                     </a>
                 </div>
 
@@ -49,7 +37,7 @@
 
         </div>
 
-        <div class="panel panel-default overview">
+        <div id="panel-quote-overview" class="panel panel-default overview">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -77,7 +65,7 @@
 
         </div>
 
-        <div class="panel panel-default overview">
+        <div id="panel-invoice-overview" class="panel panel-default overview">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -108,7 +96,7 @@
 
     <div class="col-xs-12 col-md-6">
 
-        <div class="panel panel-default">
+        <div id="panel-overdue-invoices" class="panel panel-default">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -175,14 +163,14 @@
 
                 <?php } else { ?>
 
-                    <span class="text-success"><?php echo lang('no_overdue_invoices'); ?></span>
+                    <p class="text-success"><?php echo lang('no_overdue_invoices'); ?></p>
 
                 <?php } ?>
 
             </div>
         </div>
 
-        <div class="panel panel-default">
+        <div id="panel-recent-quotes" class="panel panel-default">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -190,9 +178,7 @@
                     <?php echo lang('recent_quotes'); ?>
                 </h3>
             </div>
-            <div class="panel-body">
-
-                <div class="table-responsive">
+            <div class="table-responsive">
                 <table class="table table-striped no-margin">
                     <thead>
                     <tr>
@@ -240,12 +226,10 @@
                     </tr>
                     </tbody>
                 </table>
-                </div>
-
             </div>
         </div>
 
-        <div class="panel panel-default">
+        <div id="panel-recent-invoices" class="panel panel-default">
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -253,9 +237,7 @@
                     <?php echo lang('recent_invoices'); ?></h3>
             </div>
 
-            <div class="panel-body">
-
-                <div class="table-responsive">
+            <div class="table-responsive">
                 <table class="table table-striped no-margin">
                     <thead>
                     <tr>
@@ -307,7 +289,6 @@
                     </tr>
                     </tbody>
                 </table>
-                </div>
 
             </div>
         </div>
