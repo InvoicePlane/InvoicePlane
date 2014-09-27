@@ -52,7 +52,7 @@
 					<i class="fa fa-circle-o-notch fa-spin" ></i>  <?php echo lang('checking_for_updates'); ?>
 				</span>  
 				
-				<a href="https://invoiceplane.com/download" id="updatecheck-updates-available"
+				<a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
 					class="input-group-addon btn btn-success hidden" target="_blank">
 					<?php echo lang('updates_available'); ?>
 				</a>
