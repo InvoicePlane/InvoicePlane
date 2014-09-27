@@ -18,7 +18,8 @@
 	<meta name="viewport" content="width=device-width">
 
 	<!-- CSS: implied media=all -->
-	<link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/style.css'; ?>">
+    <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/style.css'; ?>">
+    <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/custom.css'; ?>">
 	<!-- end CSS-->
 
 	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
