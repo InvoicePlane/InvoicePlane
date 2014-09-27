@@ -394,5 +394,8 @@ $lang['viewed'] = 'Viewed';
 $lang['view_all'] = 'View All';
 
 $lang['documentation'] = 'Documentation';
+$lang['checking_for_updates'] = 'Checking for updates...';
+$lang['updates_available'] = 'Updates available!';
+$lang['no_updates_available'] = 'No updates available.';
 
 $lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';
