@@ -77,6 +77,8 @@ class Mdl_Quotes extends Response_Model {
 			ip_users.user_mobile,
 			ip_users.user_email,
 			ip_users.user_web,
+			ip_users.user_vat_id,
+			ip_users.user_tax_code,
 			ip_clients.*,
 			ip_quote_amounts.quote_amount_id,
 			IFNULL(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
