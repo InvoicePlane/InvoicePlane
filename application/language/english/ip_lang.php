@@ -393,6 +393,7 @@ $lang['sent'] = 'Sent';
 $lang['viewed'] = 'Viewed';
 $lang['view_all'] = 'View All';
 
+$lang['menu'] = 'Menu';
 $lang['documentation'] = 'Documentation';
 $lang['checking_for_updates'] = 'Checking for updates...';
 $lang['updates_available'] = 'Updates available!';

@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
-    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
+    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.min.js'; ?>"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
     <script type="text/javascript">
         (function ($) {
@@ -33,16 +33,13 @@
 
 <body>
 
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle"
                     data-toggle="collapse" data-target="#ip-navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <?php echo lang('menu') ?> &nbsp; <i class="fa fa-bars"></i>
             </button>
         </div>
 
@@ -56,14 +53,10 @@
 
             <ul class="nav navbar-nav navbar-right settings">
                 <li>
-                    <a href="#">
-                        <?php echo lang('welcome').' '.$this->session->userdata('user_name'); ?>
-                    </a>
-                </li>
-                <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
                        data-original-title="<?php echo lang('logout'); ?>" >
+                        <span class="visible-xs"><?php echo lang('logout'); ?></span>
                         <i class="fa fa-power-off"></i>
                     </a>
                 </li>
@@ -72,7 +65,7 @@
     </div>
 </nav>
 
-<div class="sidebar">
+<div class="sidebar hidden-xs">
     <ul>
         <li>
             <a href="<?php echo site_url('guest'); ?>">
@@ -103,11 +96,11 @@
 
     <?php echo $content; ?>
 
-</div><!--end.content-->
+</div>
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
