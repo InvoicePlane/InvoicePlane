@@ -1,3 +1,4 @@
+# VAT ID and VAT Code added (see #76)
 ALTER TABLE `ip_email_templates`
 ADD COLUMN `email_template_type` VARCHAR(255) NULL AFTER `email_template_title`,
 ADD COLUMN `email_template_subject` VARCHAR(255) NULL AFTER `email_template_body`,
@@ -14,3 +15,15 @@ ADD COLUMN `client_tax_code` VARCHAR(100) NOT NULL DEFAULT '' AFTER `client_vat_
 ALTER TABLE `ip_users`
 ADD COLUMN `user_vat_id` VARCHAR(100) NOT NULL DEFAULT '' AFTER `user_web`,
 ADD COLUMN `user_tax_code` VARCHAR(100) NOT NULL DEFAULT '' AFTER `user_vat_id`;
+
+# Allow quote/invoice amounts to be higher (see #84)
+ALTER TABLE ip_quote_amounts MODIFY COLUMN quote_item_subtotal decimal(20,2);
+ALTER TABLE ip_quote_amounts MODIFY COLUMN quote_item_tax_total decimal(20,2);
+ALTER TABLE ip_quote_amounts MODIFY COLUMN quote_tax_total decimal(20,2);
+ALTER TABLE ip_quote_amounts MODIFY COLUMN quote_total decimal(20,2);
+ALTER TABLE ip_invoice_amounts MODIFY COLUMN invoice_item_subtotal decimal(20,2);
+ALTER TABLE ip_invoice_amounts MODIFY COLUMN invoice_item_tax_total decimal(20,2);
+ALTER TABLE ip_invoice_amounts MODIFY COLUMN invoice_tax_total decimal(20,2);
+ALTER TABLE ip_invoice_amounts MODIFY COLUMN invoice_total decimal(20,2);
+ALTER TABLE ip_invoice_amounts MODIFY COLUMN invoice_paid decimal(20,2);
+ALTER TABLE ip_invoice_amounts MODIFY COLUMN invoice_balance decimal(20,2);
