@@ -51,11 +51,14 @@
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     }
                     else {
-                        $('.control-group').removeClass('error');
-                        for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('error');
-                        }
-                    }
+					    $('.control-group').removeClass('error');
+					    $('div.alert[class*="alert-"]').remove();
+					    var resp_errors = response.validation_errors;
+					    for (var key in resp_errors) {
+					        $('#' + key).parent().parent().addClass('error');
+					        $('#invoice_form').prepend('<div class="alert alert-danger">'+resp_errors[key]+'</div>');
+					    }
+					}
                 });
         });
 
