@@ -332,6 +332,7 @@ class Mdl_Quotes extends Response_Model {
         $this->db->where('quote_url_key', $quote_url_key);
         $this->db->set('quote_status_id', 4);
         $this->db->update('ip_quotes');
+		// @TODO Send email notification to admin if enabled in settings (#18)
     }
 
     public function reject_quote_by_key($quote_url_key)
@@ -340,6 +341,7 @@ class Mdl_Quotes extends Response_Model {
         $this->db->where('quote_url_key', $quote_url_key);
         $this->db->set('quote_status_id', 5);
         $this->db->update('ip_quotes');
+		// @TODO Send email notification to admin if enabled in settings (#18)
     }
 
     public function approve_quote_by_id($quote_id)
