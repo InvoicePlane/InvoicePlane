@@ -86,17 +86,19 @@
 
         <div id="menu-container">
 
-            <?php if (in_array($quote->quote_status_id, array(2,3))) { ?>
-            <a href="<?php echo site_url('guest/view/approve_quote/' . $quote->quote_url_key); ?>" class="btn btn-success"><i class="icon-white icon-check"></i> <?php echo lang('approve_this_quote'); ?></a>
-            <a href="<?php echo site_url('guest/view/reject_quote/' . $quote->quote_url_key); ?>" class="btn btn-danger"><i class="icon-white icon-ban-circle"></i> <?php echo lang('reject_this_quote'); ?></a>
-            <?php } elseif ($quote->quote_status_id == 4) { ?>
-            <a href="#" class="btn btn-success"><?php echo lang('quote_approved'); ?></a>
-            <?php } elseif ($quote->quote_status_id == 5) { ?>
-            <a href="#" class="btn btn-danger"><?php echo lang('quote_rejected'); ?></a>
-            <?php } ?>
+			<div class="pull-left">
+	            <?php if (in_array($quote->quote_status_id, array(2,3))) { ?>
+					<a href="<?php echo site_url('guest/view/approve_quote/' . $quote->quote_url_key); ?>" class="btn btn-success"><i class="fa fa-check"></i> <?php echo lang('approve_this_quote'); ?></a>
+					<a href="<?php echo site_url('guest/view/reject_quote/' . $quote->quote_url_key); ?>" class="btn btn-danger"><i class="fa fa-ban"></i> <?php echo lang('reject_this_quote'); ?></a>
+	            <?php } elseif ($quote->quote_status_id == 4) { ?>
+	            <a href="#" class="btn btn-success"><?php echo lang('quote_approved'); ?></a>
+	            <?php } elseif ($quote->quote_status_id == 5) { ?>
+	            <a href="#" class="btn btn-danger"><?php echo lang('quote_rejected'); ?></a>
+	            <?php } ?>
+			</div>
 
             <div class="pull-right">
-            <a href="<?php echo site_url('guest/view/generate_quote_pdf/' . $quote_url_key); ?>" class="btn btn-primary"><i class="icon-white icon-print"></i> <?php echo lang('download_pdf'); ?></a> 
+				<a href="<?php echo site_url('guest/view/generate_quote_pdf/' . $quote_url_key); ?>" class="btn btn-primary"><i class="fa fa-print"></i> <?php echo lang('download_pdf'); ?></a> 
             </div>
 
             <?php if ($flash_message) { ?>
