@@ -50,9 +50,7 @@
 
                 <?php foreach ($quote_status_totals as $total) { ?>
                     <div class="col-xs-6 col-sm-4 col-lg-2">
-                        <a href="<?php echo site_url($total['href']); ?>">
-                            <?php echo $total['label']; ?>
-                        </a>
+                        <a href="<?php echo site_url($total['href']); ?>"><?php echo $total['label']; ?></a>
                         <br/>
                         <span class="<?php echo $total['class']; ?>">
                             <?php echo format_currency($total['sum_total']); ?>
@@ -78,9 +76,7 @@
 
                 <?php foreach ($invoice_status_totals as $total) { ?>
                     <div class="col-xs-6 col-sm-4 col-lg-2">
-                        <a href="<?php echo site_url($total['href']); ?>">
-                            <?php echo $total['label']; ?>
-                        </a>
+                        <a href="<?php echo site_url($total['href']); ?>"><?php echo $total['label']; ?></a>
                         <br/>
                         <span class="<?php echo $total['class']; ?>">
                             <?php echo format_currency($total['sum_total']); ?>
