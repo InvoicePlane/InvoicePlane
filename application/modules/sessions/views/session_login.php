@@ -31,6 +31,10 @@
     <div id="login"
          class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
 
+        <?php if (isset($login_alert)) { ?>
+            <div class="alert alert-danger" style="margin:0;"><?php echo $login_alert; ?></div>
+        <?php } ?>
+
         <?php if ($login_logo) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
         <?php } else { ?>

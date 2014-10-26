@@ -25,26 +25,60 @@ class Sessions extends Base_Controller {
 
     public function login()
     {
-        if ($this->input->post('btn_login'))
-        {
-            if ($this->authenticate($this->input->post('email'), $this->input->post('password')))
-            {
-                if ($this->session->userdata('user_type') == 1)
-                {
-                    redirect('dashboard');
-                }
-                elseif ($this->session->userdata('user_type') == 2)
-                {
-                    redirect('guest');
-                }
-            }
-        }
 
-        $data = array(
+        $view_data = array(
             'login_logo' => $this->mdl_settings->setting('login_logo')
         );
 
-        $this->load->view('session_login', $data);
+        if ($this->input->post('btn_login'))
+        {
+
+            $this->db->where('user_email', $this->input->post('email'));
+            $query = $this->db->get('ip_users');
+            $user = $query->row();
+
+            // Check if the user exists
+            if ( empty($user) )
+            {
+                $view_data = array(
+                    'login_logo' => $this->mdl_settings->setting('login_logo'),
+                    'login_alert' => lang('loginalert_user_not_found')
+                );
+            } else {
+
+                // Check if the user is marked as active
+                if ($user->user_active == 0)
+                {
+                    $view_data = array(
+                        'login_logo' => $this->mdl_settings->setting('login_logo'),
+                        'login_alert' => lang('loginalert_user_inactive')
+                    );
+                } else {
+
+                    if ($this->authenticate($this->input->post('email'), $this->input->post('password')))
+                    {
+                        if ($this->session->userdata('user_type') == 1)
+                        {
+                            redirect('dashboard');
+                        }
+                        elseif ($this->session->userdata('user_type') == 2)
+                        {
+                            redirect('guest');
+                        }
+                    } else {
+                        $view_data = array(
+                            'login_logo' => $this->mdl_settings->setting('login_logo'),
+                            'login_alert' => lang('loginalert_credentials_incorrect')
+                        );
+                    }
+
+                }
+
+            }
+
+        }
+
+        $this->load->view('session_login', $view_data);
     }
 
     public function logout()
