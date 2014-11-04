@@ -28,16 +28,15 @@
 <body>
 <div class="container">
 
-    <div id="login"
-         class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+    <div id="password_reset"
+         class="panel panel-default panel-body col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
-        <?php if ($login_logo) { ?>
-            <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
-        <?php } else { ?>
-            <h1><?php echo lang('login'); ?></h1>
-        <?php } ?>
+        <h3><?php echo lang('password_reset'); ?></h3>
+        <br/>
+
+        <p><?php echo lang('password_reset_info'); ?></p>
 
         <form class="form-horizontal" method="post"
               action="<?php echo site_url($this->uri->uri_string()); ?>">
@@ -51,26 +50,11 @@
                            placeholder="<?php echo lang('email'); ?>">
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-xs-12 col-sm-3">
-                    <label for="password" class="control-label"><?php echo lang('password'); ?></label>
-                </div>
-                <div class="col-xs-12 col-sm-9">
-                    <input type="password" name="password" id="password" class="form-control"
-                           placeholder="<?php echo lang('password'); ?>" >
-                </div>
-            </div>
 
-            <input type="submit" name="btn_login" class="btn btn-block btn-primary"
-                   value="<?php echo lang('login'); ?>" >
+            <input type="submit" name="btn_reset" class="btn btn-block btn-warning"
+                   value="<?php echo lang('reset_password'); ?>" >
 
         </form>
-
-        <div class="text-right">
-            <small><a href="/sessions/passwordreset" class="text-muted">
-                <?php echo lang('forgot_your_password'); ?>
-            </a></small>
-        </div>
 
     </div>
 </div>

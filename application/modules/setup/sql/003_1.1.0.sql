@@ -15,6 +15,7 @@ ADD COLUMN `client_tax_code` VARCHAR(100) NOT NULL DEFAULT '' AFTER `client_vat_
 ALTER TABLE `ip_users`
 ADD COLUMN `user_vat_id` VARCHAR(100) NOT NULL DEFAULT '' AFTER `user_web`,
 ADD COLUMN `user_tax_code` VARCHAR(100) NOT NULL DEFAULT '' AFTER `user_vat_id`;
+ADD COLUMN `user_passwordreset_token` VARCHAR(100) DEFAULT '' AFTER `user_psalt`;
 ADD COLUMN `user_active` BOOLEAN DEFAULT true AFTER `user_type`;
 
 # Allow quote/invoice amounts to be higher (see #84)
