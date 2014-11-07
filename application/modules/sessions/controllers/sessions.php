@@ -40,18 +40,12 @@ class Sessions extends Base_Controller {
             // Check if the user exists
             if ( empty($user) )
             {
-                $view_data = array(
-                    'login_logo' => $this->mdl_settings->setting('login_logo')
-                );
                 $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
             } else {
 
                 // Check if the user is marked as active
                 if ($user->user_active == 0)
                 {
-                    $view_data = array(
-                        'login_logo' => $this->mdl_settings->setting('login_logo')
-                    );
                     $this->session->set_flashdata('alert_error', lang('loginalert_user_inactive'));
                 } else {
 
@@ -66,9 +60,6 @@ class Sessions extends Base_Controller {
                             redirect('guest');
                         }
                     } else {
-                        $view_data = array(
-                            'login_logo' => $this->mdl_settings->setting('login_logo')
-                        );
                         $this->session->set_flashdata('alert_error', lang('loginalert_credentials_incorrect'));
                     }
 
@@ -106,7 +97,6 @@ class Sessions extends Base_Controller {
         if ($token)
         {
             $this->db->where('user_passwordreset_token', $token);
-            $this->db->where('user_active', 0);
             $user = $this->db->get('ip_users');
             $user = $user->row();
 
@@ -145,7 +135,6 @@ class Sessions extends Base_Controller {
 
             // Update the user and set him active again
             $db_array = array(
-                'user_active' => 1,
                 'user_passwordreset_token' => '',
             );
 
@@ -176,7 +165,6 @@ class Sessions extends Base_Controller {
 
                 // Save the token to the database and set the user to inactive
                 $db_array = array(
-                    'user_active' => 0,
                     'user_passwordreset_token' => $token,
                 );
 

@@ -37,7 +37,7 @@
         <br/>
 
         <form class="form-horizontal" method="post"
-              action="/sessions/passwordreset/">
+              action="<?php echo base_url(); ?>sessions/passwordreset/">
 
             <input name="user_id" value="<?php echo $user_id; ?>" class="hidden" readonly>
 

@@ -67,7 +67,7 @@
         </form>
 
         <div class="text-right">
-            <small><a href="/sessions/passwordreset" class="text-muted">
+            <small><a href="<?php echo base_url(); ?>sessions/passwordreset" class="text-muted">
                 <?php echo lang('forgot_your_password'); ?>
             </a></small>
         </div>
