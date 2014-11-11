@@ -169,7 +169,7 @@
 
         <div class="invoice">
 
-            <div class="cf">
+            <div class="cf row">
 
                 <div class="col-xs-12 col-md-8">
                     <div class="pull-left">
