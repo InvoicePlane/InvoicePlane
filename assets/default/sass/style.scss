@@ -65,58 +65,7 @@
     @import "select2-bootstrap";
 
     // Bootstrap Datepicker
-    // Fix input alignment
-    .controls.date {
-        margin-left: 10px;
-        padding: 0;
-    }
-
-    .datepicker .icon-arrow-left {
-        @extend .fa;
-        @extend .fa-arrow-left;
-        color: #777;
-    }
-
-    .datepicker .icon-arrow-right {
-        @extend .fa;
-        @extend .fa-arrow-right;
-        color: #777;
-    }
-
-    .datepicker .day.active {
-        background: #3276b1;
-        color: #efefef;
-        &:hover {
-            background: #3276b1;
-            color: #fff;
-        }
-    }
-
-    .datepicker .day:hover {
-        background: #efefef;
-        color: #3276b1;
-        cursor: crosshair;
-    }
-
-    // Fix datepicker icon alingment
-    .input-append.date .add-on i,
-    .input-prepend.date .add-on i {
-        width: auto;
-        height: auto;
-        display: inline;
-    }
-
-    // Display datepicker over modal box
-    .datepicker.dropdown-menu {
-        padding: 5px;
-        z-index: 9999;
-    }
-
-    // Reset padding on Date Picker
-    .datepicker table th:first-child,
-    .datepicker table td:first-child  {
-        padding-left:5px;
-    }
+    @import "bootstrap-datepicker";
 
 
 /* =============================================================================
