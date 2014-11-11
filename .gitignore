@@ -1,2 +1,8 @@
 /application/config/development
 /application/logs/*
+!/application/logs/index.html
+/uploads/temp/*
+!/uploads/temp/remove.txt
+
+.idea
+.sass-cache
