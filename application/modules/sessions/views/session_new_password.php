@@ -43,7 +43,7 @@
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3">
-                    <label for="new_password" class="control-label"><?php echo lang('email'); ?></label>
+                    <label for="new_password" class="control-label"><?php echo lang('new_password'); ?></label>
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="new_password" id="new_password" class="form-control"
