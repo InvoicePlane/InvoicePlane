@@ -24,6 +24,8 @@
                 $('#guest_fields').show();
             }
         }
+
+        $("#user_country").select2({allowClear: true});
     });
 </script>
 
@@ -191,8 +193,12 @@
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_country" id="user_country" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_country'); ?>">
+                            <select name="user_country" id="user_country" class="form-control">
+                                <option></option>
+                                <?php foreach ($countries as $cldr => $country) { ?>
+                                    <option value="<?= $country; ?>" <?php if ($selected_country == $country) { ?>selected="selected"<?php } ?>><?= $country ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
                 </fieldset>

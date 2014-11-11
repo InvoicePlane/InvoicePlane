@@ -60,6 +60,10 @@
    Components
    ========================================================================== */
 
+    // Select2
+    @import "select2";
+    @import "select2-bootstrap";
+
     // Bootstrap Datepicker
     // Fix input alignment
     .controls.date {

@@ -1,5 +1,7 @@
 <?php
 
+$lang['cldr'] = 'en';
+
 $lang['account_information'] = 'Account Information';
 $lang['active_client'] = 'Active';
 $lang['active'] = 'Active';
@@ -47,6 +49,7 @@ $lang['database'] = 'Database';
 $lang['date_applied'] = 'Date Applied';
 $lang['date_format'] = 'Date Format';
 $lang['date'] = 'Date';
+$lang['default_country'] = 'Default country';
 $lang['default_email_template'] = 'Default Email Template';
 $lang['default_invoice_group'] = 'Default Invoice Group';
 $lang['default_invoice_tax_rate_placement'] = 'Default Invoice Tax Rate Placement';

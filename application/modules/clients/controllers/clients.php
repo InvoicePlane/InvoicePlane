@@ -108,8 +108,13 @@ class Clients extends Admin_Controller {
         }
 
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->helper('country');
 
         $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result());
+        $this->layout->set('countries', get_country_list(lang('cldr')));
+        $this->layout->set('selected_country', $this->mdl_clients->form_value('client_country') ?:
+                                               $this->mdl_settings->setting('default_country'));
+
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
     }

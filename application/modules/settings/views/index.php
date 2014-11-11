@@ -3,6 +3,7 @@ $().ready(function() {
     $('#btn-submit').click(function() {
         $('#form-settings').submit();
     });
+    $("[name='settings[default_country]']").select2({allowClear: true});
 });  
 </script>
 

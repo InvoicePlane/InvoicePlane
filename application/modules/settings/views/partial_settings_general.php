@@ -77,7 +77,23 @@
 			</select>
 		</div>
 	</div>
-    
+
+    <div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+            <label for="settings[default_country]" class="control-label">
+                <?php echo lang('default_country'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <select name="settings[default_country]" class="input-sm form-control">
+                <option></option>
+                <?php foreach ($countries as $cldr => $country) { ?>
+                    <option value="<?= $country; ?>" <?php if ($this->mdl_settings->setting('default_country') == $country) { ?>selected="selected"<?php } ?>><?= $country ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+
 	<div class="form-group">
         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
 		    <label for="settings[date_format]" class="control-label">

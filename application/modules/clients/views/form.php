@@ -1,6 +1,7 @@
 <script type="text/javascript">
     $(function() {
         $('#client_name').focus();
+        $("#client_country").select2({allowClear: true});
     });
 </script>
 
@@ -80,8 +81,12 @@
                     <div class="form-group">
                         <label><?php echo lang('country'); ?>: </label>
                         <div class="controls">
-                            <input type="text" name="client_country" id="client_country" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_country'); ?>">
+                            <select name="client_country" id="client_country" class="form-control">
+                                <option></option>
+                                <?php foreach ($countries as $cldr => $country) { ?>
+                                    <option value="<?= $country; ?>" <?php if ($selected_country == $country) { ?>selected="selected"<?php } ?>><?= $country ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
                 </fieldset>
