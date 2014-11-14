@@ -84,7 +84,7 @@
                             <select name="client_country" id="client_country" class="form-control">
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
-                                    <option value="<?= $country; ?>" <?php if ($selected_country == $country) { ?>selected="selected"<?php } ?>><?= $country ?></option>
+                                    <option value="<?php echo $country; ?>" <?php if ($selected_country == $country) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
                                 <?php } ?>
                             </select>
                         </div>
