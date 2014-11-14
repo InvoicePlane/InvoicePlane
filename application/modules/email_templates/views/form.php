@@ -192,9 +192,9 @@
 <script type="text/javascript">
     $(function(){
         var email_template_type = "<?php echo $this->mdl_email_templates->form_value('email_template_type'); ?>";
+        var $email_template_type_options = $("[name=email_template_type]");
 
-
-        $("[name=email_template_type]").click(function(){
+        $email_template_type_options.click(function(){
             // remove class "show" and deselect any selected elements.
             $(".show").removeClass("show").parent("select").each(function(){
                 this.options.selectedIndex = 0;
@@ -202,13 +202,14 @@
             // add show class to corresponding class
             $(".hidden-"+$(this).val()).addClass("show");
         });
-
-        $("[name=email_template_type]").each(function(){
-
-            if($(this).val() == email_template_type) {
-                $(this).click();
-            }
-        });
-
+        if(email_template_type === "") {
+            $email_template_type_options.first().click();
+        } else {
+            $email_template_type_options.each(function(){
+                if($(this).val() === email_template_type) {
+                    $(this).click();
+                }
+            });
+        }
     });
 </script>
