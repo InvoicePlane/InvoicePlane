@@ -94,10 +94,10 @@
               <select name="email_template_pdf_template" id="email_template_pdf_template" class="form-control">
                 <option value="" class="empty-option"></option>
                   <?php foreach ($invoice_templates as $template): ?>
-                      <option class="hidden-invoice" value="<?= $template; ?>" <?php if ($selected_pdf_template == $template) { ?>selected="selected"<?php } ?>><?php echo $template; ?></option>
+                      <option class="hidden-invoice" value="<?php echo $template; ?>" <?php if ($selected_pdf_template == $template) { ?>selected="selected"<?php } ?>><?php echo $template; ?></option>
                   <?php endforeach; ?>
                   <?php foreach ($quote_templates as $template): ?>
-                      <option class="hidden-quote" value="<?= $template; ?>" <?php if ($selected_pdf_template == $template) { ?>selected="selected"<?php } ?>><?php echo $template; ?></option>
+                      <option class="hidden-quote" value="<?php echo $template; ?>" <?php if ($selected_pdf_template == $template) { ?>selected="selected"<?php } ?>><?php echo $template; ?></option>
                   <?php endforeach; ?>
               </select>
             </div>
