@@ -177,6 +177,18 @@
     <div class="form-group">
         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
             <label class="control-label">
+                <?php echo lang('custom_title'); ?>
+            </label>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <input type="text" name="settings[custom_title]" class="input-sm form-control"
+                   value="<?php echo $this->mdl_settings->setting('custom_title'); ?>">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+            <label class="control-label">
                 <?php echo lang('disable_sidebar'); ?>
             </label>
         </div>

@@ -43,6 +43,7 @@ $lang['create_quote'] = 'Create Quote';
 $lang['created'] = 'Created';
 $lang['currency_symbol_placement'] = 'Currency Symbol Placement';
 $lang['currency_symbol'] = 'Currency Symbol';
+$lang['custom_title'] = 'Custom Title';
 $lang['dashboard'] = 'Dashboard';
 $lang['database_properly_configured'] = 'The database is properly configured';
 $lang['database'] = 'Database';
