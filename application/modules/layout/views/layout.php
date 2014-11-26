@@ -237,7 +237,6 @@
         </li>
     </ul>
 </div>
-
 <div class="main-area">
 
     <div id="modal-placeholder"></div>

@@ -353,7 +353,9 @@
    ========================================================================== */
 
     .sidebar {
-        @extend .col-sm-1;
+        display: table-cell;
+        vertical-align: top;
+        width: 66px;
         height: 100%;
         padding: 0;
         background: #eee;
@@ -433,8 +435,9 @@
     }
 
     .main-area {
-        @extend .col-xs-12;
-        @extend .col-sm-11;
+        display: table-cell;
+        width: 100%;
+
         padding: 0;
 
         .content,
