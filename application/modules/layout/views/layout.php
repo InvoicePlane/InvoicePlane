@@ -158,7 +158,7 @@
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
                 <form class="navbar-form navbar-left" role="search">
                     <div class="form-group">
-                        <input id="filter" type="text"class="search-query form-control input-sm"
+                        <input id="filter" type="text" class="search-query form-control input-sm"
                                placeholder="<?php echo $filter_placeholder; ?>">
                     </div>
                 </form>
@@ -208,7 +208,7 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs">
+<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
     <ul>
         <li>
             <a href="<?php echo site_url('dashboard'); ?>">

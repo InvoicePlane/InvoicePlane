@@ -68,6 +68,7 @@ $lang['delete_record_warning'] = 'Are you sure you wish to delete this record?';
 $lang['delete'] = 'Delete';
 $lang['description'] = 'Description';
 $lang['details'] = 'Details';
+$lang['disable_sidebar'] = 'Disable the Sidebar';
 $lang['due_date'] = 'Due Date';
 $lang['edit'] = 'Edit';
 $lang['email_address'] = 'Email Address';

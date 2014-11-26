@@ -65,7 +65,7 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs">
+<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
     <ul>
         <li>
             <a href="<?php echo site_url('guest'); ?>">
