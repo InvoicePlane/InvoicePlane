@@ -196,32 +196,6 @@
                         </div>
                     </div>
                 </fieldset>
-
-                <?php //---it---inizio ?>
-				<fieldset>
-					<legend>Ditta</legend>
-					
-					<div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        	<label class="control-label"><?php echo lang('it_codice_fiscale'); ?></label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-	                    	<input type="text" name="user_it_codfisc" id="user_it_codfisc" class="form-control"
-	                    			value="<?php echo $this->mdl_users->form_value('user_it_codfisc'); ?>">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        	<label class="control-label"><?php echo lang('it_partita_iva'); ?></label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_it_piva" id="user_it_piva" class="form-control"
-                            		value="<?php echo $this->mdl_users->form_value('user_it_piva'); ?>">
-                        </div>
-                    </div>
-				</fieldset>
-                <?php //---it---fine ?>
                 
                 <fieldset>
 

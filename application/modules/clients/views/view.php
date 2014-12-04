@@ -84,10 +84,6 @@
                             <?php echo ($client->client_state) ? $client->client_state : ''; ?>
                             <?php echo ($client->client_zip) ? $client->client_zip : ''; ?>
                             <?php echo ($client->client_country) ? '<br>' . $client->client_country : ''; ?>
-                            <?php //---it---inizio ?>
-							<?php echo ($client->client_it_codfisc) ? '<br><strong>'.lang('it_codice_fiscale').':</strong> ' . $client->client_it_codfisc : ''; ?>
-							<?php echo ($client->client_it_piva) ? '<br><strong>'.lang('it_partita_iva').':</strong> ' . $client->client_it_piva : ''; ?>
-							<?php //---it---fine ?>
 						</span>
                     </div>
 

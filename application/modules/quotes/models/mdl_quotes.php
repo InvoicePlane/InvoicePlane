@@ -87,8 +87,6 @@ class Mdl_Quotes extends Response_Model {
 			IFNULL(ip_quote_amounts.quote_total, '0.00') AS quote_total,
             ip_invoices.invoice_number,
 			ip_quotes.*", FALSE);
-        
-        //---it---: aggiunta campi ip_users.user_it_codfisc e ip_users.user_it_piva in query
     }
 
     public function default_order_by()

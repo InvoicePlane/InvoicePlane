@@ -81,8 +81,6 @@ class Mdl_Invoices extends Response_Model {
 			DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> '0000-00-00') WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
 			ip_invoices.*", FALSE);
-        
-        //---it---: aggiunta campi ip_users.user_it_codfisc e ip_users.user_it_piva in query
     }
 
     public function default_order_by()

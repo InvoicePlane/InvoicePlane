@@ -174,8 +174,6 @@
                                 <?php if ($invoice->user_fax) {
                                     ?>Fax <?php echo $invoice->user_fax; ?><?php
                                 } ?>
-	                            <?php if ($invoice->user_it_codfisc) { echo 'C.F. ' . $invoice->user_it_codfisc . '<br/>'; } ?>
-								<?php if ($invoice->user_it_piva) { echo 'P.IVA ' . $invoice->user_it_piva . '<br/>'; } ?>
                             </p>
                         </div>
                         <br/>

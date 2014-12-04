@@ -96,26 +96,6 @@
                     <input type="text" name="user_country" id="user_country" class="form-control"
                            value="<?php echo $this->mdl_users->form_value('user_country'); ?>">
                 </div>
-
-                <?php //---it---inizio ?>
-				<legend><?php echo lang('it_ditta'); ?></legend>
-				<p><?php echo lang('it_setup_ditta'); ?></p>
-				<div class="form-group">
-					<label><?php echo lang('it_codice_fiscale'); ?>: </label>
-					<div class="controls">
-						<input type="text" name="user_it_codfisc" id="user_it_codfisc" class="form-control"
-								value="<?php echo $this->mdl_users->form_value('user_it_codfisc'); ?>">
-					</div>
-				</div>
-				
-		        <div class="form-group">
-					<label><?php echo lang('it_partita_iva'); ?>: </label>
-					<div class="controls">
-						<input type="text" name="user_it_piva" id="user_it_piva" class="form-control"
-								value="<?php echo $this->mdl_users->form_value('user_it_piva'); ?>">
-					</div>
-				</div>     
-		        <?php //---it---fine ?>    
                 
                 <legend><?php echo lang('setup_other_contact'); ?></legend>
 
