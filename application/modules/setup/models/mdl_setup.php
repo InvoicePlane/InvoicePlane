@@ -128,7 +128,7 @@ class Mdl_Setup extends CI_Model {
         $default_settings = array(
             'default_language'             => $this->session->userdata('ip_lang'),
             'date_format'                  => 'd/m/Y',	//---it---
-            'currency_symbol'              => '�',		//---it---
+            'currency_symbol'              => '€',		//---it---
             'currency_symbol_placement'    => 'before',
             'invoices_due_after'           => 30,
             'quotes_expire_after'          => 15,
