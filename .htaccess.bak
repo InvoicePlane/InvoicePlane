@@ -1,0 +1,13 @@
+# Remove index.php
+RewriteEngine on
+
+# Finito il setup dice:
+# Se vuoi mettere il tuo sito in sicurezza, posiziona questo codice direttamente dopo RewriteEngine on nel file .htaccess e sostituisci yourdomain.com:
+#Redirect /setup http://yourdomain.com/
+
+# Impostare la sottocartella di installazione
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . index.php [L]
