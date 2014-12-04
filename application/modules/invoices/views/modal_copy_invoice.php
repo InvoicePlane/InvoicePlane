@@ -62,13 +62,12 @@
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php echo lang('invoice_date'); ?>: </label>
-                <div class="date datepicker">
-                    <input size="16" type="text" name="invoice_date_created"
-                           id="invoice_date_created"
-                           value="<?php echo date_from_mysql($invoice->invoice_date_created, TRUE) ?>"
-                           class="form-control datepicker" readonly="readonly">
-                    <span class="form-control-feedback">
-                        <span class="fa fa-calendar "></span>
+                <div class="input-group">
+                    <input name="invoice_date_created" id="invoice_date_created"
+                          class="form-control datepicker"
+                          value="<?php echo date_from_mysql($invoice->invoice_date_created, TRUE) ?>">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar fa-fw"></i>
                     </span>
                 </div>
             </div>

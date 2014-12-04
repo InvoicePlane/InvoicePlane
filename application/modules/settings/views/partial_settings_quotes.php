@@ -41,7 +41,7 @@
         <div class="col-xs-12 col-sm-6">
 			<select name="settings[email_quote_template]" class="input-sm form-control">
                 <option value=""></option>
-                <?php foreach ($email_templates as $email_template) { ?>
+                <?php foreach ($email_templates_quote as $email_template) { ?>
                 <option value="<?php echo $email_template->email_template_id; ?>" <?php if ($this->mdl_settings->setting('email_quote_template') == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
                 <?php } ?>
 			</select>

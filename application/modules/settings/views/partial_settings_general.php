@@ -8,6 +8,31 @@
             });
         });
     });
+	
+	// Update check
+	window.onload = function() {
+		// Get the current version
+		var current_version = "<?php echo $current_version; ?>";
+		current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
+		
+		// Get the latest version from updates.invoiceplane.com
+		$.getJSON("http://updates.invoiceplane.com", function(data) {
+			
+			var updatecheck = data.current_version.replace(/\./g, '');
+			
+			// Compare each versions and replace the placeholder with a download button
+			// or info label after 2 seconds
+			setTimeout(function() {
+				if ( current_version < updatecheck ) {
+					$('#updatecheck-loading').addClass('hidden');
+					$('#updatecheck-updates-available').removeClass('hidden');
+				} else {
+					$('#updatecheck-loading').addClass('hidden');
+					$('#updatecheck-no-updates').removeClass('hidden');
+				}
+			}, 2000);
+		});
+	};
 </script>
 
 <div class="tab-info form-horizontal">
@@ -19,8 +44,22 @@
             </label>
         </div>
         <div class="col-xs-12 col-sm-6">
-			<input type="text" class="input-sm form-control"
-                   value="<?php echo $current_version; ?>" readonly="readonly">
+			<div class="input-group">
+				<input type="text" class="input-sm form-control"
+	                   value="<?php echo $current_version; ?>" readonly="readonly">
+					   
+				<span id="updatecheck-loading" class="input-group-addon">
+					<i class="fa fa-circle-o-notch fa-spin" ></i>  <?php echo lang('checking_for_updates'); ?>
+				</span>  
+				
+				<a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
+					class="input-group-addon btn btn-success hidden" target="_blank">
+					<?php echo lang('updates_available'); ?>
+				</a>
+				<span id="updatecheck-no-updates" class="input-group-addon hidden" >
+					<?php echo lang('no_updates_available'); ?>
+				</span>
+			</div>
 		</div>
 	</div>
 

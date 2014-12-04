@@ -110,8 +110,13 @@
 
                         <div class="invoice-to">
                             <p><?php echo lang('bill_to'); ?>:</p>
-                            <p><?php //---it--- indirizzo IT ?>
-                            	<b><?php echo $invoice->client_name; ?></b><br/>
+                            <p><b><?php echo $invoice->client_name; ?></b><br/>
+                                <?php if ($invoice->client_vat_id) {
+                                    echo lang('vat_id_short') . ': ' . $invoice->client_vat_id . '<br/>';
+                                } ?>
+                                <?php if ($invoice->client_tax_code) {
+                                    echo lang('tax_code_short') . ': ' . $invoice->client_tax_code . '<br/>';
+                                } ?>
                                 <?php if ($invoice->client_address_1) {
                                     echo $invoice->client_address_1 . '<br/>';
                                 } ?>
@@ -130,8 +135,6 @@
                                 <?php if ($invoice->client_phone) { ?>
                                     Tel. <?php echo $invoice->client_phone; ?><br/>
                                 <?php } ?>
-								<?php if ($invoice->client_it_codfisc) { echo 'C.F. ' . $invoice->client_it_codfisc . '<br/>'; } ?>
-			                    <?php if ($invoice->client_it_piva) { echo 'P.IVA ' . $invoice->client_it_piva . '<br/>'; } ?>
                             </p>
                         </div>
 
@@ -143,7 +146,13 @@
                             <h3 class="company-name text-right">
                                 <?php echo $invoice->user_name; ?>
                             </h3>
-                            <p class="text-right"><?php //---it--- indirizzo IT ?>
+                            <p class="text-right">
+                                <?php if ($invoice->user_vat_id) {
+                                    echo lang('vat_id_short') . ': ' . $invoice->client_vat_id . '<br/>';
+                                } ?>
+                                <?php if ($invoice->user_tax_code) {
+                                    echo lang('tax_code_short') . ': ' . $invoice->client_tax_code . '<br/>';
+                                } ?>
                                 <?php if ($invoice->user_address_1) {
                                     echo $invoice->user_address_1 . '<br/>';
                                 }?>

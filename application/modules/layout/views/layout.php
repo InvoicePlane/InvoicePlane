@@ -9,7 +9,6 @@
 
     <meta charset="utf-8">
 
-    <!-- Use the .htaccess and remove these lines to avoid edge case issues -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
     <title>InvoicePlane</title>
@@ -17,6 +16,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
     <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.min.js'; ?>"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
@@ -86,15 +86,12 @@
     <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
 </noscript>
 
-<nav class="navbar navbar-inverse " role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#ip-navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <?php echo lang('menu') ?> &nbsp; <i class="fa fa-bars"></i>
             </button>
         </div>
 
@@ -167,25 +164,21 @@
             <?php } ?>
 
             <ul class="nav navbar-nav navbar-right">
-                <li class="hidden-xs hidden-sm">
-                    <a href="#">
-                        <?php echo lang('welcome') .' '. $this->session->userdata('user_name'); ?>
-                    </a>
-                </li>
-                <li class="hidden-xs hidden-sm divider-vertical"></li>
                 <li>
                     <a href="http://docs.invoiceplane.com/" target="_blank"
-                       class="tip icon" data-original-title="Documentation"
+                       class="tip icon" data-original-title="<?php echo lang('documentation'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-question-circle"></i>
+                        <span class="visible-xs"><?php echo lang('documentation'); ?></span>
                     </a>
                 </li>
-                <li class="divider-vertical"></li>
+
                 <li class="dropdown">
                     <a href="#" class="tip icon dropdown-toggle" data-toggle="dropdown"
                        data-original-title="<?php echo lang('settings'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-cogs"></i>
+                        <span class="visible-xs"><?php echo lang('settings'); ?></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('custom_fields/index', lang('custom_fields')); ?></li>
@@ -200,12 +193,13 @@
                         <li><?php echo anchor('settings', lang('system_settings')); ?></li>
                     </ul>
                 </li>
-                <li class="divider-vertical"></li>
+
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
                        data-original-title="<?php echo lang('logout'); ?>" >
                         <i class="fa fa-power-off"></i>
+                        <span class="visible-xs"><?php echo lang('logout'); ?></span>
                     </a>
                 </li>
             </ul>
@@ -249,11 +243,11 @@
 
     <?php echo $content; ?>
 
-</div><!--end.content-->
+</div>
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/default/js/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>

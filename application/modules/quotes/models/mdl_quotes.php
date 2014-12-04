@@ -77,8 +77,8 @@ class Mdl_Quotes extends Response_Model {
 			ip_users.user_mobile,
 			ip_users.user_email,
 			ip_users.user_web,
-        	ip_users.user_it_codfisc,
-			ip_users.user_it_piva,
+			ip_users.user_vat_id,
+			ip_users.user_tax_code,
 			ip_clients.*,
 			ip_quote_amounts.quote_amount_id,
 			IFNULL(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
@@ -334,6 +334,7 @@ class Mdl_Quotes extends Response_Model {
         $this->db->where('quote_url_key', $quote_url_key);
         $this->db->set('quote_status_id', 4);
         $this->db->update('ip_quotes');
+		// @TODO Send email notification to admin if enabled in settings (#18)
     }
 
     public function reject_quote_by_key($quote_url_key)
@@ -342,6 +343,7 @@ class Mdl_Quotes extends Response_Model {
         $this->db->where('quote_url_key', $quote_url_key);
         $this->db->set('quote_status_id', 5);
         $this->db->update('ip_quotes');
+		// @TODO Send email notification to admin if enabled in settings (#18)
     }
 
     public function approve_quote_by_id($quote_id)

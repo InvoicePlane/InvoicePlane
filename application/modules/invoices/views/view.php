@@ -51,11 +51,14 @@
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     }
                     else {
-                        $('.control-group').removeClass('error');
-                        for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('error');
-                        }
-                    }
+					    $('.control-group').removeClass('error');
+					    $('div.alert[class*="alert-"]').remove();
+					    var resp_errors = response.validation_errors;
+					    for (var key in resp_errors) {
+					        $('#' + key).parent().parent().addClass('error');
+					        $('#invoice_form').prepend('<div class="alert alert-danger">'+resp_errors[key]+'</div>');
+					    }
+					}
                 });
         });
 
@@ -204,23 +207,23 @@
                         </div>
                         <div class="invoice-properties has-feedback">
                             <label><?php echo lang('date'); ?></label>
-                            <div class="date datepicker">
-                                <input type="text" id="invoice_date_created"
-                                       class="input-sm form-control datepicker"
-                                       value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>" readonly="readonly">
-                                <span class="form-control-feedback">
-                                    <i class="fa fa-calendar"></i>
+                            <div class="input-group">
+                                <input name="invoice_date_created" id="invoice_date_created"
+                                       class="form-control datepicker"
+                                       value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar fa-fw"></i>
                                 </span>
                             </div>
                         </div>
                         <div class="invoice-properties has-feedback">
                             <label><?php echo lang('due_date'); ?></label>
-                            <div class="date datepicker">
-                                <input type="text" id="invoice_date_due"
-                                       class="input-sm form-control datepicker"
-                                       value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>" readonly="readonly">
-                                <span class="form-control-feedback">
-                                    <i class="fa fa-calendar"></i>
+                            <div class="input-group">
+                                <input name="invoice_date_due" id="invoice_date_due"
+                                       class="form-control datepicker"
+                                       value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar fa-fw"></i>
                                 </span>
                             </div>
                         </div>

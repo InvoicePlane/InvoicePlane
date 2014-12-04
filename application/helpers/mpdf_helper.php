@@ -38,7 +38,7 @@ function pdf_create($html, $filename, $stream = TRUE)
 
     if ($stream)
     {
-        $mpdf->Output($filename . '.pdf', 'D');
+        $mpdf->Output($filename . '.pdf', 'I');
     }
     else
     {

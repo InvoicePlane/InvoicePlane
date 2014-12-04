@@ -103,8 +103,13 @@
 
                         <div class="invoice-to">
                             <p><?php echo lang('bill_to'); ?>:</p>
-                            <p><?php //---it--- indirizzo IT ?>
-                            	<b><?php echo $quote->client_name; ?></b><br/>
+                            <p><b><?php echo $quote->client_name; ?></b><br/>
+                                <?php if ($quote->client_vat_id) {
+                                    echo lang('vat_id_short') . ': ' . $quote->client_vat_id . '<br/>';
+                                } ?>
+                                <?php if ($quote->client_tax_code) {
+                                    echo lang('tax_code_short') . ': ' . $quote->client_tax_code . '<br/>';
+                                } ?>
                                 <?php if ($quote->client_address_1) {
                                     echo $quote->client_address_1 . '<br/>';
                                 } ?>
@@ -123,8 +128,6 @@
                                 <?php if ($quote->client_phone) { ?>
                                     Tel. <?php echo $quote->client_phone; ?><br/>
                                 <?php } ?>
-								<?php if ($quote->client_it_codfisc) { echo 'C.F. ' . $quote->client_it_codfisc . '<br/>'; } ?>
-			                    <?php if ($quote->client_it_piva) { echo 'P.IVA ' . $quote->client_it_piva . '<br/>'; } ?>
                             </p>
                         </div>
 
@@ -136,7 +139,13 @@
                             <h3 class="company-name text-right">
                                 <?php echo $quote->user_name; ?>
                             </h3>
-                            <p class="text-right"><?php //---it--- indirizzo IT ?>
+                            <p class="text-right">
+                                <?php if ($quote->user_vat_id) {
+                                    echo lang('vat_id_short') . ': ' . $quote->client_vat_id . '<br/>';
+                                } ?>
+                                <?php if ($quote->user_tax_code) {
+                                    echo lang('tax_code_short') . ': ' . $quote->client_tax_code . '<br/>';
+                                } ?>
                                 <?php if ($quote->user_address_1) {
                                     echo $quote->user_address_1 . '<br/>';
                                 }?>
@@ -158,8 +167,6 @@
                                 <?php if ($quote->user_fax) {
                                     ?>Fax <?php echo $quote->user_fax; ?><?php
                                 } ?>
-	                            <?php if ($quote->user_it_codfisc) { echo 'C.F. ' . $quote->user_it_codfisc . '<br/>'; } ?>
-								<?php if ($quote->user_it_piva) { echo 'P.IVA ' . $quote->user_it_piva . '<br/>'; } ?>
                             </p>
                         </div>
                         <br/>

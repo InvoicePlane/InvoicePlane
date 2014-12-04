@@ -6,12 +6,6 @@ $().ready(function() {
 });  
 </script>
 
-<style>
-    body {
-        padding-bottom: 50px !important;
-    }
-</style>
-
 <div class="headerbar">
     <h1><?php echo lang('settings'); ?></h1>
     <?php $this->layout->load_view('layout/header_buttons'); ?>

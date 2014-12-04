@@ -48,18 +48,22 @@
 
             <div class="panel-body">
 
-                <?php foreach ($quote_status_totals as $total) { ?>
-                    <div class="col-xs-6 col-sm-4 col-lg-2">
-                        <a href="<?php echo site_url($total['href']); ?>">
-                            <?php echo $total['label']; ?>
-                        </a>
-                        <br/>
-                        <span class="<?php echo $total['class']; ?>">
-                            <?php echo format_currency($total['sum_total']); ?>
-                        </span>
-                        <span class="hidden-lg"><hr/></span>
-                    </div>
-                <?php } ?>
+                <table class="table table-bordered table-condensed no-margin">
+                    <?php foreach ($quote_status_totals as $total) { ?>
+                        <tr>
+                            <td>
+                                <a href="<?php echo site_url($total['href']); ?>">
+                                    <?php echo $total['label']; ?>
+                                </a>
+                            </td>
+                            <td class="text-right">
+	                        <span class="<?php echo $total['class']; ?>">
+	                            <?php echo format_currency($total['sum_total']); ?>
+	                        </span>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </table>
 
             </div>
 
@@ -76,18 +80,24 @@
 
             <div class="panel-body">
 
-                <?php foreach ($invoice_status_totals as $total) { ?>
-                    <div class="col-xs-6 col-sm-4 col-lg-2">
-                        <a href="<?php echo site_url($total['href']); ?>">
-                            <?php echo $total['label']; ?>
-                        </a>
-                        <br/>
-                        <span class="<?php echo $total['class']; ?>">
-                            <?php echo format_currency($total['sum_total']); ?>
-                        </span>
-                        <span class="hidden-lg"><hr/></span>
-                    </div>
-                <?php } ?>
+                <table class="table table-bordered table-condensed no-margin">
+
+                    <?php foreach ($invoice_status_totals as $total) { ?>
+                        <tr>
+                            <td>
+                                <a href="<?php echo site_url($total['href']); ?>">
+                                    <?php echo $total['label']; ?>
+                                </a>
+                            </td>
+                            <td class="text-right">
+							<span class="<?php echo $total['class']; ?>">
+                            	<?php echo format_currency($total['sum_total']); ?>
+                        	</span>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
+                </table>
 
             </div>
         </div>

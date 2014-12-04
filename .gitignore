@@ -1,1 +1,2 @@
-/application/logs/*.php
+/application/config/development
+/application/logs/*

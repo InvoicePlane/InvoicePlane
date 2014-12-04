@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Email_Templates extends Admin_Controller {
@@ -57,13 +57,17 @@ class Email_Templates extends Admin_Controller {
         }
 
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('invoices/mdl_templates');
 
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table)
         {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
-        
+
         $this->layout->set('custom_fields', $custom_fields);
+        $this->layout->set('invoice_templates', $this->mdl_templates->get_invoice_templates());
+        $this->layout->set('quote_templates', $this->mdl_templates->get_quote_templates());
+        $this->layout->set('selected_pdf_template', $this->mdl_email_templates->form_value('email_template_pdf_template'));
         $this->layout->buffer('content', 'email_templates/form');
         $this->layout->render();
     }
@@ -75,5 +79,3 @@ class Email_Templates extends Admin_Controller {
     }
 
 }
-
-?>
