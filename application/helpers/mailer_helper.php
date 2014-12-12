@@ -68,3 +68,37 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
 
     return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc);
 }
+
+/**
+ * @param $quote_id
+ * @param $status string "accepted" or "rejected"
+ * @return bool if the email was sent
+ */
+function email_quote_status($quote_id, $status)
+{
+    ini_set("display_errors", "on");
+    error_reporting(E_ALL);
+
+    if (!mailer_configured()) return false;
+
+    $CI = &get_instance();
+    $CI->load->helper('mailer/phpmailer');
+
+    $quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
+    $base_url = base_url('/quotes/view/' . $quote_id);
+
+    $user_email = $quote->user_email;
+    $subject = sprintf(lang('quote_status_email_subject'),
+        $quote->client_name,
+        strtolower(lang($status)),
+        $quote->quote_number
+    );
+    $body = sprintf(nl2br(lang('quote_status_email_body')),
+        $quote->client_name,
+        strtolower(lang($status)),
+        $quote->quote_number,
+        '<a href="'.$base_url.'">'.$base_url.'</a>'
+    );
+
+    return phpmail_send($user_email, $user_email, $subject, $body);
+}

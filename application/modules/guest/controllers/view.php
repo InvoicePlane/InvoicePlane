@@ -123,17 +123,23 @@ class View extends Base_Controller {
     public function approve_quote($quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');
+        $this->load->helper('mailer');
+
         $this->mdl_quotes->approve_quote_by_key($quote_url_key);
+        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, "approved");
+
         redirect('guest/view/quote/' . $quote_url_key);
     }
     
     public function reject_quote($quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');
+        $this->load->helper('mailer');
+
         $this->mdl_quotes->reject_quote_by_key($quote_url_key);
+        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, "rejected");
+
         redirect('guest/view/quote/' . $quote_url_key);
     }
 
 }
-
-?>

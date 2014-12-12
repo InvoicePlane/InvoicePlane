@@ -109,17 +109,23 @@ class Quotes extends Guest_Controller {
     public function approve($quote_id)
     {
         $this->load->model('quotes/mdl_quotes');
+        $this->load->helper('mailer');
+
         $this->mdl_quotes->approve_quote_by_id($quote_id);
+        email_quote_status($quote_id, "approved");
+
         redirect_to('guest/quotes');
     }
 
     public function reject($quote_id)
     {
         $this->load->model('quotes/mdl_quotes');
+        $this->load->helper('mailer');
+
         $this->mdl_quotes->reject_quote_by_id($quote_id);
+        email_quote_status($quote_id, "rejected");
+
         redirect_to('guest/quotes');
     }
 
 }
-
-?>

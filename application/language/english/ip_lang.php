@@ -191,6 +191,10 @@ $lang['qty'] = 'Qty';
 $lang['quantity'] = 'Quantity';
 $lang['quote_date'] = 'Quote Date';
 $lang['quote_group'] = 'Quote Group';
+$lang['quote_status_email_subject'] = 'Client %1$s %2$s quote %3$s';
+$lang['quote_status_email_body'] = 'The client %1$s has %2$s the quote %3$s.
+
+Link to Quote: %4$s';
 $lang['quote_template'] = 'Quote Template';
 $lang['quote_to_invoice'] = 'Quote to Invoice';
 $lang['quote'] = 'Quote';
