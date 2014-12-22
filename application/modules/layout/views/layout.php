@@ -109,7 +109,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <?php echo lang('clients'); ?> &nbsp; <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('clients'); ?>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', lang('add_client')); ?></li>
@@ -119,7 +119,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <?php echo lang('quotes'); ?> &nbsp; <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('quotes'); ?>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-quote"><?php echo lang('create_quote'); ?></a></li>
@@ -129,7 +129,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <?php echo lang('invoices'); ?> &nbsp; <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('invoices'); ?>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-invoice"><?php echo lang('create_invoice'); ?></a></li>
@@ -140,7 +140,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <?php echo lang('payments'); ?> &nbsp; <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('payments'); ?>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('payments/form', lang('enter_payment')); ?></li>
@@ -150,7 +150,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <?php echo lang('reports'); ?> &nbsp; <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('reports'); ?>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('reports/invoice_aging', lang('invoice_aging')); ?></li>
@@ -177,7 +177,7 @@
                        class="tip icon" data-original-title="<?php echo lang('documentation'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-question-circle"></i>
-                        <span class="visible-xs"><?php echo lang('documentation'); ?></span>
+                        <span class="visible-xs">&nbsp;<?php echo lang('documentation'); ?></span>
                     </a>
                 </li>
 
@@ -186,7 +186,7 @@
                        data-original-title="<?php echo lang('settings'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-cogs"></i>
-                        <span class="visible-xs"><?php echo lang('settings'); ?></span>
+                        <span class="visible-xs">&nbsp;<?php echo lang('settings'); ?></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('custom_fields/index', lang('custom_fields')); ?></li>
@@ -197,7 +197,7 @@
                         <li><?php echo anchor('payment_methods/index', lang('payment_methods')); ?></li>
                         <li><?php echo anchor('tax_rates/index', lang('tax_rates')); ?></li>
                         <li><?php echo anchor('users/index', lang('user_accounts')); ?></li>
-                        <li class="divider"></li>
+                        <li class="divider hidden-xs hidden-sm"></li>
                         <li><?php echo anchor('settings', lang('system_settings')); ?></li>
                     </ul>
                 </li>
@@ -207,7 +207,7 @@
                        class="tip icon logout" data-placement="bottom"
                        data-original-title="<?php echo lang('logout'); ?>" >
                         <i class="fa fa-power-off"></i>
-                        <span class="visible-xs"><?php echo lang('logout'); ?></span>
+                        <span class="visible-xs">&nbsp;<?php echo lang('logout'); ?></span>
                     </a>
                 </li>
             </ul>

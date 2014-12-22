@@ -13,9 +13,7 @@
             <button type="button" class="navbar-toggle" data-toggle="collapse"
                     data-target="#ip-submenu-collapse">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <span><i class="fa fa-bars"></i></span>
             </button>
         </div>
 
