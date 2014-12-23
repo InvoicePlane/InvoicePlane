@@ -11,6 +11,34 @@ $().ready(function() {
     <?php $this->layout->load_view('layout/header_buttons'); ?>
 </div>
 
+<div class="submenu">
+    <div class="dropdown pull-right">
+        <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="settings-menu" data-toggle="dropdown">
+            <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="settings-menu">
+            <li>
+                <a data-toggle="tab" href="#settings-general"><?php echo lang('general'); ?></a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#settings-invoices"><?php echo lang('invoices'); ?></a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#settings-quotes"><?php echo lang('quotes'); ?></a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#settings-taxes"><?php echo lang('taxes'); ?></a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#settings-email"><?php echo lang('email'); ?></a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#settings-merchant"><?php echo lang('merchant_account'); ?></a>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <form method="post" id="form-settings" enctype="multipart/form-data">
 
 	<div class="tabbable tabs-below">
@@ -48,28 +76,3 @@ $().ready(function() {
 	</div>
 	
 </form>
-
-<nav id="subnavigation" class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
-    <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li class="active">
-                <a data-toggle="tab" href="#settings-general"><?php echo lang('general'); ?></a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#settings-invoices"><?php echo lang('invoices'); ?></a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#settings-quotes"><?php echo lang('quotes'); ?></a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#settings-taxes"><?php echo lang('taxes'); ?></a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#settings-email"><?php echo lang('email'); ?></a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#settings-merchant"><?php echo lang('merchant_account'); ?></a>
-            </li>
-        </ul>
-    </div>
-</nav>

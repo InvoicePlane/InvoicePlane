@@ -1,13 +1,16 @@
 @charset "UTF-8";
-/* =============================================================================
-   InvoicePlane
-   Sass Stylesheet
-   v1.0
-   ========================================================================== */
-/* =============================================================================
-   Import Bootstrap and other assets
-   ========================================================================== */
-/*! normalize.css v3.0.1 | MIT License | git.io/normalize */
+/*
+|   =========================================================
+|   InvoicePlane
+|   Sass Stylesheet
+|   =========================================================
+*/
+/*
+|   =========================================================
+|   Import Bootstrap and other assets
+|   =========================================================
+*/
+/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -25,6 +28,7 @@ footer,
 header,
 hgroup,
 main,
+menu,
 nav,
 section,
 summary {
@@ -46,7 +50,7 @@ template {
   display: none; }
 
 a {
-  background: transparent; }
+  background-color: transparent; }
 
 a:active,
 a:hover {
@@ -187,12 +191,15 @@ td,
 th {
   padding: 0; }
 
+/*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {
-  * {
-    text-shadow: none !important;
-    color: #000 !important;
+  *,
+  *:before,
+  *:after {
     background: transparent !important;
-    box-shadow: none !important; }
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important; }
 
   a,
   a:visited {
@@ -204,8 +211,8 @@ th {
   abbr[title]:after {
     content: " (" attr(title) ")"; }
 
-  a[href^="javascript:"]:after,
-  a[href^="#"]:after {
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
     content: ""; }
 
   pre,
@@ -239,10 +246,6 @@ th {
   .navbar {
     display: none; }
 
-  .table td,
-  .table th {
-    background-color: #fff !important; }
-
   .btn > .caret,
   .dropup > .btn > .caret {
     border-top-color: #000 !important; }
@@ -252,6 +255,9 @@ th {
 
   .table {
     border-collapse: collapse !important; }
+    .table td,
+    .table th {
+      background-color: #fff !important; }
 
   .table-bordered th,
   .table-bordered td {
@@ -287,10 +293,10 @@ textarea {
   line-height: inherit; }
 
 a {
-  color: #428bca;
+  color: #337ab7;
   text-decoration: none; }
   a:hover, a:focus {
-    color: #2a6496;
+    color: #23527c;
     text-decoration: underline; }
   a:focus {
     outline: thin dotted;
@@ -305,7 +311,6 @@ img {
 
 .img-responsive {
   display: block;
-  width: 100% \9;
   max-width: 100%;
   height: auto; }
 
@@ -322,7 +327,6 @@ img {
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   display: inline-block;
-  width: 100% \9;
   max-width: 100%;
   height: auto; }
 
@@ -443,9 +447,6 @@ small,
 .small {
   font-size: 85%; }
 
-cite {
-  font-style: normal; }
-
 mark,
 .mark {
   background-color: #fcf8e3;
@@ -479,10 +480,10 @@ mark,
   color: #777777; }
 
 .text-primary {
-  color: #428bca; }
+  color: #337ab7; }
 
 a.text-primary:hover {
-  color: #3071a9; }
+  color: #286090; }
 
 .text-success {
   color: #3c763d; }
@@ -512,10 +513,10 @@ a.text-danger:hover {
   color: #fff; }
 
 .bg-primary {
-  background-color: #428bca; }
+  background-color: #337ab7; }
 
 a.bg-primary:hover {
-  background-color: #3071a9; }
+  background-color: #286090; }
 
 .bg-success {
   background-color: #dff0d8; }
@@ -556,11 +557,13 @@ ol {
   ol ol {
     margin-bottom: 0; }
 
-.list-unstyled, .list-inline {
+.list-unstyled {
   padding-left: 0;
   list-style: none; }
 
 .list-inline {
+  padding-left: 0;
+  list-style: none;
   margin-left: -5px; }
   .list-inline > li {
     display: inline-block;
@@ -650,10 +653,6 @@ blockquote.pull-right {
   blockquote.pull-right .small:after {
     content: '\00A0 \2014'; }
 
-blockquote:before,
-blockquote:after {
-  content: ""; }
-
 address {
   margin-bottom: 20px;
   font-style: normal;
@@ -682,6 +681,7 @@ kbd {
   kbd kbd {
     padding: 0;
     font-size: 100%;
+    font-weight: bold;
     box-shadow: none; }
 
 pre {
@@ -1381,6 +1381,12 @@ pre {
 table {
   background-color: transparent; }
 
+caption {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #777777;
+  text-align: left; }
+
 th {
   text-align: left; }
 
@@ -1434,12 +1440,10 @@ th {
   .table-bordered > thead > tr > td {
     border-bottom-width: 2px; }
 
-.table-striped > tbody > tr:nth-child(odd) > td,
-.table-striped > tbody > tr:nth-child(odd) > th {
+.table-striped > tbody > tr:nth-child(odd) {
   background-color: #f9f9f9; }
 
-.table-hover > tbody > tr:hover > td,
-.table-hover > tbody > tr:hover > th {
+.table-hover > tbody > tr:hover {
   background-color: #f5f5f5; }
 
 table col[class*="col-"] {
@@ -1533,45 +1537,46 @@ table th[class*="col-"] {
 .table-hover > tbody > tr > th.danger:hover, .table-hover > tbody > tr.danger:hover > td, .table-hover > tbody > tr:hover > .danger, .table-hover > tbody > tr.danger:hover > th {
   background-color: #ebcccc; }
 
-@media screen and (max-width: 767px) {
-  .table-responsive {
-    width: 100%;
-    margin-bottom: 15px;
-    overflow-y: hidden;
-    overflow-x: auto;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    border: 1px solid #ddd;
-    -webkit-overflow-scrolling: touch; }
-    .table-responsive > .table {
-      margin-bottom: 0; }
-      .table-responsive > .table > thead > tr > th,
-      .table-responsive > .table > thead > tr > td,
-      .table-responsive > .table > tbody > tr > th,
-      .table-responsive > .table > tbody > tr > td,
-      .table-responsive > .table > tfoot > tr > th,
-      .table-responsive > .table > tfoot > tr > td {
-        white-space: nowrap; }
-    .table-responsive > .table-bordered {
-      border: 0; }
-      .table-responsive > .table-bordered > thead > tr > th:first-child,
-      .table-responsive > .table-bordered > thead > tr > td:first-child,
-      .table-responsive > .table-bordered > tbody > tr > th:first-child,
-      .table-responsive > .table-bordered > tbody > tr > td:first-child,
-      .table-responsive > .table-bordered > tfoot > tr > th:first-child,
-      .table-responsive > .table-bordered > tfoot > tr > td:first-child {
-        border-left: 0; }
-      .table-responsive > .table-bordered > thead > tr > th:last-child,
-      .table-responsive > .table-bordered > thead > tr > td:last-child,
-      .table-responsive > .table-bordered > tbody > tr > th:last-child,
-      .table-responsive > .table-bordered > tbody > tr > td:last-child,
-      .table-responsive > .table-bordered > tfoot > tr > th:last-child,
-      .table-responsive > .table-bordered > tfoot > tr > td:last-child {
-        border-right: 0; }
-      .table-responsive > .table-bordered > tbody > tr:last-child > th,
-      .table-responsive > .table-bordered > tbody > tr:last-child > td,
-      .table-responsive > .table-bordered > tfoot > tr:last-child > th,
-      .table-responsive > .table-bordered > tfoot > tr:last-child > td {
-        border-bottom: 0; } }
+.table-responsive {
+  overflow-x: auto;
+  min-height: 0.01%; }
+  @media screen and (max-width: 767px) {
+    .table-responsive {
+      width: 100%;
+      margin-bottom: 15px;
+      overflow-y: hidden;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+      border: 1px solid #ddd; }
+      .table-responsive > .table {
+        margin-bottom: 0; }
+        .table-responsive > .table > thead > tr > th,
+        .table-responsive > .table > thead > tr > td,
+        .table-responsive > .table > tbody > tr > th,
+        .table-responsive > .table > tbody > tr > td,
+        .table-responsive > .table > tfoot > tr > th,
+        .table-responsive > .table > tfoot > tr > td {
+          white-space: nowrap; }
+      .table-responsive > .table-bordered {
+        border: 0; }
+        .table-responsive > .table-bordered > thead > tr > th:first-child,
+        .table-responsive > .table-bordered > thead > tr > td:first-child,
+        .table-responsive > .table-bordered > tbody > tr > th:first-child,
+        .table-responsive > .table-bordered > tbody > tr > td:first-child,
+        .table-responsive > .table-bordered > tfoot > tr > th:first-child,
+        .table-responsive > .table-bordered > tfoot > tr > td:first-child {
+          border-left: 0; }
+        .table-responsive > .table-bordered > thead > tr > th:last-child,
+        .table-responsive > .table-bordered > thead > tr > td:last-child,
+        .table-responsive > .table-bordered > tbody > tr > th:last-child,
+        .table-responsive > .table-bordered > tbody > tr > td:last-child,
+        .table-responsive > .table-bordered > tfoot > tr > th:last-child,
+        .table-responsive > .table-bordered > tfoot > tr > td:last-child {
+          border-right: 0; }
+        .table-responsive > .table-bordered > tbody > tr:last-child > th,
+        .table-responsive > .table-bordered > tbody > tr:last-child > td,
+        .table-responsive > .table-bordered > tfoot > tr:last-child > th,
+        .table-responsive > .table-bordered > tfoot > tr:last-child > td {
+          border-bottom: 0; } }
 
 fieldset {
   padding: 0;
@@ -1655,12 +1660,12 @@ output {
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6); }
   .form-control::-moz-placeholder {
-    color: #777777;
+    color: #999;
     opacity: 1; }
   .form-control:-ms-input-placeholder {
-    color: #777777; }
+    color: #999; }
   .form-control::-webkit-input-placeholder {
-    color: #777777; }
+    color: #999; }
   .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
     cursor: not-allowed;
     background-color: #eeeeee;
@@ -1672,51 +1677,46 @@ textarea.form-control {
 input[type="search"] {
   -webkit-appearance: none; }
 
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"],
-input[type="month"] {
-  line-height: 34px;
-  line-height: 1.428571429 \0; }
-  input[type="date"].input-sm, .form-horizontal .form-group-sm input[type="date"].form-control, .input-group-sm > input[type="date"].form-control,
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  input[type="month"] {
+    line-height: 34px; }
+
+  input[type="date"].input-sm, .input-group-sm > input[type="date"].form-control,
   .input-group-sm > input[type="date"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="date"].btn,
   input[type="time"].input-sm,
-  .form-horizontal .form-group-sm input[type="time"].form-control,
   .input-group-sm > input[type="time"].form-control,
   .input-group-sm > input[type="time"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="time"].btn,
   input[type="datetime-local"].input-sm,
-  .form-horizontal .form-group-sm input[type="datetime-local"].form-control,
   .input-group-sm > input[type="datetime-local"].form-control,
   .input-group-sm > input[type="datetime-local"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="datetime-local"].btn,
   input[type="month"].input-sm,
-  .form-horizontal .form-group-sm input[type="month"].form-control,
   .input-group-sm > input[type="month"].form-control,
   .input-group-sm > input[type="month"].input-group-addon,
   .input-group-sm > .input-group-btn > input[type="month"].btn {
     line-height: 30px; }
-  input[type="date"].input-lg, .form-horizontal .form-group-lg input[type="date"].form-control, .input-group-lg > input[type="date"].form-control,
+
+  input[type="date"].input-lg, .input-group-lg > input[type="date"].form-control,
   .input-group-lg > input[type="date"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="date"].btn,
   input[type="time"].input-lg,
-  .form-horizontal .form-group-lg input[type="time"].form-control,
   .input-group-lg > input[type="time"].form-control,
   .input-group-lg > input[type="time"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="time"].btn,
   input[type="datetime-local"].input-lg,
-  .form-horizontal .form-group-lg input[type="datetime-local"].form-control,
   .input-group-lg > input[type="datetime-local"].form-control,
   .input-group-lg > input[type="datetime-local"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="datetime-local"].btn,
   input[type="month"].input-lg,
-  .form-horizontal .form-group-lg input[type="month"].form-control,
   .input-group-lg > input[type="month"].form-control,
   .input-group-lg > input[type="month"].input-group-addon,
   .input-group-lg > .input-group-btn > input[type="month"].btn {
-    line-height: 46px; }
-
+    line-height: 46px; } }
 .form-group {
   margin-bottom: 15px; }
 
@@ -1724,11 +1724,11 @@ input[type="month"] {
 .checkbox {
   position: relative;
   display: block;
-  min-height: 20px;
   margin-top: 10px;
   margin-bottom: 10px; }
   .radio label,
   .checkbox label {
+    min-height: 20px;
     padding-left: 20px;
     margin-bottom: 0;
     font-weight: normal;
@@ -1780,62 +1780,60 @@ input[type="checkbox"] {
   padding-top: 7px;
   padding-bottom: 7px;
   margin-bottom: 0; }
-  .form-control-static.input-lg, .form-horizontal .form-group-lg .form-control-static.form-control, .input-group-lg > .form-control-static.form-control,
+  .form-control-static.input-lg, .input-group-lg > .form-control-static.form-control,
   .input-group-lg > .form-control-static.input-group-addon,
-  .input-group-lg > .input-group-btn > .form-control-static.btn, .form-control-static.input-sm, .form-horizontal .form-group-sm .form-control-static.form-control, .input-group-sm > .form-control-static.form-control,
+  .input-group-lg > .input-group-btn > .form-control-static.btn, .form-control-static.input-sm, .input-group-sm > .form-control-static.form-control,
   .input-group-sm > .form-control-static.input-group-addon,
   .input-group-sm > .input-group-btn > .form-control-static.btn {
     padding-left: 0;
     padding-right: 0; }
 
-.input-sm, .form-horizontal .form-group-sm .form-control, .input-group-sm > .form-control,
+.input-sm, .input-group-sm > .form-control,
 .input-group-sm > .input-group-addon,
-.input-group-sm > .input-group-btn > .btn {
+.input-group-sm > .input-group-btn > .btn, .form-group-sm .form-control {
   height: 30px;
   padding: 5px 10px;
   font-size: 12px;
   line-height: 1.5;
   border-radius: 3px; }
 
-select.input-sm, .form-horizontal .form-group-sm select.form-control, .input-group-sm > select.form-control,
+select.input-sm, .input-group-sm > select.form-control,
 .input-group-sm > select.input-group-addon,
-.input-group-sm > .input-group-btn > select.btn {
+.input-group-sm > .input-group-btn > select.btn, .form-group-sm .form-control {
   height: 30px;
   line-height: 30px; }
 
-textarea.input-sm, .form-horizontal .form-group-sm textarea.form-control, .input-group-sm > textarea.form-control,
+textarea.input-sm, .input-group-sm > textarea.form-control,
 .input-group-sm > textarea.input-group-addon,
-.input-group-sm > .input-group-btn > textarea.btn,
+.input-group-sm > .input-group-btn > textarea.btn, .form-group-sm .form-control,
 select[multiple].input-sm,
-.form-horizontal .form-group-sm select[multiple].form-control,
 .input-group-sm > select[multiple].form-control,
 .input-group-sm > select[multiple].input-group-addon,
-.input-group-sm > .input-group-btn > select[multiple].btn {
+.input-group-sm > .input-group-btn > select[multiple].btn, .form-group-sm .form-control {
   height: auto; }
 
-.input-lg, .form-horizontal .form-group-lg .form-control, .input-group-lg > .form-control,
+.input-lg, .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
-.input-group-lg > .input-group-btn > .btn {
+.input-group-lg > .input-group-btn > .btn, .form-group-lg .form-control {
   height: 46px;
   padding: 10px 16px;
   font-size: 18px;
   line-height: 1.33;
   border-radius: 6px; }
 
-select.input-lg, .form-horizontal .form-group-lg select.form-control, .input-group-lg > select.form-control,
+select.input-lg, .input-group-lg > select.form-control,
 .input-group-lg > select.input-group-addon,
-.input-group-lg > .input-group-btn > select.btn {
+.input-group-lg > .input-group-btn > select.btn, .form-group-lg .form-control {
   height: 46px;
   line-height: 46px; }
 
-textarea.input-lg, .form-horizontal .form-group-lg textarea.form-control, .input-group-lg > textarea.form-control,
+textarea.input-lg, .input-group-lg > textarea.form-control,
 .input-group-lg > textarea.input-group-addon,
-.input-group-lg > .input-group-btn > textarea.btn,
+.input-group-lg > .input-group-btn > textarea.btn, .form-group-lg .form-control,
 select[multiple].input-lg,
-.form-horizontal .form-group-lg select[multiple].form-control,
 .input-group-lg > select[multiple].form-control,
 .input-group-lg > select[multiple].input-group-addon,
-.input-group-lg > .input-group-btn > select[multiple].btn {
+.input-group-lg > .input-group-btn > select[multiple].btn, .form-group-lg .form-control {
   height: auto; }
 
 .has-feedback {
@@ -1845,23 +1843,24 @@ select[multiple].input-lg,
 
 .form-control-feedback {
   position: absolute;
-  top: 25px;
+  top: 0;
   right: 0;
   z-index: 2;
   display: block;
   width: 34px;
   height: 34px;
   line-height: 34px;
-  text-align: center; }
+  text-align: center;
+  pointer-events: none; }
 
-.input-lg + .form-control-feedback, .form-horizontal .form-group-lg .form-control + .form-control-feedback, .input-group-lg > .form-control + .form-control-feedback,
+.input-lg + .form-control-feedback, .input-group-lg > .form-control + .form-control-feedback,
 .input-group-lg > .input-group-addon + .form-control-feedback,
 .input-group-lg > .input-group-btn > .btn + .form-control-feedback {
   width: 46px;
   height: 46px;
   line-height: 46px; }
 
-.input-sm + .form-control-feedback, .form-horizontal .form-group-sm .form-control + .form-control-feedback, .input-group-sm > .form-control + .form-control-feedback,
+.input-sm + .form-control-feedback, .input-group-sm > .form-control + .form-control-feedback,
 .input-group-sm > .input-group-addon + .form-control-feedback,
 .input-group-sm > .input-group-btn > .btn + .form-control-feedback {
   width: 30px;
@@ -1873,7 +1872,7 @@ select[multiple].input-lg,
 .has-success .radio,
 .has-success .checkbox,
 .has-success .radio-inline,
-.has-success .checkbox-inline {
+.has-success .checkbox-inline, .has-success.radio label, .has-success.checkbox label, .has-success.radio-inline label, .has-success.checkbox-inline label {
   color: #3c763d; }
 .has-success .form-control {
   border-color: #3c763d;
@@ -1895,7 +1894,7 @@ select[multiple].input-lg,
 .has-warning .radio,
 .has-warning .checkbox,
 .has-warning .radio-inline,
-.has-warning .checkbox-inline {
+.has-warning .checkbox-inline, .has-warning.radio label, .has-warning.checkbox label, .has-warning.radio-inline label, .has-warning.checkbox-inline label {
   color: #8a6d3b; }
 .has-warning .form-control {
   border-color: #8a6d3b;
@@ -1917,7 +1916,7 @@ select[multiple].input-lg,
 .has-error .radio,
 .has-error .checkbox,
 .has-error .radio-inline,
-.has-error .checkbox-inline {
+.has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label, .has-error.checkbox-inline label {
   color: #a94442; }
 .has-error .form-control {
   border-color: #a94442;
@@ -1934,6 +1933,8 @@ select[multiple].input-lg,
 .has-error .form-control-feedback {
   color: #a94442; }
 
+.has-feedback label ~ .form-control-feedback {
+  top: 25px; }
 .has-feedback label.sr-only ~ .form-control-feedback {
   top: 0; }
 
@@ -1944,45 +1945,42 @@ select[multiple].input-lg,
   color: #737373; }
 
 @media (min-width: 768px) {
-  .form-inline .form-group, .navbar-form .form-group {
+  .form-inline .form-group {
     display: inline-block;
     margin-bottom: 0;
     vertical-align: middle; }
-  .form-inline .form-control, .navbar-form .form-control {
+  .form-inline .form-control {
     display: inline-block;
     width: auto;
     vertical-align: middle; }
-  .form-inline .input-group, .navbar-form .input-group {
+  .form-inline .form-control-static {
+    display: inline-block; }
+  .form-inline .input-group {
     display: inline-table;
     vertical-align: middle; }
-    .form-inline .input-group .input-group-addon, .navbar-form .input-group .input-group-addon,
+    .form-inline .input-group .input-group-addon,
     .form-inline .input-group .input-group-btn,
-    .navbar-form .input-group .input-group-btn,
-    .form-inline .input-group .form-control,
-    .navbar-form .input-group .form-control {
+    .form-inline .input-group .form-control {
       width: auto; }
-  .form-inline .input-group > .form-control, .navbar-form .input-group > .form-control {
+  .form-inline .input-group > .form-control {
     width: 100%; }
-  .form-inline .control-label, .navbar-form .control-label {
+  .form-inline .control-label {
     margin-bottom: 0;
     vertical-align: middle; }
-  .form-inline .radio, .navbar-form .radio,
-  .form-inline .checkbox,
-  .navbar-form .checkbox {
+  .form-inline .radio,
+  .form-inline .checkbox {
     display: inline-block;
     margin-top: 0;
     margin-bottom: 0;
     vertical-align: middle; }
-    .form-inline .radio label, .navbar-form .radio label,
-    .form-inline .checkbox label,
-    .navbar-form .checkbox label {
+    .form-inline .radio label,
+    .form-inline .checkbox label {
       padding-left: 0; }
-  .form-inline .radio input[type="radio"], .navbar-form .radio input[type="radio"],
-  .form-inline .checkbox input[type="checkbox"],
-  .navbar-form .checkbox input[type="checkbox"] {
+  .form-inline .radio input[type="radio"],
+  .form-inline .checkbox input[type="checkbox"] {
     position: relative;
     margin-left: 0; }
-  .form-inline .has-feedback .form-control-feedback, .navbar-form .has-feedback .form-control-feedback {
+  .form-inline .has-feedback .form-control-feedback {
     top: 0; } }
 
 .form-horizontal .radio,
@@ -2009,7 +2007,6 @@ select[multiple].input-lg,
     margin-bottom: 0;
     padding-top: 7px; } }
 .form-horizontal .has-feedback .form-control-feedback {
-  top: 0;
   right: 15px; }
 @media (min-width: 768px) {
   .form-horizontal .form-group-lg .control-label {
@@ -2024,6 +2021,7 @@ select[multiple].input-lg,
   font-weight: normal;
   text-align: center;
   vertical-align: middle;
+  touch-action: manipulation;
   cursor: pointer;
   background-image: none;
   border: 1px solid transparent;
@@ -2036,11 +2034,11 @@ select[multiple].input-lg,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
-  .btn:focus, .btn:active:focus, .btn.active:focus {
+  .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
     outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
-  .btn:hover, .btn:focus {
+  .btn:hover, .btn:focus, .btn.focus {
     color: #333;
     text-decoration: none; }
   .btn:active, .btn.active {
@@ -2060,13 +2058,13 @@ select[multiple].input-lg,
   color: #333;
   background-color: #fff;
   border-color: #ccc; }
-  .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .btn-default.dropdown-toggle {
+  .btn-default:hover, .btn-default:focus, .btn-default.focus, .btn-default:active, .btn-default.active, .open > .btn-default.dropdown-toggle {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad; }
   .btn-default:active, .btn-default.active, .open > .btn-default.dropdown-toggle {
     background-image: none; }
-  .btn-default.disabled, .btn-default.disabled:hover, .btn-default.disabled:focus, .btn-default.disabled:active, .btn-default.disabled.active, .btn-default[disabled], .btn-default[disabled]:hover, .btn-default[disabled]:focus, .btn-default[disabled]:active, .btn-default[disabled].active, fieldset[disabled] .btn-default, fieldset[disabled] .btn-default:hover, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default:active, fieldset[disabled] .btn-default.active {
+  .btn-default.disabled, .btn-default.disabled:hover, .btn-default.disabled:focus, .btn-default.disabled.focus, .btn-default.disabled:active, .btn-default.disabled.active, .btn-default[disabled], .btn-default[disabled]:hover, .btn-default[disabled]:focus, .btn-default[disabled].focus, .btn-default[disabled]:active, .btn-default[disabled].active, fieldset[disabled] .btn-default, fieldset[disabled] .btn-default:hover, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default.focus, fieldset[disabled] .btn-default:active, fieldset[disabled] .btn-default.active {
     background-color: #fff;
     border-color: #ccc; }
   .btn-default .badge {
@@ -2075,32 +2073,32 @@ select[multiple].input-lg,
 
 .btn-primary {
   color: #fff;
-  background-color: #428bca;
-  border-color: #357ebd; }
-  .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
+  background-color: #337ab7;
+  border-color: #2e6da4; }
+  .btn-primary:hover, .btn-primary:focus, .btn-primary.focus, .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #3071a9;
-    border-color: #285e8e; }
+    background-color: #286090;
+    border-color: #204d74; }
   .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
     background-image: none; }
-  .btn-primary.disabled, .btn-primary.disabled:hover, .btn-primary.disabled:focus, .btn-primary.disabled:active, .btn-primary.disabled.active, .btn-primary[disabled], .btn-primary[disabled]:hover, .btn-primary[disabled]:focus, .btn-primary[disabled]:active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary, fieldset[disabled] .btn-primary:hover, fieldset[disabled] .btn-primary:focus, fieldset[disabled] .btn-primary:active, fieldset[disabled] .btn-primary.active {
-    background-color: #428bca;
-    border-color: #357ebd; }
+  .btn-primary.disabled, .btn-primary.disabled:hover, .btn-primary.disabled:focus, .btn-primary.disabled.focus, .btn-primary.disabled:active, .btn-primary.disabled.active, .btn-primary[disabled], .btn-primary[disabled]:hover, .btn-primary[disabled]:focus, .btn-primary[disabled].focus, .btn-primary[disabled]:active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary, fieldset[disabled] .btn-primary:hover, fieldset[disabled] .btn-primary:focus, fieldset[disabled] .btn-primary.focus, fieldset[disabled] .btn-primary:active, fieldset[disabled] .btn-primary.active {
+    background-color: #337ab7;
+    border-color: #2e6da4; }
   .btn-primary .badge {
-    color: #428bca;
+    color: #337ab7;
     background-color: #fff; }
 
 .btn-success {
   color: #fff;
   background-color: #5cb85c;
   border-color: #4cae4c; }
-  .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
+  .btn-success:hover, .btn-success:focus, .btn-success.focus, .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
     color: #fff;
     background-color: #449d44;
     border-color: #398439; }
   .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
     background-image: none; }
-  .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
+  .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled.focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled].focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success.focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
     background-color: #5cb85c;
     border-color: #4cae4c; }
   .btn-success .badge {
@@ -2111,13 +2109,13 @@ select[multiple].input-lg,
   color: #fff;
   background-color: #5bc0de;
   border-color: #46b8da; }
-  .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open > .btn-info.dropdown-toggle {
+  .btn-info:hover, .btn-info:focus, .btn-info.focus, .btn-info:active, .btn-info.active, .open > .btn-info.dropdown-toggle {
     color: #fff;
     background-color: #31b0d5;
     border-color: #269abc; }
   .btn-info:active, .btn-info.active, .open > .btn-info.dropdown-toggle {
     background-image: none; }
-  .btn-info.disabled, .btn-info.disabled:hover, .btn-info.disabled:focus, .btn-info.disabled:active, .btn-info.disabled.active, .btn-info[disabled], .btn-info[disabled]:hover, .btn-info[disabled]:focus, .btn-info[disabled]:active, .btn-info[disabled].active, fieldset[disabled] .btn-info, fieldset[disabled] .btn-info:hover, fieldset[disabled] .btn-info:focus, fieldset[disabled] .btn-info:active, fieldset[disabled] .btn-info.active {
+  .btn-info.disabled, .btn-info.disabled:hover, .btn-info.disabled:focus, .btn-info.disabled.focus, .btn-info.disabled:active, .btn-info.disabled.active, .btn-info[disabled], .btn-info[disabled]:hover, .btn-info[disabled]:focus, .btn-info[disabled].focus, .btn-info[disabled]:active, .btn-info[disabled].active, fieldset[disabled] .btn-info, fieldset[disabled] .btn-info:hover, fieldset[disabled] .btn-info:focus, fieldset[disabled] .btn-info.focus, fieldset[disabled] .btn-info:active, fieldset[disabled] .btn-info.active {
     background-color: #5bc0de;
     border-color: #46b8da; }
   .btn-info .badge {
@@ -2128,13 +2126,13 @@ select[multiple].input-lg,
   color: #fff;
   background-color: #f0ad4e;
   border-color: #eea236; }
-  .btn-warning:hover, .btn-warning:focus, .btn-warning:active, .btn-warning.active, .open > .btn-warning.dropdown-toggle {
+  .btn-warning:hover, .btn-warning:focus, .btn-warning.focus, .btn-warning:active, .btn-warning.active, .open > .btn-warning.dropdown-toggle {
     color: #fff;
     background-color: #ec971f;
     border-color: #d58512; }
   .btn-warning:active, .btn-warning.active, .open > .btn-warning.dropdown-toggle {
     background-image: none; }
-  .btn-warning.disabled, .btn-warning.disabled:hover, .btn-warning.disabled:focus, .btn-warning.disabled:active, .btn-warning.disabled.active, .btn-warning[disabled], .btn-warning[disabled]:hover, .btn-warning[disabled]:focus, .btn-warning[disabled]:active, .btn-warning[disabled].active, fieldset[disabled] .btn-warning, fieldset[disabled] .btn-warning:hover, fieldset[disabled] .btn-warning:focus, fieldset[disabled] .btn-warning:active, fieldset[disabled] .btn-warning.active {
+  .btn-warning.disabled, .btn-warning.disabled:hover, .btn-warning.disabled:focus, .btn-warning.disabled.focus, .btn-warning.disabled:active, .btn-warning.disabled.active, .btn-warning[disabled], .btn-warning[disabled]:hover, .btn-warning[disabled]:focus, .btn-warning[disabled].focus, .btn-warning[disabled]:active, .btn-warning[disabled].active, fieldset[disabled] .btn-warning, fieldset[disabled] .btn-warning:hover, fieldset[disabled] .btn-warning:focus, fieldset[disabled] .btn-warning.focus, fieldset[disabled] .btn-warning:active, fieldset[disabled] .btn-warning.active {
     background-color: #f0ad4e;
     border-color: #eea236; }
   .btn-warning .badge {
@@ -2145,13 +2143,13 @@ select[multiple].input-lg,
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a; }
-  .btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active, .open > .btn-danger.dropdown-toggle {
+  .btn-danger:hover, .btn-danger:focus, .btn-danger.focus, .btn-danger:active, .btn-danger.active, .open > .btn-danger.dropdown-toggle {
     color: #fff;
     background-color: #c9302c;
     border-color: #ac2925; }
   .btn-danger:active, .btn-danger.active, .open > .btn-danger.dropdown-toggle {
     background-image: none; }
-  .btn-danger.disabled, .btn-danger.disabled:hover, .btn-danger.disabled:focus, .btn-danger.disabled:active, .btn-danger.disabled.active, .btn-danger[disabled], .btn-danger[disabled]:hover, .btn-danger[disabled]:focus, .btn-danger[disabled]:active, .btn-danger[disabled].active, fieldset[disabled] .btn-danger, fieldset[disabled] .btn-danger:hover, fieldset[disabled] .btn-danger:focus, fieldset[disabled] .btn-danger:active, fieldset[disabled] .btn-danger.active {
+  .btn-danger.disabled, .btn-danger.disabled:hover, .btn-danger.disabled:focus, .btn-danger.disabled.focus, .btn-danger.disabled:active, .btn-danger.disabled.active, .btn-danger[disabled], .btn-danger[disabled]:hover, .btn-danger[disabled]:focus, .btn-danger[disabled].focus, .btn-danger[disabled]:active, .btn-danger[disabled].active, fieldset[disabled] .btn-danger, fieldset[disabled] .btn-danger:hover, fieldset[disabled] .btn-danger:focus, fieldset[disabled] .btn-danger.focus, fieldset[disabled] .btn-danger:active, fieldset[disabled] .btn-danger.active {
     background-color: #d9534f;
     border-color: #d43f3a; }
   .btn-danger .badge {
@@ -2159,18 +2157,17 @@ select[multiple].input-lg,
     background-color: #fff; }
 
 .btn-link {
-  color: #428bca;
+  color: #337ab7;
   font-weight: normal;
-  cursor: pointer;
   border-radius: 0; }
-  .btn-link, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+  .btn-link, .btn-link:active, .btn-link.active, .btn-link[disabled], fieldset[disabled] .btn-link {
     background-color: transparent;
     -webkit-box-shadow: none;
     box-shadow: none; }
   .btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active {
     border-color: transparent; }
   .btn-link:hover, .btn-link:focus {
-    color: #2a6496;
+    color: #23527c;
     text-decoration: underline;
     background-color: transparent; }
   .btn-link[disabled]:hover, .btn-link[disabled]:focus, fieldset[disabled] .btn-link:hover, fieldset[disabled] .btn-link:focus {
@@ -2216,9 +2213,11 @@ input[type="button"].btn-block {
     opacity: 1; }
 
 .collapse {
-  display: none; }
+  display: none;
+  visibility: hidden; }
   .collapse.in {
-    display: block; }
+    display: block;
+    visibility: visible; }
 
 tr.collapse.in {
   display: table-row; }
@@ -2230,9 +2229,12 @@ tbody.collapse.in {
   position: relative;
   height: 0;
   overflow: hidden;
-  -webkit-transition: height 0.35s ease;
-  -o-transition: height 0.35s ease;
-  transition: height 0.35s ease; }
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease; }
 
 .caret {
   display: inline-block;
@@ -2296,11 +2298,10 @@ tbody.collapse.in {
   color: #fff;
   text-decoration: none;
   outline: 0;
-  background-color: #428bca; }
+  background-color: #337ab7; }
 
 .dropdown-menu > .disabled > a, .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
   color: #777777; }
-
 .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
   text-decoration: none;
   background-color: transparent;
@@ -2374,9 +2375,6 @@ tbody.collapse.in {
     .btn-group-vertical > .btn:active,
     .btn-group-vertical > .btn.active {
       z-index: 2; }
-    .btn-group > .btn:focus,
-    .btn-group-vertical > .btn:focus {
-      outline: 0; }
 
 .btn-group .btn + .btn,
 .btn-group .btn + .btn-group,
@@ -2516,12 +2514,13 @@ tbody.collapse.in {
   .btn-group-justified > .btn-group .dropdown-menu {
     left: auto; }
 
-[data-toggle="buttons"] > .btn > input[type="radio"],
-[data-toggle="buttons"] > .btn > input[type="checkbox"] {
+[data-toggle="buttons"] > .btn input[type="radio"],
+[data-toggle="buttons"] > .btn input[type="checkbox"],
+[data-toggle="buttons"] > .btn-group > .btn input[type="radio"],
+[data-toggle="buttons"] > .btn-group > .btn input[type="checkbox"] {
   position: absolute;
-  z-index: -1;
-  opacity: 0;
-  filter: alpha(opacity=0); }
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none; }
 
 .input-group {
   position: relative;
@@ -2563,13 +2562,13 @@ tbody.collapse.in {
   background-color: #eeeeee;
   border: 1px solid #ccc;
   border-radius: 4px; }
-  .input-group-addon.input-sm, .form-horizontal .form-group-sm .input-group-addon.form-control,
+  .input-group-addon.input-sm,
   .input-group-sm > .input-group-addon,
   .input-group-sm > .input-group-btn > .input-group-addon.btn {
     padding: 5px 10px;
     font-size: 12px;
     border-radius: 3px; }
-  .input-group-addon.input-lg, .form-horizontal .form-group-lg .input-group-addon.form-control,
+  .input-group-addon.input-lg,
   .input-group-lg > .input-group-addon,
   .input-group-lg > .input-group-btn > .input-group-addon.btn {
     padding: 10px 16px;
@@ -2650,7 +2649,7 @@ tbody.collapse.in {
         cursor: not-allowed; }
   .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
     background-color: #eeeeee;
-    border-color: #428bca; }
+    border-color: #337ab7; }
   .nav .nav-divider {
     height: 1px;
     margin: 9px 0;
@@ -2686,7 +2685,7 @@ tbody.collapse.in {
     margin-left: 2px; }
   .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
     color: #fff;
-    background-color: #428bca; }
+    background-color: #337ab7; }
 
 .nav-stacked > li {
   float: none; }
@@ -2734,9 +2733,11 @@ tbody.collapse.in {
       border-bottom-color: #fff; } }
 
 .tab-content > .tab-pane {
-  display: none; }
+  display: none;
+  visibility: hidden; }
 .tab-content > .active {
-  display: block; }
+  display: block;
+  visibility: visible; }
 
 .nav-tabs .dropdown-menu {
   margin-top: -1px;
@@ -2787,6 +2788,7 @@ tbody.collapse.in {
       box-shadow: none; }
       .navbar-collapse.collapse {
         display: block !important;
+        visibility: visible !important;
         height: auto !important;
         padding-bottom: 0;
         overflow: visible !important; }
@@ -2799,7 +2801,7 @@ tbody.collapse.in {
 .navbar-fixed-top .navbar-collapse,
 .navbar-fixed-bottom .navbar-collapse {
   max-height: 340px; }
-  @media (max-width: 480px) and (orientation: landscape) {
+  @media (max-device-width: 480px) and (orientation: landscape) {
     .navbar-fixed-top .navbar-collapse,
     .navbar-fixed-bottom .navbar-collapse {
       max-height: 200px; } }
@@ -2830,9 +2832,7 @@ tbody.collapse.in {
   position: fixed;
   right: 0;
   left: 0;
-  z-index: 1030;
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0); }
+  z-index: 1030; }
   @media (min-width: 768px) {
     .navbar-fixed-top,
     .navbar-fixed-bottom {
@@ -2855,6 +2855,8 @@ tbody.collapse.in {
   height: 50px; }
   .navbar-brand:hover, .navbar-brand:focus {
     text-decoration: none; }
+  .navbar-brand > img {
+    display: block; }
   @media (min-width: 768px) {
     .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
       margin-left: -15px; } }
@@ -2913,16 +2915,8 @@ tbody.collapse.in {
         float: left; }
         .navbar-nav > li > a {
           padding-top: 15px;
-          padding-bottom: 15px; }
-      .navbar-nav.navbar-right:last-child {
-        margin-right: -15px; } }
+          padding-bottom: 15px; } }
 
-@media (min-width: 768px) {
-  .navbar-left {
-    float: left !important; }
-
-  .navbar-right {
-    float: right !important; } }
 .navbar-form {
   margin-left: -15px;
   margin-right: -15px;
@@ -2933,9 +2927,49 @@ tbody.collapse.in {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
   margin-top: 8px;
   margin-bottom: 8px; }
+  @media (min-width: 768px) {
+    .navbar-form .form-group {
+      display: inline-block;
+      margin-bottom: 0;
+      vertical-align: middle; }
+    .navbar-form .form-control {
+      display: inline-block;
+      width: auto;
+      vertical-align: middle; }
+    .navbar-form .form-control-static {
+      display: inline-block; }
+    .navbar-form .input-group {
+      display: inline-table;
+      vertical-align: middle; }
+      .navbar-form .input-group .input-group-addon,
+      .navbar-form .input-group .input-group-btn,
+      .navbar-form .input-group .form-control {
+        width: auto; }
+    .navbar-form .input-group > .form-control {
+      width: 100%; }
+    .navbar-form .control-label {
+      margin-bottom: 0;
+      vertical-align: middle; }
+    .navbar-form .radio,
+    .navbar-form .checkbox {
+      display: inline-block;
+      margin-top: 0;
+      margin-bottom: 0;
+      vertical-align: middle; }
+      .navbar-form .radio label,
+      .navbar-form .checkbox label {
+        padding-left: 0; }
+    .navbar-form .radio input[type="radio"],
+    .navbar-form .checkbox input[type="checkbox"] {
+      position: relative;
+      margin-left: 0; }
+    .navbar-form .has-feedback .form-control-feedback {
+      top: 0; } }
   @media (max-width: 767px) {
     .navbar-form .form-group {
-      margin-bottom: 5px; } }
+      margin-bottom: 5px; }
+      .navbar-form .form-group:last-child {
+        margin-bottom: 0; } }
   @media (min-width: 768px) {
     .navbar-form {
       width: auto;
@@ -2945,9 +2979,7 @@ tbody.collapse.in {
       padding-top: 0;
       padding-bottom: 0;
       -webkit-box-shadow: none;
-      box-shadow: none; }
-      .navbar-form.navbar-right:last-child {
-        margin-right: -15px; } }
+      box-shadow: none; } }
 
 .navbar-nav > li > .dropdown-menu {
   margin-top: 0;
@@ -2955,6 +2987,8 @@ tbody.collapse.in {
   border-top-left-radius: 0; }
 
 .navbar-fixed-bottom .navbar-nav > li > .dropdown-menu {
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0; }
 
@@ -2975,10 +3009,17 @@ tbody.collapse.in {
     .navbar-text {
       float: left;
       margin-left: 15px;
-      margin-right: 15px; }
-      .navbar-text.navbar-right:last-child {
-        margin-right: 0; } }
+      margin-right: 15px; } }
 
+@media (min-width: 768px) {
+  .navbar-left {
+    float: left !important; }
+
+  .navbar-right {
+    float: right !important;
+    margin-right: -15px; }
+    .navbar-right ~ .navbar-right {
+      margin-right: 0; } }
 .navbar-default {
   background-color: #f8f8f8;
   border-color: #e7e7e7; }
@@ -3039,14 +3080,14 @@ tbody.collapse.in {
   background-color: #222;
   border-color: #090909; }
   .navbar-inverse .navbar-brand {
-    color: #777777; }
+    color: #9d9d9d; }
     .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
       color: #fff;
       background-color: transparent; }
   .navbar-inverse .navbar-text {
-    color: #777777; }
+    color: #9d9d9d; }
   .navbar-inverse .navbar-nav > li > a {
-    color: #777777; }
+    color: #9d9d9d; }
     .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
       color: #fff;
       background-color: transparent; }
@@ -3074,7 +3115,7 @@ tbody.collapse.in {
     .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
       background-color: #090909; }
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
-      color: #777777; }
+      color: #9d9d9d; }
       .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
         color: #fff;
         background-color: transparent; }
@@ -3085,30 +3126,15 @@ tbody.collapse.in {
       color: #444;
       background-color: transparent; } }
   .navbar-inverse .navbar-link {
-    color: #777777; }
+    color: #9d9d9d; }
     .navbar-inverse .navbar-link:hover {
       color: #fff; }
   .navbar-inverse .btn-link {
-    color: #777777; }
+    color: #9d9d9d; }
     .navbar-inverse .btn-link:hover, .navbar-inverse .btn-link:focus {
       color: #fff; }
     .navbar-inverse .btn-link[disabled]:hover, .navbar-inverse .btn-link[disabled]:focus, fieldset[disabled] .navbar-inverse .btn-link:hover, fieldset[disabled] .navbar-inverse .btn-link:focus {
       color: #444; }
-
-.breadcrumb {
-  padding: 8px 15px;
-  margin-bottom: 20px;
-  list-style: none;
-  background-color: #f5f5f5;
-  border-radius: 4px; }
-  .breadcrumb > li {
-    display: inline-block; }
-    .breadcrumb > li + li:before {
-      content: "/ ";
-      padding: 0 5px;
-      color: #ccc; }
-  .breadcrumb > .active {
-    color: #777777; }
 
 .pagination {
   display: inline-block;
@@ -3124,7 +3150,7 @@ tbody.collapse.in {
       padding: 6px 12px;
       line-height: 1.428571429;
       text-decoration: none;
-      color: #428bca;
+      color: #337ab7;
       background-color: #fff;
       border: 1px solid #ddd;
       margin-left: -1px; }
@@ -3140,7 +3166,7 @@ tbody.collapse.in {
   .pagination > li > a:hover, .pagination > li > a:focus,
   .pagination > li > span:hover,
   .pagination > li > span:focus {
-    color: #2a6496;
+    color: #23527c;
     background-color: #eeeeee;
     border-color: #ddd; }
   .pagination > .active > a, .pagination > .active > a:hover, .pagination > .active > a:focus,
@@ -3149,8 +3175,8 @@ tbody.collapse.in {
   .pagination > .active > span:focus {
     z-index: 2;
     color: #fff;
-    background-color: #428bca;
-    border-color: #428bca;
+    background-color: #337ab7;
+    border-color: #337ab7;
     cursor: default; }
   .pagination > .disabled > span,
   .pagination > .disabled > span:hover,
@@ -3254,9 +3280,9 @@ a.label:hover, a.label:focus {
     background-color: #5e5e5e; }
 
 .label-primary {
-  background-color: #428bca; }
+  background-color: #337ab7; }
   .label-primary[href]:hover, .label-primary[href]:focus {
-    background-color: #3071a9; }
+    background-color: #286090; }
 
 .label-success {
   background-color: #5cb85c; }
@@ -3299,9 +3325,13 @@ a.label:hover, a.label:focus {
   .btn-xs .badge, .btn-group-xs > .btn .badge {
     top: 0;
     padding: 1px 5px; }
-  a.list-group-item.active > .badge, .nav-pills > .active > a > .badge {
-    color: #428bca;
+  .list-group-item.active > .badge, .nav-pills > .active > a > .badge {
+    color: #337ab7;
     background-color: #fff; }
+  .list-group-item > .badge {
+    float: right; }
+  .list-group-item > .badge + .badge {
+    margin-right: 5px; }
   .nav-pills > li > a > .badge {
     margin-left: 3px; }
 
@@ -3309,63 +3339,6 @@ a.badge:hover, a.badge:focus {
   color: #fff;
   text-decoration: none;
   cursor: pointer; }
-
-.jumbotron {
-  padding: 30px;
-  margin-bottom: 30px;
-  color: inherit;
-  background-color: #eeeeee; }
-  .jumbotron h1,
-  .jumbotron .h1 {
-    color: inherit; }
-  .jumbotron p {
-    margin-bottom: 15px;
-    font-size: 21px;
-    font-weight: 200; }
-  .jumbotron > hr {
-    border-top-color: #d5d5d5; }
-  .container .jumbotron {
-    border-radius: 6px; }
-  .jumbotron .container {
-    max-width: 100%; }
-  @media screen and (min-width: 768px) {
-    .jumbotron {
-      padding-top: 48px;
-      padding-bottom: 48px; }
-      .container .jumbotron {
-        padding-left: 60px;
-        padding-right: 60px; }
-      .jumbotron h1,
-      .jumbotron .h1 {
-        font-size: 63px; } }
-
-.thumbnail {
-  display: block;
-  padding: 4px;
-  margin-bottom: 20px;
-  line-height: 1.428571429;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  -webkit-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out; }
-  .thumbnail > img,
-  .thumbnail a > img {
-    display: block;
-    width: 100% \9;
-    max-width: 100%;
-    height: auto;
-    margin-left: auto;
-    margin-right: auto; }
-  .thumbnail .caption {
-    padding: 9px;
-    color: #333333; }
-
-a.thumbnail:hover,
-a.thumbnail:focus,
-a.thumbnail.active {
-  border-color: #428bca; }
 
 .alert {
   padding: 15px;
@@ -3429,117 +3402,6 @@ a.thumbnail.active {
   .alert-danger .alert-link {
     color: #843534; }
 
-@-webkit-keyframes progress-bar-stripes {
-  from {
-    background-position: 40px 0; }
-  to {
-    background-position: 0 0; } }
-@keyframes progress-bar-stripes {
-  from {
-    background-position: 40px 0; }
-  to {
-    background-position: 0 0; } }
-.progress {
-  overflow: hidden;
-  height: 20px;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); }
-
-.progress-bar {
-  float: left;
-  width: 0%;
-  height: 100%;
-  font-size: 12px;
-  line-height: 20px;
-  color: #fff;
-  text-align: center;
-  background-color: #428bca;
-  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-  -webkit-transition: width 0.6s ease;
-  -o-transition: width 0.6s ease;
-  transition: width 0.6s ease; }
-
-.progress-striped .progress-bar,
-.progress-bar-striped {
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-size: 40px 40px; }
-
-.progress.active .progress-bar,
-.progress-bar.active {
-  -webkit-animation: progress-bar-stripes 2s linear infinite;
-  -o-animation: progress-bar-stripes 2s linear infinite;
-  animation: progress-bar-stripes 2s linear infinite; }
-
-.progress-bar[aria-valuenow="1"], .progress-bar[aria-valuenow="2"] {
-  min-width: 30px; }
-.progress-bar[aria-valuenow="0"] {
-  color: #777777;
-  min-width: 30px;
-  background-color: transparent;
-  background-image: none;
-  box-shadow: none; }
-
-.progress-bar-success {
-  background-color: #5cb85c; }
-  .progress-striped .progress-bar-success {
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent); }
-
-.progress-bar-info {
-  background-color: #5bc0de; }
-  .progress-striped .progress-bar-info {
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent); }
-
-.progress-bar-warning {
-  background-color: #f0ad4e; }
-  .progress-striped .progress-bar-warning {
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent); }
-
-.progress-bar-danger {
-  background-color: #d9534f; }
-  .progress-striped .progress-bar-danger {
-    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent); }
-
-.media,
-.media-body {
-  overflow: hidden;
-  zoom: 1; }
-
-.media,
-.media .media {
-  margin-top: 15px; }
-
-.media:first-child {
-  margin-top: 0; }
-
-.media-object {
-  display: block; }
-
-.media-heading {
-  margin: 0 0 5px; }
-
-.media > .pull-left {
-  margin-right: 10px; }
-.media > .pull-right {
-  margin-left: 10px; }
-
-.media-list {
-  padding-left: 0;
-  list-style: none; }
-
 .list-group {
   margin-bottom: 20px;
   padding-left: 0; }
@@ -3558,10 +3420,6 @@ a.thumbnail.active {
     margin-bottom: 0;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px; }
-  .list-group-item > .badge {
-    float: right; }
-  .list-group-item > .badge + .badge {
-    margin-right: 5px; }
 
 a.list-group-item {
   color: #555; }
@@ -3574,7 +3432,8 @@ a.list-group-item {
 
 .list-group-item.disabled, .list-group-item.disabled:hover, .list-group-item.disabled:focus {
   background-color: #eeeeee;
-  color: #777777; }
+  color: #777777;
+  cursor: not-allowed; }
   .list-group-item.disabled .list-group-item-heading, .list-group-item.disabled:hover .list-group-item-heading, .list-group-item.disabled:focus .list-group-item-heading {
     color: inherit; }
   .list-group-item.disabled .list-group-item-text, .list-group-item.disabled:hover .list-group-item-text, .list-group-item.disabled:focus .list-group-item-text {
@@ -3582,8 +3441,8 @@ a.list-group-item {
 .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
   z-index: 2;
   color: #fff;
-  background-color: #428bca;
-  border-color: #428bca; }
+  background-color: #337ab7;
+  border-color: #337ab7; }
   .list-group-item.active .list-group-item-heading,
   .list-group-item.active .list-group-item-heading > small,
   .list-group-item.active .list-group-item-heading > .small, .list-group-item.active:hover .list-group-item-heading,
@@ -3593,7 +3452,7 @@ a.list-group-item {
   .list-group-item.active:focus .list-group-item-heading > .small {
     color: inherit; }
   .list-group-item.active .list-group-item-text, .list-group-item.active:hover .list-group-item-text, .list-group-item.active:focus .list-group-item-text {
-    color: #e1edf7; }
+    color: #c7ddef; }
 
 .list-group-item-success {
   color: #3c763d;
@@ -3667,7 +3526,7 @@ a.list-group-item-danger {
   margin-bottom: 0;
   line-height: 1.3; }
 
-.panel, .install-panel, #login, .details-box {
+.panel, .details-box, .install-panel, #login {
   margin-bottom: 20px;
   background-color: #fff;
   border: 1px solid transparent;
@@ -3675,12 +3534,12 @@ a.list-group-item-danger {
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); }
 
-.panel-body, .install-panel, #login, .details-box {
+.panel-body, .details-box, .install-panel, #login {
   padding: 15px; }
-  .panel-body:before, .install-panel:before, #login:before, .details-box:before, .panel-body:after, .install-panel:after, #login:after, .details-box:after {
+  .panel-body:before, .details-box:before, .install-panel:before, #login:before, .panel-body:after, .details-box:after, .install-panel:after, #login:after {
     content: " ";
     display: table; }
-  .panel-body:after, .install-panel:after, #login:after, .details-box:after {
+  .panel-body:after, .details-box:after, .install-panel:after, #login:after {
     clear: both; }
 
 .panel-heading {
@@ -3706,16 +3565,32 @@ a.list-group-item-danger {
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px; }
 
-.panel > .list-group, .install-panel > .list-group, #login > .list-group, .details-box > .list-group {
+.panel > .list-group, .details-box > .list-group, .install-panel > .list-group, #login > .list-group,
+.panel > .panel-collapse > .list-group,
+.details-box > .panel-collapse > .list-group,
+.install-panel > .panel-collapse > .list-group,
+#login > .panel-collapse > .list-group {
   margin-bottom: 0; }
-  .panel > .list-group .list-group-item, .install-panel > .list-group .list-group-item, #login > .list-group .list-group-item, .details-box > .list-group .list-group-item {
+  .panel > .list-group .list-group-item, .details-box > .list-group .list-group-item, .install-panel > .list-group .list-group-item, #login > .list-group .list-group-item,
+  .panel > .panel-collapse > .list-group .list-group-item,
+  .details-box > .panel-collapse > .list-group .list-group-item,
+  .install-panel > .panel-collapse > .list-group .list-group-item,
+  #login > .panel-collapse > .list-group .list-group-item {
     border-width: 1px 0;
     border-radius: 0; }
-  .panel > .list-group:first-child .list-group-item:first-child, .install-panel > .list-group:first-child .list-group-item:first-child, #login > .list-group:first-child .list-group-item:first-child, .details-box > .list-group:first-child .list-group-item:first-child {
+  .panel > .list-group:first-child .list-group-item:first-child, .details-box > .list-group:first-child .list-group-item:first-child, .install-panel > .list-group:first-child .list-group-item:first-child, #login > .list-group:first-child .list-group-item:first-child,
+  .panel > .panel-collapse > .list-group:first-child .list-group-item:first-child,
+  .details-box > .panel-collapse > .list-group:first-child .list-group-item:first-child,
+  .install-panel > .panel-collapse > .list-group:first-child .list-group-item:first-child,
+  #login > .panel-collapse > .list-group:first-child .list-group-item:first-child {
     border-top: 0;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px; }
-  .panel > .list-group:last-child .list-group-item:last-child, .install-panel > .list-group:last-child .list-group-item:last-child, #login > .list-group:last-child .list-group-item:last-child, .details-box > .list-group:last-child .list-group-item:last-child {
+  .panel > .list-group:last-child .list-group-item:last-child, .details-box > .list-group:last-child .list-group-item:last-child, .install-panel > .list-group:last-child .list-group-item:last-child, #login > .list-group:last-child .list-group-item:last-child,
+  .panel > .panel-collapse > .list-group:last-child .list-group-item:last-child,
+  .details-box > .panel-collapse > .list-group:last-child .list-group-item:last-child,
+  .install-panel > .panel-collapse > .list-group:last-child .list-group-item:last-child,
+  #login > .panel-collapse > .list-group:last-child .list-group-item:last-child {
     border-bottom: 0;
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px; }
@@ -3726,379 +3601,453 @@ a.list-group-item-danger {
 .list-group + .panel-footer {
   border-top-width: 0; }
 
-.panel > .table, .install-panel > .table, #login > .table, .details-box > .table,
+.panel > .table, .details-box > .table, .install-panel > .table, #login > .table,
 .panel > .table-responsive > .table,
+.details-box > .table-responsive > .table,
 .install-panel > .table-responsive > .table,
 #login > .table-responsive > .table,
-.details-box > .table-responsive > .table,
 .panel > .panel-collapse > .table,
+.details-box > .panel-collapse > .table,
 .install-panel > .panel-collapse > .table,
-#login > .panel-collapse > .table,
-.details-box > .panel-collapse > .table {
+#login > .panel-collapse > .table {
   margin-bottom: 0; }
-.panel > .table:first-child, .install-panel > .table:first-child, #login > .table:first-child, .details-box > .table:first-child,
+  .panel > .table caption, .details-box > .table caption, .install-panel > .table caption, #login > .table caption,
+  .panel > .table-responsive > .table caption,
+  .details-box > .table-responsive > .table caption,
+  .install-panel > .table-responsive > .table caption,
+  #login > .table-responsive > .table caption,
+  .panel > .panel-collapse > .table caption,
+  .details-box > .panel-collapse > .table caption,
+  .install-panel > .panel-collapse > .table caption,
+  #login > .panel-collapse > .table caption {
+    padding-left: 15px;
+    padding-right: 15px; }
+.panel > .table:first-child, .details-box > .table:first-child, .install-panel > .table:first-child, #login > .table:first-child,
 .panel > .table-responsive:first-child > .table:first-child,
+.details-box > .table-responsive:first-child > .table:first-child,
 .install-panel > .table-responsive:first-child > .table:first-child,
-#login > .table-responsive:first-child > .table:first-child,
-.details-box > .table-responsive:first-child > .table:first-child {
+#login > .table-responsive:first-child > .table:first-child {
   border-top-right-radius: 3px;
   border-top-left-radius: 3px; }
-  .panel > .table:first-child > thead:first-child > tr:first-child td:first-child, .install-panel > .table:first-child > thead:first-child > tr:first-child td:first-child, #login > .table:first-child > thead:first-child > tr:first-child td:first-child, .details-box > .table:first-child > thead:first-child > tr:first-child td:first-child,
-  .panel > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  .install-panel > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  #login > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  .details-box > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  .panel > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  .install-panel > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  #login > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  .details-box > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  .panel > .table:first-child > tbody:first-child > tr:first-child th:first-child,
-  .install-panel > .table:first-child > tbody:first-child > tr:first-child th:first-child,
-  #login > .table:first-child > tbody:first-child > tr:first-child th:first-child,
-  .details-box > .table:first-child > tbody:first-child > tr:first-child th:first-child,
-  .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
-  #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
-  .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
-  .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
-  .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
-  .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child,
-  #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child,
-  .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child {
-    border-top-left-radius: 3px; }
-  .panel > .table:first-child > thead:first-child > tr:first-child td:last-child, .install-panel > .table:first-child > thead:first-child > tr:first-child td:last-child, #login > .table:first-child > thead:first-child > tr:first-child td:last-child, .details-box > .table:first-child > thead:first-child > tr:first-child td:last-child,
-  .panel > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  .install-panel > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  #login > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  .details-box > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  .panel > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  .install-panel > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  #login > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  .details-box > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  .panel > .table:first-child > tbody:first-child > tr:first-child th:last-child,
-  .install-panel > .table:first-child > tbody:first-child > tr:first-child th:last-child,
-  #login > .table:first-child > tbody:first-child > tr:first-child th:last-child,
-  .details-box > .table:first-child > tbody:first-child > tr:first-child th:last-child,
-  .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
-  #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
-  .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
-  .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
-  .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
-  .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child,
-  .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child,
-  #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child,
-  .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child {
+  .panel > .table:first-child > thead:first-child > tr:first-child, .details-box > .table:first-child > thead:first-child > tr:first-child, .install-panel > .table:first-child > thead:first-child > tr:first-child, #login > .table:first-child > thead:first-child > tr:first-child,
+  .panel > .table:first-child > tbody:first-child > tr:first-child,
+  .details-box > .table:first-child > tbody:first-child > tr:first-child,
+  .install-panel > .table:first-child > tbody:first-child > tr:first-child,
+  #login > .table:first-child > tbody:first-child > tr:first-child,
+  .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child,
+  .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child,
+  .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child,
+  #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child,
+  .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child,
+  .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child,
+  .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child,
+  #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child {
+    border-top-left-radius: 3px;
     border-top-right-radius: 3px; }
-.panel > .table:last-child, .install-panel > .table:last-child, #login > .table:last-child, .details-box > .table:last-child,
+    .panel > .table:first-child > thead:first-child > tr:first-child td:first-child, .details-box > .table:first-child > thead:first-child > tr:first-child td:first-child, .install-panel > .table:first-child > thead:first-child > tr:first-child td:first-child, #login > .table:first-child > thead:first-child > tr:first-child td:first-child,
+    .panel > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    .details-box > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    .install-panel > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    #login > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    .panel > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    .details-box > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    .install-panel > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    #login > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    .panel > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+    .details-box > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+    .install-panel > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+    #login > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+    .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
+    .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
+    #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
+    .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
+    .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+    .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+    .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+    #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child {
+      border-top-left-radius: 3px; }
+    .panel > .table:first-child > thead:first-child > tr:first-child td:last-child, .details-box > .table:first-child > thead:first-child > tr:first-child td:last-child, .install-panel > .table:first-child > thead:first-child > tr:first-child td:last-child, #login > .table:first-child > thead:first-child > tr:first-child td:last-child,
+    .panel > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    .details-box > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    .install-panel > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    #login > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    .panel > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    .details-box > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    .install-panel > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    #login > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    .panel > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+    .details-box > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+    .install-panel > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+    #login > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+    .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
+    .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
+    #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
+    .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    .details-box > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    #login > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
+    .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+    .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+    .details-box > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+    .install-panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+    #login > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child {
+      border-top-right-radius: 3px; }
+.panel > .table:last-child, .details-box > .table:last-child, .install-panel > .table:last-child, #login > .table:last-child,
 .panel > .table-responsive:last-child > .table:last-child,
+.details-box > .table-responsive:last-child > .table:last-child,
 .install-panel > .table-responsive:last-child > .table:last-child,
-#login > .table-responsive:last-child > .table:last-child,
-.details-box > .table-responsive:last-child > .table:last-child {
+#login > .table-responsive:last-child > .table:last-child {
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px; }
-  .panel > .table:last-child > tbody:last-child > tr:last-child td:first-child, .install-panel > .table:last-child > tbody:last-child > tr:last-child td:first-child, #login > .table:last-child > tbody:last-child > tr:last-child td:first-child, .details-box > .table:last-child > tbody:last-child > tr:last-child td:first-child,
-  .panel > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  .install-panel > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  #login > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  .details-box > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  .panel > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  .install-panel > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  #login > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  .details-box > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  .panel > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
-  .install-panel > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
-  #login > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
-  .details-box > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
-  .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
-  #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
-  .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
-  .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
-  .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
-  #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child {
-    border-bottom-left-radius: 3px; }
-  .panel > .table:last-child > tbody:last-child > tr:last-child td:last-child, .install-panel > .table:last-child > tbody:last-child > tr:last-child td:last-child, #login > .table:last-child > tbody:last-child > tr:last-child td:last-child, .details-box > .table:last-child > tbody:last-child > tr:last-child td:last-child,
-  .panel > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  .install-panel > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  #login > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  .details-box > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  .panel > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  .install-panel > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  #login > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  .details-box > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  .panel > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
-  .install-panel > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
-  #login > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
-  .details-box > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
-  .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
-  #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
-  .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
-  .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
-  .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
-  .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
-  #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
-  .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child {
+  .panel > .table:last-child > tbody:last-child > tr:last-child, .details-box > .table:last-child > tbody:last-child > tr:last-child, .install-panel > .table:last-child > tbody:last-child > tr:last-child, #login > .table:last-child > tbody:last-child > tr:last-child,
+  .panel > .table:last-child > tfoot:last-child > tr:last-child,
+  .details-box > .table:last-child > tfoot:last-child > tr:last-child,
+  .install-panel > .table:last-child > tfoot:last-child > tr:last-child,
+  #login > .table:last-child > tfoot:last-child > tr:last-child,
+  .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child,
+  .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child,
+  .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child,
+  #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child,
+  .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child,
+  .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child,
+  .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child,
+  #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child {
+    border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px; }
-.panel > .panel-body + .table, .install-panel > .panel-body + .table, #login > .panel-body + .table, .details-box > .panel-body + .table, .panel > .install-panel + .table, .install-panel > .install-panel + .table, #login > .install-panel + .table, .details-box > .install-panel + .table, .panel > #login + .table, .install-panel > #login + .table, #login > #login + .table, .details-box > #login + .table, .panel > .details-box + .table, .install-panel > .details-box + .table, #login > .details-box + .table, .details-box > .details-box + .table,
+    .panel > .table:last-child > tbody:last-child > tr:last-child td:first-child, .details-box > .table:last-child > tbody:last-child > tr:last-child td:first-child, .install-panel > .table:last-child > tbody:last-child > tr:last-child td:first-child, #login > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+    .panel > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    .details-box > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    .install-panel > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    #login > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    .panel > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    .details-box > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    .install-panel > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    #login > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    .panel > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+    .details-box > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+    .install-panel > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+    #login > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+    .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+    #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+    .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+    .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+    .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+    #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child {
+      border-bottom-left-radius: 3px; }
+    .panel > .table:last-child > tbody:last-child > tr:last-child td:last-child, .details-box > .table:last-child > tbody:last-child > tr:last-child td:last-child, .install-panel > .table:last-child > tbody:last-child > tr:last-child td:last-child, #login > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+    .panel > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    .details-box > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    .install-panel > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    #login > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    .panel > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    .details-box > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    .install-panel > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    #login > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    .panel > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+    .details-box > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+    .install-panel > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+    #login > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+    .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+    #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+    .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    #login > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+    .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+    .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+    .details-box > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+    .install-panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+    #login > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child {
+      border-bottom-right-radius: 3px; }
+.panel > .panel-body + .table, .details-box > .panel-body + .table, .install-panel > .panel-body + .table, #login > .panel-body + .table, .panel > .details-box + .table, .details-box > .details-box + .table, .install-panel > .details-box + .table, #login > .details-box + .table, .panel > .install-panel + .table, .details-box > .install-panel + .table, .install-panel > .install-panel + .table, #login > .install-panel + .table, .panel > #login + .table, .details-box > #login + .table, .install-panel > #login + .table, #login > #login + .table,
 .panel > .panel-body + .table-responsive,
+.details-box > .panel-body + .table-responsive,
 .install-panel > .panel-body + .table-responsive,
 #login > .panel-body + .table-responsive,
-.details-box > .panel-body + .table-responsive,
-.panel > .install-panel + .table-responsive,
-.install-panel > .install-panel + .table-responsive,
-#login > .install-panel + .table-responsive,
-.details-box > .install-panel + .table-responsive,
-.panel > #login + .table-responsive,
-.install-panel > #login + .table-responsive,
-#login > #login + .table-responsive,
-.details-box > #login + .table-responsive,
 .panel > .details-box + .table-responsive,
+.details-box > .details-box + .table-responsive,
 .install-panel > .details-box + .table-responsive,
 #login > .details-box + .table-responsive,
-.details-box > .details-box + .table-responsive {
+.panel > .install-panel + .table-responsive,
+.details-box > .install-panel + .table-responsive,
+.install-panel > .install-panel + .table-responsive,
+#login > .install-panel + .table-responsive,
+.panel > #login + .table-responsive,
+.details-box > #login + .table-responsive,
+.install-panel > #login + .table-responsive,
+#login > #login + .table-responsive,
+.panel > .table + .panel-body,
+.details-box > .table + .panel-body,
+.install-panel > .table + .panel-body,
+#login > .table + .panel-body,
+.panel > .table + .details-box,
+.details-box > .table + .details-box,
+.install-panel > .table + .details-box,
+#login > .table + .details-box,
+.panel > .table + .install-panel,
+.details-box > .table + .install-panel,
+.install-panel > .table + .install-panel,
+#login > .table + .install-panel,
+.panel > .table + #login,
+.details-box > .table + #login,
+.install-panel > .table + #login,
+#login > .table + #login,
+.panel > .table-responsive + .panel-body,
+.details-box > .table-responsive + .panel-body,
+.install-panel > .table-responsive + .panel-body,
+#login > .table-responsive + .panel-body,
+.panel > .table-responsive + .details-box,
+.details-box > .table-responsive + .details-box,
+.install-panel > .table-responsive + .details-box,
+#login > .table-responsive + .details-box,
+.panel > .table-responsive + .install-panel,
+.details-box > .table-responsive + .install-panel,
+.install-panel > .table-responsive + .install-panel,
+#login > .table-responsive + .install-panel,
+.panel > .table-responsive + #login,
+.details-box > .table-responsive + #login,
+.install-panel > .table-responsive + #login,
+#login > .table-responsive + #login {
   border-top: 1px solid #ddd; }
-.panel > .table > tbody:first-child > tr:first-child th, .install-panel > .table > tbody:first-child > tr:first-child th, #login > .table > tbody:first-child > tr:first-child th, .details-box > .table > tbody:first-child > tr:first-child th,
+.panel > .table > tbody:first-child > tr:first-child th, .details-box > .table > tbody:first-child > tr:first-child th, .install-panel > .table > tbody:first-child > tr:first-child th, #login > .table > tbody:first-child > tr:first-child th,
 .panel > .table > tbody:first-child > tr:first-child td,
+.details-box > .table > tbody:first-child > tr:first-child td,
 .install-panel > .table > tbody:first-child > tr:first-child td,
-#login > .table > tbody:first-child > tr:first-child td,
-.details-box > .table > tbody:first-child > tr:first-child td {
+#login > .table > tbody:first-child > tr:first-child td {
   border-top: 0; }
-.panel > .table-bordered, .install-panel > .table-bordered, #login > .table-bordered, .details-box > .table-bordered,
+.panel > .table-bordered, .details-box > .table-bordered, .install-panel > .table-bordered, #login > .table-bordered,
 .panel > .table-responsive > .table-bordered,
+.details-box > .table-responsive > .table-bordered,
 .install-panel > .table-responsive > .table-bordered,
-#login > .table-responsive > .table-bordered,
-.details-box > .table-responsive > .table-bordered {
+#login > .table-responsive > .table-bordered {
   border: 0; }
-  .panel > .table-bordered > thead > tr > th:first-child, .install-panel > .table-bordered > thead > tr > th:first-child, #login > .table-bordered > thead > tr > th:first-child, .details-box > .table-bordered > thead > tr > th:first-child,
+  .panel > .table-bordered > thead > tr > th:first-child, .details-box > .table-bordered > thead > tr > th:first-child, .install-panel > .table-bordered > thead > tr > th:first-child, #login > .table-bordered > thead > tr > th:first-child,
   .panel > .table-bordered > thead > tr > td:first-child,
+  .details-box > .table-bordered > thead > tr > td:first-child,
   .install-panel > .table-bordered > thead > tr > td:first-child,
   #login > .table-bordered > thead > tr > td:first-child,
-  .details-box > .table-bordered > thead > tr > td:first-child,
   .panel > .table-bordered > tbody > tr > th:first-child,
+  .details-box > .table-bordered > tbody > tr > th:first-child,
   .install-panel > .table-bordered > tbody > tr > th:first-child,
   #login > .table-bordered > tbody > tr > th:first-child,
-  .details-box > .table-bordered > tbody > tr > th:first-child,
   .panel > .table-bordered > tbody > tr > td:first-child,
+  .details-box > .table-bordered > tbody > tr > td:first-child,
   .install-panel > .table-bordered > tbody > tr > td:first-child,
   #login > .table-bordered > tbody > tr > td:first-child,
-  .details-box > .table-bordered > tbody > tr > td:first-child,
   .panel > .table-bordered > tfoot > tr > th:first-child,
+  .details-box > .table-bordered > tfoot > tr > th:first-child,
   .install-panel > .table-bordered > tfoot > tr > th:first-child,
   #login > .table-bordered > tfoot > tr > th:first-child,
-  .details-box > .table-bordered > tfoot > tr > th:first-child,
   .panel > .table-bordered > tfoot > tr > td:first-child,
+  .details-box > .table-bordered > tfoot > tr > td:first-child,
   .install-panel > .table-bordered > tfoot > tr > td:first-child,
   #login > .table-bordered > tfoot > tr > td:first-child,
-  .details-box > .table-bordered > tfoot > tr > td:first-child,
   .panel > .table-responsive > .table-bordered > thead > tr > th:first-child,
+  .details-box > .table-responsive > .table-bordered > thead > tr > th:first-child,
   .install-panel > .table-responsive > .table-bordered > thead > tr > th:first-child,
   #login > .table-responsive > .table-bordered > thead > tr > th:first-child,
-  .details-box > .table-responsive > .table-bordered > thead > tr > th:first-child,
   .panel > .table-responsive > .table-bordered > thead > tr > td:first-child,
+  .details-box > .table-responsive > .table-bordered > thead > tr > td:first-child,
   .install-panel > .table-responsive > .table-bordered > thead > tr > td:first-child,
   #login > .table-responsive > .table-bordered > thead > tr > td:first-child,
-  .details-box > .table-responsive > .table-bordered > thead > tr > td:first-child,
   .panel > .table-responsive > .table-bordered > tbody > tr > th:first-child,
+  .details-box > .table-responsive > .table-bordered > tbody > tr > th:first-child,
   .install-panel > .table-responsive > .table-bordered > tbody > tr > th:first-child,
   #login > .table-responsive > .table-bordered > tbody > tr > th:first-child,
-  .details-box > .table-responsive > .table-bordered > tbody > tr > th:first-child,
   .panel > .table-responsive > .table-bordered > tbody > tr > td:first-child,
+  .details-box > .table-responsive > .table-bordered > tbody > tr > td:first-child,
   .install-panel > .table-responsive > .table-bordered > tbody > tr > td:first-child,
   #login > .table-responsive > .table-bordered > tbody > tr > td:first-child,
-  .details-box > .table-responsive > .table-bordered > tbody > tr > td:first-child,
   .panel > .table-responsive > .table-bordered > tfoot > tr > th:first-child,
+  .details-box > .table-responsive > .table-bordered > tfoot > tr > th:first-child,
   .install-panel > .table-responsive > .table-bordered > tfoot > tr > th:first-child,
   #login > .table-responsive > .table-bordered > tfoot > tr > th:first-child,
-  .details-box > .table-responsive > .table-bordered > tfoot > tr > th:first-child,
   .panel > .table-responsive > .table-bordered > tfoot > tr > td:first-child,
+  .details-box > .table-responsive > .table-bordered > tfoot > tr > td:first-child,
   .install-panel > .table-responsive > .table-bordered > tfoot > tr > td:first-child,
-  #login > .table-responsive > .table-bordered > tfoot > tr > td:first-child,
-  .details-box > .table-responsive > .table-bordered > tfoot > tr > td:first-child {
+  #login > .table-responsive > .table-bordered > tfoot > tr > td:first-child {
     border-left: 0; }
-  .panel > .table-bordered > thead > tr > th:last-child, .install-panel > .table-bordered > thead > tr > th:last-child, #login > .table-bordered > thead > tr > th:last-child, .details-box > .table-bordered > thead > tr > th:last-child,
+  .panel > .table-bordered > thead > tr > th:last-child, .details-box > .table-bordered > thead > tr > th:last-child, .install-panel > .table-bordered > thead > tr > th:last-child, #login > .table-bordered > thead > tr > th:last-child,
   .panel > .table-bordered > thead > tr > td:last-child,
+  .details-box > .table-bordered > thead > tr > td:last-child,
   .install-panel > .table-bordered > thead > tr > td:last-child,
   #login > .table-bordered > thead > tr > td:last-child,
-  .details-box > .table-bordered > thead > tr > td:last-child,
   .panel > .table-bordered > tbody > tr > th:last-child,
+  .details-box > .table-bordered > tbody > tr > th:last-child,
   .install-panel > .table-bordered > tbody > tr > th:last-child,
   #login > .table-bordered > tbody > tr > th:last-child,
-  .details-box > .table-bordered > tbody > tr > th:last-child,
   .panel > .table-bordered > tbody > tr > td:last-child,
+  .details-box > .table-bordered > tbody > tr > td:last-child,
   .install-panel > .table-bordered > tbody > tr > td:last-child,
   #login > .table-bordered > tbody > tr > td:last-child,
-  .details-box > .table-bordered > tbody > tr > td:last-child,
   .panel > .table-bordered > tfoot > tr > th:last-child,
+  .details-box > .table-bordered > tfoot > tr > th:last-child,
   .install-panel > .table-bordered > tfoot > tr > th:last-child,
   #login > .table-bordered > tfoot > tr > th:last-child,
-  .details-box > .table-bordered > tfoot > tr > th:last-child,
   .panel > .table-bordered > tfoot > tr > td:last-child,
+  .details-box > .table-bordered > tfoot > tr > td:last-child,
   .install-panel > .table-bordered > tfoot > tr > td:last-child,
   #login > .table-bordered > tfoot > tr > td:last-child,
-  .details-box > .table-bordered > tfoot > tr > td:last-child,
   .panel > .table-responsive > .table-bordered > thead > tr > th:last-child,
+  .details-box > .table-responsive > .table-bordered > thead > tr > th:last-child,
   .install-panel > .table-responsive > .table-bordered > thead > tr > th:last-child,
   #login > .table-responsive > .table-bordered > thead > tr > th:last-child,
-  .details-box > .table-responsive > .table-bordered > thead > tr > th:last-child,
   .panel > .table-responsive > .table-bordered > thead > tr > td:last-child,
+  .details-box > .table-responsive > .table-bordered > thead > tr > td:last-child,
   .install-panel > .table-responsive > .table-bordered > thead > tr > td:last-child,
   #login > .table-responsive > .table-bordered > thead > tr > td:last-child,
-  .details-box > .table-responsive > .table-bordered > thead > tr > td:last-child,
   .panel > .table-responsive > .table-bordered > tbody > tr > th:last-child,
+  .details-box > .table-responsive > .table-bordered > tbody > tr > th:last-child,
   .install-panel > .table-responsive > .table-bordered > tbody > tr > th:last-child,
   #login > .table-responsive > .table-bordered > tbody > tr > th:last-child,
-  .details-box > .table-responsive > .table-bordered > tbody > tr > th:last-child,
   .panel > .table-responsive > .table-bordered > tbody > tr > td:last-child,
+  .details-box > .table-responsive > .table-bordered > tbody > tr > td:last-child,
   .install-panel > .table-responsive > .table-bordered > tbody > tr > td:last-child,
   #login > .table-responsive > .table-bordered > tbody > tr > td:last-child,
-  .details-box > .table-responsive > .table-bordered > tbody > tr > td:last-child,
   .panel > .table-responsive > .table-bordered > tfoot > tr > th:last-child,
+  .details-box > .table-responsive > .table-bordered > tfoot > tr > th:last-child,
   .install-panel > .table-responsive > .table-bordered > tfoot > tr > th:last-child,
   #login > .table-responsive > .table-bordered > tfoot > tr > th:last-child,
-  .details-box > .table-responsive > .table-bordered > tfoot > tr > th:last-child,
   .panel > .table-responsive > .table-bordered > tfoot > tr > td:last-child,
+  .details-box > .table-responsive > .table-bordered > tfoot > tr > td:last-child,
   .install-panel > .table-responsive > .table-bordered > tfoot > tr > td:last-child,
-  #login > .table-responsive > .table-bordered > tfoot > tr > td:last-child,
-  .details-box > .table-responsive > .table-bordered > tfoot > tr > td:last-child {
+  #login > .table-responsive > .table-bordered > tfoot > tr > td:last-child {
     border-right: 0; }
-  .panel > .table-bordered > thead > tr:first-child > td, .install-panel > .table-bordered > thead > tr:first-child > td, #login > .table-bordered > thead > tr:first-child > td, .details-box > .table-bordered > thead > tr:first-child > td,
+  .panel > .table-bordered > thead > tr:first-child > td, .details-box > .table-bordered > thead > tr:first-child > td, .install-panel > .table-bordered > thead > tr:first-child > td, #login > .table-bordered > thead > tr:first-child > td,
   .panel > .table-bordered > thead > tr:first-child > th,
+  .details-box > .table-bordered > thead > tr:first-child > th,
   .install-panel > .table-bordered > thead > tr:first-child > th,
   #login > .table-bordered > thead > tr:first-child > th,
-  .details-box > .table-bordered > thead > tr:first-child > th,
   .panel > .table-bordered > tbody > tr:first-child > td,
+  .details-box > .table-bordered > tbody > tr:first-child > td,
   .install-panel > .table-bordered > tbody > tr:first-child > td,
   #login > .table-bordered > tbody > tr:first-child > td,
-  .details-box > .table-bordered > tbody > tr:first-child > td,
   .panel > .table-bordered > tbody > tr:first-child > th,
+  .details-box > .table-bordered > tbody > tr:first-child > th,
   .install-panel > .table-bordered > tbody > tr:first-child > th,
   #login > .table-bordered > tbody > tr:first-child > th,
-  .details-box > .table-bordered > tbody > tr:first-child > th,
   .panel > .table-responsive > .table-bordered > thead > tr:first-child > td,
+  .details-box > .table-responsive > .table-bordered > thead > tr:first-child > td,
   .install-panel > .table-responsive > .table-bordered > thead > tr:first-child > td,
   #login > .table-responsive > .table-bordered > thead > tr:first-child > td,
-  .details-box > .table-responsive > .table-bordered > thead > tr:first-child > td,
   .panel > .table-responsive > .table-bordered > thead > tr:first-child > th,
+  .details-box > .table-responsive > .table-bordered > thead > tr:first-child > th,
   .install-panel > .table-responsive > .table-bordered > thead > tr:first-child > th,
   #login > .table-responsive > .table-bordered > thead > tr:first-child > th,
-  .details-box > .table-responsive > .table-bordered > thead > tr:first-child > th,
   .panel > .table-responsive > .table-bordered > tbody > tr:first-child > td,
+  .details-box > .table-responsive > .table-bordered > tbody > tr:first-child > td,
   .install-panel > .table-responsive > .table-bordered > tbody > tr:first-child > td,
   #login > .table-responsive > .table-bordered > tbody > tr:first-child > td,
-  .details-box > .table-responsive > .table-bordered > tbody > tr:first-child > td,
   .panel > .table-responsive > .table-bordered > tbody > tr:first-child > th,
+  .details-box > .table-responsive > .table-bordered > tbody > tr:first-child > th,
   .install-panel > .table-responsive > .table-bordered > tbody > tr:first-child > th,
-  #login > .table-responsive > .table-bordered > tbody > tr:first-child > th,
-  .details-box > .table-responsive > .table-bordered > tbody > tr:first-child > th {
+  #login > .table-responsive > .table-bordered > tbody > tr:first-child > th {
     border-bottom: 0; }
-  .panel > .table-bordered > tbody > tr:last-child > td, .install-panel > .table-bordered > tbody > tr:last-child > td, #login > .table-bordered > tbody > tr:last-child > td, .details-box > .table-bordered > tbody > tr:last-child > td,
+  .panel > .table-bordered > tbody > tr:last-child > td, .details-box > .table-bordered > tbody > tr:last-child > td, .install-panel > .table-bordered > tbody > tr:last-child > td, #login > .table-bordered > tbody > tr:last-child > td,
   .panel > .table-bordered > tbody > tr:last-child > th,
+  .details-box > .table-bordered > tbody > tr:last-child > th,
   .install-panel > .table-bordered > tbody > tr:last-child > th,
   #login > .table-bordered > tbody > tr:last-child > th,
-  .details-box > .table-bordered > tbody > tr:last-child > th,
   .panel > .table-bordered > tfoot > tr:last-child > td,
+  .details-box > .table-bordered > tfoot > tr:last-child > td,
   .install-panel > .table-bordered > tfoot > tr:last-child > td,
   #login > .table-bordered > tfoot > tr:last-child > td,
-  .details-box > .table-bordered > tfoot > tr:last-child > td,
   .panel > .table-bordered > tfoot > tr:last-child > th,
+  .details-box > .table-bordered > tfoot > tr:last-child > th,
   .install-panel > .table-bordered > tfoot > tr:last-child > th,
   #login > .table-bordered > tfoot > tr:last-child > th,
-  .details-box > .table-bordered > tfoot > tr:last-child > th,
   .panel > .table-responsive > .table-bordered > tbody > tr:last-child > td,
+  .details-box > .table-responsive > .table-bordered > tbody > tr:last-child > td,
   .install-panel > .table-responsive > .table-bordered > tbody > tr:last-child > td,
   #login > .table-responsive > .table-bordered > tbody > tr:last-child > td,
-  .details-box > .table-responsive > .table-bordered > tbody > tr:last-child > td,
   .panel > .table-responsive > .table-bordered > tbody > tr:last-child > th,
+  .details-box > .table-responsive > .table-bordered > tbody > tr:last-child > th,
   .install-panel > .table-responsive > .table-bordered > tbody > tr:last-child > th,
   #login > .table-responsive > .table-bordered > tbody > tr:last-child > th,
-  .details-box > .table-responsive > .table-bordered > tbody > tr:last-child > th,
   .panel > .table-responsive > .table-bordered > tfoot > tr:last-child > td,
+  .details-box > .table-responsive > .table-bordered > tfoot > tr:last-child > td,
   .install-panel > .table-responsive > .table-bordered > tfoot > tr:last-child > td,
   #login > .table-responsive > .table-bordered > tfoot > tr:last-child > td,
-  .details-box > .table-responsive > .table-bordered > tfoot > tr:last-child > td,
   .panel > .table-responsive > .table-bordered > tfoot > tr:last-child > th,
+  .details-box > .table-responsive > .table-bordered > tfoot > tr:last-child > th,
   .install-panel > .table-responsive > .table-bordered > tfoot > tr:last-child > th,
-  #login > .table-responsive > .table-bordered > tfoot > tr:last-child > th,
-  .details-box > .table-responsive > .table-bordered > tfoot > tr:last-child > th {
+  #login > .table-responsive > .table-bordered > tfoot > tr:last-child > th {
     border-bottom: 0; }
-.panel > .table-responsive, .install-panel > .table-responsive, #login > .table-responsive, .details-box > .table-responsive {
+.panel > .table-responsive, .details-box > .table-responsive, .install-panel > .table-responsive, #login > .table-responsive {
   border: 0;
   margin-bottom: 0; }
 
 .panel-group {
   margin-bottom: 20px; }
-  .panel-group .panel, .panel-group .install-panel, .panel-group #login, .panel-group .details-box {
+  .panel-group .panel, .panel-group .details-box, .panel-group .install-panel, .panel-group #login {
     margin-bottom: 0;
     border-radius: 4px; }
-    .panel-group .panel + .panel, .panel-group .install-panel + .panel, .panel-group #login + .panel, .panel-group .details-box + .panel, .panel-group .panel + .install-panel, .panel-group .install-panel + .install-panel, .panel-group #login + .install-panel, .panel-group .details-box + .install-panel, .panel-group .panel + #login, .panel-group .install-panel + #login, .panel-group #login + #login, .panel-group .details-box + #login, .panel-group .panel + .details-box, .panel-group .install-panel + .details-box, .panel-group #login + .details-box, .panel-group .details-box + .details-box {
+    .panel-group .panel + .panel, .panel-group .details-box + .panel, .panel-group .install-panel + .panel, .panel-group #login + .panel, .panel-group .panel + .details-box, .panel-group .details-box + .details-box, .panel-group .install-panel + .details-box, .panel-group #login + .details-box, .panel-group .panel + .install-panel, .panel-group .details-box + .install-panel, .panel-group .install-panel + .install-panel, .panel-group #login + .install-panel, .panel-group .panel + #login, .panel-group .details-box + #login, .panel-group .install-panel + #login, .panel-group #login + #login {
       margin-top: 5px; }
   .panel-group .panel-heading {
     border-bottom: 0; }
-    .panel-group .panel-heading + .panel-collapse > .panel-body, .panel-group .panel-heading + .panel-collapse > .install-panel, .panel-group .panel-heading + .panel-collapse > #login, .panel-group .panel-heading + .panel-collapse > .details-box {
+    .panel-group .panel-heading + .panel-collapse > .panel-body, .panel-group .panel-heading + .panel-collapse > .details-box, .panel-group .panel-heading + .panel-collapse > .install-panel, .panel-group .panel-heading + .panel-collapse > #login,
+    .panel-group .panel-heading + .panel-collapse > .list-group {
       border-top: 1px solid #ddd; }
   .panel-group .panel-footer {
     border-top: 0; }
-    .panel-group .panel-footer + .panel-collapse .panel-body, .panel-group .panel-footer + .panel-collapse .install-panel, .panel-group .panel-footer + .panel-collapse #login, .panel-group .panel-footer + .panel-collapse .details-box {
+    .panel-group .panel-footer + .panel-collapse .panel-body, .panel-group .panel-footer + .panel-collapse .details-box, .panel-group .panel-footer + .panel-collapse .install-panel, .panel-group .panel-footer + .panel-collapse #login {
       border-bottom: 1px solid #ddd; }
 
-.panel-default, .install-panel, #login, .details-box {
+.panel-default, .details-box, .install-panel, #login {
   border-color: #ddd; }
-  .panel-default > .panel-heading, .install-panel > .panel-heading, #login > .panel-heading, .details-box > .panel-heading {
+  .panel-default > .panel-heading, .details-box > .panel-heading, .install-panel > .panel-heading, #login > .panel-heading {
     color: #333333;
     background-color: #f5f5f5;
     border-color: #ddd; }
-    .panel-default > .panel-heading + .panel-collapse > .panel-body, .install-panel > .panel-heading + .panel-collapse > .panel-body, #login > .panel-heading + .panel-collapse > .panel-body, .details-box > .panel-heading + .panel-collapse > .panel-body, .panel-default > .panel-heading + .panel-collapse > .install-panel, .install-panel > .panel-heading + .panel-collapse > .install-panel, #login > .panel-heading + .panel-collapse > .install-panel, .details-box > .panel-heading + .panel-collapse > .install-panel, .panel-default > .panel-heading + .panel-collapse > #login, .install-panel > .panel-heading + .panel-collapse > #login, #login > .panel-heading + .panel-collapse > #login, .details-box > .panel-heading + .panel-collapse > #login, .panel-default > .panel-heading + .panel-collapse > .details-box, .install-panel > .panel-heading + .panel-collapse > .details-box, #login > .panel-heading + .panel-collapse > .details-box, .details-box > .panel-heading + .panel-collapse > .details-box {
+    .panel-default > .panel-heading + .panel-collapse > .panel-body, .details-box > .panel-heading + .panel-collapse > .panel-body, .install-panel > .panel-heading + .panel-collapse > .panel-body, #login > .panel-heading + .panel-collapse > .panel-body, .panel-default > .panel-heading + .panel-collapse > .details-box, .details-box > .panel-heading + .panel-collapse > .details-box, .install-panel > .panel-heading + .panel-collapse > .details-box, #login > .panel-heading + .panel-collapse > .details-box, .panel-default > .panel-heading + .panel-collapse > .install-panel, .details-box > .panel-heading + .panel-collapse > .install-panel, .install-panel > .panel-heading + .panel-collapse > .install-panel, #login > .panel-heading + .panel-collapse > .install-panel, .panel-default > .panel-heading + .panel-collapse > #login, .details-box > .panel-heading + .panel-collapse > #login, .install-panel > .panel-heading + .panel-collapse > #login, #login > .panel-heading + .panel-collapse > #login {
       border-top-color: #ddd; }
-    .panel-default > .panel-heading .badge, .install-panel > .panel-heading .badge, #login > .panel-heading .badge, .details-box > .panel-heading .badge {
+    .panel-default > .panel-heading .badge, .details-box > .panel-heading .badge, .install-panel > .panel-heading .badge, #login > .panel-heading .badge {
       color: #f5f5f5;
       background-color: #333333; }
-  .panel-default > .panel-footer + .panel-collapse > .panel-body, .install-panel > .panel-footer + .panel-collapse > .panel-body, #login > .panel-footer + .panel-collapse > .panel-body, .details-box > .panel-footer + .panel-collapse > .panel-body, .panel-default > .panel-footer + .panel-collapse > .install-panel, .install-panel > .panel-footer + .panel-collapse > .install-panel, #login > .panel-footer + .panel-collapse > .install-panel, .details-box > .panel-footer + .panel-collapse > .install-panel, .panel-default > .panel-footer + .panel-collapse > #login, .install-panel > .panel-footer + .panel-collapse > #login, #login > .panel-footer + .panel-collapse > #login, .details-box > .panel-footer + .panel-collapse > #login, .panel-default > .panel-footer + .panel-collapse > .details-box, .install-panel > .panel-footer + .panel-collapse > .details-box, #login > .panel-footer + .panel-collapse > .details-box, .details-box > .panel-footer + .panel-collapse > .details-box {
+  .panel-default > .panel-footer + .panel-collapse > .panel-body, .details-box > .panel-footer + .panel-collapse > .panel-body, .install-panel > .panel-footer + .panel-collapse > .panel-body, #login > .panel-footer + .panel-collapse > .panel-body, .panel-default > .panel-footer + .panel-collapse > .details-box, .details-box > .panel-footer + .panel-collapse > .details-box, .install-panel > .panel-footer + .panel-collapse > .details-box, #login > .panel-footer + .panel-collapse > .details-box, .panel-default > .panel-footer + .panel-collapse > .install-panel, .details-box > .panel-footer + .panel-collapse > .install-panel, .install-panel > .panel-footer + .panel-collapse > .install-panel, #login > .panel-footer + .panel-collapse > .install-panel, .panel-default > .panel-footer + .panel-collapse > #login, .details-box > .panel-footer + .panel-collapse > #login, .install-panel > .panel-footer + .panel-collapse > #login, #login > .panel-footer + .panel-collapse > #login {
     border-bottom-color: #ddd; }
 
 .panel-primary {
-  border-color: #428bca; }
+  border-color: #337ab7; }
   .panel-primary > .panel-heading {
     color: #fff;
-    background-color: #428bca;
-    border-color: #428bca; }
-    .panel-primary > .panel-heading + .panel-collapse > .panel-body, .panel-primary > .panel-heading + .panel-collapse > .install-panel, .panel-primary > .panel-heading + .panel-collapse > #login, .panel-primary > .panel-heading + .panel-collapse > .details-box {
-      border-top-color: #428bca; }
+    background-color: #337ab7;
+    border-color: #337ab7; }
+    .panel-primary > .panel-heading + .panel-collapse > .panel-body, .panel-primary > .panel-heading + .panel-collapse > .details-box, .panel-primary > .panel-heading + .panel-collapse > .install-panel, .panel-primary > .panel-heading + .panel-collapse > #login {
+      border-top-color: #337ab7; }
     .panel-primary > .panel-heading .badge {
-      color: #428bca;
+      color: #337ab7;
       background-color: #fff; }
-  .panel-primary > .panel-footer + .panel-collapse > .panel-body, .panel-primary > .panel-footer + .panel-collapse > .install-panel, .panel-primary > .panel-footer + .panel-collapse > #login, .panel-primary > .panel-footer + .panel-collapse > .details-box {
-    border-bottom-color: #428bca; }
+  .panel-primary > .panel-footer + .panel-collapse > .panel-body, .panel-primary > .panel-footer + .panel-collapse > .details-box, .panel-primary > .panel-footer + .panel-collapse > .install-panel, .panel-primary > .panel-footer + .panel-collapse > #login {
+    border-bottom-color: #337ab7; }
 
 .panel-success {
   border-color: #d6e9c6; }
@@ -4106,12 +4055,12 @@ a.list-group-item-danger {
     color: #3c763d;
     background-color: #dff0d8;
     border-color: #d6e9c6; }
-    .panel-success > .panel-heading + .panel-collapse > .panel-body, .panel-success > .panel-heading + .panel-collapse > .install-panel, .panel-success > .panel-heading + .panel-collapse > #login, .panel-success > .panel-heading + .panel-collapse > .details-box {
+    .panel-success > .panel-heading + .panel-collapse > .panel-body, .panel-success > .panel-heading + .panel-collapse > .details-box, .panel-success > .panel-heading + .panel-collapse > .install-panel, .panel-success > .panel-heading + .panel-collapse > #login {
       border-top-color: #d6e9c6; }
     .panel-success > .panel-heading .badge {
       color: #dff0d8;
       background-color: #3c763d; }
-  .panel-success > .panel-footer + .panel-collapse > .panel-body, .panel-success > .panel-footer + .panel-collapse > .install-panel, .panel-success > .panel-footer + .panel-collapse > #login, .panel-success > .panel-footer + .panel-collapse > .details-box {
+  .panel-success > .panel-footer + .panel-collapse > .panel-body, .panel-success > .panel-footer + .panel-collapse > .details-box, .panel-success > .panel-footer + .panel-collapse > .install-panel, .panel-success > .panel-footer + .panel-collapse > #login {
     border-bottom-color: #d6e9c6; }
 
 .panel-info {
@@ -4120,12 +4069,12 @@ a.list-group-item-danger {
     color: #31708f;
     background-color: #d9edf7;
     border-color: #bce8f1; }
-    .panel-info > .panel-heading + .panel-collapse > .panel-body, .panel-info > .panel-heading + .panel-collapse > .install-panel, .panel-info > .panel-heading + .panel-collapse > #login, .panel-info > .panel-heading + .panel-collapse > .details-box {
+    .panel-info > .panel-heading + .panel-collapse > .panel-body, .panel-info > .panel-heading + .panel-collapse > .details-box, .panel-info > .panel-heading + .panel-collapse > .install-panel, .panel-info > .panel-heading + .panel-collapse > #login {
       border-top-color: #bce8f1; }
     .panel-info > .panel-heading .badge {
       color: #d9edf7;
       background-color: #31708f; }
-  .panel-info > .panel-footer + .panel-collapse > .panel-body, .panel-info > .panel-footer + .panel-collapse > .install-panel, .panel-info > .panel-footer + .panel-collapse > #login, .panel-info > .panel-footer + .panel-collapse > .details-box {
+  .panel-info > .panel-footer + .panel-collapse > .panel-body, .panel-info > .panel-footer + .panel-collapse > .details-box, .panel-info > .panel-footer + .panel-collapse > .install-panel, .panel-info > .panel-footer + .panel-collapse > #login {
     border-bottom-color: #bce8f1; }
 
 .panel-warning {
@@ -4134,12 +4083,12 @@ a.list-group-item-danger {
     color: #8a6d3b;
     background-color: #fcf8e3;
     border-color: #faebcc; }
-    .panel-warning > .panel-heading + .panel-collapse > .panel-body, .panel-warning > .panel-heading + .panel-collapse > .install-panel, .panel-warning > .panel-heading + .panel-collapse > #login, .panel-warning > .panel-heading + .panel-collapse > .details-box {
+    .panel-warning > .panel-heading + .panel-collapse > .panel-body, .panel-warning > .panel-heading + .panel-collapse > .details-box, .panel-warning > .panel-heading + .panel-collapse > .install-panel, .panel-warning > .panel-heading + .panel-collapse > #login {
       border-top-color: #faebcc; }
     .panel-warning > .panel-heading .badge {
       color: #fcf8e3;
       background-color: #8a6d3b; }
-  .panel-warning > .panel-footer + .panel-collapse > .panel-body, .panel-warning > .panel-footer + .panel-collapse > .install-panel, .panel-warning > .panel-footer + .panel-collapse > #login, .panel-warning > .panel-footer + .panel-collapse > .details-box {
+  .panel-warning > .panel-footer + .panel-collapse > .panel-body, .panel-warning > .panel-footer + .panel-collapse > .details-box, .panel-warning > .panel-footer + .panel-collapse > .install-panel, .panel-warning > .panel-footer + .panel-collapse > #login {
     border-bottom-color: #faebcc; }
 
 .panel-danger {
@@ -4148,35 +4097,13 @@ a.list-group-item-danger {
     color: #a94442;
     background-color: #f2dede;
     border-color: #ebccd1; }
-    .panel-danger > .panel-heading + .panel-collapse > .panel-body, .panel-danger > .panel-heading + .panel-collapse > .install-panel, .panel-danger > .panel-heading + .panel-collapse > #login, .panel-danger > .panel-heading + .panel-collapse > .details-box {
+    .panel-danger > .panel-heading + .panel-collapse > .panel-body, .panel-danger > .panel-heading + .panel-collapse > .details-box, .panel-danger > .panel-heading + .panel-collapse > .install-panel, .panel-danger > .panel-heading + .panel-collapse > #login {
       border-top-color: #ebccd1; }
     .panel-danger > .panel-heading .badge {
       color: #f2dede;
       background-color: #a94442; }
-  .panel-danger > .panel-footer + .panel-collapse > .panel-body, .panel-danger > .panel-footer + .panel-collapse > .install-panel, .panel-danger > .panel-footer + .panel-collapse > #login, .panel-danger > .panel-footer + .panel-collapse > .details-box {
+  .panel-danger > .panel-footer + .panel-collapse > .panel-body, .panel-danger > .panel-footer + .panel-collapse > .details-box, .panel-danger > .panel-footer + .panel-collapse > .install-panel, .panel-danger > .panel-footer + .panel-collapse > #login {
     border-bottom-color: #ebccd1; }
-
-.embed-responsive {
-  position: relative;
-  display: block;
-  height: 0;
-  padding: 0;
-  overflow: hidden; }
-  .embed-responsive .embed-responsive-item,
-  .embed-responsive iframe,
-  .embed-responsive embed,
-  .embed-responsive object {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    border: 0; }
-  .embed-responsive.embed-responsive-16by9 {
-    padding-bottom: 56.25%; }
-  .embed-responsive.embed-responsive-4by3 {
-    padding-bottom: 75%; }
 
 .well {
   min-height: 20px;
@@ -4233,19 +4160,23 @@ button.close {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1050;
+  z-index: 1040;
   -webkit-overflow-scrolling: touch;
   outline: 0; }
   .modal.fade .modal-dialog {
-    -webkit-transform: translate3d(0, -25%, 0);
-    transform: translate3d(0, -25%, 0);
+    -webkit-transform: translate(0, -25%);
+    -ms-transform: translate(0, -25%);
+    -o-transform: translate(0, -25%);
+    transform: translate(0, -25%);
     -webkit-transition: -webkit-transform 0.3s ease-out;
     -moz-transition: -moz-transform 0.3s ease-out;
     -o-transition: -o-transform 0.3s ease-out;
     transition: transform 0.3s ease-out; }
   .modal.in .modal-dialog {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0); }
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0); }
 
 .modal-open .modal {
   overflow-x: hidden;
@@ -4268,12 +4199,10 @@ button.close {
   outline: 0; }
 
 .modal-backdrop {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
   left: 0;
-  z-index: 1040;
   background-color: #000; }
   .modal-backdrop.fade {
     opacity: 0;
@@ -4341,7 +4270,9 @@ button.close {
   z-index: 1070;
   display: block;
   visibility: visible;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
+  font-weight: normal;
   line-height: 1.4;
   opacity: 0;
   filter: alpha(opacity=0); }
@@ -4385,12 +4316,14 @@ button.close {
   border-top-color: #000; }
 .tooltip.top-left .tooltip-arrow {
   bottom: 0;
-  left: 5px;
+  right: 5px;
+  margin-bottom: -5px;
   border-width: 5px 5px 0;
   border-top-color: #000; }
 .tooltip.top-right .tooltip-arrow {
   bottom: 0;
-  right: 5px;
+  left: 5px;
+  margin-bottom: -5px;
   border-width: 5px 5px 0;
   border-top-color: #000; }
 .tooltip.right .tooltip-arrow {
@@ -4413,12 +4346,14 @@ button.close {
   border-bottom-color: #000; }
 .tooltip.bottom-left .tooltip-arrow {
   top: 0;
-  left: 5px;
+  right: 5px;
+  margin-top: -5px;
   border-width: 0 5px 5px;
   border-bottom-color: #000; }
 .tooltip.bottom-right .tooltip-arrow {
   top: 0;
-  right: 5px;
+  left: 5px;
+  margin-top: -5px;
   border-width: 0 5px 5px;
   border-bottom-color: #000; }
 
@@ -4430,6 +4365,10 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.428571429;
   text-align: left;
   background-color: #fff;
   background-clip: padding-box;
@@ -4452,8 +4391,6 @@ button.close {
   margin: 0;
   padding: 8px 14px;
   font-size: 14px;
-  font-weight: normal;
-  line-height: 18px;
   background-color: #f7f7f7;
   border-bottom: 1px solid #ebebeb;
   border-radius: 5px 5px 0 0; }
@@ -4529,172 +4466,6 @@ button.close {
     border-left-color: #fff;
     bottom: -10px; }
 
-.carousel {
-  position: relative; }
-
-.carousel-inner {
-  position: relative;
-  overflow: hidden;
-  width: 100%; }
-  .carousel-inner > .item {
-    display: none;
-    position: relative;
-    -webkit-transition: 0.6s ease-in-out left;
-    -o-transition: 0.6s ease-in-out left;
-    transition: 0.6s ease-in-out left; }
-    .carousel-inner > .item > img,
-    .carousel-inner > .item > a > img {
-      display: block;
-      width: 100% \9;
-      max-width: 100%;
-      height: auto;
-      line-height: 1; }
-  .carousel-inner > .active,
-  .carousel-inner > .next,
-  .carousel-inner > .prev {
-    display: block; }
-  .carousel-inner > .active {
-    left: 0; }
-  .carousel-inner > .next,
-  .carousel-inner > .prev {
-    position: absolute;
-    top: 0;
-    width: 100%; }
-  .carousel-inner > .next {
-    left: 100%; }
-  .carousel-inner > .prev {
-    left: -100%; }
-  .carousel-inner > .next.left,
-  .carousel-inner > .prev.right {
-    left: 0; }
-  .carousel-inner > .active.left {
-    left: -100%; }
-  .carousel-inner > .active.right {
-    left: 100%; }
-
-.carousel-control {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 15%;
-  opacity: 0.5;
-  filter: alpha(opacity=50);
-  font-size: 20px;
-  color: #fff;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
-  .carousel-control.left {
-    background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
-    background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
-    background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1); }
-  .carousel-control.right {
-    left: auto;
-    right: 0;
-    background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
-    background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
-    background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1); }
-  .carousel-control:hover, .carousel-control:focus {
-    outline: 0;
-    color: #fff;
-    text-decoration: none;
-    opacity: 0.9;
-    filter: alpha(opacity=90); }
-  .carousel-control .icon-prev,
-  .carousel-control .icon-next,
-  .carousel-control .glyphicon-chevron-left,
-  .carousel-control .glyphicon-chevron-right {
-    position: absolute;
-    top: 50%;
-    z-index: 5;
-    display: inline-block; }
-  .carousel-control .icon-prev,
-  .carousel-control .glyphicon-chevron-left {
-    left: 50%;
-    margin-left: -10px; }
-  .carousel-control .icon-next,
-  .carousel-control .glyphicon-chevron-right {
-    right: 50%;
-    margin-right: -10px; }
-  .carousel-control .icon-prev,
-  .carousel-control .icon-next {
-    width: 20px;
-    height: 20px;
-    margin-top: -10px;
-    font-family: serif; }
-  .carousel-control .icon-prev:before {
-    content: '\2039'; }
-  .carousel-control .icon-next:before {
-    content: '\203a'; }
-
-.carousel-indicators {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  z-index: 15;
-  width: 60%;
-  margin-left: -30%;
-  padding-left: 0;
-  list-style: none;
-  text-align: center; }
-  .carousel-indicators li {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin: 1px;
-    text-indent: -999px;
-    border: 1px solid #fff;
-    border-radius: 10px;
-    cursor: pointer;
-    background-color: #000 \9;
-    background-color: transparent; }
-  .carousel-indicators .active {
-    margin: 0;
-    width: 12px;
-    height: 12px;
-    background-color: #fff; }
-
-.carousel-caption {
-  position: absolute;
-  left: 15%;
-  right: 15%;
-  bottom: 20px;
-  z-index: 10;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  color: #fff;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
-  .carousel-caption .btn {
-    text-shadow: none; }
-
-@media screen and (min-width: 768px) {
-  .carousel-control .glyphicon-chevron-left,
-  .carousel-control .glyphicon-chevron-right,
-  .carousel-control .icon-prev,
-  .carousel-control .icon-next {
-    width: 30px;
-    height: 30px;
-    margin-top: -15px;
-    font-size: 30px; }
-  .carousel-control .glyphicon-chevron-left,
-  .carousel-control .icon-prev {
-    margin-left: -15px; }
-  .carousel-control .glyphicon-chevron-right,
-  .carousel-control .icon-next {
-    margin-right: -15px; }
-
-  .carousel-caption {
-    left: 20%;
-    right: 20%;
-    padding-bottom: 30px; }
-
-  .carousel-indicators {
-    bottom: 20px; } }
 .clearfix:before, .clearfix:after {
   content: " ";
   display: table; }
@@ -4733,9 +4504,7 @@ button.close {
   visibility: hidden !important; }
 
 .affix {
-  position: fixed;
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0); }
+  position: fixed; }
 
 @-ms-viewport {
   width: device-width; }
@@ -6454,9 +6223,11 @@ button.close {
 .fa-bomb:before {
   content: ""; }
 
-/* =============================================================================
-   Base Styles
-   ========================================================================== */
+/*
+|   =========================================================
+|   Base Styles
+|   =========================================================
+*/
 html, body {
   height: 100%;
   -webkit-font-smoothing: subpixel-antialiased; }
@@ -6487,54 +6258,17 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #aaa; }
 
-/* =============================================================================
-   Components
-   ========================================================================== */
-.controls.date {
-  margin-left: 10px;
-  padding: 0; }
+body *:focus {
+  outline: none !important; }
 
-.datepicker .icon-arrow-left {
-  color: #777; }
-
-.datepicker .icon-arrow-right {
-  color: #777; }
-
-.datepicker .day.active {
-  background: #3276b1;
-  color: #efefef; }
-  .datepicker .day.active:hover {
-    background: #3276b1;
-    color: #fff; }
-
-.datepicker .day:hover {
-  background: #efefef;
-  color: #3276b1;
-  cursor: crosshair; }
-
-.input-append.date .add-on i,
-.input-prepend.date .add-on i {
-  width: auto;
-  height: auto;
-  display: inline; }
-
-.datepicker.dropdown-menu {
-  padding: 5px;
-  z-index: 9999; }
-
-.datepicker table th:first-child,
-.datepicker table td:first-child {
-  padding-left: 5px; }
-
-/* =============================================================================
-   Row
-   ========================================================================== */
 .row-fluid:after {
   clear: none !important; }
 
-/* =============================================================================
-   Forms
-   ========================================================================== */
+/*
+|   =========================================================
+|   Forms
+|   =========================================================
+*/
 form {
   margin: 0; }
 
@@ -6558,19 +6292,16 @@ fieldset legend, fieldset .install-panel h2, .install-panel fieldset h2 {
 label {
   margin-right: 10px; }
 
-label,
-input[type="text"] {
-  height: auto;
-  line-height: auto; }
-
 textarea {
   margin-bottom: 20px;
   resize: vertical;
   cursor: text !important; }
 
-/* =============================================================================
-   Tables
-   ========================================================================== */
+/*
+|   =========================================================
+|   Tables
+|   =========================================================
+*/
 .table {
   margin: 0 0 40px; }
   .table.no-margin {
@@ -6586,89 +6317,24 @@ textarea {
 table.items td {
   vertical-align: top !important; }
 
-/* =============================================================================
-   Install, Upgrade and Login
-   ========================================================================== */
-.install-panel {
-  margin-top: 30px; }
-  .install-panel h1 {
-    margin: 20px auto;
-    display: block;
-    width: 200px;
-    height: 100px;
-    background: url("/assets/default/img/logo_200x100.png") center center no-repeat; }
-    .install-panel h1 span {
-      display: none; }
-  .install-panel ul {
-    list-style: none; }
-  .install-panel .btn {
-    margin-top: 15px; }
-  .install-panel .alert {
-    margin-left: 0;
-    margin-right: 0; }
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-  .install-panel h1 {
-    background: url("/assets/default/img/logo_400x200.png") center center no-repeat;
-    background-size: 200px 100px; } }
-#login .form-horizontal {
-  margin-bottom: 20px; }
-#login .form-group {
-  margin-bottom: 20px; }
-#login h1 {
-  margin: 20px 0; }
-
-.install-panel .alert,
-#login .alert {
-  margin-bottom: 20px; }
-
-/* =============================================================================
-   Navigation
-   ========================================================================== */
-.navbar {
-  border-radius: 0;
-  margin-bottom: 0;
-  border: none; }
-  .navbar.navbar-inverse {
-    background: #444;
-    color: #ccc; }
-    .navbar.navbar-inverse .nav a {
-      color: #ccc; }
-    .navbar.navbar-inverse .nav .open a {
-      background: #555; }
-    .navbar.navbar-inverse .dropdown-menu {
-      color: #444; }
-      .navbar.navbar-inverse .dropdown-menu a {
-        color: #444; }
-    .navbar.navbar-inverse .open .dropdown-menu a {
-      background: #fff; }
-      .navbar.navbar-inverse .open .dropdown-menu a:hover {
-        background: #f5f5f5; }
-  .navbar .navbar-collapse {
-    padding: 0; }
-    .navbar .navbar-collapse.in .navbar-form {
-      margin: 5px 0;
-      padding: 0; }
-  .navbar .navbar-toggle {
-    margin-top: 5px;
-    margin-bottom: 5px; }
-  .navbar .brand {
-    font-size: 18px;
-    font-weight: bold;
-    color: #000;
-    margin: 0;
-    padding: 0; }
-  .navbar .dropdown-menu {
-    text-align: left; }
-  .navbar .settings > li > .dropdown-menu:after {
-    right: 19px; }
-  .navbar .settings > li > .dropdown-menu:before {
-    right: 19px; }
-  .navbar .settings .dropdown-toggle:after {
-    display: none; }
-  .navbar .settings .dropdown-menu {
-    right: 0;
-    text-align: left; }
+/*
+|   =========================================================
+|   Navigation
+|   =========================================================
+*/
+.navbar.navbar-inverse .navbar-collapse {
+  padding-left: 0;
+  padding-right: 0; }
+.navbar.navbar-inverse .navbar-toggle {
+  padding: 6px 8px;
+  color: #ddd;
+  border-color: #333; }
+  .navbar.navbar-inverse .navbar-toggle:hover {
+    color: #eee;
+    border-color: #444; }
+.navbar.navbar-inverse .navbar-form {
+  margin-left: 0;
+  margin-right: 0; }
 
 .navbar-inner {
   -webkit-border-radius: 0;
@@ -6686,23 +6352,20 @@ table.items td {
   .options .dropdown-menu {
     left: -10px; }
 
-#subnavigation {
-  max-height: 50px !important;
-  border-top: none; }
+.submenu {
+  padding: 5px;
+  font-size: 85%;
+  max-width: 100% !important; }
+  .submenu .submenu-row {
+    margin-bottom: 5px; }
+  .submenu .nav-pills > li > a {
+    padding: 5px 10px; }
 
-.submenu .navbar-toggle {
-  margin: 0;
-  background: #bbb;
-  padding: 4px 6px; }
-  .submenu .navbar-toggle i {
-    color: #eee; }
-.submenu .navbar-collapse {
-  z-index: 9999;
-  padding: 0; }
-
-/* =============================================================================
-   Pagination
-   ========================================================================== */
+/*
+|   =========================================================
+|   Pagination
+|   =========================================================
+*/
 .pagination {
   height: auto;
   margin: 0; }
@@ -6712,9 +6375,11 @@ table.items td {
   padding: 3px 10px;
   line-height: 20px; }
 
-/* =============================================================================
-   Sidebar
-   ========================================================================== */
+/*
+|   =========================================================
+|   Sidebar
+|   =========================================================
+*/
 .sidebar {
   height: 100%;
   padding: 0;
@@ -6735,9 +6400,15 @@ table.items td {
       background: #e5e5e5;
       color: #555; }
 
-/* =============================================================================
-   Content
-   ========================================================================== */
+/*
+|   =========================================================
+|   Content
+|   =========================================================
+*/
+.amount {
+  text-align: right;
+  font-size: 90%; }
+
 .alert {
   margin-left: 15px;
   margin-right: 15px; }
@@ -6753,25 +6424,39 @@ div.table-content .alert {
 div.table-content .tab-pane {
   padding-bottom: 50px; }
 
-#panel-overdue-invoices .panel-body, #panel-overdue-invoices .install-panel, #panel-overdue-invoices #login, #panel-overdue-invoices .details-box,
+#panel-overdue-invoices .panel-body, #panel-overdue-invoices .details-box, #panel-overdue-invoices .install-panel, #panel-overdue-invoices #login,
 #panel-recent-quotes .panel-body,
+#panel-recent-quotes .details-box,
 #panel-recent-quotes .install-panel,
 #panel-recent-quotes #login,
-#panel-recent-quotes .details-box,
 #panel-recent-invoices .panel-body,
+#panel-recent-invoices .details-box,
 #panel-recent-invoices .install-panel,
-#panel-recent-invoices #login,
-#panel-recent-invoices .details-box {
+#panel-recent-invoices #login {
   padding: 0; }
+#panel-overdue-invoices .label,
+#panel-recent-quotes .label,
+#panel-recent-invoices .label {
+  display: block;
+  width: 100%; }
+#panel-overdue-invoices table td:first-child,
+#panel-overdue-invoices table th:first-child,
+#panel-recent-quotes table td:first-child,
+#panel-recent-quotes table th:first-child,
+#panel-recent-invoices table td:first-child,
+#panel-recent-invoices table th:first-child {
+  padding-left: 10px; }
 
 #panel-overdue-invoices p {
   margin: 15px; }
 
 .quick-actions .btn {
   padding: 5px;
-  border-right-width: 0; }
+  border: none;
+  border-right: 1px solid #ddd;
+  font-size: 90%; }
   .quick-actions .btn:last-child {
-    border-right-width: 1px; }
+    border-right: none; }
 
 .btn .fa, .btn .datepicker .icon-arrow-left, .datepicker .btn .icon-arrow-left, .btn .datepicker .icon-arrow-right, .datepicker .btn .icon-arrow-right,
 .fa.fa-margin,
@@ -6792,7 +6477,7 @@ div.table-content .tab-pane {
 
 .main-area .headerbar {
   height: 46px;
-  padding: 8px 20px;
+  padding: 8px;
   border-bottom: 1px solid #ddd; }
   .main-area .headerbar h1 {
     font-size: 15px;
@@ -6820,9 +6505,11 @@ div.table-content .tab-pane {
 #email_template_pdf_template > option {
   display: none; }
 
-/* =============================================================================
-   Tabs
-   ========================================================================== */
+/*
+|   =========================================================
+|   Tabs
+|   =========================================================
+*/
 .tabbable .table {
   margin-bottom: 20px; }
 
@@ -6859,9 +6546,11 @@ div.table-content .tab-pane {
 .tabs-below .nav-tabs > li:first-child > a:hover {
   border-left: none !important; }
 
-/* =============================================================================
-   Widgets
-   ========================================================================== */
+/*
+|   =========================================================
+|   Widgets
+|   =========================================================
+*/
 .widget {
   border: 1px solid #ddd;
   margin-top: 20px; }
@@ -6896,9 +6585,11 @@ div.table-content .tab-pane {
 .post-date {
   color: #bbb; }
 
-/* =============================================================================
-   Client Profile
-   ========================================================================== */
+/*
+|   =========================================================
+|   Client Profile
+|   =========================================================
+*/
 .profile {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -6945,9 +6636,11 @@ div.table-content .tab-pane {
   resize: both;
   width: 100%; }
 
-/* =============================================================================
-   Invoice and Quotes Global Styles
-   ========================================================================== */
+/*
+|   =========================================================
+|   Invoice and Quotes Global Styles
+|   =========================================================
+*/
 .draft {
   color: #999999; }
 
@@ -6987,15 +6680,19 @@ div.table-content .tab-pane {
   .label.canceled {
     background-color: #333333; }
 
-/* =============================================================================
-   Quotes
-   ========================================================================== */
+/*
+|   =========================================================
+|   Quotes
+|   =========================================================
+*/
 .quote .cf {
   margin-bottom: 40px; }
 
-/* =============================================================================
-   Invoice
-   ========================================================================== */
+/*
+|   =========================================================
+|   Invoices
+|   =========================================================
+*/
 .invoice .items {
   margin-top: 40px; }
 .invoice .total td:first-child,
@@ -7009,9 +6706,11 @@ div.table-content .tab-pane {
 .invoice .tax {
   background: none; }
 
-/* =============================================================================
-   Random Styles
-   ========================================================================== */
+/*
+|   =========================================================
+|   Various Styles
+|   =========================================================
+*/
 .no-border-radius {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -7019,6 +6718,9 @@ div.table-content .tab-pane {
 
 .no-margin {
   margin: 0 !important; }
+
+.no-padding {
+  padding: 0 !important; }
 
 .index-options {
   margin-bottom: 0px; }
@@ -7053,12 +6755,101 @@ legend, .install-panel h2, .install-step h2 {
   color: #B94A48;
   font-weight: bold; }
 
-/* =============================================================================
-   Responsive Media Queries
-   ========================================================================== */
+/*
+|   =========================================================
+|   Install, Upgrade and Login
+|   =========================================================
+*/
+.install-panel {
+  margin-top: 30px; }
+  .install-panel h1 {
+    margin: 20px auto;
+    display: block;
+    width: 200px;
+    height: 100px;
+    background: url("/assets/default/img/logo_200x100.png") center center no-repeat; }
+    .install-panel h1 span {
+      display: none; }
+  .install-panel ul {
+    list-style: none; }
+  .install-panel .btn {
+    margin-top: 15px; }
+  .install-panel .alert {
+    margin-left: 0;
+    margin-right: 0; }
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+  .install-panel h1 {
+    background: url("/assets/default/img/logo_400x200.png") center center no-repeat;
+    background-size: 200px 100px; } }
+#login .form-horizontal {
+  margin-bottom: 20px; }
+#login .form-group {
+  margin-bottom: 20px; }
+#login h1 {
+  margin: 20px 0; }
+
+.install-panel .alert,
+#login .alert {
+  margin-bottom: 20px; }
+
+/*
+|   =========================================================
+|   Datepicker
+|   =========================================================
+*/
+.controls.date {
+  margin-left: 10px;
+  padding: 0; }
+
+.datepicker .icon-arrow-left {
+  color: #777; }
+
+.datepicker .icon-arrow-right {
+  color: #777; }
+
+.datepicker .day.active {
+  background: #3276b1;
+  color: #efefef; }
+  .datepicker .day.active:hover {
+    background: #3276b1;
+    color: #fff; }
+
+.datepicker .day:hover {
+  background: #efefef;
+  color: #3276b1;
+  cursor: crosshair; }
+
+.input-append.date .add-on i,
+.input-prepend.date .add-on i {
+  width: auto;
+  height: auto;
+  display: inline; }
+
+.datepicker.dropdown-menu {
+  padding: 5px;
+  z-index: 9999; }
+
+.datepicker table th:first-child,
+.datepicker table td:first-child {
+  padding-left: 5px; }
+
+/*
+|   =========================================================
+|   Responsive Media Queries
+|   =========================================================
+*/
 @media (min-width: 992px) {
   .navbar-nav .visible-lg {
-    display: inline-block !important; } }
+    display: inline-block !important; }
+
+  .submenu .submenu-row {
+    float: left;
+    margin-right: 10px; } }
+@media (max-width: 992px) {
+  .submenu .submenu-row {
+    float: left;
+    margin-right: 10px; } }
 @media (max-width: 768px) {
   .sidebar li a {
     padding: 7px; }
@@ -7076,26 +6867,18 @@ legend, .install-panel h2, .install-step h2 {
     text-align: left; }
 
   .submenu .navbar-collapse {
-    margin-top: 7px; }
-
-  .navbar-inverse .navbar-nav .open .dropdown-menu {
-    padding-top: 0; }
-    .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
-      color: #ccc;
-      background: #555; }
-      .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover {
-        color: #fff;
-        background: #555; } }
+    margin-top: 7px; } }
 @media (max-width: 480px) {
-  .navbar {
+  .navbar.navbar-inverse {
     -webkit-box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.3);
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.3); }
-
-  .navbar-nav {
-    margin: 7px 0; }
-    .navbar-nav .visible-xs {
-      display: inline-block !important; }
+    .navbar.navbar-inverse .navbar-nav {
+      margin: 7px 0; }
+      .navbar.navbar-inverse .navbar-nav .dropdown .dropdown-menu {
+        background: #555; }
+      .navbar.navbar-inverse .navbar-nav .visible-xs {
+        display: inline-block !important; }
 
   .headerbar {
     padding: 8px !important; }
@@ -7115,6 +6898,3 @@ Please define your styles before this section.
 
 .cf {
   zoom: 1; }
-
-.no-padding {
-  padding: 0; }

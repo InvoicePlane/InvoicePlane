@@ -253,6 +253,7 @@ $lang['status'] = 'Status';
 $lang['street_address_2'] = 'Street Address 2';
 $lang['street_address'] = 'Street Address';
 $lang['subject'] = 'Subject';
+$lang['submenu'] = 'Submenu';
 $lang['submit'] = 'Submit';
 $lang['subtotal'] = 'Subtotal';
 $lang['success'] = 'Success';
