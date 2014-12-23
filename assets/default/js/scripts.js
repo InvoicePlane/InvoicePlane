@@ -49,25 +49,9 @@ $(document).ready(function() {
 /*Fix Scrollbar on Main Content*/
 $(window).resize(function(){
 
-    // Set sidebar height
     var D = document;
     var doc_height = Math.max(Math.max(D.body.scrollHeight,    D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
     $('.sidebar').height(doc_height);
-
-    // Set height for menus
-    var windowheight = $(this).outerHeight();
-    var height = windowheight - $('nav.navbar').outerHeight();
-    height = height - $('.main-area .headerbar').outerHeight() - $('.nav-tabs').outerHeight();
-
-    if ( $('#form-settings') ) {
-        height = height - 50;
-    }
-
-    if ( $('.main-area').outerWidth() < 800 ) {
-        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').css('margin-top',34,'height',height);
-    } else {
-        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').height(height);
-    }
 
 });
 

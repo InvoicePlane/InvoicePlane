@@ -8,10 +8,7 @@
 /* =============================================================================
    Import Bootstrap and other assets
    ========================================================================== */
-
-    // Use compass
-    @import "compass";
-
+   
     // Bootstrap
     @import "bootstrap/bootstrap-welcome";
 
@@ -29,7 +26,7 @@
 
     // overflow-x fix white space at the right when browser window is resized
     html, body {
-        overflow-y:hidden;
+        overflow-y: hidden;
     }
 
     body {
@@ -38,10 +35,6 @@
 
     img {
         vertical-align: middle;
-    }
-
-    p, ul, ol {
-        @include margin-trailer(1);
     }
 
     a:hover, a:active, a:focus {

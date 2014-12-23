@@ -14,25 +14,21 @@
                 <h3 class="panel-title"><?php echo lang('quick_actions'); ?></h3>
             </div>
 
-            <div class="panel-body">
-
-                <div class="btn-group btn-group-justified">
-                    <a href="<?php echo site_url('clients/form'); ?>"
-                       class="btn btn-default">
-                        <i class="fa fa-user"></i><span class="hidden-md hidden-xs"><?php echo lang('add_client'); ?></span>
-                    </a>
-                    <a href="javascript:void(0)" class="create-quote btn btn-default">
-                        <i class="fa fa-file"></i><span class="hidden-md hidden-xs"><?php echo lang('create_quote'); ?></span>
-                    </a>
-                    <a href="javascript:void(0)" class="create-invoice btn btn-default">
-                        <i class="fa fa-file-text"></i><span class="hidden-md hidden-xs"><?php echo lang('create_invoice'); ?></span>
-                    </a>
-                    <a href="<?php echo site_url('payments/form'); ?>"
-                       class="btn btn-default">
-                        <i class="fa fa-money"></i><span class="hidden-md hidden-xs"><?php echo lang('enter_payment'); ?></span>
-                    </a>
-                </div>
-
+            <div class="btn-group btn-group-justified no-margin">
+                <a href="<?php echo site_url('clients/form'); ?>"
+                   class="btn btn-default">
+                    <i class="fa fa-user"></i><span class="hidden-md hidden-xs"><?php echo lang('add_client'); ?></span>
+                </a>
+                <a href="javascript:void(0)" class="create-quote btn btn-default">
+                    <i class="fa fa-file"></i><span class="hidden-md hidden-xs"><?php echo lang('create_quote'); ?></span>
+                </a>
+                <a href="javascript:void(0)" class="create-invoice btn btn-default">
+                    <i class="fa fa-file-text"></i><span class="hidden-md hidden-xs"><?php echo lang('create_invoice'); ?></span>
+                </a>
+                <a href="<?php echo site_url('payments/form'); ?>"
+                   class="btn btn-default">
+                    <i class="fa fa-money"></i><span class="hidden-md hidden-xs"><?php echo lang('enter_payment'); ?></span>
+                </a>
             </div>
 
         </div>
@@ -46,8 +42,6 @@
                 </h3>
             </div>
 
-            <div class="panel-body">
-
                 <table class="table table-bordered table-condensed no-margin">
                     <?php foreach ($quote_status_totals as $total) { ?>
                         <tr>
@@ -56,7 +50,7 @@
                                     <?php echo $total['label']; ?>
                                 </a>
                             </td>
-                            <td class="text-right">
+                            <td class="amount">
 	                        <span class="<?php echo $total['class']; ?>">
 	                            <?php echo format_currency($total['sum_total']); ?>
 	                        </span>
@@ -64,8 +58,6 @@
                         </tr>
                     <?php } ?>
                 </table>
-
-            </div>
 
         </div>
 
@@ -78,8 +70,6 @@
                 </h3>
             </div>
 
-            <div class="panel-body">
-
                 <table class="table table-bordered table-condensed no-margin">
 
                     <?php foreach ($invoice_status_totals as $total) { ?>
@@ -89,7 +79,7 @@
                                     <?php echo $total['label']; ?>
                                 </a>
                             </td>
-                            <td class="text-right">
+                            <td class="amount">
 							<span class="<?php echo $total['class']; ?>">
                             	<?php echo format_currency($total['sum_total']); ?>
                         	</span>
@@ -99,7 +89,6 @@
 
                 </table>
 
-            </div>
         </div>
 
     </div>
@@ -120,7 +109,7 @@
                 <?php if ( !empty($overdue_invoices) ) { ?>
 
                     <div class="table-responsive">
-                    <table class="table table-striped no-margin">
+                    <table class="table table-striped table-condensed no-margin">
                         <thead>
                         <tr>
                             <th style="width: 15%;"><?php echo lang('status'); ?></th>
@@ -151,19 +140,19 @@
                                 <td>
                                     <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
                                 </td>
-                                <td style="text-align: right;">
+                                <td class="amount">
                                     <?php echo format_currency($invoice->invoice_balance); ?>
                                 </td>
                                 <td style="text-align: center;">
                                     <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                        title="<?php echo lang('download_pdf'); ?>">
-                                        <i class="icon ion-printer"></i>
+                                        <i class="fa fa-print"></i>
                                     </a>
                                 </td>
                             </tr>
                         <?php } ?>
                         <tr>
-                            <td colspan="6" style="text-align: center;">
+                            <td colspan="6" class="text-right">
                                 <?php echo anchor('invoices/status/overdue', lang('view_all')); ?>
                             </td>
                         </tr>
@@ -189,7 +178,7 @@
                 </h3>
             </div>
             <div class="table-responsive">
-                <table class="table table-striped no-margin">
+                <table class="table table-striped table-condensed no-margin">
                     <thead>
                     <tr>
                         <th style="width: 15%;"><?php echo lang('status'); ?></th>
@@ -218,7 +207,7 @@
                             <td>
                                 <?php echo anchor('clients/view/' . $quote->client_id, $quote->client_name); ?>
                             </td>
-                            <td style="text-align: right;">
+                            <td class="amount">
                                 <?php echo format_currency($quote->quote_total); ?>
                             </td>
                             <td style="text-align: center;">
@@ -230,7 +219,7 @@
                         </tr>
                     <?php } ?>
                     <tr>
-                        <td colspan="6" style="text-align: center;">
+                        <td colspan="6" class="text-right">
                             <?php echo anchor('quotes/status/all', lang('view_all')); ?>
                         </td>
                     </tr>
@@ -248,7 +237,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-striped no-margin">
+                <table class="table table-striped table-condensed no-margin">
                     <thead>
                     <tr>
                         <th style="width: 15%;"><?php echo lang('status'); ?></th>
@@ -280,7 +269,7 @@
                             <td>
                                 <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
                             </td>
-                            <td style="text-align: right;">
+                            <td class="amount">
                                 <?php echo format_currency($invoice->invoice_balance); ?>
                             </td>
                             <td style="text-align: center;">
@@ -293,7 +282,7 @@
                     <?php } ?>
 
                     <tr>
-                        <td colspan="6" style="text-align: center;">
+                        <td colspan="6" class="text-right">
                             <?php echo anchor('invoices/status/all', lang('view_all')); ?>
                         </td>
                     </tr>

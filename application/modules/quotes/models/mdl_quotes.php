@@ -91,7 +91,7 @@ class Mdl_Quotes extends Response_Model {
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_quotes.quote_date_created DESC');
+        $this->db->order_by('ip_quotes.quote_number DESC');
     }
 
     public function default_join()

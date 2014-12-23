@@ -22,14 +22,14 @@
     <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/custom.css'; ?>">
 	<!-- end CSS-->
 
-	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
+	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.3.min.js'; ?>"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
     <script type="text/javascript">
         (function ($) {
             $(document);
         }(jQuery));
     </script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.2.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.1.min.js"></script>
 
 	<style type="text/css">
 		html { overflow-y: visible; }
