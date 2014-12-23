@@ -6225,6 +6225,11 @@ button.close {
 
 /*
 |   =========================================================
+|   Variables
+|   =========================================================
+*/
+/*
+|   =========================================================
 |   Base Styles
 |   =========================================================
 */
@@ -6303,7 +6308,7 @@ textarea {
 |   =========================================================
 */
 .table {
-  margin: 0 0 40px; }
+  margin: 0 0 15px; }
   .table.no-margin {
     margin: 0 0 0 0; }
   .table td {
@@ -6434,11 +6439,6 @@ div.table-content .tab-pane {
 #panel-recent-invoices .install-panel,
 #panel-recent-invoices #login {
   padding: 0; }
-#panel-overdue-invoices .label,
-#panel-recent-quotes .label,
-#panel-recent-invoices .label {
-  display: block;
-  width: 100%; }
 #panel-overdue-invoices table td:first-child,
 #panel-overdue-invoices table th:first-child,
 #panel-recent-quotes table td:first-child,
@@ -6497,10 +6497,15 @@ div.table-content .tab-pane {
   margin-top: 40px;
   overflow-y: auto; }
 
-.details-box .has-feedback .form-control-feedback {
-  bottom: 0;
-  top: auto;
-  right: 0; }
+.modal-backdrop.in {
+  background: transparent; }
+
+.details-box {
+  padding: 10px; }
+  .details-box .has-feedback .form-control-feedback {
+    bottom: 0;
+    top: auto;
+    right: 0; }
 
 #email_template_pdf_template > option {
   display: none; }
@@ -6650,35 +6655,48 @@ div.table-content .tab-pane {
 .viewed {
   color: #F89406; }
 
-.paid {
-  color: #468847; }
-
+.paid,
 .approved {
   color: #468847; }
 
-.rejected, .overdue {
+.rejected,
+.overdue {
   color: #B94A48; }
 
 .canceled {
   color: #333333; }
 
 .label {
-  font-weight: normal;
-  color: white !important; }
+  font-weight: bold;
+  color: white !important;
+  display: block;
+  width: 100%; }
+  .label.label-inline {
+    display: inline;
+    width: auto; }
   .label.draft {
-    background-color: #999999; }
+    background-color: #b3b3b3; }
   .label.sent {
-    background-color: #3A87AD; }
+    background-color: #54a0c6; }
   .label.viewed {
-    background-color: #F89406; }
-  .label.paid {
-    background-color: #468847; }
-  .label.approved {
-    background-color: #468847; }
+    background-color: #faa937; }
+  .label.paid, .label.approved {
+    background-color: #58a959; }
   .label.rejected, .label.overdue {
-    background-color: #B94A48; }
+    background-color: #c76e6d; }
   .label.canceled {
-    background-color: #333333; }
+    background-color: #4d4d4d; }
+
+#item_table td, #item_table th {
+  min-width: 100px;
+  padding: 5px; }
+#item_table .form-control {
+  margin: 0; }
+#item_table .td-description {
+  min-width: 200px; }
+#item_table .td-icon {
+  text-align: center;
+  min-width: 40px; }
 
 /*
 |   =========================================================
@@ -6693,8 +6711,6 @@ div.table-content .tab-pane {
 |   Invoices
 |   =========================================================
 */
-.invoice .items {
-  margin-top: 40px; }
 .invoice .total td:first-child,
 .invoice .total:hover td:first-child {
   background: none !important; }
@@ -6705,6 +6721,12 @@ div.table-content .tab-pane {
   text-align: right; }
 .invoice .tax {
   background: none; }
+.invoice .invoice-properties {
+  margin-bottom: 5px; }
+  .invoice .invoice-properties label {
+    margin: 0; }
+  .invoice .invoice-properties:last-child {
+    margin-bottom: 0; }
 
 /*
 |   =========================================================
@@ -6726,7 +6748,7 @@ div.table-content .tab-pane {
   margin-bottom: 0px; }
 
 .padded {
-  padding: 15px; }
+  padding: 15px 0; }
 
 legend, .install-panel h2, .install-step h2 {
   -moz-border-bottom-colors: none;
@@ -6856,6 +6878,9 @@ legend, .install-panel h2, .install-step h2 {
 
   .main-area {
     margin-left: 0; }
+
+  .main-area .content, .main-area .tab-info {
+    padding: 10px; }
 
   .navbar-nav {
     margin: 7px 0; }

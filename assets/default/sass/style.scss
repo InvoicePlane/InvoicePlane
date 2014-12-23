@@ -19,6 +19,19 @@
 
 /*
 |   =========================================================
+|   Variables
+|   =========================================================
+*/
+
+$color_status_draft:            #999999;
+$color_status_sent:             #3A87AD;
+$color_status_viewed:           #F89406;
+$color_status_paid_approved:    #468847;
+$color_status_rejected_overdue: #B94A48;
+$color_status_canceled:         #333333;
+
+/*
+|   =========================================================
 |   Base Styles
 |   =========================================================
 */
@@ -114,7 +127,7 @@ textarea {
 */
 
 .table {
-    margin: 0 0 40px;
+    margin: 0 0 15px;
 
     &.no-margin {
         margin: 0 0 0 0;
@@ -294,10 +307,6 @@ div.table-content {
     .panel-body {
         padding: 0;
     }
-    .label {
-        display: block;
-        width: 100%;
-    }
     table {
         td:first-child,
         th:first-child {
@@ -376,10 +385,15 @@ div.table-content {
     overflow-y: auto;
 }
 
+.modal-backdrop.in {
+    background: transparent;
+}
+
 .details-box {
    @extend .panel;
    @extend .panel-default;
    @extend .panel-body;
+    padding: 10px;
 
    .has-feedback .form-control-feedback {
        bottom: 0;
@@ -577,29 +591,66 @@ div.table-content {
 */
 
 // Invoices and Quotes Status Colors
-.draft { color: #999999; }
-.sent { color: #3A87AD; }
-.viewed { color: #F89406; }
-.paid { color: #468847; }
-.approved { color: #468847; }
-.rejected, .overdue { color: #B94A48; }
-.canceled { color: #333333; }
+.draft      { color: $color_status_draft; }
+.sent       { color: $color_status_sent; }
+.viewed     { color: $color_status_viewed; }
+.paid,
+.approved   { color: $color_status_paid_approved; }
+.rejected,
+.overdue    { color: $color_status_rejected_overdue; }
+.canceled   { color: $color_status_canceled; }
 
 // Invoices and Quotes Status
 .label {
 
-    font-weight: normal;
+    font-weight: bold;
     color: white !important; // override status text color on labels
+    display: block;
+    width: 100%;
 
-    &.draft { background-color: #999999; }
-    &.sent { background-color: #3A87AD; }
-    &.viewed { background-color: #F89406; }
-    &.paid { background-color: #468847; }
-    &.approved { background-color: #468847; }
+    &.label-inline {
+        display: inline;
+        width: auto;
+    }
+
+    &.draft {
+        background-color: lighten($color_status_draft,10%);
+    }
+    &.sent {
+        background-color: lighten($color_status_sent,10%);
+    }
+    &.viewed {
+        background-color: lighten($color_status_viewed,10%);
+    }
+    &.paid,
+    &.approved{
+        background-color: lighten($color_status_paid_approved,10%);
+    }
     &.rejected,
-    &.overdue { background-color: #B94A48; }
-    &.canceled { background-color: #333333; }
+    &.overdue {
+        background-color: lighten($color_status_rejected_overdue,10%);
+    }
+    &.canceled {
+        background-color: lighten($color_status_canceled,10%);
+    }
 
+}
+
+#item_table {
+    td, th {
+        min-width: 100px;
+        padding: 5px;
+    }
+    .form-control {
+        margin: 0;
+    }
+    .td-description {
+        min-width: 200px;
+    }
+    .td-icon {
+        text-align: center;
+        min-width: 40px;
+    }
 }
 
 /*
@@ -619,10 +670,6 @@ div.table-content {
 */
 
 .invoice {
-    .items {
-        margin-top: 40px;
-    }
-
     .total td:first-child,
     .total:hover td:first-child {
         background: none !important;
@@ -639,6 +686,16 @@ div.table-content {
 
     .tax {
         background: none;
+    }
+
+    .invoice-properties {
+        margin-bottom: 5px;
+        label {
+            margin: 0;
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 }
 
@@ -667,7 +724,7 @@ div.table-content {
 }
 
 .padded {
-    padding: 15px;
+    padding: 15px 0;
 }
 
 legend, .install-step h2 {
@@ -870,6 +927,10 @@ only screen and (min-device-pixel-ratio: 2) {
     .sidebar li a { padding: 7px; }
 
     .main-area { margin-left: 0; }
+
+    .main-area .content, .main-area .tab-info {
+        padding: 10px;
+    }
 
     .navbar-nav { margin: 7px 0; }
 
