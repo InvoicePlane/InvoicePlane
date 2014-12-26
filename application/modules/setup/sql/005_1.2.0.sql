@@ -18,7 +18,7 @@ SET invoice_group_identifier_format = CONCAT(
     END,
     '{{{id}}}'
 );
-ALTER TABLE invoiceplane.ip_invoice_groups
+ALTER TABLE `ip_invoice_groups`
 DROP invoice_group_prefix,
 DROP invoice_group_prefix_month,
 DROP invoice_group_prefix_year
