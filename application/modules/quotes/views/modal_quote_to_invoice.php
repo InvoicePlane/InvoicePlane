@@ -1,8 +1,6 @@
 <script type="text/javascript">
 	$(function()
 	{
-		$('.datepicker').datepicker( {autoclose: true, format: '<?php echo date_format_datepicker(); ?>'} );
-
 		// Display the create quote modal
 		$('#modal_quote_to_invoice').modal('show');
 

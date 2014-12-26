@@ -41,7 +41,12 @@
             $('.nav-tabs').tab();
             $('.tip').tooltip();
 
-            $('.datepicker').datepicker({ format: '<?php echo date_format_datepicker(); ?>'});
+            $('body').on('focus',".datepicker", function(){
+                $(this).datepicker({
+                    autoclose: true,
+                    format: '<?php echo date_format_datepicker(); ?>'
+                });
+            });
 
             $('.create-invoice').click(function() {
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
