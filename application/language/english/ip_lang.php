@@ -323,6 +323,7 @@ $lang['base_invoice'] = 'Base Invoice';
 $lang['calendar_month'] = 'Month';
 $lang['calendar_week'] = 'Week';
 $lang['create_recurring'] = 'Create Recurring';
+$lang['credit_invoice'] = 'Credit Invoice';
 $lang['cron_key'] = 'CRON Key';
 $lang['days'] = 'Days';
 $lang['decimal_point'] = 'Decimal Point';

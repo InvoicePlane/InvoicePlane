@@ -69,12 +69,12 @@
 
                 <td>
                     <input type="text" name="item_quantity" class="input-sm form-control"
-                           value="<?php echo format_amount($item->item_quantity); ?>">
+                           value="<?php echo format_amount($item->item_quantity * $invoice->invoice_sign); ?>">
                 </td>
 
                 <td>
                     <input type="text" name="item_price" class="input-sm form-control"
-                           value="<?php echo format_amount($item->item_price); ?>">
+                           value="<?php echo format_amount($item->item_price * $invoice->invoice_sign); ?>">
                 </td>
 
                 <td>
@@ -88,17 +88,17 @@
 
                 <td>
                 <span name="subtotal">
-                    <?php echo format_currency($item->item_subtotal); ?>
+                    <?php echo format_currency($item->item_subtotal * $invoice->invoice_sign); ?>
                 </span>
                 </td>
                 <td>
                 <span name="item_tax_total">
-                    <?php echo format_currency($item->item_tax_total); ?>
+                    <?php echo format_currency($item->item_tax_total * $invoice->invoice_sign); ?>
                 </span>
                 </td>
                 <td>
                 <span name="item_total">
-                    <?php echo format_currency($item->item_total); ?>
+                    <?php echo format_currency($item->item_total * $invoice->invoice_sign); ?>
                 </span>
                 </td>
                 <td class="td-icon">
@@ -128,17 +128,17 @@
         </thead>
         <tbody>
         <tr>
-            <td><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
-            <td><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
+            <td><?php echo format_currency($invoice->invoice_item_subtotal * $invoice->invoice_sign); ?></td>
+            <td><?php echo format_currency($invoice->invoice_item_tax_total * $invoice->invoice_sign); ?></td>
             <td>
                 <?php if ($invoice_tax_rates) { foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
                     <strong><?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id, lang('remove')) . ' ' . $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:</strong>
-                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?><br>
+                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount * $invoice->invoice_sign); ?><br>
                 <?php } } else { echo format_currency('0'); }?>
             </td>
-            <td><?php echo format_currency($invoice->invoice_total); ?></td>
-            <td><?php echo format_currency($invoice->invoice_paid); ?></td>
-            <td><strong><?php echo format_currency($invoice->invoice_balance); ?></strong></td>
+            <td><?php echo format_currency($invoice->invoice_total * $invoice->invoice_sign); ?></td>
+            <td><?php echo format_currency($invoice->invoice_paid * $invoice->invoice_sign); ?></td>
+            <td><strong><?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?></strong></td>
         </tr>
         </tbody>
     </table>

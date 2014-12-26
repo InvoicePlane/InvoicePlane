@@ -23,3 +23,5 @@ DROP invoice_group_prefix,
 DROP invoice_group_prefix_month,
 DROP invoice_group_prefix_year
 ;
+/* Add the Invoice Sign */
+ALTER TABLE `ip_invoice_amounts` ADD `invoice_sign` ENUM('1','-1') NOT NULL DEFAULT '1' AFTER `invoice_id`;

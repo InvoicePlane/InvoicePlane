@@ -6731,6 +6731,13 @@ div.table-content .tab-pane {
   .invoice .invoice-properties:last-child {
     margin-bottom: 0; }
 
+.invoice-labels span.label {
+  float: left;
+  width: auto;
+  margin: 6px 3px 4px 0; }
+  .invoice-labels span.label:last-child {
+    margin-right: 0; }
+
 /*
 |   =========================================================
 |   Various Styles

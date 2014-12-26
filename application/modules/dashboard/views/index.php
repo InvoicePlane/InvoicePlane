@@ -141,7 +141,7 @@
                                     <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
                                 </td>
                                 <td class="amount">
-                                    <?php echo format_currency($invoice->invoice_balance); ?>
+                                    <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
                                 </td>
                                 <td style="text-align: center;">
                                     <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
@@ -270,7 +270,7 @@
                                 <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
                             </td>
                             <td class="amount">
-                                <?php echo format_currency($invoice->invoice_balance); ?>
+                                <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
                             </td>
                             <td style="text-align: center;">
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
