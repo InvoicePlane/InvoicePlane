@@ -14,6 +14,7 @@
     <title>InvoicePlane</title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">

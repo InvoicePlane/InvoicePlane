@@ -16,6 +16,7 @@
 
 	<!-- Mobile viewport optimized: j.mp/bplateviewport -->
 	<meta name="viewport" content="width=device-width">
+	<meta name="robots" content="NOINDEX,NOFOLLOW">
 
 	<!-- CSS: implied media=all -->
     <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/style.css'; ?>">
