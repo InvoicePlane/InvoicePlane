@@ -23,7 +23,7 @@ $(document).ready(function() {
     });
 
     $('html').click(function () {
-        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style'); //Integrate this into the function.
+        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
     });
 
     // Handle click event for Email Template Tags insertion
@@ -40,19 +40,6 @@ $(document).ready(function() {
     $('.taggable').on('focus', function(){
         lastTaggableClicked = this;
     });
-
-    // Load Resize Function
-    $(window).resize();
-
-});
-
-/*Fix Scrollbar on Main Content*/
-$(window).resize(function(){
-
-    var D = document;
-    var doc_height = Math.max(Math.max(D.body.scrollHeight,    D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
-    $('.sidebar').height(doc_height);
-
 });
 
 // Insert text into textarea at Caret Position

@@ -11,7 +11,7 @@
         <div id="panel-quick-actions" class="panel panel-default quick-actions">
 
             <div class="panel-heading">
-                <h3 class="panel-title"><?php echo lang('quick_actions'); ?></h3>
+                <b><?php echo lang('quick_actions'); ?></b>
             </div>
 
             <div class="btn-group btn-group-justified no-margin">
@@ -36,10 +36,7 @@
         <div id="panel-quote-overview" class="panel panel-default overview">
 
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-file"></i>
-                    <?php echo lang('quote_overview'); ?>
-                </h3>
+                <b><i class="fa fa-file"></i> <?php echo lang('quote_overview'); ?></b>
             </div>
 
                 <table class="table table-bordered table-condensed no-margin">
@@ -64,10 +61,7 @@
         <div id="panel-invoice-overview" class="panel panel-default overview">
 
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-file-text"></i>
-                    <?php echo lang('invoice_overview'); ?>
-                </h3>
+                <b><i class="fa fa-file-text"></i> <?php echo lang('invoice_overview'); ?></b>
             </div>
 
                 <table class="table table-bordered table-condensed no-margin">
@@ -98,10 +92,7 @@
         <div id="panel-overdue-invoices" class="panel panel-default">
 
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-warning"></i>
-                    <?php echo lang('overdue_invoices'); ?>
-                </h3>
+                <b><i class="fa fa-warning"></i> <?php echo lang('overdue_invoices'); ?></b>
             </div>
 
             <div class="panel-body">
@@ -172,10 +163,7 @@
         <div id="panel-recent-quotes" class="panel panel-default">
 
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-refresh"></i>
-                    <?php echo lang('recent_quotes'); ?>
-                </h3>
+                <b><i class="fa fa-refresh"></i> <?php echo lang('recent_quotes'); ?></b>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-condensed no-margin">
@@ -231,9 +219,7 @@
         <div id="panel-recent-invoices" class="panel panel-default">
 
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-refresh"></i>
-                    <?php echo lang('recent_invoices'); ?></h3>
+                <b><i class="fa fa-refresh"></i> <?php echo lang('recent_invoices'); ?></b>
             </div>
 
             <div class="table-responsive">
