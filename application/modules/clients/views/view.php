@@ -185,6 +185,9 @@
             <?php echo $invoice_table; ?>
         </div>
 
+        <div id="clientPayments" class="tab-pane">
+            <?php echo $payment_table; ?>
+        </div>
     </div>
 
 </div>
@@ -196,6 +199,7 @@
             <li class="active"><a data-toggle="tab" href="#clientDetails"><?php echo lang('details'); ?></a></li>
             <li><a data-toggle="tab" href="#clientQuotes"><?php echo lang('quotes'); ?></a></li>
             <li><a data-toggle="tab" href="#clientInvoices"><?php echo lang('invoices'); ?></a></li>
+            <li><a data-toggle="tab" href="#clientPayments"><?php echo lang('payments'); ?></a></li>
         </ul>
     </div>
 </nav>
