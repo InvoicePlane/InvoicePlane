@@ -146,10 +146,10 @@
                             </h3>
                             <p class="text-right">
                                 <?php if ($invoice->user_vat_id) {
-                                    echo lang('vat_id_short') . ': ' . $invoice->client_vat_id . '<br/>';
+                                    echo lang('vat_id_short') . ': ' . $invoice->user_vat_id . '<br/>';
                                 } ?>
                                 <?php if ($invoice->user_tax_code) {
-                                    echo lang('tax_code_short') . ': ' . $invoice->client_tax_code . '<br/>';
+                                    echo lang('tax_code_short') . ': ' . $invoice->user_tax_code . '<br/>';
                                 } ?>
                                 <?php if ($invoice->user_address_1) {
                                     echo $invoice->user_address_1 . '<br/>';

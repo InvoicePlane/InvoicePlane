@@ -281,8 +281,13 @@
             background: #444;
             color: #ccc;
 
-            .nav a {
-                color: #ccc;
+            .nav {
+                a{
+                    color: #ccc;
+                }
+                .open a {
+                    background: #555;
+                }
             }
 
             .dropdown-menu {
@@ -290,6 +295,12 @@
 
                 a {
                     color: #444;
+                }
+            }
+            .open .dropdown-menu a {
+                background: #fff;
+                &:hover {
+                    background: #f5f5f5;
                 }
             }
         }
@@ -301,6 +312,11 @@
                 margin: 5px 0;
                 padding: 0;
             }
+        }
+
+        .navbar-toggle {
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         .brand {
@@ -369,9 +385,9 @@
         .navbar-toggle {
             margin: 0;
             background: #bbb;
-            padding: 8px 6px;
-            .icon-bar {
-                background: #eee;
+            padding: 4px 6px;
+            i {
+                color: #eee;
             }
         }
         .navbar-collapse {
@@ -489,6 +505,11 @@
             padding: 20px;
         }
 
+        .content .alert {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
         .content-padding {
             padding: 20px 20px 94px;
         }
@@ -536,6 +557,10 @@
            right: 0;
        }
    }
+
+    #email_template_pdf_template > option {
+      display: none;
+    }
 
 
 /* =============================================================================
@@ -869,15 +894,27 @@
     	margin-top: 7px;
     }
 
+    .navbar-inverse .navbar-nav .open .dropdown-menu {
+        padding-top: 0;
+        > li > a {
+            color: #ccc;
+            background: #555;
+            &:hover {
+                color: #fff;
+                background: #555;
+            }
+        }
+    }
+
 }
 
 // Styles for very small devices (< xs)
 @media (max-width: 480px) {
 
     .navbar {
-        -webkit-box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
-        -moz-box-shadow:    0px 3px 5px 0px rgba(0, 0, 0, 0.3);
-        box-shadow:         0px 3px 5px 0px rgba(0, 0, 0, 0.3);
+        -webkit-box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.3);
+        -moz-box-shadow:    0 3px 5px 0 rgba(0, 0, 0, 0.3);
+        box-shadow:         0 3px 5px 0 rgba(0, 0, 0, 0.3);
     }
     .navbar-nav {
         margin: 7px 0;

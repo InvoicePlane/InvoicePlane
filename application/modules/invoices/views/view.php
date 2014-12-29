@@ -169,7 +169,7 @@
 
         <div class="invoice">
 
-            <div class="cf">
+            <div class="cf row">
 
                 <div class="col-xs-12 col-md-8">
                     <div class="pull-left">
@@ -257,11 +257,11 @@
                        value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
             <?php } ?>
 
-            <?php if ($invoice->invoice_status_id != 1) { ?>
             <p class="padded">
-                <?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
+                <?php if ($invoice->invoice_status_id != 1) { ?>
+                    <?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
+                <?php } ?>
             </p>
-            <?php } ?>
         </div>
 
     </form>
