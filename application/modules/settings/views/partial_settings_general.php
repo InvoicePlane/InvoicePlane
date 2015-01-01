@@ -88,7 +88,7 @@
             <select name="settings[default_country]" class="input-sm form-control">
                 <option></option>
                 <?php foreach ($countries as $cldr => $country) { ?>
-                    <option value="<?php echo $country; ?>" <?php if ($this->mdl_settings->setting('default_country') == $country) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                    <option value="<?php echo $cldr; ?>" <?php if ($this->mdl_settings->setting('default_country') == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
                 <?php } ?>
             </select>
         </div>
