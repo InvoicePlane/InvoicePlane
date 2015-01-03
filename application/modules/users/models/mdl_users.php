@@ -90,7 +90,9 @@ class Mdl_Users extends Response_Model {
                 'field' => 'user_zip'
             ),
             'user_country'   => array(
-                'field' => 'user_country'
+                'field' => 'user_country',
+            	'label' => lang('user_country'),
+            	'rules' => 'required'
             ),
             'user_phone'     => array(
                 'field' => 'user_phone'
@@ -147,7 +149,9 @@ class Mdl_Users extends Response_Model {
                 'field' => 'user_zip'
             ),
             'user_country'   => array(
-                'field' => 'user_country'
+                'field' => 'user_country',
+                'label' => lang('user_country'),
+                'rules' => 'required'                       		
             ),
             'user_phone'     => array(
                 'field' => 'user_phone'
