@@ -94,12 +94,7 @@ class Mailer extends Admin_Controller {
 
     public function send_invoice($invoice_id)
     {
-    	if ($this->input->post('btn_cancel'))
-    	{
-    		redirect('invoices');
-    	}
-    	
-    	if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) return;
 
         $from             = array($this->input->post('from_email'),
                                   $this->input->post('from_name'));
@@ -123,11 +118,6 @@ class Mailer extends Admin_Controller {
 
     public function send_quote($quote_id)
     {
-    	if ($this->input->post('btn_cancel'))
-    	{
-    		redirect('quotes');
-    	}
-    	
         if (!$this->mailer_configured) return;
 
         $from         = array($this->input->post('from_email'),
