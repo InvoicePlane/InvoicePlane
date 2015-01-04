@@ -16,7 +16,7 @@
 		current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
 		
 		// Get the latest version from updates.invoiceplane.com
-		$.getJSON("http://updates.invoiceplane.com", function(data) {
+		$.getJSON("https://updates.invoiceplane.com", function(data) {
 			
 			var updatecheck = data.current_version.replace(/\./g, '');
 			
