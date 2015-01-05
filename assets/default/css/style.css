@@ -6233,9 +6233,10 @@ button.close {
 |   Base Styles
 |   =========================================================
 */
-html, body {
+html {
   height: 100%;
-  -webkit-font-smoothing: subpixel-antialiased; }
+  -webkit-font-smoothing: subpixel-antialiased;
+  overflow-y: scroll; }
 
 body {
   background-color: #fff;
