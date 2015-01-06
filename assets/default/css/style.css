@@ -6319,6 +6319,21 @@ textarea {
     padding-left: 20px; }
   .table tr.bold-border td {
     border-bottom-width: 2px; }
+  .table .td-text {
+    min-width: 200px; }
+  .table .td-textarea {
+    min-width: 250px; }
+  .table .td-amount {
+    min-width: 100px;
+    text-align: right;
+    font-size: 13px;
+    font-family: Monaco, Lucida Console, monospace; }
+    .table .td-amount .form-control {
+      text-align: right;
+      font-size: 13px; }
+  .table .td-icon {
+    text-align: center;
+    min-width: 40px; }
 
 table.items td {
   vertical-align: top !important; }
@@ -6388,33 +6403,26 @@ table.items td {
 */
 .sidebar {
   height: 100%;
-  padding: 0;
-  background: #eee;
-  border-right: 1px solid #ddd; }
+  padding: 0; }
   .sidebar ul {
     margin: 0;
     padding: 0;
     list-style: none; }
   .sidebar li a {
-    padding: 10px 20px;
+    padding: 15px 20px;
     display: block;
     border-bottom: 1px solid #ddd;
-    font-size: 24px;
-    color: #555;
+    font-size: 20px;
+    color: #666;
     text-align: center; }
     .sidebar li a:hover {
-      background: #e5e5e5;
-      color: #555; }
+      color: #3A87AD; }
 
 /*
 |   =========================================================
 |   Content
 |   =========================================================
 */
-.amount {
-  text-align: right;
-  font-size: 90%; }
-
 .alert {
   margin-left: 15px;
   margin-right: 15px; }
@@ -6466,7 +6474,8 @@ div.table-content .tab-pane {
   margin-right: 7px; }
 
 .main-area {
-  padding: 0; }
+  padding: 0;
+  border-left: 1px solid #ddd; }
   .main-area .content,
   .main-area .tab-info {
     padding: 20px; }
@@ -6689,15 +6698,9 @@ div.table-content .tab-pane {
     background-color: #4d4d4d; }
 
 #item_table td, #item_table th {
-  min-width: 100px;
   padding: 5px; }
 #item_table .form-control {
   margin: 0; }
-#item_table .td-description {
-  min-width: 200px; }
-#item_table .td-icon {
-  text-align: center;
-  min-width: 40px; }
 
 /*
 |   =========================================================
@@ -6778,6 +6781,11 @@ legend, .install-panel h2, .install-step h2 {
   color: #B94A48;
   font-weight: bold; }
 
+.nav-tabs-noborder > li > a {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top: 0 !important; }
+
 /*
 |   =========================================================
 |   Install, Upgrade and Login
@@ -6800,6 +6808,8 @@ legend, .install-panel h2, .install-step h2 {
   .install-panel .alert {
     margin-left: 0;
     margin-right: 0; }
+  .install-panel .label {
+    width: auto; }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
   .install-panel h1 {
