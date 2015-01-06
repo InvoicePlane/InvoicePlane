@@ -40,6 +40,15 @@ $(document).ready(function() {
     $('.taggable').on('focus', function(){
         lastTaggableClicked = this;
     });
+
+    // Set the height for the sidebar if the main area is higher than the viewport
+    var mainAreaHeight  = $('.main-area').height();
+    var windowHeight    = $(window).height();
+    if (mainAreaHeight > windowHeight) {
+        $('.sidebar').height(mainAreaHeight);
+    } else {
+        $('.sidebar').height(windowHeight - 50);
+    }
 });
 
 // Insert text into textarea at Caret Position

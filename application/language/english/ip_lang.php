@@ -427,6 +427,7 @@ $lang['menu'] = 'Menu';
 $lang['documentation'] = 'Documentation';
 $lang['checking_for_updates'] = 'Checking for updates...';
 $lang['updates_available'] = 'Updates available!';
+$lang['updatecheck_failed'] = 'Updatecheck failed! Check your network connection.';
 $lang['no_updates_available'] = 'No updates available.';
 
 $lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';

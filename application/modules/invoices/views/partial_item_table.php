@@ -3,20 +3,20 @@
         <thead>
         <tr>
             <th><?php echo lang('item'); ?></th>
-            <th class="td-description"><?php echo lang('description'); ?></th>
+            <th><?php echo lang('description'); ?></th>
             <th><?php echo lang('quantity'); ?></th>
             <th><?php echo lang('price'); ?></th>
             <th><?php echo lang('tax_rate'); ?></th>
             <th><?php echo lang('subtotal'); ?></th>
             <th><?php echo lang('tax'); ?></th>
             <th><?php echo lang('total'); ?></th>
-            <th class="td-icon"></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
 
         <tr id="new_item" style="display: none;">
-            <td>
+            <td class="td-text">
                 <input type="hidden" name="invoice_id"
                        value="<?php echo $invoice_id; ?>">
                 <input type="hidden" name="item_id" value="" class="form-control">
@@ -28,19 +28,19 @@
                 </label>
             </td>
 
-            <td>
+            <td class="td-textarea">
                 <textarea name="item_description" class="form-control"></textarea>
             </td>
 
-            <td>
+            <td class="td-amount">
                 <input type="text" class="input-xs form-control"
                        name="item_quantity"  value=""></td>
 
-            <td>
+            <td class="td-amount">
                 <input type="text" class="input-xs form-control"
                        name="item_price" value=""></td>
 
-            <td>
+            <td class="td-amount">
                 <select name="item_tax_rate_id" class="input-xs form-control">
                     <option value="0"><?php echo lang('none'); ?></option>
                     <?php foreach ($tax_rates as $tax_rate) { ?>
@@ -48,36 +48,36 @@
                     <?php } ?>
                 </select>
             </td>
-            <td><span name="subtotal"></span></td>
-            <td><span name="item_tax_total"></span></td>
-            <td><span name="item_total"></span></td>
-            <td></td>
+            <td class="td-amount"><span name="subtotal"></span></td>
+            <td class="td-amount"><span name="item_tax_total"></span></td>
+            <td class="td-amount"><span name="item_total"></span></td>
+            <td class="td-icon"></td>
         </tr>
 
         <?php foreach ($items as $item) { ?>
             <tr class="item">
-                <td>
+                <td class="td-text">
                     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">
                     <input type="text" name="item_name" class="form-control"
                            value="<?php echo $item->item_name; ?>">
                 </td>
 
-                <td>
+                <td class="td-textarea">
                     <textarea name="item_description" class="form-control"><?php echo $item->item_description; ?></textarea>
                 </td>
 
-                <td>
+                <td class="td-amount">
                     <input type="text" name="item_quantity" class="input-sm form-control"
                            value="<?php echo format_amount($item->item_quantity); ?>">
                 </td>
 
-                <td>
+                <td class="td-amount">
                     <input type="text" name="item_price" class="input-sm form-control"
                            value="<?php echo format_amount($item->item_price); ?>">
                 </td>
 
-                <td>
+                <td class="td-amount">
                     <select name="item_tax_rate_id" name="item_tax_rate_id" class="form-control input-sm">
                         <option value="0"><?php echo lang('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
@@ -86,20 +86,20 @@
                     </select>
                 </td>
 
-                <td>
-                <span name="subtotal">
-                    <?php echo format_currency($item->item_subtotal); ?>
-                </span>
+                <td class="td-amount">
+                    <span name="subtotal">
+                        <?php echo format_currency($item->item_subtotal); ?>
+                    </span>
                 </td>
-                <td>
-                <span name="item_tax_total">
-                    <?php echo format_currency($item->item_tax_total); ?>
-                </span>
+                <td class="td-amount">
+                    <span name="item_tax_total">
+                        <?php echo format_currency($item->item_tax_total); ?>
+                    </span>
                 </td>
-                <td>
-                <span name="item_total">
-                    <?php echo format_currency($item->item_total); ?>
-                </span>
+                <td class="td-amount">
+                    <span name="item_total">
+                        <?php echo format_currency($item->item_total); ?>
+                    </span>
                 </td>
                 <td class="td-icon">
                     <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>" title="<?php echo lang('delete'); ?>">
@@ -110,7 +110,6 @@
         <?php } ?>
 
         </tbody>
-
     </table>
 </div>
 
@@ -128,17 +127,18 @@
         </thead>
         <tbody>
         <tr>
-            <td><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
-            <td><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></span></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></span></td>
             <td>
                 <?php if ($invoice_tax_rates) { foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
-                    <strong><?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id, lang('remove')) . ' ' . $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:</strong>
-                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?><br>
+                    <?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id, '<i class="fa fa-trash-o"></i>');
+                        echo ' ' . $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:
+                    <span class="amount"><?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?></span>
                 <?php } } else { echo format_currency('0'); }?>
             </td>
-            <td><?php echo format_currency($invoice->invoice_total); ?></td>
-            <td><?php echo format_currency($invoice->invoice_paid); ?></td>
-            <td><strong><?php echo format_currency($invoice->invoice_balance); ?></strong></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_total); ?></span></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_paid); ?></span></td>
+            <td><strong class="amount"><?php echo format_currency($invoice->invoice_balance); ?></strong></td>
         </tr>
         </tbody>
     </table>
