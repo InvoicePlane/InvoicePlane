@@ -26,6 +26,15 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
+    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) {?>
+    <style>
+        .amount {
+            font-family: Monaco, Lucida Console, monospace;
+            font-size: 90%;
+        }
+    </style>
+    <?php } ?>
+
     <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.3.min.js'; ?>"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
 

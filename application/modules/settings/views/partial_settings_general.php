@@ -221,6 +221,23 @@
             </div>
 		</div>
 	</div>
+
+	<div class="form-group">
+		<label class="control-label">
+			<?php echo lang('monospaced_font_for_amounts'); ?>
+		</label>
+		<p>
+			<?php echo lang('example'); ?>:
+			<span style="font-family: Monaco, Lucida Console, monospace">
+				<?php echo format_currency(123456.78); ?>
+			</span>
+		</p>
+		<select name="settings[monospace_amounts]" class="input-sm form-control"
+				id="monospace_amounts">
+			<option value="0" ><?php echo lang('no'); ?></option>
+			<option value="1" <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+		</select>
+	</div>
     
 	<div class="form-group">
         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
