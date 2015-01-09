@@ -31,7 +31,7 @@
         <?php foreach ($email_templates as $email_template) { ?>
             <tr>
                 <td><?php echo $email_template->email_template_title; ?></td>
-                <td><?php echo $email_template->email_template_type; ?></td>
+                <td><?php echo lang($email_template->email_template_type); ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i> <?php echo lang('options'); ?></a>
