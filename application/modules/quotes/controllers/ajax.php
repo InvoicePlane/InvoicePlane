@@ -36,7 +36,7 @@ class Ajax extends Admin_Controller {
 
             foreach ($items as $item)
             {
-                if ($item->item_name)
+                if ($item->item_name || $item->item_description)	// ---it--- or $item->item_description (tiene anche le righe senza cod.art. ma con la descr.)
                 {
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price    = standardize_amount($item->item_price);
