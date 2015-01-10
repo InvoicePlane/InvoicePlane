@@ -77,19 +77,15 @@
 	</div>
 
     <div class="form-group">
-        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-            <label for="settings[default_country]" class="control-label">
-                <?php echo lang('default_country'); ?>
-            </label>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <select name="settings[default_country]" class="input-sm form-control">
-                <option></option>
-                <?php foreach ($countries as $cldr => $country) { ?>
-                    <option value="<?php echo $cldr; ?>" <?php if ($this->mdl_settings->setting('default_country') == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
-                <?php } ?>
-            </select>
-        </div>
+		<label for="settings[default_country]" class="control-label">
+			<?php echo lang('default_country'); ?>
+		</label>
+		<select name="settings[default_country]" class="input-sm form-control">
+			<option></option>
+			<?php foreach ($countries as $cldr => $country) { ?>
+				<option value="<?php echo $cldr; ?>" <?php if ($this->mdl_settings->setting('default_country') == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+			<?php } ?>
+		</select>
     </div>
 
 	<div class="form-group">
@@ -149,30 +145,22 @@
 	</div>
 
     <div class="form-group">
-        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-            <label class="control-label">
-                <?php echo lang('custom_title'); ?>
-            </label>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <input type="text" name="settings[custom_title]" class="input-sm form-control"
-                   value="<?php echo $this->mdl_settings->setting('custom_title'); ?>">
-        </div>
+		<label class="control-label">
+			<?php echo lang('custom_title'); ?>
+		</label>
+		<input type="text" name="settings[custom_title]" class="input-sm form-control"
+               value="<?php echo $this->mdl_settings->setting('custom_title'); ?>">
     </div>
 
     <div class="form-group">
-        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-            <label class="control-label">
-                <?php echo lang('disable_sidebar'); ?>
-            </label>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <select name="settings[disable_sidebar]" class="input-sm form-control"
-                    id="disable_sidebar">
-                <option value="0" <?php if (!$this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
-                <option value="1" <?php if ($this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
-            </select>
-        </div>
+		<label class="control-label">
+			<?php echo lang('disable_sidebar'); ?>
+		</label>
+		<select name="settings[disable_sidebar]" class="input-sm form-control"
+				id="disable_sidebar">
+			<option value="0" <?php if (!$this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
+			<option value="1" <?php if ($this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+		</select>
     </div>
     
 	<div class="form-group">
@@ -217,7 +205,7 @@
 		<img src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('login_logo'); ?>"><br>
 		<?php echo anchor('settings/remove_logo/login', 'Remove Logo'); ?><br>
 		<?php } ?>
-		<input type="file" name="login_logo" size="40" class="form-control control-label"/>
+		<input type="file" name="login_logo" size="40" class="input-sm form-control"/>
 	</div>
 
 </div>
