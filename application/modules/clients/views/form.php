@@ -27,7 +27,7 @@
                         { echo 'checked="checked"'; } ?>
                         >
               </span>
-              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="Client Name"
+              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="<?php echo lang('client_name"'); ?>"
                            value="<?php echo $this->mdl_clients->form_value('client_name'); ?>">
             </div>
         </fieldset>
