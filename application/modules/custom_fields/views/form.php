@@ -18,7 +18,7 @@
                         class="form-control">
                     <option value=""></option>
                     <?php foreach ($custom_field_tables as $table => $label) { ?>
-                        <option value="<?php echo $table; ?>" <?php if ($this->mdl_custom_fields->form_value('custom_field_table') == $table) { ?>selected="selected"<?php } ?>><?php echo $label; ?></option>
+                        <option value="<?php echo $table; ?>" <?php if ($this->mdl_custom_fields->form_value('custom_field_table') == $table) { ?>selected="selected"<?php } ?>><?php echo lang($label); ?></option>
                     <?php } ?>
                 </select>
             </div>
