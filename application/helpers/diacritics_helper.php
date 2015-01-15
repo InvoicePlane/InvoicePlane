@@ -1,6 +1,6 @@
 <?php
 
-function mytext_seems_utf8($str)
+function diacritics_seems_utf8($str)
 {
     $length = strlen($str);
     for ($i=0; $i < $length; $i++) {
@@ -28,11 +28,11 @@ function mytext_seems_utf8($str)
  * @param string $string Text that might have accent characters
  * @return string Filtered string with replaced "nice" characters.
  */
-function mytext_remove_accents($string) {
+function diacritics_remove_accents($string) {
     if ( !preg_match('/[\x80-\xff]/', $string) )
         return $string;
 
-    if (mytext_seems_utf8($string)) {
+    if (diacritics_seems_utf8($string)) {
         $chars = array(
         // Decompositions for Latin-1 Supplement
         chr(195).chr(128) => 'A', chr(195).chr(129) => 'A',
@@ -158,7 +158,7 @@ function mytext_remove_accents($string) {
     return $string;
 }
 
-function mytext_remove_diacritics($text) {
+function diacritics_remove_diacritics($text) {
 	$trans = array(
 		'À'=>'A','Á'=>'A','Â'=>'A','Ã'=>'A','Ä'=>'A','Å'=>'A','Ç'=>'C','È'=>'E',
 		'É'=>'E','Ê'=>'E','Ë'=>'E','Ì'=>'I','Í'=>'I','Î'=>'I','Ï'=>'I','Ñ'=>'N',
@@ -267,5 +267,3 @@ function mytext_remove_diacritics($text) {
 		'ｕ'=>'u','ｖ'=>'v','ｗ'=>'w','ｘ'=>'x','ｙ'=>'y','ｚ'=>'z');
 	return strtr( $text, $trans);
 }
-
-?>

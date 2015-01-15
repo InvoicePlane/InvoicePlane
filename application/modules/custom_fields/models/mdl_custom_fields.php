@@ -71,8 +71,8 @@ class Mdl_Custom_Fields extends MY_Model {
 
         // Create the name for the custom field column
 
-        $this->load->helper('mytext');
-        $custom_field_column = strtolower(mytext_remove_diacritics($custom_tables[$db_array['custom_field_table']].'_custom_'.$custom_field_label));
+        $this->load->helper('diacritics');
+        $custom_field_column = strtolower(diacritics_remove_diacritics($custom_tables[$db_array['custom_field_table']].'_custom_'.$custom_field_label));
 
         $db_array['custom_field_column'] = $custom_field_column;
 
