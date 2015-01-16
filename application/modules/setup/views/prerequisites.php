@@ -14,6 +14,8 @@
                 <?php foreach ($basics as $basic) { ?>
                     <?php if ($basic['success']) { ?>
                     <p><span class="label label-success"><?php echo lang('success'); ?></span> <?php echo $basic['message']; ?></p>
+                    <?php } elseif($basic['warning']) { ?>
+                    <p><span class="label label-warning"><?php echo lang('warning'); ?></span> <?php echo $basic['message']; ?></p>
                     <?php } else { ?>
                     <p><span class="label label-danger"><?php echo lang('failure'); ?></span> <?php echo $basic['message']; ?></p>
                     <?php } ?>
