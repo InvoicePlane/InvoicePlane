@@ -2,7 +2,7 @@
 
 $lang['cldr'] = 'en';
 //Day of the week start. 0 (Sunday) to 6 (Saturday)
-$lang['week_start'] = 1;
+$lang['week_start'] = 0;
 
 $lang['account_information'] = 'Account Information';
 $lang['active_client'] = 'Active';
