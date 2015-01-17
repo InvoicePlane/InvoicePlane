@@ -431,3 +431,7 @@ $lang['updatecheck_failed'] = 'Updatecheck failed! Check your network connection
 $lang['no_updates_available'] = 'No updates available.';
 
 $lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';
+
+$lang['php_timezone_fail'] = 'There seems to be no timezone configured. Please check date.timezone in your php configuration. Otherwise <strong>%s</strong> will be selected.';
+$lang['php_timezone_success'] = 'A valid timezone is configured.';
+$lang['warning'] = 'Warning';
