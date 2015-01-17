@@ -53,7 +53,9 @@
             $('body').on('focus',".datepicker", function(){
                 $(this).datepicker({
                     autoclose: true,
-                    format: '<?php echo date_format_datepicker(); ?>'
+                    format: '<?php echo date_format_datepicker(); ?>',
+                    language: '<?php echo lang('cldr'); ?>',
+                    weekStart: '<?php echo lang('week_start'); ?>'                     
                 });
             });
 
@@ -269,6 +271,7 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo lang('cldr'); ?>.js"></script> 
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
