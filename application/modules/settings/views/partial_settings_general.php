@@ -179,6 +179,20 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="form-group">
+		<div class="col-xs-12 col-sm-3 text-right text-left-xs">
+			<label for="settings[allow_delete_after_send]" class="control-label">
+				<?php echo lang('allow_delete_after_send') ?>
+			</label>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<select name="settings[allow_delete_after_send]" class="input-sm form-control" id="allow_delete_after_send">
+				<option value="yes" <?php if ($this->mdl_settings->setting('allow_delete_after_send') == "yes") { ?>selected="selected"<?php } ?>>Yes</option>
+				<option value="no" <?php if ($this->mdl_settings->setting('allow_delete_after_send') == "no") { ?>selected="selected"<?php } ?>>No</option>
+			</select>
+		</div>
+	</div>
 
 	<div class="form-group">
 		<label class="control-label">
