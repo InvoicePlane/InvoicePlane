@@ -74,7 +74,10 @@ class Mdl_Users extends Response_Model {
                 'label' => lang('verify_password'),
                 'rules' => 'required|matches[user_password]'
             ),
-            'user_address_1' => array(
+        	'user_company' => array(
+      			'field' => 'user_company'
+        	),
+        	'user_address_1' => array(
                 'field' => 'user_address_1'
             ),
             'user_address_2' => array(
@@ -90,7 +93,9 @@ class Mdl_Users extends Response_Model {
                 'field' => 'user_zip'
             ),
             'user_country'   => array(
-                'field' => 'user_country'
+                'field' => 'user_country',
+            	'label' => lang('user_country'),
+            	'rules' => 'required'
             ),
             'user_phone'     => array(
                 'field' => 'user_phone'
@@ -103,6 +108,12 @@ class Mdl_Users extends Response_Model {
             ),
             'user_web'       => array(
                 'field' => 'user_web'
+            ),
+            'user_vat_id'       => array(
+                'field' => 'user_vat_id'
+            ),
+            'user_tax_code'       => array(
+                'field' => 'user_tax_code'
             )
         );
     }
@@ -125,6 +136,9 @@ class Mdl_Users extends Response_Model {
                 'label' => lang('name'),
                 'rules' => 'required'
             ),
+        	'user_company' => array(
+        		'field' => 'user_company'
+       		),
             'user_address_1' => array(
                 'field' => 'user_address_1'
             ),
@@ -141,7 +155,9 @@ class Mdl_Users extends Response_Model {
                 'field' => 'user_zip'
             ),
             'user_country'   => array(
-                'field' => 'user_country'
+                'field' => 'user_country',
+            	'label' => lang('user_country'),
+            	'rules' => 'required'
             ),
             'user_phone'     => array(
                 'field' => 'user_phone'
@@ -154,6 +170,12 @@ class Mdl_Users extends Response_Model {
             ),
             'user_web'       => array(
                 'field' => 'user_web'
+            ),
+            'user_vat_id'       => array(
+                'field' => 'user_vat_id'
+            ),
+            'user_tax_code'       => array(
+                'field' => 'user_tax_code'
             )
         );
     }

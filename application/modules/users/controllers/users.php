@@ -91,13 +91,17 @@ class Users extends Admin_Controller {
         $this->load->model('users/mdl_user_clients');
         $this->load->model('clients/mdl_clients');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->helper('country');
 
         $this->layout->set(
             array(
                 'id' => $id,
                 'user_types' => $this->mdl_users->user_types(),
                 'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result()
+                'custom_fields' => $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result(),
+                'countries' => get_country_list(lang('cldr')),
+                'selected_country' => $this->mdl_users->form_value('user_country') ?:
+                                      $this->mdl_settings->setting('default_country')
             )
         );
 

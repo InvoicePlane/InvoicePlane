@@ -1,4 +1,5 @@
 /* Author: William G. Rivera*/
+"use strict";
 
 $(document).ready(function() {
 
@@ -22,40 +23,32 @@ $(document).ready(function() {
     });
 
     $('html').click(function () {
-        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style'); //Integrate this into the function.
+        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
     });
 
     // Handle click event for Email Template Tags insertion
     // Example Usage
     // <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>
+    var lastTaggableClicked;
     $('.text-tag').bind('click', function () {
         var templateTag = this.getAttribute("data-tag");
-        insertAtCaret('email_template_body', templateTag);
+        insertAtCaret(lastTaggableClicked.id, templateTag);
         return false;
     });
 
-    // Load Resize Function
-    $(window).resize();
+    // Keep track of the last "taggable" input/textarea
+    $('.taggable').on('focus', function(){
+        lastTaggableClicked = this;
+    });
 
-});
-
-/*Fix Scrollbar on Main Content*/
-$(window).resize(function(){
-    var height = $(this).outerHeight() - $('nav.navbar').outerHeight();
-    height = height - $('.main-area .headerbar').outerHeight() - $('.nav-tabs').outerHeight();
-
-    if ( $('#form-settings') ) {
-        height = height - 50;
-    }
-
-    if ( $('.main-area').outerWidth() < 800 ) {
-        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').css('margin-top',34,'height',height);
+    // Set the height for the sidebar if the main area is higher than the viewport
+    var mainAreaHeight  = $('.main-area').height();
+    var windowHeight    = $(window).height();
+    if (mainAreaHeight > windowHeight) {
+        $('.sidebar').height(mainAreaHeight);
     } else {
-        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').height(height);
+        $('.sidebar').height(windowHeight - 50);
     }
-
-
-
 });
 
 // Insert text into textarea at Caret Position
@@ -89,4 +82,16 @@ function insertAtCaret(areaId, text) {
         txtarea.focus();
     }
     txtarea.scrollTop = scrollPos;
+}
+
+// takes mdl_email_template row as JSON, array with names to use in form fields.
+function inject_email_template(template_fields, email_template) {
+    $.each(email_template, function (key, val) {
+        // remove prefix from key
+        key = key.replace("email_template_", "");
+        // if key is in template_fields, apply value to form field
+        if (val && template_fields.indexOf(key) > -1) {
+            $("#" + key).val(val);
+        }
+    });
 }

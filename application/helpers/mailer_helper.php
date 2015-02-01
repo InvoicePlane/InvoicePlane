@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 function mailer_configured()
@@ -40,6 +40,10 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
     $message = nl2br(parse_template($db_invoice, $body));
+    $subject = parse_template($db_invoice, $subject);
+    $cc = parse_template($db_invoice, $cc);
+    $bcc = parse_template($db_invoice, $bcc);
+    $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
 
     return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc);
 }
@@ -57,6 +61,44 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
     $message = nl2br(parse_template($db_quote, $body));
+    $subject = parse_template($db_quote, $subject);
+    $cc = parse_template($db_quote, $cc);
+    $bcc = parse_template($db_quote, $bcc);
+    $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
 
     return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc);
+}
+
+/**
+ * @param $quote_id
+ * @param $status string "accepted" or "rejected"
+ * @return bool if the email was sent
+ */
+function email_quote_status($quote_id, $status)
+{
+    ini_set("display_errors", "on");
+    error_reporting(E_ALL);
+
+    if (!mailer_configured()) return false;
+
+    $CI = &get_instance();
+    $CI->load->helper('mailer/phpmailer');
+
+    $quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
+    $base_url = base_url('/quotes/view/' . $quote_id);
+
+    $user_email = $quote->user_email;
+    $subject = sprintf(lang('quote_status_email_subject'),
+        $quote->client_name,
+        strtolower(lang($status)),
+        $quote->quote_number
+    );
+    $body = sprintf(nl2br(lang('quote_status_email_body')),
+        $quote->client_name,
+        strtolower(lang($status)),
+        $quote->quote_number,
+        '<a href="'.$base_url.'">'.$base_url.'</a>'
+    );
+
+    return phpmail_send($user_email, $user_email, $subject, $body);
 }

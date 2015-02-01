@@ -1,6 +1,7 @@
 <script type="text/javascript">
     $(function() {
         $('#client_name').focus();
+        $("#client_country").select2({allowClear: true});
     });
 </script>
 
@@ -26,7 +27,7 @@
                         { echo 'checked="checked"'; } ?>
                         >
               </span>
-              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="Client Name"
+              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="<?php echo lang('client_name"'); ?>"
                            value="<?php echo $this->mdl_clients->form_value('client_name'); ?>">
             </div>
         </fieldset>
@@ -80,8 +81,12 @@
                     <div class="form-group">
                         <label><?php echo lang('country'); ?>: </label>
                         <div class="controls">
-                            <input type="text" name="client_country" id="client_country" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_country'); ?>">
+                            <select name="client_country" id="client_country" class="form-control">
+                                <option></option>
+                                <?php foreach ($countries as $cldr => $country) { ?>
+                                    <option value="<?php echo $cldr; ?>" <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
                 </fieldset>
@@ -135,23 +140,44 @@
                 </fieldset>
             </div>
 
-        </div>
-
-        <div class="row">
-
-            <div class="col-xs-12">
+            <div class="col-xs-12 col-sm-6">
                 <fieldset>
 
-                    <legend><?php echo lang('custom_fields'); ?></legend>
+                    <legend><?php echo lang('tax_information'); ?></legend>
 
+                    <div class="form-group">
+                        <label><?php echo lang('vat_id'); ?>: </label>
+                        <div class="controls">
+                            <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
+                                   value="<?php echo $this->mdl_clients->form_value('client_vat_id'); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo lang('tax_code'); ?>: </label>
+                        <div class="controls">
+                            <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
+                                   value="<?php echo $this->mdl_clients->form_value('client_tax_code'); ?>">
+                        </div>
+                    </div>
+
+                </fieldset>
+            </div>
+
+        </div>
+
+        <?php if ($custom_fields) { ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <fieldset>
+                    <legend><?php echo lang('custom_fields'); ?></legend>
                     <?php foreach ($custom_fields as $custom_field) { ?>
                         <div class="form-group">
                             <label><?php echo $custom_field->custom_field_label; ?>: </label>
                             <div class="controls">
-                                <input type="text"
+                                <input type="text" class="form-control"
                                        name="custom[<?php echo $custom_field->custom_field_column; ?>]"
                                        id="<?php echo $custom_field->custom_field_column; ?>"
-                                       class="form-control"
                                        value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
                             </div>
                         </div>
@@ -159,5 +185,6 @@
                 </fieldset>
             </div>
         </div>
+        <?php } ?>
     </div>
 </form>

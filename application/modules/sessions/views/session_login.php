@@ -31,6 +31,8 @@
     <div id="login"
          class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
 
+        <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
+
         <?php if ($login_logo) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
         <?php } else { ?>
@@ -63,6 +65,12 @@
                    value="<?php echo lang('login'); ?>" >
 
         </form>
+
+        <div class="text-right">
+            <small><a href="<?php echo base_url(); ?>sessions/passwordreset" class="text-muted">
+                <?php echo lang('forgot_your_password'); ?>
+            </a></small>
+        </div>
 
     </div>
 </div>

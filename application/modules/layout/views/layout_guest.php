@@ -6,42 +6,46 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
+    <title>
+        <?php
+        if ($this->mdl_settings->setting('custom_title') != '') {
+            echo $this->mdl_settings->setting('custom_title');
+        } else {
+            echo 'InvoicePlane';
+        }?>
+    </title>
 
     <meta charset="utf-8">
-
-    <!-- Use the .htaccess and remove these lines to avoid edge case issues -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-    <title>InvoicePlane</title>
-
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+
+    <link rel="icon" type="image/png" href="/assets/default/img/favicon.png">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
-    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
+    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.3.min.js'; ?>"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
     <script type="text/javascript">
         (function ($) {
             $(document);
         }(jQuery));
     </script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.2.0.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.1.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.2.custom.min.js"></script>
 
 </head>
 
 <body>
 
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle"
                     data-toggle="collapse" data-target="#ip-navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <?php echo lang('menu') ?> &nbsp; <i class="fa fa-bars"></i>
             </button>
         </div>
 
@@ -55,14 +59,10 @@
 
             <ul class="nav navbar-nav navbar-right settings">
                 <li>
-                    <a href="#">
-                        <?php echo lang('welcome').' '.$this->session->userdata('user_name'); ?>
-                    </a>
-                </li>
-                <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
                        data-original-title="<?php echo lang('logout'); ?>" >
+                        <span class="visible-xs">&nbsp;<?php echo lang('logout'); ?></span>
                         <i class="fa fa-power-off"></i>
                     </a>
                 </li>
@@ -71,7 +71,7 @@
     </div>
 </nav>
 
-<div class="sidebar">
+<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
     <ul>
         <li>
             <a href="<?php echo site_url('guest'); ?>">
@@ -102,7 +102,7 @@
 
     <?php echo $content; ?>
 
-</div><!--end.content-->
+</div>
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>

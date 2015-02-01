@@ -259,7 +259,8 @@ class Setup extends MX_Controller {
             './uploads',
             './uploads/temp',
             './' . APPPATH . 'config/database.php',
-            './' . APPPATH . 'helpers/mpdf/tmp'
+            './' . APPPATH . 'helpers/mpdf/tmp',
+            './' . APPPATH . 'logs'
         );
 
         foreach ($writables as $writable)
@@ -338,11 +339,28 @@ class Setup extends MX_Controller {
                 'message' => sprintf(lang('php_version_fail'), $php_installed, $php_required),
                 'success' => 0
             );
+        } 
+        else 
+        {
+            $checks[] = array(
+                'message' => lang('php_version_success'),
+                'success' => 1
+            );
+        }
+
+        if (!ini_get('date.timezone'))
+        {
+            #$this->errors += 1;
+
+            $checks[] = array(
+                'message' => sprintf(lang('php_timezone_fail'), date_default_timezone_get()),
+                'warning' => 1
+            );
         }
         else
         {
             $checks[] = array(
-                'message' => lang('php_version_success'),
+                'message' => lang('php_timezone_success'),
                 'success' => 1
             );
         }
@@ -354,10 +372,10 @@ class Setup extends MX_Controller {
     {
         $db_file = read_file(APPPATH . 'config/database_empty.php');
 
-        $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'', '$db[\'default\'][\'hostname\'] = \'' . $hostname . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'username\'] = \'\'', '$db[\'default\'][\'username\'] = \'' . $username . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'password\'] = \'\'', '$db[\'default\'][\'password\'] = \'' . $password . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'database\'] = \'\'', '$db[\'default\'][\'database\'] = \'' . $database . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'', '$db[\'default\'][\'hostname\'] = \'' . addcslashes($hostname, '\'\\') . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'username\'] = \'\'', '$db[\'default\'][\'username\'] = \'' . addcslashes($username, '\'\\') . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'password\'] = \'\'', '$db[\'default\'][\'password\'] = \'' . addcslashes($password, '\'\\') . '\'', $db_file);
+        $db_file = str_replace('$db[\'default\'][\'database\'] = \'\'', '$db[\'default\'][\'database\'] = \'' . addcslashes($database, '\'\\') . '\'', $db_file);
 
         write_file(APPPATH . 'config/database.php', $db_file);
     }

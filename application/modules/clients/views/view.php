@@ -131,6 +131,16 @@
                     <?php } ?>
                 </dl>
 
+                <dl>
+                    <dt><span><?php echo lang('tax_information'); ?></span></dt>
+                    <?php if ($client->client_vat_id) { ?>
+                        <dd><span><?php echo lang('vat_id'); ?>:</span> <?php echo $client->client_vat_id; ?></dd>
+                    <?php } ?>
+                    <?php if ($client->client_tax_code) { ?>
+                        <dd><span><?php echo lang('tax_code'); ?>:</span> <?php echo $client->client_tax_code; ?></dd>
+                    <?php } ?>
+                </dl>
+
                 <dl class="profile-custom">
                     <dt><span><?php echo lang('custom_fields'); ?></span></dt>
                     <?php foreach ($custom_fields as $custom_field) { ?>
@@ -175,6 +185,9 @@
             <?php echo $invoice_table; ?>
         </div>
 
+        <div id="clientPayments" class="tab-pane">
+            <?php echo $payment_table; ?>
+        </div>
     </div>
 
 </div>
@@ -186,6 +199,7 @@
             <li class="active"><a data-toggle="tab" href="#clientDetails"><?php echo lang('details'); ?></a></li>
             <li><a data-toggle="tab" href="#clientQuotes"><?php echo lang('quotes'); ?></a></li>
             <li><a data-toggle="tab" href="#clientInvoices"><?php echo lang('invoices'); ?></a></li>
+            <li><a data-toggle="tab" href="#clientPayments"><?php echo lang('payments'); ?></a></li>
         </ul>
     </div>
 </nav>
