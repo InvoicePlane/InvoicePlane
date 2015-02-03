@@ -1,2 +1,5 @@
 /application/config/development
 /application/logs/*
+/.settings
+/.buildpath
+/.project
