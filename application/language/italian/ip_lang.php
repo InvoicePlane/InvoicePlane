@@ -1,7 +1,5 @@
 <?php
 
-$lang['cldr'] = 'it';
-
 $lang['account_information'] = 'Informazioni account';
 $lang['active_client'] = 'Attivo';
 $lang['active'] = 'Attivo';
@@ -49,7 +47,6 @@ $lang['database'] = 'Database';
 $lang['date_applied'] = 'Data applicata';
 $lang['date_format'] = 'Formato data';
 $lang['date'] = 'Data';
-$lang['default_country'] = 'Paese predefinito';
 $lang['default_email_template'] = 'Modello email predefinito';
 $lang['default_invoice_group'] = 'Gruppo fatture predefinito';
 $lang['default_invoice_tax_rate_placement'] = 'Posizione imposta fattura predefinita';
@@ -199,7 +196,7 @@ $lang['recent_payments'] = 'Ultimi pagamenti';
 $lang['record_successfully_created'] = 'Elemento creato con successo';
 $lang['record_successfully_deleted'] = 'Elemento eliminato con successo';
 $lang['record_successfully_updated'] = 'Record aggiornato con successo';
-$lang['remove'] = 'Rimuovo';
+$lang['remove'] = 'Rimuovi';
 $lang['report_options'] = 'Opzioni report';
 $lang['reports'] = 'Report';
 $lang['reset_password'] = 'Reimposta la password';
@@ -256,6 +253,7 @@ $lang['status'] = 'Stato';
 $lang['street_address_2'] = 'Indirizzo 2';
 $lang['street_address'] = 'Indirizzo';
 $lang['subject'] = 'Oggetto';
+$lang['submenu'] = 'Sottomenu';
 $lang['submit'] = 'Invia';
 $lang['subtotal'] = 'Imponibile';
 $lang['success'] = 'Successo';
@@ -412,6 +410,11 @@ $lang['menu'] = 'Menu';
 $lang['documentation'] = 'Documentazione';
 $lang['checking_for_updates'] = 'Controllo aggiornamenti ...';
 $lang['updates_available'] = 'Aggiornamenti disponibili!';
+$lang['updatecheck_failed'] = 'Controllo aggiornamenti fallito! Controllare la connessione.';
 $lang['no_updates_available'] = 'Nessun aggiornamento disponibile.';
 
 $lang['please_enable_js'] = 'Abilitare Javascript per utilizzare InvoicePlane';
+
+$lang['php_timezone_fail'] = 'Nessun fuso orario configurato. Controllare il parametro date.timezone nella tua configurazione php. Altrimenti verrà selezionato <strong>%s</strong>.';
+$lang['php_timezone_success'] = 'Configurazione fuso orario valida.';
+$lang['warning'] = 'Attenzione';
