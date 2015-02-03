@@ -253,6 +253,7 @@ $lang['status'] = 'Status';
 $lang['street_address_2'] = 'Street Address 2';
 $lang['street_address'] = 'Street Address';
 $lang['subject'] = 'Subject';
+$lang['submenu'] = 'Submenu';
 $lang['submit'] = 'Submit';
 $lang['subtotal'] = 'Subtotal';
 $lang['success'] = 'Success';
@@ -409,6 +410,11 @@ $lang['menu'] = 'Menu';
 $lang['documentation'] = 'Documentation';
 $lang['checking_for_updates'] = 'Checking for updates...';
 $lang['updates_available'] = 'Updates available!';
+$lang['updatecheck_failed'] = 'Updatecheck failed! Check your network connection.';
 $lang['no_updates_available'] = 'No updates available.';
 
 $lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';
+
+$lang['php_timezone_fail'] = 'There seems to be no timezone configured. Please check date.timezone in your php configuration. Otherwise <strong>%s</strong> will be selected.';
+$lang['php_timezone_success'] = 'A valid timezone is configured.';
+$lang['warning'] = 'Warning';

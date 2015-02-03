@@ -23,7 +23,7 @@ $(document).ready(function() {
     });
 
     $('html').click(function () {
-        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style'); //Integrate this into the function.
+        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
     });
 
     // Handle click event for Email Template Tags insertion
@@ -41,34 +41,14 @@ $(document).ready(function() {
         lastTaggableClicked = this;
     });
 
-    // Load Resize Function
-    $(window).resize();
-
-});
-
-/*Fix Scrollbar on Main Content*/
-$(window).resize(function(){
-
-    // Set sidebar height
-    var D = document;
-    var doc_height = Math.max(Math.max(D.body.scrollHeight,    D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
-    $('.sidebar').height(doc_height);
-
-    // Set height for menus
-    var windowheight = $(this).outerHeight();
-    var height = windowheight - $('nav.navbar').outerHeight();
-    height = height - $('.main-area .headerbar').outerHeight() - $('.nav-tabs').outerHeight();
-
-    if ( $('#form-settings') ) {
-        height = height - 50;
-    }
-
-    if ( $('.main-area').outerWidth() < 800 ) {
-        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').css('margin-top',34,'height',height);
+    // Set the height for the sidebar if the main area is higher than the viewport
+    var mainAreaHeight  = $('.main-area').height();
+    var windowHeight    = $(window).height();
+    if (mainAreaHeight > windowHeight) {
+        $('.sidebar').height(mainAreaHeight);
     } else {
-        $('.main-area .container-fluid, .main-area .tab-content, .main-area .content, .main-area .table-content').height(height);
+        $('.sidebar').height(windowHeight - 50);
     }
-
 });
 
 // Insert text into textarea at Caret Position

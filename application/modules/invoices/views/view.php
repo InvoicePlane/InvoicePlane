@@ -88,7 +88,9 @@
 
 <div class="headerbar">
     <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?>
-        <?php if ($invoice->invoice_is_recurring) { ?><span class="label label-info" style="margin-left: 10px;"><?php echo lang('recurring'); ?></span><?php } ?>
+        <?php if ($invoice->invoice_is_recurring) { ?>
+            <span class="label label-info"><?php echo lang('recurring'); ?></span>
+        <?php } ?>
     </h1>
 
     <div class="pull-right btn-group">
@@ -233,7 +235,9 @@
                                 <select name="invoice_status_id" id="invoice_status_id"
                                         class="form-control input-sm">
                                     <?php foreach ($invoice_statuses as $key=>$status) { ?>
-                                        <option value="<?php echo $key; ?>" <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>><?php echo $status['label']; ?></option>
+                                        <option value="<?php echo $key; ?>" <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
+                                            <?php echo $status['label']; ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </div>
