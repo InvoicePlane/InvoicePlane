@@ -67,25 +67,38 @@ class Cron extends Base_Controller {
                     // Set the email body, use default email template if available
                     $this->load->model('email_templates/mdl_email_templates');
 
-                    $email_template_id = $this->mdl_settings->setting('default_email_template');
+                    $email_template_id = $this->mdl_settings->setting('email_invoice_template');
 
-                    if ($email_template_id)
-                    {
-                        $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
-
-                        if ($email_template->num_rows())
-                        {
-                            $body = $email_template->row()->email_template_body;
-                        }
+                    if (!$email_template_id) {
+                        return;
                     }
-                    else
-                    {
-                        $body = ' ';
-                    }
-                    
-                    $subject = lang('invoice') . ' #' . $new_invoice->invoice_number;
 
-                    email_invoice($target_id, $this->mdl_settings->setting('default_pdf_invoice_template'), $invoice->user_email, $invoice->client_email, $subject, $body);
+                    $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
+
+                    if ($email_template->num_rows() == 0) {
+                        return;
+                    }
+
+                    $tpl = $email_template->row();
+
+                    $from = !empty($tpl->email_template_from_email) ?
+                        array($tpl->email_template_from_email,
+                              $tpl->email_template_from_name) :
+                        array($invoice->user_email, "");
+                    $subject = !empty($tpl->email_template_subject) ?
+                        $tpl->email_template_subject :
+                        lang('invoice') . ' #' . $new_invoice->invoice_number;
+
+                    email_invoice(
+                        $target_id,
+                        $tpl->email_template_pdf_template,
+                        $from,
+                        $invoice->client_email,
+                        $subject,
+                        $tpl->email_template_body,
+                        $tpl->email_template_cc,
+                        $tpl->email_template_bcc
+                    );
                     
                     $this->mdl_invoices->mark_sent($target_id);
                 }
@@ -94,5 +107,3 @@ class Cron extends Base_Controller {
     }
 
 }
-
-?>
