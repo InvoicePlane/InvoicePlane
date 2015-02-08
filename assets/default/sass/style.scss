@@ -401,6 +401,13 @@ div.table-content {
 
 }
 
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
+}
+
 .modal {
     margin-top: 40px;
     overflow-y: auto;
