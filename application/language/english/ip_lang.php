@@ -437,3 +437,20 @@ $lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';
 $lang['php_timezone_fail'] = 'There seems to be no timezone configured. Please check date.timezone in your php configuration. Otherwise <strong>%s</strong> will be selected.';
 $lang['php_timezone_success'] = 'A valid timezone is configured.';
 $lang['warning'] = 'Warning';
+
+// Families module
+$lang['family'] = 'Family';
+$lang['families'] = 'Families';
+$lang['family_name'] = 'Family name';
+$lang['product_families'] = 'Product families';
+$lang['select_family'] = 'Select family';
+
+// Products module
+$lang['product'] = 'Product';
+$lang['products'] = 'Products';
+$lang['product_name'] = 'Product name';
+$lang['product_description'] = 'Product description';
+$lang['product_price'] = 'Price';
+$lang['new_product'] = 'New product';
+$lang['create_product'] = 'Create product';
+$lang['view_products'] = 'View products';
