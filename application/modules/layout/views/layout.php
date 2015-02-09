@@ -156,6 +156,17 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('products'); ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('products/form', lang('create_product')); ?></li>
+                        <li><?php echo anchor('products/index', lang('view_products')); ?></li>
+                        <li><?php echo anchor('families/index', lang('product_families')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('payments'); ?>
                     </a>
                     <ul class="dropdown-menu">
