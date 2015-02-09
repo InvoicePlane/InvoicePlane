@@ -431,6 +431,9 @@ $lang['checking_for_updates'] = 'Checking for updates...';
 $lang['updates_available'] = 'Updates available!';
 $lang['updatecheck_failed'] = 'Updatecheck failed! Check your network connection.';
 $lang['no_updates_available'] = 'No updates available.';
+$lang['updates'] = 'Updates';
+$lang['updatecheck'] = 'Updatecheck';
+$lang['invoiceplane_news'] = 'InvoicePlane News';
 
 $lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';
 
