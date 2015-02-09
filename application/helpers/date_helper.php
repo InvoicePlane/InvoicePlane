@@ -58,6 +58,10 @@ function date_formats()
         'd.m.Y' => array(
             'setting'    => 'd.m.Y',
             'datepicker' => 'dd.mm.yyyy'
+        ),
+        'j.n.Y' => array(
+            'setting'    => 'j.n.Y',
+            'datepicker' => 'd.m.yyyy'
         )
     );
 }
