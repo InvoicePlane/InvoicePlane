@@ -402,7 +402,13 @@ div.table-content {
     .pull-right {
         margin-left: 15px;
     }
+}
 
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
 }
 
 .hidden-sidebar .main-area {
