@@ -448,9 +448,13 @@ $lang['select_family'] = 'Select family';
 // Products module
 $lang['product'] = 'Product';
 $lang['products'] = 'Products';
+$lang['product_sku'] = 'SKU';
 $lang['product_name'] = 'Product name';
 $lang['product_description'] = 'Product description';
 $lang['product_price'] = 'Price';
+$lang['purchase_price'] = 'Purchase price';
 $lang['new_product'] = 'New product';
 $lang['create_product'] = 'Create product';
 $lang['view_products'] = 'View products';
+$lang['add_product'] = 'Add product';
+$lang['extra_information'] = 'Extra information';

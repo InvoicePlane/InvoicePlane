@@ -33,13 +33,18 @@ class Mdl_Products extends Response_Model {
 
     public function default_join()
     {
-        $this->db->join('ip_families', 'ip_families.family_id = ip_products.family_id');
-        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id');
+        $this->db->join('ip_families', 'ip_families.family_id = ip_products.family_id', 'left');
+        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
 	}
 
 	public function validation_rules()
     {
         return array(
+            'product_sku' => array(
+                'field' => 'product_sku',
+                'label' => lang('product_sku'),
+                'rules' => 'required'
+            ),
             'product_name' => array(
                 'field' => 'product_name',
                 'label' => lang('product_name'),
@@ -55,15 +60,20 @@ class Mdl_Products extends Response_Model {
                 'label' => lang('product_price'),
                 'rules' => 'required'
             ),
+            'purchase_price' => array(
+                'field' => 'purchase_price',
+                'label' => lang('purchase_price'),
+                'rules' => 'required'
+            ),
             'family_id' => array(
                 'field' => 'family_id',
                 'label' => lang('family'),
-                'rules' => 'required'
+                'rules' => ''
             ),
             'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
                 'label' => lang('tax_rate'),
-                'rules' => 'required'
+                'rules' => ''
             ),
 
         );
