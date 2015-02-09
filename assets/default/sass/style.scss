@@ -178,6 +178,10 @@ table.items td {
     vertical-align: top !important;
 }
 
+.table-responsive {
+    height: 100%;
+}
+
 /*
 |   =========================================================
 |   Navigation
@@ -225,7 +229,8 @@ table.items td {
     margin: 0;
 
     .dropdown-menu {
-        left: -10px; // Align dropdown icons with options icon
+        right: 0;
+        left: auto;
     }
 }
 
@@ -311,12 +316,18 @@ table.items td {
 
 #form-settings .tab-content,
 div.table-content {
+    height: 100%;
+
     .alert {
         margin: 15px;
     }
     .tab-pane {
         padding-bottom: 50px;
     }
+}
+
+#filter_results {
+    height: 100%;
 }
 
 #panel-overdue-invoices,
