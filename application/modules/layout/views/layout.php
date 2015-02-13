@@ -104,7 +104,7 @@
 
 </head>
 
-<body>
+<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden-sidebar';}?>">
 
 <noscript>
     <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
@@ -151,6 +151,17 @@
                         <li><a href="#" class="create-invoice"><?php echo lang('create_invoice'); ?></a></li>
                         <li><?php echo anchor('invoices/index', lang('view_invoices')); ?></li>
                         <li><?php echo anchor('invoices/recurring/index', lang('view_recurring_invoices')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('products'); ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('products/form', lang('create_product')); ?></li>
+                        <li><?php echo anchor('products/index', lang('view_products')); ?></li>
+                        <li><?php echo anchor('families/index', lang('product_families')); ?></li>
                     </ul>
                 </li>
 

@@ -9,61 +9,10 @@
         });
     });
 	
-	// Update check
-	window.onload = function() {
-		// Get the current version
-		var current_version = "<?php echo $current_version; ?>";
-		current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
-		
-		// Get the latest version from updates.invoiceplane.com
-		$.getJSON("https://updates.invoiceplane.com", function(data) {
-			
-			var updatecheck = data.current_version.replace(/\./g, '');
-			
-			// Compare each versions and replace the placeholder with a download button
-			// or info label after 2 seconds
-			setTimeout(function() {
-				if ( current_version < updatecheck ) {
-					$('#updatecheck-loading').addClass('hidden');
-					$('#updatecheck-updates-available').removeClass('hidden');
-				} else {
-					$('#updatecheck-loading').addClass('hidden');
-					$('#updatecheck-no-updates').removeClass('hidden');
-				}
-			}, 2000);
-		}).error(function() {
-			$('#updatecheck-loading').addClass('hidden');
-			$('#updatecheck-failed').removeClass('hidden');
-		});
-	};
+	// Update check moved to partial_settings_updates.php!
 </script>
 
 <div class="tab-info">
-
-	<div class="form-group">
-		<label class="control-label">
-			<?php echo lang('current_version'); ?>
-		</label>
-		<div class="input-group">
-			<input type="text" class="input-sm form-control"
-				   value="<?php echo $current_version; ?>" readonly="readonly">
-
-			<span id="updatecheck-loading" class="input-group-addon">
-				<i class="fa fa-circle-o-notch fa-spin" ></i>  <?php echo lang('checking_for_updates'); ?>
-			</span>
-
-			<a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
-				class="input-group-addon btn btn-success hidden" target="_blank">
-				<?php echo lang('updates_available'); ?>
-			</a>
-			<span id="updatecheck-no-updates" class="input-group-addon hidden" >
-				<?php echo lang('no_updates_available'); ?>
-			</span>
-			<span id="updatecheck-failed" class="input-group-addon hidden" >
-				<?php echo lang('updatecheck_failed'); ?>
-			</span>
-		</div>
-	</div>
 
 	<div class="form-group">
 		<label for="settings[default_language]" class="control-label">
@@ -209,6 +158,23 @@
 			<option value="0" ><?php echo lang('no'); ?></option>
 			<option value="1" <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
 		</select>
+	</div>
+    
+	<div class="form-group">
+		<label for="settings[cron_key]" class="control-label">
+			<?php echo lang('cron_key'); ?>
+		</label>
+		<div class="row">
+			<div class="col-xs-8 col-sm-9">
+				<input type="text" name="settings[cron_key]" id="cron_key"
+					   class="input-sm form-control"
+					   value="<?php echo $this->mdl_settings->setting('cron_key'); ?>">
+			</div>
+			<div class="col-xs-4 col-sm-3">
+				<input id="btn_generate_cron_key" value="<?php echo lang('generate'); ?>"
+					   type="button" class="btn btn-primary btn-sm btn-block">
+			</div>
+		</div>
 	</div>
     
 	<div class="form-group">

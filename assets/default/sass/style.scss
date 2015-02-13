@@ -305,6 +305,10 @@ table.items td {
     margin-left: 15px;
     margin-right: 15px;
 }
+.alert.alert-default {
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+}
 
 .tab-content .alert {
     margin-left: 0;
@@ -398,7 +402,20 @@ div.table-content {
     .pull-right {
         margin-left: 15px;
     }
+}
 
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
+}
+
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
 }
 
 .modal {
@@ -425,6 +442,23 @@ div.table-content {
 
 #email_template_pdf_template > option {
     display: none;
+}
+
+#settings-tabs>li.active:first-child>a {
+    border-left: 0 !important;
+}
+
+.updatecheck-results {
+    margin: 10px 0;
+}
+
+#ipnews-loading {
+    margin-top: 15px;
+}
+
+#ipnews-results .alert {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /*
