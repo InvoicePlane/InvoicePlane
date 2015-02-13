@@ -124,6 +124,7 @@ class Clients extends Admin_Controller {
         $this->load->model('clients/mdl_client_notes');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
+        $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
 
         $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
@@ -139,6 +140,7 @@ class Clients extends Admin_Controller {
                 'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
                 'invoices'         => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
                 'quotes'           => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
+                'payments'         => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
                 'custom_fields'    => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
                 'quote_statuses'   => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
@@ -149,6 +151,7 @@ class Clients extends Admin_Controller {
             array(
                 array('invoice_table', 'invoices/partial_invoice_table'),
                 array('quote_table', 'quotes/partial_quote_table'),
+                array('payment_table', 'payments/partial_payment_table'),
                 array('partial_notes', 'clients/partial_notes'),
                 array('content', 'clients/view')
             )

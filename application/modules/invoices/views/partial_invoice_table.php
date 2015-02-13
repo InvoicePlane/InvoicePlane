@@ -15,7 +15,8 @@
         </thead>
 
         <tbody>
-        <?php foreach ($invoices as $invoice) { ?>
+        <?php foreach ($invoices as $invoice) { 
+					$invoice_class=$invoice_statuses[$invoice->invoice_status_id]['class']; ?>
             <tr>
                 <td>
                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>"><?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?></span>
@@ -60,11 +61,13 @@
                                     <?php echo lang('enter_payment'); ?>
                                 </a>
                             </li>
+													<?php if ($invoice_class == 'draft') { ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>" onclick="return confirm('<?php echo lang('delete_invoice_warning'); ?>');">
                                     <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                 </a>
                             </li>
+													<?php } ?>
                         </ul>
                     </div>
                 </td>

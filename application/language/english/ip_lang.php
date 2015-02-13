@@ -1,6 +1,8 @@
 <?php
 
 $lang['cldr'] = 'en';
+//Day of the week start. 0 (Sunday) to 6 (Saturday)
+$lang['week_start'] = 0;
 
 $lang['account_information'] = 'Account Information';
 $lang['active_client'] = 'Active';
@@ -13,6 +15,7 @@ $lang['address'] = 'Address';
 $lang['administrator'] = 'Administrator';
 $lang['after_amount'] = 'After Amount';
 $lang['all'] = 'All';
+$lang['allow_delete_after_send'] = 'Allow deleting invoice after being sent';
 $lang['amount_due'] = 'Amount Due';
 $lang['amount'] = 'Amount';
 $lang['apply_after_item_tax'] = 'Apply After Item Tax';
@@ -85,6 +88,7 @@ $lang['email_templates'] = 'Email Templates';
 $lang['email'] = 'Email';
 $lang['enter_payment'] = 'Enter Payment';
 $lang['errors'] = 'Errors';
+$lang['example'] = 'Example';
 $lang['expired'] = 'Expired';
 $lang['expires'] = 'Expires';
 $lang['failure'] = 'Failure';
@@ -155,6 +159,7 @@ $lang['merchant_signature'] = 'Signature';
 $lang['merchant_test_mode'] = 'Test Mode';
 $lang['mobile_number'] = 'Mobile Number';
 $lang['mobile'] = 'Mobile';
+$lang['monospaced_font_for_amounts'] = 'Use a Monospace font for amounts';
 $lang['month_prefix'] = 'Month Prefix';
 $lang['name'] = 'Name';
 $lang['new'] = 'New';
@@ -426,6 +431,35 @@ $lang['menu'] = 'Menu';
 $lang['documentation'] = 'Documentation';
 $lang['checking_for_updates'] = 'Checking for updates...';
 $lang['updates_available'] = 'Updates available!';
+$lang['updatecheck_failed'] = 'Updatecheck failed! Check your network connection.';
 $lang['no_updates_available'] = 'No updates available.';
+$lang['updates'] = 'Updates';
+$lang['updatecheck'] = 'Updatecheck';
+$lang['invoiceplane_news'] = 'InvoicePlane News';
 
 $lang['please_enable_js'] = 'Please enable Javascript to use InvoicePlane';
+
+$lang['php_timezone_fail'] = 'There seems to be no timezone configured. Please check date.timezone in your php configuration. Otherwise <strong>%s</strong> will be selected.';
+$lang['php_timezone_success'] = 'A valid timezone is configured.';
+$lang['warning'] = 'Warning';
+
+// Families module
+$lang['family'] = 'Family';
+$lang['families'] = 'Families';
+$lang['family_name'] = 'Family name';
+$lang['product_families'] = 'Product families';
+$lang['select_family'] = 'Select family';
+
+// Products module
+$lang['product'] = 'Product';
+$lang['products'] = 'Products';
+$lang['product_sku'] = 'SKU';
+$lang['product_name'] = 'Product name';
+$lang['product_description'] = 'Product description';
+$lang['product_price'] = 'Price';
+$lang['purchase_price'] = 'Purchase price';
+$lang['new_product'] = 'New product';
+$lang['create_product'] = 'Create product';
+$lang['view_products'] = 'View products';
+$lang['add_product'] = 'Add product';
+$lang['extra_information'] = 'Extra information';

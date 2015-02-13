@@ -29,6 +29,7 @@ class Mdl_Payments extends Response_Model {
             ip_payment_methods.*,
             ip_invoice_amounts.*,
             ip_clients.client_name,
+        	ip_clients.client_id,
             ip_invoices.invoice_number,
             ip_invoices.invoice_date_created,
             ip_payments.*", FALSE);
@@ -169,6 +170,12 @@ class Mdl_Payments extends Response_Model {
         return TRUE;
     }
 
+    public function by_client($client_id)
+    {
+        $this->filter_where('ip_clients.client_id', $client_id);
+    	return $this;
+    }
+   
 }
 
 ?>

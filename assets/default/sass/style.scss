@@ -22,6 +22,11 @@
 |   Variables
 |   =========================================================
 */
+$color_grey:    #999999;
+$color_blue:    #3A87AD;
+$color_yellow:  #F89406;
+$color_green:   #468847;
+$color_red:     #B94A48;
 
 $color_status_draft:            #999999;
 $color_status_sent:             #3A87AD;
@@ -36,9 +41,10 @@ $color_status_canceled:         #333333;
 |   =========================================================
 */
 
-html, body {
+html {
     height: 100%;
     -webkit-font-smoothing: subpixel-antialiased;
+    overflow-y: scroll;
 }
 
 body {
@@ -145,6 +151,27 @@ textarea {
     tr.bold-border td {
         border-bottom-width: 2px;
     }
+
+    .td-text {
+        min-width: 200px;
+    }
+    .td-textarea {
+        min-width: 250px;
+    }
+    .td-amount {
+        min-width: 100px;
+        text-align: right;
+        font-size: 13px;
+        font-family: Monaco, Lucida Console, monospace;
+        .form-control {
+            text-align: right;
+            font-size: 13px;
+        }
+    }
+    .td-icon {
+        text-align: center;
+        min-width: 40px;
+    }
 }
 
 table.items td {
@@ -246,8 +273,6 @@ table.items td {
     width: 66px;
     height: 100%;
     padding: 0;
-    background: #eee;
-    border-right: 1px solid #ddd;
 
     ul {
         margin: 0;
@@ -256,16 +281,15 @@ table.items td {
     }
 
     li a {
-        padding: 10px 20px;
+        padding: 15px 20px;
         display: block;
         border-bottom: 1px solid #ddd;
-        font-size: 24px;
-        color: #555;
+        font-size: 20px;
+        color: #666;
         text-align: center;
 
         &:hover {
-            background: #e5e5e5;
-            color: #555;
+            color: $color_blue;
         }
     }
 
@@ -277,15 +301,13 @@ table.items td {
 |   =========================================================
 */
 
-.amount {
-    //font-family: Monaco, Lucida Console, monospace;
-    text-align: right;
-    font-size: 90%;
-}
-
 .alert {
     margin-left: 15px;
     margin-right: 15px;
+}
+.alert.alert-default {
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
 }
 
 .tab-content .alert {
@@ -340,6 +362,7 @@ div.table-content {
     display: table-cell;
     width: 100%;
     padding: 0;
+    border-left: 1px solid #ddd;
 
     .content,
     .tab-info {
@@ -379,7 +402,20 @@ div.table-content {
     .pull-right {
         margin-left: 15px;
     }
+}
 
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
+}
+
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
 }
 
 .modal {
@@ -406,6 +442,23 @@ div.table-content {
 
 #email_template_pdf_template > option {
     display: none;
+}
+
+#settings-tabs>li.active:first-child>a {
+    border-left: 0 !important;
+}
+
+.updatecheck-results {
+    margin: 10px 0;
+}
+
+#ipnews-loading {
+    margin-top: 15px;
+}
+
+#ipnews-results .alert {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /*
@@ -640,18 +693,10 @@ div.table-content {
 
 #item_table {
     td, th {
-        min-width: 100px;
         padding: 5px;
     }
     .form-control {
         margin: 0;
-    }
-    .td-description {
-        min-width: 200px;
-    }
-    .td-icon {
-        text-align: center;
-        min-width: 40px;
     }
 }
 
@@ -718,6 +763,10 @@ div.table-content {
 |   =========================================================
 */
 
+.amount {
+    text-align: right;
+}
+
 .no-border-radius {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
@@ -770,6 +819,12 @@ legend, .install-step h2 {
     font-weight: bold;
 }
 
+.nav-tabs-noborder > li > a {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top: 0 !important;
+}
+
 /*
 |   =========================================================
 |   Install, Upgrade and Login
@@ -809,6 +864,10 @@ legend, .install-step h2 {
     .alert {
         margin-left: 0;
         margin-right: 0;
+    }
+
+    .label {
+        width: auto;
     }
 
 }

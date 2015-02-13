@@ -60,6 +60,18 @@
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                         <label class="control-label">
+                            <?php echo lang('company'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <input type="text" name="user_company" id="user_company" class="form-control"
+                               value="<?php echo $this->mdl_users->form_value('user_company'); ?>">
+                    </div>
+                </div>                
+                
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label class="control-label">
                             <?php echo lang('email_address'); ?>
                         </label>
                     </div>
@@ -196,7 +208,7 @@
                             <select name="user_country" id="user_country" class="form-control">
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
-                                    <option value="<?php echo $country; ?>" <?php if ($selected_country == $country) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                                    <option value="<?php echo $cldr; ?>" <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
                                 <?php } ?>
                             </select>
                         </div>

@@ -1,8 +1,6 @@
 <script type="text/javascript">
     $(function()
     {
-        $('.datepicker').datepicker( {autoclose: true, format: '<?php echo date_format_datepicker(); ?>'} );
-
         // Display the create quote modal
         $('#modal_create_recurring').modal('show');
 

@@ -6,12 +6,6 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-
-    <meta charset="utf-8">
-
-    <!-- Use the .htaccess and remove these lines to avoid edge case issues -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
     <title>
         <?php
         if ($this->mdl_settings->setting('custom_title') != '') {
@@ -21,7 +15,12 @@
         }?>
     </title>
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+
+    <link rel="icon" type="image/png" href="/assets/default/img/favicon.png">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
