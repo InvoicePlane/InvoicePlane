@@ -30,9 +30,9 @@
 
                 <td><a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>" title="<?php echo lang('view_client'); ?>"><?php echo $invoice->client_name; ?></a></td>
 
-                <td style="text-align: right; padding-right: 25px;"><?php echo format_currency($invoice->invoice_total); ?></td>
+                <td style="text-align: right; padding-right: 25px;"><?php echo format_currency($invoice->invoice_total * $invoice->invoice_sign); ?></td>
 
-                <td style="text-align: right; padding-right: 25px;"><?php echo format_currency($invoice->invoice_balance); ?></td>
+                <td style="text-align: right; padding-right: 25px;"><?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?></td>
 
                 <td>
                     <div class="options btn-group">

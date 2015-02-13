@@ -69,12 +69,12 @@
 
                 <td class="td-amount">
                     <input type="text" name="item_quantity" class="input-sm form-control"
-                           value="<?php echo format_amount($item->item_quantity); ?>">
+                           value="<?php echo format_amount($item->item_quantity * $invoice->invoice_sign); ?>">
                 </td>
 
                 <td class="td-amount">
                     <input type="text" name="item_price" class="input-sm form-control"
-                           value="<?php echo format_amount($item->item_price); ?>">
+                           value="<?php echo format_amount($item->item_price * $invoice->invoice_sign); ?>">
                 </td>
 
                 <td class="td-amount">
@@ -88,17 +88,17 @@
 
                 <td class="td-amount">
                     <span name="subtotal">
-                        <?php echo format_currency($item->item_subtotal); ?>
+                        <?php echo format_currency($item->item_subtotal * $invoice->invoice_sign); ?>
                     </span>
                 </td>
                 <td class="td-amount">
                     <span name="item_tax_total">
-                        <?php echo format_currency($item->item_tax_total); ?>
+                        <?php echo format_currency($item->item_tax_total * $invoice->invoice_sign); ?>
                     </span>
                 </td>
                 <td class="td-amount">
                     <span name="item_total">
-                        <?php echo format_currency($item->item_total); ?>
+                        <?php echo format_currency($item->item_total * $invoice->invoice_sign); ?>
                     </span>
                 </td>
                 <td class="td-icon">
@@ -127,18 +127,17 @@
         </thead>
         <tbody>
         <tr>
-            <td><span class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></span></td>
-            <td><span class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></span></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_item_subtotal * $invoice->invoice_sign); ?></span></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_item_tax_total * $invoice->invoice_sign); ?></span></td>
             <td>
                 <?php if ($invoice_tax_rates) { foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
-                    <?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id, '<i class="fa fa-trash-o"></i>');
-                        echo ' ' . $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:
-                    <span class="amount"><?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?></span>
+                    <strong><?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id, lang('remove')) . ' ' . $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:</strong>
+                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount * $invoice->invoice_sign); ?><br>
                 <?php } } else { echo format_currency('0'); }?>
             </td>
-            <td><span class="amount"><?php echo format_currency($invoice->invoice_total); ?></span></td>
-            <td><span class="amount"><?php echo format_currency($invoice->invoice_paid); ?></span></td>
-            <td><strong class="amount"><?php echo format_currency($invoice->invoice_balance); ?></strong></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_total * $invoice->invoice_sign); ?></span></td>
+            <td><span class="amount"><?php echo format_currency($invoice->invoice_paid * $invoice->invoice_sign); ?></span></td>
+            <td><strong class="amount"><?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?></strong></td>
         </tr>
         </tbody>
     </table>

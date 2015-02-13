@@ -712,6 +712,17 @@ div.table-content {
     }
 }
 
+.invoice-labels {
+    span.label {
+        float: left;
+        width: auto;
+        margin: 6px 3px 4px 0;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
 /*
 |   =========================================================
 |   Various Styles
