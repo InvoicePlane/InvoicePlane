@@ -24,9 +24,9 @@
         </ul>
     </div>
 
-    <div class="pull-right hidden-sm hidden-md hidden-lg btn-group">
+    <div class="pull-left hidden-sm hidden-md hidden-lg btn-group">
         <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" >
-            <?php echo lang('options'); ?> <i class="fa fa-chevron-down"></i>
+            <?php #echo lang('options');<i class="fa fa-bars"></i> ?> <i class="fa fa-chevron-down"></i>
         </a>
         <ul class="dropdown-menu" role="menu">
             <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a href="<?php echo site_url('quotes/status/all'); ?>"><?php echo lang('all'); ?></a></li>

@@ -44,19 +44,17 @@
 
     <div class="pull-right btn-group">
         <a href="#" class="btn btn-sm btn-default client-create-quote"
-           data-client-name="<?php echo $client->client_name; ?>">
-            <i class="fa fa-file"></i> <?php echo lang('create_quote'); ?>
+           data-client-name="<?php echo $client->client_name; ?>" title="<?php echo lang('create_quote'); ?>">
+            <i class="fa fa-file"></i><span class="hidden-sm hidden-xs"><?php echo lang('create_quote'); ?></span>
         </a>
-        <a href="#" class="btn btn-sm btn-default client-create-invoice" data-client-name="<?php echo $client->client_name; ?>"><i class="fa fa-file-text""></i> <?php echo lang('create_invoice'); ?></a>
-        <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
-           class="btn btn-sm btn-default">
-            <i class="fa fa-edit"></i> <?php echo lang('edit'); ?>
+        <a href="#" class="btn btn-sm btn-default client-create-invoice" data-client-name="<?php echo $client->client_name; ?>" title="<?php echo lang('create_invoice'); ?>"><i class="fa fa-file-text"></i><span class="hidden-sm hidden-xs"><?php echo lang('create_invoice'); ?></a></span>
+        <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>" class="btn btn-sm btn-default" title="<?php echo lang('edit'); ?>">
+            <i class="fa fa-edit"></i><span class="hidden-sm hidden-xs"><?php echo lang('edit'); ?></span>
         </a>
 
         <a class="btn btn-sm btn-danger"
-           href="<?php echo site_url('clients/delete/' . $client->client_id); ?>"
-           onclick="return confirm('<?php echo lang('delete_client_warning'); ?>');">
-            <i class="fa fa-trash-o"></i> <?php echo lang('delete'); ?>
+           href="<?php echo site_url('clients/delete/' . $client->client_id); ?>" onclick="return confirm('<?php echo lang('delete_client_warning'); ?>');" title="<?php echo lang('delete'); ?>">
+            <i class="fa fa-trash-o"></i><span class="hidden-sm hidden-xs"><?php echo lang('delete'); ?></span>
         </a>
     </div>
 
@@ -191,8 +189,8 @@
 
 <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation"
      style="max-height: 50px !important;">
-    <div class="container-fluid">
-        <ul class="nav navbar-nav">
+    <div class="container">
+        <ul class="nav navbar-nav nav-pills">
             <li class="active"><a data-toggle="tab" href="#clientDetails"><?php echo lang('details'); ?></a></li>
             <li><a data-toggle="tab" href="#clientQuotes"><?php echo lang('quotes'); ?></a></li>
             <li><a data-toggle="tab" href="#clientInvoices"><?php echo lang('invoices'); ?></a></li>

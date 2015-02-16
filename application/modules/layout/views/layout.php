@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -97,11 +97,11 @@
 
         <div class="collapse navbar-collapse" id="ip-navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><?php echo anchor('dashboard', lang('dashboard')); ?></li>
+                <li><?php echo anchor('dashboard', '<i class="fa fa-dashboard" title="'.lang('dashboard').'"></i>&nbsp;<span class="visible-xs-inline-block visible-lg">'.lang('dashboard').'&nbsp;</span>'); ?></li>
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('clients'); ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('clients'); ?>">
+                        <i class="fa fa-users"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('clients'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', lang('add_client')); ?></li>
@@ -110,8 +110,8 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('quotes'); ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('quotes'); ?>">
+                        <i class="fa fa-file"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('quotes'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-quote"><?php echo lang('create_quote'); ?></a></li>
@@ -120,8 +120,8 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('invoices'); ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('invoices'); ?>">
+                        <i class="fa fa-file-text"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('invoices'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-invoice"><?php echo lang('create_invoice'); ?></a></li>
@@ -131,8 +131,8 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('payments'); ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('payments'); ?>">
+                        <i class="fa fa-money"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('payments'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('payments/form', lang('enter_payment')); ?></li>
@@ -141,8 +141,8 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('reports'); ?>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('reports'); ?>">
+                        <i class="fa fa-bar-chart-o"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('reports'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('reports/invoice_aging', lang('invoice_aging')); ?></li>
@@ -150,35 +150,34 @@
                         <li><?php echo anchor('reports/sales_by_client', lang('sales_by_client')); ?></li>
                     </ul>
                 </li>
-
-            </ul>
-
-            <?php if (isset($filter_display) and $filter_display == TRUE) { ?>
-                <?php $this->layout->load_view('filter/jquery_filter'); ?>
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input id="filter" type="text"class="search-query form-control input-sm"
-                               placeholder="<?php echo $filter_placeholder; ?>">
-                    </div>
-                </form>
-            <?php } ?>
-
-            <ul class="nav navbar-nav navbar-right">
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+				<?php if (isset($filter_display) and $filter_display == TRUE) { ?>
+					<?php $this->layout->load_view('filter/jquery_filter'); ?>
+					<li>
+						<form class="navbar-form" role="search">
+							<div class="form-group">
+								<input id="filter" type="text"class="search-query form-control input-sm"
+									   placeholder="<?php echo $filter_placeholder; ?>">
+							</div>
+						</form>
+					</li>
+				<?php } ?>
                 <li>
                     <a href="http://docs.invoiceplane.com/" target="_blank"
                        class="tip icon" data-original-title="<?php echo lang('documentation'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-question-circle"></i>
-                        <span class="visible-xs">&nbsp;<?php echo lang('documentation'); ?></span>
+                        <span class="visible-xs-inline-block">&nbsp;<?php echo lang('documentation'); ?></span>
                     </a>
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" class="tip icon dropdown-toggle" data-toggle="dropdown"
+                    <a href="#" class="dropdown-toggle tip icon" data-toggle="dropdown"
                        data-original-title="<?php echo lang('settings'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-cogs"></i>
-                        <span class="visible-xs">&nbsp;<?php echo lang('settings'); ?></span>
+                        <span class="visible-xs-inline-block">&nbsp;<?php echo lang('settings'); ?></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('custom_fields/index', lang('custom_fields')); ?></li>
@@ -199,7 +198,7 @@
                        class="tip icon logout" data-placement="bottom"
                        data-original-title="<?php echo lang('logout'); ?>" >
                         <i class="fa fa-power-off"></i>
-                        <span class="visible-xs">&nbsp;<?php echo lang('logout'); ?></span>
+                        <span class="visible-xs-inline-block">&nbsp;<?php echo lang('logout'); ?></span>
                     </a>
                 </li>
             </ul>

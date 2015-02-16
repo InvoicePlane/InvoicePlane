@@ -95,8 +95,8 @@
 
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
-               data-toggle="dropdown" href="#">
-                <?php echo lang('options'); ?> <i class="fa fa-caret-down no-margin"></i>
+               data-toggle="dropdown" href="#" title="<?php echo lang('options'); ?>">
+               <i class="fa fa-cog"></i> <span class="hidden-sm hidden-xs"><?php echo lang('options'); ?></span> <i class="fa fa-caret-down no-margin"></i>
             </a>
             <ul class="dropdown-menu">
                 <li>
@@ -146,16 +146,15 @@
             </ul>
         </div>
 
-        <a href="#" class="btn btn-sm btn-default" id="btn_add_item">
-            <i class="fa fa-plus"></i> <?php echo lang('add_item'); ?>
+        <a href="#" class="btn btn-sm btn-default" id="btn_add_item" title="<?php echo lang('add_item'); ?>">
+            <i class="fa fa-plus"></i><span class="hidden-sm hidden-xs"><?php echo lang('add_item'); ?></span>
         </a>
-        <a href="#" class="btn btn-sm btn-default" id="btn_add_item_from_lookup">
-            <i class="fa fa-database"></i>
-            <?php echo lang('add_item_from_lookup'); ?>
+        <a href="#" class="btn btn-sm btn-default" id="btn_add_item_from_lookup" title="<?php echo lang('add_item_from_lookup'); ?>">
+            <i class="fa fa-database"></i><span class="hidden-sm hidden-xs"><?php echo lang('add_item_from_lookup'); ?></span>
         </a>
 
-        <a href="#" class="btn btn-sm btn-success" id="btn_save_invoice">
-            <i class="fa fa-check"></i> <?php echo lang('save'); ?>
+        <a href="#" class="btn btn-sm btn-success" id="btn_save_invoice" title="<?php echo lang('save'); ?>">
+            <i class="fa fa-check"></i><span class="hidden-sm hidden-xs"><?php echo lang('save'); ?></span>
         </a>
     </div>
 
