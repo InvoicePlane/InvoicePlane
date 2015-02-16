@@ -1,6 +1,12 @@
 # Remove index.php
 RewriteEngine on
-RewriteBase /
+
+# Uncomment 4 setup protect
+#Redirect /setup http://myinvoiceplane.host
+
+# Uncomment 4 work in sub directory:see:https://community.invoiceplane.com/t/solved-installation-help/42/6
+#RewriteBase /sub-dir
+
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
