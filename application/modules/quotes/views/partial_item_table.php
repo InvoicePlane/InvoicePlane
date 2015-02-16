@@ -74,7 +74,7 @@
                        value="<?php echo format_amount($item->item_price); ?>">
             </td>
 			<td style="vertical-align: top;">
-				<select name="item_tax_rate_id" name="item_tax_rate_id"
+				<select name="item_tax_rate_id"
                     class="form-control input-sm">
 					<option value="0"><?php echo lang('none'); ?></option>
 					<?php foreach ($tax_rates as $tax_rate) { ?>
