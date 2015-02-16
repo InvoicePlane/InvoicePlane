@@ -253,6 +253,7 @@ $lang['status'] = 'Statut';
 $lang['street_address_2'] = 'Adresse 2';
 $lang['street_address'] = 'Adresse postale';
 $lang['subject'] = 'Sujet';
+$lang['submenu'] = 'Sous-menu';
 $lang['submit'] = 'Enregistrer';
 $lang['subtotal'] = 'Total partiel';
 $lang['success'] = 'Succès';
@@ -290,6 +291,7 @@ $lang['web'] = 'Web';
 $lang['year_prefix'] = 'Préfixe de l\'année';
 $lang['yes'] = 'Oui';
 $lang['zip_code'] = 'Code postal';
+
 $lang['column'] = 'Colonne';
 $lang['custom_fields'] = 'Champs personnalisés';
 $lang['custom_field_form'] = 'Champ personnalisé';
@@ -301,6 +303,7 @@ $lang['php_version_fail'] = 'PHP version %s est installé mais InvoicePlane requ
 $lang['php_version_success'] = 'PHP semble répondre à l\'exigence d\'installation';
 $lang['setup_prerequisites_message'] = 'Bienvenue sur InvoicePlane ! Toute question énumérée ci-dessous doit être réglée avant que l\'installation puisse continuer.';
 $lang['table'] = 'Table';
+
 $lang['base_invoice'] = 'Facture de base';
 $lang['calendar_month'] = 'Mois';
 $lang['calendar_week'] = 'Semaine';
@@ -327,13 +330,18 @@ $lang['total_paid'] = 'Total payé';
 $lang['view_recurring_invoices'] = 'Voir les factures régulières';
 $lang['year'] = 'Année';
 $lang['years'] = 'Années';
+
 $lang['bill_to'] = 'À l\'attention de';#Projet de loi
+
 $lang['current_version'] = 'Version actuelle';
 $lang['view_client'] = 'Voir les Clients';
+
 $lang['notes'] = 'Notes';
 $lang['tax_rate_decimal_places'] = 'Décimales des taxes';
+
 $lang['invoice_logo'] = 'Logo de la facture';
 $lang['remove_logo'] = 'Enlever le Logo';
+
 $lang['company'] = 'Société';
 $lang['email_send_method'] = 'Méthode d\'envoi de courriel';
 $lang['email_send_method_phpmail'] = 'PHP Mail';
@@ -343,16 +351,20 @@ $lang['email_successfully_sent'] = 'E-mail envoyé avec succès';
 $lang['email_template_tags'] = 'E-mail Template Tags';
 $lang['login_logo'] = 'Logo de connexion';
 $lang['online_payment_method'] = 'Mode de paiement en ligne';
+
 $lang['add_quote_tax'] = 'Ajoutez une taxe au devis';# Remise/#Impôt#Taxe
 $lang['copy_quote'] = 'Copiez le devis';
 $lang['filter_quotes'] = 'Filtre de devis';
 $lang['quote_tax'] = 'Taxes de ce devis';#Taux monétaire#Taxe
+
 $lang['download_pdf'] = 'Télécharger le PDF';
 $lang['guest_account_denied'] = 'Ce compte n\'est pas configuré. S\'il vous plaît contactez l\'administrateur système.';
 $lang['open_quotes'] = 'Devis ouverts';
 $lang['pdf'] = 'PDF';
 $lang['welcome'] = 'Bienvenue';
+
 $lang['automatic_email_on_recur'] = 'Envoyez automatiquement les factures régulières';
+
 $lang['default_pdf_template'] = 'Modèle PDF par défaut';
 $lang['default_public_template'] = 'Modèle Public par défaut';
 $lang['taxes'] = 'Taxes';#Taux monétaires
@@ -361,6 +373,7 @@ $lang['vat_id'] = 'Numéro TVA';
 $lang['vat_id_short'] = 'TVA';
 $lang['tax_code'] = 'Numéro URSAFF';#Code des impôts
 $lang['tax_code_short'] = 'Numéro URSAFF';#Code des impôts
+
 $lang['approve'] = 'Approuver';
 $lang['approved'] = 'Approuvés';
 $lang['approve_this_quote'] = 'Approuver ce devis';
@@ -392,9 +405,17 @@ $lang['save_item_as_lookup'] = 'Enregistrer l\'article pour référence';
 $lang['sent'] = 'Envoyé(e)s';
 $lang['viewed'] = 'Vues';
 $lang['view_all'] = 'Tout voir';
+
 $lang['menu'] = 'Menu';
 $lang['documentation'] = 'Documentation';
 $lang['checking_for_updates'] = 'Vérification des mises à jour...';
 $lang['updates_available'] = 'Mises à jour disponibles !';
+$lang['updatecheck_failed'] = 'Échec de la Vérification des mises à jour! Verifier la connection au reseau.';
 $lang['no_updates_available'] = 'Aucune mise à jour est disponible.';
 $lang['please_enable_js'] = 'Pour utiliser InvoicePlane, s\'il vous plaît activer le Javascript de votre navigateur';
+
+$lang['please_enable_js'] = 'Activer le Javascript pour utilser InvoicePlane';
+
+$lang['php_timezone_fail'] = 'Il ne semble y avoir aucun fuseau horaire configuré. Veuillez vérifier la date.timezone dans votre configuration de php. Sinon <strong>%s</strong> sera sélectionné.';
+$lang['php_timezone_success'] = 'Un fuseau horaire valide est configuré.';
+$lang['warning'] = 'Warning';
