@@ -339,11 +339,28 @@ class Setup extends MX_Controller {
                 'message' => sprintf(lang('php_version_fail'), $php_installed, $php_required),
                 'success' => 0
             );
+        } 
+        else 
+        {
+            $checks[] = array(
+                'message' => lang('php_version_success'),
+                'success' => 1
+            );
+        }
+
+        if (!ini_get('date.timezone'))
+        {
+            #$this->errors += 1;
+
+            $checks[] = array(
+                'message' => sprintf(lang('php_timezone_fail'), date_default_timezone_get()),
+                'warning' => 1
+            );
         }
         else
         {
             $checks[] = array(
-                'message' => lang('php_version_success'),
+                'message' => lang('php_timezone_success'),
                 'success' => 1
             );
         }

@@ -3,6 +3,10 @@
     <h1><?php echo lang('invoices'); ?></h1>
 
     <div class="pull-right">
+        <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
+                data-toggle="collapse" data-target="#ip-submenu-collapse" >
+            <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
+        </button>
         <a class="create-invoice btn btn-sm btn-primary" href="#">
             <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
         </a>
@@ -13,6 +17,7 @@
     </div>
 
     <div class="pull-right hidden-xs">
+
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a href="<?php echo site_url('invoices/status/all'); ?>"><?php echo lang('all'); ?></a></li>
             <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo lang('draft'); ?></a></li>

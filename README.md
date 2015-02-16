@@ -12,11 +12,8 @@ démonstration [anglais maybe in french?](https://demo.invoiceplane.com)
 2. Extraire le paquet et transferer tout le contenu sur votre serveur internet, pensez au fichier .htaccess il peut être caché sous GNULinux
 3. Ouvrir `http://my.host/invoiceflamefolder/setup` et suivre les instructions.
 
-
-
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 1.1.1  
-
+#### _Version 1.1.2_  
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or take a look at the __[demo](https://demo.invoiceplane.com)__
 

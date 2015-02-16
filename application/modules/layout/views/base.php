@@ -6,30 +6,26 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-
-	<meta charset="utf-8">
-
-	<!-- Use the .htaccess and remove these lines to avoid edge case issues -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
 	<title>InvoicePlane</title>
 
-	<!-- Mobile viewport optimized: j.mp/bplateviewport -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width">
+	<meta name="robots" content="NOINDEX,NOFOLLOW">
 
-	<!-- CSS: implied media=all -->
+	<link rel="icon" type="image/png" href="/assets/default/img/favicon.png">
+
     <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/style.css'; ?>">
     <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/custom.css'; ?>">
-	<!-- end CSS-->
 
-	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.2.js'; ?>"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
+	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.3.min.js'; ?>"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
     <script type="text/javascript">
         (function ($) {
             $(document);
         }(jQuery));
     </script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.2.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.1.min.js"></script>
 
 	<style type="text/css">
 		html { overflow-y: visible; }

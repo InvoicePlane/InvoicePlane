@@ -3,6 +3,10 @@
     <h1><?php echo lang('clients'); ?></h1>
 
     <div class="pull-right">
+        <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
+                data-toggle="collapse" data-target="#ip-submenu-collapse" >
+            <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
+        </button>
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('clients/form'); ?>">
             <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
         </a>

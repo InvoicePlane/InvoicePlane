@@ -3,16 +3,20 @@
     <h1><?php echo lang('quotes'); ?></h1>
 
     <div class="pull-right">
+        <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
+                data-toggle="collapse" data-target="#ip-submenu-collapse" >
+            <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
+        </button>
         <a class="create-quote btn btn-sm btn-primary" href="#">
             <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
         </a>
     </div>
 
-    <div class="pull-right">
+    <div class="pull-right visible-lg">
         <?php echo pager(site_url('quotes/status/' . $this->uri->segment(3)), 'mdl_quotes'); ?>
     </div>
 
-    <div class="pull-right hidden-xs">
+    <div class="pull-right visible-lg">
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a href="<?php echo site_url('quotes/status/all'); ?>"><?php echo lang('all'); ?></a></li>
             <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a href="<?php echo site_url('quotes/status/draft'); ?>"><?php echo lang('draft'); ?></a></li>

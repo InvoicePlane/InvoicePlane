@@ -1,865 +1,922 @@
-/* =============================================================================
-   InvoicePlane
-   Sass Stylesheet
-   v1.0
-   ========================================================================== */
+/*
+|   =========================================================
+|   InvoicePlane
+|   Sass Stylesheet
+|   =========================================================
+*/
 
-/* =============================================================================
-   Import Bootstrap and other assets
-   ========================================================================== */
+/*
+|   =========================================================
+|   Import Bootstrap and other assets
+|   =========================================================
+*/
 
-    // Bootstrap
-    @import "bootstrap/bootstrap";
+// Bootstrap
+@import "bootstrap/bootstrap";
 
-    // Font: Font-Awesome
-    @import "fonts/font-awesome/font-awesome";
+// Font: Font-Awesome
+@import "fonts/font-awesome/font-awesome";
 
+/*
+|   =========================================================
+|   Variables
+|   =========================================================
+*/
+$color_grey:    #999999;
+$color_blue:    #3A87AD;
+$color_yellow:  #F89406;
+$color_green:   #468847;
+$color_red:     #B94A48;
 
-/* =============================================================================
-   Base Styles
-   ========================================================================== */
+$color_status_draft:            #999999;
+$color_status_sent:             #3A87AD;
+$color_status_viewed:           #F89406;
+$color_status_paid_approved:    #468847;
+$color_status_rejected_overdue: #B94A48;
+$color_status_canceled:         #333333;
 
-    html, body {
-        height: 100%;
-        -webkit-font-smoothing: subpixel-antialiased;
+/*
+|   =========================================================
+|   Base Styles
+|   =========================================================
+*/
+
+html {
+    height: 100%;
+    -webkit-font-smoothing: subpixel-antialiased;
+    overflow-y: scroll;
+}
+
+body {
+    background-color: #fff;
+    padding-top: 50px;
+}
+
+img {
+    vertical-align: middle;
+}
+
+a:hover, a:active, a:focus {
+    outline: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background-color: #eaeaea;
+    border-left: 1px solid #ccc;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+
+body *:focus {
+    outline: none !important;
+}
+
+// Fix rows getting large height
+.row-fluid:after {
+    clear: none !important;
+}
+
+/*
+|   =========================================================
+|   Forms
+|   =========================================================
+*/
+
+form {
+    margin: 0;
+}
+
+fieldset {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+fieldset legend {
+    padding: 0 20px;
+    font-size: 16px;
+    width: auto;
+    border: none;
+    margin: 0;
+}
+
+label {
+    margin-right: 10px;
+}
+
+textarea {
+    margin-bottom: 20px;
+    resize: vertical;
+    cursor: text !important;
+}
+
+/*
+|   =========================================================
+|   Tables
+|   =========================================================
+*/
+
+.table {
+    margin: 0 0 15px;
+
+    &.no-margin {
+        margin: 0 0 0 0;
     }
 
-    body {
-        background-color: #fff;
-        padding-top: 50px;
+    td {
+        vertical-align: middle !important;
     }
 
-    img {
-        vertical-align: middle;
+    th:first-child,
+    td:first-child {
+        padding-left: 20px;
     }
 
-    a:hover, a:active, a:focus {
-        outline: 0;
+    tr.bold-border td {
+        border-bottom-width: 2px;
     }
 
-    h1, h2, h3, h4, h5, h6 {
-        margin: 0;
+    .td-text {
+        min-width: 200px;
+    }
+    .td-textarea {
+        min-width: 250px;
+    }
+    .td-amount {
+        min-width: 100px;
+        text-align: right;
+        font-size: 13px;
+        font-family: Monaco, Lucida Console, monospace;
+        .form-control {
+            text-align: right;
+            font-size: 13px;
+        }
+    }
+    .td-icon {
+        text-align: center;
+        min-width: 40px;
+    }
+}
+
+table.items td {
+    vertical-align: top !important;
+}
+
+/*
+|   =========================================================
+|   Navigation
+|   =========================================================
+*/
+
+.navbar.navbar-inverse {
+
+    .navbar-collapse {
+        padding-left: 0;
+        padding-right: 0;
     }
 
-    ::-webkit-scrollbar {
-        width: 12px;
-    }
-    ::-webkit-scrollbar-track {
-        background-color: #eaeaea;
-        border-left: 1px solid #ccc;
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: #ccc;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: #aaa;
-    }
-
-
-/* =============================================================================
-   Components
-   ========================================================================== */
-
-    // Bootstrap Datepicker
-    // Fix input alignment
-    .controls.date {
-        margin-left: 10px;
-        padding: 0;
-    }
-
-    .datepicker .icon-arrow-left {
-        @extend .fa;
-        @extend .fa-arrow-left;
-        color: #777;
-    }
-
-    .datepicker .icon-arrow-right {
-        @extend .fa;
-        @extend .fa-arrow-right;
-        color: #777;
-    }
-
-    .datepicker .day.active {
-        background: #3276b1;
-        color: #efefef;
+    .navbar-toggle {
+        padding: 6px 8px;
+        color: #ddd;
+        border-color: #333;
         &:hover {
-            background: #3276b1;
-            color: #fff;
+            color: #eee;
+            border-color: #444;
         }
     }
 
-    .datepicker .day:hover {
-        background: #efefef;
-        color: #3276b1;
-        cursor: crosshair;
-    }
-
-    // Fix datepicker icon alingment
-    .input-append.date .add-on i,
-    .input-prepend.date .add-on i {
-        width: auto;
-        height: auto;
-        display: inline;
-    }
-
-    // Display datepicker over modal box
-    .datepicker.dropdown-menu {
-        padding: 5px;
-        z-index: 9999;
-    }
-
-    // Reset padding on Date Picker
-    .datepicker table th:first-child,
-    .datepicker table td:first-child  {
-        padding-left:5px;
-    }
-
-
-/* =============================================================================
-   Row
-   ========================================================================== */
-
-    // Fix rows getting large height
-    .row-fluid:after {
-        clear: none !important;
-    }
-
-
-/* =============================================================================
-   Forms
-   ========================================================================== */
-
-    form {
-        margin: 0;
-    }
-
-    fieldset {
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        -ms-border-radius: 5px;
-        -o-border-radius: 5px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        margin-bottom: 20px;
-        padding: 20px;
-    }
-
-    fieldset legend {
-        padding: 0 20px;
-        font-size: 16px;
-        width: auto;
-        border: none;
-        margin: 0;
-    }
-
-    label {
-        margin-right: 10px;
-    }
-
-    label,
-    input[type="text"] {
-        height: auto;
-        line-height: auto;
-    }
-    textarea {
-        margin-bottom: 20px;
-        resize: vertical;
-        cursor: text !important;
-    }
-
-
-/* =============================================================================
-   Tables
-   ========================================================================== */
-
-    .table {
-        margin: 0 0 40px;
-
-        &.no-margin {
-            margin: 0 0 0 0;
-        }
-
-        td {
-            vertical-align: middle !important;
-        }
-
-        th:first-child,
-        td:first-child {
-            padding-left: 20px;
-        }
-
-        tr.bold-border td {
-            border-bottom-width: 2px;
-        }
-    }
-
-    table.items td {
-    	vertical-align: top !important;
-    }
-
-
-/* =============================================================================
-   Install, Upgrade and Login
-   ========================================================================== */
-
-    .install-panel {
-        @extend .panel;
-        @extend .panel-default;
-        @extend .panel-body;
-        margin-top: 30px;
-
-        h1  {
-            margin: 20px auto;
-            display: block;
-            width: 200px;
-            height: 100px;
-            background: url('/assets/default/img/logo_200x100.png') center center no-repeat;
-
-            span {
-                display: none;
-            }
-        }
-
-        h2 {
-            @extend legend;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        .btn {
-            margin-top: 15px;
-        }
-
-        .alert {
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-    }
-
-    @media only screen and (-webkit-min-device-pixel-ratio: 2),
-    only screen and (min-device-pixel-ratio: 2) {
-        .install-panel h1 {
-            background: url('/assets/default/img/logo_400x200.png') center center no-repeat;
-            background-size: 200px 100px;
-        }
-    }
-
-    #login {
-        @extend .panel;
-        @extend .panel-default;
-        @extend .panel-body;
-
-        .form-horizontal {
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        h1 {
-            margin: 20px 0;
-        }
-    }
-
-    .install-panel .alert,
-    #login .alert {
-        margin-bottom: 20px;
-    }
-
-/* =============================================================================
-   Navigation
-   ========================================================================== */
-
-    .navbar {
-        border-radius: 0;
-        margin-bottom: 0;
-        border: none;
-
-        &.navbar-inverse {
-            background: #444;
-            color: #ccc;
-
-            .nav {
-                a{
-                    color: #ccc;
-                }
-                .open a {
-                    background: #555;
-                }
-            }
-
-            .dropdown-menu {
-                color: #444;
-
-                a {
-                    color: #444;
-                }
-            }
-            .open .dropdown-menu a {
-                background: #fff;
-                &:hover {
-                    background: #f5f5f5;
-                }
-            }
-        }
-
-        .navbar-collapse {
-            padding: 0;
-
-            &.in .navbar-form {
-                margin: 5px 0;
-                padding: 0;
-            }
-        }
-
-        .navbar-toggle {
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-
-        .brand {
-            font-size: 18px;
-            font-weight: bold;
-            color: #000;
-            margin: 0;
-            padding: 0;
-        }
-
-        .dropdown-menu {
-            text-align: left;
-        }
-
-        .settings {
-
-            > li > .dropdown-menu:after {
-                right: 19px;
-            }
-
-            > li > .dropdown-menu:before {
-                right: 19px;
-            }
-
-            .dropdown-toggle:after {
-                display: none;
-            }
-
-            .dropdown-menu {
-                right: 0;
-                text-align: left;
-            }
-
-        } // /.settings
-
-    } // /.navbar
-
-   .navbar-inner {
-       -webkit-border-radius: 0;
-       -moz-border-radius: 0;
-       border-radius: 0;
-       padding: 0;
-       border: none;
-       text-align: right;
-   }
-
-   .navbar-search {
-       margin-top: 0;
-   }
-
-    // Options Dropdown
-    .options {
-        margin: 0;
-
-        .dropdown-menu {
-            left: -10px; // Align dropdown icons with options icon
-        }
-    }
-
-    #subnavigation {
-        max-height: 50px !important;
-        border-top: none;
-    }
-
-    .submenu {
-        .navbar-toggle {
-            margin: 0;
-            background: #bbb;
-            padding: 4px 6px;
-            i {
-                color: #eee;
-            }
-        }
-        .navbar-collapse {
-            z-index: 9999;
-            padding: 0;
-        }
-    }
-
-
-/* =============================================================================
-   Pagination
-   ========================================================================== */
-    .pagination {
-        height: auto;
-        margin: 0;
-    }
-    .pagination ul > li > a,
-    .pagination ul > li > span {
-        padding: 3px 10px;
-        line-height: 20px;
-    }
-
-
-/* =============================================================================
-   Sidebar
-   ========================================================================== */
-
-    .sidebar {
-        @extend .col-sm-1;
-        height: 100%;
-        padding: 0;
-        background: #eee;
-        border-right: 1px solid #ddd;
-
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        li a {
-            padding: 10px 20px;
-            display: block;
-            border-bottom: 1px solid #ddd;
-            font-size: 24px;
-            color: #555;
-            text-align: center;
-
-            &:hover {
-                background: #e5e5e5;
-                color: #555;
-            }
-        }
-
-    }
-
-
-/* =============================================================================
-   Content
-   ========================================================================== */
-
-    .alert {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-
-    .tab-content .alert {
+    .navbar-form {
         margin-left: 0;
         margin-right: 0;
     }
+}
 
-    #form-settings .tab-content,
-    div.table-content {
-	    .alert {
-			margin: 15px;
-	    }
-        .tab-pane {
-            padding-bottom: 50px;
+.navbar-inner {
+   -webkit-border-radius: 0;
+   -moz-border-radius: 0;
+   border-radius: 0;
+   padding: 0;
+   border: none;
+   text-align: right;
+}
+
+.navbar-search {
+   margin-top: 0;
+}
+
+// Options Dropdown
+.options {
+    margin: 0;
+
+    .dropdown-menu {
+        left: -10px; // Align dropdown icons with options icon
+    }
+}
+
+.submenu {
+    padding: 5px;
+    font-size: 85%;
+    max-width: 100% !important;
+
+    .submenu-row {
+        margin-bottom: 5px;
+    }
+
+    .nav-pills {
+        > li > a {
+            padding: 5px 10px;
+        }
+    }
+}
+
+/*
+|   =========================================================
+|   Pagination
+|   =========================================================
+*/
+
+.pagination {
+    height: auto;
+    margin: 0;
+}
+.pagination ul > li > a,
+.pagination ul > li > span {
+    padding: 3px 10px;
+    line-height: 20px;
+}
+
+/*
+|   =========================================================
+|   Sidebar
+|   =========================================================
+*/
+
+.sidebar {
+    @extend .col-sm-1;
+    height: 100%;
+    padding: 0;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li a {
+        padding: 15px 20px;
+        display: block;
+        border-bottom: 1px solid #ddd;
+        font-size: 20px;
+        color: #666;
+        text-align: center;
+
+        &:hover {
+            color: $color_blue;
         }
     }
 
-    #panel-overdue-invoices,
-    #panel-recent-quotes,
-    #panel-recent-invoices {
-        .panel-body {
-            padding: 0;
-        }
-    }
+}
 
-    #panel-overdue-invoices p {
+/*
+|   =========================================================
+|   Content
+|   =========================================================
+*/
+
+.alert {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.tab-content .alert {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#form-settings .tab-content,
+div.table-content {
+    .alert {
         margin: 15px;
     }
-
-    .quick-actions .btn {
-        padding: 5px;
-        border-right-width: 0;
-
-        &:last-child {
-            border-right-width: 1px;
-        }
+    .tab-pane {
+        padding-bottom: 50px;
     }
+}
 
-    .btn .fa,
-    .fa.fa-margin {
-        margin-right: 7px;
-    }
-
-    .main-area {
-        @extend .col-xs-12;
-        @extend .col-sm-11;
+#panel-overdue-invoices,
+#panel-recent-quotes,
+#panel-recent-invoices {
+    .panel-body {
         padding: 0;
-
-        .content,
-        .tab-info {
-            padding: 20px;
-        }
-
-        .content .alert {
-            margin-right: 0;
-            margin-left: 0;
-        }
-
-        .content-padding {
-            padding: 20px 20px 94px;
+    }
+    table {
+        td:first-child,
+        th:first-child {
+            padding-left: 10px;
         }
     }
+}
 
-    .main-area .headerbar {
-        height: 46px;
-        padding: 8px 20px;
-        border-bottom: 1px solid #ddd;
+#panel-overdue-invoices p {
+    margin: 15px;
+}
 
-        h1 {
-            font-size: 15px;
-            line-height: 30px;
-            margin: 0;
-            float: left;
-        }
+.quick-actions .btn {
+    padding: 5px;
+    border: none;
+    border-right: 1px solid #ddd;
+    font-size: 90%;
+    &:last-child {
+        border-right: none;
+    }
+}
 
-        .nav {
-            margin-bottom: 0;
-            font-size: 12px;
-            line-height: 1.5;
+.btn .fa,
+.fa.fa-margin {
+    margin-right: 7px;
+}
 
-            li a { padding: 6px 12px; }
-        }
+.main-area {
+    @extend .col-xs-12;
+    @extend .col-sm-11;
+    padding: 0;
+    border-left: 1px solid #ddd;
 
-        .pull-right {
-            margin-left: 15px;
-        }
-
+    .content,
+    .tab-info {
+        padding: 20px;
     }
 
-    .modal {
-        margin-top: 40px;
-        overflow-y: auto;
-    }
-
-   .details-box {
-       @extend .panel;
-       @extend .panel-default;
-       @extend .panel-body;
-
-       .has-feedback .form-control-feedback {
-           bottom: 0;
-           top: auto;
-           right: 0;
-       }
-   }
-
-    #email_template_pdf_template > option {
-      display: none;
-    }
-
-
-/* =============================================================================
-   Tabs
-   ========================================================================== */
-
-    .tabbable .table {
-        margin-bottom: 20px;
-    }
-
-    .tabs-below .nav-tabs {
-        margin: 0;
-        border: 0;
-        list-style: none;
-        background-color: #444;
-        color: #ccc;
-        height: 40px;
-        width: 100%;
-    }
-
-    .tabs-below .nav-tabs > li {
-        margin-top: 0;
-    }
-
-    .tabs-below .nav-tabs > li > a {
-        border: transparent;
-        color: #ccc;
+    .content .alert {
         margin-right: 0;
-        padding: 10px 20px 11px;
-        display: block;
-        line-height: 19px;
+        margin-left: 0;
     }
 
-    .tabs-below .nav-tabs > li > a:hover,
-    .tabs-below .nav-tabs .active > a,
-    .tabs-below .nav-tabs .active > a:hover {
-        border-radius: 0;
-        background-color: #444;
-        color: #fff;
-        text-decoration: none;
-        border: none;
+    .content-padding {
+        padding: 20px 20px 94px;
+    }
+}
+
+.main-area .headerbar {
+    height: 46px;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+
+    h1 {
+        font-size: 15px;
+        line-height: 30px;
+        margin: 0;
+        float: left;
     }
 
-    .tabs-below .nav-tabs > li:first-child > a,
-    .tabs-below .nav-tabs > li:first-child > a:hover {
-        border-left: none !important;
+    .nav {
+        margin-bottom: 0;
+        font-size: 12px;
+        line-height: 1.5;
+
+        li a { padding: 6px 12px; }
     }
 
-
-/* =============================================================================
-   Widgets
-   ========================================================================== */
-
-    .widget {
-            border: 1px solid #ddd;
-            margin-top: 20px;
-
-        .widget-title {
-            padding: 8px 20px;
-            overflow: hidden;
-
-            h5 {
-                float: left;
-            }
-
-            h5 i {
-                margin-right: 10px;
-            }
-        }
-
-        .content-padding {
-            padding: 20px;
-        }
+    .pull-right {
+        margin-left: 15px;
     }
 
-   // Invoices and Quotes Overview
-   .overview table {
+}
 
-        th, td {
-            border: none;
-        }
+.modal {
+    margin-top: 40px;
+    overflow-y: auto;
+}
 
-        th {
-            text-transform: uppercase;
-            font-weight: normal;
-            font-size: 11px;
-            padding-bottom: 0;
-        }
+.modal-backdrop.in {
+    background: transparent;
+}
 
-        td {
-            font-size: 16px;
-            font-weight: bold;
-            padding-top: 4px;
-        }
+.details-box {
+   @extend .panel;
+   @extend .panel-default;
+   @extend .panel-body;
+    padding: 10px;
 
-    }
-
-   // Recent Activity
-   .time {
-       font-size: 11px;
+   .has-feedback .form-control-feedback {
+       bottom: 0;
+       top: auto;
+       right: 0;
    }
+}
 
-   // Recent News
-   .post h4 {
-       font-size: 14px;
-   }
-   .post-date {
-       @extend .time;
-       color: #bbb;
-   }
+#email_template_pdf_template > option {
+  display: none;
+}
 
+/*
+|   =========================================================
+|   Tabs
+|   =========================================================
+*/
 
-/* =============================================================================
-   Client Profile
-   ========================================================================== */
+.tabbable .table {
+    margin-bottom: 20px;
+}
 
-    .profile {
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        -ms-border-radius: 5px;
-        -o-border-radius: 5px;
-        border-radius: 5px;
-        background: #f9f9f9;
+.tabs-below .nav-tabs {
+    margin: 0;
+    border: 0;
+    list-style: none;
+    background-color: #444;
+    color: #ccc;
+    height: 40px;
+    width: 100%;
+}
+
+.tabs-below .nav-tabs > li {
+    margin-top: 0;
+}
+
+.tabs-below .nav-tabs > li > a {
+    border: transparent;
+    color: #ccc;
+    margin-right: 0;
+    padding: 10px 20px 11px;
+    display: block;
+    line-height: 19px;
+}
+
+.tabs-below .nav-tabs > li > a:hover,
+.tabs-below .nav-tabs .active > a,
+.tabs-below .nav-tabs .active > a:hover {
+    border-radius: 0;
+    background-color: #444;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+}
+
+.tabs-below .nav-tabs > li:first-child > a,
+.tabs-below .nav-tabs > li:first-child > a:hover {
+    border-left: none !important;
+}
+
+/*
+|   =========================================================
+|   Widgets
+|   =========================================================
+*/
+
+.widget {
         border: 1px solid #ddd;
-        margin-bottom: 20px;
+        margin-top: 20px;
+
+    .widget-title {
+        padding: 8px 20px;
         overflow: hidden;
-        padding-bottom: 40px;
 
-        .primaryInfo {
-            padding: 20px 46px 0;
-        }
-
-        dl {
-            clear: both;
-            margin-top: 40px;
-        }
-
-        dl dt  {
-            margin: 40px 0 20px;
-            border-top: 1px solid #ddd;
-            line-height: 0;
-        }
-
-        dl dt span {
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            -ms-border-radius: 5px;
-            -o-border-radius: 5px;
-            border-radius: 5px;
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 2px 25px;
-            margin-left: 20px;
-        }
-
-        dl dd {
-            clear: both;
-            line-height: 20px;
-            padding-top: 6px;
-            margin: 0;
-        }
-
-        dl dd span {
-            font-weight: bold;
+        h5 {
             float: left;
-            text-align: right;
-            width: 70px;
+        }
+
+        h5 i {
             margin-right: 10px;
         }
     }
 
-    .notes textarea {
-        resize: both;
-        width: 100%;
+    .content-padding {
+        padding: 20px;
+    }
+}
+
+// Invoices and Quotes Overview
+.overview table {
+
+    th, td {
+        border: none;
     }
 
-/* =============================================================================
-   Invoice and Quotes Global Styles
-   ========================================================================== */
-
-    // Invoices and Quotes Status Colors
-    .draft { color: #999999; }
-    .sent { color: #3A87AD; }
-    .viewed { color: #F89406; }
-    .paid { color: #468847; }
-    .approved { color: #468847; }
-    .rejected, .overdue { color: #B94A48; }
-    .canceled { color: #333333; }
-
-    // Invoices and Quotes Status
-    .label {
-
+    th {
+        text-transform: uppercase;
         font-weight: normal;
-        color: white !important; // override status text color on labels
-
-        &.draft { background-color: #999999; }
-        &.sent { background-color: #3A87AD; }
-        &.viewed { background-color: #F89406; }
-        &.paid { background-color: #468847; }
-        &.approved { background-color: #468847; }
-        &.rejected,
-        &.overdue { background-color: #B94A48; }
-        &.canceled { background-color: #333333; }
-
+        font-size: 11px;
+        padding-bottom: 0;
     }
 
-/* =============================================================================
-   Quotes
-   ========================================================================== */
-
-    .quote .cf {
-        margin-bottom: 40px;
-    }
-
-/* =============================================================================
-   Invoice
-   ========================================================================== */
-
-    .invoice {
-        .items {
-            margin-top: 40px;
-        }
-
-        .total td:first-child,
-        .total:hover td:first-child {
-            background: none !important;
-        }
-
-        .total td:last-child {
-            border-left: none;
-        }
-
-        .subtotal, .tax, .total,
-        th.align-right, td.align-right {
-            text-align: right;
-        }
-
-        .tax {
-            background: none;
-        }
-    }
-
-
-
-/* =============================================================================
-   Random Styles
-   ========================================================================== */
-    .no-border-radius {
-        -webkit-border-radius: 0;
-        -moz-border-radius: 0;
-        border-radius: 0;
-    }
-
-    .no-margin {
-        margin: 0 !important;
-    }
-
-    .index-options {
-        margin-bottom: 0px;
-    }
-
-    .padded {
-        padding: 15px;
-    }
-
-    legend, .install-step h2 {
-        -moz-border-bottom-colors: none;
-        -moz-border-left-colors: none;
-        -moz-border-right-colors: none;
-        -moz-border-top-colors: none;
-        border-color: -moz-use-text-color -moz-use-text-color #E5E5E5;
-        border-image: none;
-        border-style: none none solid;
-        border-width: 0 0 1px;
-        color: #333333;
-        display: block;
-        font-size: 18px;
-        line-height: 40px;
-        margin-bottom: 20px;
-        padding: 0;
-        width: 100%;
-    }
-
-    .login-logo {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 15px;
-    }
-
-    .font-overdue {
-        color: #B94A48;
+    td {
+        font-size: 16px;
         font-weight: bold;
+        padding-top: 4px;
     }
 
+}
 
-/* =============================================================================
-   Responsive Media Queries
-   ========================================================================== */
+// Recent Activity
+.time {
+   font-size: 11px;
+}
+
+// Recent News
+.post h4 {
+   font-size: 14px;
+}
+.post-date {
+   @extend .time;
+   color: #bbb;
+}
+
+/*
+|   =========================================================
+|   Client Profile
+|   =========================================================
+*/
+
+.profile {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    overflow: hidden;
+    padding-bottom: 40px;
+
+    .primaryInfo {
+        padding: 20px 46px 0;
+    }
+
+    dl {
+        clear: both;
+        margin-top: 40px;
+    }
+
+    dl dt  {
+        margin: 40px 0 20px;
+        border-top: 1px solid #ddd;
+        line-height: 0;
+    }
+
+    dl dt span {
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -o-border-radius: 5px;
+        border-radius: 5px;
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 2px 25px;
+        margin-left: 20px;
+    }
+
+    dl dd {
+        clear: both;
+        line-height: 20px;
+        padding-top: 6px;
+        margin: 0;
+    }
+
+    dl dd span {
+        font-weight: bold;
+        float: left;
+        text-align: right;
+        width: 70px;
+        margin-right: 10px;
+    }
+}
+
+.notes textarea {
+    resize: both;
+    width: 100%;
+}
+
+/*
+|   =========================================================
+|   Invoice and Quotes Global Styles
+|   =========================================================
+*/
+
+// Invoices and Quotes Status Colors
+.draft      { color: $color_status_draft; }
+.sent       { color: $color_status_sent; }
+.viewed     { color: $color_status_viewed; }
+.paid,
+.approved   { color: $color_status_paid_approved; }
+.rejected,
+.overdue    { color: $color_status_rejected_overdue; }
+.canceled   { color: $color_status_canceled; }
+
+// Invoices and Quotes Status
+.label {
+
+    font-weight: bold;
+    color: white !important; // override status text color on labels
+    display: block;
+    width: 100%;
+
+    &.label-inline {
+        display: inline;
+        width: auto;
+    }
+
+    &.draft {
+        background-color: lighten($color_status_draft,10%);
+    }
+    &.sent {
+        background-color: lighten($color_status_sent,10%);
+    }
+    &.viewed {
+        background-color: lighten($color_status_viewed,10%);
+    }
+    &.paid,
+    &.approved{
+        background-color: lighten($color_status_paid_approved,10%);
+    }
+    &.rejected,
+    &.overdue {
+        background-color: lighten($color_status_rejected_overdue,10%);
+    }
+    &.canceled {
+        background-color: lighten($color_status_canceled,10%);
+    }
+
+}
+
+#item_table {
+    td, th {
+        padding: 5px;
+    }
+    .form-control {
+        margin: 0;
+    }
+}
+
+/*
+|   =========================================================
+|   Quotes
+|   =========================================================
+*/
+
+.quote .cf {
+    margin-bottom: 40px;
+}
+
+/*
+|   =========================================================
+|   Invoices
+|   =========================================================
+*/
+
+.invoice {
+    .total td:first-child,
+    .total:hover td:first-child {
+        background: none !important;
+    }
+
+    .total td:last-child {
+        border-left: none;
+    }
+
+    .subtotal, .tax, .total,
+    th.align-right, td.align-right {
+        text-align: right;
+    }
+
+    .tax {
+        background: none;
+    }
+
+    .invoice-properties {
+        margin-bottom: 5px;
+        label {
+            margin: 0;
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+/*
+|   =========================================================
+|   Various Styles
+|   =========================================================
+*/
+
+.amount {
+    text-align: right;
+}
+
+.no-border-radius {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.index-options {
+    margin-bottom: 0px;
+}
+
+.padded {
+    padding: 15px 0;
+}
+
+legend, .install-step h2 {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color #E5E5E5;
+    border-image: none;
+    border-style: none none solid;
+    border-width: 0 0 1px;
+    color: #333333;
+    display: block;
+    font-size: 18px;
+    line-height: 40px;
+    margin-bottom: 20px;
+    padding: 0;
+    width: 100%;
+}
+
+.login-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+}
+
+.font-overdue {
+    color: #B94A48;
+    font-weight: bold;
+}
+
+.nav-tabs-noborder > li > a {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top: 0 !important;
+}
+
+/*
+|   =========================================================
+|   Install, Upgrade and Login
+|   =========================================================
+*/
+
+.install-panel {
+    @extend .panel;
+    @extend .panel-default;
+    @extend .panel-body;
+    margin-top: 30px;
+
+    h1  {
+        margin: 20px auto;
+        display: block;
+        width: 200px;
+        height: 100px;
+        background: url('/assets/default/img/logo_200x100.png') center center no-repeat;
+
+        span {
+            display: none;
+        }
+    }
+
+    h2 {
+        @extend legend;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    .btn {
+        margin-top: 15px;
+    }
+
+    .alert {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .label {
+        width: auto;
+    }
+
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2) {
+    .install-panel h1 {
+        background: url('/assets/default/img/logo_400x200.png') center center no-repeat;
+        background-size: 200px 100px;
+    }
+}
+
+#login {
+    @extend .panel;
+    @extend .panel-default;
+    @extend .panel-body;
+
+    .form-horizontal {
+        margin-bottom: 20px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    h1 {
+        margin: 20px 0;
+    }
+}
+
+.install-panel .alert,
+#login .alert {
+    margin-bottom: 20px;
+}
+
+/*
+|   =========================================================
+|   Datepicker
+|   =========================================================
+*/
+
+.controls.date {
+    margin-left: 10px;
+    padding: 0;
+}
+
+.datepicker .icon-arrow-left {
+    @extend .fa;
+    @extend .fa-arrow-left;
+    color: #777;
+}
+
+.datepicker .icon-arrow-right {
+    @extend .fa;
+    @extend .fa-arrow-right;
+    color: #777;
+}
+
+.datepicker .day.active {
+    background: #3276b1;
+    color: #efefef;
+    &:hover {
+        background: #3276b1;
+        color: #fff;
+    }
+}
+
+.datepicker .day:hover {
+    background: #efefef;
+    color: #3276b1;
+    cursor: crosshair;
+}
+
+// Fix datepicker icon alingment
+.input-append.date .add-on i,
+.input-prepend.date .add-on i {
+    width: auto;
+    height: auto;
+    display: inline;
+}
+
+// Display datepicker over modal box
+.datepicker.dropdown-menu {
+    padding: 5px;
+    z-index: 9999;
+}
+
+// Reset padding on Date Picker
+.datepicker table th:first-child,
+.datepicker table td:first-child  {
+    padding-left:5px;
+}
+
+/*
+|   =========================================================
+|   Responsive Media Queries
+|   =========================================================
+*/
 
 // Styles for large devices (< lg)
 @media (min-width: 992px) {
@@ -868,10 +925,24 @@
             display: inline-block !important;
     }
 
+    .submenu {
+        .submenu-row {
+            float: left;
+            margin-right: 10px;
+        }
+    }
+
 }
 
 // Styles for medium devices (sm > md)
 @media (max-width: 992px) {
+
+    .submenu {
+        .submenu-row {
+            float: left;
+            margin-right: 10px;
+        }
+    }
 
 }
 
@@ -881,6 +952,10 @@
     .sidebar li a { padding: 7px; }
 
     .main-area { margin-left: 0; }
+
+    .main-area .content, .main-area .tab-info {
+        padding: 10px;
+    }
 
     .navbar-nav { margin: 7px 0; }
 
@@ -894,35 +969,27 @@
     	margin-top: 7px;
     }
 
-    .navbar-inverse .navbar-nav .open .dropdown-menu {
-        padding-top: 0;
-        > li > a {
-            color: #ccc;
-            background: #555;
-            &:hover {
-                color: #fff;
-                background: #555;
-            }
-        }
-    }
 
 }
 
 // Styles for very small devices (< xs)
 @media (max-width: 480px) {
 
-    .navbar {
+    .navbar.navbar-inverse {
         -webkit-box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.3);
         -moz-box-shadow:    0 3px 5px 0 rgba(0, 0, 0, 0.3);
         box-shadow:         0 3px 5px 0 rgba(0, 0, 0, 0.3);
-    }
-    .navbar-nav {
-        margin: 7px 0;
-
-        .visible-xs {
-            display: inline-block !important;
+        .navbar-nav {
+            margin: 7px 0;
+            .dropdown .dropdown-menu {
+                background: #555;
+            }
+            .visible-xs {
+                display: inline-block !important;
+            }
         }
     }
+
     .headerbar { padding: 8px !important; }
     .pull-right { margin-left: 5px !important; }
 
@@ -937,5 +1004,3 @@ Please define your styles before this section.
 .cf:before, .cf:after { content: ""; display: table; }
 .cf:after { clear: both; }
 .cf { zoom: 1; }
-
-.no-padding { padding: 0; }
