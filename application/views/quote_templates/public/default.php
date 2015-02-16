@@ -186,7 +186,7 @@
                         <?php if ($quote->quote_item_tax_total > 0) { ?>
                         <tr>
                                 <td class="no-bottom-border" colspan="3"></td>
-                                <td><?php echo lang('item_tax'); ?></td>
+                                <td><?php echo lang('item_tax'); ?>:</td>
                                 <td><?php echo format_currency($quote->quote_item_tax_total); ?></td>
                         </tr>
                         <?php } ?>

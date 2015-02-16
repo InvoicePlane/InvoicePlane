@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -175,14 +175,14 @@
                         <?php if ($invoice->invoice_item_tax_total > 0) { ?>
                         <tr>
                                 <td class="no-bottom-border" colspan="3"></td>
-                                <td><?php echo lang('item_tax'); ?></td>
+                                <td><?php echo lang('item_tax'); ?>:</td>
                                 <td><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
                         </tr>
                         <?php } ?>
                         <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
                             <tr>    
                                 <td class="no-bottom-border" colspan="3"></td>
-                                <td><?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%</td>
+                                <td><?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:</td>
                                 <td><?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?></td>
                             </tr>
                         <?php endforeach ?>

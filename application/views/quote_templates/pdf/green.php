@@ -264,7 +264,7 @@
                             <?php foreach ($quote_tax_rates as $quote_tax_rate) : ?>
                                 <tr>    
                                     <td class="text-right color-n">
-                                        <?php echo $quote_tax_rate->quote_tax_rate_name . ' ' . $quote_tax_rate->quote_tax_rate_percent; ?>%
+                                        <?php echo $quote_tax_rate->quote_tax_rate_name . ' ' . $quote_tax_rate->quote_tax_rate_percent; ?>%:
                                     </td>
                                     <td class="text-right color-n">
                                         <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>

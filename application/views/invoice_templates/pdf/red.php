@@ -258,7 +258,7 @@
                             <?php if ($invoice->invoice_item_tax_total > 0) { ?>
                                 <tr>
                                     <td class="text-right color-n">
-                                        <?php echo lang('item_tax'); ?>
+                                        <?php echo lang('item_tax'); ?>:
                                     </td>
                                     <td class="text-right color-n">
                                         <?php echo format_currency($invoice->invoice_item_tax_total); ?>
@@ -269,7 +269,7 @@
                             <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
                                 <tr>
                                     <td class="text-right color-n">
-                                        <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%
+                                        <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:
                                     </td>
                                     <td class="text-right color-n">
                                         <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
