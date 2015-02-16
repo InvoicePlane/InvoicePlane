@@ -85,7 +85,7 @@ $lang = array(
 	'merchant_name' => '﻿Nom',
 	'merchant_first_name' => '﻿Prénom',
 	'merchant_last_name' => '﻿Nom de famille',
-	'merchant_card_issue' => '﻿Numéro de carte',
+	'merchant_card_issue' => 'Édition du numéro de carte',
 	'merchant_exp_month' => '﻿Mois d\'échéance',
 	'merchant_exp_year' => '﻿Année d\'expiration',
 	'merchant_start_month' => '﻿Mois de départ',
@@ -103,5 +103,5 @@ $lang = array(
 	'merchant_invalid_response' => '﻿Réponse non valide de la passerelle de paiement.',
 	'merchant_payment_failed' => '﻿Paiement a échoué. S\'il vous plaît essayer de nouveau.',
 	'merchant_payment_redirect' => '﻿Veuillez patienter pendant que nous vous redirigeons vers la page de paiement...',
-	'merchant_3dauth_redirect' => '﻿Veuillez patienter pendant que nous vous redirigeons vers l\'émetteur de votre carte d\'authentification...',
+	'merchant_3dauth_redirect' => '﻿Veuillez patienter pendant que nous vous redirigeons vers l\'émetteur de votre carte pour authentification...',
 )
