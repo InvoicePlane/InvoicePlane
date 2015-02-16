@@ -3,7 +3,7 @@
     <h1><?php echo lang('clients'); ?></h1>
 
     <div class="pull-right">
-        <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
+        <button type="button" class="btn btn-default btn-sm submenu-toggle hidden"
                 data-toggle="collapse" data-target="#ip-submenu-collapse" >
             <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
         </button>
