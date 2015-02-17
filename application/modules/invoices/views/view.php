@@ -104,12 +104,12 @@
                         <i class="fa fa-plus fa-margin"></i> <?php echo lang('add_invoice_tax'); ?>
                     </a>
                 </li>
+                <?php } ?>
                 <li>
                     <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-minus fa-margin"></i> <?php echo lang('create_credit_invoice'); ?>
                     </a>
                 </li>
-                <?php } ?>
                 <li>
                     <a href="#" class="invoice-add-payment"
                        data-invoice-id="<?php echo $invoice_id; ?>"
