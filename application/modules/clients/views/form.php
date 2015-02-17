@@ -27,7 +27,7 @@
                         { echo 'checked="checked"'; } ?>
                         >
               </span>
-              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="Client Name"
+              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="<?php echo lang('client_name"'); ?>"
                            value="<?php echo $this->mdl_clients->form_value('client_name'); ?>">
             </div>
         </fieldset>
@@ -84,7 +84,7 @@
                             <select name="client_country" id="client_country" class="form-control">
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
-                                    <option value="<?php echo $country; ?>" <?php if ($selected_country == $country) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                                    <option value="<?php echo $cldr; ?>" <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
                                 <?php } ?>
                             </select>
                         </div>

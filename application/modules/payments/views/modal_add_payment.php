@@ -7,8 +7,6 @@
             $('#payment_amount').focus();
         });
 
-        $('.datepicker').datepicker({ format: '<?php echo date_format_datepicker(); ?>'});
-
         $('#btn_modal_payment_submit').click(function()
         {
             $.post("<?php echo site_url('payments/ajax/add'); ?>", {

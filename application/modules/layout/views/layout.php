@@ -6,9 +6,6 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
     <title>
         <?php
         if ($this->mdl_settings->setting('custom_title') != '') {
@@ -18,6 +15,8 @@
         }?>
     </title>
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
@@ -25,6 +24,15 @@
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
+
+    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) {?>
+    <style>
+        .amount {
+            font-family: Monaco, Lucida Console, monospace;
+            font-size: 90%;
+        }
+    </style>
+    <?php } ?>
 
     <script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.8.3.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
@@ -42,7 +50,14 @@
             $('.nav-tabs').tab();
             $('.tip').tooltip();
 
-            $('.datepicker').datepicker({ format: '<?php echo date_format_datepicker(); ?>'});
+            $('body').on('focus',".datepicker", function(){
+                $(this).datepicker({
+                    autoclose: true,
+                    format: '<?php echo date_format_datepicker(); ?>',
+                    language: '<?php echo lang('cldr'); ?>',
+                    weekStart: '<?php echo lang('week_start'); ?>'                     
+                });
+            });
 
             $('.create-invoice').click(function() {
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
@@ -89,7 +104,7 @@
 
 </head>
 
-<body>
+<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden-sidebar';}?>">
 
 <noscript>
     <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
@@ -136,6 +151,17 @@
                         <li><a href="#" class="create-invoice"><?php echo lang('create_invoice'); ?></a></li>
                         <li><?php echo anchor('invoices/index', lang('view_invoices')); ?></li>
                         <li><?php echo anchor('invoices/recurring/index', lang('view_recurring_invoices')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('products'); ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('products/form', lang('create_product')); ?></li>
+                        <li><?php echo anchor('products/index', lang('view_products')); ?></li>
+                        <li><?php echo anchor('families/index', lang('product_families')); ?></li>
                     </ul>
                 </li>
 
@@ -256,6 +282,7 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo lang('cldr'); ?>.js"></script> 
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>

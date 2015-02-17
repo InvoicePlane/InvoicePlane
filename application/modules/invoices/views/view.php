@@ -3,7 +3,7 @@
     $(function() {
 
         $('#btn_add_item_from_lookup').click(function() {
-            $('#modal-placeholder').load("<?php echo site_url('item_lookups/ajax/modal_item_lookups'); ?>/" + Math.floor(Math.random()*1000));
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random()*1000));
         });
 
         $('#btn_add_item').click(function() {
@@ -149,7 +149,7 @@
         </a>
         <a href="#" class="btn btn-sm btn-default" id="btn_add_item_from_lookup">
             <i class="fa fa-database"></i>
-            <?php echo lang('add_item_from_lookup'); ?>
+            <?php echo lang('add_product'); ?>
         </a>
 
         <a href="#" class="btn btn-sm btn-success" id="btn_save_invoice">

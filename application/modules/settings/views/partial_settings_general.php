@@ -9,61 +9,10 @@
         });
     });
 	
-	// Update check
-	window.onload = function() {
-		// Get the current version
-		var current_version = "<?php echo $current_version; ?>";
-		current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
-		
-		// Get the latest version from updates.invoiceplane.com
-		$.getJSON("https://updates.invoiceplane.com", function(data) {
-			
-			var updatecheck = data.current_version.replace(/\./g, '');
-			
-			// Compare each versions and replace the placeholder with a download button
-			// or info label after 2 seconds
-			setTimeout(function() {
-				if ( current_version < updatecheck ) {
-					$('#updatecheck-loading').addClass('hidden');
-					$('#updatecheck-updates-available').removeClass('hidden');
-				} else {
-					$('#updatecheck-loading').addClass('hidden');
-					$('#updatecheck-no-updates').removeClass('hidden');
-				}
-			}, 2000);
-		}).error(function() {
-			$('#updatecheck-loading').addClass('hidden');
-			$('#updatecheck-failed').removeClass('hidden');
-		});
-	};
+	// Update check moved to partial_settings_updates.php!
 </script>
 
 <div class="tab-info">
-
-	<div class="form-group">
-		<label class="control-label">
-			<?php echo lang('current_version'); ?>
-		</label>
-		<div class="input-group">
-			<input type="text" class="input-sm form-control"
-				   value="<?php echo $current_version; ?>" readonly="readonly">
-
-			<span id="updatecheck-loading" class="input-group-addon">
-				<i class="fa fa-circle-o-notch fa-spin" ></i>  <?php echo lang('checking_for_updates'); ?>
-			</span>
-
-			<a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
-				class="input-group-addon btn btn-success hidden" target="_blank">
-				<?php echo lang('updates_available'); ?>
-			</a>
-			<span id="updatecheck-no-updates" class="input-group-addon hidden" >
-				<?php echo lang('no_updates_available'); ?>
-			</span>
-			<span id="updatecheck-failed" class="input-group-addon hidden" >
-				<?php echo lang('updatecheck_failed'); ?>
-			</span>
-		</div>
-	</div>
 
 	<div class="form-group">
 		<label for="settings[default_language]" class="control-label">
@@ -77,19 +26,15 @@
 	</div>
 
     <div class="form-group">
-        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-            <label for="settings[default_country]" class="control-label">
-                <?php echo lang('default_country'); ?>
-            </label>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <select name="settings[default_country]" class="input-sm form-control">
-                <option></option>
-                <?php foreach ($countries as $cldr => $country) { ?>
-                    <option value="<?php echo $country; ?>" <?php if ($this->mdl_settings->setting('default_country') == $country) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
-                <?php } ?>
-            </select>
-        </div>
+		<label for="settings[default_country]" class="control-label">
+			<?php echo lang('default_country'); ?>
+		</label>
+		<select name="settings[default_country]" class="input-sm form-control">
+			<option></option>
+			<?php foreach ($countries as $cldr => $country) { ?>
+				<option value="<?php echo $cldr; ?>" <?php if ($this->mdl_settings->setting('default_country') == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+			<?php } ?>
+		</select>
     </div>
 
 	<div class="form-group">
@@ -149,31 +94,40 @@
 	</div>
 
     <div class="form-group">
-        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-            <label class="control-label">
-                <?php echo lang('custom_title'); ?>
-            </label>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <input type="text" name="settings[custom_title]" class="input-sm form-control"
-                   value="<?php echo $this->mdl_settings->setting('custom_title'); ?>">
-        </div>
+		<label class="control-label">
+			<?php echo lang('custom_title'); ?>
+		</label>
+		<input type="text" name="settings[custom_title]" class="input-sm form-control"
+               value="<?php echo $this->mdl_settings->setting('custom_title'); ?>">
     </div>
 
     <div class="form-group">
-        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-            <label class="control-label">
-                <?php echo lang('disable_sidebar'); ?>
-            </label>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <select name="settings[disable_sidebar]" class="input-sm form-control"
-                    id="disable_sidebar">
-                <option value="0" <?php if (!$this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
-                <option value="1" <?php if ($this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
-            </select>
-        </div>
+		<label class="control-label">
+			<?php echo lang('disable_sidebar'); ?>
+		</label>
+		<select name="settings[disable_sidebar]" class="input-sm form-control"
+				id="disable_sidebar">
+			<option value="0" <?php if (!$this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
+			<option value="1" <?php if ($this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+		</select>
     </div>
+
+	<div class="form-group">
+		<label class="control-label">
+			<?php echo lang('monospaced_font_for_amounts'); ?>
+		</label>
+		<p>
+			<?php echo lang('example'); ?>:
+			<span style="font-family: Monaco, Lucida Console, monospace">
+				<?php echo format_currency(123456.78); ?>
+			</span>
+		</p>
+		<select name="settings[monospace_amounts]" class="input-sm form-control"
+				id="monospace_amounts">
+			<option value="0" ><?php echo lang('no'); ?></option>
+			<option value="1" <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+		</select>
+	</div>
     
 	<div class="form-group">
 		<label for="settings[cron_key]" class="control-label">
@@ -200,7 +154,7 @@
 		<img src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('login_logo'); ?>"><br>
 		<?php echo anchor('settings/remove_logo/login', 'Remove Logo'); ?><br>
 		<?php } ?>
-		<input type="file" name="login_logo" size="40" class="form-control control-label"/>
+		<input type="file" name="login_logo" size="40" class="input-sm form-control"/>
 	</div>
 
 </div>

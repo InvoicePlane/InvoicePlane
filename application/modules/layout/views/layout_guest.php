@@ -6,9 +6,6 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
     <title>
         <?php
         if ($this->mdl_settings->setting('custom_title') != '') {
@@ -18,6 +15,8 @@
         }?>
     </title>
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
@@ -25,6 +24,15 @@
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
+
+    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) {?>
+        <style>
+            .amount {
+                font-family: Monaco, Lucida Console, monospace;
+                font-size: 90%;
+            }
+        </style>
+    <?php } ?>
 
     <script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.8.3.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
