@@ -66,6 +66,7 @@
             window.location = '<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>';
         });
 
+        <?php if ($invoice->is_read_only != 1) { ?>
         var fixHelper = function(e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
@@ -78,7 +79,7 @@
         $("#item_table tbody").sortable({
             helper: fixHelper
         });
-
+        <?php } ?>
     });
 
 </script>
@@ -89,22 +90,31 @@
 <div class="headerbar">
     <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
-    <div class="pull-right btn-group">
+    <div class="pull-right <?php if ($invoice->is_read_only != 1) { ?>btn-group<?php } ?>">
 
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
                data-toggle="dropdown" href="#">
-                <?php echo lang('options'); ?> <i class="fa fa-caret-down no-margin"></i>
+                <i class="fa fa-caret-down no-margin"></i> <?php echo lang('options'); ?>
             </a>
             <ul class="dropdown-menu">
+                <?php if ($invoice->is_read_only != 1) { ?>
                 <li>
                     <a href="#add-invoice-tax" data-toggle="modal">
-                        <i class="fa fa-plus fa-margin"></i> <?php echo lang('add_invoice_tax'); ?></a></li>
+                        <i class="fa fa-plus fa-margin"></i> <?php echo lang('add_invoice_tax'); ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-minus fa-margin"></i> <?php echo lang('create_credit_invoice'); ?>
+                    </a>
+                </li>
+                <?php } ?>
                 <li>
                     <a href="#" class="invoice-add-payment"
-                       data-invoice-id="<?php echo $invoice->invoice_id; ?>"
+                       data-invoice-id="<?php echo $invoice_id; ?>"
                        data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
-                        <i class="fa fa-money fa-margin"></i>
+                        <i class="fa fa-credit-card fa-margin"></i>
                         <?php echo lang('enter_payment'); ?>
                     </a>
                 </li>
@@ -121,13 +131,8 @@
                         <?php echo lang('send_email'); ?>
                     </a>
                 </li>
-                <li>
-                    <a href="#" id="btn_copy_invoice"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-copy fa-margin"></i>
-                        <?php echo lang('copy_invoice'); ?>
-                    </a>
-                </li>
+                <li class="divider"></li>
+                <?php if ($invoice->is_read_only != 1) { ?>
                 <li>
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -135,15 +140,26 @@
                         <?php echo lang('create_recurring'); ?>
                     </a>
                 </li>
+                <?php } ?>
+                <li>
+                    <a href="#" id="btn_copy_invoice"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-copy fa-margin"></i>
+                        <?php echo lang('copy_invoice'); ?>
+                    </a>
+                </li>
+                <?php if ($invoice->is_read_only != 1) { ?>
                 <li>
                     <a href="#delete-invoice" data-toggle="modal">
                         <i class="fa fa-trash-o fa-margin"></i>
                         <?php echo lang('delete'); ?>
                     </a>
                 </li>
+                <?php } ?>
             </ul>
         </div>
 
+        <?php if ($invoice->is_read_only != 1) { ?>
         <a href="#" class="btn btn-sm btn-default" id="btn_add_item">
             <i class="fa fa-plus"></i> <?php echo lang('add_item'); ?>
         </a>
@@ -151,18 +167,18 @@
             <i class="fa fa-database"></i>
             <?php echo lang('add_product'); ?>
         </a>
-
         <a href="#" class="btn btn-sm btn-success" id="btn_save_invoice">
             <i class="fa fa-check"></i> <?php echo lang('save'); ?>
         </a>
+        <?php } ?>
     </div>
 
     <div class="invoice-labels pull-right">
         <?php if ($invoice->invoice_is_recurring) { ?>
             <span class="label label-info"><?php echo lang('recurring'); ?></span>
         <?php } ?>
-        <?php if ($invoice->invoice_sign == -1) { ?>
-            <span class="label label-warning"><?php echo lang('credit_invoice'); ?></span>
+        <?php if ($invoice->is_read_only == 1) { ?>
+            <span class="label label-danger"><?php echo lang('read_only'); ?></span>
         <?php } ?>
     </div>
 
@@ -204,12 +220,22 @@
                 <div class="col-xs-12 col-md-4">
                     <div class="details-box">
 
+                        <?php if ($invoice->invoice_sign == -1) { ?>
+                            <div class="invoice-properties">
+                                <span class="label label-warning">
+                                    <?php echo lang('credit_invoice_for_invoice') . ' ';
+                                    echo anchor('/invoices/view/'.$invoice->creditinvoice_parent_id,$invoice->creditinvoice_parent_id)?>
+                                </span>
+                            </div>
+                        <?php } ?>
+
                         <div class="invoice-properties">
                             <label><?php echo lang('invoice'); ?> #</label>
                             <div >
                                 <input type="text" id="invoice_number"
                                        class="input-sm form-control"
-                                       value="<?php echo $invoice->invoice_number; ?>" >
+                                       value="<?php echo $invoice->invoice_number; ?>"
+                                    <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
                             </div>
                         </div>
                         <div class="invoice-properties has-feedback">
@@ -217,7 +243,8 @@
                             <div class="input-group">
                                 <input name="invoice_date_created" id="invoice_date_created"
                                        class="form-control datepicker"
-                                       value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>">
+                                       value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
+                                    <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
                                 <span class="input-group-addon">
                                     <i class="fa fa-calendar fa-fw"></i>
                                 </span>
@@ -228,7 +255,8 @@
                             <div class="input-group">
                                 <input name="invoice_date_due" id="invoice_date_due"
                                        class="form-control datepicker"
-                                       value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>">
+                                       value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
+                                    <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
                                 <span class="input-group-addon">
                                     <i class="fa fa-calendar fa-fw"></i>
                                 </span>
@@ -238,7 +266,8 @@
                             <label><?php echo lang('status'); ?></label>
                             <div>
                                 <select name="invoice_status_id" id="invoice_status_id"
-                                        class="form-control input-sm">
+                                        class="form-control input-sm"
+                                    <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
                                     <?php foreach ($invoice_statuses as $key=>$status) { ?>
                                         <option value="<?php echo $key; ?>" <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
                                             <?php echo $status['label']; ?>
@@ -255,15 +284,17 @@
             <?php $this->layout->load_view('invoices/partial_item_table'); ?>
 
             <label><?php echo lang('invoice_terms'); ?></label>
-            <textarea id="invoice_terms" name="invoice_terms"
-                      class="form-control" rows="3"><?php echo $invoice->invoice_terms; ?></textarea>
+            <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
+                <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>
+                ><?php echo $invoice->invoice_terms; ?></textarea>
 
             <?php foreach ($custom_fields as $custom_field) { ?>
                 <label><?php echo $custom_field->custom_field_label; ?></label>
                 <input type="text" class="form-control"
                        name="custom[<?php echo $custom_field->custom_field_column; ?>]"
                        id="<?php echo $custom_field->custom_field_column; ?>"
-                       value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                       value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
+                    <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
             <?php } ?>
 
             <p class="padded">

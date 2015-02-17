@@ -50,3 +50,6 @@ INSERT INTO ip_products (product_name, product_description, product_price)
 
 /* Add the Invoice Sign */
 ALTER TABLE `ip_invoice_amounts` ADD `invoice_sign` ENUM('1','-1') NOT NULL DEFAULT '1' AFTER `invoice_id`;
+ALTER TABLE `ip_invoices`
+  ADD `creditinvoice_parent_id` INT(11),
+  ADD `is_read_only` TINYINT(1) AFTER `invoice_status_id`;

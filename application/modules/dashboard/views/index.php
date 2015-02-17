@@ -115,10 +115,16 @@
                         <?php foreach ($overdue_invoices as $invoice) { ?>
                             <tr>
                                 <td>
-                                    <span class="label
-                                    <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
-                                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
-                                    </span>
+                                    <?php if ($invoice->is_read_only != 1) { ?>
+                                        <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
+                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
+                        <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
+                    </span>
+                                    <?php } else { ?>
+                                        <span class="label label-danger">
+                        <?php echo lang('read_only'); ?>
+                    </span>
+                                    <?php } ?>
                                 </td>
                                 <td>
                                     <span class="font-overdue">
@@ -239,10 +245,16 @@
                     <?php foreach ($invoices as $invoice) { ?>
                         <tr>
                             <td>
-                                <span class="label
-                                <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
-                                    <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
-                                </span>
+                                <?php if ($invoice->is_read_only != 1) { ?>
+                                    <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
+                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
+                        <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
+                    </span>
+                                <?php } else { ?>
+                                    <span class="label label-danger">
+                        <?php echo lang('read_only'); ?>
+                    </span>
+                                <?php } ?>
                             </td>
                             <td>
                                 <span class="<?php if ($invoice->is_overdue) { ?>font-overdue<?php } ?>">

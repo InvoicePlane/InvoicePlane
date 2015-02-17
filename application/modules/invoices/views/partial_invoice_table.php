@@ -8,8 +8,8 @@
             <th><?php echo lang('created'); ?></th>
             <th><?php echo lang('due_date'); ?></th>
             <th><?php echo lang('client_name'); ?></th>
-            <th style="text-align: right; padding-right: 25px;"><?php echo lang('amount'); ?></th>
-            <th style="text-align: right; padding-right: 25px;"><?php echo lang('balance'); ?></th>
+            <th style="text-align: right;"><?php echo lang('amount'); ?></th>
+            <th style="text-align: right;"><?php echo lang('balance'); ?></th>
             <th><?php echo lang('options'); ?></th>
         </tr>
         </thead>
@@ -18,20 +18,47 @@
         <?php foreach ($invoices as $invoice) { ?>
             <tr>
                 <td>
-                    <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>"><?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?></span>
+                    <?php if ($invoice->is_read_only != 1) { ?>
+                    <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
+                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
+                        <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
+                    </span>
+                    <?php } else { ?>
+                    <span class="label label-danger">
+                        <?php echo lang('read_only'); ?>
+                    </span>
+                    <?php } ?>
                 </td>
 
-                <td><a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>" title="<?php echo lang('edit'); ?>"><?php echo $invoice->invoice_number; ?></a></td>
+                <td>
+                    <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>" title="<?php echo lang('edit'); ?>">
+                        <?php echo $invoice->invoice_number; ?>
+                    </a>
+                </td>
 
-                <td><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
+                <td>
+                    <?php echo date_from_mysql($invoice->invoice_date_created); ?>
+                </td>
 
-                <td><span class="<?php if ($invoice->is_overdue) { ?>font-overdue<?php } ?>"><?php echo date_from_mysql($invoice->invoice_date_due); ?></span></td>
+                <td>
+                    <span class="<?php if ($invoice->is_overdue) { ?>font-overdue<?php } ?>">
+                        <?php echo date_from_mysql($invoice->invoice_date_due); ?>
+                    </span>
+                </td>
 
-                <td><a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>" title="<?php echo lang('view_client'); ?>"><?php echo $invoice->client_name; ?></a></td>
+                <td>
+                    <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>" title="<?php echo lang('view_client'); ?>">
+                        <?php echo $invoice->client_name; ?>
+                    </a>
+                </td>
 
-                <td style="text-align: right; padding-right: 25px;"><?php echo format_currency($invoice->invoice_total * $invoice->invoice_sign); ?></td>
+                <td class="amount <?php if ($invoice->invoice_sign == '-1') {echo 'text-danger';}; ?>">
+                    <?php echo format_currency($invoice->invoice_total * $invoice->invoice_sign); ?>
+                </td>
 
-                <td style="text-align: right; padding-right: 25px;"><?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?></td>
+                <td class="amount">
+                    <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
+                </td>
 
                 <td>
                     <div class="options btn-group">

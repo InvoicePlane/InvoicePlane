@@ -62,6 +62,7 @@ img {
 
 a:hover, a:active, a:focus {
     outline: 0;
+    text-decoration: none;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -363,12 +364,19 @@ div.table-content {
     border: none;
     border-right: 1px solid #ddd;
     font-size: 90%;
+    .fa {
+        margin-right: 5px;
+    }
     &:last-child {
         border-right: none;
     }
 }
 
-.btn .fa,
+.fa {
+    min-width: 15px;
+    text-align: center;
+}
+
 .fa.fa-margin {
     margin-right: 7px;
 }

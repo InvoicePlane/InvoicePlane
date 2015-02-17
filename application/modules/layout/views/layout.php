@@ -77,6 +77,11 @@
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
             });
 
+            $('#btn_create_credit').click(function() {
+                invoice_id = $(this).data('invoice-id');
+                $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {invoice_id: invoice_id});
+            });
+
             $('#btn_copy_quote').click(function() {
                 quote_id = $(this).data('quote-id');
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {quote_id: quote_id});
