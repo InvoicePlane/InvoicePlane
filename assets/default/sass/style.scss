@@ -17,6 +17,9 @@
 // Font: Font-Awesome
 @import "fonts/font-awesome/font-awesome";
 
+// Import Noto Font
+@import "fonts/noto/noto";
+
 /*
 |   =========================================================
 |   Variables
@@ -50,6 +53,7 @@ html {
 body {
     background-color: #fff;
     padding-top: 50px;
+    font-family: 'Noto Sans', Helvetica, Arial, sans-serif;
 }
 
 img {
