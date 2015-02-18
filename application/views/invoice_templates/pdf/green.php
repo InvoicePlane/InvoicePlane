@@ -9,7 +9,7 @@
             body {
                 color: #555;
                 font-size: 1em;
-                font-family: Arial, Verdana, sans-serif;
+                font-family: Noto, Arial, Verdana, sans-serif;
             }
             table {
                 width:100%;
