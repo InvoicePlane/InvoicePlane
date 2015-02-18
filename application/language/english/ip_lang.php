@@ -265,6 +265,7 @@ $lang = array(
     'payments' => 'Payments',
     'pdf' => 'PDF',
     'pdf_invoice_footer' => 'PDF Footer',
+    'pdf_invoice_footer_hint' => 'You can enter any HTML here which will be displayed on the bottom of your PDF invoices.',
     'pdf_template' => 'PDF Template',
     'pdf_template_overdue' => 'Overdue PDF Template',
     'pdf_template_paid' => 'Paid PDF Template',

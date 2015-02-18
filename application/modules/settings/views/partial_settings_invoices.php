@@ -61,14 +61,11 @@
 	</div>
 
     <div class="form-group">
-        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-            <label for="settings[public_invoice_template]" class="control-label">
-                <?php echo lang('pdf_invoice_footer'); ?>
-            </label>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <textarea name="settings[pdf_invoice_footer]" class="input-sm form-control"><?php echo $this->mdl_settings->setting('pdf_invoice_footer'); ?></textarea>
-        </div>
+        <label for="settings[public_invoice_template]" class="control-label">
+            <?php echo lang('pdf_invoice_footer'); ?>
+        </label>
+        <textarea name="settings[pdf_invoice_footer]" class="input-sm form-control no-margin"><?php echo $this->mdl_settings->setting('pdf_invoice_footer'); ?></textarea>
+        <p class="help-block"><?php echo lang('pdf_invoice_footer_hint'); ?></p>
     </div>
     
 	<div class="form-group">
