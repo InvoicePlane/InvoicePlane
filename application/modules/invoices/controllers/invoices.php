@@ -143,7 +143,11 @@ class Invoices extends Admin_Controller {
     public function delete($invoice_id)
     {
         // Delete the invoice
-        $this->mdl_invoices->delete($invoice_id);
+        if ($this->config->item('enable_invoice_deletion') === TRUE) {
+            $this->mdl_invoices->delete($invoice_id);
+        } else {
+            $this->session->set_flashdata('alert_error', lang('invoice_deletion_forbidden'));
+        }
 
         // Redirect to invoice index
         redirect('invoices/index');

@@ -84,6 +84,19 @@ $config['charset'] = 'UTF-8';
 
 /*
 |--------------------------------------------------------------------------
+| Allow deletion of invoices after they have been sent
+|--------------------------------------------------------------------------
+|
+| As it is forbidden in many countries to delete invoices that have been
+| sent to a customer the deletion is disabled by default. If you need
+| this function anyway you can enable invoice deletion by setting the
+| value to TRUE
+|
+*/
+$config['enable_invoice_deletion'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
 | Enable/Disable System Hooks
 |--------------------------------------------------------------------------
 |

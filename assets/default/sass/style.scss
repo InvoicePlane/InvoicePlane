@@ -144,6 +144,9 @@ textarea {
         margin: 0 0 0 0;
     }
 
+    tr {
+        background: #fff;
+    }
     td {
         vertical-align: middle !important;
     }
@@ -379,6 +382,14 @@ div.table-content {
 
 .fa.fa-margin {
     margin-right: 7px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-move {
+    cursor: move;
 }
 
 .main-area {

@@ -2,6 +2,7 @@
     <table id="item_table" class="items table table-striped table-condensed table-bordered">
         <thead>
         <tr>
+            <th></th>
             <th><?php echo lang('item'); ?></th>
             <th><?php echo lang('description'); ?></th>
             <th><?php echo lang('quantity'); ?></th>
@@ -16,6 +17,7 @@
         <tbody>
 
         <tr id="new_item" style="display: none;">
+            <td><i class="fa fa-bars cursor-move"></i></td>
             <td class="td-text">
                 <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                 <input type="hidden" name="item_id" value="" class="form-control">
@@ -56,6 +58,7 @@
 
         <?php foreach ($items as $item) { ?>
             <tr class="item">
+                <td><i class="fa fa-bars cursor-move"></i></td>
                 <td class="td-text">
                     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>"
                         <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
@@ -80,7 +83,7 @@
 
                 <td class="td-amount">
                     <input type="text" name="item_price" class="input-sm form-control"
-                           value="<?php echo format_amount($item->item_price * $invoice->invoice_sign); ?>"
+                           value="<?php echo format_amount($item->item_price); ?>"
                         <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
                 </td>
 
@@ -97,17 +100,17 @@
 
                 <td class="td-amount">
                     <span name="subtotal">
-                        <?php echo format_currency($item->item_subtotal); ?>
+                        <?php echo format_currency($item->item_subtotal * $invoice->invoice_sign); ?>
                     </span>
                 </td>
                 <td class="td-amount">
                     <span name="item_tax_total">
-                        <?php echo format_currency($item->item_tax_total); ?>
+                        <?php echo format_currency($item->item_tax_total * $invoice->invoice_sign); ?>
                     </span>
                 </td>
                 <td class="td-amount">
                     <span name="item_total">
-                        <?php echo format_currency($item->item_total); ?>
+                        <?php echo format_currency($item->item_total * $invoice->invoice_sign); ?>
                     </span>
                 </td>
                 <td class="td-icon">

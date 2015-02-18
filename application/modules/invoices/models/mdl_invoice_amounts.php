@@ -84,6 +84,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
         {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_status_id', 4);
+            $this->db->set('is_read_only', 1);
             $this->db->update('ip_invoices');
         }
     }
@@ -146,6 +147,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
             {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 4);
+                $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
             }
         }

@@ -148,7 +148,7 @@
                         <?php echo lang('copy_invoice'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->is_read_only != 1) { ?>
+                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === TRUE && $invoice->is_read_only != 1)) { ?>
                 <li>
                     <a href="#delete-invoice" data-toggle="modal">
                         <i class="fa fa-trash-o fa-margin"></i>

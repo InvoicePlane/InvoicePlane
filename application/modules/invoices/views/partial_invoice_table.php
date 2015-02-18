@@ -18,16 +18,11 @@
         <?php foreach ($invoices as $invoice) { ?>
             <tr>
                 <td>
-                    <?php if ($invoice->is_read_only != 1) { ?>
                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
                         <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
                         <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
+                        <?php if ($invoice->is_read_only == 1) {echo ' / ' . lang('read_only');}; ?>
                     </span>
-                    <?php } else { ?>
-                    <span class="label label-danger">
-                        <?php echo lang('read_only'); ?>
-                    </span>
-                    <?php } ?>
                 </td>
 
                 <td>
@@ -66,11 +61,13 @@
                             <i class="fa fa-cog"></i> <?php echo lang('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
+                            <?php if ($invoice->is_read_only != 1) { ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
                                     <i class="fa fa-edit fa-margin"></i> <?php echo lang('edit'); ?>
                                 </a>
                             </li>
+                            <?php } ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>">
                                     <i class="fa fa-print fa-margin"></i> <?php echo lang('download_pdf'); ?>
@@ -87,11 +84,13 @@
                                     <?php echo lang('enter_payment'); ?>
                                 </a>
                             </li>
-                            <li>
-                                <a href="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>" onclick="return confirm('<?php echo lang('delete_invoice_warning'); ?>');">
-                                    <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
-                                </a>
-                            </li>
+                            <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === TRUE && $invoice->is_read_only != 1)) { ?>
+                                <li>
+                                    <a href="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>" onclick="return confirm('<?php echo lang('delete_invoice_warning'); ?>');">
+                                        <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
+                                    </a>
+                                </li>
+                            <?php } ?>
                         </ul>
                     </div>
                 </td>

@@ -349,6 +349,7 @@ class Mdl_Invoices extends Response_Model {
             {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 2);
+                $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
             }
         }
