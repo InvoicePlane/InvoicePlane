@@ -6,7 +6,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-	<title>InvoicePlane</title>
+	<title>InvoicePlane Setup</title>
 
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -15,34 +15,17 @@
 
 	<link rel="icon" type="image/png" href="/assets/default/img/favicon.png">
 
-    <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/style.css'; ?>">
-    <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/custom.css'; ?>">
-
-	<script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.3.min.js'; ?>"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
-    <script type="text/javascript">
-        (function ($) {
-            $(document);
-        }(jQuery));
-    </script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.1.min.js"></script>
-
-	<style type="text/css">
-		html { overflow-y: visible; }
-	</style>
+    <link rel="stylesheet" href="<?php echo base_url() . 'assets/default/css/welcome.css'; ?>">
 
 </head>
 
-<body style="overflow-y: visible;height:auto;">
+<body>
 
     <noscript>
         <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
     </noscript>
 
 	<?php echo $content; ?>
-
-    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
-    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 
 	<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
 	     chromium.org/developers/how-tos/chrome-frame-getting-started -->

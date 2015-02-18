@@ -193,6 +193,10 @@ class Mdl_Setup extends CI_Model {
     }
 
     public function upgrade_005_1_2_0() {
-        // Nothing to do here
+        // Update alert to notify about the changes with invoice deletion and credit invoices
+        $this->session->set_flashdata('aftersetup_alert', array(
+            'type' => 'alert_error',
+            'content' => lang('setup_v120_alert')
+        ));
     }
 }

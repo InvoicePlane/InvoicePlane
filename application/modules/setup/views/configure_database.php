@@ -1,8 +1,7 @@
 <div class="container">
-    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-        <div class="install-panel">
+    <div class="install-panel">
 
-            <h1><span>InvoicePlane</span></h1>
+        <h1 id="logo"><span>InvoicePlane</span></h1>
 
         <form method="post"
               action="<?php echo site_url($this->uri->uri_string()); ?>">
@@ -60,7 +59,7 @@
                 <input type="submit" class="btn btn-primary" name="btn_try_again"
                        value="<?php echo lang('try_again'); ?>">
             <?php } else { ?>
-                <p><span class="label label-success"><?php echo lang('success'); ?></span>
+                <p><i class="fa fa-check text-success fa-margin"></i>
                     <?php echo lang('setup_database_configured_message'); ?>
                 </p>
                 <input type="submit" class="btn btn-success" name="btn_continue"
@@ -69,6 +68,5 @@
 
         </form>
 
-        </div>
     </div>
 </div>

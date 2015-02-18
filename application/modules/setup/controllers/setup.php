@@ -69,7 +69,7 @@ class Setup extends MX_Controller {
         $this->layout->set('languages', $languages);
 
         $this->layout->buffer('content', 'setup/language');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function prerequisites()
@@ -94,7 +94,7 @@ class Setup extends MX_Controller {
         );
 
         $this->layout->buffer('content', 'setup/prerequisites');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function configure_database()
@@ -132,7 +132,7 @@ class Setup extends MX_Controller {
         $this->layout->set('database', $this->check_database());
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function install_tables()
@@ -158,7 +158,7 @@ class Setup extends MX_Controller {
         );
 
         $this->layout->buffer('content', 'setup/install_tables');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function upgrade_tables()
@@ -177,6 +177,12 @@ class Setup extends MX_Controller {
             }
             else
             {
+                // Load the aftersetup_alert from the session data and create flashdata from it
+                if ($this->session->flashdata('aftersetup_alert')) {
+                    $aftersetup_alert = $this->session->flashdata('aftersetup_alert');
+                    $this->session->set_flashdata($aftersetup_alert['type'], $aftersetup_alert['content']);
+                }
+
                 $this->session->set_userdata('install_step', 'complete');
                 redirect('setup/complete');
             }
@@ -192,7 +198,7 @@ class Setup extends MX_Controller {
         );
 
         $this->layout->buffer('content', 'setup/upgrade_tables');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function create_user()
@@ -218,7 +224,7 @@ class Setup extends MX_Controller {
         }
 
         $this->layout->buffer('content', 'setup/create_user');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function complete()
@@ -248,7 +254,7 @@ class Setup extends MX_Controller {
         $this->layout->set('update', $update);
 
         $this->layout->buffer('content', 'setup/complete');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     private function check_writables()
