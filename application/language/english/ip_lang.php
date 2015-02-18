@@ -264,6 +264,7 @@ $lang = array(
     'payment_methods' => 'Payment Methods',
     'payments' => 'Payments',
     'pdf' => 'PDF',
+    'pdf_invoice_footer' => 'PDF Footer',
     'pdf_template' => 'PDF Template',
     'pdf_template_overdue' => 'Overdue PDF Template',
     'pdf_template_paid' => 'Paid PDF Template',
