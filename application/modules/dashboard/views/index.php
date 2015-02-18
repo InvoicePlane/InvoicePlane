@@ -1,7 +1,3 @@
-<div class="headerbar">
-    <h1><?php echo lang('dashboard'); ?></h1>
-</div>
-
 <?php echo $this->layout->load_view('layout/alerts'); ?>
 
 <div class="content">
@@ -41,18 +37,18 @@
 
                 <table class="table table-bordered table-condensed no-margin">
                     <?php foreach ($quote_status_totals as $total) { ?>
-                        <tr>
-                            <td>
-                                <a href="<?php echo site_url($total['href']); ?>">
-                                    <?php echo $total['label']; ?>
-                                </a>
-                            </td>
-                            <td class="amount">
-	                        <span class="<?php echo $total['class']; ?>">
-	                            <?php echo format_currency($total['sum_total']); ?>
-	                        </span>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <a href="<?php echo site_url($total['href']); ?>">
+                                <?php echo $total['label']; ?>
+                            </a>
+                        </td>
+                        <td class="amount">
+                        <span class="<?php echo $total['class']; ?>">
+                            <?php echo format_currency($total['sum_total']); ?>
+                        </span>
+                        </td>
+                    </tr>
                     <?php } ?>
                 </table>
 
@@ -67,18 +63,18 @@
                 <table class="table table-bordered table-condensed no-margin">
 
                     <?php foreach ($invoice_status_totals as $total) { ?>
-                        <tr>
-                            <td>
-                                <a href="<?php echo site_url($total['href']); ?>">
-                                    <?php echo $total['label']; ?>
-                                </a>
-                            </td>
-                            <td class="amount">
-							<span class="<?php echo $total['class']; ?>">
-                            	<?php echo format_currency($total['sum_total']); ?>
-                        	</span>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <a href="<?php echo site_url($total['href']); ?>">
+                                <?php echo $total['label']; ?>
+                            </a>
+                        </td>
+                        <td class="amount">
+                        <span class="<?php echo $total['class']; ?>">
+                            <?php echo format_currency($total['sum_total']); ?>
+                        </span>
+                        </td>
+                    </tr>
                     <?php } ?>
 
                 </table>
@@ -99,67 +95,62 @@
 
                 <?php if ( !empty($overdue_invoices) ) { ?>
 
-                    <div class="table-responsive">
-                    <table class="table table-striped table-condensed no-margin">
-                        <thead>
+                <div class="table-responsive">
+                <table class="table table-striped table-condensed no-margin">
+                    <thead>
+                    <tr>
+                        <th style="width: 15%;"><?php echo lang('status'); ?></th>
+                        <th style="width: 15%;"><?php echo lang('due_date'); ?></th>
+                        <th style="width: 10%;"><?php echo lang('invoice'); ?></th>
+                        <th style="width: 40%;"><?php echo lang('client'); ?></th>
+                        <th style="text-align: right; width: 15%;"><?php echo lang('balance'); ?></th>
+                        <th style="text-align: center; width: 5%;"><?php echo lang('pdf'); ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($overdue_invoices as $invoice) { ?>
                         <tr>
-                            <th style="width: 15%;"><?php echo lang('status'); ?></th>
-                            <th style="width: 15%;"><?php echo lang('due_date'); ?></th>
-                            <th style="width: 10%;"><?php echo lang('invoice'); ?></th>
-                            <th style="width: 40%;"><?php echo lang('client'); ?></th>
-                            <th style="text-align: right; width: 15%;"><?php echo lang('balance'); ?></th>
-                            <th style="text-align: center; width: 5%;"><?php echo lang('pdf'); ?></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ($overdue_invoices as $invoice) { ?>
-                            <tr>
-                                <td>
-                                    <?php if ($invoice->is_read_only != 1) { ?>
-                                        <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
-                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
-                        <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
-                    </span>
-                                    <?php } else { ?>
-                                        <span class="label label-danger">
-                        <?php echo lang('read_only'); ?>
-                    </span>
-                                    <?php } ?>
-                                </td>
-                                <td>
-                                    <span class="font-overdue">
-                                        <?php echo date_from_mysql($invoice->invoice_date_due); ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php echo anchor('invoices/view/' . $invoice->invoice_id, $invoice->invoice_number); ?>
-                                </td>
-                                <td>
-                                    <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
-                                </td>
-                                <td class="amount">
-                                    <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
-                                </td>
-                                <td style="text-align: center;">
-                                    <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-                                       title="<?php echo lang('download_pdf'); ?>">
-                                        <i class="fa fa-print"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                        <tr>
-                            <td colspan="6" class="text-right">
-                                <?php echo anchor('invoices/status/overdue', lang('view_all')); ?>
+                            <td>
+                                <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
+                                    <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
+                                    <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
+                                    <?php if ($invoice->is_read_only == 1) {echo ' / ' . lang('read_only');}; ?>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="font-overdue">
+                                    <?php echo date_from_mysql($invoice->invoice_date_due); ?>
+                                </span>
+                            </td>
+                            <td>
+                                <?php echo anchor('invoices/view/' . $invoice->invoice_id, $invoice->invoice_number); ?>
+                            </td>
+                            <td>
+                                <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
+                            </td>
+                            <td class="amount">
+                                <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
+                                   title="<?php echo lang('download_pdf'); ?>">
+                                    <i class="fa fa-print"></i>
+                                </a>
                             </td>
                         </tr>
-                        </tbody>
-                    </table>
-                    </div>
+                    <?php } ?>
+                    <tr>
+                        <td colspan="6" class="text-right">
+                            <?php echo anchor('invoices/status/overdue', lang('view_all')); ?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
 
                 <?php } else { ?>
 
-                    <p class="text-success"><?php echo lang('no_overdue_invoices'); ?></p>
+                <p class="text-success"><?php echo lang('no_overdue_invoices'); ?></p>
 
                 <?php } ?>
 
@@ -184,7 +175,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($quotes as $quote) { ?>
+                        <?php foreach ($quotes as $quote) { ?>
                         <tr>
                             <td>
                                 <span class="label
@@ -211,12 +202,12 @@
                                 </a>
                             </td>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <td colspan="6" class="text-right">
-                            <?php echo anchor('quotes/status/all', lang('view_all')); ?>
-                        </td>
-                    </tr>
+                        <?php } ?>
+                        <tr>
+                            <td colspan="6" class="text-right">
+                                <?php echo anchor('quotes/status/all', lang('view_all')); ?>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -242,19 +233,14 @@
                     </thead>
                     <tbody>
 
-                    <?php foreach ($invoices as $invoice) { ?>
+                        <?php foreach ($invoices as $invoice) { ?>
                         <tr>
                             <td>
-                                <?php if ($invoice->is_read_only != 1) { ?>
-                                    <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
-                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
-                        <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
-                    </span>
-                                <?php } else { ?>
-                                    <span class="label label-danger">
-                        <?php echo lang('read_only'); ?>
-                    </span>
-                                <?php } ?>
+                                <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
+                                <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
+                                <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
+                                <?php if ($invoice->is_read_only == 1) {echo ' / ' . lang('read_only');}; ?>
+                                </span>
                             </td>
                             <td>
                                 <span class="<?php if ($invoice->is_overdue) { ?>font-overdue<?php } ?>">
@@ -277,13 +263,12 @@
                                 </a>
                             </td>
                         </tr>
-                    <?php } ?>
-
-                    <tr>
-                        <td colspan="6" class="text-right">
-                            <?php echo anchor('invoices/status/all', lang('view_all')); ?>
-                        </td>
-                    </tr>
+                        <?php } ?>
+                        <tr>
+                            <td colspan="6" class="text-right">
+                                <?php echo anchor('invoices/status/all', lang('view_all')); ?>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
