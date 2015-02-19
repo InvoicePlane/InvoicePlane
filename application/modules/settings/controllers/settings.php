@@ -145,7 +145,8 @@ class Settings extends Admin_Controller {
                 'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
                 'merchant_drivers'         => $this->merchant->valid_drivers(),
                 'merchant_currency_codes'  => Merchant::$NUMERIC_CURRENCY_CODES,
-                'current_version'          => $current_version
+                'current_version'          => $current_version,
+                'first_days_of_weeks'      => array("0" => lang("sunday"), "1" => lang("monday"))
             )
         );
 
