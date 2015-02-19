@@ -54,7 +54,7 @@
                     autoclose: true,
                     format: '<?php echo date_format_datepicker(); ?>',
                     language: '<?php echo lang('cldr'); ?>',
-                    weekStart: '<?php echo lang('week_start'); ?>'                     
+                    weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>'                     
                 });
             });
 

@@ -25,6 +25,17 @@
 		</select>
 	</div>
 
+	<div class="form-group">
+		<label for="settings[first_day_of_week]" class="control-label">
+			<?php echo lang('first_day_of_week'); ?>
+		</label>
+		<select name="settings[first_day_of_week]" class="input-sm form-control">
+			<?php foreach ($first_days_of_weeks as $first_day_of_week_id => $first_day_of_week_name) { ?>
+			<option value="<?php echo $first_day_of_week_id; ?>" <?php if ($this->mdl_settings->setting('first_day_of_week') == $first_day_of_week_id) { ?>selected="selected"<?php } ?>><?php echo $first_day_of_week_name; ?></option>
+			<?php } ?>
+		</select>
+	</div>
+
     <div class="form-group">
 		<label for="settings[default_country]" class="control-label">
 			<?php echo lang('default_country'); ?>
