@@ -6,7 +6,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-    <title>InvoicePlane</title>
+    <title>Portal Domatix</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -148,6 +148,7 @@
                         <li><?php echo anchor('reports/invoice_aging', lang('invoice_aging')); ?></li>
                         <li><?php echo anchor('reports/payment_history', lang('payment_history')); ?></li>
                         <li><?php echo anchor('reports/sales_by_client', lang('sales_by_client')); ?></li>
+                        <li><?php echo anchor('reports/sales_by_year', lang('sales_by_year')); ?></li>  
                     </ul>
                 </li>
 
