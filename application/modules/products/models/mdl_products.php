@@ -35,9 +35,9 @@ class Mdl_Products extends Response_Model {
     {
         $this->db->join('ip_families', 'ip_families.family_id = ip_products.family_id', 'left');
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
-	}
+    }
 
-	public function validation_rules()
+    public function validation_rules()
     {
         return array(
             'product_sku' => array(
