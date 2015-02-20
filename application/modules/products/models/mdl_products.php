@@ -34,7 +34,7 @@ class Mdl_Products extends Response_Model {
     public function default_join()
     {
         $this->db->join('ip_families', 'ip_families.family_id = ip_products.family_id', 'left');
-        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
+        //$this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
     }
 
 	public function by_product($match)
