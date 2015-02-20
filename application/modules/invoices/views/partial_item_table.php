@@ -16,17 +16,19 @@
         </thead>
         <tbody>
 
-        <tr id="new_item" style="display: none;">
+        <tr id="new_row" style="display: none;">
             <td><i class="fa fa-bars cursor-move"></i></td>
             <td class="td-text">
                 <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                 <input type="hidden" name="item_id" value="" class="form-control">
                 <input type="text" name="item_name" class="lookup-item-name form-control"
                        data-typeahead=""><br>
+                <!-- // temporarily disabled
                 <label>
                     <input type="checkbox" name="save_item_as_lookup" tabindex="999">
                     <?php echo lang('save_item_as_lookup'); ?>
                 </label>
+                -->
             </td>
 
             <td class="td-textarea">

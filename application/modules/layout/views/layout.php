@@ -224,7 +224,9 @@
                         <li><?php echo anchor('email_templates/index', lang('email_templates')); ?></li>
                         <li><?php echo anchor('import', lang('import_data')); ?></li>
                         <li><?php echo anchor('invoice_groups/index', lang('invoice_groups')); ?></li>
+                        <!-- // temporarily disabled
                         <li><?php echo anchor('item_lookups/index', lang('item_lookups')); ?></li>
+                        -->
                         <li><?php echo anchor('payment_methods/index', lang('payment_methods')); ?></li>
                         <li><?php echo anchor('tax_rates/index', lang('tax_rates')); ?></li>
                         <li><?php echo anchor('users/index', lang('user_accounts')); ?></li>

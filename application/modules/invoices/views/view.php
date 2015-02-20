@@ -2,12 +2,12 @@
 
     $(function() {
 
-        $('#btn_add_item_from_lookup').click(function() {
+        $('#btn_add_product').click(function() {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random()*1000));
         });
 
-        $('#btn_add_item').click(function() {
-            $('#new_item').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+        $('#btn_add_row').click(function() {
+            $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         });
 
         <?php if (!$items) { ?>
@@ -160,10 +160,10 @@
         </div>
 
         <?php if ($invoice->is_read_only != 1) { ?>
-        <a href="#" class="btn btn-sm btn-default" id="btn_add_item">
-            <i class="fa fa-plus"></i> <?php echo lang('add_item'); ?>
+        <a href="#" class="btn btn-sm btn-default" id="btn_add_row">
+            <i class="fa fa-plus"></i> <?php echo lang('add_new_row'); ?>
         </a>
-        <a href="#" class="btn btn-sm btn-default" id="btn_add_item_from_lookup">
+        <a href="#" class="btn btn-sm btn-default" id="btn_add_product">
             <i class="fa fa-database"></i>
             <?php echo lang('add_product'); ?>
         </a>
