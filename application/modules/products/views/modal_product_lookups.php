@@ -105,6 +105,7 @@
             <div class="table-responsive">
                 <table id="products_table" class="table table-bordered table-striped">
                     <tr>
+                        <th>&nbsp;</th>
                         <th><?php echo lang('product_sku'); ?></th>
                         <th><?php echo lang('family_name'); ?></th>
                         <th><?php echo lang('product_name'); ?></th>
@@ -116,6 +117,8 @@
                             <td class="text-left">
                                 <input type="checkbox" name="product_ids[]"
                                        value="<?php echo $product->product_id; ?>">
+                            </td>
+                            <td nowrap class="text-left">
                                 <b><?php echo $product->product_sku; ?></b>
                             </td>
                             <td>
