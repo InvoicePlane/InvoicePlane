@@ -18,19 +18,24 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller {
 
-    //public $ajax_controller = TRUE;
+    public $ajax_controller = TRUE;
 
     public function modal_product_lookups()
     {
-		//$filter_family  = $this->input->get('filter_family');
+<<<<<<< HEAD
+		/* ToDo
+		$filter_family  = $this->input->get('filter_family');
+		*/
 		$filter_product = $this->input->get('filter_product');
 		
+=======
+>>>>>>> parent of 7fa3386... Product filter in modal
         $this->load->model('mdl_products');
-        $this->load->model('families/mdl_families');
         
+<<<<<<< HEAD
 		// Apply filters
 		
-		/*
+		/* ToDo
 		if((int)$filter_family) {
 			$products = $this->mdl_products->by_family($filter_family);
 		}
@@ -39,11 +44,8 @@ class Ajax extends Admin_Controller {
 		if(!empty($filter_product)) {
 			$products = $this->mdl_products->by_product($filter_product);
 		}
-		//$products = $this->mdl_products->get()->result();
 		$products = $this->mdl_products->get();
 		$products = $this->mdl_products->result();
-
-		//die("OK");
 
 		$families = $this->mdl_families->get()->result();
 		
@@ -51,7 +53,13 @@ class Ajax extends Admin_Controller {
             'products' => $products,
             'families' => $families,
             'filter_product' => $filter_product,
-            //'filter_family'  => $filter_family,
+            /* ToDo
+			'filter_family'  => $filter_family,
+			*/
+=======
+        $data = array(
+            'products' => $this->mdl_products->get()->result()
+>>>>>>> parent of 7fa3386... Product filter in modal
         );
 
         $this->layout->load_view('products/modal_product_lookups', $data);
@@ -68,6 +76,7 @@ class Ajax extends Admin_Controller {
 			$product->product_price = format_amount($product->product_price);
 		}
         
+		//header('Content-Type: application/json');
         echo json_encode($products);
     }
 

@@ -35,48 +35,11 @@
         });
 		
 		// Toggle checkbox when click on row
-		$('#products_table tr').click(function(event)
-		{
+		$('#products_table tr').click(function(event) {
 			if (event.target.type !== 'checkbox') {
 				$(':checkbox', this).trigger('click');
 			}
 		});
-		
-		// Filter on search button click
-		$('#filter-button').click(function()
-		{
-			products_filter();
-		});
-		
-		// Filter on family dropdown change
-		$("#filter_family").change(function()
-		{
-			products_filter();
-		});
-		
-		// Filter products
-		function products_filter()
-		{
-			var filter_family = $('#filter_family').val();
-			var filter_product = $('#filter_product').val();
-
-			var lookup_url = "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/";
-			lookup_url += Math.floor(Math.random()*1000) + '/?';
-			
-			if(filter_family)
-			{
-				lookup_url += "&filter_family=" + filter_family;
-			}
-			
-			if(filter_product)
-			{
-				lookup_url += "&filter_product=" + filter_product;
-			}
-			
-			// refresh modal
-			$('#modal-choose-items').modal('hide');
-			$('#modal-placeholder').load(lookup_url);
-		}
     });
 
 </script>
@@ -89,9 +52,10 @@
             <h3><?php echo lang('add_product'); ?></h3>
         </div>
         <div class="modal-body">
+<<<<<<< HEAD
 			<div class="form-inline">
 				<div class="form-group filter-form">
-					<!--
+					<!-- ToDo
 					<select name="filter_family" id="filter_family" class="form-control">
 						<option value=""><?php echo lang('any_family'); ?></option>
 						<?php foreach ($families as $family) { ?>
@@ -105,12 +69,14 @@
 					<input type="text" class="form-control" name="filter_product" id="filter_product" placeholder="<?php echo lang('product_name'); ?>" value="<?php echo $filter_product ?>">
 				</div>
 				<button type="button" id="filter-button" class="btn btn-default"><?php echo lang('search_product'); ?></button>
-				<!--
+				<!-- ToDo
 				<button type="button" id="reset-button" class="btn btn-default"><?php echo lang('reset'); ?></button>
 				-->
 			</div>
 			<br />
 
+=======
+>>>>>>> parent of 7fa3386... Product filter in modal
             <div class="table-responsive">
                 <table id="products_table" class="table table-bordered table-striped">
 					<tr>
@@ -128,10 +94,10 @@
 								<b><?php echo $product->product_sku; ?></b>
                             </td>
                             <td>
-                                <b><?php echo $product->family_name; ?></b>
+                                <b><?php echo $product->product_name; ?></b>
                             </td>
                             <td>
-                                <b><?php echo $product->product_name; ?></b>
+                                <b><?php echo $product->family_name; ?></b>
                             </td>
                             <td>
                                 <?php echo $product->product_description; ?>
@@ -140,7 +106,7 @@
                                 <?php echo format_currency($product->product_price); ?>
                             </td>
                         </tr>
-                        <!--
+                        <!-- Todo
 						<tr class="bold-border">
                             <td colspan="3">
                                 <?php echo $product->product_description; ?>
