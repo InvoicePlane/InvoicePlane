@@ -447,6 +447,7 @@ $lang['families'] = 'Families';
 $lang['family_name'] = 'Family name';
 $lang['product_families'] = 'Product families';
 $lang['select_family'] = 'Select family';
+$lang['any_family'] = 'Any family';
 
 // Products module
 $lang['product'] = 'Product';
@@ -460,4 +461,5 @@ $lang['new_product'] = 'New product';
 $lang['create_product'] = 'Create product';
 $lang['view_products'] = 'View products';
 $lang['add_product'] = 'Add product';
+$lang['search_product'] = 'Search product';
 $lang['extra_information'] = 'Extra information';
