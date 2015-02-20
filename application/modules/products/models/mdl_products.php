@@ -53,7 +53,7 @@ class Mdl_Products extends Response_Model {
             'product_description' => array(
                 'field' => 'product_description',
                 'label' => lang('product_description'),
-                'rules' => 'required'
+                'rules' => ''
             ),
             'product_price' => array(
                 'field' => 'product_price',
@@ -63,7 +63,7 @@ class Mdl_Products extends Response_Model {
             'purchase_price' => array(
                 'field' => 'purchase_price',
                 'label' => lang('purchase_price'),
-                'rules' => 'required'
+                'rules' => ''
             ),
             'family_id' => array(
                 'field' => 'family_id',
@@ -78,6 +78,21 @@ class Mdl_Products extends Response_Model {
 
         );
     }
+
+	public function by_family($family_id)
+	{
+		//$this->filter_where($this->table.'.family_id', $family_id);
+		$this->get_where($this->table, 'family_id', $family_id);
+		return $this;
+	}
+
+	public function by_product($string)
+	{
+		$this
+			->like($this->table.'.product_sku', $string)
+			->or_like($this->table.'.product_name', $string);
+		return $this;
+	}
 
 }
 
