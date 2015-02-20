@@ -37,6 +37,13 @@ class Mdl_Products extends Response_Model {
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
     }
 
+	public function by_product($match)
+	{
+		$this->db->like('product_sku', $match);
+		$this->db->or_like('product_name', $match); 
+		$this->db->or_like('product_description', $match); 
+	}
+	
     public function validation_rules()
     {
         return array(
@@ -53,7 +60,7 @@ class Mdl_Products extends Response_Model {
             'product_description' => array(
                 'field' => 'product_description',
                 'label' => lang('product_description'),
-                'rules' => 'required'
+                'rules' => ''
             ),
             'product_price' => array(
                 'field' => 'product_price',
@@ -63,7 +70,7 @@ class Mdl_Products extends Response_Model {
             'purchase_price' => array(
                 'field' => 'purchase_price',
                 'label' => lang('purchase_price'),
-                'rules' => 'required'
+                'rules' => ''
             ),
             'family_id' => array(
                 'field' => 'family_id',
