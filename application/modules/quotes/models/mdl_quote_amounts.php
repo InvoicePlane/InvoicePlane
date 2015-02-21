@@ -172,12 +172,53 @@ class Mdl_Quote_Amounts extends CI_Model {
         }
     }
 
-    public function get_status_totals()
+    public function get_status_totals($period = '')
     {
-        $this->db->select("quote_status_id, SUM(quote_total) AS sum_total, COUNT(*) AS num_total");
-        $this->db->join('ip_quotes', 'ip_quotes.quote_id = ip_quote_amounts.quote_id');
-        $this->db->group_by('quote_status_id');
-        $results = $this->db->get('ip_quote_amounts')->result_array();
+        switch ($period) {
+            default:
+            case 'month':
+                $results = $this->db->query("
+					SELECT quote_status_id,
+					    SUM(quote_total) AS sum_total,
+					    COUNT(*) AS num_total
+					FROM ip_quote_amounts
+					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
+                        AND MONTH(ip_quotes.quote_date_created) = MONTH(NOW())
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
+					GROUP BY ip_quotes.quote_status_id")->result_array();
+                break;
+            case 'last-month':
+                $results = $this->db->query("
+					SELECT quote_status_id,
+					    SUM(quote_total) AS sum_total,
+					    COUNT(*) AS num_total
+					FROM ip_quote_amounts
+					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
+                        AND MONTH(ip_quotes.quote_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
+					GROUP BY ip_quotes.quote_status_id")->result_array();
+                break;
+            case 'year':
+                $results = $this->db->query("
+					SELECT quote_status_id,
+					    SUM(quote_total) AS sum_total,
+					    COUNT(*) AS num_total
+					FROM ip_quote_amounts
+					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
+					GROUP BY ip_quotes.quote_status_id")->result_array();
+                break;
+            case 'last-year':
+                $results = $this->db->query("
+					SELECT quote_status_id,
+					    SUM(quote_total) AS sum_total,
+					    COUNT(*) AS num_total
+					FROM ip_quote_amounts
+					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW() - INTERVAL 1 YEAR)
+					GROUP BY ip_quotes.quote_status_id")->result_array();
+                break;
+        }
 
         $return = array();
 

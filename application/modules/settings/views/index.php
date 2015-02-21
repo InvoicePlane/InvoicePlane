@@ -40,7 +40,7 @@ $().ready(function() {
 
 	<div class="tabbable tabs-below">
 
-		<div class="tab-content col-xs-12 col-sm-10 col-md-8 col-lg-6">
+		<div class="tab-content col-xs-12 col-md-8 col-lg-6">
 
 			<div id="settings-general" class="tab-pane active">
                 <?php $this->layout->load_view('layout/alerts'); ?>
