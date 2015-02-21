@@ -19,9 +19,15 @@
             <tr>
                 <td>
                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
-                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label']; ?>
-                        <?php if ($invoice->invoice_sign == '-1') {echo ' / ' . lang('credit_invoice');}; ?>
-                        <?php if ($invoice->is_read_only == 1) {echo ' / ' . lang('read_only');}; ?>
+                        <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
+                        if ($invoice->invoice_sign == '-1') {?>
+                            &nbsp;<i class="fa fa-credit-invoice"
+                                     title="<?php echo lang('credit_invoice')?>"></i>
+                        <?php }
+                        if ($invoice->is_read_only == 1) { ?>
+                            &nbsp;<i class="fa fa-read-only"
+                                     title="<?php echo lang('read_only')?>"></i>
+                        <?php }; ?>
                     </span>
                 </td>
 
@@ -48,11 +54,11 @@
                 </td>
 
                 <td class="amount <?php if ($invoice->invoice_sign == '-1') {echo 'text-danger';}; ?>">
-                    <?php echo format_currency($invoice->invoice_total * $invoice->invoice_sign); ?>
+                    <?php echo format_currency($invoice->invoice_total); ?>
                 </td>
 
                 <td class="amount">
-                    <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
+                    <?php echo format_currency($invoice->invoice_balance); ?>
                 </td>
 
                 <td>

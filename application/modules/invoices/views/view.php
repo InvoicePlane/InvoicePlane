@@ -178,7 +178,9 @@
             <span class="label label-info"><?php echo lang('recurring'); ?></span>
         <?php } ?>
         <?php if ($invoice->is_read_only == 1) { ?>
-            <span class="label label-danger"><?php echo lang('read_only'); ?></span>
+            <span class="label label-danger">
+                <i class="fa fa-read-only"></i> <?php echo lang('read_only'); ?>
+            </span>
         <?php } ?>
     </div>
 
@@ -223,8 +225,10 @@
                         <?php if ($invoice->invoice_sign == -1) { ?>
                             <div class="invoice-properties">
                                 <span class="label label-warning">
+                                    <i class="fa fa-credit-invoice"></i>&nbsp;
                                     <?php echo lang('credit_invoice_for_invoice') . ' ';
-                                    echo anchor('/invoices/view/'.$invoice->creditinvoice_parent_id,$invoice->creditinvoice_parent_id)?>
+                                    echo anchor('/invoices/view/'.$invoice->creditinvoice_parent_id,
+                                        $invoice->creditinvoice_parent_id)?>
                                 </span>
                             </div>
                         <?php } ?>

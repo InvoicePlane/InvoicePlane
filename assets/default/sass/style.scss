@@ -384,6 +384,20 @@ div.table-content {
     margin-right: 7px;
 }
 
+.fa-credit-invoice {
+    &:before {
+        content: '-';
+    }
+    &:after {
+        font-family: FontAwesome;
+        content: '\f155';
+    }
+}
+
+.fa-read-only {
+    @extend .fa-ban;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }
