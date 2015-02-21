@@ -298,7 +298,7 @@ class Ajax extends Admin_Controller {
             $target_id = $this->mdl_invoices->save();
             $source_id = $this->input->post('invoice_id');
 
-            $this->mdl_invoices->copy_invoice($source_id, $target_id);
+            $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
             // Set source invoice to read-only
             $this->mdl_invoices->where('invoice_id', $source_id);

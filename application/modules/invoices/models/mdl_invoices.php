@@ -223,6 +223,47 @@ class Mdl_Invoices extends Response_Model {
         }
     }
 
+    /**
+     * Copies invoice items, tax rates, etc from source to target
+     * @param int $source_id
+     * @param int $target_id
+     */
+    public function copy_credit_invoice($source_id, $target_id)
+    {
+        $this->load->model('invoices/mdl_items');
+
+        $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
+
+        foreach ($invoice_items as $invoice_item)
+        {
+            $db_array = array(
+                'invoice_id'       => $target_id,
+                'item_tax_rate_id' => $invoice_item->item_tax_rate_id,
+                'item_name'        => $invoice_item->item_name,
+                'item_description' => $invoice_item->item_description,
+                'item_quantity'    => -$invoice_item->item_quantity,
+                'item_price'       => $invoice_item->item_price,
+                'item_order'       => $invoice_item->item_order
+            );
+
+            $this->mdl_items->save($target_id, NULL, $db_array);
+        }
+
+        $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
+
+        foreach ($invoice_tax_rates as $invoice_tax_rate)
+        {
+            $db_array = array(
+                'invoice_id'              => $target_id,
+                'tax_rate_id'             => $invoice_tax_rate->tax_rate_id,
+                'include_item_tax'        => $invoice_tax_rate->include_item_tax,
+                'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount
+            );
+
+            $this->mdl_invoice_tax_rates->save($target_id, NULL, $db_array);
+        }
+    }
+
     public function db_array()
     {
         $db_array = parent::db_array();
