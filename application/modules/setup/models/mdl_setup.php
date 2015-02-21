@@ -188,15 +188,16 @@ class Mdl_Setup extends CI_Model {
         // Nothing to do here
     }
 
-    public function upgrade_004_1_1_2() {
+    public function upgrade_005_1_1_2() {
         // Nothing to do here
     }
 
-    public function upgrade_005_1_2_0() {
+    public function upgrade_006_1_2_0() {
         // Update alert to notify about the changes with invoice deletion and credit invoices
-        $this->session->set_flashdata('aftersetup_alert', array(
-            'type' => 'alert_error',
-            'content' => lang('setup_v120_alert')
-        ));
+        $setup_notice = array(
+            'type' => 'alert-danger',
+            'content' => lang('setup_v120_alert'),
+        );
+        $this->session->set_userdata('setup_notice', $setup_notice);
     }
 }

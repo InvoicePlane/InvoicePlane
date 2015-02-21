@@ -177,12 +177,6 @@ class Setup extends MX_Controller {
             }
             else
             {
-                // Load the aftersetup_alert from the session data and create flashdata from it
-                if ($this->session->flashdata('aftersetup_alert')) {
-                    $aftersetup_alert = $this->session->flashdata('aftersetup_alert');
-                    $this->session->set_flashdata($aftersetup_alert['type'], $aftersetup_alert['content']);
-                }
-
                 $this->session->set_userdata('install_step', 'complete');
                 redirect('setup/complete');
             }

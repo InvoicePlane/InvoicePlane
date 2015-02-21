@@ -19,7 +19,13 @@
             <code>Redirect /setup http://yourdomain.com/</code>
         </p>
 
-        <div><?php $this->layout->load_view('layout/alerts'); ?></div>
+        <?php if ($this->session->userdata('setup_notice')) {
+            $setup_notice = $this->session->userdata('setup_notice');
+            ?>
+            <div class="alert <?php echo $setup_notice['type']; ?>">
+                <?php echo $setup_notice['content']; ?>
+            </div>
+        <?php } ?>
 
         <a href="<?php echo site_url('sessions/login'); ?>" class="btn btn-success" >
             <i class="fa fa-check fa-margin"></i> <?php echo lang('login'); ?>
