@@ -21,7 +21,7 @@
 
                 for(var key in items) {
                     if ($('#item_table tr:last input[name=item_name]').val() !== '') {
-                        $('#new_item').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+						$('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
                     }
                     $('#item_table tr:last input[name=item_name]').val(items[key].product_name);
                     $('#item_table tr:last textarea[name=item_description]').val(items[key].product_description);
@@ -30,6 +30,7 @@
                     $('#item_table tr:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
 
                     $('#modal-choose-items').modal('hide');
+					console.log(items[key].tax_rate_id);
                 }
             });
         });
@@ -105,6 +106,7 @@
             <div class="table-responsive">
                 <table id="products_table" class="table table-bordered table-striped">
                     <tr>
+                        <th>&nbsp;</th>
                         <th><?php echo lang('product_sku'); ?></th>
                         <th><?php echo lang('family_name'); ?></th>
                         <th><?php echo lang('product_name'); ?></th>
@@ -116,6 +118,8 @@
                             <td class="text-left">
                                 <input type="checkbox" name="product_ids[]"
                                        value="<?php echo $product->product_id; ?>">
+                            </td>
+                            <td nowrap class="text-left">
                                 <b><?php echo $product->product_sku; ?></b>
                             </td>
                             <td>
