@@ -11,7 +11,7 @@
         });
 
         <?php if (!$items) { ?>
-        $('#new_item').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         <?php } ?>
 
         $('#btn_create_recurring').click(function()
