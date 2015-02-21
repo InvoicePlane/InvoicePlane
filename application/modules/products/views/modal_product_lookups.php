@@ -20,6 +20,9 @@
                 items = JSON.parse(data);
 
                 for(var key in items) {
+					// Set default tax rate id if empty
+					if(!items[key].tax_rate_id) items[key].tax_rate_id = 0;
+					
                     if ($('#item_table tr:last input[name=item_name]').val() !== '') {
 						$('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
                     }
@@ -30,7 +33,6 @@
                     $('#item_table tr:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
 
                     $('#modal-choose-items').modal('hide');
-					console.log(items[key].tax_rate_id);
                 }
             });
         });
