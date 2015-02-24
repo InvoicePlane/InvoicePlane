@@ -4,3 +4,23 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
+.nav > li > a {
+    padding-left: 8px;
+    padding-right: 8px;}
+.main-area .headerbar .nav li a, .navbar-form {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+@media screen and (max-width: 345px) {
+	.btn-sm{
+		padding: 5px 7px;
+	}
+}
+@media screen and (width: 768px) {
+	.navbar-nav {
+		margin: 0px;
+	}
+	.main-area {
+		float: none;
+	}
+}

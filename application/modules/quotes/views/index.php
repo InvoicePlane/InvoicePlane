@@ -12,11 +12,11 @@
         </a>
     </div>
 
-    <div class="pull-right visible-lg">
+    <div class="pull-right">
         <?php echo pager(site_url('quotes/status/' . $this->uri->segment(3)), 'mdl_quotes'); ?>
     </div>
 
-    <div class="pull-right visible-lg">
+    <div class="pull-right hidden-xs">
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a href="<?php echo site_url('quotes/status/all'); ?>"><?php echo lang('all'); ?></a></li>
             <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a href="<?php echo site_url('quotes/status/draft'); ?>"><?php echo lang('draft'); ?></a></li>
@@ -29,7 +29,7 @@
     </div>
 
     <div class="pull-left hidden-sm hidden-md hidden-lg btn-group">
-        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" >
+        <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#" >
             <?php #echo lang('options');<i class="fa fa-bars"></i> ?> <i class="fa fa-chevron-down"></i>
         </a>
         <ul class="dropdown-menu" role="menu">

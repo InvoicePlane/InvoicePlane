@@ -40,20 +40,20 @@
 					<h3><?php echo $invoice->client_name; ?></h3>
 
 					<span>
-						<?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-						<?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
+						<?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br /> ' : ''; ?>
+						<?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br /> ' : ''; ?>
+						<?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
 						<?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
 						<?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-						<?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-						<?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+						<?php echo ($invoice->client_country) ? '<br /> ' . $invoice->client_country : ''; ?>
 					</span>
-					<br><br>
+					<br /> <br /> 
 
 					<?php if ($invoice->client_phone) { ?>
                         <span>
                             <strong><?php echo lang('phone'); ?>:</strong>
                             <?php echo $invoice->client_phone; ?>
-                        </span><br>
+                        </span><br /> 
 					<?php } ?>
 
 					<?php if ($invoice->client_email) { ?>
@@ -69,17 +69,17 @@
                 <div class="col-xs-12 col-md-3">
                     <div class="panel panel-default panel-body text-right">
                         <p>
-                            <b><?php echo lang('invoice'); ?> #</b><br/>
+                            <b><?php echo lang('invoice'); ?> #</b><br />
                             <?php echo $invoice->invoice_number; ?>
                         </p>
 
                         <p>
-                            <b><?php echo lang('date'); ?></b><br/>
+                            <b><?php echo lang('date'); ?></b><br />
                             <?php echo date_from_mysql($invoice->invoice_date_created); ?>
                         </p>
 
                         <p>
-                            <b><?php echo lang('due_date'); ?></b><br/>
+                            <b><?php echo lang('due_date'); ?></b><br />
                             <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                         </p>
 
@@ -137,7 +137,7 @@
                         <td>
                             <?php if ($invoice_tax_rates) { foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
                                 <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:
-                                <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?><br>
+                                <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?><br /> 
                             <?php } } else { echo format_currency('0'); }?>
                         </td>
                         <td><?php echo format_currency($invoice->invoice_total); ?></td>
@@ -149,7 +149,7 @@
             </div>
 			
 			<p>
-                <strong><?php echo lang('invoice_terms'); ?></strong><br/>
+                <strong><?php echo lang('invoice_terms'); ?></strong><br />
                 <?php echo nl2br($invoice->invoice_terms); ?></p>
 
 		</div>

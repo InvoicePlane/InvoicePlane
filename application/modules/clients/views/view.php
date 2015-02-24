@@ -45,16 +45,16 @@
     <div class="pull-right btn-group">
         <a href="#" class="btn btn-sm btn-default client-create-quote"
            data-client-name="<?php echo $client->client_name; ?>" title="<?php echo lang('create_quote'); ?>">
-            <i class="fa fa-file"></i><span class="hidden-sm hidden-xs"><?php echo lang('create_quote'); ?></span>
+            <i class="fa fa-file"></i><span class="hidden-xs"><?php echo lang('create_quote'); ?></span>
         </a>
-        <a href="#" class="btn btn-sm btn-default client-create-invoice" data-client-name="<?php echo $client->client_name; ?>" title="<?php echo lang('create_invoice'); ?>"><i class="fa fa-file-text"></i><span class="hidden-sm hidden-xs"><?php echo lang('create_invoice'); ?></a></span>
+        <a href="#" class="btn btn-sm btn-default client-create-invoice" data-client-name="<?php echo $client->client_name; ?>" title="<?php echo lang('create_invoice'); ?>"><i class="fa fa-file-text"></i><span class="hidden-xs"><?php echo lang('create_invoice'); ?></a></span>
         <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>" class="btn btn-sm btn-default" title="<?php echo lang('edit'); ?>">
-            <i class="fa fa-edit"></i><span class="hidden-sm hidden-xs"><?php echo lang('edit'); ?></span>
+            <i class="fa fa-edit"></i><span class="hidden-xs"><?php echo lang('edit'); ?></span>
         </a>
 
         <a class="btn btn-sm btn-danger"
            href="<?php echo site_url('clients/delete/' . $client->client_id); ?>" onclick="return confirm('<?php echo lang('delete_client_warning'); ?>');" title="<?php echo lang('delete'); ?>">
-            <i class="fa fa-trash-o"></i><span class="hidden-sm hidden-xs"><?php echo lang('delete'); ?></span>
+            <i class="fa fa-trash-o"></i><span class="hidden-xs"><?php echo lang('delete'); ?></span>
         </a>
     </div>
 
@@ -74,14 +74,14 @@
 
                     <div class="pull-left">
                         <h2><?php echo $client->client_name; ?></h2>
-                        <br>
+                        <br /> 
 						<span>
-							<?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>
-                            <?php echo ($client->client_address_2) ? $client->client_address_2 . '<br>' : ''; ?>
+                            <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br /> ' : ''; ?>
+                            <?php echo ($client->client_address_2) ? $client->client_address_2 . '<br /> ' : ''; ?>
+                            <?php echo ($client->client_zip) ? $client->client_zip : ''; ?>
                             <?php echo ($client->client_city) ? $client->client_city : ''; ?>
                             <?php echo ($client->client_state) ? $client->client_state : ''; ?>
-                            <?php echo ($client->client_zip) ? $client->client_zip : ''; ?>
-                            <?php echo ($client->client_country) ? '<br>' . $client->client_country : ''; ?>
+                            <?php echo ($client->client_country) ? '<br /> ' . $client->client_country : ''; ?>
 						</span>
                     </div>
 
@@ -92,14 +92,14 @@
                             </strong>
                             <?php echo format_currency($client->client_invoice_total); ?>
                         </span>
-                        <br>
+                        <br /> 
                         <span>
                             <strong>
                                 <?php echo lang('total_paid'); ?>:
                             </strong>
                             <?php echo format_currency($client->client_invoice_paid); ?>
                         </span>
-                        <br>
+                        <br /> 
                         <span>
                             <strong>
                                 <?php echo lang('total_balance'); ?>:
@@ -146,7 +146,7 @@
                     <?php } ?>
                 </dl>
 
-                <br>
+                <br />
 
             </div>
 
