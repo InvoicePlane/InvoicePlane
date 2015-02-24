@@ -6,25 +6,41 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-    <title>Portal Domatix</title>
+    <title>
+        <?php
+        if ($this->mdl_settings->setting('custom_title') != '') {
+            echo $this->mdl_settings->setting('custom_title');
+        } else {
+            echo 'InvoicePlane';
+        }?>
+    </title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="/assets/default/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
-    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.3.min.js'; ?>"></script>
+    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) {?>
+    <style>
+        .amount {
+            font-family: Monaco, Lucida Console, monospace;
+            font-size: 90%;
+        }
+    </style>
+    <?php } ?>
+
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.8.3.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
 
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.1.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.2.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-typeahead.js"></script>
-    <!-- @TODO (IP) Clean up the scripts (merge them?!) -->
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2.min.js"></script>
 
     <script type="text/javascript">
 
@@ -33,7 +49,14 @@
             $('.nav-tabs').tab();
             $('.tip').tooltip();
 
-            $('.datepicker').datepicker({ format: '<?php echo date_format_datepicker(); ?>'});
+            $('body').on('focus',".datepicker", function(){
+                $(this).datepicker({
+                    autoclose: true,
+                    format: '<?php echo date_format_datepicker(); ?>',
+                    language: '<?php echo lang('cldr'); ?>',
+                    weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>'                     
+                });
+            });
 
             $('.create-invoice').click(function() {
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
@@ -51,6 +74,11 @@
             $('#btn_copy_invoice').click(function() {
                 invoice_id = $(this).data('invoice-id');
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
+            });
+
+            $('#btn_create_credit').click(function() {
+                invoice_id = $(this).data('invoice-id');
+                $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {invoice_id: invoice_id});
             });
 
             $('#btn_copy_quote').click(function() {
@@ -80,7 +108,7 @@
 
 </head>
 
-<body>
+<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden-sidebar';}?>">
 
 <noscript>
     <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
@@ -132,6 +160,17 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('products'); ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('products/form', lang('create_product')); ?></li>
+                        <li><?php echo anchor('products/index', lang('view_products')); ?></li>
+                        <li><?php echo anchor('families/index', lang('product_families')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('payments'); ?>
                     </a>
                     <ul class="dropdown-menu">
@@ -148,7 +187,6 @@
                         <li><?php echo anchor('reports/invoice_aging', lang('invoice_aging')); ?></li>
                         <li><?php echo anchor('reports/payment_history', lang('payment_history')); ?></li>
                         <li><?php echo anchor('reports/sales_by_client', lang('sales_by_client')); ?></li>
-                        <li><?php echo anchor('reports/sales_by_year', lang('sales_by_year')); ?></li>  
                     </ul>
                 </li>
 
@@ -158,7 +196,7 @@
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
                 <form class="navbar-form navbar-left" role="search">
                     <div class="form-group">
-                        <input id="filter" type="text"class="search-query form-control input-sm"
+                        <input id="filter" type="text" class="search-query form-control input-sm"
                                placeholder="<?php echo $filter_placeholder; ?>">
                     </div>
                 </form>
@@ -208,7 +246,7 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs">
+<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
     <ul>
         <li>
             <a href="<?php echo site_url('dashboard'); ?>">
@@ -237,7 +275,6 @@
         </li>
     </ul>
 </div>
-
 <div class="main-area">
 
     <div id="modal-placeholder"></div>
@@ -249,6 +286,7 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo (lang('cldr') != 'en' ? '.'.lang('cldr') : ''); ?>.js"></script>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
