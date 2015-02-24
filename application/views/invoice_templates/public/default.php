@@ -94,15 +94,15 @@
                         <td id="company-name">
                             <?php echo invoice_logo(); ?>
                             <h2><?php echo $invoice->user_name; ?></h2>
-                            <p><?php if ($invoice->user_vat_id) { echo lang("vat_id_short") . ": " . $invoice->user_vat_id . '<br>'; } ?>
-                                <?php if ($invoice->user_tax_code) { echo lang("tax_code_short") . ": " . $invoice->user_tax_code . '<br>'; } ?>
-                                <?php if ($invoice->user_address_1) { echo $invoice->user_address_1 . '<br>'; } ?>
-                                <?php if ($invoice->user_address_2) { echo $invoice->user_address_2 . '<br>'; } ?>
+                            <p><?php if ($invoice->user_vat_id) { echo lang("vat_id_short") . ": " . $invoice->user_vat_id . '<br />'; } ?>
+                                <?php if ($invoice->user_tax_code) { echo lang("tax_code_short") . ": " . $invoice->user_tax_code . '<br />'; } ?>
+                                <?php if ($invoice->user_address_1) { echo $invoice->user_address_1 . '<br />'; } ?>
+                                <?php if ($invoice->user_address_2) { echo $invoice->user_address_2 . '<br />'; } ?>
+                                <?php if ($invoice->user_zip) { echo $invoice->user_zip . ' '; } ?>
                                 <?php if ($invoice->user_city) { echo $invoice->user_city . ' '; } ?>
-                                <?php if ($invoice->user_state) { echo $invoice->user_state . ' '; } ?>
-                                <?php if ($invoice->user_zip) { echo $invoice->user_zip . '<br>'; } ?>
-                                <?php if ($invoice->user_phone) { ?><abbr>P:</abbr><?php echo $invoice->user_phone; ?><br><?php } ?>
-                                <?php if ($invoice->user_fax) { ?><abbr>F:</abbr><?php echo $invoice->user_fax; ?><?php } ?>
+                                <?php if ($invoice->user_state) { echo $invoice->user_state . '<br />'; } ?>
+                                <?php if ($invoice->user_phone) { ?><abbr><?php echo substr(lang('phone'), 0, 4); ?>:</abbr> <?php echo $invoice->user_phone; ?><br /><?php } ?>
+                                <?php if ($invoice->user_fax) { ?><abbr><?php echo substr(lang('fax'), 0, 4); ?>:</abbr> <?php echo $invoice->user_fax; ?><?php } ?>
                             </p>
                         </td>
                         <td class="alignr"><h2><?php echo lang('invoice'); ?> <?php echo $invoice->invoice_number; ?></h2></td>
@@ -114,14 +114,14 @@
                     <tr>
                         <td>
                             <h3><?php echo $invoice->client_name; ?></h3>
-                            <p><?php if ($invoice->client_vat_id) { echo lang("vat_id_short") . ": " . $invoice->client_vat_id . '<br>'; } ?>
-                                <?php if ($invoice->client_tax_code) { echo lang("tax_code_short") . ": " . $invoice->client_tax_code . '<br>'; } ?>
-                                <?php if ($invoice->client_address_1) { echo $invoice->client_address_1 . '<br>'; } ?>
-                                <?php if ($invoice->client_address_2) { echo $invoice->client_address_2 . '<br>'; } ?>
+                            <p><?php if ($invoice->client_vat_id) { echo lang("vat_id_short") . ": " . $invoice->client_vat_id . '<br />'; } ?>
+                                <?php if ($invoice->client_tax_code) { echo lang("tax_code_short") . ": " . $invoice->client_tax_code . '<br />'; } ?>
+                                <?php if ($invoice->client_address_1) { echo $invoice->client_address_1 . '<br />'; } ?>
+                                <?php if ($invoice->client_address_2) { echo $invoice->client_address_2 . '<br />'; } ?>
+                                <?php if ($invoice->client_zip) { echo $invoice->client_zip . ' '; } ?>
                                 <?php if ($invoice->client_city) { echo $invoice->client_city . ' '; } ?>
-                                <?php if ($invoice->client_state) { echo $invoice->client_state . ' '; } ?>
-                                <?php if ($invoice->client_zip) { echo $invoice->client_zip . '<br>'; } ?>
-                                <?php if ($invoice->client_phone) { ?><abbr>P:</abbr><?php echo $invoice->client_phone; ?><br><?php } ?>
+                                <?php if ($invoice->client_state) { echo $invoice->client_state . '<br />'; } ?>
+                                <?php if ($invoice->client_phone) { ?><abbr><?php echo substr(lang('phone'), 0, 4); ?>:</abbr> <?php echo $invoice->client_phone; ?><br /><?php } ?>
                             </p>
                         </td>
                         <td style="width:30%;"></td>

@@ -105,15 +105,15 @@
                         <td id="company-name">
                             <?php echo invoice_logo(); ?>
                             <h2><?php echo $quote->user_name; ?></h2>
-                            <p><?php if ($quote->user_vat_id) { echo lang("vat_id_short") . ": " . $quote->user_vat_id . '<br>'; } ?>
-                                <?php if ($quote->user_tax_code) { echo lang("tax_code_short") . ": " . $quote->user_tax_code . '<br>'; } ?>
-                                <?php if ($quote->user_address_1) { echo $quote->user_address_1 . '<br>'; } ?>
-                                <?php if ($quote->user_address_2) { echo $quote->user_address_2 . '<br>'; } ?>
+                            <p><?php if ($quote->user_vat_id) { echo lang("vat_id_short") . ": " . $quote->user_vat_id . '<br /> '; } ?>
+                                <?php if ($quote->user_tax_code) { echo lang("tax_code_short") . ": " . $quote->user_tax_code . '<br /> '; } ?>
+                                <?php if ($quote->user_address_1) { echo $quote->user_address_1 . '<br /> '; } ?>
+                                <?php if ($quote->user_address_2) { echo $quote->user_address_2 . '<br /> '; } ?>
+                                <?php if ($quote->user_zip) { echo $quote->user_zip . ' '; } ?>
                                 <?php if ($quote->user_city) { echo $quote->user_city . ' '; } ?>
-                                <?php if ($quote->user_state) { echo $quote->user_state . ' '; } ?>
-                                <?php if ($quote->user_zip) { echo $quote->user_zip . '<br>'; } ?>
-                                <?php if ($quote->user_phone) { ?><abbr>P:</abbr><?php echo $quote->user_phone; ?><br><?php } ?>
-                                <?php if ($quote->user_fax) { ?><abbr>F:</abbr><?php echo $quote->user_fax; ?><?php } ?>
+                                <?php if ($quote->user_state) { echo $quote->user_state . '<br /> '; } ?>
+                                <?php if ($quote->user_phone) { ?><abbr><?php echo substr(lang('phone'), 0, 4); ?>:</abbr> <?php echo $quote->user_phone; ?><br /> <?php } ?>
+                                <?php if ($quote->user_fax) { ?><abbr><?php echo substr(lang('fax'), 0, 4); ?>:</abbr> <?php echo $quote->user_fax; ?><?php } ?>
                             </p>
                         </td>
                         <td class="alignr"><h2><?php echo lang('quote'); ?> <?php echo $quote->quote_number; ?></h2></td>
@@ -125,14 +125,14 @@
                     <tr>
                         <td>
                             <h3><?php echo $quote->client_name; ?></h3>
-                            <p><?php if ($quote->client_vat_id) { echo lang("vat_id_short") . ": " . $quote->client_vat_id . '<br>'; } ?>
-                                <?php if ($quote->client_tax_code) { echo lang("tax_code_short") . ": " . $quote->client_tax_code . '<br>'; } ?>
-                                <?php if ($quote->client_address_1) { echo $quote->client_address_1 . '<br>'; } ?>
-                                <?php if ($quote->client_address_2) { echo $quote->client_address_2 . '<br>'; } ?>
+                            <p><?php if ($quote->client_vat_id) { echo lang("vat_id_short") . ": " . $quote->client_vat_id . '<br /> '; } ?>
+                                <?php if ($quote->client_tax_code) { echo lang("tax_code_short") . ": " . $quote->client_tax_code . '<br /> '; } ?>
+                                <?php if ($quote->client_address_1) { echo $quote->client_address_1 . '<br /> '; } ?>
+                                <?php if ($quote->client_address_2) { echo $quote->client_address_2 . '<br /> '; } ?>
+                                <?php if ($quote->client_zip) { echo $quote->client_zip . ' '; } ?>
                                 <?php if ($quote->client_city) { echo $quote->client_city . ' '; } ?>
-                                <?php if ($quote->client_state) { echo $quote->client_state . ' '; } ?>
-                                <?php if ($quote->client_zip) { echo $quote->client_zip . '<br>'; } ?>
-                                <?php if ($quote->client_phone) { ?><abbr>P:</abbr><?php echo $quote->client_phone; ?><br><?php } ?>
+                                <?php if ($quote->client_state) { echo $quote->client_state . '<br /> '; } ?>
+                                <?php if ($quote->client_phone) { ?><abbr><?php echo substr(lang('phone'), 0, 4); ?>:</abbr> <?php echo $quote->client_phone; ?><br /> <?php } ?>
                             </p>
                         </td>
                         <td style="width:30%;"></td>

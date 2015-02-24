@@ -100,31 +100,31 @@
 
                         <div class="invoice-to">
                             <p><?php echo lang('bill_to'); ?>:</p>
-                            <p><b><?php echo $invoice->client_name; ?></b><br/>
+                            <p><b><?php echo $invoice->client_name; ?></b><br />
                                 <?php if ($invoice->client_vat_id) {
-                                    echo lang('vat_id_short') . ': ' . $invoice->client_vat_id . '<br/>';
+                                    echo lang('vat_id_short') . ': ' . $invoice->client_vat_id . '<br />';
                                 } ?>
                                 <?php if ($invoice->client_tax_code) {
-                                    echo lang('tax_code_short') . ': ' . $invoice->client_tax_code . '<br/>';
+                                    echo lang('tax_code_short') . ': ' . $invoice->client_tax_code . '<br />';
                                 } ?>
                                 <?php if ($invoice->client_address_1) {
-                                    echo $invoice->client_address_1 . '<br/>';
+                                    echo $invoice->client_address_1 . '<br />';
                                 } ?>
                                 <?php if ($invoice->client_address_2) {
-                                    echo $invoice->client_address_2 . '<br/>';
-                                } ?>
-                                <?php if ($invoice->client_city) {
-                                    echo $invoice->client_city . ' ';
+                                    echo $invoice->client_address_2 . '<br />';
                                 } ?>
                                 <?php if ($invoice->client_zip) {
-                                    echo $invoice->client_zip . '<br/>';
+                                    echo $invoice->client_zip . ' ';
+                                } ?>
+                                <?php if ($invoice->client_city) {
+                                    echo $invoice->client_city . '<br />';
                                 } ?>
                                 <?php if ($invoice->client_state) {
-                                    echo $invoice->client_state . '<br/>';
+                                    echo $invoice->client_state . '<br />';
                                 } ?>
 
                                 <?php if ($invoice->client_phone) { ?>
-                                    <abbr>P:</abbr><?php echo $invoice->client_phone; ?><br/>
+                                    <abbr><?php echo substr(lang('phone'), 0, 4); ?>:</abbr> <?php echo $invoice->client_phone; ?><br />
                                 <?php } ?>
                             </p>
                         </div>
@@ -139,36 +139,36 @@
                             </h3>
                             <p class="text-right">
                                 <?php if ($invoice->user_vat_id) {
-                                    echo lang('vat_id_short') . ': ' . $invoice->user_vat_id . '<br/>';
+                                    echo lang('vat_id_short') . ': ' . $invoice->user_vat_id . '<br />';
                                 } ?>
                                 <?php if ($invoice->user_tax_code) {
-                                    echo lang('tax_code_short') . ': ' . $invoice->user_tax_code . '<br/>';
+                                    echo lang('tax_code_short') . ': ' . $invoice->user_tax_code . '<br />';
                                 } ?>
                                 <?php if ($invoice->user_address_1) {
-                                    echo $invoice->user_address_1 . '<br/>';
+                                    echo $invoice->user_address_1 . '<br />';
                                 }?>
                                 <?php if ($invoice->user_address_2) {
-                                    echo $invoice->user_address_2 . '<br/>';
+                                    echo $invoice->user_address_2 . '<br />';
                                 } ?>
-                                <?php if ($invoice->user_city) {
-                                    echo $invoice->user_city . ' ';
+                                <?php if ($invoice->user_zip) {
+                                    echo $invoice->user_zip . ' ';
                                 } ?>
 
-                                <?php if ($invoice->user_zip) {
-                                    echo $invoice->user_zip . '<br/>';
+                                <?php if ($invoice->user_city) {
+                                    echo $invoice->user_city . '<br />';
                                 } ?>
                                 <?php if ($invoice->user_state) {
-                                    echo $invoice->user_state . '<br/>';
+                                    echo $invoice->user_state . '<br />';
                                 } ?>
                                 <?php if ($invoice->user_phone) {
-                                    ?><abbr>P:</abbr><?php echo $invoice->user_phone; ?><br><?php
+                                    ?><abbr><?php echo substr(lang('phone'), 0, 4); ?>:</abbr> <?php echo $invoice->user_phone; ?><br /> <?php
                                 } ?>
                                 <?php if ($invoice->user_fax) {
-                                    ?><abbr>F:</abbr><?php echo $invoice->user_fax; ?><?php
+                                    ?><abbr><?php echo substr(lang('fax'), 0, 4); ?>:</abbr> <?php echo $invoice->user_fax; ?><?php
                                 } ?>
                             </p>
                         </div>
-                        <br/>
+                        <br />
                         <div class="invoice-details">
                             <table>
                                 <tbody>
@@ -205,9 +205,9 @@
             </table>
         </div>
 
-        <br/>
+        <br />
         <h2 class="invoice-id"><?php echo lang('invoice'); ?> <?php echo $invoice->invoice_number; ?></h2>
-        <br/>
+        <br />
 
         <div class="invoice-items">
             <table class="table table-striped" style="width: 100%;">
