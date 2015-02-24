@@ -19,8 +19,13 @@
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
                 <td><?php echo date_from_mysql($payment->invoice_date_created); ?></td>
-                <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>
-                <td><?php echo $payment->client_name; ?></td>
+                <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>              
+                <td>
+                    <a href="<?php echo site_url('clients/view/' . $payment->client_id); ?>"
+                       title="<?php echo lang('view_client'); ?>">
+                       <?php echo $payment->client_name; ?>
+                    </a>
+                </td>               
                 <td><?php echo format_currency($payment->payment_amount); ?></td>
                 <td><?php echo $payment->payment_method_name; ?></td>
                 <td><?php echo $payment->payment_note; ?></td>

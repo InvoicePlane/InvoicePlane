@@ -92,6 +92,14 @@ starting at 1, as they appear in the .ttc file e.g.
 */
 
 $this->fontdata = array(
+    // Main InvoicePlane font: Noto Sans
+    "noto" => array(
+        'R' => "noto_400_normal.ttf",
+        'B' => "noto_700_normal.ttf",
+        'I' => "noto_400_italic.ttf",
+        'BI' => "noto_700_italic.ttf",
+    ),
+
 	"dejavusanscondensed" => array(
 		'R' => "DejaVuSansCondensed.ttf",
 		'B' => "DejaVuSansCondensed-Bold.ttf",

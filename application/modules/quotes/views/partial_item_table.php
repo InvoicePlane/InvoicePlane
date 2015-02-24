@@ -15,17 +15,19 @@
 	</thead>
 	<tbody>
 		
-		<tr id="new_item" style="display: none;">
+		<tr id="new_row" style="display: none;">
 			<td class="td-text">
 				<input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
 				<input type="hidden" name="item_id" value="">
 				<input type="text" name="item_name"
                        class="form-control lookup-item-name" data-typeahead="">
                 <br/>
+                <!-- // temporarily disabled
                 <label>
                     <input type="checkbox" name="save_item_as_lookup" tabindex="999">
                     <?php echo lang('save_item_as_lookup'); ?>
                 </label>
+                -->
 			</td>
             <td class="td-textarea">
                 <textarea name="item_description" class="form-control"></textarea>

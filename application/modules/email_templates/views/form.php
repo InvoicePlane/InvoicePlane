@@ -20,7 +20,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="email_template_type" class="control-label"><?php echo "Type"; ?>: </label>
+                <label for="email_template_type" class="control-label"><?php echo lang('type'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <label class="radio-inline">

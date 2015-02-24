@@ -1,41 +1,39 @@
 <div class="container">
-    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-        <div class="install-panel">
+    <div class="install-panel">
 
-            <h1><span>InvoicePlane</span></h1>
+        <h1 id="logo"><span>InvoicePlane</span></h1>
 
-            <form method="post" class="form-horizontal"
-                  action="<?php echo site_url($this->uri->uri_string()); ?>">
+        <form method="post" class="form-horizontal"
+              action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-                <legend><?php echo lang('setup_install_tables'); ?></legend>
+            <legend><?php echo lang('setup_install_tables'); ?></legend>
 
-                <?php if ($errors) { ?>
-                    <p><?php echo lang('setup_tables_errors'); ?></p>
+            <?php if ($errors) { ?>
+                <p><?php echo lang('setup_tables_errors'); ?></p>
 
-                    <?php foreach ($errors as $error) { ?>
-                        <p>
-                            <span class="label label-important">
-                                <?php echo lang('failure'); ?>
-                            </span>
-                            <?php echo $error; ?>
-                        </p>
-                    <?php } ?>
-
-                <?php } else { ?>
+                <?php foreach ($errors as $error) { ?>
                     <p>
-                        <span class="label label-success"><?php echo lang('success'); ?></span>
-                        <?php echo lang('setup_tables_success'); ?>
+                        <span class="label label-important">
+                            <?php echo lang('failure'); ?>
+                        </span>
+                        <?php echo $error; ?>
                     </p>
                 <?php } ?>
 
-            <?php if ($errors) { ?>
-                <input type="submit" class="btn btn-primary" name="btn_try_again" value="<?php echo lang('try_again'); ?>">
             <?php } else { ?>
-                <input type="submit" class="btn btn-success" name="btn_continue" value="<?php echo lang('continue'); ?>">
+                <p>
+                    <i class="fa fa-check text-success fa-margin"></i>
+                    <?php echo lang('setup_tables_success'); ?>
+                </p>
             <?php } ?>
 
-            </form>
+        <?php if ($errors) { ?>
+            <input type="submit" class="btn btn-primary" name="btn_try_again" value="<?php echo lang('try_again'); ?>">
+        <?php } else { ?>
+            <input type="submit" class="btn btn-success" name="btn_continue" value="<?php echo lang('continue'); ?>">
+        <?php } ?>
 
-        </div>
+        </form>
+
     </div>
 </div>

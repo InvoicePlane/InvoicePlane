@@ -109,6 +109,8 @@ class Settings extends Admin_Controller {
         $this->load->model('invoices/mdl_templates');
 
         $this->load->helper('directory');
+        $this->load->helper('country');
+
         $this->load->library('merchant');
 
         // Collect the list of templates
@@ -136,13 +138,15 @@ class Settings extends Admin_Controller {
                 'public_quote_templates'   => $public_quote_templates,
                 'pdf_quote_templates'      => $pdf_quote_templates,
                 'languages'                => $languages,
+                'countries'                => get_country_list(lang('cldr')),
                 'date_formats'             => date_formats(),
                 'current_date'             => new DateTime(),
                 'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
                 'merchant_drivers'         => $this->merchant->valid_drivers(),
                 'merchant_currency_codes'  => Merchant::$NUMERIC_CURRENCY_CODES,
-                'current_version'          => $current_version
+                'current_version'          => $current_version,
+                'first_days_of_weeks'      => array("0" => lang("sunday"), "1" => lang("monday"))
             )
         );
 

@@ -1,27 +1,35 @@
-/* Author: William G. Rivera*/
 "use strict";
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-    $(".dropdown-toggle").click(function(e) {
-        var menu = $(this).next('.dropdown-menu'),
-            mousex = e.pageX + 20, //Get X coodrinates
-            mousey = e.pageY + 20, //Get Y coordinates
-            menuWidth = menu.width(), //Find width of tooltip
-            menuHeight = menu.height(), //Find height of tooltip
-            menuVisX = $(window).width() - (mousex + menuWidth), //Distance of element from the right edge of viewport
-            menuVisY = $(window).height() - (mousey + menuHeight); //Distance of element from the bottom of viewport
+    // Set the height for calculations
+    // On mobile devices we'll take the window height to show a scrollbar at the bottom of the window
+    var documentHeight = $(document).height();
+    var windowHeight = $(window).height();
 
-        if (menuVisX < 20) { //If tooltip exceeds the X coordinate of viewport
-            // menu.css({'left': '-89px'});
-        } if (menuVisY < 20) { //If tooltip exceeds the Y coordinate of viewport
-            menu.css({
-                'top': 'auto',
-                'bottom': '100%'
-            });
-        }
-    });
+    if ($(document).width() <= 768) {
+        var relativeHeight = windowHeight;
+    } else {
+        var relativeHeight = documentHeight;
+    }
 
+    $('.main-area').height(relativeHeight - 50);
+
+    // Increase height for main-area and sidebar if you need to scroll
+    if (documentHeight > windowHeight) {
+        $('.main-area').height(relativeHeight - 50);
+        $('.sidebar').height(relativeHeight - 50);
+    }
+
+    // Calculate the height for responsive tables
+    // window height - navbar - headerbar - submenu and borders
+    var tableHeight = relativeHeight - 50 - ($('.headerbar').outerHeight() - 1) - $('.submenu').outerHeight();
+
+    $('.table-content .table-responsive').height(tableHeight - 1);
+    $('.table-content').height(tableHeight);
+    $('#filter_results').height(tableHeight);
+
+    // Dropdown Datepicker fix
     $('html').click(function () {
         $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
     });
@@ -37,18 +45,9 @@ $(document).ready(function() {
     });
 
     // Keep track of the last "taggable" input/textarea
-    $('.taggable').on('focus', function(){
+    $('.taggable').on('focus', function () {
         lastTaggableClicked = this;
     });
-
-    // Set the height for the sidebar if the main area is higher than the viewport
-    var mainAreaHeight  = $('.main-area').height();
-    var windowHeight    = $(window).height();
-    if (mainAreaHeight > windowHeight) {
-        $('.sidebar').height(mainAreaHeight);
-    } else {
-        $('.sidebar').height(windowHeight - 50);
-    }
 });
 
 // Insert text into textarea at Caret Position
@@ -58,25 +57,25 @@ function insertAtCaret(areaId, text) {
     var strPos = 0;
     var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ?
         "ff" : (document.selection ? "ie" : false));
-    if(br == "ie") {
+    if (br == "ie") {
         txtarea.focus();
         var range = document.selection.createRange();
         range.moveStart('character', -txtarea.value.length);
         strPos = range.text.length;
-    } else if(br == "ff") strPos = txtarea.selectionStart;
+    } else if (br == "ff") strPos = txtarea.selectionStart;
 
     var front = (txtarea.value).substring(0, strPos);
     var back = (txtarea.value).substring(strPos, txtarea.value.length);
     txtarea.value = front + text + back;
     strPos = strPos + text.length;
-    if(br == "ie") {
+    if (br == "ie") {
         txtarea.focus();
         var range = document.selection.createRange();
         range.moveStart('character', -txtarea.value.length);
         range.moveStart('character', strPos);
         range.moveEnd('character', 0);
         range.select();
-    } else if(br == "ff") {
+    } else if (br == "ff") {
         txtarea.selectionStart = strPos;
         txtarea.selectionEnd = strPos;
         txtarea.focus();

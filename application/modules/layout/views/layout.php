@@ -6,25 +6,41 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-    <title>InvoicePlane</title>
+    <title>
+        <?php
+        if ($this->mdl_settings->setting('custom_title') != '') {
+            echo $this->mdl_settings->setting('custom_title');
+        } else {
+            echo 'InvoicePlane';
+        }?>
+    </title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="/assets/default/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
-    <script src="<?php echo base_url() . 'assets/default/js/libs/modernizr-2.8.3.min.js'; ?>"></script>
+    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) {?>
+    <style>
+        .amount {
+            font-family: Monaco, Lucida Console, monospace;
+            font-size: 90%;
+        }
+    </style>
+    <?php } ?>
+
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.8.3.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
 
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.1.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.2.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-typeahead.js"></script>
-    <!-- @TODO (IP) Clean up the scripts (merge them?!) -->
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2.min.js"></script>
 
     <script type="text/javascript">
 
@@ -33,7 +49,14 @@
             $('.nav-tabs').tab();
             $('.tip').tooltip();
 
-            $('.datepicker').datepicker({ format: '<?php echo date_format_datepicker(); ?>'});
+            $('body').on('focus',".datepicker", function(){
+                $(this).datepicker({
+                    autoclose: true,
+                    format: '<?php echo date_format_datepicker(); ?>',
+                    language: '<?php echo lang('cldr'); ?>',
+                    weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>'                     
+                });
+            });
 
             $('.create-invoice').click(function() {
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
@@ -51,6 +74,11 @@
             $('#btn_copy_invoice').click(function() {
                 invoice_id = $(this).data('invoice-id');
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
+            });
+
+            $('#btn_create_credit').click(function() {
+                invoice_id = $(this).data('invoice-id');
+                $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {invoice_id: invoice_id});
             });
 
             $('#btn_copy_quote').click(function() {
@@ -80,7 +108,7 @@
 
 </head>
 
-<body>
+<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden-sidebar';}?>">
 
 <noscript>
     <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
@@ -97,11 +125,11 @@
 
         <div class="collapse navbar-collapse" id="ip-navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><?php echo anchor('dashboard', '<i class="fa fa-dashboard" title="'.lang('dashboard').'"></i>&nbsp;<span class="visible-xs-inline-block visible-lg">'.lang('dashboard').'&nbsp;</span>'); ?></li>
+                <li><?php echo anchor('dashboard', '<i class="fa fa-dashboard" title="'.lang('dashboard').'"></i>&nbsp;<span class="visible-xs-inline-block hidden-md hidden-sm">'.lang('dashboard').'&nbsp;</span>'); ?></li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('clients'); ?>">
-                        <i class="fa fa-users"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('clients'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-users"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('clients'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', lang('add_client')); ?></li>
@@ -111,7 +139,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('quotes'); ?>">
-                        <i class="fa fa-file"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('quotes'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-file"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('quotes'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-quote"><?php echo lang('create_quote'); ?></a></li>
@@ -121,7 +149,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('invoices'); ?>">
-                        <i class="fa fa-file-text"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('invoices'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-file-text"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('invoices'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-invoice"><?php echo lang('create_invoice'); ?></a></li>
@@ -131,8 +159,19 @@
                 </li>
 
                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('products'); ?>">
+                        <i class="fa fa-tags"></i> &nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('products'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('products/form', lang('create_product')); ?></li>
+                        <li><?php echo anchor('products/index', lang('view_products')); ?></li>
+                        <li><?php echo anchor('families/index', lang('product_families')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('payments'); ?>">
-                        <i class="fa fa-money"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('payments'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-money"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('payments'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('payments/form', lang('enter_payment')); ?></li>
@@ -142,7 +181,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('reports'); ?>">
-                        <i class="fa fa-bar-chart-o"></i>&nbsp;<span class="visible-xs-inline-block visible-lg"><?php echo lang('reports'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-bar-chart-o"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('reports'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('reports/invoice_aging', lang('invoice_aging')); ?></li>
@@ -150,19 +189,21 @@
                         <li><?php echo anchor('reports/sales_by_client', lang('sales_by_client')); ?></li>
                     </ul>
                 </li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-				<?php if (isset($filter_display) and $filter_display == TRUE) { ?>
-					<?php $this->layout->load_view('filter/jquery_filter'); ?>
-					<li>
-						<form class="navbar-form" role="search">
-							<div class="form-group">
-								<input id="filter" type="text"class="search-query form-control input-sm"
-									   placeholder="<?php echo $filter_placeholder; ?>">
-							</div>
-						</form>
-					</li>
-				<?php } ?>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+
+            <?php if (isset($filter_display) and $filter_display == TRUE) { ?>
+            <li>
+                <?php $this->layout->load_view('filter/jquery_filter'); ?>
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input id="filter" type="text" class="search-query form-control input-sm"
+                               placeholder="<?php echo $filter_placeholder; ?>">
+                    </div>
+                </form>
+            </li>
+            <?php } ?>
+
                 <li>
                     <a href="http://docs.invoiceplane.com/" target="_blank"
                        class="tip icon" data-original-title="<?php echo lang('documentation'); ?>"
@@ -184,7 +225,9 @@
                         <li><?php echo anchor('email_templates/index', lang('email_templates')); ?></li>
                         <li><?php echo anchor('import', lang('import_data')); ?></li>
                         <li><?php echo anchor('invoice_groups/index', lang('invoice_groups')); ?></li>
+                        <!-- // temporarily disabled
                         <li><?php echo anchor('item_lookups/index', lang('item_lookups')); ?></li>
+                        -->
                         <li><?php echo anchor('payment_methods/index', lang('payment_methods')); ?></li>
                         <li><?php echo anchor('tax_rates/index', lang('tax_rates')); ?></li>
                         <li><?php echo anchor('users/index', lang('user_accounts')); ?></li>
@@ -206,36 +249,40 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs">
+<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
     <ul>
         <li>
-            <a href="<?php echo site_url('dashboard'); ?>">
+            <a href="<?php echo site_url('dashboard'); ?>" title="<?php echo lang('dashboard'); ?>">
                 <i class="fa fa-dashboard"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('clients/index'); ?>">
+            <a href="<?php echo site_url('clients/index'); ?>" title="<?php echo lang('clients'); ?>">
                 <i class="fa fa-users"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('quotes/index'); ?>">
+            <a href="<?php echo site_url('quotes/index'); ?>" title="<?php echo lang('quotes'); ?>">
                 <i class="fa fa-file"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('invoices/index'); ?>">
+            <a href="<?php echo site_url('invoices/index'); ?>" title="<?php echo lang('invoices'); ?>">
                 <i class="fa fa-file-text"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('payments/index'); ?>">
+            <a href="<?php echo site_url('products/index'); ?>" title="<?php echo lang('products'); ?>">
+                <i class="fa fa-tags"></i>
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo site_url('payments/index'); ?>" title="<?php echo lang('payments'); ?>">
                 <i class="fa fa-money"></i>
             </a>
         </li>
     </ul>
 </div>
-
 <div class="main-area">
 
     <div id="modal-placeholder"></div>
@@ -247,6 +294,7 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo (lang('cldr') != 'en' ? '.'.lang('cldr') : ''); ?>.js"></script>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>

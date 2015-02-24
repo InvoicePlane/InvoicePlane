@@ -25,10 +25,13 @@ class Dashboard extends Admin_Controller {
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
 
+        $quote_overview_period = $this->mdl_settings->setting('quote_overview_period');
+        $invoice_overview_period = $this->mdl_settings->setting('invoice_overview_period');
+
         $this->layout->set(
             array(
-                'invoice_status_totals' => $this->mdl_invoice_amounts->get_status_totals(),
-                'quote_status_totals'   => $this->mdl_quote_amounts->get_status_totals(),
+                'invoice_status_totals' => $this->mdl_invoice_amounts->get_status_totals($invoice_overview_period),
+                'quote_status_totals'   => $this->mdl_quote_amounts->get_status_totals($quote_overview_period),
                 'invoices'              => $this->mdl_invoices->limit(10)->get()->result(),
                 'quotes'                => $this->mdl_quotes->limit(10)->get()->result(),
                 'invoice_statuses'      => $this->mdl_invoices->statuses(),

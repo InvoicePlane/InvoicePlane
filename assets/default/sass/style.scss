@@ -17,6 +17,9 @@
 // Font: Font-Awesome
 @import "fonts/font-awesome/font-awesome";
 
+// Import Noto Font
+@import "fonts/noto/noto";
+
 /*
 |   =========================================================
 |   Variables
@@ -50,6 +53,7 @@ html {
 body {
     background-color: #fff;
     padding-top: 50px;
+    font-family: 'Noto Sans', Helvetica, Arial, sans-serif;
 }
 
 img {
@@ -58,6 +62,7 @@ img {
 
 a:hover, a:active, a:focus {
     outline: 0;
+    text-decoration: none;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -139,6 +144,9 @@ textarea {
         margin: 0 0 0 0;
     }
 
+    tr {
+        background: #fff;
+    }
     td {
         vertical-align: middle !important;
     }
@@ -178,6 +186,10 @@ table.items td {
     vertical-align: top !important;
 }
 
+.table-responsive {
+    height: 100%;
+}
+
 /*
 |   =========================================================
 |   Navigation
@@ -208,16 +220,16 @@ table.items td {
 }
 
 .navbar-inner {
-   -webkit-border-radius: 0;
-   -moz-border-radius: 0;
-   border-radius: 0;
-   padding: 0;
-   border: none;
-   text-align: right;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    padding: 0;
+    border: none;
+    text-align: right;
 }
 
 .navbar-search {
-   margin-top: 0;
+    margin-top: 0;
 }
 
 // Options Dropdown
@@ -225,7 +237,8 @@ table.items td {
     margin: 0;
 
     .dropdown-menu {
-        left: -10px; // Align dropdown icons with options icon
+        right: 0;
+        left: auto;
     }
 }
 
@@ -268,7 +281,9 @@ table.items td {
 */
 
 .sidebar {
-    @extend .col-sm-1;
+    display: table-cell;
+    vertical-align: top;
+    width: 66px;
     height: 100%;
     padding: 0;
 
@@ -303,6 +318,10 @@ table.items td {
     margin-left: 15px;
     margin-right: 15px;
 }
+.alert.alert-default {
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+}
 
 .tab-content .alert {
     margin-left: 0;
@@ -311,12 +330,18 @@ table.items td {
 
 #form-settings .tab-content,
 div.table-content {
+    height: 100%;
+
     .alert {
         margin: 15px;
     }
     .tab-pane {
         padding-bottom: 50px;
     }
+}
+
+#filter_results {
+    height: 100%;
 }
 
 #panel-overdue-invoices,
@@ -342,19 +367,48 @@ div.table-content {
     border: none;
     border-right: 1px solid #ddd;
     font-size: 90%;
+    .fa {
+        margin-right: 5px;
+    }
     &:last-child {
         border-right: none;
     }
 }
 
-.btn .fa,
+.fa {
+    min-width: 15px;
+    text-align: center;
+}
+
 .fa.fa-margin {
     margin-right: 7px;
 }
 
+.fa-credit-invoice {
+    &:before {
+        content: '-';
+    }
+    &:after {
+        font-family: FontAwesome;
+        content: '\f155';
+    }
+}
+
+.fa-read-only {
+    @extend .fa-ban;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-move {
+    cursor: move;
+}
+
 .main-area {
-    @extend .col-xs-12;
-    @extend .col-sm-11;
+    display: table-cell;
+    width: 100%;
     padding: 0;
     border-left: 1px solid #ddd;
 
@@ -396,7 +450,20 @@ div.table-content {
     .pull-right {
         margin-left: 15px;
     }
+}
 
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
+}
+
+.hidden-sidebar .main-area {
+    display: block !important;
+    .headerbar {
+        padding: 8px 15px;
+    }
 }
 
 .modal {
@@ -409,20 +476,37 @@ div.table-content {
 }
 
 .details-box {
-   @extend .panel;
-   @extend .panel-default;
-   @extend .panel-body;
+    @extend .panel;
+    @extend .panel-default;
+    @extend .panel-body;
     padding: 10px;
 
-   .has-feedback .form-control-feedback {
-       bottom: 0;
-       top: auto;
-       right: 0;
-   }
+    .has-feedback .form-control-feedback {
+        bottom: 0;
+        top: auto;
+        right: 0;
+    }
 }
 
 #email_template_pdf_template > option {
-  display: none;
+    display: none;
+}
+
+#settings-tabs>li.active:first-child>a {
+    border-left: 0 !important;
+}
+
+.updatecheck-results {
+    margin: 10px 0;
+}
+
+#ipnews-loading {
+    margin-top: 15px;
+}
+
+#ipnews-results .alert {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /*
@@ -480,8 +564,8 @@ div.table-content {
 */
 
 .widget {
-        border: 1px solid #ddd;
-        margin-top: 20px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
 
     .widget-title {
         padding: 8px 20px;
@@ -525,16 +609,16 @@ div.table-content {
 
 // Recent Activity
 .time {
-   font-size: 11px;
+    font-size: 11px;
 }
 
 // Recent News
 .post h4 {
-   font-size: 14px;
+    font-size: 14px;
 }
 .post-date {
-   @extend .time;
-   color: #bbb;
+    @extend .time;
+    color: #bbb;
 }
 
 /*
@@ -710,6 +794,17 @@ div.table-content {
     }
 }
 
+.invoice-labels {
+    span.label {
+        float: left;
+        width: auto;
+        margin: 6px 3px 4px 0;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
 /*
 |   =========================================================
 |   Various Styles
@@ -780,58 +875,9 @@ legend, .install-step h2 {
 
 /*
 |   =========================================================
-|   Install, Upgrade and Login
+|   Login
 |   =========================================================
 */
-
-.install-panel {
-    @extend .panel;
-    @extend .panel-default;
-    @extend .panel-body;
-    margin-top: 30px;
-
-    h1  {
-        margin: 20px auto;
-        display: block;
-        width: 200px;
-        height: 100px;
-        background: url('/assets/default/img/logo_200x100.png') center center no-repeat;
-
-        span {
-            display: none;
-        }
-    }
-
-    h2 {
-        @extend legend;
-    }
-
-    ul {
-        list-style: none;
-    }
-
-    .btn {
-        margin-top: 15px;
-    }
-
-    .alert {
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    .label {
-        width: auto;
-    }
-
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2),
-only screen and (min-device-pixel-ratio: 2) {
-    .install-panel h1 {
-        background: url('/assets/default/img/logo_400x200.png') center center no-repeat;
-        background-size: 200px 100px;
-    }
-}
 
 #login {
     @extend .panel;
@@ -849,7 +895,6 @@ only screen and (min-device-pixel-ratio: 2) {
     }
 }
 
-.install-panel .alert,
 #login .alert {
     margin-bottom: 20px;
 }
@@ -860,57 +905,9 @@ only screen and (min-device-pixel-ratio: 2) {
 |   =========================================================
 */
 
-.controls.date {
-    margin-left: 10px;
-    padding: 0;
-}
-
-.datepicker .icon-arrow-left {
-    @extend .fa;
-    @extend .fa-arrow-left;
-    color: #777;
-}
-
-.datepicker .icon-arrow-right {
-    @extend .fa;
-    @extend .fa-arrow-right;
-    color: #777;
-}
-
-.datepicker .day.active {
-    background: #3276b1;
-    color: #efefef;
-    &:hover {
-        background: #3276b1;
-        color: #fff;
-    }
-}
-
-.datepicker .day:hover {
-    background: #efefef;
-    color: #3276b1;
-    cursor: crosshair;
-}
-
-// Fix datepicker icon alingment
-.input-append.date .add-on i,
-.input-prepend.date .add-on i {
-    width: auto;
-    height: auto;
-    display: inline;
-}
-
-// Display datepicker over modal box
-.datepicker.dropdown-menu {
-    padding: 5px;
-    z-index: 9999;
-}
-
-// Reset padding on Date Picker
-.datepicker table th:first-child,
-.datepicker table td:first-child  {
-    padding-left:5px;
-}
+@import "select2";
+@import "select2-bootstrap";
+@import "bootstrap-datepicker";
 
 /*
 |   =========================================================
@@ -922,7 +919,7 @@ only screen and (min-device-pixel-ratio: 2) {
 @media (min-width: 992px) {
 
     .navbar-nav .visible-lg {
-            display: inline-block !important;
+        display: inline-block !important;
     }
 
     .submenu {
@@ -951,7 +948,7 @@ only screen and (min-device-pixel-ratio: 2) {
 
     .sidebar li a { padding: 7px; }
 
-    .main-area { margin-left: 0; }
+    .main-area { margin-left: 0; float: left; }
 
     .main-area .content, .main-area .tab-info {
         padding: 10px;
@@ -966,7 +963,7 @@ only screen and (min-device-pixel-ratio: 2) {
     }
 
     .submenu .navbar-collapse {
-    	margin-top: 7px;
+        margin-top: 7px;
     }
 
 

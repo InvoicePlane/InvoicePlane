@@ -1,29 +1,35 @@
 <div class="container">
+    <div class="install-panel">
 
-    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-        <div class="install-panel">
+        <h1 id="logo"><span>InvoicePlane</span></h1>
 
-            <h1><span>InvoicePlane</span></h1>
+        <h2><?php echo lang('setup_complete'); ?></h2>
 
-            <h2><?php echo lang('setup_complete'); ?></h2>
+        <p>
+            <?php echo lang('setup_complete_message'); ?>
+        </p>
 
-            <p class="alert alert-success">
-                <?php echo lang('setup_complete_message'); ?>
-            </p>
+        <p class="alert alert-info">
+            <?php echo lang('setup_complete_support_note'); ?>
+        </p>
 
-            <p class="alert alert-info">
-                <?php echo lang('setup_complete_support_note'); ?>
-            </p>
+        <p class="alert alert-warning">
+            <?php echo lang('setup_complete_secure_setup'); ?>
+            <br/>
+            <code>Redirect /setup http://yourdomain.com/</code>
+        </p>
 
-            <p class="alert alert-warning">
-                <?php echo lang('setup_complete_secure_setup'); ?>
-                <br/>
-                <code>Redirect /setup http://yourdomain.com/</code>
-            </p>
+        <?php if ($this->session->userdata('setup_notice')) {
+            $setup_notice = $this->session->userdata('setup_notice');
+            ?>
+            <div class="alert <?php echo $setup_notice['type']; ?>">
+                <?php echo $setup_notice['content']; ?>
+            </div>
+        <?php } ?>
 
-            <a href="<?php echo site_url('sessions/login'); ?>" class="btn btn-success" >
-                <i class="fa fa-check fa-margin"></i> <?php echo lang('login'); ?>
-            </a>
-        </div>
+        <a href="<?php echo site_url('sessions/login'); ?>" class="btn btn-success" >
+            <i class="fa fa-check fa-margin"></i> <?php echo lang('login'); ?>
+        </a>
+
     </div>
 </div>

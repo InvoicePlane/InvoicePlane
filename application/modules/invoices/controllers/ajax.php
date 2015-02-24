@@ -269,6 +269,63 @@ class Ajax extends Admin_Controller {
         echo json_encode($response);
     }
 
-}
+    public function modal_create_credit()
+    {
+        $this->load->module('layout');
 
-?>
+        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('invoice_groups/mdl_invoice_groups');
+        $this->load->model('tax_rates/mdl_tax_rates');
+
+        $data = array(
+            'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
+            'tax_rates'      => $this->mdl_tax_rates->get()->result(),
+            'invoice_id'     => $this->input->post('invoice_id'),
+            'invoice'        => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))->get()->row()
+        );
+
+        $this->layout->load_view('invoices/modal_create_credit', $data);
+    }
+
+    public function create_credit()
+    {
+        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('invoices/mdl_items');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
+
+        if ($this->mdl_invoices->run_validation())
+        {
+            $target_id = $this->mdl_invoices->save();
+            $source_id = $this->input->post('invoice_id');
+
+            $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
+
+            // Set source invoice to read-only
+            $this->mdl_invoices->where('invoice_id', $source_id);
+            $this->mdl_invoices->update('ip_invoices', array('is_read_only' => '1'));
+
+            // Set target invoice to credit invoice
+            $this->mdl_invoices->where('invoice_id', $target_id);
+            $this->mdl_invoices->update('ip_invoices', array('creditinvoice_parent_id' => $source_id));
+
+            $this->mdl_invoices->where('invoice_id', $target_id);
+            $this->mdl_invoices->update('ip_invoice_amounts', array('invoice_sign' => '-1'));
+
+            $response = array(
+                'success'    => 1,
+                'invoice_id' => $target_id
+            );
+        }
+        else
+        {
+            $this->load->helper('json_error');
+            $response = array(
+                'success'           => 0,
+                'validation_errors' => json_errors()
+            );
+        }
+
+        echo json_encode($response);
+    }
+
+}

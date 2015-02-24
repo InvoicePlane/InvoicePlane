@@ -2,16 +2,16 @@
 
     $(function() {
 
-        $('#btn_add_item_from_lookup').click(function() {
-            $('#modal-placeholder').load("<?php echo site_url('item_lookups/ajax/modal_item_lookups'); ?>/" + Math.floor(Math.random()*1000));
+        $('#btn_add_product').click(function() {
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random()*1000));
         });
 
-        $('#btn_add_item').click(function() {
-            $('#new_item').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+        $('#btn_add_row').click(function() {
+            $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         });
 
         <?php if (!$items) { ?>
-            $('#new_item').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         <?php } ?>
 
         $('#btn_save_quote').click(function() {
@@ -85,7 +85,7 @@
 		<div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
                data-toggle="dropdown" href="#" title="<?php echo lang('options'); ?>">
-               <i class="fa fa-cog"></i> <span class="hidden-sm hidden-xs"><?php echo lang('options'); ?></span> <i class="fa fa-caret-down no-margin"></i>
+               <i class="fa fa-cog"></i> <span class="hidden-xs"><?php echo lang('options'); ?></span> <i class="fa fa-caret-down no-margin"></i>
             </a>
 			<ul class="dropdown-menu">
 				<li>
@@ -129,14 +129,15 @@
 			</ul>
 		</div>
 
-		<a href="#" class="btn btn-sm btn-default" id="btn_add_item" title="<?php echo lang('add_item'); ?>">
-            <i class="fa fa-plus"></i><span class="hidden-sm hidden-xs"><?php echo lang('add_item'); ?></span>
+		<a href="#" class="btn btn-sm btn-default" id="btn_add_row" title="<?php echo lang('add_new_row'); ?>">
+            <i class="fa fa-plus"></i><span class="hidden-xs"><?php echo lang('add_new_row'); ?></span>
+            
         </a>
-        <a href="#" class="btn btn-sm btn-default" id="btn_add_item_from_lookup" title="<?php echo lang('add_item_from_lookup'); ?>">
-            <i class="fa fa-database"></i><span class="hidden-sm hidden-xs"><?php echo lang('add_item_from_lookup'); ?></span>
+        <a href="#" class="btn btn-sm btn-default" id="btn_add_product" title="<?php echo lang('add_product'); ?>">
+            <i class="fa fa-database"></i><span class="hidden-xs"><?php echo lang('add_product'); ?></span>
         </a>
 		<a href="#" class="btn btn-sm btn-success" id="btn_save_quote" title="<?php echo lang('save'); ?>">
-            <i class="fa fa-check"></i><span class="hidden-sm hidden-xs"><?php echo lang('save'); ?></span>
+            <i class="fa fa-check"></i><span class="hidden-xs"><?php echo lang('save'); ?></span>
         </a>
 	</div>
 
@@ -155,18 +156,18 @@
                 <div class="col-xs-12 col-md-8">
 				<div class="pull-left">
 
-                    <h2><a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"><?php echo $quote->client_name; ?></a></h2><br>
+                    <h2><a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"><?php echo $quote->client_name; ?></a></h2><br />
 					<span>
-						<?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
-						<?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>
+						<?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br />' : ''; ?>
+						<?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br />' : ''; ?>
+						<?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
 						<?php echo ($quote->client_city) ? $quote->client_city : ''; ?>
 						<?php echo ($quote->client_state) ? $quote->client_state : ''; ?>
-						<?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
-						<?php echo ($quote->client_country) ? '<br>' . $quote->client_country : ''; ?>
+						<?php echo ($quote->client_country) ? '<br />' . $quote->client_country : ''; ?>
 					</span>
-					<br><br>
+					<br /><br />
 					<?php if ($quote->client_phone) { ?>
-					<span><strong><?php echo lang('phone'); ?>:</strong> <?php echo $quote->client_phone; ?></span><br>
+					<span><strong><?php echo lang('phone'); ?>:</strong> <?php echo $quote->client_phone; ?></span><br />
 					<?php } ?>
 					<?php if ($quote->client_email) { ?>
 					<span><strong><?php echo lang('email'); ?>:</strong> <?php echo $quote->client_email; ?></span>

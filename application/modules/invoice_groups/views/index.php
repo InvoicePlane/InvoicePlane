@@ -21,11 +21,8 @@
             <thead>
             <tr>
                 <th><?php echo lang('name'); ?></th>
-                <th><?php echo lang('prefix'); ?></th>
                 <th><?php echo lang('next_id'); ?></th>
                 <th><?php echo lang('left_pad'); ?></th>
-                <th><?php echo lang('year_prefix'); ?></th>
-                <th><?php echo lang('month_prefix'); ?></th>
                 <th><?php echo lang('options'); ?></th>
             </tr>
             </thead>
@@ -34,11 +31,8 @@
             <?php foreach ($invoice_groups as $invoice_group) { ?>
                 <tr>
                     <td><?php echo $invoice_group->invoice_group_name; ?></td>
-                    <td><?php echo $invoice_group->invoice_group_prefix; ?></td>
                     <td><?php echo $invoice_group->invoice_group_next_id; ?></td>
                     <td><?php echo $invoice_group->invoice_group_left_pad; ?></td>
-                    <td><?php echo ($invoice_group->invoice_group_prefix_year) ? lang('yes') : lang('no'); ?></td>
-                    <td><?php echo ($invoice_group->invoice_group_prefix_month) ? lang('yes') : lang('no'); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

@@ -59,6 +59,14 @@
 			<?php } ?>
 		</select>
 	</div>
+
+    <div class="form-group">
+        <label for="settings[public_invoice_template]" class="control-label">
+            <?php echo lang('pdf_invoice_footer'); ?>
+        </label>
+        <textarea name="settings[pdf_invoice_footer]" class="input-sm form-control no-margin"><?php echo $this->mdl_settings->setting('pdf_invoice_footer'); ?></textarea>
+        <p class="help-block"><?php echo lang('pdf_invoice_footer_hint'); ?></p>
+    </div>
     
 	<div class="form-group">
 		<label for="settings[email_invoice_template_paid]" class="control-label">
