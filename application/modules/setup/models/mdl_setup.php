@@ -109,8 +109,8 @@ class Mdl_Setup extends CI_Model {
 
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Invoice Default', 'invoice_group_next_id' => 1));
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Quote Default', 'invoice_group_prefix'  => 'QUO', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Facture Simple', 'invoice_group_prefix'  => 'FAC', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Devis Simple', 'invoice_group_prefix'  => 'DEV', 'invoice_group_next_id' => 1));
     }
 
     private function install_default_settings()
