@@ -331,5 +331,4 @@ class Mdl_Invoice_Amounts extends CI_Model {
     }
 
 }
-
-?>)-
+?>
