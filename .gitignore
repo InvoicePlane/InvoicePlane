@@ -3,6 +3,7 @@
 !/application/logs/index.html
 /uploads/temp/*
 !/uploads/temp/remove.txt
+/application/helpers/mpdf/ttfontdata/*
 
 .idea
 .sass-cache
