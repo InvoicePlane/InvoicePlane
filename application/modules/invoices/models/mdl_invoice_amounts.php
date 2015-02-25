@@ -295,7 +295,6 @@ class Mdl_Invoice_Amounts extends CI_Model {
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW())
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
 					GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
@@ -304,7 +303,6 @@ class Mdl_Invoice_Amounts extends CI_Model {
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW())
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW() - INTERVAL 1 YEAR)
 					GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
@@ -334,4 +332,4 @@ class Mdl_Invoice_Amounts extends CI_Model {
 
 }
 
-?>
+?>)-
