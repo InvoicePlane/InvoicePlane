@@ -14,7 +14,7 @@
      role="dialog" aria-labelledby="delete-invoice" aria-hidden="true">
     <div class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">×</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
             <h3><?php echo lang('delete_invoice'); ?></h3>
         </div>
         <div class="modal-body">
