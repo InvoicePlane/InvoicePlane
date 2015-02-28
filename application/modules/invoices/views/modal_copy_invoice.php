@@ -40,7 +40,7 @@
      role="dialog" aria-labelledby="modal_copy_invoice" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">x</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
             <h3><?php echo lang('copy_invoice'); ?></h3>
         </div>
         <div class="modal-body">

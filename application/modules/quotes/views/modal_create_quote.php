@@ -49,7 +49,7 @@
      role="dialog" aria-labelledby="modal_create_quote" aria-hidden="true">
 	<form class="modal-content">
 		<div class="modal-header">
-			<a data-dismiss="modal" class="close">x</a>
+			<a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 			<h3><?php echo lang('create_quote'); ?></h3>
 		</div>
 		<div class="modal-body">
