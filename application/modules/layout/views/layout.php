@@ -125,11 +125,11 @@
 
         <div class="collapse navbar-collapse" id="ip-navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><?php echo anchor('dashboard', '<i class="fa fa-dashboard" title="'.lang('dashboard').'"></i>&nbsp;<span class="visible-xs-inline-block hidden-md hidden-sm">'.lang('dashboard').'&nbsp;</span>'); ?></li>
+                <li><?php echo anchor('dashboard', '<i class="fa fa-dashboard" title="'.lang('dashboard').'"></i><span class="visible-xs-inline-block hidden-md hidden-sm">'.lang('dashboard').'</span>'); ?></li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('clients'); ?>">
-                        <i class="fa fa-users"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('clients'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-users"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('clients'); ?></span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', lang('add_client')); ?></li>
@@ -139,7 +139,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('quotes'); ?>">
-                        <i class="fa fa-file"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('quotes'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-file"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('quotes'); ?></span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-quote"><?php echo lang('create_quote'); ?></a></li>
@@ -149,7 +149,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('invoices'); ?>">
-                        <i class="fa fa-file-text"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('invoices'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-file-text"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('invoices'); ?></span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-invoice"><?php echo lang('create_invoice'); ?></a></li>
@@ -160,7 +160,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('products'); ?>">
-                        <i class="fa fa-tags"></i> &nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('products'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-tags"></i> &nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('products'); ?></span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('products/form', lang('create_product')); ?></li>
@@ -171,7 +171,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('payments'); ?>">
-                        <i class="fa fa-money"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('payments'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-money"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('payments'); ?></span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('payments/form', lang('enter_payment')); ?></li>
@@ -181,7 +181,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('reports'); ?>">
-                        <i class="fa fa-bar-chart-o"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('reports'); ?>&nbsp;</span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-bar-chart-o"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('reports'); ?></span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('reports/invoice_aging', lang('invoice_aging')); ?></li>
