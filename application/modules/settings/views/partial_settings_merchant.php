@@ -1,4 +1,4 @@
-<div class="tab-info form-horizontal">
+<div class="tab-info">
 
 	<div class="form-group">
         <label for="settings[merchant_enabled]" class="control-label">
