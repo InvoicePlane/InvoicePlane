@@ -288,7 +288,9 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
-<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo (lang('cldr') != 'en' ? '.'.lang('cldr') : ''); ?>.js"></script>
+<?php if (lang('cldr') != 'en') {?>
+<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo lang('cldr'); ?>.js"></script>
+<?php } ?>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
