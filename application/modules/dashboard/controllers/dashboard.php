@@ -32,6 +32,8 @@ class Dashboard extends Admin_Controller {
             array(
                 'invoice_status_totals' => $this->mdl_invoice_amounts->get_status_totals($invoice_overview_period),
                 'quote_status_totals'   => $this->mdl_quote_amounts->get_status_totals($quote_overview_period),
+                'invoice_status_period' => str_replace('-', '_', $invoice_overview_period),
+                'quote_status_period'   => str_replace('-', '_', $quote_overview_period),
                 'invoices'              => $this->mdl_invoices->limit(10)->get()->result(),
                 'quotes'                => $this->mdl_quotes->limit(10)->get()->result(),
                 'invoice_statuses'      => $this->mdl_invoices->statuses(),

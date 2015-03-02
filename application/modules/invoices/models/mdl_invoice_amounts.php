@@ -280,7 +280,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
     {
         switch ($period) {
             default:
-            case 'month':
+            case 'this-month':
                 $results = $this->db->query("
 					SELECT ip_invoices.invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
@@ -298,7 +298,23 @@ class Mdl_Invoice_Amounts extends CI_Model {
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
 					GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
-            case 'year':
+            case 'this-quarter':
+                $results = $this->db->query("
+					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW())
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+            case 'last-quarter':
+                $results = $this->db->query("
+					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+            case 'this-year':
                 $results = $this->db->query("
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts

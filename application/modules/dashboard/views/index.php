@@ -33,6 +33,7 @@
 
             <div class="panel-heading">
                 <b><i class="fa fa-file"></i> <?php echo lang('quote_overview'); ?></b>
+                <span class="pull-right text-muted"><?php echo lang($quote_status_period); ?></span>
             </div>
 
                 <table class="table table-bordered table-condensed no-margin">
@@ -58,6 +59,7 @@
 
             <div class="panel-heading">
                 <b><i class="fa fa-file-text"></i> <?php echo lang('invoice_overview'); ?></b>
+                <span class="pull-right text-muted"><?php echo lang($invoice_status_period); ?></span>
             </div>
 
                 <table class="table table-bordered table-condensed no-margin">
