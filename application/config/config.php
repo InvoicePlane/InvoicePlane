@@ -106,7 +106,7 @@ $config['enable_invoice_deletion'] = FALSE;
 | setting the value to TRUE
 |
 */
-$config['disable_read_only'] = TRUE;
+$config['disable_read_only'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
