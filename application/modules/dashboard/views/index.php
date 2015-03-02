@@ -108,7 +108,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($overdue_invoices as $invoice) { ?>
+                    <?php foreach ($overdue_invoices as $invoice) {
+                        if ($this->config->item('disable_read_only') == TRUE) {
+                            $invoice->is_read_only = 0;
+                        } ?>
                         <tr>
                             <td>
                                 <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
@@ -239,7 +242,10 @@
                     </thead>
                     <tbody>
 
-                        <?php foreach ($invoices as $invoice) { ?>
+                        <?php foreach ($invoices as $invoice) {
+                            if ($this->config->item('disable_read_only') == TRUE) {
+                                $invoice->is_read_only = 0;
+                            } ?>
                         <tr>
                             <td>
                                 <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">

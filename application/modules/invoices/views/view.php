@@ -84,13 +84,18 @@
 
 </script>
 
-<?php echo $modal_delete_invoice; ?>
-<?php echo $modal_add_invoice_tax; ?>
+<?php
+    echo $modal_delete_invoice;
+    echo $modal_add_invoice_tax;
+    if ($this->config->item('disable_read_only') == TRUE) {
+        $invoice->is_read_only = 0;
+    }
+?>
 
 <div class="headerbar">
     <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
-    <div class="pull-right <?php if ($invoice->is_read_only != 1) { ?>btn-group<?php } ?>">
+    <div class="pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
 
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
@@ -167,6 +172,8 @@
             <i class="fa fa-database"></i>
             <?php echo lang('add_product'); ?>
         </a>
+        <?php }
+        if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
         <a href="#" class="btn btn-sm btn-success" id="btn_save_invoice">
             <i class="fa fa-check"></i> <?php echo lang('save'); ?>
         </a>
@@ -267,11 +274,17 @@
                             </div>
                         </div>
                         <div class="invoice-properties">
-                            <label><?php echo lang('status'); ?></label>
+                            <label><?php echo lang('status');
+                                if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
+                                    echo ' <span class="small">('.lang('can_be_changed').')</span>';
+                                }
+                                ?></label>
                             <div>
                                 <select name="invoice_status_id" id="invoice_status_id"
                                         class="form-control input-sm"
-                                    <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
+                                    <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                        echo 'disabled="disabled"';
+                                    } ?>>
                                     <?php foreach ($invoice_statuses as $key=>$status) { ?>
                                         <option value="<?php echo $key; ?>" <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
                                             <?php echo $status['label']; ?>
