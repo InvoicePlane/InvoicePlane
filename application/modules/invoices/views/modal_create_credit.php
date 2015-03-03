@@ -53,9 +53,9 @@
 
             <select name="invoice_group_id" id="invoice_group_id" class="hidden">
                 <option value=""></option>
-                <?php foreach ($invoice_groups as $invoice_group) { ?>
+                <?php  foreach ($invoice_groups as $invoice_group) { ?>
                     <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                        <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) {
+                        <?php if ($invoice->invoice_group_id == $invoice_group->invoice_group_id) {
                             echo 'selected="selected"';
                             $credit_invoice_group = $invoice_group->invoice_group_name;
                         } ?>>
@@ -69,7 +69,7 @@
             <ul>
                 <li><?php echo lang('client') . ': ' . $invoice->client_name ?></li>
                 <li><?php echo lang('credit_invoice_date') . ': ' . $credit_date ?></li>
-                <li><?php echo lang('invoice_group') . ': ' . $credit_invoice_group ?></li>
+                <li><?php echo lang('invoice_group') . ': ' . @$credit_invoice_group ?></li>
             </ul>
 
             <div class="alert alert-danger no-margin">
