@@ -30,7 +30,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#36393d', end
 	.navbar-nav {
 		margin: 0px;
 	}
-	.main-area {
-		float: none;
+}
+@media screen and (min-width: 768px) {
+	.main-area.col-sm-11{
+		width:91.3333%
+	}
+	.sidebar.col-sm-1 {
+		width:8.6666%
 	}
 }

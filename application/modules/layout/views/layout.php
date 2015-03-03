@@ -239,7 +239,7 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
+<div class="sidebar hidden-xs <?php echo ($this->mdl_settings->setting('disable_sidebar')==1)?'hidden':'col-sm-1';?>">
     <ul>
         <li>
             <a href="<?php echo site_url('dashboard'); ?>" title="<?php echo lang('dashboard'); ?>">
@@ -273,7 +273,7 @@
         </li>
     </ul>
 </div>
-<div class="main-area">
+<div class="main-area <?php echo ($this->mdl_settings->setting('disable_sidebar')==1)?'col-sm-12':'col-sm-11';?>">
 
     <div id="modal-placeholder"></div>
 
