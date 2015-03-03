@@ -1,7 +1,7 @@
 <form method="post" class="form-horizontal">
 
     <div class="headerbar">
-        <h1><?php echo lang('families_form'); ?></h1>
+        <h1><?php echo lang('family'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 

@@ -40,7 +40,7 @@
 </style>
 
 <div class="headerbar">
-    <h1><?php echo $client->client_name; ?></h1>
+    <h1><?php echo lang('client'); ?></h1>
 
     <div class="pull-right btn-group">
         <a href="#" class="btn btn-sm btn-default client-create-quote"

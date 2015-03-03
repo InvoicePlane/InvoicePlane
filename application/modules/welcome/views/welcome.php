@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -11,7 +11,7 @@
     <!-- Use the .htaccess and remove these lines to avoid edge case issues -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>InvoicePlane</title>
+    <title><?php echo ($this->mdl_settings->setting('custom_title'))?$this->mdl_settings->setting('custom_title'):'InvoicePlane' ?></title>
 
     <!-- Mobile viewport optimized: j.mp/bplateviewport -->
     <meta name="viewport" content="width=device-width">

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -6,15 +6,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-    <title>
-        <?php
-        if ($this->mdl_settings->setting('custom_title') != '') {
-            echo $this->mdl_settings->setting('custom_title');
-        } else {
-            echo 'InvoicePlane';
-        }?>
-    </title>
-
+    <title><?php echo ($this->mdl_settings->setting('custom_title'))?$this->mdl_settings->setting('custom_title'):'InvoicePlane' ?></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">

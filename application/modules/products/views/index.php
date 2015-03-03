@@ -33,16 +33,16 @@
             <tbody>
             <?php foreach ($products as $product) { ?>
                 <tr>
-                    <td><?php echo $product->family_name; ?></td>
+                    <td><a href="<?php echo site_url('families/form/'   . $product->family_id); ?>" title="<?php echo lang('edit'); ?>"><?php echo $product->family_name; ?></a></td>
                     <td><?php echo $product->product_sku; ?></td>
-                    <td><?php echo $product->product_name; ?></td>
+                    <td><a href="<?php echo site_url('products/form/'   . $product->product_id); ?>" title="<?php echo lang('edit'); ?>"><?php echo $product->product_name; ?></a></td>
                     <td><?php echo $product->product_description; ?></td>
                     <td><?php echo format_currency($product->product_price); ?></td>
                     <td><?php echo ($product->tax_rate_id) ? $product->tax_rate_name : lang('none'); ?></td>
-					<td>
-						<a href="<?php echo site_url('products/form/'   . $product->product_id); ?>" title="<?php echo lang('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
-						<a href="<?php echo site_url('products/delete/' . $product->product_id); ?>" title="<?php echo lang('delete'); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');"><i class="fa fa-trash-o fa-margin"></i></a>
-					</td>
+                    <td>
+                        <a href="<?php echo site_url('products/form/'   . $product->product_id); ?>" title="<?php echo lang('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
+                        <a href="<?php echo site_url('products/delete/' . $product->product_id); ?>" title="<?php echo lang('delete'); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');"><i class="fa fa-trash-o fa-margin"></i></a>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>
