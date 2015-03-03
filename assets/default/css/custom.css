@@ -4,6 +4,16 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
+.navbar-inverse {
+background: #36393d;
+background: -moz-linear-gradient(45deg,  #36393d 0%, #000000 100%);
+background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#36393d), color-stop(100%,#000000));
+background: -webkit-linear-gradient(45deg,  #36393d 0%,#000000 100%);
+background: -o-linear-gradient(45deg,  #36393d 0%,#000000 100%);
+background: -ms-linear-gradient(45deg,  #36393d 0%,#000000 100%);
+background: linear-gradient(45deg,  #36393d 0%,#000000 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#36393d', endColorstr='#000000',GradientType=1 );
+}
 .nav > li > a {
     padding-left: 8px;
     padding-right: 8px;}
