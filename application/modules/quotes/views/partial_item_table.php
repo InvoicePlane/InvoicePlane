@@ -60,7 +60,7 @@
 		
 		<?php foreach ($items as $item) { ?>
 		<tr class="item">
-			<td><i class="fa fa-bars cursor-move"></i></td>
+			<td><i class="fa fa-arrows cursor-move"></i></td>
 			<td class="td-text">
 				<input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
 				<input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">
