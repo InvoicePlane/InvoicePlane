@@ -1,4 +1,39 @@
-<div class="tab-info form-horizontal">
+<div class="tab-info">
+
+    <div class="form-group">
+        <label for="settings[quotes_expire_after]" class="control-label">
+            <?php echo lang('quotes_expire_after'); ?>
+        </label>
+        <input type="text" name="settings[quotes_expire_after]" class="input-sm form-control"
+               value="<?php echo $this->mdl_settings->setting('quotes_expire_after'); ?>">
+    </div>
+
+    <div class="form-group">
+        <label for="settings[default_quote_group]" class="control-label">
+            <?php echo lang('default_quote_group'); ?>
+        </label>
+        <select name="settings[default_quote_group]" class="input-sm form-control">
+            <option value=""></option>
+            <?php foreach ($invoice_groups as $invoice_group) { ?>
+                <option value="<?php echo $invoice_group->invoice_group_id; ?>" <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
+            <?php } ?>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="settings[mark_quotes_sent_pdf]" class="control-label">
+            <?php echo lang('mark_quotes_sent_pdf'); ?>
+        </label>
+        <select name="settings[mark_quotes_sent_pdf]" class="input-sm form-control">
+            <option value="0" <?php if (!$this->mdl_settings->setting('mark_quotes_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
+            <option value="1" <?php if ($this->mdl_settings->setting('mark_quotes_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <hr/>
+        <h4><?php echo lang('quote_template'); ?></h4>
+    </div>
 
 	<div class="form-group">
         <label for="settings[pdf_quote_template]" class="control-label">
@@ -35,35 +70,5 @@
             <?php } ?>
         </select>
 	</div>
-
-	<div class="form-group">
-        <label for="settings[quotes_expire_after]" class="control-label">
-            <?php echo lang('quotes_expire_after'); ?>
-        </label>
-        <input type="text" name="settings[quotes_expire_after]" class="input-sm form-control"
-               value="<?php echo $this->mdl_settings->setting('quotes_expire_after'); ?>">
-	</div>
-
-	<div class="form-group">
-        <label for="settings[default_quote_group]" class="control-label">
-            <?php echo lang('default_quote_group'); ?>
-        </label>
-        <select name="settings[default_quote_group]" class="input-sm form-control">
-            <option value=""></option>
-            <?php foreach ($invoice_groups as $invoice_group) { ?>
-            <option value="<?php echo $invoice_group->invoice_group_id; ?>" <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
-            <?php } ?>
-        </select>
-	</div>
-
-    <div class="form-group">
-        <label for="settings[mark_quotes_sent_pdf]" class="control-label">
-            <?php echo lang('mark_quotes_sent_pdf'); ?>
-        </label>
-        <select name="settings[mark_quotes_sent_pdf]" class="input-sm form-control">
-            <option value="0" <?php if (!$this->mdl_settings->setting('mark_quotes_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
-            <option value="1" <?php if ($this->mdl_settings->setting('mark_quotes_sent_pdf')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
-        </select>
-    </div>
 
 </div>

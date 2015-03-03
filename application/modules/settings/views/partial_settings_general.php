@@ -141,9 +141,11 @@
                     <?php echo lang('quote_overview_period'); ?>
                 </label>
                 <select name="settings[quote_overview_period]" class="input-sm form-control">
-                    <option value="month" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'month') { ?>selected="selected"<?php } ?>><?php echo lang('this_month'); ?></option>
+                    <option value="this-month" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo lang('this_month'); ?></option>
                     <option value="last-month" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo lang('last_month'); ?></option>
-                    <option value="year" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'year') { ?>selected="selected"<?php } ?>><?php echo lang('this_year'); ?></option>
+                    <option value="this-quarter" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('this_quarter'); ?></option>
+                    <option value="last-quarter" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('last_quarter'); ?></option>
+                    <option value="this-year" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo lang('this_year'); ?></option>
                     <option value="last-year" <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo lang('last_year'); ?></option>
                 </select>
             </div>
@@ -155,9 +157,11 @@
                     <?php echo lang('invoice_overview_period'); ?>
                 </label>
                 <select name="settings[invoice_overview_period]" class="input-sm form-control">
-                    <option value="month" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'month') { ?>selected="selected"<?php } ?>><?php echo lang('this_month'); ?></option>
+                    <option value="this-month" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo lang('this_month'); ?></option>
                     <option value="last-month" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo lang('last_month'); ?></option>
-                    <option value="year" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'year') { ?>selected="selected"<?php } ?>><?php echo lang('this_year'); ?></option>
+                    <option value="this-quarter" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('this_quarter'); ?></option>
+                    <option value="last-quarter" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('last_quarter'); ?></option>
+                    <option value="this-year" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo lang('this_year'); ?></option>
                     <option value="last-year" <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo lang('last_year'); ?></option>
                 </select>
             </div>

@@ -85,11 +85,12 @@ h1, h2, h3, h4, h5, h6 {
 
 body *:focus {
     outline: none !important;
+    border-color: #aaa !important;
+    box-shadow: none !important;
 }
 
-// Fix rows getting large height
-.row-fluid:after {
-    clear: none !important;
+.form-control, .panel {
+    box-shadow: none;
 }
 
 /*
@@ -167,18 +168,11 @@ textarea {
         min-width: 250px;
     }
     .td-amount {
-        min-width: 100px;
         text-align: right;
-        font-size: 13px;
-        font-family: Monaco, Lucida Console, monospace;
         .form-control {
             text-align: right;
             font-size: 13px;
         }
-    }
-    .td-icon {
-        text-align: center;
-        min-width: 40px;
     }
 }
 
@@ -745,6 +739,13 @@ div.table-content {
     }
     .form-control {
         margin: 0;
+    }
+    tr.item {
+        input, textarea {
+            border-color: #e5e5e5;
+            border-radius: 0;
+            box-shadow: none;
+        }
     }
 }
 

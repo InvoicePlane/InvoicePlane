@@ -17,7 +17,7 @@
 	<tbody>
 		
 		<tr id="new_row" style="display: none;">
-			<td><i class="fa fa-bars cursor-move"></i></td>
+			<td><i class="fa fa-arrows cursor-move"></i></td>
 			<td class="td-text">
 				<input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
 				<input type="hidden" name="item_id" value="">
@@ -34,15 +34,15 @@
             <td class="td-textarea">
                 <textarea name="item_description" class="form-control"></textarea>
             </td>
-			<td class="td-amount">
+			<td class="td-amount amount">
                 <input type="text" class="input-sm form-control"
                        name="item_quantity" value="">
             </td>
-			<td class="td-amount">
+			<td class="td-amount amount">
                 <input type="text" class="input-sm form-control"
                        name="item_price" value="">
             </td>
-			<td class="td-amount">
+			<td class="td-amount amount">
 				<select name="item_tax_rate_id" class="input-sm form-control">
 					<option value="0"><?php echo lang('none'); ?></option>
 					<?php foreach ($tax_rates as $tax_rate) { ?>
@@ -52,9 +52,9 @@
 					<?php } ?>
 				</select>
 			</td>
-			<td class="td-amount"><span name="subtotal"></span></td>
-			<td class="td-amount"><span name="item_tax_total"></span></td>
-			<td class="td-amount"><span name="item_total"></span></td>
+			<td class="td-amount amount"><span name="subtotal"></span></td>
+			<td class="td-amount amount"><span name="item_tax_total"></span></td>
+			<td class="td-amount amount"><span name="item_total"></span></td>
 			<td class="td-icon"></td>
 		</tr>
 		
@@ -70,15 +70,15 @@
             <td class="td-textarea">
                 <textarea name="item_description" class="input-sm form-control"><?php echo $item->item_description; ?></textarea>
             </td>
-			<td class="td-amount">
+			<td class="td-amount amount">
                 <input type="text" name="item_quantity" class="input-sm form-control"
                        value="<?php echo format_amount($item->item_quantity); ?>">
             </td>
-			<td class="td-amount">
+			<td class="td-amount amount">
                 <input type="text" name="item_price" class="input-sm form-control"
                        value="<?php echo format_amount($item->item_price); ?>">
             </td>
-			<td style="vertical-align: top;">
+			<td class="td-amount amount">
 				<select name="item_tax_rate_id"
                     class="form-control input-sm">
 					<option value="0"><?php echo lang('none'); ?></option>
@@ -89,17 +89,17 @@
 					<?php } ?>
 				</select>
 			</td>
-			<td class="td-amount">
+			<td class="td-amount amount">
                 <span name="subtotal">
                     <?php echo format_currency($item->item_subtotal); ?>
                 </span>
             </td>
-			<td class="td-amount">
+			<td class="td-amount amount">
                 <span name="item_tax_total">
                     <?php echo format_currency($item->item_tax_total); ?>
                 </span>
             </td>
-			<td class="td-amount">
+			<td class="td-amount amount">
                 <span name="item_total">
                     <?php echo format_currency($item->item_total); ?>
                 </span>
