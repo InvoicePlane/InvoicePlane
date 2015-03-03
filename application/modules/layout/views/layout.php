@@ -111,13 +111,13 @@
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#ip-navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
-                <?php echo lang('menu') ?> &nbsp; <i class="fa fa-bars"></i>
+                <?php echo lang('menu') ?> &nbsp;<i class="fa fa-bars"></i>
             </button>
         </div>
 
         <div class="collapse navbar-collapse" id="ip-navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><?php echo anchor('dashboard', '<i class="fa fa-dashboard" title="'.lang('dashboard').'"></i><span class="visible-xs-inline-block hidden-md hidden-sm">'.lang('dashboard').'</span>'); ?></li>
+                <li><?php echo anchor('dashboard', '<i class="fa fa-dashboard" title="'.lang('dashboard').'"></i>&nbsp;<span class="visible-xs-inline-block hidden-md hidden-sm">'.lang('dashboard').'</span>'); ?></li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('clients'); ?>">
@@ -152,7 +152,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo lang('products'); ?>">
-                        <i class="fa fa-tags"></i> &nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('products'); ?></span><i class="fa fa-caret-down"></i>
+                        <i class="fa fa-tags"></i>&nbsp;<span class="visible-xs-inline-block visible-lg hidden-md"><?php echo lang('products'); ?></span><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('products/form', lang('create_product')); ?></li>
@@ -201,8 +201,7 @@
                     <a href="http://docs.invoiceplane.com/" target="_blank"
                        class="tip icon" data-original-title="<?php echo lang('documentation'); ?>"
                        data-placement="bottom">
-                        <i class="fa fa-question-circle"></i>
-                        <span class="visible-xs-inline-block">&nbsp;<?php echo lang('documentation'); ?></span>
+                        <i class="fa fa-question-circle"></i>&nbsp;<span class="visible-xs-inline-block"><?php echo lang('documentation'); ?></span>
                     </a>
                 </li>
 
@@ -210,8 +209,7 @@
                     <a href="#" class="dropdown-toggle tip icon" data-toggle="dropdown"
                        data-original-title="<?php echo lang('settings'); ?>"
                        data-placement="bottom">
-                        <i class="fa fa-cogs"></i>
-                        <span class="visible-xs-inline-block">&nbsp;<?php echo lang('settings'); ?></span>
+                        <i class="fa fa-cogs"></i>&nbsp;<span class="visible-xs-inline-block"><?php echo lang('settings'); ?></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('custom_fields/index', lang('custom_fields')); ?></li>
@@ -233,8 +231,7 @@
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
                        data-original-title="<?php echo lang('logout'); ?>" >
-                        <i class="fa fa-power-off"></i>
-                        <span class="visible-xs-inline-block">&nbsp;<?php echo lang('logout'); ?></span>
+                        <i class="fa fa-power-off"></i>&nbsp;<span class="visible-xs-inline-block"><?php echo lang('logout'); ?></span>
                     </a>
                 </li>
             </ul>
