@@ -223,7 +223,6 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('custom_fields/index', lang('custom_fields')); ?></li>
                         <li><?php echo anchor('email_templates/index', lang('email_templates')); ?></li>
-                        <li><?php echo anchor('import', lang('import_data')); ?></li>
                         <li><?php echo anchor('invoice_groups/index', lang('invoice_groups')); ?></li>
                         <!-- // temporarily disabled
                         <li><?php echo anchor('item_lookups/index', lang('item_lookups')); ?></li>
@@ -233,6 +232,7 @@
                         <li><?php echo anchor('users/index', lang('user_accounts')); ?></li>
                         <li class="divider hidden-xs hidden-sm"></li>
                         <li><?php echo anchor('settings', lang('system_settings')); ?></li>
+						<li><?php echo anchor('import', lang('import_data')); ?></li>
                     </ul>
                 </li>
 
@@ -289,7 +289,9 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
-<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo (lang('cldr') != 'en' ? '.'.lang('cldr') : ''); ?>.js"></script>
+<?php if (lang('cldr') != 'en') {?>
+<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo lang('cldr'); ?>.js"></script>
+<?php } ?>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>

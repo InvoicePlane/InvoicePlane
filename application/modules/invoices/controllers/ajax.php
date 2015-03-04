@@ -62,13 +62,30 @@ class Ajax extends Admin_Controller {
                 }
             }
 
+            $invoice_status = $this->input->post('invoice_status_id');
+
             $db_array = array(
                 'invoice_number'       => $this->input->post('invoice_number'),
                 'invoice_terms'        => $this->input->post('invoice_terms'),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due'     => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_status_id'    => $this->input->post('invoice_status_id')
+                'invoice_status_id'    => $invoice_status
             );
+
+            // check if status changed to sent, the feature is enabled and settings is set to sent
+            if ($invoice_status == 2 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
+                $db_array['is_read_only'] = 1;
+            }
+
+            // check if status changed to viewed, the feature is enabled and settings is set to viewed
+            if ($invoice_status == 3 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
+                $db_array['is_read_only'] = 1;
+            }
+
+            // check if status changed to paid and the feature is enabled
+            if ($invoice_status == 4 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'paid') {
+                $db_array['is_read_only'] = 1;
+            }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
 
@@ -301,8 +318,10 @@ class Ajax extends Admin_Controller {
             $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
             // Set source invoice to read-only
-            $this->mdl_invoices->where('invoice_id', $source_id);
-            $this->mdl_invoices->update('ip_invoices', array('is_read_only' => '1'));
+            if ($this->config->item('disable_read_only') == FALSE) {
+                $this->mdl_invoices->where('invoice_id', $source_id);
+                $this->mdl_invoices->update('ip_invoices', array('is_read_only' => '1'));
+            }
 
             // Set target invoice to credit invoice
             $this->mdl_invoices->where('invoice_id', $target_id);

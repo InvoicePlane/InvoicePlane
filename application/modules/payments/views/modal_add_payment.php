@@ -41,7 +41,7 @@
      role="dialog" aria-labelledby="modal_enter_payment" aria-hidden="true">
     <div class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">x</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
             <h3><?php echo lang('enter_payment'); ?></h3>
         </div>
 

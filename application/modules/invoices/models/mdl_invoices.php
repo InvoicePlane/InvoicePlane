@@ -374,6 +374,14 @@ class Mdl_Invoices extends Response_Model {
                 $this->db->set('invoice_status_id', 3);
                 $this->db->update('ip_invoices');
             }
+
+            // Set the invoice to read-only if feature is not disabled and setting is view
+            if ($this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'viewed')
+            {
+                $this->db->where('invoice_id', $invoice_id);
+                $this->db->set('is_read_only', 1);
+                $this->db->update('ip_invoices');
+            }
         }
     }
     
@@ -390,6 +398,13 @@ class Mdl_Invoices extends Response_Model {
             {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 2);
+                $this->db->update('ip_invoices');
+            }
+
+            // Set the invoice to read-only if feature is not disabled and setting is sent
+            if ($this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'sent')
+            {
+                $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
             }

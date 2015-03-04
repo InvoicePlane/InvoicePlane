@@ -142,10 +142,15 @@ class Invoices extends Admin_Controller {
 
     public function delete($invoice_id)
     {
-        // Delete the invoice
-        if ($this->config->item('enable_invoice_deletion') === TRUE) {
+        // Get the status of the invoice
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice_status = $invoice->invoice_status_id;
+        
+        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === TRUE) {
+            // Delete the invoice
             $this->mdl_invoices->delete($invoice_id);
         } else {
+            // Add alert that invoices can't be deleted
             $this->session->set_flashdata('alert_error', lang('invoice_deletion_forbidden'));
         }
 

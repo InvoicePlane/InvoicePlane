@@ -176,7 +176,7 @@ class Mdl_Quote_Amounts extends CI_Model {
     {
         switch ($period) {
             default:
-            case 'month':
+            case 'this-month':
                 $results = $this->db->query("
 					SELECT quote_status_id,
 					    SUM(quote_total) AS sum_total,
@@ -198,7 +198,27 @@ class Mdl_Quote_Amounts extends CI_Model {
                         AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
 					GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
-            case 'year':
+            case 'this-quarter':
+                $results = $this->db->query("
+					SELECT quote_status_id,
+					    SUM(quote_total) AS sum_total,
+					    COUNT(*) AS num_total
+					FROM ip_quote_amounts
+					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
+                        AND QUARTER(ip_quotes.quote_date_created) = QUARTER(NOW())
+					GROUP BY ip_quotes.quote_status_id")->result_array();
+                break;
+            case 'last-quarter':
+                $results = $this->db->query("
+					SELECT quote_status_id,
+					    SUM(quote_total) AS sum_total,
+					    COUNT(*) AS num_total
+					FROM ip_quote_amounts
+					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
+                        AND QUARTER(ip_quotes.quote_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
+					GROUP BY ip_quotes.quote_status_id")->result_array();
+                break;
+            case 'this-year':
                 $results = $this->db->query("
 					SELECT quote_status_id,
 					    SUM(quote_total) AS sum_total,

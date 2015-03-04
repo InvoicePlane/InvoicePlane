@@ -1,4 +1,4 @@
-<div class="tab-info form-horizontal">
+<div class="tab-info">
 
 	<div class="form-group">
 		<label for="settings[default_invoice_tax_rate]" class="control-label">

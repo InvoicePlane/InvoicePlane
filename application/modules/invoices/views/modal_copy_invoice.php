@@ -40,7 +40,7 @@
      role="dialog" aria-labelledby="modal_copy_invoice" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">x</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
             <h3><?php echo lang('copy_invoice'); ?></h3>
         </div>
         <div class="modal-body">
@@ -63,7 +63,7 @@
                 <div class="input-group">
                     <input name="invoice_date_created" id="invoice_date_created"
                           class="form-control datepicker"
-                          value="<?php echo date_from_mysql($invoice->invoice_date_created, TRUE) ?>">
+                          value="<?php echo date_from_mysql(date('Y-m-d', time()), TRUE) ?>">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>
