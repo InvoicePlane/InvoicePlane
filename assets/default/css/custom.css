@@ -21,6 +21,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#36393d', end
     padding-left: 3px;
     padding-right: 3px;
 }
+.table-responsive > .table > thead > tr > th, .table-responsive > .table > thead > tr > td, .table-responsive > .table > tbody > tr > th, .table-responsive > .table > tbody > tr > td, .table-responsive > .table > tfoot > tr > th, .table-responsive > .table > tfoot > tr > td {
+    white-space: normal;
+}
 @media screen and (max-width: 345px) {
 	.btn-sm{
 		padding: 5px 7px;
@@ -39,5 +42,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#36393d', end
 	.sidebar.col-sm-1 {
 		width:8.6666%;
 		position:fixed;
+	}
+}
+@media screen and (min-width: 1200px) and (max-width: 1360px) {/*quick action text*/
+	a>span.hidden-md.hidden-xs{
+		font-size: 90%;
 	}
 }

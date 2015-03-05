@@ -129,15 +129,15 @@
                             <table>
                                 <tbody>
                                     <tr>
-                                        <td><?php echo lang('invoice_date'); ?></td>
+                                        <td><?php echo lang('invoice_date'); ?>:</td>
                                         <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><?php echo lang('due_date'); ?></td>
+                                        <td><?php echo lang('due_date'); ?>:</td>
                                         <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_due); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><?php echo lang('amount_due'); ?></td>
+                                        <td><?php echo lang('amount_due'); ?>:</td>
                                         <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
                                     </tr>
                                 </tbody>
@@ -193,12 +193,12 @@
                         </tr>
                         <tr>
                             <td class="no-bottom-border" colspan="3"></td>
-                            <td><?php echo lang('paid'); ?></td>
+                            <td><?php echo lang('paid'); ?>:</td>
                             <td><?php echo format_currency($invoice->invoice_paid) ?></td>
                         </tr>
                         <tr>
-                            <td class="no-bottom-border" colspan="3"></td>                
-                            <td><?php echo lang('balance'); ?></td>
+                            <td class="no-bottom-border" colspan="3"></td>
+                            <td><?php echo lang('balance'); ?>:</td>
                             <td><strong><?php echo format_currency($invoice->invoice_balance) ?></strong></td>
                         </tr>
                     </tbody>

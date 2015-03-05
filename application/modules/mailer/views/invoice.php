@@ -111,7 +111,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="subject" id="subject" class="form-control"
-                       value="<?php echo lang('invoice') . ' #' . $invoice->invoice_number; ?>">
+                       value="<?php echo lang('invoice_number') . $invoice->invoice_number; ?>">
             </div>
         </div>
 

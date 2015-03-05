@@ -45,9 +45,11 @@
                     window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
                 }
                 else {
-                    $('.control-group').removeClass('error');
+                    $('.has-error').removeClass('has-error');
+                    $('div.alert[class*="alert-"]').remove();
                     for (var key in response.validation_errors) {
-                        $('#' + key).parent().parent().addClass('error');
+                        $('#' + key).parent().parent().addClass('has-error');
+                        $('#quote_form').prepend('<div class="alert alert-danger" role="alert">'+response.validation_errors[key]+'</div>');
                     }
                 }
             });
@@ -78,7 +80,7 @@
 <?php echo $modal_add_quote_tax; ?>
 
 <div class="headerbar">
-	<h1><?php echo lang('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
+	<h1><?php echo lang('quote_number') . $quote->quote_number; ?></h1>
 
 	<div class="pull-right btn-group">
 
@@ -181,7 +183,7 @@
 
                         <div class="quote-properties">
                             <label for="quote_number">
-                                <?php echo lang('quote'); ?> #
+                                <?php echo lang('quote_number'); ?>
                             </label>
                             <div class="controls">
                                 <input type="text" id="quote_number" class="form-control input-sm"

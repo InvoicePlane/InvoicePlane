@@ -1,5 +1,5 @@
 <div class="headerbar">
-	<h1><?php echo lang('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
+	<h1><?php echo lang('quote_number') . $quote->quote_number; ?></h1>
 	
 	<div class="pull-right btn-group">
         
@@ -65,7 +65,7 @@
             <div class="col-xs-12 col-md-3">
                 <div class="panel panel-default panel-body text-right">
                     <p>
-                        <b><?php echo lang('quote'); ?> #</b><br/>
+                        <b><?php echo lang('quote_number'); ?></b><br/>
                         <?php echo $quote->quote_number; ?>
                     </p>
 

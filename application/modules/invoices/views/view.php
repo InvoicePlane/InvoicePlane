@@ -51,12 +51,12 @@
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     }
                     else {
-					    $('.control-group').removeClass('error');
+					    $('.has-error').removeClass('has-error');
 					    $('div.alert[class*="alert-"]').remove();
 					    var resp_errors = response.validation_errors;
 					    for (var key in resp_errors) {
-					        $('#' + key).parent().parent().addClass('error');
-					        $('#invoice_form').prepend('<div class="alert alert-danger">'+resp_errors[key]+'</div>');
+					        $('#' + key).parent().parent().addClass('has-error');
+					        $('#invoice_form').prepend('<div class="alert alert-danger role="alert">'+resp_errors[key]+'</div>');
 					    }
 					}
                 });
@@ -93,7 +93,7 @@
 ?>
 
 <div class="headerbar">
-    <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+    <h1><?php echo lang('invoice_number') . $invoice->invoice_number; ?></h1>
 
     <div class="pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
 
@@ -241,7 +241,7 @@
                         <?php } ?>
 
                         <div class="invoice-properties">
-                            <label><?php echo lang('invoice'); ?> #</label>
+                            <label><?php echo lang('invoice_number'); ?></label>
                             <div >
                                 <input type="text" id="invoice_number"
                                        class="input-sm form-control"

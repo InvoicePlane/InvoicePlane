@@ -11,7 +11,7 @@
                     if (response.success == '1')
                     {
                         // The validation was successful
-                        $('.control-group').removeClass('error');
+                        $('.has-error').removeClass('has-error');
                         $('#client_note').val('');
 
                         $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
@@ -22,9 +22,9 @@
                     else
                     {
                         // The validation was not successful
-                        $('.control-group').removeClass('error');
+                        $('.has-error').removeClass('has-error');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('error');
+                            $('#' + key).parent().parent().addClass('has-error');
                         }
                     }
                 });

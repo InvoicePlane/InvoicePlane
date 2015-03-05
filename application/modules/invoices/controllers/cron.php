@@ -87,7 +87,7 @@ class Cron extends Base_Controller {
                         array($invoice->user_email, "");
                     $subject = !empty($tpl->email_template_subject) ?
                         $tpl->email_template_subject :
-                        lang('invoice') . ' #' . $new_invoice->invoice_number;
+                        lang('invoice_number') . $new_invoice->invoice_number;
 
                     email_invoice(
                         $target_id,

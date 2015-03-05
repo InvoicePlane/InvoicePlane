@@ -109,8 +109,8 @@ class Mdl_Setup extends CI_Model {
 
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Facture Simple', 'invoice_group_prefix'  => 'FAC', 'invoice_group_next_id' => 1));
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Devis Simple', 'invoice_group_prefix'  => 'DEV', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Facture Simple', 'invoice_group_prefix'  => 'FAC{{{id}}}', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array('invoice_group_name'    => 'Devis Simple', 'invoice_group_prefix'  => 'DEV{{{id}}}', 'invoice_group_next_id' => 1));
     }
 
     private function install_default_settings()
@@ -119,9 +119,9 @@ class Mdl_Setup extends CI_Model {
 
         $default_settings = array(
             'default_language' => $this->session->userdata('ip_lang'),
-            'date_format' => 'm/d/Y',
-            'currency_symbol' => '$',
-            'currency_symbol_placement' => 'before',
+            'date_format' => 'd/m/Y',
+            'currency_symbol' => '€',
+            'currency_symbol_placement' => 'after',
             'invoices_due_after' => 30,
             'quotes_expire_after' => 15,
             'default_invoice_group' => 1,
@@ -131,12 +131,12 @@ class Mdl_Setup extends CI_Model {
             'cron_key' => random_string('alnum', 16),
             'tax_rate_decimal_places' => 2,
             'pdf_invoice_template' => 'default',
-            'pdf_invoice_template_paid' => 'default',
-            'pdf_invoice_template_overdue' => 'default',
+            'pdf_invoice_template_paid' => 'default-paid',
+            'pdf_invoice_template_overdue' => 'default-overdue',
             'pdf_quote_template' => 'default',
             'public_invoice_template' => 'default',
             'public_quote_template' => 'default',
-            'disable_sidebar' => 1
+            'disable_sidebar' => 0
         );
 
         foreach ($default_settings as $setting_key => $setting_value)

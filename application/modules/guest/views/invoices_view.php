@@ -11,7 +11,7 @@
 </script>
 
 <div class="headerbar">
-	<h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+	<h1><?php echo lang('invoice_number') . $invoice->invoice_number; ?></h1>
 
 	<div class="pull-right">
         <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
@@ -69,17 +69,17 @@
                 <div class="col-xs-12 col-md-3">
                     <div class="panel panel-default panel-body text-right">
                         <p>
-                            <b><?php echo lang('invoice'); ?> #</b><br />
+                            <b><?php echo lang('invoice_number'); ?>:</b><br />
                             <?php echo $invoice->invoice_number; ?>
                         </p>
 
                         <p>
-                            <b><?php echo lang('date'); ?></b><br />
+                            <b><?php echo lang('date'); ?>:</b><br />
                             <?php echo date_from_mysql($invoice->invoice_date_created); ?>
                         </p>
 
                         <p>
-                            <b><?php echo lang('due_date'); ?></b><br />
+                            <b><?php echo lang('due_date'); ?>:</b><br />
                             <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                         </p>
 

@@ -53,7 +53,7 @@
 
             <select name="invoice_group_id" id="invoice_group_id" class="hidden">
                 <option value=""></option>
-                <?php  foreach ($invoice_groups as $invoice_group) { ?>
+                <?php foreach ($invoice_groups as $invoice_group) { ?>
                     <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                         <?php if ($invoice->invoice_group_id == $invoice_group->invoice_group_id) {
                             echo 'selected="selected"';

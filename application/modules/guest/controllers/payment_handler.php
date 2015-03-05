@@ -53,7 +53,7 @@ class Payment_Handler extends Base_Controller {
 
             // Create the parameters
             $params = array(
-                'description' => lang('invoice') . ' #' . $invoice->invoice_number,
+                'description' => lang('invoice_number') . $invoice->invoice_number,
                 'amount'      => $invoice->invoice_balance,
                 'currency'    => $this->mdl_settings->setting('merchant_currency_code'),
                 'return_url'  => site_url('guest/payment_handler/payment_return/' . $invoice_url_key . '/r'),

@@ -140,15 +140,15 @@
                             <table>
                                 <tbody>
                                     <tr>
-                                        <td><?php echo lang('quote_date'); ?></td>
+                                        <td><?php echo lang('quote_date'); ?>:</td>
                                         <td style="text-align:right;"><?php echo date_from_mysql($quote->quote_date_created); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><?php echo lang('expires'); ?></td>
+                                        <td><?php echo lang('expires'); ?>:</td>
                                         <td style="text-align:right;"><?php echo date_from_mysql($quote->quote_date_expires); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><?php echo lang('total'); ?></td>
+                                        <td><?php echo lang('total'); ?>:</td>
                                         <td style="text-align:right;"><?php echo format_currency($quote->quote_total); ?></td>
                                     </tr>
                                 </tbody>
