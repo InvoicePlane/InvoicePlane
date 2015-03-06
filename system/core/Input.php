@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -23,7 +24,7 @@
  * @package		CodeIgniter
  * @subpackage	Libraries
  * @category	Input
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/input.html
  */
 class CI_Input {
@@ -631,8 +632,24 @@ class CI_Input {
 			unset($_COOKIE['$Path']);
 			unset($_COOKIE['$Domain']);
 
+			// Work-around for PHP bug #66827 (https://bugs.php.net/bug.php?id=66827)
+			//
+			// The session ID sanitizer doesn't check for the value type and blindly does
+			// an implicit cast to string, which triggers an 'Array to string' E_NOTICE.
+			$sess_cookie_name = config_item('cookie_prefix').config_item('sess_cookie_name');
+			if (isset($_COOKIE[$sess_cookie_name]) && ! is_string($_COOKIE[$sess_cookie_name]))
+			{
+				unset($_COOKIE[$sess_cookie_name]);
+			}
+
 			foreach ($_COOKIE as $key => $val)
 			{
+				// _clean_input_data() has been reported to break encrypted cookies
+				if ($key === $sess_cookie_name && config_item('sess_encrypt_cookie'))
+				{
+					continue;
+				}
+
 				$_COOKIE[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
 			}
 		}
