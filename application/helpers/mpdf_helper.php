@@ -18,7 +18,6 @@ if (!defined('BASEPATH'))
 
 function pdf_create($html, $filename, $stream = TRUE)
 {
-
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
 
     $mpdf = new mPDF();
@@ -33,16 +32,10 @@ function pdf_create($html, $filename, $stream = TRUE)
 
     $mpdf->WriteHTML($html);
 
-    if ($stream)
-    {
-        $mpdf->Output($filename . '.pdf', 'I');
-    }
-    else
-    {
+    if ($stream) {
+        return $mpdf->Output($filename . '.pdf', 'I');
+    } else {
         $mpdf->Output('./uploads/temp/' . $filename . '.pdf', 'F');
-        
         return './uploads/temp/' . $filename . '.pdf';
     }
 }
-
-?>

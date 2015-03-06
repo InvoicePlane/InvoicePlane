@@ -16,8 +16,8 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Crypt {
-
+class Crypt
+{
     public function salt()
     {
         return substr(sha1(mt_rand()), 0, 22);
@@ -30,10 +30,9 @@ class Crypt {
 
     public function check_password($hash, $password)
     {
-        $new_hash  = crypt($password, $hash);
+        $new_hash = crypt($password, $hash);
 
         return ($hash == $new_hash);
     }
 
 }
-?>
