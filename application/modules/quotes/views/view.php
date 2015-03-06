@@ -248,9 +248,14 @@
                    id="<?php echo $custom_field->custom_field_column; ?>"
                    value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
                 >
+             </p>
             <?php } ?>
 
+            <p>
+                <strong> <?php echo lang('notes'); ?> </strong>
             </p>
+
+            <textarea rows="6" class="input-sm form-control" style="width:45%;" name="notes" id="notes"><?php echo $quote->notes; ?></textarea>
 
         <?php if ($quote->quote_status_id != 1) { ?>
             <p class="padded">
