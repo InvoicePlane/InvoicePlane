@@ -79,7 +79,7 @@
                             </li>
                             <?php } ?>
                             <li>
-                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>">
+                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>" target="_blank">
                                     <i class="fa fa-print fa-margin"></i> <?php echo lang('download_pdf'); ?>
                                 </a>
                             </li>

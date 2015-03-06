@@ -52,7 +52,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>">
+							<a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>" target="_blank">
 								<i class="fa fa-print fa-margin"></i> <?php echo lang('download_pdf'); ?>
 							</a>
 						</li>

@@ -63,7 +63,7 @@
         });
 
         $('#btn_generate_pdf').click(function() {
-            window.location = '<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>';
+            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
         });
 
         <?php if ($invoice->is_read_only != 1) { ?>
