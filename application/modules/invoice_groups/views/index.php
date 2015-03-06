@@ -2,7 +2,8 @@
     <h1><?php echo lang('invoice_groups'); ?></h1>
 
     <div class="pull-right">
-        <a class="btn btn-sm btn-primary" href="<?php echo site_url('invoice_groups/form'); ?>"><i class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
+        <a class="btn btn-sm btn-primary" href="<?php echo site_url('invoice_groups/form'); ?>"><i
+                class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -46,7 +47,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo site_url('invoice_groups/delete/' . $invoice_group->invoice_group_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                    <a href="<?php echo site_url('invoice_groups/delete/' . $invoice_group->invoice_group_id); ?>"
+                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                     </a>
                                 </li>

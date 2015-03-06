@@ -33,8 +33,8 @@
                     <?php echo lang('try_again'); ?>
                 </a>
             <?php } else { ?>
-            <input class="btn btn-success" type="submit" name="btn_continue"
-                   value="<?php echo lang('continue'); ?>">
+                <input class="btn btn-success" type="submit" name="btn_continue"
+                       value="<?php echo lang('continue'); ?>">
             <?php } ?>
 
         </form>

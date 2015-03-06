@@ -16,9 +16,9 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Invoice_Groups extends Response_Model {
-
-    public $table       = 'ip_invoice_groups';
+class Mdl_Invoice_Groups extends Response_Model
+{
+    public $table = 'ip_invoice_groups';
     public $primary_key = 'ip_invoice_groups.invoice_group_id';
 
     public function default_select()
@@ -34,7 +34,7 @@ class Mdl_Invoice_Groups extends Response_Model {
     public function validation_rules()
     {
         return array(
-            'invoice_group_name'         => array(
+            'invoice_group_name' => array(
                 'field' => 'invoice_group_name',
                 'label' => lang('name'),
                 'rules' => 'required'
@@ -44,12 +44,12 @@ class Mdl_Invoice_Groups extends Response_Model {
                 'label' => lang('identifier_format'),
                 'rules' => 'required'
             ),
-            'invoice_group_next_id'      => array(
+            'invoice_group_next_id' => array(
                 'field' => 'invoice_group_next_id',
                 'label' => lang('next_id'),
                 'rules' => 'required'
             ),
-            'invoice_group_left_pad'     => array(
+            'invoice_group_left_pad' => array(
                 'field' => 'invoice_group_left_pad',
                 'label' => lang('left_pad'),
                 'rules' => 'required'

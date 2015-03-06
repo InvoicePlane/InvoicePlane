@@ -16,9 +16,9 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Quote_Tax_Rates extends Response_Model {
-
-    public $table       = 'ip_quote_tax_rates';
+class Mdl_Quote_Tax_Rates extends Response_Model
+{
+    public $table = 'ip_quote_tax_rates';
     public $primary_key = 'ip_quote_tax_rates.quote_tax_rate_id';
 
     public function default_select()
@@ -44,12 +44,12 @@ class Mdl_Quote_Tax_Rates extends Response_Model {
     public function validation_rules()
     {
         return array(
-            'quote_id'         => array(
+            'quote_id' => array(
                 'field' => 'quote_id',
                 'label' => lang('quote'),
                 'rules' => 'required'
             ),
-            'tax_rate_id'      => array(
+            'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
                 'label' => lang('tax_rate'),
                 'rules' => 'required'
@@ -63,5 +63,3 @@ class Mdl_Quote_Tax_Rates extends Response_Model {
     }
 
 }
-
-?>

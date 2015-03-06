@@ -16,32 +16,30 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class View extends Base_Controller {
-
+class View extends Base_Controller
+{
     public function invoice($invoice_url_key)
     {
         $this->load->model('invoices/mdl_invoices');
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
 
-        if ($invoice->num_rows() == 1)
-        {
+        if ($invoice->num_rows() == 1) {
             $this->load->model('invoices/mdl_items');
             $this->load->model('invoices/mdl_invoice_tax_rates');
 
             $invoice = $invoice->row();
-            
-            if ($this->session->userdata('user_type') <> 1 and $invoice->invoice_status_id == 2)
-            {
+
+            if ($this->session->userdata('user_type') <> 1 and $invoice->invoice_status_id == 2) {
                 $this->mdl_invoices->mark_viewed($invoice->invoice_id);
             }
 
             $data = array(
-                'invoice'           => $invoice,
-                'items'             => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+                'invoice' => $invoice,
+                'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-                'invoice_url_key'   => $invoice_url_key,
-                'flash_message'     => $this->session->flashdata('flash_message')
+                'invoice_url_key' => $invoice_url_key,
+                'flash_message' => $this->session->flashdata('flash_message')
             );
 
             $this->load->view('invoice_templates/public/' . $this->mdl_settings->setting('public_invoice_template') . '.php', $data);
@@ -51,20 +49,18 @@ class View extends Base_Controller {
     public function generate_invoice_pdf($invoice_url_key, $stream = TRUE, $invoice_template = NULL)
     {
         $this->load->model('invoices/mdl_invoices');
-        
+
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
 
-        if ($invoice->num_rows() == 1)
-        {
+        if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
-            if (!$invoice_template)
-            {
+            if (!$invoice_template) {
                 $invoice_template = $this->mdl_settings->setting('default_pdf_invoice_template');
             }
-            
+
             $this->load->helper('pdf');
-            
+
             generate_invoice_pdf($invoice->invoice_id, $stream, $invoice_template);
         }
     }
@@ -75,24 +71,22 @@ class View extends Base_Controller {
 
         $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
 
-        if ($quote->num_rows() == 1)
-        {
+        if ($quote->num_rows() == 1) {
             $this->load->model('quotes/mdl_quote_items');
             $this->load->model('quotes/mdl_quote_tax_rates');
 
             $quote = $quote->row();
-            
-            if ($this->session->userdata('user_type') <> 1 and $quote->quote_status_id == 2)
-            {
+
+            if ($this->session->userdata('user_type') <> 1 and $quote->quote_status_id == 2) {
                 $this->mdl_quotes->mark_viewed($quote->quote_id);
             }
 
             $data = array(
-                'quote'           => $quote,
-                'items'           => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
+                'quote' => $quote,
+                'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
-                'quote_url_key'   => $quote_url_key,
-                'flash_message'   => $this->session->flashdata('flash_message')
+                'quote_url_key' => $quote_url_key,
+                'flash_message' => $this->session->flashdata('flash_message')
             );
 
             $this->load->view('quote_templates/public/' . $this->mdl_settings->setting('public_quote_template') . '.php', $data);
@@ -104,22 +98,20 @@ class View extends Base_Controller {
         $this->load->model('quotes/mdl_quotes');
 
         $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
-        
-        if ($quote->num_rows() == 1)
-        {
+
+        if ($quote->num_rows() == 1) {
             $quote = $quote->row();
 
-            if (!$quote_template)
-            {
+            if (!$quote_template) {
                 $quote_template = $this->mdl_settings->setting('default_pdf_quote_template');
             }
-            
+
             $this->load->helper('pdf');
-            
-            generate_quote_pdf($quote->quote_id, $stream, $quote_template);            
+
+            generate_quote_pdf($quote->quote_id, $stream, $quote_template);
         }
     }
-    
+
     public function approve_quote($quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');
@@ -130,7 +122,7 @@ class View extends Base_Controller {
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
-    
+
     public function reject_quote($quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');

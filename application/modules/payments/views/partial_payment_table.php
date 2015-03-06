@@ -19,13 +19,13 @@
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
                 <td><?php echo date_from_mysql($payment->invoice_date_created); ?></td>
-                <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>              
+                <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $payment->client_id); ?>"
                        title="<?php echo lang('view_client'); ?>">
-                       <?php echo $payment->client_name; ?>
+                        <?php echo $payment->client_name; ?>
                     </a>
-                </td>               
+                </td>
                 <td><?php echo format_currency($payment->payment_amount); ?></td>
                 <td><?php echo $payment->payment_method_name; ?></td>
                 <td><?php echo $payment->payment_note; ?></td>
@@ -42,7 +42,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('payments/delete/' . $payment->payment_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                <a href="<?php echo site_url('payments/delete/' . $payment->payment_id); ?>"
+                                   onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                     <i class="fa fa-trash-o fa-margin"></i>
                                     <?php echo lang('delete'); ?>
                                 </a>

@@ -27,7 +27,7 @@
             </div>
         <?php } ?>
 
-        <a href="<?php echo site_url('sessions/login'); ?>" class="btn btn-success" >
+        <a href="<?php echo site_url('sessions/login'); ?>" class="btn btn-success">
             <i class="fa fa-check fa-margin"></i> <?php echo lang('login'); ?>
         </a>
 

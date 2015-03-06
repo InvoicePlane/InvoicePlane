@@ -16,8 +16,8 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Quotes extends Guest_Controller {
-
+class Quotes extends Guest_Controller
+{
     public function __construct()
     {
         parent::__construct();
@@ -34,10 +34,9 @@ class Quotes extends Guest_Controller {
     public function status($status = 'open', $page = 0)
     {
         redirect_to_set();
-        
+
         // Determine which group of quotes to load
-        switch ($status)
-        {
+        switch ($status) {
             case 'approved':
                 $this->mdl_quotes->is_approved()->where_in('ip_quotes.client_id', $this->user_clients);
                 break;
@@ -62,14 +61,13 @@ class Quotes extends Guest_Controller {
     public function view($quote_id)
     {
         redirect_to_set();
-        
+
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
 
         $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
-        if (!$quote)
-        {
+        if (!$quote) {
             show_404();
         }
 
@@ -77,10 +75,10 @@ class Quotes extends Guest_Controller {
 
         $this->layout->set(
             array(
-                'quote'           => $quote,
-                'items'           => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
+                'quote' => $quote,
+                'items' => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'quote_id'        => $quote_id
+                'quote_id' => $quote_id
             )
         );
 
@@ -96,12 +94,9 @@ class Quotes extends Guest_Controller {
 
         $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
-        if (!$quote)
-        {
+        if (!$quote) {
             show_404();
-        }
-        else
-        {
+        } else {
             generate_quote_pdf($quote_id, $stream, $quote_template);
         }
     }

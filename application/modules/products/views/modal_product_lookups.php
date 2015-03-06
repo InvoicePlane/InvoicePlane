@@ -1,30 +1,27 @@
 <script type="text/javascript">
-    $(function()
-    {
+    $(function () {
         // Display the create invoice modal
         $('#modal-choose-items').modal('show');
 
         // Creates the invoice
-        $('#select-items-confirm').click(function()
-        {
+        $('#select-items-confirm').click(function () {
             var product_ids = [];
 
-            $("input[name='product_ids[]']:checked").each(function ()
-            {
+            $("input[name='product_ids[]']:checked").each(function () {
                 product_ids.push(parseInt($(this).val()));
             });
 
             $.post("<?php echo site_url('products/ajax/process_product_selections'); ?>", {
                 product_ids: product_ids
-            }, function(data) {
+            }, function (data) {
                 items = JSON.parse(data);
 
-                for(var key in items) {
-					// Set default tax rate id if empty
-					if(!items[key].tax_rate_id) items[key].tax_rate_id = 0;
-					
+                for (var key in items) {
+                    // Set default tax rate id if empty
+                    if (!items[key].tax_rate_id) items[key].tax_rate_id = 0;
+
                     if ($('#item_table tr:last input[name=item_name]').val() !== '') {
-						$('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+                        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
                     }
                     $('#item_table tr:last input[name=item_name]').val(items[key].product_name);
                     $('#item_table tr:last textarea[name=item_description]').val(items[key].product_description);
@@ -45,12 +42,12 @@
         });
 
         // Filter on search button click
-        $('#filter-button').click(function() {
+        $('#filter-button').click(function () {
             products_filter();
         });
 
         // Filter on family dropdown change
-        $("#filter_family").change(function() {
+        $("#filter_family").change(function () {
             products_filter();
         });
 
@@ -59,7 +56,7 @@
             var filter_family = $('#filter_family').val();
             var filter_product = $('#filter_product').val();
             var lookup_url = "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/";
-            lookup_url += Math.floor(Math.random()*1000) + '/?';
+            lookup_url += Math.floor(Math.random() * 1000) + '/?';
 
             if (filter_family) {
                 lookup_url += "&filter_family=" + filter_family;
@@ -81,6 +78,7 @@
     <form class="modal-content">
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
+
             <h3><?php echo lang('add_product'); ?></h3>
         </div>
         <div class="modal-body">
@@ -91,20 +89,23 @@
 						<option value=""><?php echo lang('any_family'); ?></option>
 						<?php foreach ($families as $family) { ?>
 						<option value="<?php echo $family->family_id; ?>"
-							<?php if($family->family_id == $filter_family) echo ' selected="selected"'; ?>><?php echo $family->family_name; ?></option>
+							<?php if ($family->family_id == $filter_family) echo ' selected="selected"'; ?>><?php echo $family->family_name; ?></option>
 						<?php } ?>
 					</select>
 					-->
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="filter_product" id="filter_product" placeholder="<?php echo lang('product_name'); ?>" value="<?php echo $filter_product ?>">
+                    <input type="text" class="form-control" name="filter_product" id="filter_product"
+                           placeholder="<?php echo lang('product_name'); ?>" value="<?php echo $filter_product ?>">
                 </div>
-                <button type="button" id="filter-button" class="btn btn-default"><?php echo lang('search_product'); ?></button>
+                <button type="button" id="filter-button"
+                        class="btn btn-default"><?php echo lang('search_product'); ?></button>
                 <!-- ToDo
 				<button type="button" id="reset-button" class="btn btn-default"><?php echo lang('reset'); ?></button>
 				-->
             </div>
-            <br />
+            <br/>
+
             <div class="table-responsive">
                 <table id="products_table" class="table table-bordered table-striped">
                     <tr>

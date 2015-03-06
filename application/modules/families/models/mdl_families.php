@@ -16,9 +16,9 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Families extends Response_Model {
-
-    public $table       = 'ip_families';
+class Mdl_Families extends Response_Model
+{
+    public $table = 'ip_families';
     public $primary_key = 'ip_families.family_id';
 
     public function default_select()
@@ -33,15 +33,13 @@ class Mdl_Families extends Response_Model {
 
     public function validation_rules()
     {
-		return array(
-			'family_name' => array(
-				'field' => 'family_name',
-				'label' => lang('family_name'),
-				'rules' => 'required'
-			)
-		);    
-	}
+        return array(
+            'family_name' => array(
+                'field' => 'family_name',
+                'label' => lang('family_name'),
+                'rules' => 'required'
+            )
+        );
+    }
 
 }
-
-?>

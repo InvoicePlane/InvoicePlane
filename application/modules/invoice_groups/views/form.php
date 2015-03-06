@@ -21,7 +21,8 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                <label class="control-label" for="invoice_group_identifier_format"><?php echo lang('identifier_format'); ?>: </label>
+                <label class="control-label"
+                       for="invoice_group_identifier_format"><?php echo lang('identifier_format'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-8 col-lg-8">
                 <input type="text" class="form-control taggable"
@@ -51,9 +52,11 @@
             </div>
         </div>
         <br>
+
         <div class="row">
             <div class="col-xs-12">
                 <h4><?php echo lang('identifier_format_template_tags'); ?></h4>
+
                 <p><?php echo lang('identifier_format_template_tags_instructions'); ?></p>
             </div>
 

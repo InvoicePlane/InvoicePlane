@@ -1,9 +1,7 @@
 <script type="text/javascript">
-    $(function()
-    {
+    $(function () {
         $('#modal-create-credit-invoice').modal('show');
-        $('#create-credit-confirm').click(function()
-        {
+        $('#create-credit-confirm').click(function () {
             $.post("<?php echo site_url('invoices/ajax/create_credit'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     client_name: $('#client_name').val(),
@@ -11,14 +9,12 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     user_id: $('#user_id').val()
                 },
-                function(data) {
+                function (data) {
                     var response = JSON.parse(data);
-                    if (response.success == '1')
-                    {
+                    if (response.success == '1') {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
                     }
-                    else
-                    {
+                    else {
                         // The validation was not successful
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
@@ -35,6 +31,7 @@
     <form class="modal-content">
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
+
             <h3><?php echo lang('create_credit_invoice'); ?></h3>
         </div>
         <div class="modal-body">
@@ -49,7 +46,8 @@
                    value="<?php echo $invoice->client_name; ?>">
 
             <input type="hidden" name="invoice_date_created" id="invoice_date_created"
-                   value="<?php $credit_date = date_from_mysql(date('Y-m-d', time()), TRUE); echo $credit_date; ?>">
+                   value="<?php $credit_date = date_from_mysql(date('Y-m-d', time()), TRUE);
+                   echo $credit_date; ?>">
 
             <select name="invoice_group_id" id="invoice_group_id" class="hidden">
                 <option value=""></option>

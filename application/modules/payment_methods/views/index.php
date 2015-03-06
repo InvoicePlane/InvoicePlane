@@ -46,7 +46,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo site_url('payment_methods/delete/' . $payment_method->payment_method_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                    <a href="<?php echo site_url('payment_methods/delete/' . $payment_method->payment_method_id); ?>"
+                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i>
                                         <?php echo lang('delete'); ?>
                                     </a>

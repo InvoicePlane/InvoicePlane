@@ -16,10 +16,10 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Payments extends Response_Model {
-
-    public $table            = 'ip_payments';
-    public $primary_key      = 'ip_payments.payment_id';
+class Mdl_Payments extends Response_Model
+{
+    public $table = 'ip_payments';
+    public $primary_key = 'ip_payments.payment_id';
     public $validation_rules = 'validation_rules';
 
     public function default_select()
@@ -52,17 +52,17 @@ class Mdl_Payments extends Response_Model {
     public function validation_rules()
     {
         return array(
-            'invoice_id'        => array(
+            'invoice_id' => array(
                 'field' => 'invoice_id',
                 'label' => lang('invoice'),
                 'rules' => 'required'
             ),
-            'payment_date'      => array(
+            'payment_date' => array(
                 'field' => 'payment_date',
                 'label' => lang('date'),
                 'rules' => 'required'
             ),
-            'payment_amount'    => array(
+            'payment_amount' => array(
                 'field' => 'payment_amount',
                 'label' => lang('payment'),
                 'rules' => 'required|callback_validate_payment_amount'
@@ -71,7 +71,7 @@ class Mdl_Payments extends Response_Model {
                 'field' => 'payment_method_id',
                 'label' => lang('payment_method')
             ),
-            'payment_note'      => array(
+            'payment_note' => array(
                 'field' => 'payment_note',
                 'label' => lang('note')
             )
@@ -85,15 +85,13 @@ class Mdl_Payments extends Response_Model {
 
         $invoice_balance = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row()->invoice_balance;
 
-        if ($payment_id)
-        {
+        if ($payment_id) {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
 
             $invoice_balance = $invoice_balance + $payment->payment_amount;
         }
 
-        if ($amount > $invoice_balance)
-        {
+        if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', lang('payment_cannot_exceed_balance'));
             return FALSE;
         }
@@ -133,14 +131,13 @@ class Mdl_Payments extends Response_Model {
         $this->db->select('invoice_status_id');
         $this->db->where('invoice_id', $invoice_id);
         $invoice = $this->db->get('ip_invoices')->row();
-        
-        if ($invoice->invoice_status_id == 4)
-        {
+
+        if ($invoice->invoice_status_id == 4) {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_status_id', 2);
             $this->db->update('ip_invoices');
         }
-        
+
         $this->load->helper('orphan');
         delete_orphans();
     }
@@ -148,7 +145,7 @@ class Mdl_Payments extends Response_Model {
     public function db_array()
     {
         $db_array = parent::db_array();
-        
+
         $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
         $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
 
@@ -157,25 +154,21 @@ class Mdl_Payments extends Response_Model {
 
     public function prep_form($id = NULL)
     {
-        if (!parent::prep_form($id))
-        {
+        if (!parent::prep_form($id)) {
             return FALSE;
         }
 
-        if (!$id)
-        {
+        if (!$id) {
             parent::set_form_value('payment_date', date('Y-m-d'));
         }
-        
+
         return TRUE;
     }
 
     public function by_client($client_id)
     {
         $this->filter_where('ip_clients.client_id', $client_id);
-    	return $this;
+        return $this;
     }
-   
-}
 
-?>
+}

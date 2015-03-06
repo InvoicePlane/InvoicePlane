@@ -1,9 +1,9 @@
 <div class="headerbar">
-	<h1><?php echo lang('payments'); ?></h1>
+    <h1><?php echo lang('payments'); ?></h1>
 
-	<div class="pull-right">
-		<?php echo pager(site_url('guest/payments/index'), 'mdl_payments'); ?>
-	</div>
+    <div class="pull-right">
+        <?php echo pager(site_url('guest/payments/index'), 'mdl_payments'); ?>
+    </div>
 
 </div>
 
@@ -13,9 +13,9 @@
 
     <div id="filter_results">
         <div class="table-responsive">
-        <table class="table table-striped">
+            <table class="table table-striped">
 
-            <thead>
+                <thead>
                 <tr>
                     <th><?php echo lang('date'); ?></th>
                     <th><?php echo lang('invoice'); ?></th>
@@ -23,21 +23,21 @@
                     <th><?php echo lang('payment_method'); ?></th>
                     <th><?php echo lang('note'); ?></th>
                 </tr>
-            </thead>
+                </thead>
 
-            <tbody>
+                <tbody>
                 <?php foreach ($payments as $payment) { ?>
-                <tr>
-                    <td><?php echo date_from_mysql($payment->payment_date); ?></td>
-                    <td><?php echo $payment->invoice_number; ?></td>
-                    <td><?php echo format_currency($payment->payment_amount); ?></td>
-                    <td><?php echo $payment->payment_method_name; ?></td>
-                    <td><?php echo $payment->payment_note; ?></td>
-                </tr>
+                    <tr>
+                        <td><?php echo date_from_mysql($payment->payment_date); ?></td>
+                        <td><?php echo $payment->invoice_number; ?></td>
+                        <td><?php echo format_currency($payment->payment_amount); ?></td>
+                        <td><?php echo $payment->payment_method_name; ?></td>
+                        <td><?php echo $payment->payment_note; ?></td>
+                    </tr>
                 <?php } ?>
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
         </div>
     </div>
 

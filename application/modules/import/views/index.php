@@ -43,10 +43,12 @@
                     <td><?php echo $import->num_payments; ?></td>
                     <td>
                         <div class="options btn-group">
-                            <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i> <?php echo lang('options'); ?></a>
+                            <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i
+                                    class="fa fa-cog"></i> <?php echo lang('options'); ?></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="<?php echo site_url('import/delete/' . $import->import_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                    <a href="<?php echo site_url('import/delete/' . $import->import_id); ?>"
+                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                     </a>
                                 </li>

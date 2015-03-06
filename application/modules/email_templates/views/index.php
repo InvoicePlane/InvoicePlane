@@ -34,7 +34,8 @@
                 <td><?php echo lang($email_template->email_template_type); ?></td>
                 <td>
                     <div class="options btn-group">
-                        <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i> <?php echo lang('options'); ?></a>
+                        <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i
+                                class="fa fa-cog"></i> <?php echo lang('options'); ?></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="<?php echo site_url('email_templates/form/' . $email_template->email_template_id); ?>">
@@ -42,7 +43,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('email_templates/delete/' . $email_template->email_template_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                <a href="<?php echo site_url('email_templates/delete/' . $email_template->email_template_id); ?>"
+                                   onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                     <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                 </a>
                             </li>

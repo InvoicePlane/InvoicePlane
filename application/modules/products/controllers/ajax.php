@@ -16,10 +16,9 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Ajax extends Admin_Controller {
-
+class Ajax extends Admin_Controller
+{
     //public $ajax_controller = TRUE;
-
     public function modal_product_lookups()
     {
         //$filter_family  = $this->input->get('filter_family');
@@ -35,7 +34,7 @@ class Ajax extends Admin_Controller {
         }
         */
 
-        if(!empty($filter_product)) {
+        if (!empty($filter_product)) {
             $products = $this->mdl_products->by_product($filter_product);
         }
         $products = $this->mdl_products->get();
@@ -48,25 +47,22 @@ class Ajax extends Admin_Controller {
             'families' => $families,
             'filter_product' => $filter_product,
             //'filter_family'  => $filter_family,
-         );
+        );
 
         $this->layout->load_view('products/modal_product_lookups', $data);
     }
-    
+
     public function process_product_selections()
     {
         $this->load->model('mdl_products');
-        
+
         $products = $this->mdl_products->where_in('product_id', $this->input->post('product_ids'))->get()->result();
-		
-		foreach ($products as $product)
-		{
-			$product->product_price = format_amount($product->product_price);
-		}
+
+        foreach ($products as $product) {
+            $product->product_price = format_amount($product->product_price);
+        }
 
         echo json_encode($products);
     }
 
 }
-
-?>

@@ -16,12 +16,12 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Quote_Items extends Response_Model {
+class Mdl_Quote_Items extends Response_Model
+{
+    public $table = 'ip_quote_items';
+    public $primary_key = 'ip_quote_items.item_id';
+    public $date_created_field = 'item_date_added';
 
-    public $table              = 'ip_quote_items';
-    public $primary_key        = 'ip_quote_items.item_id';
-    public $date_created_field  = 'item_date_added';
-    
     public function default_select()
     {
         $this->db->select('ip_quote_item_amounts.*, ip_quote_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
@@ -105,5 +105,3 @@ class Mdl_Quote_Items extends Response_Model {
     }
 
 }
-
-?>

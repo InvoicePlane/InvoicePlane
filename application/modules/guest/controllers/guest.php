@@ -16,8 +16,8 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Guest extends Guest_Controller {
-
+class Guest extends Guest_Controller
+{
     public function index()
     {
         $this->load->model('quotes/mdl_quotes');
@@ -26,8 +26,8 @@ class Guest extends Guest_Controller {
         $this->layout->set(
             array(
                 'overdue_invoices' => $this->mdl_invoices->is_overdue()->where_in('ip_invoices.client_id', $this->user_clients)->get()->result(),
-                'open_quotes'      => $this->mdl_quotes->is_open()->where_in('ip_quotes.client_id', $this->user_clients)->get()->result(),
-                'open_invoices'    => $this->mdl_invoices->is_open()->where_in('ip_invoices.client_id', $this->user_clients)->get()->result()
+                'open_quotes' => $this->mdl_quotes->is_open()->where_in('ip_quotes.client_id', $this->user_clients)->get()->result(),
+                'open_invoices' => $this->mdl_invoices->is_open()->where_in('ip_invoices.client_id', $this->user_clients)->get()->result()
             )
         );
 
@@ -36,5 +36,3 @@ class Guest extends Guest_Controller {
     }
 
 }
-
-?>

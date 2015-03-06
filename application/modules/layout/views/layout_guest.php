@@ -1,9 +1,13 @@
 <!doctype html>
 
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if lt IE 7]>
+<html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
     <title>
@@ -12,7 +16,7 @@
             echo $this->mdl_settings->setting('custom_title');
         } else {
             echo 'InvoicePlane';
-        }?>
+        } ?>
     </title>
 
     <meta charset="utf-8">
@@ -25,7 +29,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
-    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) {?>
+    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>
         <style>
             .amount {
                 font-family: Monaco, Lucida Console, monospace;
@@ -70,7 +74,7 @@
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
-                       data-original-title="<?php echo lang('logout'); ?>" >
+                       data-original-title="<?php echo lang('logout'); ?>">
                         <span class="visible-xs">&nbsp;<?php echo lang('logout'); ?></span>
                         <i class="fa fa-power-off"></i>
                     </a>
@@ -80,7 +84,9 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
+<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
+    echo 'hidden';
+} ?>">
     <ul>
         <li>
             <a href="<?php echo site_url('guest'); ?>">
@@ -119,14 +125,17 @@
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
-<script type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+<script
+    type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
 <![endif]-->
 
 <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
      chromium.org/developers/how-tos/chrome-frame-getting-started -->
 <!--[if lt IE 7 ]>
 <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-<script type="text/javascript">window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<script type="text/javascript">window.attachEvent('onload', function () {
+    CFInstall.check({mode: 'overlay'})
+})</script>
 <![endif]-->
 
 </body>

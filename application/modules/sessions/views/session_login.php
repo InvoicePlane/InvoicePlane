@@ -20,7 +20,9 @@
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
 
     <script type="text/javascript">
-        $(function() { $('#email').focus(); });
+        $(function () {
+            $('#email').focus();
+        });
     </script>
 
 </head>
@@ -57,19 +59,19 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="password" id="password" class="form-control"
-                           placeholder="<?php echo lang('password'); ?>" >
+                           placeholder="<?php echo lang('password'); ?>">
                 </div>
             </div>
 
             <input type="submit" name="btn_login" class="btn btn-block btn-primary"
-                   value="<?php echo lang('login'); ?>" >
+                   value="<?php echo lang('login'); ?>">
 
         </form>
 
         <div class="text-right">
             <small><a href="<?php echo base_url(); ?>sessions/passwordreset" class="text-muted">
-                <?php echo lang('forgot_your_password'); ?>
-            </a></small>
+                    <?php echo lang('forgot_your_password'); ?>
+                </a></small>
         </div>
 
     </div>
