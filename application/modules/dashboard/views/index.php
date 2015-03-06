@@ -144,7 +144,7 @@
                             </td>
                             <td style="text-align: center;">
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-                                   title="<?php echo lang('download_pdf'); ?>">
+                                   title="<?php echo lang('download_pdf'); ?>" target="_blank">
                                     <i class="fa fa-print"></i>
                                 </a>
                             </td>
@@ -208,7 +208,7 @@
                             </td>
                             <td style="text-align: center;">
                                 <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
-                                   title="<?php echo lang('download_pdf'); ?>">
+                                   title="<?php echo lang('download_pdf'); ?>" target="_blank">
                                     <i class="fa fa-print"></i>
                                 </a>
                             </td>
@@ -278,7 +278,7 @@
                             </td>
                             <td style="text-align: center;">
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-                                   title="<?php echo lang('download_pdf'); ?>">
+                                   title="<?php echo lang('download_pdf'); ?>" target="_blank">
                                     <i class="fa fa-print"></i>
                                 </a>
                             </td>

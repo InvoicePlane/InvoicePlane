@@ -54,7 +54,7 @@
         });
 
         $('#btn_generate_pdf').click(function() {
-            window.location = '<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>';
+            window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
         });
 
         var fixHelper = function(e, tr) {
