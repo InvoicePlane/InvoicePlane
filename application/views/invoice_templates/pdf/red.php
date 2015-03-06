@@ -3,91 +3,23 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title></title>
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
         
         <style>
-            body {
-                color: #555;
-                font-size: 1em;
-                font-family: Arial, Verdana, sans-serif;
-            }
-            table {
-                width:100%;
-                border-spacing:0;
-                border-collapse: collapse;
-            }
-
-            .text-right {
-                text-align: right;
-            }
-
             .color-l { color: #faccb5; }
             .color-n { color: #f29671; }
             .color-d { color: #e63d26; }
-
-            .border-bottom-l {
-                border-bottom-width: 1px;
-                border-style: solid;
-                border-color: #faccb5;
-            }
-            .border-bottom-n {
-                border-bottom-width: 1px;
-                border-style: solid;
-                border-color: #f29671;
-            }
-            .border-bottom-d {
-                border-bottom-width: 1px;
-                border-style: solid;
-                border-color: #e63d26;
-            }
-
-            .border-top-l {
-                border-top-width: 1px;
-                border-style: solid;
-                border-color: #faccb5;
-            }
-            .border-top-n {
-                border-top-width: 1px;
-                border-style: solid;
-                border-color: #f29671;
-            }
-            .border-top-d {
-                border-top-width: 1px;
-                border-style: solid;
-                border-color: #e63d26;
-            }
-
+            .border-bottom-l {  border-color: #faccb5;  }
+            .border-bottom-n {  border-color: #f29671;  }
+            .border-bottom-d {  border-color: #e63d26;  }
+            .border-top-l {  border-color: #faccb5;  }
+            .border-top-n {  border-color: #f29671;  }
+            .border-top-d {  border-color: #e63d26;  }
             .background-l { background-color: #fdede5; }
-
-            #header table {
-                width:100%;
-                padding: 0;
-            }
-
-            .company-details,
-            .company-details h3,
-            .company-details p,
-            .invoice-details {
-                text-align: right;
-            }
-
             .company-name,
             .invoice-id {
                 color: #e63d26 !important;
             }
-            .invoice-details td {
-                padding: 0.2em 0.3em;
-            }
-            .invoice-items td,
-            .invoice-items th {
-                padding: 0.2em 0.4em 0.4em;
-            }
-
-            .seperator {
-                height: 25px;
-                margin-bottom: 15px;
-            }
-
         </style>
         
 	</head>
@@ -124,7 +56,7 @@
                                 } ?>
 
                                 <?php if ($invoice->client_phone) { ?>
-                                    <abbr>P:</abbr><?php echo $invoice->client_phone; ?><br/>
+                                    <?php echo lang('phone_abbr'); ?>: <?php echo $invoice->client_phone; ?><br/>
                                 <?php } ?>
                             </p>
                         </div>
@@ -161,10 +93,10 @@
                                     echo $invoice->user_state . '<br/>';
                                 } ?>
                                 <?php if ($invoice->user_phone) {
-                                    ?><abbr>P:</abbr><?php echo $invoice->user_phone; ?><br><?php
+                                    ?><?php echo lang('phone_abbr'); ?>: <?php echo $invoice->user_phone; ?><br><?php
                                 } ?>
                                 <?php if ($invoice->user_fax) {
-                                    ?><abbr>F:</abbr><?php echo $invoice->user_fax; ?><?php
+                                    ?><?php echo lang('fax_abbr'); ?>: <?php echo $invoice->user_fax; ?><?php
                                 } ?>
                             </p>
                         </div>
