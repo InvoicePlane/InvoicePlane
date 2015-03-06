@@ -4,6 +4,8 @@ class  SetTimezoneClass
 {
     public function setTimezone()
     {
-        date_default_timezone_set('UTC');
+        if (!ini_get('date.timezone')) {
+            date_default_timezone_set('UTC');
+        }
     }
 }
