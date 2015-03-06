@@ -57,6 +57,12 @@ table {
     text-align: right;
 }
 
+#invoice-logo {
+    max-width: 10em !important;
+    max-height: 10em !important;
+    margin-bottom: 1em;
+}
+
 .color-paid {  color: $color_status_paid_approved;  }
 .color-overdue { color: $color_status_rejected_overdue; }
 

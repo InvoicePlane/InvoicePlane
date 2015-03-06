@@ -33,7 +33,7 @@ function invoice_logo_pdf()
 
     if ($CI->mdl_settings->setting('invoice_logo'))
     {
-        return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';
+        return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
     }
     return '';
 }
