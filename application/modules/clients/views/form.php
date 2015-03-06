@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         $('#client_name').focus();
         $("#client_country").select2({allowClear: true});
     });
@@ -22,13 +22,16 @@
               <span class="input-group-addon">
                 <?php echo lang('active_client'); ?>: 
                 <input id="client_active" name="client_active" type="checkbox" value="1"
-                        <?php if ($this->mdl_clients->form_value('client_active') == 1
-                            or !is_numeric($this->mdl_clients->form_value('client_active')))
-                        { echo 'checked="checked"'; } ?>
-                        >
+                    <?php if ($this->mdl_clients->form_value('client_active') == 1
+                        or !is_numeric($this->mdl_clients->form_value('client_active'))
+                    ) {
+                        echo 'checked="checked"';
+                    } ?>
+                    >
               </span>
-              <input id="client_name" name="client_name" type="text" class="form-control" placeholder="<?php echo lang('client_name"'); ?>"
-                           value="<?php echo $this->mdl_clients->form_value('client_name'); ?>">
+                <input id="client_name" name="client_name" type="text" class="form-control"
+                       placeholder="<?php echo lang('client_name"'); ?>"
+                       value="<?php echo $this->mdl_clients->form_value('client_name'); ?>">
             </div>
         </fieldset>
 
@@ -40,6 +43,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('street_address'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_address_1" id="client_address_1" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_address_1'); ?>">
@@ -48,6 +52,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('street_address_2'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_address_2" id="client_address_2" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_address_2'); ?>">
@@ -56,6 +61,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('city'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_city" id="client_city" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_city'); ?>">
@@ -64,6 +70,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('state'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_state" id="client_state" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_state'); ?>">
@@ -72,6 +79,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('zip_code'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_zip" id="client_zip" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_zip'); ?>">
@@ -80,11 +88,13 @@
 
                     <div class="form-group">
                         <label><?php echo lang('country'); ?>: </label>
+
                         <div class="controls">
                             <select name="client_country" id="client_country" class="form-control">
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
-                                    <option value="<?php echo $cldr; ?>" <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                                    <option value="<?php echo $cldr; ?>"
+                                            <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -99,6 +109,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('phone_number'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_phone" id="client_phone" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_phone'); ?>">
@@ -107,6 +118,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('fax_number'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_fax" id="client_fax" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_fax'); ?>">
@@ -115,6 +127,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('mobile_number'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_mobile" id="client_mobile" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_mobile'); ?>">
@@ -123,6 +136,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('email_address'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_email" id="client_email" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_email'); ?>">
@@ -131,6 +145,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('web_address'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_web" id="client_web" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_web'); ?>">
@@ -147,6 +162,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('vat_id'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_vat_id'); ?>">
@@ -155,6 +171,7 @@
 
                     <div class="form-group">
                         <label><?php echo lang('tax_code'); ?>: </label>
+
                         <div class="controls">
                             <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_tax_code'); ?>">
@@ -167,24 +184,25 @@
         </div>
 
         <?php if ($custom_fields) { ?>
-        <div class="row">
-            <div class="col-xs-12">
-                <fieldset>
-                    <legend><?php echo lang('custom_fields'); ?></legend>
-                    <?php foreach ($custom_fields as $custom_field) { ?>
-                        <div class="form-group">
-                            <label><?php echo $custom_field->custom_field_label; ?>: </label>
-                            <div class="controls">
-                                <input type="text" class="form-control"
-                                       name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                       id="<?php echo $custom_field->custom_field_column; ?>"
-                                       value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+            <div class="row">
+                <div class="col-xs-12">
+                    <fieldset>
+                        <legend><?php echo lang('custom_fields'); ?></legend>
+                        <?php foreach ($custom_fields as $custom_field) { ?>
+                            <div class="form-group">
+                                <label><?php echo $custom_field->custom_field_label; ?>: </label>
+
+                                <div class="controls">
+                                    <input type="text" class="form-control"
+                                           name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                           id="<?php echo $custom_field->custom_field_column; ?>"
+                                           value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                                </div>
                             </div>
-                        </div>
-                    <?php } ?>
-                </fieldset>
+                        <?php } ?>
+                    </fieldset>
+                </div>
             </div>
-        </div>
         <?php } ?>
     </div>
 </form>

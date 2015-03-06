@@ -3,7 +3,7 @@
 
         <h1 id="logo"><span>InvoicePlane</span></h1>
 
-        <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>" >
+        <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <input type="hidden" name="user_type" value="1">
 

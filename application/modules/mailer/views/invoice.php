@@ -19,7 +19,8 @@
     });
 </script>
 
-<form method="post" class="form-horizontal" action="<?php echo site_url('mailer/send_invoice/'.$invoice->invoice_id) ?>">
+<form method="post" class="form-horizontal"
+      action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
 
     <div class="headerbar">
         <h1><?php echo lang('email_invoice'); ?></h1>

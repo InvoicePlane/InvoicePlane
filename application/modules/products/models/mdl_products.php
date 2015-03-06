@@ -16,9 +16,9 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Products extends Response_Model {
-
-    public $table       = 'ip_products';
+class Mdl_Products extends Response_Model
+{
+    public $table = 'ip_products';
     public $primary_key = 'ip_products.product_id';
 
     public function default_select()
@@ -37,13 +37,13 @@ class Mdl_Products extends Response_Model {
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
     }
 
-	public function by_product($match)
-	{
-		$this->db->like('product_sku', $match);
-		$this->db->or_like('product_name', $match); 
-		$this->db->or_like('product_description', $match); 
-	}
-	
+    public function by_product($match)
+    {
+        $this->db->like('product_sku', $match);
+        $this->db->or_like('product_name', $match);
+        $this->db->or_like('product_description', $match);
+    }
+
     public function validation_rules()
     {
         return array(
@@ -87,5 +87,3 @@ class Mdl_Products extends Response_Model {
     }
 
 }
-
-?>

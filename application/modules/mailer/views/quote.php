@@ -19,7 +19,7 @@
     });
 </script>
 
-<form method="post" class="form-horizontal" action="<?php echo site_url('mailer/send_quote/'.$quote->quote_id) ?>">
+<form method="post" class="form-horizontal" action="<?php echo site_url('mailer/send_quote/' . $quote->quote_id) ?>">
 
     <div class="headerbar">
         <h1><?php echo lang('email_quote'); ?></h1>

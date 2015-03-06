@@ -16,16 +16,15 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Sessions extends CI_Model {
-
+class Mdl_Sessions extends CI_Model
+{
     public function auth($email, $password)
     {
         $this->db->where('user_email', $email);
 
         $query = $this->db->get('ip_users');
 
-        if ($query->num_rows())
-        {
+        if ($query->num_rows()) {
             $user = $query->row();
 
             $this->load->library('crypt');
@@ -34,35 +33,31 @@ class Mdl_Sessions extends CI_Model {
              * Password hashing changed after 1.2.0
              * Check to see if user has logged in since the password change
              */
-            if (!$user->user_psalt)
-            {
+            if (!$user->user_psalt) {
                 /**
                  * The user has not logged in, so we're going to attempt to
                  * update their record with the updated hash
                  */
-                if (md5($password) == $user->user_password)
-                {
+                if (md5($password) == $user->user_password) {
                     /**
-                     * The md5 login validated - let's update this user 
+                     * The md5 login validated - let's update this user
                      * to the new hash
                      */
                     $salt = $this->crypt->salt();
                     $hash = $this->crypt->generate_password($password, $salt);
 
                     $db_array = array(
-                        'user_psalt'    => $salt,
+                        'user_psalt' => $salt,
                         'user_password' => $hash
                     );
-                    
+
                     $this->db->where('user_id', $user->user_id);
                     $this->db->update('ip_users', $db_array);
-                    
+
                     $this->db->where('user_email', $email);
                     $user = $this->db->get('ip_users')->row();
-                    
-                }
-                else
-                {
+
+                } else {
                     /**
                      * The password didn't verify against original md5
                      */
@@ -70,11 +65,10 @@ class Mdl_Sessions extends CI_Model {
                 }
             }
 
-            if ($this->crypt->check_password($user->user_password, $password))
-            {
+            if ($this->crypt->check_password($user->user_password, $password)) {
                 $session_data = array(
                     'user_type' => $user->user_type,
-                    'user_id'   => $user->user_id,
+                    'user_id' => $user->user_id,
                     'user_name' => $user->user_name
                 );
 
@@ -88,5 +82,3 @@ class Mdl_Sessions extends CI_Model {
     }
 
 }
-
-?>

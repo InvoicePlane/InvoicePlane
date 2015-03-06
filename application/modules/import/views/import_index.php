@@ -13,9 +13,7 @@
         </div>
 
         <div class="panel-body">
-
             <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
-
                 <?php foreach ($files as $file) { ?>
                     <div class="form-group">
                         <div class="controls">
@@ -26,17 +24,13 @@
                         </div>
                     </div>
                 <?php } ?>
-
                 <div class="form-group">
                     <div class="controls">
-                        <input type="submit" class="btn btn-default" name="btn_submit" value="<?php echo lang('import'); ?>">
+                        <input type="submit" class="btn btn-default" name="btn_submit"
+                               value="<?php echo lang('import'); ?>">
                     </div>
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>

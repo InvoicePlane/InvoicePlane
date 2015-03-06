@@ -20,7 +20,9 @@
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
 
     <script type="text/javascript">
-        $(function() { $('#email').focus(); });
+        $(function () {
+            $('#email').focus();
+        });
     </script>
 
 </head>
@@ -52,7 +54,7 @@
             </div>
 
             <input type="submit" name="btn_new_password" class="btn btn-block btn-warning"
-                   value="<?php echo lang('set_new_password'); ?>" >
+                   value="<?php echo lang('set_new_password'); ?>">
 
         </form>
 

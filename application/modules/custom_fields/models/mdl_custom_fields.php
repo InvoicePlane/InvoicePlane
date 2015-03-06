@@ -16,9 +16,9 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Custom_Fields extends MY_Model {
-
-    public $table       = 'ip_custom_fields';
+class Mdl_Custom_Fields extends MY_Model
+{
+    public $table = 'ip_custom_fields';
     public $primary_key = 'ip_custom_fields.custom_field_id';
 
     public function default_select()
@@ -29,11 +29,11 @@ class Mdl_Custom_Fields extends MY_Model {
     public function custom_tables()
     {
         return array(
-            'ip_client_custom'  => 'client',
+            'ip_client_custom' => 'client',
             'ip_invoice_custom' => 'invoice',
             'ip_payment_custom' => 'payment',
-            'ip_quote_custom'   => 'quote',
-            'ip_user_custom'    => 'user'
+            'ip_quote_custom' => 'quote',
+            'ip_user_custom' => 'user'
         );
     }
 
@@ -57,16 +57,16 @@ class Mdl_Custom_Fields extends MY_Model {
     {
         // Get the default db array
         $db_array = parent::db_array();
-        
+
         // Get the array of custom tables
         $custom_tables = $this->custom_tables();
 
         // Check if the user wants to add 'id' as custom field
-        if ( strtolower($db_array['custom_field_label']) == 'id') {
+        if (strtolower($db_array['custom_field_label']) == 'id') {
             // Replace 'id' with 'field_id' to avoid problems with the primary key
             $custom_field_label = 'field_id';
         } else {
-            $custom_field_label = strtolower( str_replace(' ', '_', $db_array['custom_field_label']) );
+            $custom_field_label = strtolower(str_replace(' ', '_', $db_array['custom_field_label']));
         }
 
         // Create the name for the custom field column
@@ -75,7 +75,7 @@ class Mdl_Custom_Fields extends MY_Model {
 
         $clean_name = preg_replace('/[^a-z0-9_\s]/', '', strtolower(diacritics_remove_diacritics($custom_field_label)));
 
-        $db_array['custom_field_column'] = $custom_tables[$db_array['custom_field_table']] . '_custom_'. $clean_name;
+        $db_array['custom_field_column'] = $custom_tables[$db_array['custom_field_table']] . '_custom_' . $clean_name;
 
         // Return the db array
         return $db_array;
@@ -83,8 +83,7 @@ class Mdl_Custom_Fields extends MY_Model {
 
     public function save($id = NULL, $db_array = NULL)
     {
-        if ($id)
-        {
+        if ($id) {
             // Get the original record before saving
             $original_record = $this->get_by_id($id);
         }
@@ -95,16 +94,12 @@ class Mdl_Custom_Fields extends MY_Model {
         // Save the record to ip_custom_fields
         $id = parent::save($id, $db_array);
 
-        if (isset($original_record))
-        {
-            if ($original_record->custom_field_column <> $db_array['custom_field_column'])
-            {
+        if (isset($original_record)) {
+            if ($original_record->custom_field_column <> $db_array['custom_field_column']) {
                 // The column name differs from the original - rename it
                 $this->rename_column($db_array['custom_field_table'], $original_record->custom_field_column, $db_array['custom_field_column']);
             }
-        }
-        else
-        {
+        } else {
             // This is a new column - add it
             $this->add_column($db_array['custom_field_table'], $db_array['custom_field_column']);
         }
@@ -118,7 +113,7 @@ class Mdl_Custom_Fields extends MY_Model {
 
         $column = array(
             $column_name => array(
-                'type'       => 'VARCHAR',
+                'type' => 'VARCHAR',
                 'constraint' => 255
             )
         );
@@ -129,11 +124,11 @@ class Mdl_Custom_Fields extends MY_Model {
     private function rename_column($table_name, $old_column_name, $new_column_name)
     {
         $this->load->dbforge();
-        
+
         $column = array(
             $old_column_name => array(
-                'name'       => $new_column_name,
-                'type'       => 'VARCHAR',
+                'name' => $new_column_name,
+                'type' => 'VARCHAR',
                 'constraint' => 255
             )
         );
@@ -145,8 +140,7 @@ class Mdl_Custom_Fields extends MY_Model {
     {
         $custom_field = $this->get_by_id($id);
 
-        if ($this->db->field_exists($custom_field->custom_field_column, $custom_field->custom_field_table))
-        {
+        if ($this->db->field_exists($custom_field->custom_field_column, $custom_field->custom_field_table)) {
             $this->load->dbforge();
             $this->dbforge->drop_column($custom_field->custom_field_table, $custom_field->custom_field_column);
         }
@@ -161,5 +155,3 @@ class Mdl_Custom_Fields extends MY_Model {
     }
 
 }
-
-?>

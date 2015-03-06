@@ -16,8 +16,8 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Invoices extends Admin_Controller {
-
+class Invoices extends Admin_Controller
+{
     public function __construct()
     {
         parent::__construct();
@@ -34,8 +34,7 @@ class Invoices extends Admin_Controller {
     public function status($status = 'all', $page = 0)
     {
         // Determine which group of invoices to load
-        switch ($status)
-        {
+        switch ($status) {
             case 'draft':
                 $this->mdl_invoices->is_draft();
                 break;
@@ -58,12 +57,12 @@ class Invoices extends Admin_Controller {
 
         $this->layout->set(
             array(
-                'invoices'           => $invoices,
-                'status'             => $status,
-                'filter_display'     => TRUE,
+                'invoices' => $invoices,
+                'status' => $status,
+                'filter_display' => TRUE,
                 'filter_placeholder' => lang('filter_invoices'),
-                'filter_method'      => 'filter_invoices',
-                'invoice_statuses'   => $this->mdl_invoices->statuses()
+                'filter_method' => 'filter_invoices',
+                'invoice_statuses' => $this->mdl_invoices->statuses()
             )
         );
 
@@ -90,41 +89,38 @@ class Invoices extends Admin_Controller {
 
         $invoice_custom = $this->mdl_invoice_custom->where('invoice_id', $invoice_id)->get();
 
-        if ($invoice_custom->num_rows())
-        {
+        if ($invoice_custom->num_rows()) {
             $invoice_custom = $invoice_custom->row();
 
             unset($invoice_custom->invoice_id, $invoice_custom->invoice_custom_id);
 
-            foreach ($invoice_custom as $key => $val)
-            {
+            foreach ($invoice_custom as $key => $val) {
                 $this->mdl_invoices->set_form_value('custom[' . $key . ']', $val);
             }
         }
 
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if (!$invoice)
-        {
+        if (!$invoice) {
             show_404();
         }
 
         $this->layout->set(
             array(
-                'invoice'           => $invoice,
-                'items'             => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_id'        => $invoice_id,
-                'tax_rates'         => $this->mdl_tax_rates->get()->result(),
+                'invoice' => $invoice,
+                'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+                'invoice_id' => $invoice_id,
+                'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'payment_methods'   => $this->mdl_payment_methods->get()->result(),
-                'custom_fields'     => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result(),
-                'custom_js_vars'    => array(
-                    'currency_symbol'           => $this->mdl_settings->setting('currency_symbol'),
+                'payment_methods' => $this->mdl_payment_methods->get()->result(),
+                'custom_fields' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result(),
+                'custom_js_vars' => array(
+                    'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
-                    'decimal_point'             => $this->mdl_settings->setting('decimal_point')
+                    'decimal_point' => $this->mdl_settings->setting('decimal_point')
                 ),
-                'item_lookups'      => $this->mdl_item_lookups->get()->result(),
-                'invoice_statuses'  => $this->mdl_invoices->statuses()
+                'item_lookups' => $this->mdl_item_lookups->get()->result(),
+                'invoice_statuses' => $this->mdl_invoices->statuses()
             )
         );
 
@@ -145,7 +141,7 @@ class Invoices extends Admin_Controller {
         // Get the status of the invoice
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_status = $invoice->invoice_status_id;
-        
+
         if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === TRUE) {
             // Delete the invoice
             $this->mdl_invoices->delete($invoice_id);
@@ -171,9 +167,8 @@ class Invoices extends Admin_Controller {
     public function generate_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
     {
         $this->load->helper('pdf');
-        
-        if ($this->mdl_settings->setting('mark_invoices_sent_pdf') == 1)
-        {
+
+        if ($this->mdl_settings->setting('mark_invoices_sent_pdf') == 1) {
             $this->mdl_invoices->mark_sent($invoice_id);
         }
 
@@ -198,12 +193,9 @@ class Invoices extends Admin_Controller {
 
         $this->load->model('mdl_invoice_amounts');
 
-        foreach ($invoice_ids as $invoice_id)
-        {
+        foreach ($invoice_ids as $invoice_id) {
             $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
         }
     }
 
 }
-
-?>

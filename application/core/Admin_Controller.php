@@ -16,12 +16,13 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Admin_Controller extends User_Controller {
+class Admin_Controller extends User_Controller
+{
 
-	public function __construct()
-	{
-		parent::__construct('user_type', 1);
-	}
+    public function __construct()
+    {
+        parent::__construct('user_type', 1);
+    }
 
 }
 

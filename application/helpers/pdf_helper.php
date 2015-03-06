@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
 
     $CI->load->model('invoices/mdl_invoices');
     $CI->load->model('invoices/mdl_items');
@@ -26,17 +26,16 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
-    if (!$invoice_template)
-    {
+    if (!$invoice_template) {
         $CI->load->helper('template');
         $invoice_template = select_pdf_invoice_template($invoice);
     }
 
     $data = array(
-        'invoice'           => $invoice,
+        'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-        'items'             => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-        'output_type'       => 'pdf'
+        'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+        'output_type' => 'pdf'
     );
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, TRUE);
@@ -48,7 +47,7 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
 
 function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
 
     $CI->load->model('quotes/mdl_quotes');
     $CI->load->model('quotes/mdl_quote_items');
@@ -56,16 +55,15 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
 
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
 
-    if (!$quote_template)
-    {
+    if (!$quote_template) {
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
     }
 
     $data = array(
-        'quote'           => $quote,
+        'quote' => $quote,
         'quote_tax_rates' => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-        'items'           => $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
-        'output_type'     => 'pdf'
+        'items' => $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
+        'output_type' => 'pdf'
     );
 
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, TRUE);

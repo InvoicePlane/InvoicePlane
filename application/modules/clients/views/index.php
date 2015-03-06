@@ -4,7 +4,7 @@
 
     <div class="pull-right">
         <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
-                data-toggle="collapse" data-target="#ip-submenu-collapse" >
+                data-toggle="collapse" data-target="#ip-submenu-collapse">
             <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
         </button>
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('clients/form'); ?>">

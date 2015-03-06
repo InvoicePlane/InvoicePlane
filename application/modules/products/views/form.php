@@ -13,12 +13,12 @@
             <div class="col-xs-12 col-sm-7">
                 <fieldset>
                     <legend>
-                    <?php if($this->mdl_products->form_value('product_id')) : ?>
-                        #<?php echo $this->mdl_products->form_value('product_id'); ?>&nbsp;
-                        <?php echo $this->mdl_products->form_value('product_name'); ?>
-                    <?php else : ?>
-                        <?php echo lang('new_product'); ?>
-                    <?php endif; ?>
+                        <?php if ($this->mdl_products->form_value('product_id')) : ?>
+                            #<?php echo $this->mdl_products->form_value('product_id'); ?>&nbsp;
+                            <?php echo $this->mdl_products->form_value('product_name'); ?>
+                        <?php else : ?>
+                            <?php echo lang('new_product'); ?>
+                        <?php endif; ?>
                     </legend>
 
                     <div class="form-group">
@@ -29,7 +29,8 @@
                             <select name="family_id" id="family_id" class="form-control">
                                 <option value=""><?php echo lang('select_family'); ?></option>
                                 <?php foreach ($families as $family) { ?>
-                                    <option value="<?php echo $family->family_id; ?>" <?php if ($this->mdl_products->form_value('family_id') == $family->family_id) { ?>selected="selected"<?php } ?>><?php echo $family->family_name; ?></option>
+                                    <option value="<?php echo $family->family_id; ?>"
+                                            <?php if ($this->mdl_products->form_value('family_id') == $family->family_id) { ?>selected="selected"<?php } ?>><?php echo $family->family_name; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -98,7 +99,7 @@
                 <fieldset>
                     <legend><?php echo lang('extra_information'); ?></legend>
 
-    <!--
+                    <!--
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
                             <label class="control-label"><?php echo lang('provider_name'); ?>: </label>
@@ -122,7 +123,7 @@
                 </fieldset>
             </div>
         </div>
-		
-	</div>
+
+    </div>
 
 </form>

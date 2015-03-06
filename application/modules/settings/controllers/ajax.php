@@ -16,8 +16,8 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Ajax extends Admin_Controller {
-
+class Ajax extends Admin_Controller
+{
     public $ajax_controller = TRUE;
 
     public function get_cron_key()
@@ -26,5 +26,3 @@ class Ajax extends Admin_Controller {
     }
 
 }
-
-?>

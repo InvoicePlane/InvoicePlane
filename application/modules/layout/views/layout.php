@@ -1,9 +1,13 @@
 <!doctype html>
 
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if lt IE 7]>
+<html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
     <title>
@@ -12,7 +16,7 @@
             echo $this->mdl_settings->setting('custom_title');
         } else {
             echo 'InvoicePlane';
-        }?>
+        } ?>
     </title>
 
     <meta charset="utf-8">
@@ -25,13 +29,13 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
-    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) {?>
-    <style>
-        .amount {
-            font-family: Monaco, Lucida Console, monospace;
-            font-size: 90%;
-        }
-    </style>
+    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>
+        <style>
+            .amount {
+                font-family: Monaco, Lucida Console, monospace;
+                font-size: 90%;
+            }
+        </style>
     <?php } ?>
 
     <script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.8.3.min.js"></script>
@@ -44,62 +48,64 @@
 
     <script type="text/javascript">
 
-        $(function()
-        {
+        $(function () {
             $('.nav-tabs').tab();
             $('.tip').tooltip();
 
-            $('body').on('focus',".datepicker", function(){
+            $('body').on('focus', ".datepicker", function () {
                 $(this).datepicker({
                     autoclose: true,
                     format: '<?php echo date_format_datepicker(); ?>',
                     language: '<?php echo lang('cldr'); ?>',
-                    weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>'                     
+                    weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>'
                 });
             });
 
-            $('.create-invoice').click(function() {
+            $('.create-invoice').click(function () {
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
             });
 
-            $('.create-quote').click(function() {
+            $('.create-quote').click(function () {
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>");
             });
 
-            $('#btn_quote_to_invoice').click(function() {
+            $('#btn_quote_to_invoice').click(function () {
                 quote_id = $(this).data('quote-id');
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_quote_to_invoice'); ?>/" + quote_id);
             });
 
-            $('#btn_copy_invoice').click(function() {
+            $('#btn_copy_invoice').click(function () {
                 invoice_id = $(this).data('invoice-id');
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
             });
 
-            $('#btn_create_credit').click(function() {
+            $('#btn_create_credit').click(function () {
                 invoice_id = $(this).data('invoice-id');
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {invoice_id: invoice_id});
             });
 
-            $('#btn_copy_quote').click(function() {
+            $('#btn_copy_quote').click(function () {
                 quote_id = $(this).data('quote-id');
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {quote_id: quote_id});
             });
 
-            $('.client-create-invoice').click(function() {
+            $('.client-create-invoice').click(function () {
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>", {
                     client_name: $(this).data('client-name')
                 });
             });
-            $('.client-create-quote').click(function() {
+            $('.client-create-quote').click(function () {
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {
                     client_name: $(this).data('client-name')
                 });
             });
-            $(document).on('click', '.invoice-add-payment', function() {
+            $(document).on('click', '.invoice-add-payment', function () {
                 invoice_id = $(this).data('invoice-id');
                 invoice_balance = $(this).data('invoice-balance');
-                $('#modal-placeholder').load("<?php echo site_url('payments/ajax/modal_add_payment'); ?>", {invoice_id: invoice_id, invoice_balance: invoice_balance });
+                $('#modal-placeholder').load("<?php echo site_url('payments/ajax/modal_add_payment'); ?>", {
+                    invoice_id: invoice_id,
+                    invoice_balance: invoice_balance
+                });
             });
 
         });
@@ -108,7 +114,9 @@
 
 </head>
 
-<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden-sidebar';}?>">
+<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
+    echo 'hidden-sidebar';
+} ?>">
 
 <noscript>
     <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
@@ -232,14 +240,14 @@
                         <li><?php echo anchor('users/index', lang('user_accounts')); ?></li>
                         <li class="divider hidden-xs hidden-sm"></li>
                         <li><?php echo anchor('settings', lang('system_settings')); ?></li>
-						<li><?php echo anchor('import', lang('import_data')); ?></li>
+                        <li><?php echo anchor('import', lang('import_data')); ?></li>
                     </ul>
                 </li>
 
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
-                       data-original-title="<?php echo lang('logout'); ?>" >
+                       data-original-title="<?php echo lang('logout'); ?>">
                         <i class="fa fa-power-off"></i>
                         <span class="visible-xs">&nbsp;<?php echo lang('logout'); ?></span>
                     </a>
@@ -249,7 +257,9 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {echo 'hidden';}?>">
+<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
+    echo 'hidden';
+} ?>">
     <ul>
         <li>
             <a href="<?php echo site_url('dashboard'); ?>">
@@ -289,20 +299,24 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
-<?php if (lang('cldr') != 'en') {?>
-<script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo lang('cldr'); ?>.js"></script>
+<?php if (lang('cldr') != 'en') { ?>
+    <script
+        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo lang('cldr'); ?>.js"></script>
 <?php } ?>
 
 <!--[if lt IE 7 ]>
 <script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
-<script type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+<script
+    type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
 <![endif]-->
 
 <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
      chromium.org/developers/how-tos/chrome-frame-getting-started -->
 <!--[if lt IE 7 ]>
 <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-<script type="text/javascript">window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<script type="text/javascript">window.attachEvent('onload', function () {
+    CFInstall.check({mode: 'overlay'})
+})</script>
 <![endif]-->
 
 </body>

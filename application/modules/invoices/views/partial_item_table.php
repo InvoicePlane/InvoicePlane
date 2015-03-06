@@ -63,35 +63,49 @@
                 <td><i class="fa fa-arrows cursor-move"></i></td>
                 <td class="td-text">
                     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>"
-                        <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>>
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>"
-                        <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>>
                     <input type="text" name="item_name" class="form-control"
                            value="<?php echo $item->item_name; ?>"
-                        <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>>
                 </td>
 
                 <td class="td-textarea">
                     <textarea name="item_description" class="form-control"
-                        <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>
                         ><?php echo $item->item_description; ?></textarea>
                 </td>
 
                 <td class="td-amount amount">
                     <input type="text" name="item_quantity" class="input-sm form-control"
                            value="<?php echo format_amount($item->item_quantity); ?>"
-                        <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>>
                 </td>
 
                 <td class="td-amount amount">
                     <input type="text" name="item_price" class="input-sm form-control"
                            value="<?php echo format_amount($item->item_price); ?>"
-                        <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>>
                 </td>
 
                 <td class="td-amount amount">
                     <select name="item_tax_rate_id" name="item_tax_rate_id" class="form-control input-sm"
-                        <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>>
                         <option value="0"><?php echo lang('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -117,10 +131,10 @@
                 </td>
                 <td class="td-icon">
                     <?php if ($invoice->is_read_only != 1) { ?>
-                    <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>"
-                       title="<?php echo lang('delete'); ?>">
-                        <i class="fa fa-trash-o no-margin text-danger"></i>
-                    </a>
+                        <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>"
+                           title="<?php echo lang('delete'); ?>">
+                            <i class="fa fa-trash-o no-margin text-danger"></i>
+                        </a>
                     <?php } ?>
                 </td>
             </tr>

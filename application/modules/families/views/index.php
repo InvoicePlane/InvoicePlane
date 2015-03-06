@@ -2,7 +2,8 @@
     <h1><?php echo lang('families'); ?></h1>
 
     <div class="pull-right">
-        <a class="btn btn-sm btn-primary" href="<?php echo site_url('families/form'); ?>"><i class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
+        <a class="btn btn-sm btn-primary" href="<?php echo site_url('families/form'); ?>"><i
+                class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -42,7 +43,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo site_url('families/delete/' . $family->family_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                    <a href="<?php echo site_url('families/delete/' . $family->family_id); ?>"
+                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                     </a>
                                 </li>

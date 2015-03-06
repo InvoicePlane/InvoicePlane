@@ -10,13 +10,13 @@
 
             <?php if (!$database['success']) { ?>
 
-            <?php if ($database['message'] and $_POST) { ?>
-            <p><span class="label label-danger"><?php echo lang('failure'); ?></span>
-                <?php echo $database['message']; ?>
-            </p>
-            <?php } ?>
+                <?php if ($database['message'] and $_POST) { ?>
+                    <p><span class="label label-danger"><?php echo lang('failure'); ?></span>
+                        <?php echo $database['message']; ?>
+                    </p>
+                <?php } ?>
 
-            <p><?php echo lang('setup_database_message'); ?></p>
+                <p><?php echo lang('setup_database_message'); ?></p>
 
                 <div class="form-group">
                     <label for="db_hostname">

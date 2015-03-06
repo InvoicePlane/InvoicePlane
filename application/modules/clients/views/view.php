@@ -1,15 +1,13 @@
 <script type="text/javascript">
-    $(function() {
-        $('#save_client_note').click(function()
-        {
+    $(function () {
+        $('#save_client_note').click(function () {
             $.post("<?php echo site_url('clients/ajax/save_client_note'); ?>",
                 {
                     client_id: $('#client_id').val(),
                     client_note: $('#client_note').val()
-                }, function(data) {
+                }, function (data) {
                     var response = JSON.parse(data);
-                    if (response.success == '1')
-                    {
+                    if (response.success == '1') {
                         // The validation was successful
                         $('.control-group').removeClass('error');
                         $('#client_note').val('');
@@ -19,8 +17,7 @@
                                 client_id: <?php echo $client->client_id; ?>
                             });
                     }
-                    else
-                    {
+                    else {
                         // The validation was not successful
                         $('.control-group').removeClass('error');
                         for (var key in response.validation_errors) {
@@ -39,7 +36,9 @@
            data-client-name="<?php echo $client->client_name; ?>">
             <i class="fa fa-file"></i> <?php echo lang('create_quote'); ?>
         </a>
-        <a href="#" class="btn btn-sm btn-default client-create-invoice" data-client-name="<?php echo $client->client_name; ?>"><i class="fa fa-file-text""></i> <?php echo lang('create_invoice'); ?></a>
+        <a href="#" class="btn btn-sm btn-default client-create-invoice"
+           data-client-name="<?php echo $client->client_name; ?>"><i
+                class="fa fa-file-text""></i> <?php echo lang('create_invoice'); ?></a>
         <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
            class="btn btn-sm btn-default">
             <i class="fa fa-edit"></i> <?php echo lang('edit'); ?>
@@ -73,6 +72,7 @@
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
                     <h2><?php echo $client->client_name; ?></h2>
                     <br/>
+
                     <p>
                         <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>
                         <?php echo ($client->client_address_2) ? $client->client_address_2 . '<br>' : ''; ?>
@@ -146,7 +146,7 @@
                         <?php if ($client->client_web) { ?>
                             <tr>
                                 <td><?php echo lang('web'); ?></td>
-                                <td><?php echo auto_link($client->client_web,'url', TRUE); ?></td>
+                                <td><?php echo auto_link($client->client_web, 'url', TRUE); ?></td>
                             </tr>
                         <?php } ?>
                     </table>
@@ -197,13 +197,15 @@
             <div>
                 <h4><?php echo lang('notes'); ?></h4>
                 <br/>
+
                 <div id="notes_list">
                     <?php echo $partial_notes; ?>
                 </div>
                 <div class="panel panel-default panel-body">
                     <form class="row">
                         <div class="col-xs-12 col-md-10">
-                            <input type="hidden" name="client_id" id="client_id" value="<?php echo $client->client_id; ?>">
+                            <input type="hidden" name="client_id" id="client_id"
+                                   value="<?php echo $client->client_id; ?>">
                             <textarea id="client_note" class="form-control" rows="1"></textarea>
                         </div>
                         <div class="col-xs-12 col-md-2 text-center">

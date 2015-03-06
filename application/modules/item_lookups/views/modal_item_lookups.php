@@ -1,25 +1,22 @@
 <script type="text/javascript">
-    $(function()
-    {
+    $(function () {
         // Display the create invoice modal
         $('#modal-choose-items').modal('show');
 
         // Creates the invoice
-        $('#select-items-confirm').click(function()
-        {
+        $('#select-items-confirm').click(function () {
             var item_lookup_ids = [];
 
-            $("input[name='item_lookup_ids[]']:checked").each(function ()
-            {
+            $("input[name='item_lookup_ids[]']:checked").each(function () {
                 item_lookup_ids.push(parseInt($(this).val()));
             });
 
             $.post("<?php echo site_url('item_lookups/ajax/process_item_selections'); ?>", {
                 item_lookup_ids: item_lookup_ids
-            }, function(data) {
+            }, function (data) {
                 items = JSON.parse(data);
 
-                for(var key in items) {
+                for (var key in items) {
                     if ($('#item_table tr:last input[name=item_name]').val() !== '') {
                         $('#new_item').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
                     }
@@ -41,6 +38,7 @@
     <form class="modal-content">
         <div class="modal-header">
             <a data-dismiss="modal" class="close">x</a>
+
             <h3><?php echo lang('add_item_from_lookup'); ?></h3>
         </div>
         <div class="modal-body">

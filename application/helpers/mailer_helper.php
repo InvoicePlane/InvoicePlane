@@ -18,17 +18,17 @@ if (!defined('BASEPATH'))
 
 function mailer_configured()
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
 
     return (($CI->mdl_settings->setting('email_send_method') == 'phpmail') OR
         ($CI->mdl_settings->setting('email_send_method') == 'sendmail') OR
         (($CI->mdl_settings->setting('email_send_method') == 'smtp') AND ($CI->mdl_settings->setting('smtp_server_address')))
-        );
+    );
 }
 
 function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL)
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
 
     $CI->load->helper('mailer/phpmailer');
     $CI->load->helper('template');
@@ -50,7 +50,7 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
 
 function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL)
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
 
     $CI->load->helper('mailer/phpmailer');
     $CI->load->helper('template');
@@ -97,7 +97,7 @@ function email_quote_status($quote_id, $status)
         $quote->client_name,
         strtolower(lang($status)),
         $quote->quote_number,
-        '<a href="'.$base_url.'">'.$base_url.'</a>'
+        '<a href="' . $base_url . '">' . $base_url . '</a>'
     );
 
     return phpmail_send($user_email, $user_email, $subject, $body);

@@ -1,9 +1,13 @@
 <!doctype html>
 
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if lt IE 7]>
+<html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
     <meta charset="utf-8">
@@ -33,11 +37,12 @@
             <span class="text-muted">S'il vous plaît installer InvoicePlane</span><br/>
             <span class="text-muted">Por favor, instale InvoicePlane</span><br/>
         </p>
+
         <div class="btn-group btn-group-justified">
             <a href="/setup" class="btn btn-success">
                 <i class="fa fa-cogs"></i> Setup
             </a>
-            <a href="https://support.invoiceplane.com" class="btn btn-info">
+            <a href="https://wiki.invoiceplane.com/" class="btn btn-info">
                 <i class="fa fa-info-circle"></i> Get Help
             </a>
         </div>

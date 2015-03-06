@@ -3,24 +3,24 @@
 /**
  * CodeIgniter CRUD Model 2
  * A base model providing CRUD, pagination and validation.
- * 
+ *
  * Install this file as application/core/MY_Model.php
- * 
- * @package	CodeIgniter
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012, Jesse Terry
- * @link		http://developer13.com
- * 
+ *
+ * @package    CodeIgniter
+ * @author        Kovah (www.kovah.de)
+ * @copyright    Copyright (c) 2012, Jesse Terry
+ * @link        http://developer13.com
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,29 +28,30 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- * 
+ *
  */
-class MY_Model extends CI_Model {
+class MY_Model extends CI_Model
+{
 
     public $table;
     public $primary_key;
-    public $default_limit            = 15;
+    public $default_limit = 15;
     public $page_links;
     public $query;
-    public $form_values              = array();
+    public $form_values = array();
     protected $default_validation_rules = 'validation_rules';
     protected $validation_rules;
     public $validation_errors;
     public $total_rows;
     public $date_created_field;
     public $date_modified_field;
-    public $native_methods           = array(
+    public $native_methods = array(
         'select', 'select_max', 'select_min', 'select_avg', 'select_sum', 'join',
         'where', 'or_where', 'where_in', 'or_where_in', 'where_not_in', 'or_where_not_in',
         'like', 'or_like', 'not_like', 'or_not_like', 'group_by', 'distinct', 'having',
         'or_having', 'order_by', 'limit'
     );
-    public $total_pages              = 0;
+    public $total_pages = 0;
     public $current_page;
     public $next_page;
     public $previous_page;
@@ -59,16 +60,13 @@ class MY_Model extends CI_Model {
     public $previous_offset;
     public $last_offset;
     public $id;
-    public $filter                   = array();
+    public $filter = array();
 
     public function __call($name, $arguments)
     {
-        if (substr($name, 0, 7) == 'filter_')
-        {
+        if (substr($name, 0, 7) == 'filter_') {
             $this->filter[] = array(substr($name, 7), $arguments);
-        }
-        else
-        {
+        } else {
             call_user_func_array(array($this->db, $name), $arguments);
         }
         return $this;
@@ -81,8 +79,7 @@ class MY_Model extends CI_Model {
      */
     public function get($include_defaults = true)
     {
-        if ($include_defaults)
-        {
+        if ($include_defaults) {
             $this->set_defaults();
         }
 
@@ -97,8 +94,7 @@ class MY_Model extends CI_Model {
 
     private function run_filters()
     {
-        foreach ($this->filter as $filter)
-        {
+        foreach ($this->filter as $filter) {
             call_user_func_array(array($this->db, $filter[0]), $filter[1]);
         }
 
@@ -111,23 +107,20 @@ class MY_Model extends CI_Model {
 
     /**
      * Query builder which listens to methods in child model.
-     * @param type $exclude 
+     * @param type $exclude
      */
     private function set_defaults($exclude = array())
     {
         $native_methods = $this->native_methods;
 
-        foreach ($exclude as $unset_method)
-        {
+        foreach ($exclude as $unset_method) {
             unset($native_methods[array_search($unset_method, $native_methods)]);
         }
 
-        foreach ($native_methods as $native_method)
-        {
+        foreach ($native_methods as $native_method) {
             $native_method = 'default_' . $native_method;
 
-            if (method_exists($this, $native_method))
-            {
+            if (method_exists($this, $native_method)) {
                 $this->$native_method();
             }
         }
@@ -143,7 +136,7 @@ class MY_Model extends CI_Model {
         $this->load->library('pagination');
 
         $this->offset = $offset;
-        $per_page     = $this->default_limit;
+        $per_page = $this->default_limit;
 
         $this->set_defaults();
         $this->run_filters();
@@ -151,21 +144,20 @@ class MY_Model extends CI_Model {
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
 
-        $this->total_rows      = $this->db->query("SELECT FOUND_ROWS() AS num_rows")->row()->num_rows;
-        $this->total_pages     = ceil($this->total_rows / $per_page);
+        $this->total_rows = $this->db->query("SELECT FOUND_ROWS() AS num_rows")->row()->num_rows;
+        $this->total_pages = ceil($this->total_rows / $per_page);
         $this->previous_offset = $this->offset - $per_page;
-        $this->next_offset     = $this->offset + $per_page;
+        $this->next_offset = $this->offset + $per_page;
 
         $config = array(
-            'base_url'   => $base_url,
+            'base_url' => $base_url,
             'total_rows' => $this->total_rows,
-            'per_page'   => $per_page
+            'per_page' => $per_page
         );
 
         $this->last_offset = ($this->total_pages * $per_page) - $per_page;
 
-        if ($this->config->item('pagination_style'))
-        {
+        if ($this->config->item('pagination_style')) {
             $config = array_merge($config, $this->config->item('pagination_style'));
         }
 
@@ -184,44 +176,31 @@ class MY_Model extends CI_Model {
 
     public function save($id = NULL, $db_array = NULL)
     {
-        if (!$db_array)
-        {
+        if (!$db_array) {
             $db_array = $this->db_array();
         }
 
         $datetime = date('Y-m-d H:i:s');
 
-        if (!$id)
-        {
-            if ($this->date_created_field)
-            {
-                if (is_array($db_array))
-                {
+        if (!$id) {
+            if ($this->date_created_field) {
+                if (is_array($db_array)) {
                     $db_array[$this->date_created_field] = $datetime;
 
-                    if ($this->date_modified_field)
-                    {
+                    if ($this->date_modified_field) {
                         $db_array[$this->date_modified_field] = $datetime;
                     }
-                }
-                else
-                {
+                } else {
                     $db_array->{$this->date_created_field} = $datetime;
 
-                    if ($this->date_modified_field)
-                    {
+                    if ($this->date_modified_field) {
                         $db_array->{$this->date_modified_field} = $datetime;
                     }
                 }
-            }
-            elseif ($this->date_modified_field)
-            {
-                if (is_array($db_array))
-                {
+            } elseif ($this->date_modified_field) {
+                if (is_array($db_array)) {
                     $db_array[$this->date_modified_field] = $datetime;
-                }
-                else
-                {
+                } else {
                     $db_array->{$this->date_modified_field} = $datetime;
                 }
             }
@@ -229,17 +208,11 @@ class MY_Model extends CI_Model {
             $this->db->insert($this->table, $db_array);
 
             return $this->db->insert_id();
-        }
-        else
-        {
-            if ($this->date_modified_field)
-            {
-                if (is_array($db_array))
-                {
+        } else {
+            if ($this->date_modified_field) {
+                if (is_array($db_array)) {
                     $db_array[$this->date_modified_field] = $datetime;
-                }
-                else
-                {
+                } else {
                     $db_array->{$this->date_modified_field} = $datetime;
                 }
             }
@@ -261,10 +234,8 @@ class MY_Model extends CI_Model {
 
         $validation_rules = $this->{$this->validation_rules}();
 
-        foreach ($this->input->post() as $key => $value)
-        {
-            if (array_key_exists($key, $validation_rules))
-            {
+        foreach ($this->input->post() as $key => $value) {
+            if (array_key_exists($key, $validation_rules)) {
                 $db_array[$key] = $value;
             }
         }
@@ -329,27 +300,22 @@ class MY_Model extends CI_Model {
 
     /**
      * Used to retrieve record by ID and populate $this->form_values.
-     * @param int $id 
+     * @param int $id
      * @return boolean
      */
     public function prep_form($id = NULL)
     {
-        if (!$_POST and ($id))
-        {
+        if (!$_POST and ($id)) {
             $row = $this->get_by_id($id);
 
-            if ($row)
-            {
-                foreach ($row as $key => $value)
-                {
+            if ($row) {
+                foreach ($row as $key => $value) {
                     $this->form_values[$key] = $value;
                 }
                 return TRUE;
             }
             return FALSE;
-        }
-        elseif (!$id)
-        {
+        } elseif (!$id) {
             return TRUE;
         }
     }
@@ -363,18 +329,15 @@ class MY_Model extends CI_Model {
      */
     public function run_validation($validation_rules = NULL)
     {
-        if (!$validation_rules)
-        {
+        if (!$validation_rules) {
             $validation_rules = $this->default_validation_rules;
         }
 
-        foreach (array_keys($_POST) as $key)
-        {
+        foreach (array_keys($_POST) as $key) {
             $this->form_values[$key] = $this->input->post($key);
         }
 
-        if (method_exists($this, $validation_rules))
-        {
+        if (method_exists($this, $validation_rules)) {
             $this->validation_rules = $validation_rules;
 
             $this->load->library('form_validation');
@@ -392,7 +355,7 @@ class MY_Model extends CI_Model {
     /**
      * Returns the assigned form value to a form input element.
      * @param type $key
-     * @return type 
+     * @return type
      */
     public function form_value($key)
     {
