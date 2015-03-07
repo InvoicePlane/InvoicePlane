@@ -122,7 +122,7 @@
     <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
 </noscript>
 
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#ip-navbar-collapse">
