@@ -52,7 +52,7 @@ html {
 
 body {
     background-color: #fff;
-    padding-top: 50px;
+    //padding-top: 50px;
     font-family: 'Noto Sans', Helvetica, Arial, sans-serif;
 }
 
@@ -189,7 +189,10 @@ table.items td {
 |   Navigation
 |   =========================================================
 */
-
+.navbar {
+    margin: 0;
+    border-radius: 0;
+}
 .navbar.navbar-inverse {
 
     .navbar-collapse {
