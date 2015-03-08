@@ -105,6 +105,7 @@ $lang = array(
     'delete_record_warning' => 'Are you sure you wish to delete this record?',
     'description' => 'Description',
     'details' => 'Details',
+    'disable_quickactions' => 'Disable the Quickactions',
     'disable_sidebar' => 'Disable the Sidebar',
     'documentation' => 'Documentation',
     'download_pdf' => 'Download PDF',
