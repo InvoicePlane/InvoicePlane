@@ -140,8 +140,20 @@
                 <label for="body" class="control-label"><?php echo lang('body'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <textarea name="body" id="body" class="form-control" rows="6"></textarea>
+                <textarea name="body" id="body" class="form-control" rows="8"></textarea>
             </div>
+
+            <script src="<?php echo base_url(); ?>assets/default/js/libs/sceditor.min.js"></script>
+            <script>
+                $(document).ready(function(){
+                    $("#body").sceditor({
+                        toolbar: "bold,italic,underline|left,center,right|font|size,color,code|image,email,link|source",
+                        fonts: "Sans-serif,Serif",
+                        width: "auto",
+                        emoticonsEnabled: false
+                    });
+                });
+            </script>
         </div>
 
         <div class="form-group">
