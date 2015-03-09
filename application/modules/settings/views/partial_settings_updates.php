@@ -8,8 +8,10 @@
         current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
 
         // Get the latest version from updates.invoiceplane.com
-        $.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {
-
+        //$.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {	// ---it--- ORIGINALE
+		//$.getJSON("http://127.0.0.1:8080/invoiceplane.it/updatecheck", function (data) {		// ---it--- Check versione italiana DEBUG
+		$.getJSON("http://www.invoiceplane.com/updatecheck", function (data) {		// ---it--- Check versione italiana
+		
             var updatecheck = data.current_version.replace(/\./g, '');
 
             // Compare each versions and replace the placeholder with a download button
@@ -53,8 +55,12 @@
 
 <div class="tab-info">
 
+	<?php if (FALSE): // ---it--- ORIGINALE ?>
     <h4><?php echo lang('updatecheck'); ?></h4><br/>
-
+	<?php else:	// ---it--- titolo modificato ?>
+	<h4>Controllo aggiornamenti (edizione italiana)</h4><br/>
+	<?php endif; ?>
+	
     <div class="form-group">
         <input type="text" class="input-sm form-control"
                value="<?php echo $current_version; ?>" readonly="readonly">
@@ -71,17 +77,28 @@
         <span id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
             <?php echo lang('updatecheck_failed'); ?>
         </span>
-
+		
+		<?php if (FALSE):	// ---it--- ORIGINALE ?>
         <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
            class="btn btn-success btn-sm hidden" target="_blank">
             <?php echo lang('updates_available'); ?>
         </a>
+        <?php else:			// ---it--- download da invoiceplane.it ?>
+        <a href="http://invoiceplane.it/" id="updatecheck-updates-available"
+           class="btn btn-success btn-sm hidden" target="_blank">
+            <?php echo lang('updates_available'); ?>
+        </a>
+        <?php endif; ?>
     </div>
 
     <hr/>
-
+	
+	<?php if (FALSE): // ---it--- ORIGINALE ?>
     <h4><?php echo lang('invoiceplane_news'); ?></h4>
-
+	<?php else: // ---it--- modifica titolo ?>
+	<h4>InvoicePlane International News</h4>
+	<?php endif; ?>
+	
     <div id="ipnews-results">
         <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
             <i class="fa fa-circle-o-notch fa-spin"></i>  <?php echo lang('checking_for_news'); ?>
