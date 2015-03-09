@@ -9,8 +9,8 @@
 
         // Get the latest version from updates.invoiceplane.com
         //$.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {	// ---it--- ORIGINALE
-		//$.getJSON("http://127.0.0.1:8080/invoiceplane.it/updatecheck", function (data) {		// ---it--- Check versione italiana DEBUG
-		$.getJSON("http://www.invoiceplane.com/updatecheck", function (data) {		// ---it--- Check versione italiana
+		//$.getJSON("http://127.0.0.1:8080/invoiceplane.it/updatecheck?callback=?", function (data) {		// ---it--- Check versione italiana DEBUG
+		$.getJSON("http://www.invoiceplane.it/updatecheck?callback=?", function (data) {		// ---it--- Check versione italiana
 		
             var updatecheck = data.current_version.replace(/\./g, '');
 
