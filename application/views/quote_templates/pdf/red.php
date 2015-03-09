@@ -3,94 +3,31 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title></title>
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
         
         <style>
-        	<?php //---it---inizio ?>
+            <?php //---it---inizio ?>
          	<?php if (!empty($preview_pdf)): ?>
          		html, body {
 				  overflow-y: visible;
 				}
          	<?php endif; ?>
         	<?php //---it---fine ?>
-        	
-            body {
-                color: #555;
-                font-size: 1em;
-                font-family: Arial, Verdana, sans-serif;
-            }
-            table {
-                width:100%;
-                border-spacing:0;
-                border-collapse: collapse;
-            }
-
-            .text-right {
-                text-align: right;
-            }
-
             .color-l { color: #faccb5; }
             .color-n { color: #f0855a; }
             .color-d { color: #e63d26; }
-
-            .border-bottom-l {
-                border-bottom-width: 1px;
-                border-style: solid;
-                border-color: #faccb5;
-            }
-            .border-bottom-n {
-                border-bottom-width: 1px;
-                border-style: solid;
-                border-color: #f0855a;
-            }
-            .border-bottom-d {
-                border-bottom-width: 1px;
-                border-style: solid;
-                border-color: #e63d26;
-            }
-
-            .border-top-l {
-                border-top-width: 1px;
-                border-style: solid;
-                border-color: #faccb5;
-            }
-            .border-top-n {
-                border-top-width: 1px;
-                border-style: solid;
-                border-color: #f0855a;
-            }
-            .border-top-d {
-                border-top-width: 1px;
-                border-style: solid;
-                border-color: #e63d26;
-            }
-
+            .border-bottom-l {  border-color: #faccb5;  }
+            .border-bottom-n {  border-color: #f0855a;  }
+            .border-bottom-d {  border-color: #e63d26;  }
+            .border-top-l {  border-color: #faccb5;  }
+            .border-top-n {  border-color: #f0855a;  }
+            .border-top-d {  border-color: #e63d26;  }
             .background-l { background-color: #fdede5; }
-
-            #header table {
-                width:100%;
-                padding: 0;
-            }
-
-            .company-details,
-            .company-details h3,
-            .company-details p,
-            .invoice-details {
-                text-align: right;
-            }
-
             .company-name,
             .quote-id {
                 color: #e63d26 !important;
             }
-            .invoice-details td {
-                padding: 0.2em 0.3em;
-            }
-            .invoice-items td,
-            .invoice-items th {
-                padding: 0.2em 0.4em 0.4em;
-            }
-
         </style>
         
 	</head>
@@ -116,17 +53,18 @@
                                 <?php if ($quote->client_address_2) {
                                     echo $quote->client_address_2 . '<br/>';
                                 } ?>
-                                <?php if ($quote->client_zip) {
-                                    echo $quote->client_zip . ' ';
-                                } ?>
                                 <?php if ($quote->client_city) {
                                     echo $quote->client_city . ' ';
                                 } ?>
-                                <?php if ($quote->client_state) {
-                                    echo '('.$quote->client_state . ')<br/>';
+                                <?php if ($quote->client_zip) {
+                                    echo $quote->client_zip . '<br/>';
                                 } ?>
+                                <?php if ($quote->client_state) {
+                                    echo $quote->client_state . '<br/>';
+                                } ?>
+
                                 <?php if ($quote->client_phone) { ?>
-                                    Tel. <?php echo $quote->client_phone; ?><br/>
+                                    <?php echo lang('phone_abbr'); ?>: <?php echo $quote->client_phone; ?><br/>
                                 <?php } ?>
                             </p>
                         </div>
@@ -152,20 +90,21 @@
                                 <?php if ($quote->user_address_2) {
                                     echo $quote->user_address_2 . '<br/>';
                                 } ?>
-                                <?php if ($quote->user_zip) {
-                                    echo $quote->user_zip . ' ';
-                                } ?>
                                 <?php if ($quote->user_city) {
                                     echo $quote->user_city . ' ';
                                 } ?>
+
+                                <?php if ($quote->user_zip) {
+                                    echo $quote->user_zip . '<br/>';
+                                } ?>
                                 <?php if ($quote->user_state) {
-                                    echo '('.$quote->user_state . ')<br/>';
+                                    echo $quote->user_state . '<br/>';
                                 } ?>
                                 <?php if ($quote->user_phone) {
-                                    ?>Tel. <?php echo $quote->user_phone; ?><br><?php
+                                    ?><?php echo lang('phone_abbr'); ?>: <?php echo $quote->user_phone; ?><br><?php
                                 } ?>
                                 <?php if ($quote->user_fax) {
-                                    ?>Fax <?php echo $quote->user_fax; ?><?php
+                                    ?><?php echo lang('fax_abbr'); ?>: <?php echo $quote->user_fax; ?><?php
                                 } ?>
                             </p>
                         </div>

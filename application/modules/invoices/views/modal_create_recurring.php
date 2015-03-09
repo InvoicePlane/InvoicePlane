@@ -1,35 +1,28 @@
 <script type="text/javascript">
-    $(function()
-    {
-        $('.datepicker').datepicker( {autoclose: true, format: '<?php echo date_format_datepicker(); ?>'} );
-
+    $(function () {
         // Display the create quote modal
         $('#modal_create_recurring').modal('show');
 
         get_recur_start_date();
 
-        $('#recur_frequency').change(function()
-        {
+        $('#recur_frequency').change(function () {
             get_recur_start_date();
         });
 
         // Creates the invoice
-        $('#create_recurring_confirm').click(function()
-        {
+        $('#create_recurring_confirm').click(function () {
             $.post("<?php echo site_url('invoices/ajax/create_recurring'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     recur_start_date: $('#recur_start_date').val(),
                     recur_end_date: $('#recur_end_date').val(),
                     recur_frequency: $('#recur_frequency').val()
                 },
-                function(data) {
+                function (data) {
                     var response = JSON.parse(data);
-                    if (response.success == '1')
-                    {
+                    if (response.success == '1') {
                         window.location = "<?php echo site_url('invoices/view'); ?>/<?php echo $invoice_id; ?>";
                     }
-                    else
-                    {
+                    else {
                         // The validation was not successful
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
@@ -39,13 +32,12 @@
                 });
         });
 
-        function get_recur_start_date()
-        {
+        function get_recur_start_date() {
             $.post("<?php echo site_url('invoices/ajax/get_recur_start_date'); ?>", {
                     invoice_date: $('#invoice_date_created').val(),
                     recur_frequency: $('#recur_frequency').val()
                 },
-                function(data) {
+                function (data) {
                     $('#recur_start_date').val(data);
                 });
         }
@@ -57,18 +49,21 @@
      role="dialog" aria-labelledby="modal_create_recurring" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">x</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
+
             <h3><?php echo lang('create_recurring'); ?></h3>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
                 <label><?php echo lang('every'); ?>: </label>
+
                 <div class="controls">
                     <select name="recur_frequency" id="recur_frequency" class="form-control"
                             style="width: 150px;">
-                        <?php foreach ($recur_frequencies as $key=>$lang) { ?>
-                            <option value="<?php echo $key; ?>" <?php if ($key == '1M') { ?>selected="selected"<?php } ?>><?php echo lang($lang); ?></option>
+                        <?php foreach ($recur_frequencies as $key => $lang) { ?>
+                            <option value="<?php echo $key; ?>"
+                                    <?php if ($key == '1M') { ?>selected="selected"<?php } ?>><?php echo lang($lang); ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -76,6 +71,7 @@
 
             <div class="form-group has-feedback">
                 <label><?php echo lang('start_date'); ?>: </label>
+
                 <div class="input-group">
                     <input name="recur_start_date" id="recur_start_date"
                            class="form-control datepicker">
@@ -87,6 +83,7 @@
 
             <div class="form-group has-feedback">
                 <label><?php echo lang('end_date'); ?> (<?php echo lang('optional'); ?>): </label>
+
                 <div class="input-group">
                     <input name="recur_end_date" id="recur_end_date"
                            class="form-control datepicker">

@@ -10,7 +10,7 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
@@ -18,12 +18,9 @@ if (!defined('BASEPATH'))
 
 function parse_template($object, $body)
 {
-    if (preg_match_all('/{{{([^{|}]*)}}}/', $body, $template_vars))
-    {
-        foreach ($template_vars[1] as $var)
-        {
-            switch ($var)
-            {
+    if (preg_match_all('/{{{([^{|}]*)}}}/', $body, $template_vars)) {
+        foreach ($template_vars[1] as $var) {
+            switch ($var) {
                 case 'invoice_guest_url':
                     $replace = site_url('guest/view/invoice/' . $object->invoice_url_key);
                     break;
@@ -68,19 +65,14 @@ function parse_template($object, $body)
 function select_pdf_invoice_template($invoice)
 {
     $CI =& get_instance();
-    
-    if ($invoice->is_overdue)
-    {
+
+    if ($invoice->is_overdue) {
         // Use the overdue template
         return $CI->mdl_settings->setting('pdf_invoice_template_overdue');
-    }
-    elseif ($invoice->invoice_status_id == 4)
-    {
+    } elseif ($invoice->invoice_status_id == 4) {
         // Use the paid template
         return $CI->mdl_settings->setting('pdf_invoice_template_paid');
-    }
-    else
-    {
+    } else {
         // Use the default template
         return $CI->mdl_settings->setting('pdf_invoice_template');
     }
@@ -89,22 +81,15 @@ function select_pdf_invoice_template($invoice)
 function select_email_invoice_template($invoice)
 {
     $CI =& get_instance();
-    
-    if ($invoice->is_overdue)
-    {
+
+    if ($invoice->is_overdue) {
         // Use the overdue template
         return $CI->mdl_settings->setting('email_invoice_template_overdue');
-    }
-    elseif ($invoice->invoice_status_id == 4)
-    {
+    } elseif ($invoice->invoice_status_id == 4) {
         // Use the paid template
         return $CI->mdl_settings->setting('email_invoice_template_paid');
-    }
-    else
-    {
+    } else {
         // Use the default template
         return $CI->mdl_settings->setting('email_invoice_template');
     }
 }
-
-?>

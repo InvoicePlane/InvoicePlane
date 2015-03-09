@@ -10,7 +10,7 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
@@ -33,13 +33,13 @@ function invoice_logo_pdf()
 
     if ($CI->mdl_settings->setting('invoice_logo'))
     {
-    	//---it---inizio
-    	global $pdf_preview;
-    	if(@$pdf_preview)
-    		return '<img src="' . base_url() . 'uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';	// Supporto anteprima PDF
-    	else
-    	//---it---fine
-    	return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';
+        //---it---inizio
+        global $pdf_preview;
+        if(@$pdf_preview)
+            return '<img src="' . base_url() . 'uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';    // Supporto anteprima PDF
+        else
+        //---it---fine
+        return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
     }
     return '';
 }

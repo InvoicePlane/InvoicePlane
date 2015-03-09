@@ -15,7 +15,8 @@
 
         <meta name="viewport" content="width=device-width,initial-scale=1">
 
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
         <style>
             body {
@@ -112,8 +113,8 @@
                                 <?php if ($quote->user_city) { echo $quote->user_city . ' '; } ?>
                                 <?php if ($quote->user_state) { echo $quote->user_state . ' '; } ?>
                                 <?php if ($quote->user_zip) { echo $quote->user_zip . '<br>'; } ?>
-                                <?php if ($quote->user_phone) { ?><abbr>P:</abbr><?php echo $quote->user_phone; ?><br><?php } ?>
-                                <?php if ($quote->user_fax) { ?><abbr>F:</abbr><?php echo $quote->user_fax; ?><?php } ?>
+                                <?php if ($quote->user_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $quote->user_phone; ?><br><?php } ?>
+                                <?php if ($quote->user_fax) { ?><?php echo lang('fax_abbr'); ?>: <?php echo $quote->user_fax; ?><?php } ?>
                             </p>
                         </td>
                         <td class="alignr"><h2><?php echo lang('quote'); ?> <?php echo $quote->quote_number; ?></h2></td>
@@ -132,7 +133,7 @@
                                 <?php if ($quote->client_city) { echo $quote->client_city . ' '; } ?>
                                 <?php if ($quote->client_state) { echo $quote->client_state . ' '; } ?>
                                 <?php if ($quote->client_zip) { echo $quote->client_zip . '<br>'; } ?>
-                                <?php if ($quote->client_phone) { ?><abbr>P:</abbr><?php echo $quote->client_phone; ?><br><?php } ?>
+                                <?php if ($quote->client_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $quote->client_phone; ?><br><?php } ?>
                             </p>
                         </td>
                         <td style="width:30%;"></td>

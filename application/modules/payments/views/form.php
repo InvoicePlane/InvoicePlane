@@ -1,10 +1,10 @@
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         $('#invoice_id').focus();
 
         amounts = JSON.parse('<?php echo $amounts; ?>');
 
-        $('#invoice_id').change(function() {
+        $('#invoice_id').change(function () {
             $('#payment_amount').val(amounts["invoice" + $('#invoice_id').val()]);
         });
 
@@ -35,10 +35,12 @@
                     <?php if (!$payment_id) { ?>
                         <option value=""></option>
                         <?php foreach ($open_invoices as $invoice) { ?>
-                            <option value="<?php echo $invoice->invoice_id; ?>" <?php if ($this->mdl_payments->form_value('invoice_id') == $invoice->invoice_id) { ?>selected="selected"<?php } ?>><?php echo $invoice->invoice_number . ' - ' . $invoice->client_name . ' - ' . format_currency($invoice->invoice_balance); ?></option>
+                            <option value="<?php echo $invoice->invoice_id; ?>"
+                                    <?php if ($this->mdl_payments->form_value('invoice_id') == $invoice->invoice_id) { ?>selected="selected"<?php } ?>><?php echo $invoice->invoice_number . ' - ' . $invoice->client_name . ' - ' . format_currency($invoice->invoice_balance); ?></option>
                         <?php } ?>
                     <?php } else { ?>
-                        <option value="<?php echo $payment->invoice_id; ?>"><?php echo $payment->invoice_number . ' - ' . $payment->client_name . ' - ' . format_currency($payment->invoice_balance); ?></option>
+                        <option
+                            value="<?php echo $payment->invoice_id; ?>"><?php echo $payment->invoice_number . ' - ' . $payment->client_name . ' - ' . format_currency($payment->invoice_balance); ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -49,14 +51,14 @@
                 <label for="payment_date" class="control-label"><?php echo lang('date'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
-              <div class="input-group">
-                  <input name="payment_date" id="payment_date"
-                         class="form-control datepicker"
-                         value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>">
+                <div class="input-group">
+                    <input name="payment_date" id="payment_date"
+                           class="form-control datepicker"
+                           value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>">
                   <span class="input-group-addon">
                       <i class="fa fa-calendar fa-fw"></i>
                   </span>
-              </div>
+                </div>
             </div>
         </div>
 
@@ -80,7 +82,8 @@
                 <select name="payment_method_id" class="form-control">
                     <option value="0"></option>
                     <?php foreach ($payment_methods as $payment_method) { ?>
-                        <option value="<?php echo $payment_method->payment_method_id; ?>" <?php if ($this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id) { ?>selected="selected"<?php } ?>>
+                        <option value="<?php echo $payment_method->payment_method_id; ?>"
+                                <?php if ($this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id) { ?>selected="selected"<?php } ?>>
                             <?php echo $payment_method->payment_method_name; ?>
                         </option>
                     <?php } ?>
@@ -93,7 +96,8 @@
                 <label for="payment_note" class="control-label"><?php echo lang('note'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <textarea name="payment_note" class="form-control"><?php echo $this->mdl_payments->form_value('payment_note'); ?></textarea>
+                <textarea name="payment_note"
+                          class="form-control"><?php echo $this->mdl_payments->form_value('payment_note'); ?></textarea>
             </div>
 
         </div>

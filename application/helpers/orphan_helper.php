@@ -10,7 +10,7 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
@@ -19,7 +19,7 @@ if (!defined('BASEPATH'))
 function delete_orphans()
 {
     $CI =& get_instance();
-    
+
     $queries = array(
         'DELETE FROM ip_invoices WHERE client_id NOT IN (SELECT client_id FROM ip_clients)',
         'DELETE FROM ip_quotes WHERE client_id NOT IN (SELECT client_id FROM ip_clients)',
@@ -37,9 +37,8 @@ function delete_orphans()
         'DELETE FROM ip_quote_item_amounts WHERE item_id NOT IN (SELECT item_id FROM ip_quote_items)',
         'DELETE FROM ip_client_notes WHERE client_id NOT IN (SELECT client_id FROM ip_clients)'
     );
-    
-    foreach ($queries as $query)
-    {
+
+    foreach ($queries as $query) {
         $CI->db->query($query);
     }
 }

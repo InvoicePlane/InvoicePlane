@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  *
  */
 
-class Mailer extends Admin_Controller {
-
+class Mailer extends Admin_Controller
+{
     private $mailer_configured;
 
     public function __construct()
@@ -94,21 +94,20 @@ class Mailer extends Admin_Controller {
 
     public function send_invoice($invoice_id)
     {
-    	if ($this->input->post('btn_cancel'))
-    	{
-    		redirect('invoices');
-    	}
-    	
-    	if (!$this->mailer_configured) return;
+        if ($this->input->post('btn_cancel')) {
+            redirect('invoices');
+        }
 
-        $from             = array($this->input->post('from_email'),
-                                  $this->input->post('from_name'));
-        $pdf_template     = $this->input->post('pdf_template');
-        $to               = $this->input->post('to_email');
-        $subject          = $this->input->post('subject');
-        $body             = $this->input->post('body');
-        $cc               = $this->input->post('cc');
-        $bcc              = $this->input->post('bcc');
+        if (!$this->mailer_configured) return;
+
+        $from = array($this->input->post('from_email'),
+            $this->input->post('from_name'));
+        $pdf_template = $this->input->post('pdf_template');
+        $to = $this->input->post('to_email');
+        $subject = $this->input->post('subject');
+        $body = $this->input->post('body');
+        $cc = $this->input->post('cc');
+        $bcc = $this->input->post('bcc');
 
         if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc)) {
             $this->mdl_invoices->mark_sent($invoice_id);
@@ -123,21 +122,20 @@ class Mailer extends Admin_Controller {
 
     public function send_quote($quote_id)
     {
-    	if ($this->input->post('btn_cancel'))
-    	{
-    		redirect('quotes');
-    	}
-    	
+        if ($this->input->post('btn_cancel')) {
+            redirect('quotes');
+        }
+
         if (!$this->mailer_configured) return;
 
-        $from         = array($this->input->post('from_email'),
-                              $this->input->post('from_name'));
+        $from = array($this->input->post('from_email'),
+            $this->input->post('from_name'));
         $pdf_template = $this->input->post('pdf_template');
-        $to           = $this->input->post('to_email');
-        $subject      = $this->input->post('subject');
-        $body         = $this->input->post('body');
-        $cc           = $this->input->post('cc');
-        $bcc          = $this->input->post('bcc');
+        $to = $this->input->post('to_email');
+        $subject = $this->input->post('subject');
+        $body = $this->input->post('body');
+        $cc = $this->input->post('cc');
+        $bcc = $this->input->post('bcc');
 
         if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc)) {
             $this->mdl_quotes->mark_sent($quote_id);

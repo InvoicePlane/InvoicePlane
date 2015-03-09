@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -25,7 +26,7 @@
  * @package		CodeIgniter
  * @subpackage	Drivers
  * @category	Database
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
 class CI_DB_mysqli_driver extends CI_DB {
@@ -56,7 +57,7 @@ class CI_DB_mysqli_driver extends CI_DB {
 
 	// whether SET NAMES must be used to set the character set
 	var $use_set_names;
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -311,18 +312,8 @@ class CI_DB_mysqli_driver extends CI_DB {
 			return $str;
 		}
 
-		if (function_exists('mysqli_real_escape_string') AND is_object($this->conn_id))
-		{
-			$str = mysqli_real_escape_string($this->conn_id, $str);
-		}
-		elseif (function_exists('mysql_escape_string'))
-		{
-			$str = mysql_escape_string($str);
-		}
-		else
-		{
-			$str = addslashes($str);
-		}
+
+		$str = mysqli_real_escape_string($this->conn_id, $str);
 
 		// escape LIKE condition wildcards
 		if ($like === TRUE)

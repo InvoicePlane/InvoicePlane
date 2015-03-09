@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  *
  */
 
-class Email_Templates extends Admin_Controller {
-
+class Email_Templates extends Admin_Controller
+{
     public function __construct()
     {
         parent::__construct();
@@ -37,21 +37,17 @@ class Email_Templates extends Admin_Controller {
 
     public function form($id = NULL)
     {
-        if ($this->input->post('btn_cancel'))
-        {
+        if ($this->input->post('btn_cancel')) {
             redirect('email_templates');
         }
 
-        if ($this->mdl_email_templates->run_validation())
-        {
+        if ($this->mdl_email_templates->run_validation()) {
             $this->mdl_email_templates->save($id);
             redirect('email_templates');
         }
 
-        if ($id and !$this->input->post('btn_submit'))
-        {
-            if (!$this->mdl_email_templates->prep_form($id))
-            {
+        if ($id and !$this->input->post('btn_submit')) {
+            if (!$this->mdl_email_templates->prep_form($id)) {
                 show_404();
             }
         }
@@ -59,8 +55,7 @@ class Email_Templates extends Admin_Controller {
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('invoices/mdl_templates');
 
-        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table)
-        {
+        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
 

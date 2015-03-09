@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Quotes extends Admin_Controller {
-
+class Quotes extends Admin_Controller
+{
     public function __construct()
     {
         parent::__construct();
@@ -34,8 +34,7 @@ class Quotes extends Admin_Controller {
     public function status($status = 'all', $page = 0)
     {
         // Determine which group of quotes to load
-        switch ($status)
-        {
+        switch ($status) {
             case 'draft':
                 $this->mdl_quotes->is_draft();
                 break;
@@ -61,12 +60,12 @@ class Quotes extends Admin_Controller {
 
         $this->layout->set(
             array(
-                'quotes'             => $quotes,
-                'status'             => $status,
-                'filter_display'     => TRUE,
+                'quotes' => $quotes,
+                'status' => $status,
+                'filter_display' => TRUE,
                 'filter_placeholder' => lang('filter_quotes'),
-                'filter_method'      => 'filter_quotes',
-                'quote_statuses'     => $this->mdl_quotes->statuses()
+                'filter_method' => 'filter_quotes',
+                'quote_statuses' => $this->mdl_quotes->statuses()
             )
         );
 
@@ -84,39 +83,36 @@ class Quotes extends Admin_Controller {
 
         $quote_custom = $this->mdl_quote_custom->where('quote_id', $quote_id)->get();
 
-        if ($quote_custom->num_rows())
-        {
+        if ($quote_custom->num_rows()) {
             $quote_custom = $quote_custom->row();
 
             unset($quote_custom->quote_id, $quote_custom->quote_custom_id);
 
-            foreach ($quote_custom as $key => $val)
-            {
+            foreach ($quote_custom as $key => $val) {
                 $this->mdl_quotes->set_form_value('custom[' . $key . ']', $val);
             }
         }
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-        if (!$quote)
-        {
+        if (!$quote) {
             show_404();
         }
 
         $this->layout->set(
             array(
-                'quote'           => $quote,
-                'items'           => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
-                'quote_id'        => $quote_id,
-                'tax_rates'       => $this->mdl_tax_rates->get()->result(),
+                'quote' => $quote,
+                'items' => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
+                'quote_id' => $quote_id,
+                'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'custom_fields'   => $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result(),
-                'custom_js_vars'  => array(
-                    'currency_symbol'           => $this->mdl_settings->setting('currency_symbol'),
+                'custom_fields' => $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result(),
+                'custom_js_vars' => array(
+                    'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
-                    'decimal_point'             => $this->mdl_settings->setting('decimal_point')
+                    'decimal_point' => $this->mdl_settings->setting('decimal_point')
                 ),
-                'quote_statuses'     => $this->mdl_quotes->statuses()
+                'quote_statuses' => $this->mdl_quotes->statuses()
             )
         );
 
@@ -153,9 +149,8 @@ class Quotes extends Admin_Controller {
     public function generate_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
     {
         $this->load->helper('pdf');
-        
-        if ($this->mdl_settings->setting('mark_quotes_sent_pdf') == 1)
-        {
+
+        if ($this->mdl_settings->setting('mark_quotes_sent_pdf') == 1) {
             $this->mdl_quotes->mark_sent($quote_id);
         }
 
@@ -189,12 +184,9 @@ class Quotes extends Admin_Controller {
 
         $this->load->model('mdl_quote_amounts');
 
-        foreach ($quote_ids as $quote_id)
-        {
+        foreach ($quote_ids as $quote_id) {
             $this->mdl_quote_amounts->calculate($quote_id->quote_id);
         }
     }
 
 }
-
-?>

@@ -10,15 +10,15 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Mdl_Invoice_Tax_Rates extends Response_Model {
-
-    public $table       = 'ip_invoice_tax_rates';
+class Mdl_Invoice_Tax_Rates extends Response_Model
+{
+    public $table = 'ip_invoice_tax_rates';
     public $primary_key = 'ip_invoice_tax_rates.invoice_tax_rate_id';
 
     public function default_select()
@@ -44,12 +44,12 @@ class Mdl_Invoice_Tax_Rates extends Response_Model {
     public function validation_rules()
     {
         return array(
-            'invoice_id'       => array(
+            'invoice_id' => array(
                 'field' => 'invoice_id',
                 'label' => lang('invoice'),
                 'rules' => 'required'
             ),
-            'tax_rate_id'      => array(
+            'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
                 'label' => lang('tax_rate'),
                 'rules' => 'required'
@@ -63,5 +63,3 @@ class Mdl_Invoice_Tax_Rates extends Response_Model {
     }
 
 }
-
-?>

@@ -1,11 +1,9 @@
 <div class="headerbar">
-	
-	<h1><?php echo lang('version_history'); ?></h1>
-	
-	<div class="pull-right">
-		<?php echo pager(site_url('settings/versions/index'), 'mdl_versions'); ?>
-	</div>
-	
+    <h1><?php echo lang('version_history'); ?></h1>
+
+    <div class="pull-right">
+        <?php echo pager(site_url('settings/versions/index'), 'mdl_versions'); ?>
+    </div>
 </div>
 
 <div class="table-content">

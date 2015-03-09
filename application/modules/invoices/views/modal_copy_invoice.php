@@ -1,16 +1,12 @@
 <?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
 
 <script type="text/javascript">
-    $(function()
-    {
-        $('.datepicker').datepicker( {autoclose: true, format: '<?php echo date_format_datepicker(); ?>'} );
-
+    $(function () {
         // Display the create quote modal
         $('#modal_copy_invoice').modal('show');
 
         // Creates the invoice
-        $('#copy_invoice_confirm').click(function()
-        {
+        $('#copy_invoice_confirm').click(function () {
             $.post("<?php echo site_url('invoices/ajax/copy_invoice'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     client_name: $('#client_name').val(),
@@ -18,14 +14,12 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     user_id: $('#user_id').val()
                 },
-                function(data) {
+                function (data) {
                     var response = JSON.parse(data);
-                    if (response.success == '1')
-                    {
+                    if (response.success == '1') {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
                     }
-                    else
-                    {
+                    else {
                         // The validation was not successful
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
@@ -42,7 +36,8 @@
      role="dialog" aria-labelledby="modal_copy_invoice" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">x</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
+
             <h3><?php echo lang('copy_invoice'); ?></h3>
         </div>
         <div class="modal-body">
@@ -52,6 +47,7 @@
 
             <div class="form-group">
                 <label><?php echo lang('client'); ?>: </label>
+
                 <div class="controls">
                     <input type="text" name="client_name" id="client_name" style="margin: 0 auto;"
                            class="form-control"
@@ -62,10 +58,11 @@
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php echo lang('invoice_date'); ?>: </label>
+
                 <div class="input-group">
                     <input name="invoice_date_created" id="invoice_date_created"
-                          class="form-control datepicker"
-                          value="<?php echo date_from_mysql($invoice->invoice_date_created, TRUE) ?>">
+                           class="form-control datepicker"
+                           value="<?php echo date_from_mysql(date('Y-m-d', time()), TRUE) ?>">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>
@@ -74,11 +71,13 @@
 
             <div class="form-group">
                 <label for="invoice_group_id"><?php echo lang('invoice_group'); ?>: </label>
+
                 <div>
                     <select name="invoice_group_id" id="invoice_group_id" class="form-control">
                         <option value=""></option>
                         <?php foreach ($invoice_groups as $invoice_group) { ?>
-                            <option value="<?php echo $invoice_group->invoice_group_id; ?>" <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
+                            <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                                    <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
                         <?php } ?>
                     </select>
                 </div>

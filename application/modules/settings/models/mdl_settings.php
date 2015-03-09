@@ -10,76 +10,67 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Mdl_Settings extends CI_Model {
+class Mdl_Settings extends CI_Model
+{
+    public $settings = array();
 
-	public $settings = array();
+    public function get($key)
+    {
+        $this->db->select('setting_value');
+        $this->db->where('setting_key', $key);
+        $query = $this->db->get('ip_settings');
 
-	public function get($key)
-	{
-		$this->db->select('setting_value');
-		$this->db->where('setting_key', $key);
-		$query = $this->db->get('ip_settings');
+        if ($query->row()) {
+            return $query->row()->setting_value;
+        } else {
+            return NULL;
+        }
+    }
 
-		if ($query->row())
-		{
-			return $query->row()->setting_value;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
+    public function save($key, $value)
+    {
+        $db_array = array(
+            'setting_key' => $key,
+            'setting_value' => $value
+        );
 
-	public function save($key, $value)
-	{
-		$db_array = array(
-			'setting_key' => $key,
-			'setting_value' => $value
-		);
+        if ($this->get($key) !== NULL) {
+            $this->db->where('setting_key', $key);
+            $this->db->update('ip_settings', $db_array);
+        } else {
+            $this->db->insert('ip_settings', $db_array);
+        }
+    }
 
-		if ($this->get($key) !== NULL)
-		{
-			$this->db->where('setting_key', $key);
-			$this->db->update('ip_settings', $db_array);
-		}
-		else
-		{
-			$this->db->insert('ip_settings', $db_array);
-		}
-	}
+    public function delete($key)
+    {
+        $this->db->where('setting_key', $key);
+        $this->db->delete('ip_settings');
+    }
 
-	public function delete($key)
-	{
-		$this->db->where('setting_key', $key);
-		$this->db->delete('ip_settings');
-	}
+    public function load_settings()
+    {
+        $ip_settings = $this->db->get('ip_settings')->result();
 
-	public function load_settings()
-	{
-		$ip_settings = $this->db->get('ip_settings')->result();
+        foreach ($ip_settings as $data) {
+            $this->settings[$data->setting_key] = $data->setting_value;
+        }
+    }
 
-		foreach ($ip_settings as $data)
-		{
-			$this->settings[$data->setting_key] = $data->setting_value;
-		}
-	}
+    public function setting($key)
+    {
+        return (isset($this->settings[$key])) ? $this->settings[$key] : '';
+    }
 
-	public function setting($key)
-	{
-		return (isset($this->settings[$key])) ? $this->settings[$key] : '';
-	}
-
-	public function set_setting($key, $value)
-	{
-		$this->settings->$key = $value;
-	}
+    public function set_setting($key, $value)
+    {
+        $this->settings->$key = $value;
+    }
 
 }
-
-?>

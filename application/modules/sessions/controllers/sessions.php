@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Sessions extends Base_Controller {
-
+class Sessions extends Base_Controller
+{
     public function index()
     {
         redirect('sessions/login');
@@ -25,38 +25,30 @@ class Sessions extends Base_Controller {
 
     public function login()
     {
-
         $view_data = array(
             'login_logo' => $this->mdl_settings->setting('login_logo')
         );
 
-        if ($this->input->post('btn_login'))
-        {
+        if ($this->input->post('btn_login')) {
 
             $this->db->where('user_email', $this->input->post('email'));
             $query = $this->db->get('ip_users');
             $user = $query->row();
 
             // Check if the user exists
-            if ( empty($user) )
-            {
+            if (empty($user)) {
                 $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
             } else {
 
                 // Check if the user is marked as active
-                if ($user->user_active == 0)
-                {
+                if ($user->user_active == 0) {
                     $this->session->set_flashdata('alert_error', lang('loginalert_user_inactive'));
                 } else {
 
-                    if ($this->authenticate($this->input->post('email'), $this->input->post('password')))
-                    {
-                        if ($this->session->userdata('user_type') == 1)
-                        {
+                    if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
+                        if ($this->session->userdata('user_type') == 1) {
                             redirect('dashboard');
-                        }
-                        elseif ($this->session->userdata('user_type') == 2)
-                        {
+                        } elseif ($this->session->userdata('user_type') == 2) {
                             redirect('guest');
                         }
                     } else {
@@ -83,8 +75,7 @@ class Sessions extends Base_Controller {
     {
         $this->load->model('mdl_sessions');
 
-        if ($this->mdl_sessions->auth($email_address, $password))
-        {
+        if ($this->mdl_sessions->auth($email_address, $password)) {
             return TRUE;
         }
 
@@ -94,14 +85,12 @@ class Sessions extends Base_Controller {
     public function passwordreset($token = NULL)
     {
         // Check if a token was provided
-        if ($token)
-        {
+        if ($token) {
             $this->db->where('user_passwordreset_token', $token);
             $user = $this->db->get('ip_users');
             $user = $user->row();
 
-            if (empty($user))
-            {
+            if (empty($user)) {
                 // Redirect back to the login screen with an alert
                 $this->session->set_flashdata('alert_success', lang('wrong_passwordreset_token'));
                 redirect('sessions/login');
@@ -116,13 +105,11 @@ class Sessions extends Base_Controller {
         }
 
         // Check if the form for a new password was used
-        if ($this->input->post('btn_new_password'))
-        {
+        if ($this->input->post('btn_new_password')) {
             $new_password = $this->input->post('new_password');
             $user_id = $this->input->post('user_id');
 
-            if ( empty($user_id) || empty($new_password))
-            {
+            if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', lang('loginalert_no_password'));
                 redirect($_SERVER['HTTP_REFERER']);
             }
@@ -147,21 +134,18 @@ class Sessions extends Base_Controller {
         }
 
         // Check if the password reset form was used
-        if ($this->input->post('btn_reset'))
-        {
+        if ($this->input->post('btn_reset')) {
             $email = $this->input->post('email');
-            if ( empty($email) )
-            {
+            if (empty($email)) {
                 $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
                 redirect($_SERVER['HTTP_REFERER']);
             }
 
             // Test if a user with this email exists
-            if ($this->db->where('user_email', $email))
-            {
+            if ($this->db->where('user_email', $email)) {
                 // Create a passwordreset token
                 $email = $this->input->post('email');
-                $token = md5(time().$email);
+                $token = md5(time() . $email);
 
                 // Save the token to the database and set the user to inactive
                 $db_array = array(
@@ -176,10 +160,10 @@ class Sessions extends Base_Controller {
 
                 // Preprare some variables for the email
                 $email_resetlink = base_url() . 'sessions/passwordreset/' . $token;
-                $email_message = $this->load->view('emails/passwordreset',array(
+                $email_message = $this->load->view('emails/passwordreset', array(
                     'resetlink' => $email_resetlink
                 ), TRUE);
-                $email_from = 'system@'.preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/","$1",base_url());
+                $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", "$1", base_url());
 
                 // Set email configuration
                 $config['mailtype'] = 'html';
@@ -204,5 +188,3 @@ class Sessions extends Base_Controller {
     }
 
 }
-
-?>

@@ -20,7 +20,9 @@
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
 
     <script type="text/javascript">
-        $(function() { $('#email').focus(); });
+        $(function () {
+            $('#email').focus();
+        });
     </script>
 
 </head>
@@ -43,7 +45,7 @@
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3">
-                    <label for="new_password" class="control-label"><?php echo lang('email'); ?></label>
+                    <label for="new_password" class="control-label"><?php echo lang('new_password'); ?></label>
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="new_password" id="new_password" class="form-control"
@@ -52,7 +54,7 @@
             </div>
 
             <input type="submit" name="btn_new_password" class="btn btn-block btn-warning"
-                   value="<?php echo lang('set_new_password'); ?>" >
+                   value="<?php echo lang('set_new_password'); ?>">
 
         </form>
 

@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Payments extends Admin_Controller {
-
+class Payments extends Admin_Controller
+{
     public function __construct()
     {
         parent::__construct();
@@ -32,10 +32,10 @@ class Payments extends Admin_Controller {
 
         $this->layout->set(
             array(
-                'payments'           => $payments,
-                'filter_display'     => TRUE,
+                'payments' => $payments,
+                'filter_display' => TRUE,
                 'filter_placeholder' => lang('filter_payments'),
-                'filter_method'      => 'filter_payments'
+                'filter_method' => 'filter_payments'
             )
         );
 
@@ -45,13 +45,11 @@ class Payments extends Admin_Controller {
 
     public function form($id = NULL)
     {
-        if ($this->input->post('btn_cancel'))
-        {
+        if ($this->input->post('btn_cancel')) {
             redirect('payments');
         }
 
-        if ($this->mdl_payments->run_validation())
-        {
+        if ($this->mdl_payments->run_validation()) {
             $id = $this->mdl_payments->save($id);
 
             $this->load->model('custom_fields/mdl_payment_custom');
@@ -61,12 +59,10 @@ class Payments extends Admin_Controller {
             redirect('payments');
         }
 
-        if (!$this->input->post('btn_submit'))
-        {
+        if (!$this->input->post('btn_submit')) {
             $prep_form = $this->mdl_payments->prep_form($id);
-            
-            if ($id and !$prep_form)
-            {
+
+            if ($id and !$prep_form) {
                 show_404();
             }
 
@@ -74,24 +70,18 @@ class Payments extends Admin_Controller {
 
             $payment_custom = $this->mdl_payment_custom->where('payment_id', $id)->get();
 
-            if ($payment_custom->num_rows())
-            {
+            if ($payment_custom->num_rows()) {
                 $payment_custom = $payment_custom->row();
 
                 unset($payment_custom->payment_id, $payment_custom->payment_custom_id);
 
-                foreach ($payment_custom as $key => $val)
-                {
+                foreach ($payment_custom as $key => $val) {
                     $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
                 }
             }
-        }
-        else
-        {
-            if ($this->input->post('custom'))
-            {
-                foreach ($this->input->post('custom') as $key => $val)
-                {
+        } else {
+            if ($this->input->post('custom')) {
+                foreach ($this->input->post('custom') as $key => $val) {
                     $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
                 }
             }
@@ -105,23 +95,21 @@ class Payments extends Admin_Controller {
 
         $amounts = array();
 
-        foreach ($open_invoices as $open_invoice)
-        {
+        foreach ($open_invoices as $open_invoice) {
             $amounts['invoice' . $open_invoice->invoice_id] = format_amount($open_invoice->invoice_balance);
         }
-        
+
         $this->layout->set(
             array(
-                'payment_id'      => $id,
+                'payment_id' => $id,
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
-                'open_invoices'   => $open_invoices,
-                'custom_fields'   => $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result(),
-                'amounts'         => json_encode($amounts)
+                'open_invoices' => $open_invoices,
+                'custom_fields' => $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result(),
+                'amounts' => json_encode($amounts)
             )
         );
 
-        if ($id)
-        {
+        if ($id) {
             $this->layout->set('payment', $this->mdl_payments->where('ip_payments.payment_id', $id)->get()->row());
         }
 
@@ -136,5 +124,3 @@ class Payments extends Admin_Controller {
     }
 
 }
-
-?>

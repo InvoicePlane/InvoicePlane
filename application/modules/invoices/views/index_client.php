@@ -14,9 +14,15 @@
 
     <div class="pull-right">
         <ul class="nav nav-pills index-options">
-            <li <?php if ($status == 'open') { ?>class="active"<?php } ?>><a href="<?php echo site_url('invoices/client/' . $client_id . '/open'); ?>"><?php echo lang('open'); ?></a></li>
-            <li <?php if ($status == 'closed') { ?>class="active"<?php } ?>><a href="<?php echo site_url('invoices/client/' . $client_id . '/closed'); ?>"><?php echo lang('closed'); ?></a></li>
-            <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a href="<?php echo site_url('invoices/client/' . $client_id . '/overdue'); ?>"><?php echo lang('overdue'); ?></a></li>
+            <li <?php if ($status == 'open') { ?>class="active"<?php } ?>><a
+                    href="<?php echo site_url('invoices/client/' . $client_id . '/open'); ?>"><?php echo lang('open'); ?></a>
+            </li>
+            <li <?php if ($status == 'closed') { ?>class="active"<?php } ?>><a
+                    href="<?php echo site_url('invoices/client/' . $client_id . '/closed'); ?>"><?php echo lang('closed'); ?></a>
+            </li>
+            <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a
+                    href="<?php echo site_url('invoices/client/' . $client_id . '/overdue'); ?>"><?php echo lang('overdue'); ?></a>
+            </li>
         </ul>
     </div>
 

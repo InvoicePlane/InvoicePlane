@@ -1,16 +1,15 @@
 <?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
 
 <script type="text/javascript">
-    $(function()
-    {
-        $('#btn_user_client').click(function() {
+    $(function () {
+        $('#btn_user_client').click(function () {
 
             $.post("<?php echo site_url('users/ajax/save_user_client'); ?>", {
                 user_id: '<?php echo $id; ?>',
                 client_name: $('#client_name').val()
-            }, function(data) {
+            }, function (data) {
 
-                $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', { user_id: '<?php echo $id; ?>' } );
+                $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', {user_id: '<?php echo $id; ?>'});
             });
 
         });
@@ -22,7 +21,8 @@
      role="dialog" aria-labelledby="modal_add_user_client" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">x</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
+
             <h3><?php echo lang('add_client'); ?></h3>
         </div>
         <div class="modal-body">

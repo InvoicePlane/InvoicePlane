@@ -9,13 +9,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  *
  */
 
-class Welcome extends CI_Controller {
+class Welcome extends CI_Controller
+{
     public function index()
     {
         $this->load->view('welcome');

@@ -10,13 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Base_Controller extends MX_Controller {
+class Base_Controller extends MX_Controller
+{
 
     public $ajax_controller = false;
 
@@ -27,8 +28,7 @@ class Base_Controller extends MX_Controller {
         $this->config->load('invoice_plane');
 
         // Don't allow non-ajax requests to ajax controllers
-        if ($this->ajax_controller and !$this->input->is_ajax_request())
-        {
+        if ($this->ajax_controller and !$this->input->is_ajax_request()) {
             exit;
         }
 
@@ -37,7 +37,7 @@ class Base_Controller extends MX_Controller {
         $this->load->database();
 
         // Check if database has been configured
-        if ( empty($this->db->hostname) ) {
+        if (empty($this->db->hostname)) {
 
             $this->load->helper('redirect');
             redirect('/welcome');

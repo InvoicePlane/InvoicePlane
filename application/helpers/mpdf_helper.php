@@ -10,7 +10,7 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
@@ -18,32 +18,34 @@ if (!defined('BASEPATH'))
 
 function pdf_create($html, $filename, $stream = TRUE)
 {
-	// ---it---inizio
-	// Speciale motore stampa dompdf: primo motore stampa FI, poi tolto dalla versione originale e mantenuto nella versione italiana.
-	// Questo motore PDF, infatti, mantiene il risultato visualizzato nell'anteprima PDF (a differenza del nuovo motore mPDF).
-	$CI = & get_instance();
-	if ($CI->mdl_settings->setting('it_print_engine') == 'dompdf')
-	{
-		return pdf_create_dompdf($html, $filename, $stream);
-	}
-	// ---it---fine
+    // ---it---inizio
+    // Speciale motore stampa dompdf: primo motore stampa FI, poi tolto dalla versione originale e mantenuto nella versione italiana.
+    // Questo motore PDF, infatti, mantiene il risultato visualizzato nell'anteprima PDF (a differenza del nuovo motore mPDF).
+    $CI = & get_instance();
+    if ($CI->mdl_settings->setting('it_print_engine') == 'dompdf')
+    {
+        return pdf_create_dompdf($html, $filename, $stream);
+    }
+    // ---it---fine
 	
-	require_once(APPPATH . 'helpers/mpdf/mpdf.php');
-
+    require_once(APPPATH . 'helpers/mpdf/mpdf.php');
+    
     $mpdf = new mPDF();
 
     $mpdf->SetAutoFont();
 
+    if (strpos($filename, lang('invoice')) !== false) {
+        $CI = &get_instance();
+        $mpdf->setAutoBottomMargin = 'stretch';
+        $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
+    }
+
     $mpdf->WriteHTML($html);
 
-    if ($stream)
-    {
-        $mpdf->Output($filename . '.pdf', 'I');
-    }
-    else
-    {
+    if ($stream) {
+        return $mpdf->Output($filename . '.pdf', 'I');
+    } else {
         $mpdf->Output('./uploads/temp/' . $filename . '.pdf', 'F');
-        
         return './uploads/temp/' . $filename . '.pdf';
     }
 }

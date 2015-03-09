@@ -10,15 +10,15 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Mdl_Item_Lookups extends MY_Model {
-
-    public $table       = 'ip_item_lookups';
+class Mdl_Item_Lookups extends MY_Model
+{
+    public $table = 'ip_item_lookups';
     public $primary_key = 'ip_item_lookups.item_lookup_id';
 
     public function default_select()
@@ -34,7 +34,7 @@ class Mdl_Item_Lookups extends MY_Model {
     public function validation_rules()
     {
         return array(
-            'item_name'        => array(
+            'item_name' => array(
                 'field' => 'item_name',
                 'label' => lang('item_name'),
                 'rules' => 'required'
@@ -43,7 +43,7 @@ class Mdl_Item_Lookups extends MY_Model {
                 'field' => 'item_description',
                 'label' => lang('description')
             ),
-            'item_price'       => array(
+            'item_price' => array(
                 'field' => 'item_price',
                 'label' => lang('price'),
                 'rules' => 'required'
@@ -64,8 +64,7 @@ class Mdl_Item_Lookups extends MY_Model {
     {
         $return = FALSE;
 
-        if ($id)
-        {
+        if ($id) {
             $return = parent::prep_form($id);
 
             $this->set_form_value('item_price', format_amount($this->form_value('item_price')));

@@ -1,0 +1,31 @@
+/*
+ *  Noto Sans Font
+ *  Google Inc. - Apache License, version 2.0
+ *  https://www.google.com/fonts/specimen/Noto+Sans
+ */
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Noto Sans'), local('NotoSans'), url('../fonts/noto/noto_400_normal.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Noto Sans Bold'), local('NotoSans-Bold'), url('../fonts/noto/noto_700_normal.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Noto Sans Italic'), local('NotoSans-Italic'), url('../fonts/noto/noto_400_italic.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: italic;
+    font-weight: 700;
+    src: local('Noto Sans Bold Italic'), local('NotoSans-BoldItalic'), url('../fonts/noto/noto_700_italic.ttf') format('truetype');
+}
+

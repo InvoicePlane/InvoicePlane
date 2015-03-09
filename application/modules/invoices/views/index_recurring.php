@@ -68,7 +68,8 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="<?php echo site_url('invoices/recurring/delete/' . $invoice->invoice_recurring_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                        <a href="<?php echo site_url('invoices/recurring/delete/' . $invoice->invoice_recurring_id); ?>"
+                                           onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                             <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                         </a>
                                     </li>

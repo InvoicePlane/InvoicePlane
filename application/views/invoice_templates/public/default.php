@@ -15,7 +15,8 @@
 
         <meta name="viewport" content="width=device-width,initial-scale=1">
 
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
 
         <style>
             body {
@@ -101,8 +102,8 @@
                                 <?php if ($invoice->user_city) { echo $invoice->user_city . ' '; } ?>
                                 <?php if ($invoice->user_state) { echo $invoice->user_state . ' '; } ?>
                                 <?php if ($invoice->user_zip) { echo $invoice->user_zip . '<br>'; } ?>
-                                <?php if ($invoice->user_phone) { ?><abbr>P:</abbr><?php echo $invoice->user_phone; ?><br><?php } ?>
-                                <?php if ($invoice->user_fax) { ?><abbr>F:</abbr><?php echo $invoice->user_fax; ?><?php } ?>
+                                <?php if ($invoice->user_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $invoice->user_phone; ?><br><?php } ?>
+                                <?php if ($invoice->user_fax) { ?><?php echo lang('fax_abbr'); ?>: <?php echo $invoice->user_fax; ?><?php } ?>
                             </p>
                         </td>
                         <td class="alignr"><h2><?php echo lang('invoice'); ?> <?php echo $invoice->invoice_number; ?></h2></td>
@@ -121,7 +122,7 @@
                                 <?php if ($invoice->client_city) { echo $invoice->client_city . ' '; } ?>
                                 <?php if ($invoice->client_state) { echo $invoice->client_state . ' '; } ?>
                                 <?php if ($invoice->client_zip) { echo $invoice->client_zip . '<br>'; } ?>
-                                <?php if ($invoice->client_phone) { ?><abbr>P:</abbr><?php echo $invoice->client_phone; ?><br><?php } ?>
+                                <?php if ($invoice->client_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $invoice->client_phone; ?><br><?php } ?>
                             </p>
                         </td>
                         <td style="width:30%;"></td>

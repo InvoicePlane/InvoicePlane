@@ -10,17 +10,17 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Mdl_Clients extends Response_Model {
-
-    public $table               = 'ip_clients';
-    public $primary_key         = 'ip_clients.client_id';
-    public $date_created_field  = 'client_date_created';
+class Mdl_Clients extends Response_Model
+{
+    public $table = 'ip_clients';
+    public $primary_key = 'ip_clients.client_id';
+    public $date_created_field = 'client_date_created';
     public $date_modified_field = 'client_date_modified';
 
     public function default_select()
@@ -41,12 +41,12 @@ class Mdl_Clients extends Response_Model {
     public function validation_rules()
     {
         return array(
-            'client_name'      => array(
+            'client_name' => array(
                 'field' => 'client_name',
                 'label' => lang('client_name'),
                 'rules' => 'required'
             ),
-            'client_active'    => array(
+            'client_active' => array(
                 'field' => 'client_active'
             ),
             'client_address_1' => array(
@@ -55,37 +55,37 @@ class Mdl_Clients extends Response_Model {
             'client_address_2' => array(
                 'field' => 'client_address_2'
             ),
-            'client_city'      => array(
+            'client_city' => array(
                 'field' => 'client_city'
             ),
-            'client_state'     => array(
+            'client_state' => array(
                 'field' => 'client_state'
             ),
-            'client_zip'       => array(
+            'client_zip' => array(
                 'field' => 'client_zip'
             ),
-            'client_country'   => array(
+            'client_country' => array(
                 'field' => 'client_country'
             ),
-            'client_phone'     => array(
+            'client_phone' => array(
                 'field' => 'client_phone'
             ),
-            'client_fax'       => array(
+            'client_fax' => array(
                 'field' => 'client_fax'
             ),
-            'client_mobile'    => array(
+            'client_mobile' => array(
                 'field' => 'client_mobile'
             ),
-            'client_email'     => array(
+            'client_email' => array(
                 'field' => 'client_email'
             ),
-            'client_web'       => array(
+            'client_web' => array(
                 'field' => 'client_web'
             ),
-            'client_vat_id'       => array(
+            'client_vat_id' => array(
                 'field' => 'user_vat_id'
             ),
-            'client_tax_code'       => array(
+            'client_tax_code' => array(
                 'field' => 'user_tax_code'
             )
         );
@@ -95,8 +95,7 @@ class Mdl_Clients extends Response_Model {
     {
         $db_array = parent::db_array();
 
-        if (!isset($db_array['client_active']))
-        {
+        if (!isset($db_array['client_active'])) {
             $db_array['client_active'] = 0;
         }
 
@@ -112,18 +111,15 @@ class Mdl_Clients extends Response_Model {
     }
 
     /**
-     * Returns client_id of existing or new record 
+     * Returns client_id of existing or new record
      */
     public function client_lookup($client_name)
     {
         $client = $this->mdl_clients->where('client_name', $client_name)->get();
 
-        if ($client->num_rows())
-        {
+        if ($client->num_rows()) {
             $client_id = $client->row()->client_id;
-        }
-        else
-        {
+        } else {
             $db_array = array(
                 'client_name' => $client_name
             );
@@ -165,5 +161,3 @@ class Mdl_Clients extends Response_Model {
     }
 
 }
-
-?>

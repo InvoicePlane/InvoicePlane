@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Ajax extends Admin_Controller {
-
+class Ajax extends Admin_Controller
+{
     public $ajax_controller = TRUE;
 
     public function name_query()
@@ -32,8 +32,7 @@ class Ajax extends Admin_Controller {
 
         $response = array();
 
-        foreach ($clients as $client)
-        {
+        foreach ($clients as $client) {
             $response[] = $client->client_name;
         }
 
@@ -44,19 +43,16 @@ class Ajax extends Admin_Controller {
     {
         $this->load->model('clients/mdl_client_notes');
 
-        if ($this->mdl_client_notes->run_validation())
-        {
+        if ($this->mdl_client_notes->run_validation()) {
             $this->mdl_client_notes->save();
 
             $response = array(
                 'success' => 1
             );
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = array(
-                'success'           => 0,
+                'success' => 0,
                 'validation_errors' => json_errors()
             );
         }
@@ -76,5 +72,3 @@ class Ajax extends Admin_Controller {
     }
 
 }
-
-?>

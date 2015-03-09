@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Invoices extends Guest_Controller {
-
+class Invoices extends Guest_Controller
+{
     public function __construct()
     {
         parent::__construct();
@@ -34,8 +34,7 @@ class Invoices extends Guest_Controller {
     public function status($status = 'open', $page = 0)
     {
         // Determine which group of invoices to load
-        switch ($status)
-        {
+        switch ($status) {
             case 'paid':
                 $this->mdl_invoices->is_paid()->where_in('ip_invoices.client_id', $this->user_clients);
                 break;
@@ -50,8 +49,8 @@ class Invoices extends Guest_Controller {
 
         $this->layout->set(
             array(
-                'invoices'           => $invoices,
-                'status'             => $status
+                'invoices' => $invoices,
+                'status' => $status
             )
         );
 
@@ -63,22 +62,21 @@ class Invoices extends Guest_Controller {
     {
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
-        
+
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
-        
-        if (!$invoice)
-        {
+
+        if (!$invoice) {
             show_404();
         }
-        
+
         $this->mdl_invoices->mark_viewed($invoice->invoice_id);
 
         $this->layout->set(
             array(
-                'invoice'           => $invoice,
-                'items'             => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+                'invoice' => $invoice,
+                'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_id'        => $invoice_id
+                'invoice_id' => $invoice_id
             )
         );
 
@@ -94,12 +92,10 @@ class Invoices extends Guest_Controller {
     public function generate_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
     {
         $this->load->helper('pdf');
-        
+
         $this->mdl_invoices->mark_viewed($invoice_id);
-        
+
         generate_invoice_pdf($invoice_id, $stream, $invoice_template);
     }
 
 }
-
-?>

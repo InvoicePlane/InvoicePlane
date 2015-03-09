@@ -10,23 +10,23 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class User_Controller extends Base_Controller {
+class User_Controller extends Base_Controller
+{
 
-	public function __construct($required_key, $required_val)
-	{
-		parent::__construct();
+    public function __construct($required_key, $required_val)
+    {
+        parent::__construct();
 
-		if ($this->session->userdata($required_key) <> $required_val)
-		{
-			redirect('sessions/login');
-		}
-	}
+        if ($this->session->userdata($required_key) <> $required_val) {
+            redirect('sessions/login');
+        }
+    }
 
 }
 

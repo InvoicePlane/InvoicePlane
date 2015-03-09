@@ -10,24 +10,21 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Mdl_Templates extends CI_Model {
-
+class Mdl_Templates extends CI_Model
+{
     public function get_invoice_templates($type = 'pdf')
     {
         $this->load->helper('directory');
 
-        if ($type == 'pdf')
-        {
+        if ($type == 'pdf') {
             $templates = directory_map(APPPATH . '/views/invoice_templates/pdf', TRUE);
-        }
-        elseif ($type == 'public')
-        {
+        } elseif ($type == 'public') {
             $templates = directory_map(APPPATH . '/views/invoice_templates/public', TRUE);
         }
 
@@ -40,12 +37,9 @@ class Mdl_Templates extends CI_Model {
     {
         $this->load->helper('directory');
 
-        if ($type == 'pdf')
-        {
+        if ($type == 'pdf') {
             $templates = directory_map(APPPATH . '/views/quote_templates/pdf', TRUE);
-        }
-        elseif ($type == 'public')
-        {
+        } elseif ($type == 'public') {
             $templates = directory_map(APPPATH . '/views/quote_templates/public', TRUE);
         }
 
@@ -56,8 +50,7 @@ class Mdl_Templates extends CI_Model {
 
     private function remove_extension($files)
     {
-        foreach ($files as $key => $file)
-        {
+        foreach ($files as $key => $file) {
             $files[$key] = str_replace('.php', '', $file);
         }
 
@@ -65,5 +58,3 @@ class Mdl_Templates extends CI_Model {
     }
 
 }
-
-?>

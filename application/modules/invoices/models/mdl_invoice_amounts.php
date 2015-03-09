@@ -10,32 +10,32 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Mdl_Invoice_Amounts extends CI_Model {
-
+class Mdl_Invoice_Amounts extends CI_Model
+{
     /**
-     * FI_INVOICE_AMOUNTS
+     * IP_INVOICE_AMOUNTS
      * invoice_amount_id
      * invoice_id
-     * invoice_item_subtotal	SUM(item_subtotal)
-     * invoice_item_tax_total	SUM(item_tax_total)
+     * invoice_item_subtotal    SUM(item_subtotal)
+     * invoice_item_tax_total    SUM(item_tax_total)
      * invoice_tax_total
-     * invoice_total			invoice_item_subtotal + invoice_item_tax_total + invoice_tax_total
+     * invoice_total            invoice_item_subtotal + invoice_item_tax_total + invoice_tax_total
      * invoice_paid
-     * invoice_balance			invoice_total - invoice_paid
+     * invoice_balance            invoice_total - invoice_paid
      *
-     * FI_INVOICE_ITEM_AMOUNTS
+     * IP_INVOICE_ITEM_AMOUNTS
      * item_amount_id
      * item_id
      * item_tax_rate_id
-     * item_subtotal			item_quantity * item_price
-     * item_tax_total			item_subtotal * tax_rate_percent
-     * item_total				item_subtotal + item_tax_total
+     * item_subtotal            item_quantity * item_price
+     * item_tax_total            item_subtotal * tax_rate_percent
+     * item_total                item_subtotal + item_tax_total
      *
      */
     public function calculate($invoice_id)
@@ -55,23 +55,20 @@ class Mdl_Invoice_Amounts extends CI_Model {
 
         // Create the database array and insert or update
         $db_array = array(
-            'invoice_id'             => $invoice_id,
-            'invoice_item_subtotal'  => $invoice_amounts->invoice_item_subtotal,
+            'invoice_id' => $invoice_id,
+            'invoice_item_subtotal' => $invoice_amounts->invoice_item_subtotal,
             'invoice_item_tax_total' => $invoice_amounts->invoice_item_tax_total,
-            'invoice_total'          => $invoice_amounts->invoice_total,
-            'invoice_paid'           => ($invoice_paid) ? $invoice_paid : 0,
-            'invoice_balance'        => $invoice_amounts->invoice_total - $invoice_paid
+            'invoice_total' => $invoice_amounts->invoice_total,
+            'invoice_paid' => ($invoice_paid) ? $invoice_paid : 0,
+            'invoice_balance' => $invoice_amounts->invoice_total - $invoice_paid
         );
 
         $this->db->where('invoice_id', $invoice_id);
-        if ($this->db->get('ip_invoice_amounts')->num_rows())
-        {
+        if ($this->db->get('ip_invoice_amounts')->num_rows()) {
             // The record already exists; update it
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('ip_invoice_amounts', $db_array);
-        }
-        else
-        {
+        } else {
             // The record does not yet exist; insert it
             $this->db->insert('ip_invoice_amounts', $db_array);
         }
@@ -80,10 +77,14 @@ class Mdl_Invoice_Amounts extends CI_Model {
         $this->calculate_invoice_taxes($invoice_id);
 
         // Set to paid if applicable
-        if ($db_array['invoice_balance'] == 0)
-        {
+        if ($db_array['invoice_balance'] == 0) {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_status_id', 4);
+            $this->db->update('ip_invoices');
+        }
+        if ($this->config->item('disable_read_only') == FALSE && $db_array['invoice_balance'] == 0 && $db_array['invoice_total'] != 0) {
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('is_read_only', 1);
             $this->db->update('ip_invoices');
         }
     }
@@ -94,22 +95,17 @@ class Mdl_Invoice_Amounts extends CI_Model {
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result();
 
-        if ($invoice_tax_rates)
-        {
+        if ($invoice_tax_rates) {
             // There are invoice taxes applied
             // Get the current invoice amount record
             $invoice_amount = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
             // Loop through the invoice taxes and update the amount for each of the applied invoice taxes
-            foreach ($invoice_tax_rates as $invoice_tax_rate)
-            {
-                if ($invoice_tax_rate->include_item_tax)
-                {
+            foreach ($invoice_tax_rates as $invoice_tax_rate) {
+                if ($invoice_tax_rate->include_item_tax) {
                     // The invoice tax rate should include the applied item tax
                     $invoice_tax_rate_amount = ($invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total) * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
-                }
-                else
-                {
+                } else {
                     // The invoice tax rate should not include the applied item tax
                     $invoice_tax_rate_amount = $invoice_amount->invoice_item_subtotal * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
                 }
@@ -129,12 +125,12 @@ class Mdl_Invoice_Amounts extends CI_Model {
             $invoice_amount = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
             // Recalculate the invoice total and balance
-            $invoice_total   = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
+            $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
             $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
 
             // Update the invoice amount record
             $db_array = array(
-                'invoice_total'   => $invoice_total,
+                'invoice_total' => $invoice_total,
                 'invoice_balance' => $invoice_balance
             );
 
@@ -142,15 +138,17 @@ class Mdl_Invoice_Amounts extends CI_Model {
             $this->db->update('ip_invoice_amounts', $db_array);
 
             // Set to paid if applicable
-            if ($invoice_balance == 0)
-            {
+            if ($invoice_balance == 0) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 4);
                 $this->db->update('ip_invoices');
             }
-        }
-        else
-        {
+            if ($this->config->item('disable_read_only') == FALSE && $invoice_balance == 0 && $invoice_total != 0) {
+                $this->db->where('invoice_id', $invoice_id);
+                $this->db->set('is_read_only', 1);
+                $this->db->update('ip_invoices');
+            }
+        } else {
             // No invoice taxes applied
 
             $db_array = array(
@@ -164,8 +162,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
 
     public function get_total_invoiced($period = NULL)
     {
-        switch ($period)
-        {
+        switch ($period) {
             case 'month':
                 return $this->db->query("
 					SELECT SUM(invoice_total) AS total_invoiced 
@@ -201,8 +198,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
 
     public function get_total_paid($period = NULL)
     {
-        switch ($period)
-        {
+        switch ($period) {
             case 'month':
                 return $this->db->query("
 					SELECT SUM(invoice_paid) AS total_paid 
@@ -235,8 +231,7 @@ class Mdl_Invoice_Amounts extends CI_Model {
 
     public function get_total_balance($period = NULL)
     {
-        switch ($period)
-        {
+        switch ($period) {
             case 'month':
                 return $this->db->query("SELECT SUM(invoice_balance) AS total_balance 
 					FROM ip_invoice_amounts
@@ -266,29 +261,76 @@ class Mdl_Invoice_Amounts extends CI_Model {
         }
     }
 
-    public function get_status_totals()
+    public function get_status_totals($period = '')
     {
-        $this->db->select("invoice_status_id, (CASE invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total");
-        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_invoice_amounts.invoice_id');
-        $this->db->group_by('invoice_status_id');
-        $results = $this->db->get('ip_invoice_amounts')->result_array();
+        switch ($period) {
+            default:
+            case 'this-month':
+                $results = $this->db->query("
+					SELECT ip_invoices.invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW())
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+            case 'last-month':
+                $results = $this->db->query("
+					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+            case 'this-quarter':
+                $results = $this->db->query("
+					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW())
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+            case 'last-quarter':
+                $results = $this->db->query("
+					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+            case 'this-year':
+                $results = $this->db->query("
+					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+            case 'last-year':
+                $results = $this->db->query("
+					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					FROM ip_invoice_amounts
+					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW() - INTERVAL 1 YEAR)
+					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                break;
+        }
 
         $return = array();
 
-        foreach ($this->mdl_invoices->statuses() as $key => $status)
-        {
+        foreach ($this->mdl_invoices->statuses() as $key => $status) {
             $return[$key] = array(
                 'invoice_status_id' => $key,
-                'class'             => $status['class'],
-                'label'             => $status['label'],
-                'href'              => $status['href'],
-                'sum_total'         => 0,
-                'num_total'         => 0
+                'class' => $status['class'],
+                'label' => $status['label'],
+                'href' => $status['href'],
+                'sum_total' => 0,
+                'num_total' => 0
             );
         }
 
-        foreach ($results as $result)
-        {
+        foreach ($results as $result) {
             $return[$result['invoice_status_id']] = array_merge($return[$result['invoice_status_id']], $result);
         }
 
@@ -296,5 +338,3 @@ class Mdl_Invoice_Amounts extends CI_Model {
     }
 
 }
-
-?>

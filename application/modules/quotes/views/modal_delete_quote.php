@@ -1,19 +1,18 @@
 <script type="text/javascript">
-	$(function()
-	{
-		$('#modal_delete_quote_confirm').click(function()
-		{
-			quote_id = $(this).data('quote-id');
-			window.location = '<?php echo site_url('quotes/delete'); ?>/' + quote_id;
-		});
-	});
+    $(function () {
+        $('#modal_delete_quote_confirm').click(function () {
+            quote_id = $(this).data('quote-id');
+            window.location = '<?php echo site_url('quotes/delete'); ?>/' + quote_id;
+        });
+    });
 </script>
 
 <div id="delete-quote" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
      role="dialog" aria-labelledby="modal_delete_quote" aria-hidden="true">
     <div class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close">×</a>
+            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
+
             <h3><?php echo lang('delete_quote'); ?></h3>
         </div>
         <div class="modal-body">

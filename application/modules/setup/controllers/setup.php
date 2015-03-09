@@ -10,14 +10,14 @@ if (!defined('BASEPATH'))
  *
  * @package		InvoicePlane
  * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  * 
  */
 
-class Setup extends MX_Controller {
-
+class Setup extends MX_Controller
+{
     public $errors = 0;
 
     public function __construct()
@@ -40,7 +40,7 @@ class Setup extends MX_Controller {
             //$this->session->set_userdata('ip_lang', 'english');	//---it--- ORIGINALE
             $this->session->set_userdata('ip_lang', 'italian');	//---it---
         }
-
+        
         $this->lang->load('ip', $this->session->userdata('ip_lang'));
         
         //---it---inizio
@@ -56,8 +56,7 @@ class Setup extends MX_Controller {
 
     public function language()
     {
-        if ($this->input->post('btn_continue'))
-        {
+        if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('ip_lang', $this->input->post('ip_lang'));
             $this->session->set_userdata('install_step', 'prerequisites');
             redirect('setup/prerequisites');
@@ -75,54 +74,47 @@ class Setup extends MX_Controller {
         $this->layout->set('languages', $languages);
 
         $this->layout->buffer('content', 'setup/language');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function prerequisites()
     {
-        if ($this->session->userdata('install_step') <> 'prerequisites')
-        {
+        if ($this->session->userdata('install_step') <> 'prerequisites') {
             redirect('setup/language');
         }
 
-        if ($this->input->post('btn_continue'))
-        {
+        if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'configure_database');
             redirect('setup/configure_database');
         }
 
         $this->layout->set(
             array(
-                'basics'    => $this->check_basics(),
+                'basics' => $this->check_basics(),
                 'writables' => $this->check_writables(),
-                'errors'    => $this->errors
+                'errors' => $this->errors
             )
         );
 
         $this->layout->buffer('content', 'setup/prerequisites');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function configure_database()
     {
-        if ($this->session->userdata('install_step') <> 'configure_database')
-        {
+        if ($this->session->userdata('install_step') <> 'configure_database') {
             redirect('setup/prerequisites');
         }
 
-        if ($this->input->post('btn_continue'))
-        {
+        if ($this->input->post('btn_continue')) {
             $this->load_ci_database();
 
             // This might be an upgrade - check if it is
-            if (!$this->db->table_exists('ip_versions'))
-            {
+            if (!$this->db->table_exists('ip_versions')) {
                 // This appears to be an install
                 $this->session->set_userdata('install_step', 'install_tables');
                 redirect('setup/install_tables');
-            }
-            else
-            {
+            } else {
                 // This appears to be an upgrade
                 $this->session->set_userdata('is_upgrade', TRUE);
                 $this->session->set_userdata('install_step', 'upgrade_tables');
@@ -130,26 +122,23 @@ class Setup extends MX_Controller {
             }
         }
 
-        if ($this->input->post('db_hostname'))
-        {
+        if ($this->input->post('db_hostname')) {
             $this->write_database_config($this->input->post('db_hostname'), $this->input->post('db_username'), $this->input->post('db_password'), $this->input->post('db_database'));
         }
 
         $this->layout->set('database', $this->check_database());
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function install_tables()
     {
-        if ($this->session->userdata('install_step') <> 'install_tables')
-        {
+        if ($this->session->userdata('install_step') <> 'install_tables') {
             redirect('setup/prerequisites');
         }
 
-        if ($this->input->post('btn_continue'))
-        {
+        if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'upgrade_tables');
             redirect('setup/upgrade_tables');
         }
@@ -159,30 +148,25 @@ class Setup extends MX_Controller {
         $this->layout->set(
             array(
                 'success' => $this->mdl_setup->install_tables(),
-                'errors'  => $this->mdl_setup->errors
+                'errors' => $this->mdl_setup->errors
             )
         );
 
         $this->layout->buffer('content', 'setup/install_tables');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function upgrade_tables()
     {
-        if ($this->session->userdata('install_step') <> 'upgrade_tables')
-        {
+        if ($this->session->userdata('install_step') <> 'upgrade_tables') {
             redirect('setup/prerequisites');
         }
 
-        if ($this->input->post('btn_continue'))
-        {
-            if (!$this->session->userdata('is_upgrade'))
-            {
+        if ($this->input->post('btn_continue')) {
+            if (!$this->session->userdata('is_upgrade')) {
                 $this->session->set_userdata('install_step', 'create_user');
                 redirect('setup/create_user');
-            }
-            else
-            {
+            } else {
                 $this->session->set_userdata('install_step', 'complete');
                 redirect('setup/complete');
             }
@@ -193,18 +177,17 @@ class Setup extends MX_Controller {
         $this->layout->set(
             array(
                 'success' => $this->mdl_setup->upgrade_tables(),
-                'errors'  => $this->mdl_setup->errors
+                'errors' => $this->mdl_setup->errors
             )
         );
 
         $this->layout->buffer('content', 'setup/upgrade_tables');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function create_user()
     {
-        if ($this->session->userdata('install_step') <> 'create_user')
-        {
+        if ($this->session->userdata('install_step') <> 'create_user') {
             redirect('setup/prerequisites');
         }
 
@@ -212,9 +195,8 @@ class Setup extends MX_Controller {
 
         $this->load->model('users/mdl_users');
 
-        if ($this->mdl_users->run_validation())
-        {
-            $db_array              = $this->mdl_users->db_array();
+        if ($this->mdl_users->run_validation()) {
+            $db_array = $this->mdl_users->db_array();
             $db_array['user_type'] = 1;
 
             $this->mdl_users->save(NULL, $db_array);
@@ -224,13 +206,12 @@ class Setup extends MX_Controller {
         }
 
         $this->layout->buffer('content', 'setup/create_user');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     public function complete()
     {
-        if ($this->session->userdata('install_step') <> 'complete')
-        {
+        if ($this->session->userdata('install_step') <> 'complete') {
             redirect('setup/prerequisites');
         }
 
@@ -239,14 +220,14 @@ class Setup extends MX_Controller {
         $this->load_ci_database();
         $versions = $this->db->query('SELECT * FROM ip_versions');
         if ($versions->num_rows() > 0) {
-            foreach($versions->result() as $row):
+            foreach ($versions->result() as $row):
                 $data[] = $row;
             endforeach;
         }
 
         // Then check if the first version entry is less than 30 minutes old
         // If yes we assume that the user ran the setup a few minutes ago
-        if ( $data[0]->version_date_applied < (time() - 1800) ) {
+        if ($data[0]->version_date_applied < (time() - 1800)) {
             $update = true;
         } else {
             $update = false;
@@ -254,7 +235,7 @@ class Setup extends MX_Controller {
         $this->layout->set('update', $update);
 
         $this->layout->buffer('content', 'setup/complete');
-        $this->layout->render('base');
+        $this->layout->render('setup');
     }
 
     private function check_writables()
@@ -269,19 +250,15 @@ class Setup extends MX_Controller {
             './' . APPPATH . 'logs'
         );
 
-        foreach ($writables as $writable)
-        {
-            if (!is_writable($writable))
-            {
+        foreach ($writables as $writable) {
+            if (!is_writable($writable)) {
                 $checks[] = array(
                     'message' => $writable . ' ' . lang('is_not_writable'),
                     'success' => 0
                 );
 
                 $this->errors += 1;
-            }
-            else
-            {
+            } else {
                 $checks[] = array(
                     'message' => $writable . ' ' . lang('is_writable'),
                     'success' => 1
@@ -302,8 +279,7 @@ class Setup extends MX_Controller {
 
         $can_connect = $this->lib_mysql->connect($db['hostname'], $db['username'], $db['password']);
 
-        if (!$can_connect)
-        {
+        if (!$can_connect) {
             $this->errors += 1;
 
             return array(
@@ -314,8 +290,7 @@ class Setup extends MX_Controller {
 
         $can_select_db = $this->lib_mysql->select_db($db['database']);
 
-        if (!$can_select_db)
-        {
+        if (!$can_select_db) {
             $this->errors += 1;
 
             return array(
@@ -334,37 +309,31 @@ class Setup extends MX_Controller {
     {
         $checks = array();
 
-        $php_required  = '5.3';
+        $php_required = '5.3';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
-        if ($php_installed < $php_required)
-        {
+        if ($php_installed < $php_required) {
             $this->errors += 1;
 
             $checks[] = array(
                 'message' => sprintf(lang('php_version_fail'), $php_installed, $php_required),
                 'success' => 0
             );
-        } 
-        else 
-        {
+        } else {
             $checks[] = array(
                 'message' => lang('php_version_success'),
                 'success' => 1
             );
         }
 
-        if (!ini_get('date.timezone'))
-        {
+        if (!ini_get('date.timezone')) {
             #$this->errors += 1;
 
             $checks[] = array(
                 'message' => sprintf(lang('php_timezone_fail'), date_default_timezone_get()),
                 'warning' => 1
             );
-        }
-        else
-        {
+        } else {
             $checks[] = array(
                 'message' => lang('php_timezone_success'),
                 'success' => 1
