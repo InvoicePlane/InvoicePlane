@@ -1,6 +1,6 @@
-<?php echo $this->layout->load_view('layout/alerts'); ?>
-
 <div class="content">
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <div class="row <?php if ($this->mdl_settings->setting('disable_quickactions') == 1) {
         echo 'hidden';
     } ?>">
