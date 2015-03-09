@@ -53,28 +53,7 @@ class Mdl_Invoice_Groups extends Response_Model
                 'field' => 'invoice_group_left_pad',
                 'label' => lang('left_pad'),
                 'rules' => 'required'
-            ),
-            'invoice_group_prefix_year'  => array(
-                'field' => 'invoice_group_prefix_year',
-                'label' => lang('year_prefix'),
-                'rules' => 'required'
-            ),
-            'invoice_group_prefix_month' => array(
-                'field' => 'invoice_group_prefix_month',
-                'label' => lang('month_prefix'),
-                'rules' => 'required'
-            ),
-        	/*---it---inizio*/
-        	'invoice_it_group_suffix'       => array(
-        			'field' => 'invoice_it_group_suffix',
-        			'label' => lang('it_suffisso'),
-        	),
-        	'invoice_it_group_suffix_year'  => array(
-        			'field' => 'invoice_it_group_suffix_year',
-        			'label' => lang('it_suffisso_anno'),
-        			'rules' => 'required'
-        	)
-        	/*---it---fine*/
+            )
         );
     }
 
@@ -92,52 +71,37 @@ class Mdl_Invoice_Groups extends Response_Model
             $this->set_next_invoice_number($invoice_group_id);
         }
 
-        $invoice_number .= $invoice_id;
-        
-        //---it---inizio
-        $invoice_number .= $invoice_group->invoice_it_group_suffix;
-        if ($invoice_group->invoice_it_group_suffix_year)
-        {
-        	$invoice_number .= date('Y');
-        }
-        //---it---fine
-        
-        if ($set_next)
-        {
-            $this->set_next_invoice_number($invoice_group_id);
-        }
-		
-        return $identifier_format;
+        return $invoice_identifier;
     }
-    
+
     private function parse_identifier_format($identifier_format, $next_id, $left_pad)
     {
-    	if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
-    		foreach ($template_vars[1] as $var) {
-    			switch ($var) {
-    				case 'year':
-    					$replace = date('Y');
-    					break;
-    				case 'month':
-    					$replace = date('m');
-    					break;
-    				case 'day':
-    					$replace = date('d');
-    					break;
-    				case 'id':
-    					$replace = str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
-    					break;
-    				default:
-    					$replace = '';
-    			}
-    
-    			$identifier_format = str_replace('{{{' . $var . '}}}', $replace, $identifier_format);
-    		}
-    	}
-    
-    	return $identifier_format;
+        if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
+            foreach ($template_vars[1] as $var) {
+                switch ($var) {
+                    case 'year':
+                        $replace = date('Y');
+                        break;
+                    case 'month':
+                        $replace = date('m');
+                        break;
+                    case 'day':
+                        $replace = date('d');
+                        break;
+                    case 'id':
+                        $replace = str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
+                        break;
+                    default:
+                        $replace = '';
+                }
+
+                $identifier_format = str_replace('{{{' . $var . '}}}', $replace, $identifier_format);
+            }
+        }
+
+        return $identifier_format;
     }
-    
+
     public function set_next_invoice_number($invoice_group_id)
     {
         $this->db->where($this->primary_key, $invoice_group_id);

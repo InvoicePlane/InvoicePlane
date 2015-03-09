@@ -82,11 +82,6 @@
                                     </a>
                                 </li>
                             <?php } ?>
-                            <li>
-                                <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
-                                    <i class="fa fa-edit fa-margin"></i> <?php echo lang('edit'); ?>
-                                </a>
-                            </li>
                             <?php //---it---inizio ?>
 							<li>
 								<a href="<?php echo site_url('invoices/preview_pdf/' . $invoice->invoice_id); ?>">

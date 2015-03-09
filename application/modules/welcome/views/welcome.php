@@ -33,7 +33,8 @@
         <div id="logo"><span>InvoicePlane</span></div>
         <p class="alert alert-info text-center">
             <!-- ---it---inizio -->
-            Per favore, installa InvoicePlane all'indirizzo http://&lt;url-cartella-invoiceplane&gt;/setup
+            <span class="text-muted">Bitte installiere InvoicePlane.</span><br/>
+            Si prega di installare InvoicePlane
             <!-- ---it---fine -->
             <!-- ---it---ORIGINALE
             Please install InvoicePlane.<br/>

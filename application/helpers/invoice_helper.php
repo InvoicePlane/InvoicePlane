@@ -36,7 +36,7 @@ function invoice_logo_pdf()
         //---it---inizio
         global $pdf_preview;
         if(@$pdf_preview)
-            return '<img src="' . base_url() . 'uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';    // Supporto anteprima PDF
+            return '<img src="' . base_url() . 'uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';    // Supporto anteprima PDF
         else
         //---it---fine
         return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
