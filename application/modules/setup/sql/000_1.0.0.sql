@@ -276,7 +276,7 @@ CREATE TABLE `ip_quotes` (
   `quote_date_expires` date NOT NULL,
   `quote_number` varchar(20) NOT NULL,
   `quote_url_key` char(32) NOT NULL,
-  `notes` longtext,    
+  `notes` longtext,
   PRIMARY KEY (`quote_id`),
   KEY `user_id` (`user_id`,`client_id`,`invoice_group_id`,`quote_date_created`,`quote_date_expires`,`quote_number`),
   KEY `invoice_id` (`invoice_id`),
