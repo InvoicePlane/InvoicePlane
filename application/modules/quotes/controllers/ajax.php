@@ -58,11 +58,14 @@ class Ajax extends Admin_Controller
                 }
             }
 
+            $notes = $this->input->post('notes');
+
             $db_array = array(
                 'quote_number' => $this->input->post('quote_number'),
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
-                'quote_status_id' => $this->input->post('quote_status_id')
+                'quote_status_id' => $this->input->post('quote_status_id'),
+                'notes' => (empty($notes) ? '' : $notes)
             );
 
             $this->mdl_quotes->save($quote_id, $db_array);
