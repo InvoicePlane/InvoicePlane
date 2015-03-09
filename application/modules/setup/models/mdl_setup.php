@@ -118,15 +118,15 @@ class Mdl_Setup extends CI_Model
 
         $default_settings = array(
             'default_language' => $this->session->userdata('ip_lang'),
-            'date_format' => 'd/m/Y',	//---it---
-            'currency_symbol' => '€',		//---it---
+            'date_format' => 'd/m/Y', //---it---
+            'currency_symbol' => '€', //---it---
             'currency_symbol_placement' => 'before',
             'invoices_due_after' => 30,
             'quotes_expire_after' => 15,
             'default_invoice_group' => 1,
             'default_quote_group' => 2,
-            'thousands_separator' => '.',			//---it---
-            'decimal_point' => ',',			//---it---
+            'thousands_separator' => '.', //---it---
+            'decimal_point' => ',', //---it---
             'cron_key' => random_string('alnum', 16),
             'tax_rate_decimal_places' => 2,
             'pdf_invoice_template' => 'default',
@@ -135,7 +135,9 @@ class Mdl_Setup extends CI_Model
             'pdf_quote_template' => 'default',
             'public_invoice_template' => 'default',
             'public_quote_template' => 'default',
-            'disable_sidebar' => 1
+            'disable_sidebar' => 1,
+        	'first_day_of_week' => 1, //---it---
+        	'default_country' => 'IT' //---it---
         );
 
         foreach ($default_settings as $setting_key => $setting_value) {
