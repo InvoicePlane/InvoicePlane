@@ -43,7 +43,7 @@
                     invoice_status_id: $('#invoice_status_id').val(),
                     items: JSON.stringify(items),
                     invoice_terms: $('#invoice_terms').val(),
-                    custom: $('input[name^=custom]').serializeArray()
+                    custom: $('input[name^=custom],select[name^=custom]').serializeArray()
                 },
                 function(data) {
                     var response = JSON.parse(data);
@@ -288,14 +288,20 @@
                 <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>
                 ><?php echo $invoice->invoice_terms; ?></textarea>
 
-            <?php foreach ($custom_fields as $custom_field) { ?>
-                <label><?php echo $custom_field->custom_field_label; ?></label>
-                <input type="text" class="form-control"
-                       name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                       id="<?php echo $custom_field->custom_field_column; ?>"
-                       value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
-                    <?php if ($invoice->is_read_only == 1) { echo 'disabled="disabled"';} ?>>
-            <?php } ?>
+             <?php if($custom_field->custom_field_label=="Pago"){?>
+					<select name="custom[<?php echo $custom_field->custom_field_column; ?>]" id="<?php echo $custom_field->custom_field_column; ?>" class="form-control" style="width:19%;">
+					<?php foreach ($payment_methods as $payment_method) { ?>
+					<option <?php if(form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']'))==$payment_method->payment_method_name) echo "selected " ?>value="<?php echo $payment_method->payment_method_name; ?>">
+					<?php echo $payment_method->payment_method_name; ?>
+					</option>
+					<?php } ?>
+					</select>
+					<?php }else{ ?>
+					<input type="text" class="form-control"
+							name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+							id="<?php echo $custom_field->custom_field_column; ?>"
+							value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+						<?php } ?>
 
             <p class="padded">
                 <?php if ($invoice->invoice_status_id != 1) { ?>
