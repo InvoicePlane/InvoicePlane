@@ -363,13 +363,8 @@ div.table-content {
 }
 
 .quick-actions .btn {
-    padding: 5px;
     border: none;
     border-right: 1px solid #ddd;
-    font-size: 90%;
-    .fa {
-        margin-right: 5px;
-    }
     &:last-child {
         border-right: none;
     }

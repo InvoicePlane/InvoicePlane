@@ -13,23 +13,21 @@
                 </div>
 
                 <div class="btn-group btn-group-justified no-margin">
-                    <a href="<?php echo site_url('clients/form'); ?>"
-                       class="btn btn-default">
-                        <i class="fa fa-user"></i><span
-                            class="hidden-md hidden-xs"><?php echo lang('add_client'); ?></span>
+                    <a href="<?php echo site_url('clients/form'); ?>" class="btn btn-default">
+                        <i class="fa fa-user fa-margin"></i>
+                        <span class="hidden-md hidden-xs"><?php echo lang('add_client'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">
-                        <i class="fa fa-file"></i><span
-                            class="hidden-md hidden-xs"><?php echo lang('create_quote'); ?></span>
+                        <i class="fa fa-file fa-margin"></i>
+                        <span class="hidden-md hidden-xs"><?php echo lang('create_quote'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-invoice btn btn-default">
-                        <i class="fa fa-file-text"></i><span
-                            class="hidden-md hidden-xs"><?php echo lang('create_invoice'); ?></span>
+                        <i class="fa fa-file-text fa-margin"></i>
+                        <span class="hidden-md hidden-xs"><?php echo lang('create_invoice'); ?></span>
                     </a>
-                    <a href="<?php echo site_url('payments/form'); ?>"
-                       class="btn btn-default">
-                        <i class="fa fa-money"></i><span
-                            class="hidden-md hidden-xs"><?php echo lang('enter_payment'); ?></span>
+                    <a href="<?php echo site_url('payments/form'); ?>" class="btn btn-default">
+                        <i class="fa fa-credit-card fa-margin"></i>
+                        <span class="hidden-md hidden-xs"><?php echo lang('enter_payment'); ?></span>
                     </a>
                 </div>
 
@@ -43,7 +41,7 @@
             <div id="panel-quote-overview" class="panel panel-default overview">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-file"></i> <?php echo lang('quote_overview'); ?></b>
+                    <b><i class="fa fa-bar-chart fa-margin"></i> <?php echo lang('quote_overview'); ?></b>
                     <span class="pull-right text-muted"><?php echo lang($quote_status_period); ?></span>
                 </div>
 
@@ -71,7 +69,7 @@
             <div id="panel-invoice-overview" class="panel panel-default overview">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-file-text"></i> <?php echo lang('invoice_overview'); ?></b>
+                    <b><i class="fa fa-bar-chart fa-margin"></i> <?php echo lang('invoice_overview'); ?></b>
                     <span class="pull-right text-muted"><?php echo lang($invoice_status_period); ?></span>
                 </div>
 
@@ -123,7 +121,7 @@
             <div id="panel-recent-quotes" class="panel panel-default">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-refresh"></i> <?php echo lang('recent_quotes'); ?></b>
+                    <b><i class="fa fa-history fa-margin"></i> <?php echo lang('recent_quotes'); ?></b>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-condensed no-margin">
@@ -182,7 +180,7 @@
             <div id="panel-recent-invoices" class="panel panel-default">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-refresh"></i> <?php echo lang('recent_invoices'); ?></b>
+                    <b><i class="fa fa-history fa-margin"></i> <?php echo lang('recent_invoices'); ?></b>
                 </div>
 
                 <div class="table-responsive">
