@@ -65,7 +65,8 @@ class Ajax extends Admin_Controller
                 'invoice_terms' => $this->input->post('invoice_terms'),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_status_id' => $invoice_status
+                'invoice_status_id' => $invoice_status,
+                'payment_method' => $this->input->post('payment_method')
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
