@@ -37,6 +37,7 @@
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
                     items: JSON.stringify(items),
+                    notes: $('#notes').val(),
                     custom: $('input[name^=custom]').serializeArray()
                 },
                 function (data) {
