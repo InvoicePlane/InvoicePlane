@@ -42,7 +42,8 @@
                     invoice_status_id: $('#invoice_status_id').val(),
                     items: JSON.stringify(items),
                     invoice_terms: $('#invoice_terms').val(),
-                    custom: $('input[name^=custom]').serializeArray()
+                    custom: $('input[name^=custom]').serializeArray(),
+                    payment_method: $('#combo_payment_methods').val()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -332,6 +333,14 @@ if ($this->config->item('disable_read_only') == TRUE) {
                         echo 'disabled="disabled"';
                     } ?>>
             <?php } ?>
+
+            <select name="combo_payment_methods" id="combo_payment_methods" class="form-control" style="width:19%;">
+					<?php foreach ($payment_methods as $payment_method) { ?>
+					<option <?php if($invoice->payment_method==$payment_method->payment_method_name) echo "selected " ?>value="<?php echo $payment_method->payment_method_name; ?>">
+					<?php echo $payment_method->payment_method_name; ?>
+					</option>
+					<?php } ?> 
+			</select>
 
             <p class="padded">
                 <?php if ($invoice->invoice_status_id != 1) { ?>

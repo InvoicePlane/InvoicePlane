@@ -14,6 +14,9 @@
 // Bootstrap
 @import "bootstrap/bootstrap";
 
+// SCEditor
+@import "sceditor/square";
+
 // Font: Font-Awesome
 @import "fonts/font-awesome/font-awesome";
 
@@ -360,13 +363,8 @@ div.table-content {
 }
 
 .quick-actions .btn {
-    padding: 5px;
     border: none;
     border-right: 1px solid #ddd;
-    font-size: 90%;
-    .fa {
-        margin-right: 5px;
-    }
     &:last-child {
         border-right: none;
     }
@@ -750,6 +748,12 @@ div.table-content {
             box-shadow: none;
         }
     }
+}
+
+.sceditor-container iframe,
+.sceditor-container textarea {
+    width: 100%;
+    margin: 0;
 }
 
 /*

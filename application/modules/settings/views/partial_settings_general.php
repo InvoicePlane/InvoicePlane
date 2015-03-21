@@ -192,6 +192,23 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo lang('disable_quickactions'); ?>
+                </label>
+                <select name="settings[disable_quickactions]" class="input-sm form-control"
+                        id="disable_quickactions">
+                    <option value="0"
+                            <?php if (!$this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
+                    <option value="1"
+                            <?php if ($this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+                </select>
+            </div>
+        </div>
+    </div>
+
     <hr/>
     <h4><?php echo lang('interface'); ?></h4>
     <br/>

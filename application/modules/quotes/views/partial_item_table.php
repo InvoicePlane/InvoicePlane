@@ -2,6 +2,7 @@
     <table id="item_table" class="items table table-striped table-condensed table-bordered">
         <thead>
         <tr>
+            <th></th>
             <th><?php echo lang('item'); ?></th>
             <th><?php echo lang('description'); ?></th>
             <th><?php echo lang('quantity'); ?></th>
@@ -16,6 +17,7 @@
         <tbody>
 
         <tr id="new_row" style="display: none;">
+            <td><i class="fa fa-arrows cursor-move"></i></td>
             <td class="td-text">
                 <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
                 <input type="hidden" name="item_id" value="">
@@ -59,6 +61,7 @@
 
         <?php foreach ($items as $item) { ?>
             <tr class="item">
+                <td><i class="fa fa-arrows cursor-move"></i></td>
                 <td class="td-text">
                     <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">

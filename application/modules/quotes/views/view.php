@@ -37,6 +37,7 @@
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
                     items: JSON.stringify(items),
+                    notes: $('#notes').val(),
                     custom: $('input[name^=custom]').serializeArray()
                 },
                 function (data) {
@@ -253,11 +254,14 @@
             <input type="text" class="form-control"
                    name="custom[<?php echo $custom_field->custom_field_column; ?>]"
                    id="<?php echo $custom_field->custom_field_column; ?>"
-                   value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
-                >
+                   value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
             <?php } ?>
-
         </p>
+
+        <div class="form-group">
+            <label class="control-label"><?php echo lang('notes'); ?></label>
+            <textarea name="notes" id="notes" rows="3" class="input-sm form-control"><?php echo $quote->notes; ?></textarea>
+        </div>
 
         <?php if ($quote->quote_status_id != 1) { ?>
             <p class="padded">

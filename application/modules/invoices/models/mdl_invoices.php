@@ -112,6 +112,9 @@ class Mdl_Invoices extends Response_Model
                 'label' => lang('invoice_date'),
                 'rules' => 'required'
             ),
+            'invoice_time_created' => array(
+                'rules' => 'required'
+            ),
             'invoice_group_id' => array(
                 'field' => 'invoice_group_id',
                 'label' => lang('invoice_group'),

@@ -123,6 +123,18 @@
                 <textarea name="email_template_body" id="email_template_body" style="height: 200px;"
                           class="form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body'); ?></textarea>
             </div>
+
+            <script src="<?php echo base_url(); ?>assets/default/js/libs/sceditor.min.js"></script>
+            <script>
+                $(document).ready(function(){
+                    $("#email_template_body").sceditor({
+                        toolbar: "bold,italic,underline|left,center,right|font|size,color,code|image,email,link|source",
+                        fonts: "Sans-serif,Serif",
+                        width: "auto",
+                        emoticonsEnabled: false
+                    });
+                });
+            </script>
         </div>
 
         <div class="row">
