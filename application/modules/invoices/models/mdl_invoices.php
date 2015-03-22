@@ -145,6 +145,9 @@ class Mdl_Invoices extends Response_Model
                 'field' => 'invoice_date_due',
                 'label' => lang('due_date'),
                 'rules' => 'required'
+            ),
+            'invoice_time_created' => array(
+                'rules' => 'required'
             )
         );
     }

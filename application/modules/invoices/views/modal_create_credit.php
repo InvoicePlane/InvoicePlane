@@ -7,6 +7,7 @@
                     client_name: $('#client_name').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
+                    invoice_time_created: '<?php echo date('H:i:s') ?>',
                     user_id: $('#user_id').val()
                 },
                 function (data) {
