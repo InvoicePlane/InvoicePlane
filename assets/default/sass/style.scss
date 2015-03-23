@@ -21,7 +21,7 @@
 @import "fonts/font-awesome/font-awesome";
 
 // Import Noto Font
-//@import "fonts/noto/noto";
+@import "fonts/source-sans-pro";
 
 /*
 |   =========================================================
@@ -332,9 +332,6 @@ table.items td {
 div.table-content {
     height: 100%;
 
-    .alert {
-        margin: 15px;
-    }
     .tab-pane {
         padding-bottom: 50px;
     }
@@ -911,8 +908,8 @@ legend, .install-step h2 {
 |   =========================================================
 */
 
-@import "select2";
-@import "select2-bootstrap";
+@import "select2/select2";
+@import "select2/select2-bootstrap";
 @import "bootstrap-datepicker";
 
 /*
