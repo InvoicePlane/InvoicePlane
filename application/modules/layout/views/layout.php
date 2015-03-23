@@ -141,7 +141,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp;<span class="hidden-sm"><?php echo lang('clients'); ?></span><i class="visible-sm-inline fa fa-users"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('clients'); ?></span><i
+                            class="visible-sm-inline fa fa-users"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', lang('add_client')); ?></li>
@@ -151,7 +153,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp;<span class="hidden-sm"><?php echo lang('quotes'); ?></span><i class="visible-sm-inline fa fa-file"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('quotes'); ?></span><i
+                            class="visible-sm-inline fa fa-file"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-quote"><?php echo lang('create_quote'); ?></a></li>
@@ -161,7 +165,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp;<span class="hidden-sm"><?php echo lang('invoices'); ?></span><i class="visible-sm-inline fa fa-file-text"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('invoices'); ?></span><i
+                            class="visible-sm-inline fa fa-file-text"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-invoice"><?php echo lang('create_invoice'); ?></a></li>
@@ -172,7 +178,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp;<span class="hidden-sm"><?php echo lang('products'); ?></span><i class="visible-sm-inline fa fa-database"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('products'); ?></span><i
+                            class="visible-sm-inline fa fa-database"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('products/form', lang('create_product')); ?></li>
@@ -183,7 +191,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp;<span class="hidden-sm"><?php echo lang('payments'); ?></span><i class="visible-sm-inline fa fa-credit-card"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('payments'); ?></span><i
+                            class="visible-sm-inline fa fa-credit-card"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('payments/form', lang('enter_payment')); ?></li>
@@ -193,7 +203,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp;<span class="hidden-sm"><?php echo lang('reports'); ?></span><i class="visible-sm-inline fa fa-bar-chart"></i>
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('reports'); ?></span><i
+                            class="visible-sm-inline fa fa-bar-chart"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('reports/invoice_aging', lang('invoice_aging')); ?></li>
