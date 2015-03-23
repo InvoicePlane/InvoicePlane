@@ -43,7 +43,7 @@
                     items: JSON.stringify(items),
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom]').serializeArray(),
-                    payment_method: $('#combo_payment_methods').val()
+                    payment_method: $('#payment_method').val()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -119,7 +119,8 @@ if ($this->config->item('disable_read_only') == TRUE) {
                 <li>
                     <a href="#" class="invoice-add-payment"
                        data-invoice-id="<?php echo $invoice_id; ?>"
-                       data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
+                       data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                       data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
                         <i class="fa fa-credit-card fa-margin"></i>
                         <?php echo lang('enter_payment'); ?>
                     </a>
@@ -309,6 +310,21 @@ if ($this->config->item('disable_read_only') == TRUE) {
                                 </select>
                             </div>
                         </div>
+
+                        <div class="invoice-properties">
+                            <label><?php echo lang('payment_method');?></label>
+                            <select name="payment_method" id="payment_method" class="form-control input-sm"
+                                <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                    echo 'disabled="disabled"';
+                                } ?>>
+                                <option value=""><?php echo lang('select_payment_method');?></option>
+                                <?php foreach ($payment_methods as $payment_method) { ?>
+                                    <option <?php if($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?> value="<?php echo $payment_method->payment_method_id; ?>">
+                                        <?php echo $payment_method->payment_method_name; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -333,14 +349,6 @@ if ($this->config->item('disable_read_only') == TRUE) {
                         echo 'disabled="disabled"';
                     } ?>>
             <?php } ?>
-
-            <select name="combo_payment_methods" id="combo_payment_methods" class="form-control" style="width:19%;">
-					<?php foreach ($payment_methods as $payment_method) { ?>
-					<option <?php if($invoice->payment_method==$payment_method->payment_method_name) echo "selected " ?>value="<?php echo $payment_method->payment_method_name; ?>">
-					<?php echo $payment_method->payment_method_name; ?>
-					</option>
-					<?php } ?> 
-			</select>
 
             <p class="padded">
                 <?php if ($invoice->invoice_status_id != 1) { ?>

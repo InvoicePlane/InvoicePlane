@@ -12,8 +12,3 @@ WHERE `setting_value` = "year";
 
 # Solves IP-198
 ALTER TABLE ip_tax_rates CHANGE tax_rate_name tax_rate_name VARCHAR(60) NOT NULL;
-
-#Solves IP-196
-ALTER TABLE `ip_invoices`
-ADD COLUMN `payment_method` VARCHAR(50) NOT NULL DEFAULT ''
-AFTER `invoice_url_key`;

@@ -78,8 +78,15 @@ class Mdl_Invoice_Amounts extends CI_Model
 
         // Set to paid if applicable
         if ($db_array['invoice_balance'] == 0) {
+
+            // Get the payment method id first
+            $this->db->where('invoice_id', $invoice_id);
+            $payment = $this->db->get('invoice_id');
+            $payment_method_id = (isset($payment->payment_method_id) ? $payment->payment_method_id : 0);
+
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_status_id', 4);
+            $this->db->set('payment_method', $payment_method_id);
             $this->db->update('ip_invoices');
         }
         if ($this->config->item('disable_read_only') == FALSE && $db_array['invoice_balance'] == 0 && $db_array['invoice_total'] != 0) {
