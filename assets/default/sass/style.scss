@@ -21,7 +21,7 @@
 @import "fonts/font-awesome/font-awesome";
 
 // Import Noto Font
-@import "fonts/noto/noto";
+//@import "fonts/noto/noto";
 
 /*
 |   =========================================================
@@ -55,8 +55,8 @@ html {
 
 body {
     background-color: #fff;
-    //padding-top: 50px;
-    font-family: 'Noto Sans', Helvetica, Arial, sans-serif;
+    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+    font-size: 15px;
 }
 
 img {
@@ -701,7 +701,8 @@ div.table-content {
 // Invoices and Quotes Status
 .label {
 
-    font-weight: bold;
+    font-weight: normal;
+    padding: .3em .6em;
     color: white !important; // override status text color on labels
     display: block;
     width: 100%;
