@@ -15,19 +15,19 @@
                 <div class="btn-group btn-group-justified no-margin">
                     <a href="<?php echo site_url('clients/form'); ?>" class="btn btn-default">
                         <i class="fa fa-user fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('add_client'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('add_client'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">
                         <i class="fa fa-file fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('create_quote'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('create_quote'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-invoice btn btn-default">
                         <i class="fa fa-file-text fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('create_invoice'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('create_invoice'); ?></span>
                     </a>
                     <a href="<?php echo site_url('payments/form'); ?>" class="btn btn-default">
                         <i class="fa fa-credit-card fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('enter_payment'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('enter_payment'); ?></span>
                     </a>
                 </div>
 
