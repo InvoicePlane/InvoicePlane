@@ -1,8 +1,8 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('dashboard'); ?></h1>
 </div>
 
-<div class="content">
+<div id="content">
 
     <?php if ($overdue_invoices) { ?>
         <div class="panel panel-default">

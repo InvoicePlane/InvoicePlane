@@ -78,7 +78,7 @@
 <?php echo $modal_delete_quote; ?>
 <?php echo $modal_add_quote_tax; ?>
 
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
 
     <div class="pull-right btn-group">
@@ -146,7 +146,7 @@
 
 </div>
 
-<div class="content">
+<div id="content">
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 

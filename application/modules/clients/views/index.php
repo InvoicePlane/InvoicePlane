@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
 
     <h1><?php echo lang('clients'); ?></h1>
 
@@ -32,7 +32,7 @@
 
 </div>
 
-<div class="submenu">
+<div id="submenu">
     <div class="collapse clearfix" id="ip-submenu-collapse">
 
         <div class="submenu-row">
@@ -56,7 +56,7 @@
     </div>
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <?php $this->layout->load_view('layout/alerts'); ?>
 

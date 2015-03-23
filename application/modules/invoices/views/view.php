@@ -92,7 +92,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
 }
 ?>
 
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
     <div
@@ -195,7 +195,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
 </div>
 
-<div class="content">
+<div id="content">
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 

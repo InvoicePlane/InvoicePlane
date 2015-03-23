@@ -22,7 +22,7 @@
 <form method="post" class="form-horizontal"
       action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('email_invoice'); ?></h1>
 
         <div class="pull-right btn-group">
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 

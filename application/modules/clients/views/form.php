@@ -5,14 +5,14 @@
     });
 </script>
 
-<form method="post" class="">
+<form method="post">
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('client_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
