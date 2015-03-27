@@ -25,6 +25,7 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('item_lookups/mdl_item_lookups');
+        $this->load->library('encrypt');
 
         $invoice_id = $this->input->post('invoice_id');
 
@@ -65,6 +66,7 @@ class Ajax extends Admin_Controller
                 'invoice_terms' => $this->input->post('invoice_terms'),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
+                'invoice_password' => $this->encrypt->encode($this->input->post('invoice_password')),
                 'invoice_status_id' => $invoice_status,
                 'payment_method' => $this->input->post('payment_method')
             );

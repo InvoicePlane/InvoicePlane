@@ -185,6 +185,8 @@ $lang = array(
     'invoice_logo' => 'Invoice Logo',
     'invoice_overview' => 'Invoice Overview',
     'invoice_overview_period' => 'Invoice Overview Period',
+    'invoice_password' => 'PDF password (optional)',
+    'invoice_pre_password' => 'Invoice standard PDF password (optional)',
     'invoice_tax' => 'Invoice Tax',
     'invoice_tax_rate' => 'Invoice Tax Rate',
     'invoice_template' => 'Invoice Template',
@@ -314,6 +316,8 @@ $lang = array(
     'quote_group' => 'Quote Group',
     'quote_overview' => 'Quote Overview',
     'quote_overview_period' => 'Quote Overview Period',
+    'quote_password' => 'Quote PDF password (optional)',
+    'quote_pre_password' => 'Quote standard PDF password (optional)',
     'quote_rejected' => 'This quote has been rejected',
     'quote_status_email_body' => 'The client %1$s has %2$s the quote %3$s.
 

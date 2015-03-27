@@ -179,9 +179,7 @@ class MY_Model extends CI_Model
         if (!$db_array) {
             $db_array = $this->db_array();
         }
-
         $datetime = date('Y-m-d H:i:s');
-
         if (!$id) {
             if ($this->date_created_field) {
                 if (is_array($db_array)) {

@@ -120,6 +120,10 @@ class Mdl_Invoices extends Response_Model
                 'label' => lang('invoice_group'),
                 'rules' => 'required'
             ),
+            'invoice_password' => array(
+                'field' => 'invoice_password',
+                'label' => lang('invoice_password')
+            ),
             'user_id' => array(
                 'field' => 'user_id',
                 'label' => lang('user'),
@@ -148,12 +152,17 @@ class Mdl_Invoices extends Response_Model
             ),
             'invoice_time_created' => array(
                 'rules' => 'required'
+            ),
+            'invoice_password' => array(
+                'field' => 'invoice_password',
+                'label' => lang('invoice_password')
             )
         );
     }
 
     public function create($db_array = NULL, $include_invoice_tax_rates = TRUE)
     {
+
         $invoice_id = parent::save(NULL, $db_array);
 
         // Create an invoice amount record

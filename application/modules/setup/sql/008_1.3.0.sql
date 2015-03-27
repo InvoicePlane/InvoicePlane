@@ -5,10 +5,20 @@ ALTER TABLE `ip_quotes` ADD COLUMN `notes` LONGTEXT;
 ALTER TABLE `ip_invoices` 
 ADD COLUMN `invoice_time_created` TIME NOT NULL DEFAULT '00:00:00'
 AFTER `invoice_date_created`,
-ADD COLUMN `invoice_password` VARCHAR(60) NULL
+ADD COLUMN `invoice_password` VARCHAR(90) NULL
 AFTER `is_read_only`;
 
 # Solves IP-196
 ALTER TABLE `ip_invoices`
 ADD COLUMN `payment_method` INT NOT NULL DEFAULT 0
 AFTER `invoice_url_key`;
+
+# Solves IP-213
+INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
+VALUES ('invoice_pre_password', '');
+INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
+VALUES ('quote_pre_password', '');
+ALTER TABLE `ip_quotes`
+ADD COLUMN `quote_password` VARCHAR(90) NULL
+AFTER `quote_url_key`;
+#

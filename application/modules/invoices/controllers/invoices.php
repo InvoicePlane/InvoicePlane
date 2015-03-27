@@ -82,6 +82,7 @@ class Invoices extends Admin_Controller
                 'item_lookups/mdl_item_lookups'
             )
         );
+        $this->load->library('encrypt');
 
         $this->load->module('payments');
 
@@ -100,6 +101,8 @@ class Invoices extends Admin_Controller
         }
 
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+
+        $invoice->invoice_password = $this->encrypt->decode($invoice->invoice_password);
 
         if (!$invoice) {
             show_404();

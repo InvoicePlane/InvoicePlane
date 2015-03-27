@@ -25,6 +25,7 @@ class Ajax extends Admin_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('item_lookups/mdl_item_lookups');
+        $this->load->library('encrypt');
 
         $quote_id = $this->input->post('quote_id');
 
@@ -63,6 +64,7 @@ class Ajax extends Admin_Controller
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
                 'quote_status_id' => $this->input->post('quote_status_id'),
+                'quote_password' => $this->encrypt->encode($this->input->post('quote_password')),
                 'notes' => $this->input->post('notes'),
             );
 
