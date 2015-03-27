@@ -135,6 +135,19 @@ textarea {
     cursor: text !important;
 }
 
+.discount-field {
+    float: right;
+    max-width: 40%;
+    margin-left: 10px;
+    .input-sm {
+        height: auto;
+        padding: 3px 5px;
+    }
+    .input-group-addon {
+        min-width: 20px;
+    }
+}
+
 /*
 |   =========================================================
 |   Tables
@@ -164,23 +177,42 @@ textarea {
         border-bottom-width: 2px;
     }
 
-    .td-text {
-        min-width: 200px;
-    }
-    .td-textarea {
-        min-width: 250px;
-    }
-    .td-amount {
-        text-align: right;
-        .form-control {
+    &.items td {
+        min-width: 150px;
+        max-width: 300px;
+        vertical-align: top !important;
+        &.td-icon {
+            max-width: 30px;
+            min-width: unset;
+        }
+        &.td-amount {
+            max-width: 200px;
             text-align: right;
-            font-size: 13px;
+            .form-control {
+                text-align: right;
+                font-size: 12px;
+            }
+        }
+        &.td-textarea {
+            min-width: 300px;
+            max-width: 400px;
+        }
+        &.td-quantity {
+            max-width: 200px;
+        }
+        &.td-vert-middle {
+            vertical-align: middle !important;
         }
     }
-}
 
-table.items td {
-    vertical-align: top !important;
+    .input-group {
+        width: 100%;
+        height: 100%;
+    }
+    .input-group-addon {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
 }
 
 .table-responsive {

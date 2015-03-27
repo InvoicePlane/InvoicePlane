@@ -17,7 +17,7 @@
         $('#btn_save_quote').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tr.item').each(function () {
+            $('table tbody.item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -37,6 +37,8 @@
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
                     items: JSON.stringify(items),
+                    quote_discount_amount: $('#quote_discount_amount').val(),
+                    quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
                     custom: $('input[name^=custom]').serializeArray()
                 },
@@ -56,6 +58,26 @@
 
         $('#btn_generate_pdf').click(function () {
             window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
+        });
+
+        $(document).ready(function() {
+            if ($('#quote_discount_percent').val().length > 0) {
+                toggleDisabled($('#quote_discount_amount'));
+            }
+        });
+        $('#quote_discount_amount').keyup(function () {
+            if (this.value.length > 0) {
+                $('#quote_discount_percent').prop('disabled', true);
+            } else {
+                $('#quote_discount_percent').prop('disabled', false);
+            }
+        });
+        $('#quote_discount_percent').keyup(function () {
+            if (this.value.length > 0) {
+                $('#quote_discount_amount').prop('disabled', true);
+            } else {
+                $('#quote_discount_amount').prop('disabled', false);
+            }
         });
 
         var fixHelper = function (e, tr) {
@@ -260,7 +282,8 @@
 
         <div class="form-group">
             <label class="control-label"><?php echo lang('notes'); ?></label>
-            <textarea name="notes" id="notes" rows="3" class="input-sm form-control"><?php echo $quote->notes; ?></textarea>
+            <textarea name="notes" id="notes" rows="3"
+                      class="input-sm form-control"><?php echo $quote->notes; ?></textarea>
         </div>
 
         <?php if ($quote->quote_status_id != 1) { ?>
@@ -269,8 +292,4 @@
                 : <?php echo auto_link(site_url('guest/view/quote/' . $quote->quote_url_key)); ?>
             </p>
         <?php } ?>
-</div>
-
-</form>
-
 </div>

@@ -16,6 +16,9 @@ $(document).ready(function () {
         $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
     });
 
+    // Tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+
     // Handle click event for Email Template Tags insertion
     // Example Usage
     // <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>

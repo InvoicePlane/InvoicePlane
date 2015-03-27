@@ -37,6 +37,7 @@ class Ajax extends Admin_Controller
                 if ($item->item_name) {
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price = standardize_amount($item->item_price);
+                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
 
                     $item_id = ($item->item_id) ?: NULL;
 
@@ -58,15 +59,22 @@ class Ajax extends Admin_Controller
                 }
             }
 
+            // @TODO Add checks / formatting for discounts!
             $db_array = array(
                 'quote_number' => $this->input->post('quote_number'),
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
                 'quote_status_id' => $this->input->post('quote_status_id'),
                 'notes' => $this->input->post('notes'),
+                'quote_discount_amount' => $this->input->post('quote_discount_amount'),
+                'quote_discount_percent' => $this->input->post('quote_discount_percent'),
             );
 
             $this->mdl_quotes->save($quote_id, $db_array);
+
+            // Recalculate for discounts
+            $this->load->model('quotes/mdl_quote_amounts');
+            $this->mdl_quote_amounts->calculate($quote_id);
 
             $response = array(
                 'success' => 1

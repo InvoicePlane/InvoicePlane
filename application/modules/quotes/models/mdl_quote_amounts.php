@@ -39,19 +39,25 @@ class Mdl_Quote_Amounts extends CI_Model
     public function calculate($quote_id)
     {
         // Get the basic totals
-        $query = $this->db->query("SELECT SUM(item_subtotal) AS quote_item_subtotal,	
-		SUM(item_tax_total) AS quote_item_tax_total,
-		SUM(item_subtotal) + SUM(item_tax_total) AS quote_total
-		FROM ip_quote_item_amounts WHERE item_id IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")");
+        $query = $this->db->query("
+            SELECT SUM(item_subtotal) AS quote_item_subtotal,
+		        SUM(item_tax_total) AS quote_item_tax_total,
+		        SUM(item_subtotal) + SUM(item_tax_total) AS quote_total
+		    FROM ip_quote_item_amounts
+		    WHERE item_id
+		        IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")
+            ");
 
         $quote_amounts = $query->row();
+
+        $quote_total = $this->calculate_discount($quote_id, $quote_amounts->quote_total);
 
         // Create the database array and insert or update
         $db_array = array(
             'quote_id' => $quote_id,
             'quote_item_subtotal' => $quote_amounts->quote_item_subtotal,
             'quote_item_tax_total' => $quote_amounts->quote_item_tax_total,
-            'quote_total' => $quote_amounts->quote_total
+            'quote_total' => $quote_total,
         );
 
         $this->db->where('quote_id', $quote_id);
@@ -106,6 +112,8 @@ class Mdl_Quote_Amounts extends CI_Model
             // Recalculate the quote total
             $quote_total = $quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total + $quote_amount->quote_tax_total;
 
+            $quote_total = $this->calculate_discount($quote_id, $quote_total);
+
             // Update the quote amount record
             $db_array = array(
                 'quote_total' => $quote_total
@@ -123,6 +131,20 @@ class Mdl_Quote_Amounts extends CI_Model
             $this->db->where('quote_id', $quote_id);
             $this->db->update('ip_quote_amounts', $db_array);
         }
+    }
+
+    public function calculate_discount($quote_id, $quote_total) {
+        $this->db->where('quote_id', $quote_id);
+        $quote_data = $this->db->get('ip_quotes')->row();
+
+        $total              = (float) number_format($quote_total,2,'.','');
+        $discount_amount    = (float) number_format($quote_data->quote_discount_amount,2,'.','');
+        $discount_percent   = (float) number_format($quote_data->quote_discount_percent,2,'.','');
+
+        $total = $total - $discount_amount;
+        $total = $total - round(($total / 100 * $discount_percent), 2);
+
+        return $total;
     }
 
     public function get_total_quoted($period = NULL)
