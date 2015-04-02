@@ -7,7 +7,4 @@
 
 .idea
 .sass-cache
-
-.htaccess
 adminer.php
-application/config/database.php
