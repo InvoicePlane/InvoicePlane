@@ -313,7 +313,7 @@
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
 <?php if (lang('cldr') != 'en') { ?>
     <script
-        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo lang('cldr'); ?>.js"></script>
+        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo lang('cldr'); ?>.js"></script>
 <?php } ?>
 
 <!--[if lt IE 7 ]>
