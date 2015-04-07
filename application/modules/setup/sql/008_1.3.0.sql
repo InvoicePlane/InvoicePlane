@@ -1,4 +1,4 @@
-# IP-195
+# Solves IP-195
 ALTER TABLE `ip_quotes` ADD COLUMN `notes` LONGTEXT;
 
 # Solves IP-216
@@ -21,4 +21,7 @@ VALUES ('quote_pre_password', '');
 ALTER TABLE `ip_quotes`
 ADD COLUMN `quote_password` VARCHAR(90) NULL
 AFTER `quote_url_key`;
-#
+
+# Solves IP-227
+ALTER TABLE `ip_invoices` CHANGE `invoice_number` `invoice_number` VARCHAR(100) NOT NULL;
+ALTER TABLE `ip_quotes` CHANGE `quote_number` `quote_number` VARCHAR(100) NOT NULL;
