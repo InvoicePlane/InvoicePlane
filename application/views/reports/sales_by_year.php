@@ -69,12 +69,12 @@
 			 	 <tr>
 				 	<td style="border-bottom: none;">&nbsp;</td>
 			 		<td style="border-bottom: none;text-align:center;"><?php 
-			 		 if($quarter=="t1") echo lang('Q1')."-".$year;
-			 		 else if($quarter=="t2") echo lang('Q2')."-".$year;
-			 		 else if($quarter=="t3") echo lang('Q3')."-".$year;
-			 		 else if($quarter=="t4") echo lang('Q4')."-".$year;
+			 		 if($quarter=="t1") echo lang('Q1')."/".$year;
+			 		 else if($quarter=="t2") echo lang('Q2')."/".$year;
+			 		 else if($quarter=="t3") echo lang('Q3')."/".$year;
+			 		 else if($quarter=="t4") echo lang('Q4')."/".$year;
 			 		?></td>
-			 		<td style="border-bottom: none;text-align:center;"><?php if($value>0){echo format_currency($value); echo " €";} ?>></td>
+			 		<td style="border-bottom: none;text-align:center;"><?php if($value>0){echo format_currency($value);} ?></td>
 			 	</tr>
 			 	
 			 <?php 
