@@ -198,6 +198,17 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('tasks'); ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('tasks/form', lang('create_task')); ?></li>
+                        <li><?php echo anchor('tasks/index', lang('show_tasks')); ?></li>
+                        <li><?php echo anchor('projects/index', lang('projects')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
                             class="hidden-sm"><?php echo lang('reports'); ?></span><i
                             class="visible-sm-inline fa fa-bar-chart"></i>
