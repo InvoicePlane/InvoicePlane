@@ -17,10 +17,9 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 
 If you need support or want to help developing please visit the [official wiki](https://wiki.invoiceplane.com) or join the community:
 
-[![Community Forums](https://invoiceplane.com/content/badges/badge_forums.png)](https://forums.invoiceplane.com/)
-[![Gitter chat](https://badges.gitter.im/InvoicePlane/InvoicePlane.png)](https://gitter.im/InvoicePlane/InvoicePlane)  
-[![Freenode](https://invoiceplane.com/content/badges/badge_freenode.png)](irc://irc.freenode.net/InvoicePlane)  
-
+[![Community Forums](https://invoiceplane.com/content/badges/badge_community.png)](https://community.invoiceplane.com/)   
+[![Gitter chat](https://badges.gitter.im/InvoicePlane/InvoicePlane.png)](https://gitter.im/InvoicePlane/InvoicePlane)   
+[![Freenode](https://invoiceplane.com/content/badges/badge_freenode.png)](irc://irc.freenode.net/InvoicePlane)
 
 ---
   
