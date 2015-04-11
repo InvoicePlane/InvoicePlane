@@ -1,4 +1,25 @@
 ================================================================================
+Copyright Notice for InvoicePlane
+================================================================================
+The name 'InvoicePlane' and the InvoicePlane logo are original copyright
+of InvoicePlane.com / Kovah.de and the following restrictions apply to
+both of them:
+
+You are allowed to:
+- use the name 'InvoicePlane' or the InvoicePlane logo in any context directly
+    related to the application or the project. This includes the application
+    itself, local communities and news or blog posts about InvoicePlane or
+- use the name 'InvoicePlane' or the InvoicePlane logo to provide professional
+    support or hosting for the InvoicePlane application.
+
+You are NOT allowed to:
+- use the name 'InvoicePlane' or the InvoicePlane logo in any context that is
+    NOT related to the project,
+- alter the name 'InvoicePlane' or the InvoicePlane logo in any way or
+- sell or redistribute the application under the name 'InvoicePlane' and the
+    InvoicePlane logo.
+
+================================================================================
 License for InvoicePlane
 ================================================================================
 Copyright (c) 2012-2014 InvoicePlane.com
@@ -12,11 +33,6 @@ so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all 
 copies or substantial portions of the Software.
-
-The name (InvoicePlane) and the logo can be used in any context related to
-InvoicePlane as application or project but may not be changed / altered in
-any way. The name and the logo are both original copyright by InvoicePlane.com
-and Kovah.de
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
