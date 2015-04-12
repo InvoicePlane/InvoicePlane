@@ -1,8 +1,8 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('invoice_aging'); ?></h1>
 </div>
 
-<div class="content">
+<div id="content">
 
     <?php $this->layout->load_view('layout/alerts'); ?>
 

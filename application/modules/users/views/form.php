@@ -30,12 +30,12 @@
 
 <form method="post" class="form-horizontal">
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('user_form'); ?></h1>
         <?php echo $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php echo $this->layout->load_view('layout/alerts'); ?>
 

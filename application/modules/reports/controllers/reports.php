@@ -18,6 +18,7 @@ if (!defined('BASEPATH'))
 
 class Reports extends Admin_Controller
 {
+
     public function __construct()
     {
         parent::__construct();
@@ -74,6 +75,24 @@ class Reports extends Admin_Controller
         }
 
         $this->layout->buffer('content', 'reports/invoice_aging_index')->render();
+    }
+
+    public function sales_by_year()
+    {
+
+        if ($this->input->post('btn_submit')) {
+            $data = array(
+                'results' => $this->mdl_reports->sales_by_year($this->input->post('from_date'), $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax'))
+            );
+
+            $html = $this->load->view('reports/sales_by_year', $data, TRUE);
+
+            $this->load->helper('mpdf');
+
+            pdf_create($html, lang('sales_by_date'), TRUE);
+        }
+
+        $this->layout->buffer('content', 'reports/sales_by_year_index')->render();
     }
 
 }

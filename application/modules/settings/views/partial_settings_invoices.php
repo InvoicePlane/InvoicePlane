@@ -181,6 +181,14 @@
     </div>
 
     <div class="form-group">
+        <label for="settings[invoice_pre_password]" class="control-label">
+            <?php echo lang('invoice_pre_password'); ?>
+        </label>
+        <input type="text" name="settings[invoice_pre_password]" class="input-sm form-control"
+               value="<?php echo $this->mdl_settings->setting('invoice_pre_password'); ?>">
+    </div>
+
+    <div class="form-group">
         <label for="settings[public_invoice_template]" class="control-label">
             <?php echo lang('pdf_invoice_footer'); ?>
         </label>

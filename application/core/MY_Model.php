@@ -136,7 +136,8 @@ class MY_Model extends CI_Model
         $this->load->library('pagination');
 
         $this->offset = $offset;
-        $per_page = $this->default_limit;
+        $default_list_limit = $this->mdl_settings->setting('default_list_limit');
+        $per_page = (empty($default_list_limit) ? $this->default_limit : $default_list_limit);
 
         $this->set_defaults();
         $this->run_filters();
@@ -179,9 +180,7 @@ class MY_Model extends CI_Model
         if (!$db_array) {
             $db_array = $this->db_array();
         }
-
         $datetime = date('Y-m-d H:i:s');
-
         if (!$id) {
             if ($this->date_created_field) {
                 if (is_array($db_array)) {

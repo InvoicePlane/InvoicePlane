@@ -1,11 +1,11 @@
 <form method="post" class="form-horizontal">
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('email_template_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -123,9 +123,21 @@
                 <textarea name="email_template_body" id="email_template_body" style="height: 200px;"
                           class="form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body'); ?></textarea>
             </div>
+
+            <script src="<?php echo base_url(); ?>assets/default/js/libs/sceditor.min.js"></script>
+            <script>
+                $(document).ready(function(){
+                    $("#email_template_body").sceditor({
+                        toolbar: "bold,italic,underline|left,center,right|font|size,color,code|image,email,link|source",
+                        fonts: "Sans-serif,Serif",
+                        width: "auto",
+                        emoticonsEnabled: false
+                    });
+                });
+            </script>
         </div>
 
-        <div class="row">
+        <div class="row form-group">
             <div class="col-xs-12">
                 <h4><?php echo lang('email_template_tags'); ?></h4>
 

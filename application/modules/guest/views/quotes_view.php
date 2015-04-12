@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
 
     <div class="pull-right btn-group">
@@ -35,7 +35,7 @@
 
 <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-<div class="content">
+<div id="content" class="table-content">
 
     <div class="quote">
 

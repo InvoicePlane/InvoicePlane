@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
 
     <h1><?php echo lang('invoices'); ?></h1>
 
@@ -28,4 +28,8 @@
 
 </div>
 
-<?php $this->layout->load_view('invoices/partial_invoice_table', array('invoices' => $invoices)); ?>
+<div id="content" class="table-content">
+
+    <?php $this->layout->load_view('invoices/partial_invoice_table', array('invoices' => $invoices)); ?>
+
+</div>

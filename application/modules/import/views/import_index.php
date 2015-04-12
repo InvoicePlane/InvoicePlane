@@ -1,8 +1,8 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('import_data'); ?></h1>
 </div>
 
-<div class="content">
+<div id="content">
 
     <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -15,21 +15,14 @@
         <div class="panel-body">
             <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
                 <?php foreach ($files as $file) { ?>
-                    <div class="form-group">
-                        <div class="controls">
-                            <label class="checkbox">
-                                <input type="checkbox" name="files[]" class="form-control"
-                                       value="<?php echo $file; ?>"> <?php echo $file; ?>
-                            </label>
-                        </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="files[]" value="<?php echo $file; ?>"> <?php echo $file; ?>
+                        </label>
                     </div>
                 <?php } ?>
-                <div class="form-group">
-                    <div class="controls">
-                        <input type="submit" class="btn btn-default" name="btn_submit"
-                               value="<?php echo lang('import'); ?>">
-                    </div>
-                </div>
+                <input type="submit" class="btn btn-default" name="btn_submit"
+                       value="<?php echo lang('import'); ?>">
             </form>
         </div>
     </div>

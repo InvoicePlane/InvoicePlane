@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
 
     <h1><?php echo lang('invoices'); ?></h1>
 
@@ -23,7 +23,7 @@
 
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <div id="filter_results">
         <div class="table-responsive">

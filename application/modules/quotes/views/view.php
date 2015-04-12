@@ -36,7 +36,9 @@
                     quote_date_created: $('#quote_date_created').val(),
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
+                    quote_password: $('#quote_password').val(),
                     items: JSON.stringify(items),
+                    notes: $('#notes').val(),
                     custom: $('input[name^=custom]').serializeArray()
                 },
                 function (data) {
@@ -77,7 +79,7 @@
 <?php echo $modal_delete_quote; ?>
 <?php echo $modal_add_quote_tax; ?>
 
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
 
     <div class="pull-right btn-group">
@@ -145,7 +147,7 @@
 
 </div>
 
-<div class="content">
+<div id="content">
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
@@ -224,6 +226,16 @@
                             </div>
                         </div>
                         <div class="quote-properties">
+                            <label for="quote_password">
+                                <?php echo lang('quote_password'); ?>
+                            </label>
+
+                            <div class="controls">
+                                <input type="text" id="quote_password" class="form-control input-sm"
+                                       value="<?php echo $quote->quote_password; ?>">
+                            </div>
+                        </div>
+                        <div class="quote-properties">
                             <label for="quote_status_id">
                                 <?php echo lang('status'); ?>
                             </label>
@@ -253,11 +265,14 @@
             <input type="text" class="form-control"
                    name="custom[<?php echo $custom_field->custom_field_column; ?>]"
                    id="<?php echo $custom_field->custom_field_column; ?>"
-                   value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
-                >
+                   value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
             <?php } ?>
-
         </p>
+
+        <div class="form-group">
+            <label class="control-label"><?php echo lang('notes'); ?></label>
+            <textarea name="notes" id="notes" rows="3" class="input-sm form-control"><?php echo $quote->notes; ?></textarea>
+        </div>
 
         <?php if ($quote->quote_status_id != 1) { ?>
             <p class="padded">
