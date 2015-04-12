@@ -8,7 +8,7 @@
 
 </script>
 
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
     <div class="pull-right">
@@ -24,7 +24,7 @@
 
 <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-<div class="content">
+<div id="content" class="table-content">
 
     <form id="invoice_form" class="form-horizontal">
 

@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('payments'); ?></h1>
 
     <div class="pull-right">
@@ -7,7 +7,7 @@
 
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <?php $this->layout->load_view('layout/alerts'); ?>
 

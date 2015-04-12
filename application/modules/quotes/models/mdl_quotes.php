@@ -123,6 +123,10 @@ class Mdl_Quotes extends Response_Model
                 'label' => lang('quote_group'),
                 'rules' => 'required'
             ),
+            'quote_password' => array(
+                'field' => 'quote_password',
+                'label' => lang('quote_password')
+            ),
             'user_id' => array(
                 'field' => 'user_id',
                 'label' => lang('user'),
@@ -148,6 +152,10 @@ class Mdl_Quotes extends Response_Model
                 'field' => 'quote_date_expires',
                 'label' => lang('due_date'),
                 'rules' => 'required'
+            ),
+            'quote_password' => array(
+                'field' => 'quote_password',
+                'label' => lang('quote_password')
             )
         );
     }

@@ -3,9 +3,13 @@
         $('#invoice_id').focus();
 
         amounts = JSON.parse('<?php echo $amounts; ?>');
+        invoice_payment_methods = JSON.parse('<?php echo $invoice_payment_methods; ?>');
 
         $('#invoice_id').change(function () {
-            $('#payment_amount').val(amounts["invoice" + $('#invoice_id').val()]);
+            var invoice_identifier = "invoice"+$('#invoice_id').val();
+            $('#payment_amount').val(amounts[invoice_identifier]);
+            $('#payment_method_id option[value="'+invoice_payment_methods[invoice_identifier]+'"]').attr('selected', 'selected');
+            $('#payment_method_id').attr('disabled', 'disabled');
         });
 
     });
@@ -17,12 +21,12 @@
         <input type="hidden" name="payment_id" value="<?php echo $payment_id; ?>">
     <?php } ?>
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('payment_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -79,7 +83,8 @@
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="payment_method_id" class="form-control">
+                <select id="payment_method_id" name="payment_method_id" class="form-control"
+                    <?php echo ($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
                     <option value="0"></option>
                     <?php foreach ($payment_methods as $payment_method) { ?>
                         <option value="<?php echo $payment_method->payment_method_id; ?>"

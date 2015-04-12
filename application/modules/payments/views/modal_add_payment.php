@@ -75,10 +75,12 @@
                     <label for="payment_method_id"><?php echo lang('payment_method'); ?></label>
 
                     <div class="controls">
-                        <select name="payment_method_id" id="payment_method_id" class="form-control">
+                        <select name="payment_method_id" id="payment_method_id" class="form-control"
+                            <?php echo(!empty($invoice_payment_method) ? 'disabled="disabled"' : ''); ?>>
                             <option value=""></option>
                             <?php foreach ($payment_methods as $payment_method) { ?>
-                                <option value="<?php echo $payment_method->payment_method_id; ?>">
+                                <option value="<?php echo $payment_method->payment_method_id; ?>"
+                                    <?php echo($invoice_payment_method == $payment_method->payment_method_id ? 'selected' : ''); ?>>
                                     <?php echo $payment_method->payment_method_name; ?>
                                 </option>
                             <?php } ?>

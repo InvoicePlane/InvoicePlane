@@ -23,6 +23,7 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     $CI->load->model('invoices/mdl_invoices');
     $CI->load->model('invoices/mdl_items');
     $CI->load->model('invoices/mdl_invoice_tax_rates');
+    $CI->load->library('encrypt');
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
@@ -42,7 +43,7 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
 
     $CI->load->helper('mpdf');
 
-    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream);
+    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream,$CI->encrypt->decode($invoice->invoice_password));
 }
 
 function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
@@ -52,6 +53,7 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
     $CI->load->model('quotes/mdl_quotes');
     $CI->load->model('quotes/mdl_quote_items');
     $CI->load->model('quotes/mdl_quote_tax_rates');
+    $CI->load->library('encrypt');
 
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
 
@@ -70,5 +72,5 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
 
     $CI->load->helper('mpdf');
 
-    return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream);
+    return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream,$CI->encrypt->decode($quote->quote_password));
 }

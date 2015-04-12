@@ -14,11 +14,14 @@
 // Bootstrap
 @import "bootstrap/bootstrap";
 
+// SCEditor
+@import "sceditor/square";
+
 // Font: Font-Awesome
 @import "fonts/font-awesome/font-awesome";
 
 // Import Noto Font
-@import "fonts/noto/noto";
+@import "fonts/source-sans-pro";
 
 /*
 |   =========================================================
@@ -52,8 +55,8 @@ html {
 
 body {
     background-color: #fff;
-    //padding-top: 50px;
-    font-family: 'Noto Sans', Helvetica, Arial, sans-serif;
+    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+    font-size: 15px;
 }
 
 img {
@@ -182,6 +185,7 @@ table.items td {
 
 .table-responsive {
     height: 100%;
+    margin-bottom: 0;
 }
 
 /*
@@ -239,13 +243,12 @@ table.items td {
     }
 }
 
-.submenu {
-    padding: 5px;
+#submenu {
     font-size: 85%;
     max-width: 100% !important;
 
     .submenu-row {
-        margin-bottom: 5px;
+        padding: 5px;
     }
 
     .nav-pills {
@@ -329,9 +332,6 @@ table.items td {
 div.table-content {
     height: 100%;
 
-    .alert {
-        margin: 15px;
-    }
     .tab-pane {
         padding-bottom: 50px;
     }
@@ -360,13 +360,8 @@ div.table-content {
 }
 
 .quick-actions .btn {
-    padding: 5px;
     border: none;
     border-right: 1px solid #ddd;
-    font-size: 90%;
-    .fa {
-        margin-right: 5px;
-    }
     &:last-child {
         border-right: none;
     }
@@ -403,28 +398,32 @@ div.table-content {
     cursor: move;
 }
 
-.main-area {
+#main-area {
     display: table-cell;
     width: 100%;
     padding: 0;
     border-left: 1px solid #ddd;
+}
 
-    .content,
-    .tab-info {
-        padding: 20px;
+#content {
+    padding: 20px;
+
+    &.table-content {
+        padding: 0;
     }
-
-    .content .alert {
+    .alert {
         margin-right: 0;
         margin-left: 0;
     }
-
-    .content-padding {
-        padding: 20px 20px 94px;
-    }
+}
+.tab-content {
+    @extend #content;
+}
+.modal-open {
+    padding-right: 0 !important;
 }
 
-.main-area .headerbar {
+#headerbar {
     height: 46px;
     padding: 8px;
     border-bottom: 1px solid #ddd;
@@ -449,14 +448,7 @@ div.table-content {
     }
 }
 
-.hidden-sidebar .main-area {
-    display: block !important;
-    .headerbar {
-        padding: 8px 15px;
-    }
-}
-
-.hidden-sidebar .main-area {
+.hidden-sidebar #main-area {
     display: block !important;
     .headerbar {
         padding: 8px 15px;
@@ -703,7 +695,8 @@ div.table-content {
 // Invoices and Quotes Status
 .label {
 
-    font-weight: bold;
+    font-weight: normal;
+    padding: .3em .6em;
     color: white !important; // override status text color on labels
     display: block;
     width: 100%;
@@ -750,6 +743,12 @@ div.table-content {
             box-shadow: none;
         }
     }
+}
+
+.sceditor-container iframe,
+.sceditor-container textarea {
+    width: 100%;
+    margin: 0;
 }
 
 /*
@@ -909,8 +908,8 @@ legend, .install-step h2 {
 |   =========================================================
 */
 
-@import "select2";
-@import "select2-bootstrap";
+@import "select2/select2";
+@import "select2/select2-bootstrap";
 @import "bootstrap-datepicker";
 
 /*
@@ -926,7 +925,7 @@ legend, .install-step h2 {
         display: inline-block !important;
     }
 
-    .submenu {
+    #submenu {
         .submenu-row {
             float: left;
             margin-right: 10px;
@@ -938,7 +937,7 @@ legend, .install-step h2 {
 // Styles for medium devices (sm > md)
 @media (max-width: 992px) {
 
-    .submenu {
+    #submenu {
         .submenu-row {
             float: left;
             margin-right: 10px;
@@ -952,56 +951,39 @@ legend, .install-step h2 {
 
     .sidebar li a { padding: 7px; }
 
-    .main-area { margin-left: 0; float: left; }
-
-    .main-area .content, .main-area .tab-info {
-        padding: 10px;
-    }
+    #content { padding: 15px; }
 
     .navbar-nav { margin: 7px 0; }
 
-    .container-fluid { padding: 0 20px; }
+    .text-left-xs { text-align: left; }
 
-    .text-left-xs {
-        text-align: left;
-    }
-
-    .submenu .navbar-collapse {
-        margin-top: 7px;
-    }
-
+    #submenu .navbar-collapse { margin-top: 7px; }
 
 }
 
 // Styles for very small devices (< xs)
 @media (max-width: 480px) {
 
-    .navbar.navbar-inverse {
-        -webkit-box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.3);
-        -moz-box-shadow:    0 3px 5px 0 rgba(0, 0, 0, 0.3);
-        box-shadow:         0 3px 5px 0 rgba(0, 0, 0, 0.3);
-        .navbar-nav {
-            margin: 7px 0;
-            .dropdown .dropdown-menu {
-                background: #555;
-            }
-            .visible-xs {
-                display: inline-block !important;
-            }
+    .navbar-nav {
+        margin: 7px 0;
+        .dropdown .dropdown-menu {
+            background: #555;
+        }
+        .visible-xs {
+            display: inline-block !important;
+        }
+    }
+
+    #content {
+        padding: 10px;
+        .row {
+            margin-left: -10px;
+            margin-right: -10px;
         }
     }
 
     .headerbar { padding: 8px !important; }
+
     .pull-right { margin-left: 5px !important; }
 
 }
-
-
-/* ==|== non-semantic helper classes ========================================
-Please define your styles before this section.
-========================================================================== */
-
-/* Contain floats: h5bp.com/q */
-.cf:before, .cf:after { content: ""; display: table; }
-.cf:after { clear: both; }
-.cf { zoom: 1; }

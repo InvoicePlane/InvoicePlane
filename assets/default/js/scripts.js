@@ -2,32 +2,14 @@
 
 $(document).ready(function () {
 
-    // Set the height for calculations
-    // On mobile devices we'll take the window height to show a scrollbar at the bottom of the window
-    var documentHeight = $(document).height();
-    var windowHeight = $(window).height();
-
-    if ($(document).width() <= 768) {
-        var relativeHeight = windowHeight;
-    } else {
-        var relativeHeight = documentHeight;
+    // Correct the height of the content area
+    var documentHeight = $('html').outerHeight(),
+        navbarHeight = $('.navbar').outerHeight(),
+        headerbarHeight = $('#headerbar').outerHeight(),
+        contentHeight = documentHeight - navbarHeight - headerbarHeight;
+    if ($('#content').outerHeight() < contentHeight) {
+        $('#content').outerHeight(contentHeight);
     }
-
-    $('.main-area').height(relativeHeight - 50);
-
-    // Increase height for main-area and sidebar if you need to scroll
-    if (documentHeight > windowHeight) {
-        $('.main-area').height(relativeHeight - 50);
-        $('.sidebar').height(relativeHeight - 50);
-    }
-
-    // Calculate the height for responsive tables
-    // window height - navbar - headerbar - submenu and borders
-    var tableHeight = relativeHeight - 50 - ($('.headerbar').outerHeight() - 1) - $('.submenu').outerHeight();
-
-    $('.table-content .table-responsive').height(tableHeight - 1);
-    $('.table-content').height(tableHeight);
-    $('#filter_results').height(tableHeight);
 
     // Dropdown Datepicker fix
     $('html').click(function () {

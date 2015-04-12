@@ -40,9 +40,11 @@
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_date_due: $('#invoice_date_due').val(),
                     invoice_status_id: $('#invoice_status_id').val(),
+                    invoice_password: $('#invoice_password').val(),
                     items: JSON.stringify(items),
                     invoice_terms: $('#invoice_terms').val(),
-                    custom: $('input[name^=custom]').serializeArray()
+                    custom: $('input[name^=custom]').serializeArray(),
+                    payment_method: $('#payment_method').val()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -91,7 +93,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
 }
 ?>
 
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
     <div
@@ -118,7 +120,8 @@ if ($this->config->item('disable_read_only') == TRUE) {
                 <li>
                     <a href="#" class="invoice-add-payment"
                        data-invoice-id="<?php echo $invoice_id; ?>"
-                       data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
+                       data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                       data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
                         <i class="fa fa-credit-card fa-margin"></i>
                         <?php echo lang('enter_payment'); ?>
                     </a>
@@ -137,15 +140,13 @@ if ($this->config->item('disable_read_only') == TRUE) {
                     </a>
                 </li>
                 <li class="divider"></li>
-                <?php if ($invoice->is_read_only != 1) { ?>
-                    <li>
-                        <a href="#" id="btn_create_recurring"
-                           data-invoice-id="<?php echo $invoice_id; ?>">
-                            <i class="fa fa-repeat fa-margin"></i>
-                            <?php echo lang('create_recurring'); ?>
-                        </a>
-                    </li>
-                <?php } ?>
+                <li>
+                    <a href="#" id="btn_create_recurring"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-repeat fa-margin"></i>
+                        <?php echo lang('create_recurring'); ?>
+                    </a>
+                </li>
                 <li>
                     <a href="#" id="btn_copy_invoice"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -193,7 +194,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
 </div>
 
-<div class="content">
+<div id="content">
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
@@ -307,6 +308,33 @@ if ($this->config->item('disable_read_only') == TRUE) {
                                     <?php } ?>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="invoice-properties">
+                            <label><?php echo lang('invoice_password'); ?></label>
+                            <div>
+                                <input type="text" id="invoice_password"
+                                       class="input-sm form-control"
+                                       value="<?php echo $invoice->invoice_password; ?>"
+                                    <?php if ($invoice->is_read_only == 1) {
+                                        echo 'disabled="disabled"';
+                                    } ?>>
+                            </div>
+                        </div>
+
+                        <div class="invoice-properties">
+                            <label><?php echo lang('payment_method');?></label>
+                            <select name="payment_method" id="payment_method" class="form-control input-sm"
+                                <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                    echo 'disabled="disabled"';
+                                } ?>>
+                                <option value=""><?php echo lang('select_payment_method');?></option>
+                                <?php foreach ($payment_methods as $payment_method) { ?>
+                                    <option <?php if($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?> value="<?php echo $payment_method->payment_method_id; ?>">
+                                        <?php echo $payment_method->payment_method_name; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
                 </div>
