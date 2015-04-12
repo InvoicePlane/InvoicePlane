@@ -74,6 +74,14 @@
     </div>
 
     <div class="form-group">
+        <label for="settings[invoice_pre_password]" class="control-label">
+            <?php echo lang('invoice_pre_password'); ?>
+        </label>
+        <input type="text" name="settings[invoice_pre_password]" class="input-sm form-control"
+               value="<?php echo $this->mdl_settings->setting('invoice_pre_password'); ?>">
+    </div>
+
+    <div class="form-group">
         <label class="control-label">
             <?php echo lang('invoice_logo'); ?>
         </label>
@@ -178,14 +186,6 @@
                         <?php if ($this->mdl_settings->setting('email_invoice_template_overdue') == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
             <?php } ?>
         </select>
-    </div>
-
-    <div class="form-group">
-        <label for="settings[invoice_pre_password]" class="control-label">
-            <?php echo lang('invoice_pre_password'); ?>
-        </label>
-        <input type="text" name="settings[invoice_pre_password]" class="input-sm form-control"
-               value="<?php echo $this->mdl_settings->setting('invoice_pre_password'); ?>">
     </div>
 
     <div class="form-group">
