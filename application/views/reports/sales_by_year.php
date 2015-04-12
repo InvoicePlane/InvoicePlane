@@ -53,7 +53,7 @@
 				<td style="border-bottom: none;text-align:center;"> <?php echo $result->VAT_ID; ?> </td>
 				<td style="border-bottom: none;text-align:center;" rowspan="<?php echo $numRows; ?>" valign="top"> <?php echo $result->Name; ?> </td>
 				<td style="border-bottom: none;text-align:center;"> <?php echo lang('annual'); ?> </td>
-				<td style="border-bottom: none;text-align:center;"> <?php echo format_currency($result->total_payment); echo" €"?> </td>
+				<td style="border-bottom: none;text-align:center;"> <?php echo format_currency($result->total_payment); ?> </td>
 			</tr>
 			
 			<?php
