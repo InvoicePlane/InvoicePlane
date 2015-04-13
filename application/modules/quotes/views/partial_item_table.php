@@ -66,7 +66,7 @@
                     <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">
                     <input type="text" name="item_name" class="input-sm form-control"
-                           value="<?php echo $item->item_name; ?>">
+                           value="<?php echo html_escape($item->item_name); ?>">
                 </td>
                 <td class="td-textarea">
                     <textarea name="item_description"
