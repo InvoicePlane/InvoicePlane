@@ -96,7 +96,6 @@ class Quotes extends Admin_Controller
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-        $quote->quote_password = $this->encrypt->decode($quote->quote_password);
 
         if (!$quote) {
             show_404();

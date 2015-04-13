@@ -21,14 +21,6 @@ class Response_Model extends Form_Validation_Model
 
     public function save($id = NULL, $db_array = NULL)
     {
-        // Encode the password if it's available and not empty
-        $this->load->library('encrypt');
-        if (isset($_POST['quote_password']) && !empty($_POST['quote_password'])) {
-            $_POST['quote_password'] = $this->encrypt->encode($_POST['quote_password']);
-        }
-        if (isset($_POST['invoice_password']) && !empty($_POST['invoice_password'])) {
-            $_POST['invoice_password'] = $this->encrypt->encode($_POST['invoice_password']);
-        }
 
         if ($id) {
             $this->session->set_flashdata('alert_success', lang('record_successfully_updated'));

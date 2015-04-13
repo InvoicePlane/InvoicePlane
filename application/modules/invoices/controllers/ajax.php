@@ -25,7 +25,6 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('item_lookups/mdl_item_lookups');
-        $this->load->library('encrypt');
 
         $invoice_id = $this->input->post('invoice_id');
 
@@ -61,16 +60,12 @@ class Ajax extends Admin_Controller
 
             $invoice_status = $this->input->post('invoice_status_id');
 
-            // Encode the password if it's not empty, else leave it empty
-            $password = $this->input->post('invoice_password');
-            $password = (empty($password) ? '' : $this->encrypt->encode($password));
-
             $db_array = array(
                 'invoice_number' => $this->input->post('invoice_number'),
                 'invoice_terms' => $this->input->post('invoice_terms'),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_password' => $password,
+                'invoice_password' => $this->input->post('invoice_password'),
                 'invoice_status_id' => $invoice_status,
                 'payment_method' => $this->input->post('payment_method')
             );

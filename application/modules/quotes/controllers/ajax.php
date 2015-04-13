@@ -59,16 +59,12 @@ class Ajax extends Admin_Controller
                 }
             }
 
-            // Encode the password if it's not empty, else leave it empty
-            $password = $this->input->post('quote_password');
-            $password = (empty($password) ? '' : $this->encrypt->encode($password));
-
             $db_array = array(
                 'quote_number' => $this->input->post('quote_number'),
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
                 'quote_status_id' => $this->input->post('quote_status_id'),
-                'quote_password' => $password,
+                'quote_password' => $this->input->post('quote_password'),
                 'notes' => $this->input->post('notes'),
             );
 
