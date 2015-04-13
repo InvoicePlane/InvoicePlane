@@ -61,12 +61,16 @@ class Ajax extends Admin_Controller
 
             $invoice_status = $this->input->post('invoice_status_id');
 
+            // Encode the password if it's not empty, else leave it empty
+            $password = $this->input->post('invoice_password');
+            $password = (empty($password) ? '' : $this->encrypt->encode($password));
+
             $db_array = array(
                 'invoice_number' => $this->input->post('invoice_number'),
                 'invoice_terms' => $this->input->post('invoice_terms'),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_password' => $this->encrypt->encode($this->input->post('invoice_password')),
+                'invoice_password' => $password,
                 'invoice_status_id' => $invoice_status,
                 'payment_method' => $this->input->post('payment_method')
             );
