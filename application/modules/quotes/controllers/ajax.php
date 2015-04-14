@@ -64,7 +64,7 @@ class Ajax extends Admin_Controller
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
                 'quote_status_id' => $this->input->post('quote_status_id'),
-                'quote_password' => $this->encrypt->encode($this->input->post('quote_password')),
+                'quote_password' => $this->input->post('quote_password'),
                 'notes' => $this->input->post('notes'),
             );
 
