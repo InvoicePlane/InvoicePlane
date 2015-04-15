@@ -16,14 +16,27 @@
 				<th><?php echo lang('note'); ?></th>
 				<th class="amount"><?php echo lang('amount'); ?></th>
 			</tr>
-			<?php foreach ($results as $result) { ?>
+			<?php 
+				$sum = 0;
+
+				foreach ($results as $result) { 
+			?>
 			<tr>
 				<td><?php echo date_from_mysql($result->payment_date, TRUE); ?></td>
 				<td><?php echo $result->invoice_number; ?></td>
 				<td><?php echo $result->client_name; ?></td>
 				<td><?php echo $result->payment_method_name; ?></td>
 				<td><?php echo nl2br($result->payment_note); ?></td>
-				<td class="amount"><?php echo format_currency($result->payment_amount); ?></td>
+				<td class="amount"><?php echo format_currency($result->payment_amount); $sum = $sum + $result->payment_amount; ?></td>
+			</tr>
+			<?php 
+				} 
+				
+				if (!empty($results)) { 
+			?>
+			<tr>
+				<td colspan=5><?php echo lang('total'); ?></td>
+				<td class="amount"><?php echo format_currency($sum); ?></td>
 			</tr>
 			<?php } ?>
 		</table>
