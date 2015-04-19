@@ -81,7 +81,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 
             // Get the payment method id first
             $this->db->where('invoice_id', $invoice_id);
-            $payment = $this->db->get('invoice_id');
+            $payment = $this->db->get('ip_payments');
             $payment_method_id = (isset($payment->payment_method_id) ? $payment->payment_method_id : 0);
 
             $this->db->where('invoice_id', $invoice_id);
