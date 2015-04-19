@@ -10,6 +10,7 @@
                     client_name: $('#client_name').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
+                    invoice_password: $('#invoice_password').val(),
                     user_id: $('#user_id').val()
                 },
                 function (data) {
@@ -57,6 +58,12 @@
 								<i class="fa fa-calendar fa-fw"></i>
 						</span>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
+                <input type="text" name="invoice_password" id="invoice_password" class="form-control"
+                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('invoice_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">

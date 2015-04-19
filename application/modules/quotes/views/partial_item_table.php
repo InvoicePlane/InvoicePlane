@@ -98,7 +98,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('item'); ?></span>
                         <input type="text" name="item_name" class="input-sm form-control"
-                               value="<?php echo $item->item_name; ?>">
+                               value="<?php echo html_escape($item->item_name); ?>">
                     </div>
                 </td>
                 <td class="td-amount td-quantity">

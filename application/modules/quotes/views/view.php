@@ -36,6 +36,7 @@
                     quote_date_created: $('#quote_date_created').val(),
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
+                    quote_password: $('#quote_password').val(),
                     items: JSON.stringify(items),
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
@@ -244,6 +245,16 @@
                               <span class="input-group-addon">
                                   <i class="fa fa-calendar fa-fw"></i>
                               </span>
+                            </div>
+                        </div>
+                        <div class="quote-properties">
+                            <label for="quote_password">
+                                <?php echo lang('quote_password'); ?>
+                            </label>
+
+                            <div class="controls">
+                                <input type="text" id="quote_password" class="form-control input-sm"
+                                       value="<?php echo $quote->quote_password; ?>">
                             </div>
                         </div>
                         <div class="quote-properties">
