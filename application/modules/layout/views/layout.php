@@ -198,6 +198,17 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('tasks'); ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('tasks/form', lang('create_task')); ?></li>
+                        <li><?php echo anchor('tasks/index', lang('show_tasks')); ?></li>
+                        <li><?php echo anchor('projects/index', lang('projects')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
                             class="hidden-sm"><?php echo lang('reports'); ?></span><i
                             class="visible-sm-inline fa fa-bar-chart"></i>
@@ -214,7 +225,7 @@
 
             <?php if (isset($filter_display) and $filter_display == TRUE) { ?>
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
-                <form class="navbar-form navbar-left" role="search">
+                <form class="navbar-form navbar-left" role="search" onsubmit="return false;">
                     <div class="form-group">
                         <input id="filter" type="text" class="search-query form-control input-sm"
                                placeholder="<?php echo $filter_placeholder; ?>">
@@ -313,7 +324,7 @@
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
 <?php if (lang('cldr') != 'en') { ?>
     <script
-        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker<?php echo lang('cldr'); ?>.js"></script>
+        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo lang('cldr'); ?>.js"></script>
 <?php } ?>
 
 <!--[if lt IE 7 ]>

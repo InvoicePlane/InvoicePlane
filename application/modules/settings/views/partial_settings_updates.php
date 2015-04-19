@@ -34,7 +34,6 @@
             setTimeout(function () {
                 $('#ipnews-loading').addClass('hidden');
                 data.forEach(function (news) {
-                    console.log(news);
                     var ipnews = '<div class="alert alert-' + news.type + '">';
                     ipnews += '<b>' + news.title + '</b><br/>';
                     ipnews += news.text + '<br/>';

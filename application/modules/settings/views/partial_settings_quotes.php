@@ -34,6 +34,14 @@
     </div>
 
     <div class="form-group">
+        <label for="settings[quote_pre_password]" class="control-label">
+            <?php echo lang('quote_pre_password'); ?>
+        </label>
+        <input type="text" name="settings[quote_pre_password]" class="input-sm form-control"
+               value="<?php echo $this->mdl_settings->setting('quote_pre_password'); ?>">
+    </div>
+
+    <div class="form-group">
         <hr/>
         <h4><?php echo lang('quote_template'); ?></h4>
     </div>

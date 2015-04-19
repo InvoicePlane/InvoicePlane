@@ -40,6 +40,7 @@
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_date_due: $('#invoice_date_due').val(),
                     invoice_status_id: $('#invoice_status_id').val(),
+                    invoice_password: $('#invoice_password').val(),
                     items: JSON.stringify(items),
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom]').serializeArray(),
@@ -139,15 +140,13 @@ if ($this->config->item('disable_read_only') == TRUE) {
                     </a>
                 </li>
                 <li class="divider"></li>
-                <?php if ($invoice->is_read_only != 1) { ?>
-                    <li>
-                        <a href="#" id="btn_create_recurring"
-                           data-invoice-id="<?php echo $invoice_id; ?>">
-                            <i class="fa fa-repeat fa-margin"></i>
-                            <?php echo lang('create_recurring'); ?>
-                        </a>
-                    </li>
-                <?php } ?>
+                <li>
+                    <a href="#" id="btn_create_recurring"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-repeat fa-margin"></i>
+                        <?php echo lang('create_recurring'); ?>
+                    </a>
+                </li>
                 <li>
                     <a href="#" id="btn_copy_invoice"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -308,6 +307,18 @@ if ($this->config->item('disable_read_only') == TRUE) {
                                         </option>
                                     <?php } ?>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="invoice-properties">
+                            <label><?php echo lang('invoice_password'); ?></label>
+                            <div>
+                                <input type="text" id="invoice_password"
+                                       class="input-sm form-control"
+                                       value="<?php echo $invoice->invoice_password; ?>"
+                                    <?php if ($invoice->is_read_only == 1) {
+                                        echo 'disabled="disabled"';
+                                    } ?>>
                             </div>
                         </div>
 

@@ -71,7 +71,7 @@
                             echo 'disabled="disabled"';
                         } ?>>
                     <input type="text" name="item_name" class="form-control"
-                           value="<?php echo $item->item_name; ?>"
+                           value="<?php echo html_escape($item->item_name); ?>"
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>>
