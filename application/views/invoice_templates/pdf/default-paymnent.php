@@ -126,7 +126,7 @@
                                         <?php echo lang('payment_method'); ?>: &nbsp;
                                     </td>
                                     <td class="text-right color-n">
-                                        <?php echo $payment_method->payment_method_name; ?>
+                                        <?php if($payment_method != NULL) echo $payment_method->payment_method_name; ?>
                                     </td>
                                 </tr>
                                 <tr>

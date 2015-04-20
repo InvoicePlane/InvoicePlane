@@ -138,12 +138,12 @@
                                         <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_due); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><?php echo lang('amount_due'); ?></td>
-                                        <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
+                                        <td><?php echo lang('payment_method'); ?></td>
+                                        <td style="text-align:right;"><?php if($payment_method != NULL) echo $payment_method->payment_method_name; ?></td>
                                     </tr>
                                     <tr>
-                                        <td><?php echo lang('payment_method'); ?></td>
-                                        <td style="text-align:right;"><?php echo $payment_method->payment_method_name; ?></td>
+                                        <td><?php echo lang('amount_due'); ?></td>
+                                        <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
                                     </tr>
                                 </tbody>
                             </table>
