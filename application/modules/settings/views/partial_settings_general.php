@@ -98,6 +98,8 @@
                             <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'before') { ?>selected="selected"<?php } ?>><?php echo lang('before_amount'); ?></option>
                     <option value="after"
                             <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'after') { ?>selected="selected"<?php } ?>><?php echo lang('after_amount'); ?></option>
+                    <option value="afterspace"
+                            <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'afterspace') { ?>selected="selected"<?php } ?>><?php echo lang('after_amount_space'); ?></option>
                 </select>
             </div>
         </div>
