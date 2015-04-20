@@ -48,7 +48,7 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
 
     $CI->load->helper('mpdf');
 
-    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream,$invoice->invoice_password);
+    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream,$CI->encrypt->decode($invoice->invoice_password));
 }
 
 function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
