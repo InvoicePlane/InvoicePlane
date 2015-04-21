@@ -30,7 +30,7 @@
     });
 </script>
 
-<div class="headerbar">
+<div id="headerbar">
     <div class="pull-right btn-group">
         <a href="#" class="btn btn-sm btn-default client-create-quote"
            data-client-name="<?php echo $client->client_name; ?>">

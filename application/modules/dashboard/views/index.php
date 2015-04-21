@@ -1,4 +1,4 @@
-<div class="content">
+<div id="content">
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <div class="row <?php if ($this->mdl_settings->setting('disable_quickactions') == 1) {
@@ -15,19 +15,19 @@
                 <div class="btn-group btn-group-justified no-margin">
                     <a href="<?php echo site_url('clients/form'); ?>" class="btn btn-default">
                         <i class="fa fa-user fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('add_client'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('add_client'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">
                         <i class="fa fa-file fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('create_quote'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('create_quote'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-invoice btn btn-default">
                         <i class="fa fa-file-text fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('create_invoice'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('create_invoice'); ?></span>
                     </a>
                     <a href="<?php echo site_url('payments/form'); ?>" class="btn btn-default">
                         <i class="fa fa-credit-card fa-margin"></i>
-                        <span class="hidden-md hidden-xs"><?php echo lang('enter_payment'); ?></span>
+                        <span class="hidden-xs"><?php echo lang('enter_payment'); ?></span>
                     </a>
                 </div>
 
@@ -127,12 +127,12 @@
                     <table class="table table-striped table-condensed no-margin">
                         <thead>
                         <tr>
-                            <th style="width: 15%;"><?php echo lang('status'); ?></th>
-                            <th style="width: 15%;"><?php echo lang('date'); ?></th>
-                            <th style="width: 10%;"><?php echo lang('quote'); ?></th>
-                            <th style="width: 40%;"><?php echo lang('client'); ?></th>
-                            <th style="text-align: right; width: 15%;"><?php echo lang('balance'); ?></th>
-                            <th style="text-align: center; width: 5%;"><?php echo lang('pdf'); ?></th>
+                            <th><?php echo lang('status'); ?></th>
+                            <th style="min-width: 15%;"><?php echo lang('date'); ?></th>
+                            <th style="min-width: 15%;"><?php echo lang('quote'); ?></th>
+                            <th style="min-width: 35%;"><?php echo lang('client'); ?></th>
+                            <th style="text-align: right;"><?php echo lang('balance'); ?></th>
+                            <th><?php echo lang('pdf'); ?></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -187,12 +187,12 @@
                     <table class="table table-striped table-condensed no-margin">
                         <thead>
                         <tr>
-                            <th style="width: 15%;"><?php echo lang('status'); ?></th>
-                            <th style="width: 15%;"><?php echo lang('due_date'); ?></th>
-                            <th style="width: 10%;"><?php echo lang('invoice'); ?></th>
-                            <th style="width: 40%;"><?php echo lang('client'); ?></th>
-                            <th style="text-align: right; width: 15%;"><?php echo lang('balance'); ?></th>
-                            <th style="text-align: center; width: 5%;"><?php echo lang('pdf'); ?></th>
+                            <th><?php echo lang('status'); ?></th>
+                            <th style="min-width: 15%;"><?php echo lang('due_date'); ?></th>
+                            <th style="min-width: 15%;"><?php echo lang('invoice'); ?></th>
+                            <th style="min-width: 35%;"><?php echo lang('client'); ?></th>
+                            <th style="text-align: right;"><?php echo lang('balance'); ?></th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>

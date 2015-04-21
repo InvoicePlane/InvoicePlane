@@ -18,7 +18,13 @@
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'development');
+
+if (is_dir(__DIR__."/application/config/development")) {
+    define('ENVIRONMENT', 'development');
+} else {
+    define('ENVIRONMENT', 'production');
+}
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

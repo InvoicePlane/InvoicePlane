@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('version_history'); ?></h1>
 
     <div class="pull-right">
@@ -6,7 +6,7 @@
     </div>
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <div class="table-responsive-">
         <table class="table table-striped">

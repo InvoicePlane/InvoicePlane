@@ -18,8 +18,11 @@
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
                     client_name: $('#client_name').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
-                    user_id: '<?php echo $this->session->userdata('user_id'); ?>',
-                    invoice_group_id: $('#invoice_group_id').val()
+                    invoice_group_id: $('#invoice_group_id').val(),
+                    invoice_time_created: '<?php echo date('H:i:s') ?>',
+                    invoice_password: $('#invoice_password').val(),
+                    user_id: '<?php echo $this->session->userdata('user_id'); ?>'
+
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -67,6 +70,12 @@
                     <i class="fa fa-calendar fa-fw"></i>
                 </span>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
+                <input type="text" name="invoice_password" id="invoice_password" class="form-control"
+                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('invoice_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">
