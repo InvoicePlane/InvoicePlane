@@ -7,6 +7,8 @@
                     client_name: $('#client_name').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
+                    invoice_time_created: '<?php echo date('H:i:s') ?>',
+                    invoice_password: $('#invoice_password').val(),
                     user_id: $('#user_id').val()
                 },
                 function (data) {
@@ -48,6 +50,12 @@
             <input type="hidden" name="invoice_date_created" id="invoice_date_created"
                    value="<?php $credit_date = date_from_mysql(date('Y-m-d', time()), TRUE);
                    echo $credit_date; ?>">
+
+            <div class="form-group">
+                <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
+                <input type="text" name="invoice_password" id="invoice_password" class="form-control"
+                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('invoice_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
+            </div>
 
             <select name="invoice_group_id" id="invoice_group_id" class="hidden">
                 <option value=""></option>

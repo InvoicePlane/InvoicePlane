@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
 
     <h1><?php echo lang('quotes'); ?></h1>
 
@@ -21,7 +21,7 @@
 
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <div id="filter_results">
         <?php echo $this->layout->load_view('layout/alerts'); ?>
