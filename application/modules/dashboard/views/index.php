@@ -103,9 +103,7 @@
                 }
                 ?>
                 <div class="panel panel-danger panel-heading">
-                    <a href="/invoices/status/overdue" class="text-danger">
-                        <i class="fa fa-external-link"></i> <?php echo lang('overdue_invoices'); ?>
-                    </a>
+                    <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> '.lang('overdue_invoices'), 'class="text-danger"'); ?>
                     <span class="pull-right text-danger">
                         <?php echo format_currency($overdue_invoices_total); ?>
                     </span>
