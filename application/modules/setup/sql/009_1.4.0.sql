@@ -18,3 +18,6 @@ CREATE TABLE `ip_tasks` (
   `task_status` tinyint(1) NOT NULL,
   PRIMARY KEY (`task_id`)
 ) ENGINE = MyISAM DEFAULT CHARSET = utf8; 
+
+# Solves IP-243
+# ALTER TABLE `ip_settings` ADD COLUMN `default_quote_notes` LONGTEXT;
