@@ -27,19 +27,24 @@ class View extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $this->load->model('invoices/mdl_items');
             $this->load->model('invoices/mdl_invoice_tax_rates');
+            $this->load->model('payment_methods/mdl_payment_methods');
 
             $invoice = $invoice->row();
 
             if ($this->session->userdata('user_type') <> 1 and $invoice->invoice_status_id == 2) {
                 $this->mdl_invoices->mark_viewed($invoice->invoice_id);
             }
+            
+            $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
+            if ($invoice->payment_method == 0 ) $payment_method = NULL; 
 
             $data = array(
                 'invoice' => $invoice,
                 'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_url_key' => $invoice_url_key,
-                'flash_message' => $this->session->flashdata('flash_message')
+                'flash_message' => $this->session->flashdata('flash_message'),
+                'payment_method' => $payment_method                
             );
 
             $this->load->view('invoice_templates/public/' . $this->mdl_settings->setting('public_invoice_template') . '.php', $data);
@@ -74,6 +79,7 @@ class View extends Base_Controller
         if ($quote->num_rows() == 1) {
             $this->load->model('quotes/mdl_quote_items');
             $this->load->model('quotes/mdl_quote_tax_rates');
+            
 
             $quote = $quote->row();
 
