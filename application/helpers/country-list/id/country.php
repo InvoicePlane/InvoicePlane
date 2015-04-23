@@ -151,7 +151,7 @@
   'NA' => 'Namibia',
   'NR' => 'Nauru',
   'NP' => 'Nepal',
-  'NL' => 'Netherlands',
+  'NL' => 'The Netherlands',
   'NI' => 'Nicaragua',
   'NE' => 'Niger',
   'NG' => 'Nigeria',
