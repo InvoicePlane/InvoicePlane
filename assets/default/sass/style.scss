@@ -14,9 +14,6 @@
 // Bootstrap
 @import "bootstrap/bootstrap";
 
-// SCEditor
-@import "sceditor/square";
-
 // Font: Font-Awesome
 @import "fonts/font-awesome/font-awesome";
 
@@ -745,12 +742,6 @@ div.table-content {
     }
 }
 
-.sceditor-container iframe,
-.sceditor-container textarea {
-    width: 100%;
-    margin: 0;
-}
-
 /*
 |   =========================================================
 |   Quotes
@@ -874,6 +865,22 @@ legend, .install-step h2 {
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     border-top: 0 !important;
+}
+
+.html-tags {
+    .html-tag {
+        border-bottom: none;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
+#email_template_body {
+    border-top-left-radius: 0;
+}
+
+#email-template-preview {
+    width: 100%;
+    border: 0;
 }
 
 /*

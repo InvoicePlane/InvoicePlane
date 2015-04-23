@@ -22,7 +22,7 @@ $(document).ready(function () {
     var lastTaggableClicked;
     $('.text-tag').bind('click', function () {
         var templateTag = this.getAttribute("data-tag");
-        insertAtCaret(lastTaggableClicked.id, templateTag);
+        insert_at_caret(lastTaggableClicked.id, templateTag);
         return false;
     });
 
@@ -30,10 +30,32 @@ $(document).ready(function () {
     $('.taggable').on('focus', function () {
         lastTaggableClicked = this;
     });
+
+    // HTML tags to email templates textarea
+    $('.html-tag').click(function (event) {
+        var tag_type = $(this).data('tagType');
+        var body_id = $('.email-template-body').attr('id');
+        insert_html_tag(tag_type, body_id);
+    });
+
+    // Email Template Preview handling
+    var email_template_body_id = $('.email-template-body').attr('id');
+
+    if ($('#email_template_preview').empty()) {
+        update_email_template_preview();
+    }
+
+    $(email_template_body_id).bind('input propertychange', function () {
+        update_email_template_preview();
+    });
+
+    $('#email-template-preview-reload').click(function () {
+        update_email_template_preview();
+    });
 });
 
 // Insert text into textarea at Caret Position
-function insertAtCaret(areaId, text) {
+function insert_at_caret(areaId, text) {
     var txtarea = document.getElementById(areaId);
     var scrollPos = txtarea.scrollTop;
     var strPos = 0;
@@ -72,7 +94,96 @@ function inject_email_template(template_fields, email_template) {
         key = key.replace("email_template_", "");
         // if key is in template_fields, apply value to form field
         if (val && template_fields.indexOf(key) > -1) {
-            $("#" + key).val(val);
+            if (key === 'body') {
+                $("#" + key).html(val);
+            } else {
+                $("#" + key).val(val);
+            }
         }
     });
+}
+
+// Insert HTML tags into textarea
+function insert_html_tag(tag_type, destination_id) {
+    var text;
+    switch (tag_type) {
+        case 'text-bold':
+            text = ['<b>', '</b>'];
+            break;
+        case 'text-italic':
+            text = ['<em>', '</em>'];
+            break;
+        case 'text-paragraph':
+            text = ['<p>', '</p>'];
+            break;
+
+        case 'text-h1':
+            text = ['<h1>', '</h1>'];
+            break;
+        case 'text-h2':
+            text = ['<h2>', '</h2>'];
+            break;
+        case 'text-h3':
+            text = ['<h3>', '</h3>'];
+            break;
+        case 'text-h4':
+            text = ['<h4>', '</h4>'];
+            break;
+
+        case 'text-code':
+            text = ['<code>', '</code>'];
+            break;
+        case 'text-hr':
+            text = ['<hr/>', ''];
+            break;
+        case 'text-css':
+            text = ['<style></style>', ''];
+            break;
+    }
+
+    // Get the selected text
+    var text_area = document.getElementById(destination_id);
+    var selectedText;
+    if (document.selection != undefined) {
+        text_area.focus();
+        var sel = document.selection.createRange();
+        selectedText = sel.text;
+    }
+    else if (text_area.selectionStart != undefined) {
+        var startPos = text_area.selectionStart;
+        var endPos = text_area.selectionEnd;
+        selectedText = text_area.value.substring(startPos, endPos)
+    }
+
+    // Check if <style> should be added
+    if (tag_type === 'text-css') {
+        var replace = text[0] + '\n\r' + text_area.value;
+        $(text_area).val(replace);
+        update_email_template_preview();
+        return true;
+    }
+
+    // Check if there is only one HTML tag
+    if (text[1].length === 0) {
+        insert_at_caret(destination_id, text[0]);
+        update_email_template_preview();
+        return true;
+    }
+
+    // Check if text is selected, replace it or just insert the tag at cursor position
+    if (!selectedText || !selectedText.length) {
+        text = text[0] + text[1];
+        insert_at_caret(destination_id, text);
+        update_email_template_preview();
+    } else {
+        var replaceText = text[0] + selectedText + text[1];
+        var len = text_area.value.length;
+        var replace = text_area.value.substring(0, startPos) + replaceText + text_area.value.substring(endPos, len);
+        $(text_area).val(replace);
+        update_email_template_preview();
+    }
+}
+
+function update_email_template_preview() {
+    $('#email-template-preview').contents().find("body").html($('.email-template-body').val());
 }
