@@ -57,7 +57,7 @@ class Mdl_Users extends Response_Model
             'user_email' => array(
                 'field' => 'user_email',
                 'label' => lang('email'),
-                'rules' => 'required|valid_email'
+                'rules' => 'required|valid_email|is_unique[ip_users.user_email]'
             ),
             'user_name' => array(
                 'field' => 'user_name',
