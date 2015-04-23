@@ -198,7 +198,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-caret-down"></i> &nbsp; <?php echo lang('tasks'); ?>
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('tasks'); ?></span><i
+                            class="visible-sm-inline fa fa-check-square-o"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('tasks/form', lang('create_task')); ?></li>
