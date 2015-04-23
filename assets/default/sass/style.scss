@@ -782,6 +782,16 @@ div.table-content {
 
 .quote .cf {
     margin-bottom: 40px;
+
+    .quote-properties {
+        margin-bottom: 5px;
+        label {
+            margin: 0;
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
 }
 
 /*

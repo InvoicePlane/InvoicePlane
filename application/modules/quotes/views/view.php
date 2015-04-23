@@ -61,7 +61,7 @@
             window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             if ($('#quote_discount_percent').val().length > 0) {
                 toggleDisabled($('#quote_discount_amount'));
             }
@@ -179,7 +179,7 @@
 
             <div class="cf row">
 
-                <div class="col-xs-12 col-md-5" >
+                <div class="col-xs-12 col-md-5">
                     <div class="pull-left">
 
                         <h2>
@@ -206,107 +206,89 @@
                     </div>
                 </div>
 
-               <div class="col-xs-12 col-md-7" >
-                
+                <div class="col-xs-12 col-md-7">
+
                     <div class="details-box">
-                    
-                    	<div class="clearfix">
 
-                    		<div>
-		                        <div class="quote-properties col-xs-12 col-md-6" style="margin-bottom: 10px;"> 
-		                            <label for="quote_number">
-		                                <?php echo lang('quote'); ?> #
-		                            </label>
-		
-		                            <div class="controls">
-		                                <input type="text" id="quote_number" class="form-control input-sm"
-		                                       value="<?php echo $quote->quote_number; ?>">
-		                            </div>
-		                        </div>
-	                        
-	                        </div>
-	                        
-	                        <div>
-	                        
-	                        	<div class="quote-properties col-xs-12 col-md-6" style="margin-bottom: 10px;"> 
-		                            <label for="quote_status_id">
-		                                <?php echo lang('status'); ?>
-		                            </label>
-		                            <select name="quote_status_id" id="quote_status_id"
-		                                    class="form-control input-sm">
-		                                <?php foreach ($quote_statuses as $key => $status) { ?>
-		                                    <option value="<?php echo $key; ?>"
-		                                            <?php if ($key == $quote->quote_status_id) { ?>selected="selected"<?php } ?>>
-		                                        <?php echo $status['label']; ?>
-		                                    </option>
-		                                <?php } ?>
-		                            </select>
-		                        </div>
+                        <div class="row">
 
-                        	</div>
-                        	
-                        </div>
-                        
-                        <div>
-                        
-	                        <div>
-	                        
-	                        <div class="quote-properties has-feedback col-xs-12 col-md-6" style="margin-bottom: 10px;"> 
-		                            <label for="quote_date_created">
-		                                <?php echo lang('date'); ?>
-		                            </label>
-		
-		                            <div class="input-group">
-		                                <input name="quote_date_created" id="quote_date_created"
-		                                       class="form-control input-sm datepicker"
-		                                       value="<?php echo date_from_mysql($quote->quote_date_created); ?>">
+                            <div class="col-xs-12 col-sm-6">
+
+                                <div class="quote-properties">
+                                    <label for="quote_number">
+                                        <?php echo lang('quote'); ?> #
+                                    </label>
+
+                                    <div class="controls">
+                                        <input type="text" id="quote_number" class="form-control input-sm"
+                                               value="<?php echo $quote->quote_number; ?>">
+                                    </div>
+                                </div>
+
+                                <div class="quote-properties has-feedback">
+                                    <label for="quote_date_created">
+                                        <?php echo lang('date'); ?>
+                                    </label>
+
+                                    <div class="input-group">
+                                        <input name="quote_date_created" id="quote_date_created"
+                                               class="form-control input-sm datepicker"
+                                               value="<?php echo date_from_mysql($quote->quote_date_created); ?>">
 		                                <span class="input-group-addon">
 		                                    <i class="fa fa-calendar fa-fw"></i>
 		                                </span>
-		                            </div>
-		                        </div>
+                                    </div>
+                                </div>
 
-	                        </div>
-	                        
-	                        
-	                        
-	                        <div>
+                                <div class="quote-properties has-feedback">
+                                    <label for="quote_date_expires">
+                                        <?php echo lang('expires'); ?>
+                                    </label>
 
-                        		 <div class="quote-properties has-feedback col-xs-12 col-md-6" style="margin-bottom: 10px;"> 
-		                            <label for="quote_date_expires">
-		                                <?php echo lang('expires'); ?>
-		                            </label>
-		
-		                            <div class="input-group">
-		                                <input name="quote_date_expires" id="quote_date_expires"
-		                                       class="form-control input-sm datepicker"
-		                                       value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
+                                    <div class="input-group">
+                                        <input name="quote_date_expires" id="quote_date_expires"
+                                               class="form-control input-sm datepicker"
+                                               value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
 		                              <span class="input-group-addon">
 		                                  <i class="fa fa-calendar fa-fw"></i>
 		                              </span>
-		                            </div>
-		                        </div>
+                                    </div>
+                                </div>
 
-                        	</div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6">
+
+                                <div class="quote-properties">
+                                    <label for="quote_status_id">
+                                        <?php echo lang('status'); ?>
+                                    </label>
+                                    <select name="quote_status_id" id="quote_status_id"
+                                            class="form-control input-sm">
+                                        <?php foreach ($quote_statuses as $key => $status) { ?>
+                                            <option value="<?php echo $key; ?>"
+                                                    <?php if ($key == $quote->quote_status_id) { ?>selected="selected"<?php } ?>>
+                                                <?php echo $status['label']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+
+                                <div class="quote-properties">
+                                    <label for="quote_password">
+                                        <?php echo lang('quote_password'); ?>
+                                    </label>
+
+                                    <div class="controls">
+                                        <input type="text" id="quote_password" class="form-control input-sm"
+                                               value="<?php echo $quote->quote_password; ?>">
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
-                        
-                        <div>
-                        	
-                        		
-                        		<div class="quote-properties col-xs-12 col-md-6" style="margin-bottom: 10px;"> 
-		                            <label for="quote_password">
-		                                <?php echo lang('quote_password'); ?>
-		                            </label>
-		
-		                            <div class="controls">
-		                                <input type="text" id="quote_password" class="form-control input-sm"
-		                                       value="<?php echo $quote->quote_password; ?>">
-		                            </div>
-		                        </div>
-		                        
-                        		
-                        </div>
-                        
+
                     </div>
                 </div>
             </div>
