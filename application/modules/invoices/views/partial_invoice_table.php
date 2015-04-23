@@ -96,7 +96,8 @@
                             <li>
                                 <a href="#" class="invoice-add-payment"
                                    data-invoice-id="<?php echo $invoice->invoice_id; ?>"
-                                   data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
+                                   data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                                   data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
                                     <i class="fa fa-money fa-margin"></i>
                                     <?php echo lang('enter_payment'); ?>
                                 </a>
