@@ -37,7 +37,7 @@ class Mdl_Families extends Response_Model
             'family_name' => array(
                 'field' => 'family_name',
                 'label' => lang('family_name'),
-                'rules' => 'required'
+                'rules' => 'required|is_unique[ip_families.family_name]'
             )
         );
     }
