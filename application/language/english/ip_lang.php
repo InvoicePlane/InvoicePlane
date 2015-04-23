@@ -294,6 +294,7 @@ $lang = array(
     'please_enable_js' => 'Please enable Javascript to use InvoicePlane',
     'prefix' => 'Prefix',
     'prev' => 'Prev',
+    'preview' => 'Preview',
     'price' => 'Price',
     'product' => 'Product',
     'product_description' => 'Product description',

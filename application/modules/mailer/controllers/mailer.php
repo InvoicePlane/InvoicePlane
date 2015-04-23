@@ -105,7 +105,7 @@ class Mailer extends Admin_Controller
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
-        $body = $this->input->post('body');
+        $body = htmlspecialchars_decode($this->input->post('body'));
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
 
@@ -133,7 +133,7 @@ class Mailer extends Admin_Controller
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
-        $body = $this->input->post('body');
+        $body = htmlspecialchars_decode($this->input->post('body'));
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
 
