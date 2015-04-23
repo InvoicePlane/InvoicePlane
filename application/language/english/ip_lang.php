@@ -12,6 +12,7 @@ $lang = array(
     'address' => 'Address',
     'administrator' => 'Administrator',
     'after_amount' => 'After Amount',
+    'after_amount_space' => 'After Amount with nonbreaking space', 
     'all' => 'All',
     'amount' => 'Amount',
     'amount_due' => 'Amount Due',
