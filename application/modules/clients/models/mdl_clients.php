@@ -44,7 +44,7 @@ class Mdl_Clients extends Response_Model
             'client_name' => array(
                 'field' => 'client_name',
                 'label' => lang('client_name'),
-                'rules' => 'required'
+                'rules' => 'required|is_unique[ip_clients.client_name]'
             ),
             'client_active' => array(
                 'field' => 'client_active'

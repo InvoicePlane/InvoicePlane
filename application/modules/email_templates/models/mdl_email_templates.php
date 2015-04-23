@@ -37,7 +37,7 @@ class Mdl_Email_Templates extends Response_Model
             'email_template_title' => array(
                 'field' => 'email_template_title',
                 'label' => lang('title'),
-                'rules' => 'required'
+                'rules' => 'required|is_unique[ip_email_templates.email_template_title]'
             ),
             'email_template_type' => array(
                 'field' => 'email_template_pdf_quote_template',

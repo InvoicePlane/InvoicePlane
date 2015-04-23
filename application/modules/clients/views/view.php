@@ -176,12 +176,6 @@
                     <h4><?php echo lang('custom_fields'); ?></h4>
                     <br/>
                     <table class="table table-condensed table-striped">
-                        <?php if ($client->client_vat_id) { ?>
-                            <tr>
-                                <td><?php echo lang('vat_id'); ?></td>
-                                <td><?php echo $client->client_vat_id; ?></td>
-                            </tr>
-                        <?php } ?>
                         <?php foreach ($custom_fields as $custom_field) { ?>
                             <tr>
                                 <td><?php echo $custom_field->custom_field_label ?></td>
