@@ -93,6 +93,7 @@ $lang = array(
     'default_item_tax_rate' => 'Default Item Tax Rate',
     'default_list_limit' => 'Number of Items in Lists',
     'default_notes' => 'Default Notes',
+    'default_payment_mode' => 'Forma de pago por defecto',
     'default_pdf_template' => 'Default PDF Template',
     'default_public_template' => 'Default Public Template',
     'default_quote_group' => 'Default Quote Group',
