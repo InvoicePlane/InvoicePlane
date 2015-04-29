@@ -42,6 +42,22 @@
     </div>
 
     <div class="form-group">
+        <label for="settings[default_payment_mode]" class="control-label">
+            <?php echo lang('default_payment_mode'); ?>
+        </label>
+       
+        <select name="settings[default_payment_mode]" id="payment_method" class="form-control input-sm">
+		   <option value=""><?php echo lang('select_payment_method');?></option> 
+		        <?php foreach ($payment_methods as $payment_method) { ?>
+		        <option <?php if($this->mdl_settings->setting('default_payment_mode') == $payment_method->payment_method_id) echo "selected" ?> 
+		        		value="<?php echo $payment_method->payment_method_id; ?>">
+		                <?php echo $payment_method->payment_method_name; ?>
+		        </option>
+		                <?php } ?>
+		 </select>
+    </div>
+
+    <div class="form-group">
         <label for="settings[default_invoice_terms]">
             <?php echo lang('default_terms'); ?>
         </label>

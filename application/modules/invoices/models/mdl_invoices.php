@@ -286,6 +286,7 @@ class Mdl_Invoices extends Response_Model
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
         $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
         $db_array['invoice_terms'] = $this->mdl_settings->setting('default_invoice_terms');
+	$db_array['payment_method'] = $this->mdl_settings->setting('default_payment_mode');
 
         if (!isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;
