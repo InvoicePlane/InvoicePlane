@@ -42,6 +42,7 @@ $lang = array(
     'cldr' => 'en',
     'client' => 'Client',
     'client_access' => 'Client Access',
+    'client_already_exists' => 'Client already exists!',
     'client_form' => 'Client Form',
     'client_name' => 'Client Name',
     'clients' => 'Clients',
