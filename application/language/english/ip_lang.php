@@ -125,6 +125,7 @@ $lang = array(
     'email_send_method_smtp' => 'SMTP',
     'email_successfully_sent' => 'Email successfully sent',
     'email_template' => 'Email Template',
+    'email_template_already_exists' => 'Email Template already exists!',
     'email_template_form' => 'Email Template Form',
     'email_template_overdue' => 'Overdue Email Template',
     'email_template_paid' => 'Paid Email Template',
