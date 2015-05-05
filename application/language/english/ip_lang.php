@@ -142,6 +142,7 @@ $lang = array(
     'failure' => 'Failure',
     'families' => 'Families',
     'family' => 'Family',
+    'family_already_exists' => 'Family already exists!',
     'family_name' => 'Family name',
     'fax' => 'Fax',
     'fax_abbr' => 'F',
