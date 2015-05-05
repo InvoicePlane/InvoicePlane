@@ -275,6 +275,7 @@ $lang = array(
     'payment_form' => 'Payment Form',
     'payment_history' => 'Payment History',
     'payment_method' => 'Payment Method',
+    'payment_method_already_exists' => 'Payment Method already exists!',
     'payment_method_form' => 'Payment Method Form',
     'payment_methods' => 'Payment Methods',
     'payments' => 'Payments',
