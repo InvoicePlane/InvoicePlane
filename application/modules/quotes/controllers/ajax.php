@@ -146,6 +146,55 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    public function modal_change_client()
+    {
+        $this->load->module('layout');
+        $this->load->model('clients/mdl_clients');
+
+        $data = array(
+            'client_name' => $this->input->post('client_name'),
+            'quote_id' => $this->input->post('quote_id'),
+            'clients' => $this->mdl_clients->get()->result(),
+        );
+
+        $this->layout->load_view('quotes/modal_change_client', $data);
+    }
+
+    public function change_client()
+    {
+        $this->load->model('quotes/mdl_quotes');
+        $this->load->model('clients/mdl_clients');
+
+        // Get the client ID
+        $client_name = $this->input->post('client_name');
+        $client = $this->mdl_clients->where('client_name', $this->db->escape_str($client_name))
+            ->get()->row();
+
+        if (!empty($client)) {
+            $client_id = $client->client_id;
+            $quote_id = $this->input->post('quote_id');
+
+            $db_array = array(
+                'client_id' => $client_id,
+            );
+            $this->db->where('quote_id', $quote_id);
+            $this->db->update('ip_quotes', $db_array);
+
+            $response = array(
+                'success' => 1,
+                'quote_id' => $quote_id
+            );
+        } else {
+            $this->load->helper('json_error');
+            $response = array(
+                'success' => 0,
+                'validation_errors' => json_errors()
+            );
+        }
+
+        echo json_encode($response);
+    }
+
     public function get_item()
     {
         $this->load->model('quotes/mdl_quote_items');

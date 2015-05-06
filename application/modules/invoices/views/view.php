@@ -18,6 +18,10 @@
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>", {invoice_id: <?php echo $invoice_id; ?>});
         });
 
+        $('#invoice_change_client').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {invoice_id: <?php echo $invoice_id; ?>, client_name: "<?php echo $this->db->escape_str($invoice->client_name); ?>"});
+        });
+
         $('#btn_save_invoice').click(function () {
             var items = [];
             var item_order = 1;
@@ -234,6 +238,11 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo $invoice->client_name; ?></a>
+                            <?php if ($invoice->invoice_status_id == 1) { ?>
+                            <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
+                                  data-toggle="tooltip" data-placement="bottom"
+                                  title="<?php echo lang('change_client'); ?>"></span>
+                            <?php } ?>
                         </h2><br>
                         <span>
                             <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>

@@ -29,6 +29,7 @@ $lang = array(
     'before_amount' => 'Before Amount',
     'bill_to' => 'Bill To',
     'body' => 'Body',
+    'change_client' => 'Change Client',
     'calculate_discounts' => 'Calculate Discounts',
     'calendar_month' => 'Month',
     'calendar_week' => 'Week',
