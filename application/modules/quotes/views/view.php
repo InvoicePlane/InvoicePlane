@@ -63,7 +63,10 @@
 
         $(document).ready(function () {
             if ($('#quote_discount_percent').val().length > 0) {
-                toggleDisabled($('#quote_discount_amount'));
+                $('#quote_discount_amount').prop('disabled', true);
+            }
+            if ($('#quote_discount_amount').val().length > 0) {
+                $('#quote_discount_percent').prop('disabled', true);
             }
         });
         $('#quote_discount_amount').keyup(function () {

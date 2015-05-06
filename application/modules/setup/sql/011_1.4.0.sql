@@ -12,6 +12,19 @@ ALTER TABLE `ip_quote_items`
 ADD COLUMN `item_discount_amount` DECIMAL(20,2) NOT NULL DEFAULT 0
 AFTER `item_price`;
 
+ALTER TABLE `ip_invoices`
+ADD COLUMN `invoice_discount_amount` DECIMAL(20,2) NOT NULL DEFAULT 0
+AFTER `invoice_number`,
+ADD COLUMN `invoice_discount_percent` DECIMAL(20,2) NOT NULL DEFAULT 0
+AFTER `invoice_discount_amount`;
+
+ALTER TABLE `ip_invoice_item_amounts`
+ADD COLUMN `item_discount` DECIMAL(20,2) NOT NULL DEFAULT 0
+AFTER `item_tax_total`;
+ALTER TABLE `ip_invoice_items`
+ADD COLUMN `item_discount_amount` DECIMAL(20,2) NOT NULL DEFAULT 0
+AFTER `item_price`;
+
 # Feature IP-162
 # For module "projects" 
 CREATE TABLE `ip_projects` (
