@@ -2,11 +2,11 @@
 
     $(function () {
 
-        $('#btn_add_product').click(function () {
+        $('.btn_add_product').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
-        $('#btn_add_row').click(function () {
+        $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         });
 
@@ -191,10 +191,10 @@ if ($this->config->item('disable_read_only') == TRUE) {
         </div>
 
         <?php if ($invoice->is_read_only != 1) { ?>
-            <a href="#" class="btn btn-sm btn-default" id="btn_add_row">
+            <a href="#" class="btn_add_row btn btn-sm btn-default">
                 <i class="fa fa-plus"></i> <?php echo lang('add_new_row'); ?>
             </a>
-            <a href="#" class="btn btn-sm btn-default" id="btn_add_product">
+            <a href="#" class="btn_add_product btn btn-sm btn-default">
                 <i class="fa fa-database"></i>
                 <?php echo lang('add_product'); ?>
             </a>
