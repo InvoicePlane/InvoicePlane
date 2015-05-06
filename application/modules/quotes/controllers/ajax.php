@@ -161,11 +161,13 @@ class Ajax extends Admin_Controller
 
         $this->load->model('invoice_groups/mdl_invoice_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
+        $this->load->model('clients/mdl_clients');
 
         $data = array(
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'client_name' => $this->input->post('client_name')
+            'client_name' => $this->input->post('client_name'),
+            'clients' => $this->mdl_clients->get()->result(),
         );
 
         $this->layout->load_view('quotes/modal_create_quote', $data);
