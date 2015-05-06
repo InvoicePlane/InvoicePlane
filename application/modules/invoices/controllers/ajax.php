@@ -37,6 +37,7 @@ class Ajax extends Admin_Controller
                 if ($item->item_name) {
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price = standardize_amount($item->item_price);
+                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
 
                     $item_id = ($item->item_id) ?: NULL;
 
@@ -67,7 +68,9 @@ class Ajax extends Admin_Controller
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
                 'invoice_password' => $this->input->post('invoice_password'),
                 'invoice_status_id' => $invoice_status,
-                'payment_method' => $this->input->post('payment_method')
+                'payment_method' => $this->input->post('payment_method'),
+                'invoice_discount_amount' => $this->input->post('invoice_discount_amount'),
+                'invoice_discount_percent' => $this->input->post('invoice_discount_percent'),
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
@@ -86,6 +89,10 @@ class Ajax extends Admin_Controller
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
+
+            // Recalculate for discounts
+            $this->load->model('invoices/mdl_invoice_amounts');
+            $this->mdl_invoice_amounts->calculate($invoice_id);
 
             $response = array(
                 'success' => 1
