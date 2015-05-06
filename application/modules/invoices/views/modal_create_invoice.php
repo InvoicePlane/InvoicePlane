@@ -9,7 +9,10 @@
             $("#client_name").focus();
         });
 
-        $('#client_name').typeahead();
+        $().ready(function () {
+            $("[name='client_name']").select2({allowClear: true});
+            $("#client_name").focus();
+        });
 
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
@@ -55,8 +58,15 @@
 
             <div class="form-group">
                 <label for="client_name"><?php echo lang('client'); ?></label>
-                <input type="text" name="client_name" id="client_name" class="form-control"
-                       value="<?php echo $client_name; ?>" style="margin: 0 auto;" autocomplete="off">
+                <select name="client_name" id="client_name" class="input-sm form-control" autofocus>
+                    <option></option>
+                    <?php foreach ($clients as $client) { ?>
+                        <option value="<?php echo $client->client_name; ?>"
+                                <?php if ($client_name == $client->client_name) { ?>selected="selected"<?php } ?>
+                            > <?php echo $client->client_name; ?>     </option>
+
+                    <?php } ?>
+                </select>
             </div>
 
             <div class="form-group has-feedback">
