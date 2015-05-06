@@ -4,7 +4,7 @@
         $('#modal-choose-items').modal('show');
 
         // Creates the invoice
-        $('#select-items-confirm').click(function () {
+        $('.select-items-confirm').click(function () {
             var product_ids = [];
 
             $("input[name='product_ids[]']:checked").each(function () {
@@ -20,14 +20,14 @@
                     // Set default tax rate id if empty
                     if (!items[key].tax_rate_id) items[key].tax_rate_id = 0;
 
-                    if ($('#item_table tr:last input[name=item_name]').val() !== '') {
+                    if ($('#item_table tbody:last input[name=item_name]').val() !== '') {
                         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
                     }
-                    $('#item_table tr:last input[name=item_name]').val(items[key].product_name);
-                    $('#item_table tr:last textarea[name=item_description]').val(items[key].product_description);
-                    $('#item_table tr:last input[name=item_price]').val(items[key].product_price);
-                    $('#item_table tr:last input[name=item_quantity]').val('1');
-                    $('#item_table tr:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
+                    $('#item_table tbody:last input[name=item_name]').val(items[key].product_name);
+                    $('#item_table tbody:last textarea[name=item_description]').val(items[key].product_description);
+                    $('#item_table tbody:last input[name=item_price]').val(items[key].product_price);
+                    $('#item_table tbody:last input[name=item_quantity]').val('1');
+                    $('#item_table tbody:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
 
                     $('#modal-choose-items').modal('hide');
                 }
@@ -82,9 +82,11 @@
             <h3><?php echo lang('add_product'); ?></h3>
         </div>
         <div class="modal-body">
-            <div class="form-inline">
-                <div class="form-group filter-form">
-                    <!-- ToDo
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="form-inline">
+                        <div class="form-group filter-form">
+                            <!-- ToDo
 					<select name="filter_family" id="filter_family" class="form-control">
 						<option value=""><?php echo lang('any_family'); ?></option>
 						<?php foreach ($families as $family) { ?>
@@ -93,16 +95,30 @@
 						<?php } ?>
 					</select>
 					-->
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" name="filter_product" id="filter_product"
-                           placeholder="<?php echo lang('product_name'); ?>" value="<?php echo $filter_product ?>">
-                </div>
-                <button type="button" id="filter-button"
-                        class="btn btn-default"><?php echo lang('search_product'); ?></button>
-                <!-- ToDo
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="filter_product" id="filter_product"
+                                   placeholder="<?php echo lang('product_name'); ?>" value="<?php echo $filter_product ?>">
+                        </div>
+                        <button type="button" id="filter-button"
+                                class="btn btn-default"><?php echo lang('search_product'); ?></button>
+                        <!-- ToDo
 				<button type="button" id="reset-button" class="btn btn-default"><?php echo lang('reset'); ?></button>
 				-->
+                    </div>
+                </div>
+                <div class="col-xs-4 text-right">
+                    <div class="btn-group">
+                        <button class="btn btn-danger" type="button" data-dismiss="modal">
+                            <i class="fa fa-times"></i>
+                            <?php echo lang('cancel'); ?>
+                        </button>
+                        <button class="select-items-confirm btn btn-success" type="button">
+                            <i class="fa fa-check"></i>
+                            <?php echo lang('submit'); ?>
+                        </button>
+                    </div>
+                </div>
             </div>
             <br/>
 
@@ -132,7 +148,7 @@
                                 <b><?php echo $product->product_name; ?></b>
                             </td>
                             <td>
-                                <?php echo $product->product_description; ?>
+                                <?php echo nl2br($product->product_description); ?>
                             </td>
                             <td class="text-right">
                                 <?php echo format_currency($product->product_price); ?>
@@ -156,7 +172,7 @@
                     <i class="fa fa-times"></i>
                     <?php echo lang('cancel'); ?>
                 </button>
-                <button class="btn btn-success" id="select-items-confirm" type="button">
+                <button class="select-items-confirm btn btn-success"  type="button">
                     <i class="fa fa-check"></i>
                     <?php echo lang('submit'); ?>
                 </button>
