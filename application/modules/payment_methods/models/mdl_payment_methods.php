@@ -37,7 +37,7 @@ class Mdl_Payment_Methods extends Response_Model
             'payment_method_name' => array(
                 'field' => 'payment_method_name',
                 'label' => lang('payment_method'),
-                'rules' => 'required|is_unique[ip_payment_methods.payment_method_name]'
+                'rules' => 'required'
             )
         );
     }

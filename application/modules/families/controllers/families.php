@@ -41,6 +41,14 @@ class Families extends Admin_Controller
             redirect('families');
         }
 
+        if ($this->input->post('is_update') == 0 && $this->input->post('family_name') != '') {
+            $check = $this->db->get_where('ip_families', array('family_name' => $this->input->post('family_name')))->result();
+            if (!empty($check)) {
+                $this->session->set_flashdata('alert_error', lang('family_already_exists'));
+                redirect('families/form');
+            }
+        }
+
         if ($this->mdl_families->run_validation()) {
             $this->mdl_families->save($id);
             redirect('families');
@@ -50,6 +58,7 @@ class Families extends Admin_Controller
             if (!$this->mdl_families->prep_form($id)) {
                 show_404();
             }
+            $this->mdl_families->set_form_value('is_update', true);
         }
 
         $this->layout->buffer('content', 'families/form');
