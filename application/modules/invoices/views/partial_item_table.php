@@ -208,7 +208,23 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-12 col-md-6 col-md-offset-6 col-lg-4 col-lg-offset-8">
+    <div class="col-xs-12 col-md-4">
+
+        <div class="btn-group">
+            <?php if ($invoice->is_read_only != 1) { ?>
+                <a href="#" class="btn_add_row btn btn-sm btn-default">
+                    <i class="fa fa-plus"></i> <?php echo lang('add_new_row'); ?>
+                </a>
+                <a href="#" class="btn_add_product btn btn-sm btn-default">
+                    <i class="fa fa-database"></i>
+                    <?php echo lang('add_product'); ?>
+                </a>
+            <?php } ?>
+        </div>
+        <br/><br/>
+    </div>
+
+    <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-condensed text-right">
             <tr>
                 <td style="width: 40%;"><?php echo lang('subtotal'); ?></td>
