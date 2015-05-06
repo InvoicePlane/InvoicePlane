@@ -232,6 +232,55 @@ class Ajax extends Admin_Controller
         echo increment_user_date($invoice_date, $recur_frequency);
     }
 
+    public function modal_change_client()
+    {
+        $this->load->module('layout');
+        $this->load->model('clients/mdl_clients');
+
+        $data = array(
+            'client_name' => $this->input->post('client_name'),
+            'invoice_id' => $this->input->post('invoice_id'),
+            'clients' => $this->mdl_clients->get()->result(),
+        );
+
+        $this->layout->load_view('invoices/modal_change_client', $data);
+    }
+
+    public function change_client()
+    {
+        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('clients/mdl_clients');
+
+        // Get the client ID
+        $client_name = $this->input->post('client_name');
+        $client = $this->mdl_clients->where('client_name', $this->db->escape_str($client_name))
+            ->get()->row();
+
+        if (!empty($client)) {
+            $client_id = $client->client_id;
+            $invoice_id = $this->input->post('invoice_id');
+
+            $db_array = array(
+                'client_id' => $client_id,
+            );
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->update('ip_invoices', $db_array);
+
+            $response = array(
+                'success' => 1,
+                'invoice_id' => $invoice_id
+            );
+        } else {
+            $this->load->helper('json_error');
+            $response = array(
+                'success' => 0,
+                'validation_errors' => json_errors()
+            );
+        }
+
+        echo json_encode($response);
+    }
+
     public function modal_copy_invoice()
     {
         $this->load->module('layout');
