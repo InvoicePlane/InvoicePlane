@@ -17,15 +17,15 @@
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
-            // will create the new client if necessary
+            // will create the new client if necessar
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
                     client_name: $('#client_name').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_password: $('#invoice_password').val(),
-                    user_id: '<?php echo $this->session->userdata('user_id'); ?>'
-
+                    user_id: '<?php echo $this->session->userdata('user_id'); ?>',
+                    payment_method: $('#payment_method_id').val()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -55,6 +55,8 @@
             <h3><?php echo lang('create_invoice'); ?></h3>
         </div>
         <div class="modal-body">
+
+            <input class="hidden" id="payment_method_id" value="<?php echo $this->mdl_settings->setting('invoice_default_payment_method'); ?>">
 
             <div class="form-group">
                 <label for="client_name"><?php echo lang('client'); ?></label>
