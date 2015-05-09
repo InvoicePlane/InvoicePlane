@@ -28,6 +28,7 @@
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/upload.css">
 
     <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/monospace.css">
@@ -40,6 +41,11 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.2.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-typeahead.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/select2.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone.js"></script>
+
+    <script>
+        Dropzone.autoDiscover = false;
+    </script>
 
     <script type="text/javascript">
 

@@ -33,3 +33,13 @@ CREATE TABLE `ip_tasks` (
   PRIMARY KEY (`task_id`)
 ) ENGINE = MyISAM DEFAULT CHARSET = utf8; 
 
+# For module "upload" IP-211
+CREATE TABLE `ip_uploads` (
+  `upload_id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `url_key` CHAR(32) NOT NULL,
+  `file_name_original` longtext NOT NULL,
+  `file_name_new` longtext NOT NULL,
+  `uploaded_date` date NOT NULL,
+  PRIMARY KEY (`upload_id`)
+) ENGINE = MyISAM DEFAULT CHARSET = utf8;
