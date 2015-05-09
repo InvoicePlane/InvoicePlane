@@ -43,3 +43,7 @@ CREATE TABLE `ip_uploads` (
   `uploaded_date` date NOT NULL,
   PRIMARY KEY (`upload_id`)
 ) ENGINE = MyISAM DEFAULT CHARSET = utf8;
+
+# Attach pdf on emails setting
+INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
+VALUES ('email_pdf_attachment', '1');
