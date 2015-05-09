@@ -99,7 +99,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
     }
 
     // Add the attachment if supplied
-    if ($attachment_path) {
+    if ($attachment_path && $CI->mdl_settings->setting('email_pdf_attachment')) {
             $mail->AddAttachment($attachment_path);
     }
     // Add the other attachments if supplied
