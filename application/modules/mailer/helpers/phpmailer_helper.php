@@ -16,7 +16,7 @@ if (!defined('BASEPATH'))
  * 
  */
 
-function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $cc = NULL, $bcc = NULL)
+function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $cc = NULL, $bcc = NULL,$more_attachments = NULL)
 {
     require_once(APPPATH . 'modules/mailer/helpers/phpmailer/class.phpmailer.php');
 
@@ -112,7 +112,14 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
 
     // Add the attachment if supplied
     if ($attachment_path) {
-        $mail->AddAttachment($attachment_path);
+            $mail->AddAttachment($attachment_path);
+    }
+    // Add the other attachments if supplied
+    if ($more_attachments) {
+
+        foreach($more_attachments as $paths) {
+            $mail->AddAttachment($paths['path'],$paths['filename']);
+        }
     }
 
     // And away it goes...
