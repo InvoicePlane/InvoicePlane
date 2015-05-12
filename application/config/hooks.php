@@ -17,5 +17,15 @@ $hook['pre_controller'] = array(
 );
 
 
+//Uncomment to allow Joomla Single Sign On
+/*
+$hook['post_controller'][] = array(
+    'class'    => 'JoomlaSSO',
+    'function' => 'CheckLogin',
+    'filename' => 'JoomlaSSO.php',
+    'filepath' => 'hooks'
+);
+*/
+
 /* End of file hooks.php */
 /* Location: ./application/config/hooks.php */
