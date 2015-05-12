@@ -80,6 +80,7 @@ class Quotes extends Admin_Controller
         $this->load->model('mdl_quote_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_quote_custom');
+        $this->load->library('encrypt');
 
         $quote_custom = $this->mdl_quote_custom->where('quote_id', $quote_id)->get();
 
@@ -94,6 +95,7 @@ class Quotes extends Admin_Controller
         }
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
+
 
         if (!$quote) {
             show_404();

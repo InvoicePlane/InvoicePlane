@@ -7,7 +7,7 @@
     });
 </script>
 
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('settings'); ?></h1>
     <?php $this->layout->load_view('layout/header_buttons'); ?>
 </div>

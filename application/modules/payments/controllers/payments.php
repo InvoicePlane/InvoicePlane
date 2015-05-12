@@ -94,9 +94,10 @@ class Payments extends Admin_Controller
         $open_invoices = $this->mdl_invoices->where('ip_invoice_amounts.invoice_balance >', 0)->get()->result();
 
         $amounts = array();
-
+        $invoice_payment_methods = array();
         foreach ($open_invoices as $open_invoice) {
             $amounts['invoice' . $open_invoice->invoice_id] = format_amount($open_invoice->invoice_balance);
+            $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }
 
         $this->layout->set(
@@ -105,7 +106,8 @@ class Payments extends Admin_Controller
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
                 'open_invoices' => $open_invoices,
                 'custom_fields' => $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result(),
-                'amounts' => json_encode($amounts)
+                'amounts' => json_encode($amounts),
+                'invoice_payment_methods' => json_encode($invoice_payment_methods)
             )
         );
 

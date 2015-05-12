@@ -114,15 +114,18 @@ class Mdl_Import extends Response_Model
 
         while (($data = fgetcsv($handle, 1000, ",")) <> FALSE) {
             // Check to make sure the file headers match the expected headers
-            if ($row == 1 and $data <> $headers) {
-                return FALSE;
+            if ($row == 1) {
+                foreach ($headers as $header){
+                    if(!in_array($header, $data))
+                        return FALSE;
+                }
+                $fileheaders = $data;
             } elseif ($row > 1) {
                 // Init the array
                 $db_array = array();
-
                 // Loop through each of the values in the row
                 foreach ($headers as $key => $header) {
-                    $db_array[$header] = ($data[$key] <> 'NULL') ? $data[$key] : '';
+                    $db_array[$header] = ($data[array_keys($fileheaders,$header)[0]] <> 'NULL') ? $data[array_keys($fileheaders,$header)[0]] : '';
                 }
 
                 // Create a couple of default values if file is clients.csv

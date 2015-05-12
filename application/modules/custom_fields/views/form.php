@@ -1,11 +1,11 @@
 <form method="post" class="form-horizontal">
 
-    <div class="headerbar clearfix">
+    <div id="headerbar">
         <h1 class="pull-left"><?php echo lang('custom_field_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 

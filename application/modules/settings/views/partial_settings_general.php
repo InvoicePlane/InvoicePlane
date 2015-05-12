@@ -125,21 +125,52 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="control-label">
-            <?php echo lang('tax_rate_decimal_places'); ?>
-        </label>
-        <select name="settings[tax_rate_decimal_places]" class="input-sm form-control"
-                id="tax_rate_decimal_places">
-            <option value="2"
-                    <?php if ($this->mdl_settings->setting('tax_rate_decimal_places') == '2') { ?>selected="selected"<?php } ?>>
-                2
-            </option>
-            <option value="3"
-                    <?php if ($this->mdl_settings->setting('tax_rate_decimal_places') == '3') { ?>selected="selected"<?php } ?>>
-                3
-            </option>
-        </select>
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo lang('tax_rate_decimal_places'); ?>
+                </label>
+                <select name="settings[tax_rate_decimal_places]" class="input-sm form-control"
+                        id="tax_rate_decimal_places">
+                    <option value="2"
+                            <?php if ($this->mdl_settings->setting('tax_rate_decimal_places') == '2') { ?>selected="selected"<?php } ?>>
+                        2
+                    </option>
+                    <option value="3"
+                            <?php if ($this->mdl_settings->setting('tax_rate_decimal_places') == '3') { ?>selected="selected"<?php } ?>>
+                        3
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo lang('default_list_limit'); ?>
+                </label>
+                <select name="settings[default_list_limit]" class="input-sm form-control"
+                        id="default_list_limit">
+                    <option value="15"
+                            <?php if ($this->mdl_settings->setting('default_list_limit') == '15') { ?>selected="selected"<?php } ?>>
+                        15
+                    </option>
+                    <option value="25"
+                            <?php if ($this->mdl_settings->setting('default_list_limit') == '25') { ?>selected="selected"<?php } ?>>
+                        25
+                    </option>
+                    <option value="50"
+                            <?php if ($this->mdl_settings->setting('default_list_limit') == '50') { ?>selected="selected"<?php } ?>>
+                        50
+                    </option>
+                    <option value="100"
+                            <?php if ($this->mdl_settings->setting('default_list_limit') == '100') { ?>selected="selected"<?php } ?>>
+                        100
+                    </option>
+                </select>
+            </div>
+        </div>
     </div>
 
     <hr/>
@@ -187,6 +218,23 @@
                             <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo lang('this_year'); ?></option>
                     <option value="last-year"
                             <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo lang('last_year'); ?></option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo lang('disable_quickactions'); ?>
+                </label>
+                <select name="settings[disable_quickactions]" class="input-sm form-control"
+                        id="disable_quickactions">
+                    <option value="0"
+                            <?php if (!$this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
+                    <option value="1"
+                            <?php if ($this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
                 </select>
             </div>
         </div>

@@ -22,7 +22,7 @@
 <form method="post" class="form-horizontal"
       action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('email_invoice'); ?></h1>
 
         <div class="pull-right btn-group">
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -138,10 +138,55 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="body" class="control-label"><?php echo lang('body'); ?>: </label>
+                <label for="email_template_body">
+                    <?php echo lang('body'); ?>:
+                </label>
             </div>
+
             <div class="col-xs-12 col-sm-6">
-                <textarea name="body" id="body" class="form-control" rows="6"></textarea>
+                <div class="html-tags btn-group btn-group-sm">
+                    <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
+                        <i class="fa fa-paragraph"></i>
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-bold">
+                        <i class="fa fa-bold"></i>
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-italic">
+                        <i class="fa fa-italic"></i>
+                    </span>
+                </div>
+                <div class="html-tags btn-group btn-group-sm">
+                    <span class="html-tag btn btn-default" data-tag-type="text-h1">H1</span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-h2">H2</span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-h3">H3</span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-h4">H4</span>
+                </div>
+                <div class="html-tags btn-group btn-group-sm">
+                    <span class="html-tag btn btn-default" data-tag-type="text-code">
+                        <i class="fa fa-code"></i>
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-hr">
+                        &lt;hr/&gt;
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-css">
+                        CSS
+                    </span>
+                </div>
+
+                <textarea name="body" id="body" style="height: 200px;"
+                          class="email-template-body form-control taggable"></textarea>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo lang('preview'); ?>
+                        <span id="email-template-preview-reload" class="pull-right cursor-pointer">
+                            <i class="fa fa-refresh"></i>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <iframe id="email-template-preview"></iframe>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -21,6 +21,7 @@ class Response_Model extends Form_Validation_Model
 
     public function save($id = NULL, $db_array = NULL)
     {
+
         if ($id) {
             $this->session->set_flashdata('alert_success', lang('record_successfully_updated'));
             parent::save($id, $db_array);

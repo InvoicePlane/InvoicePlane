@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('item_lookups'); ?></h1>
 
     <div class="pull-right">
@@ -12,7 +12,7 @@
 
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 

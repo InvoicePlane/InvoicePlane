@@ -1,11 +1,11 @@
 <form method="post" class="form-horizontal">
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('products_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -72,7 +72,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="product_price" id="product_price" class="form-control"
-                                   value="<?php echo $this->mdl_products->form_value('product_price'); ?>">
+                                   value="<?php echo format_amount($this->mdl_products->form_value('product_price')); ?>">
                         </div>
                     </div>
 
@@ -116,7 +116,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="purchase_price" id="purchase_price" class="form-control"
-                                   value="<?php echo $this->mdl_products->form_value('purchase_price'); ?>">
+                                   value="<?php echo format_amount($this->mdl_products->form_value('purchase_price')); ?>">
                         </div>
                     </div>
 

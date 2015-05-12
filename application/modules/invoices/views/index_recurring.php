@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1><?php echo lang('recurring_invoices'); ?></h1>
 
     <div class="pull-right">

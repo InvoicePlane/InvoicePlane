@@ -16,7 +16,7 @@ if (!defined('BASEPATH'))
  * 
  */
 
-function pdf_create($html, $filename, $stream = TRUE)
+function pdf_create($html, $filename, $stream = TRUE, $password = NULL)
 {
     // ---it---inizio
     // Speciale motore stampa dompdf: primo motore stampa FI, poi tolto dalla versione originale e mantenuto nella versione italiana.
@@ -31,8 +31,8 @@ function pdf_create($html, $filename, $stream = TRUE)
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
     
     $mpdf = new mPDF();
-
     $mpdf->SetAutoFont();
+    $mpdf->SetProtection(array('copy','print'), $password, $password);
 
     if (strpos($filename, lang('invoice')) !== false) {
         $CI = &get_instance();

@@ -1,13 +1,21 @@
 <form method="post" class="form-horizontal">
 
-    <div class="headerbar">
+    <div id="headerbar">
         <h1><?php echo lang('email_template_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
+
+        <input class="hidden" name="is_update" type="hidden"
+            <?php if ($this->mdl_email_templates->form_value('is_update')) {
+                echo 'value="1"';
+            } else {
+                echo 'value="0"';
+            } ?>
+            >
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
@@ -87,7 +95,7 @@
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="email_template_subject" id="email_template_subject"
                        class="form-control taggable"
-                       value="<?php echo $this->mdl_email_templates->form_value('email_template_subject'); ?>">
+                       value="<?php echo html_escape($this->mdl_email_templates->form_value('email_template_subject')); ?>">
             </div>
         </div>
 
@@ -120,12 +128,53 @@
             </div>
 
             <div class="col-xs-12 col-sm-6">
+                <div class="html-tags btn-group btn-group-sm">
+                    <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
+                        <i class="fa fa-paragraph"></i>
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-bold">
+                        <i class="fa fa-bold"></i>
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-italic">
+                        <i class="fa fa-italic"></i>
+                    </span>
+                </div>
+                <div class="html-tags btn-group btn-group-sm">
+                    <span class="html-tag btn btn-default" data-tag-type="text-h1">H1</span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-h2">H2</span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-h3">H3</span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-h4">H4</span>
+                </div>
+                <div class="html-tags btn-group btn-group-sm">
+                    <span class="html-tag btn btn-default" data-tag-type="text-code">
+                        <i class="fa fa-code"></i>
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-hr">
+                        &lt;hr/&gt;
+                    </span>
+                    <span class="html-tag btn btn-default" data-tag-type="text-css">
+                        CSS
+                    </span>
+                </div>
+
                 <textarea name="email_template_body" id="email_template_body" style="height: 200px;"
-                          class="form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body'); ?></textarea>
+                          class="email-template-body form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body'); ?></textarea>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo lang('preview'); ?>
+                        <span id="email-template-preview-reload" class="pull-right cursor-pointer">
+                            <i class="fa fa-refresh"></i>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <iframe id="email-template-preview"></iframe>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="row">
+        <div class="row form-group">
             <div class="col-xs-12">
                 <h4><?php echo lang('email_template_tags'); ?></h4>
 

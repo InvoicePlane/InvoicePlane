@@ -101,6 +101,7 @@ class Invoices extends Admin_Controller
 
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
+
         if (!$invoice) {
             show_404();
         }

@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
 
     <h1><?php echo lang('invoices'); ?></h1>
 
@@ -35,7 +35,7 @@
 
 </div>
 
-<div class="submenu">
+<div id="submenu">
     <div class="collapse clearfix" id="ip-submenu-collapse">
 
         <div class="submenu-row">
@@ -63,7 +63,7 @@
     </div>
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <div id="filter_results">
         <?php $this->layout->load_view('invoices/partial_invoice_table', array('invoices' => $invoices)); ?>
