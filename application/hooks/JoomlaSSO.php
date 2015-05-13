@@ -6,8 +6,8 @@ define("JOOMLA_DB_USERNAME", "");//Joomla's DB Username
 define("JOOMLA_DB_PASSWORD", "");//Joomla's DB Password
 define("JOOMLA_DB_PREFIX", ""); //Joomla database prefix - INCLUDE UNDERSCORE
 
-define("JOOMLA_LOGOUT_URL", "http://kfnwebsolutions.com/SandBox/Geek/index.php?option=com_users&task=logout");
-define("JOOMLA_LOGIN_URL", "http://kfnwebsolutions.com/SandBox/Geek/index.php?option=com_users&task=login");
+define("JOOMLA_LOGOUT_URL", ""); //Ex: http://example.com/index.php?option=com_users&task=logout
+define("JOOMLA_LOGIN_URL", ""); //Ex: http://example.com/index.php?option=com_users&task=login
 
 define("JOOMLA_USER_TYPE", 1); //User type that should be given to automatically created users. 1 = admin
 
