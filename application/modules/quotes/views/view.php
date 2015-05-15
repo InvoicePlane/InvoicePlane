@@ -2,12 +2,16 @@
 
     $(function () {
 
-        $('#btn_add_product').click(function () {
+        $('.btn_add_product').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
-        $('#btn_add_row').click(function () {
+        $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+        });
+
+        $('#quote_change_client').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {quote_id: <?php echo $quote_id; ?>, client_name: "<?php echo $this->db->escape_str($quote->client_name); ?>"});
         });
 
         <?php if (!$items) { ?>
@@ -63,7 +67,10 @@
 
         $(document).ready(function () {
             if ($('#quote_discount_percent').val().length > 0) {
-                toggleDisabled($('#quote_discount_amount'));
+                $('#quote_discount_amount').prop('disabled', true);
+            }
+            if ($('#quote_discount_amount').val().length > 0) {
+                $('#quote_discount_percent').prop('disabled', true);
             }
         });
         $('#quote_discount_amount').keyup(function () {
@@ -184,6 +191,11 @@
 
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"><?php echo $quote->client_name; ?></a>
+                            <?php if ($quote->quote_status_id == 1) { ?>
+                                <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
+                                      data-toggle="tooltip" data-placement="bottom"
+                                      title="<?php echo lang('change_client'); ?>"></span>
+                            <?php } ?>
                         </h2><br>
 					<span>
 						<?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>

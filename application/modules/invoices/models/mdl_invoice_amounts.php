@@ -48,6 +48,8 @@ class Mdl_Invoice_Amounts extends CI_Model
 
         $invoice_amounts = $query->row();
 
+        $invoice_total = $this->calculate_discount($invoice_id, $invoice_amounts->invoice_total);
+
         // Get the amount already paid
         $query = $this->db->query("SELECT SUM(payment_amount) AS invoice_paid FROM ip_payments WHERE invoice_id = " . $this->db->escape($invoice_id));
 
@@ -133,6 +135,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 
             // Recalculate the invoice total and balance
             $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
+            $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
             $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
 
             // Update the invoice amount record
@@ -145,7 +148,7 @@ class Mdl_Invoice_Amounts extends CI_Model
             $this->db->update('ip_invoice_amounts', $db_array);
 
             // Set to paid if applicable
-            if ($invoice_balance == 0) {
+            if ($invoice_balance <= 0) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 4);
                 $this->db->update('ip_invoices');
@@ -165,6 +168,20 @@ class Mdl_Invoice_Amounts extends CI_Model
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('ip_invoice_amounts', $db_array);
         }
+    }
+
+    public function calculate_discount($invoice_id, $invoice_total) {
+        $this->db->where('invoice_id', $invoice_id);
+        $invoice_data = $this->db->get('ip_invoices')->row();
+
+        $total              = (float) number_format($invoice_total,2,'.','');
+        $discount_amount    = (float) number_format($invoice_data->invoice_discount_amount,2,'.','');
+        $discount_percent   = (float) number_format($invoice_data->invoice_discount_percent,2,'.','');
+
+        $total = $total - $discount_amount;
+        $total = $total - round(($total / 100 * $discount_percent), 2);
+
+        return $total;
     }
 
     public function get_total_invoiced($period = NULL)
