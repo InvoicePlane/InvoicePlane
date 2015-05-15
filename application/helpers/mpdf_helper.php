@@ -21,7 +21,8 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL)
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
 
     $mpdf = new mPDF();
-    $mpdf->SetAutoFont();
+    $mpdf->useAdobeCJK = true;
+	$mpdf->SetAutoFont();
     $mpdf->SetProtection(array('copy','print'), $password, $password);
 
     if (strpos($filename, lang('invoice')) !== false) {
