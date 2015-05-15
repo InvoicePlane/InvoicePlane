@@ -41,6 +41,14 @@ class Email_Templates extends Admin_Controller
             redirect('email_templates');
         }
 
+        if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
+            $check = $this->db->get_where('ip_email_templates', array('email_template_title' => $this->input->post('email_template_title')))->result();
+            if (!empty($check)) {
+                $this->session->set_flashdata('alert_error', lang('email_template_already_exists'));
+                redirect('email_templates/form');
+            }
+        }
+
         if ($this->mdl_email_templates->run_validation()) {
             $this->mdl_email_templates->save($id);
             redirect('email_templates');
@@ -50,6 +58,7 @@ class Email_Templates extends Admin_Controller
             if (!$this->mdl_email_templates->prep_form($id)) {
                 show_404();
             }
+            $this->mdl_email_templates->set_form_value('is_update', true);
         }
 
         $this->load->model('custom_fields/mdl_custom_fields');

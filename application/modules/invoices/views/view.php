@@ -2,11 +2,11 @@
 
     $(function () {
 
-        $('#btn_add_product').click(function () {
+        $('.btn_add_product').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
-        $('#btn_add_row').click(function () {
+        $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         });
 
@@ -18,10 +18,14 @@
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>", {invoice_id: <?php echo $invoice_id; ?>});
         });
 
+        $('#invoice_change_client').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {invoice_id: <?php echo $invoice_id; ?>, client_name: "<?php echo $this->db->escape_str($invoice->client_name); ?>"});
+        });
+
         $('#btn_save_invoice').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tr.item').each(function () {
+            $('table tbody.item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -42,6 +46,8 @@
                     invoice_status_id: $('#invoice_status_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     items: JSON.stringify(items),
+                    invoice_discount_amount: $('#invoice_discount_amount').val(),
+                    invoice_discount_percent: $('#invoice_discount_percent').val(),
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val()
@@ -81,6 +87,29 @@
             helper: fixHelper
         });
         <?php } ?>
+
+        $(document).ready(function () {
+            if ($('#invoice_discount_percent').val().length > 0) {
+                $('#invoice_discount_amount').prop('disabled', true);
+            }
+            if ($('#invoice_discount_amount').val().length > 0) {
+                $('#invoice_discount_percent').prop('disabled', true);
+            }
+        });
+        $('#invoice_discount_amount').keyup(function () {
+            if (this.value.length > 0) {
+                $('#invoice_discount_percent').prop('disabled', true);
+            } else {
+                $('#invoice_discount_percent').prop('disabled', false);
+            }
+        });
+        $('#invoice_discount_percent').keyup(function () {
+            if (this.value.length > 0) {
+                $('#invoice_discount_amount').prop('disabled', true);
+            } else {
+                $('#invoice_discount_amount').prop('disabled', false);
+            }
+        });
     });
 
 </script>
@@ -166,10 +195,10 @@ if ($this->config->item('disable_read_only') == TRUE) {
         </div>
 
         <?php if ($invoice->is_read_only != 1) { ?>
-            <a href="#" class="btn btn-sm btn-default" id="btn_add_row">
+            <a href="#" class="btn_add_row btn btn-sm btn-default">
                 <i class="fa fa-plus"></i> <?php echo lang('add_new_row'); ?>
             </a>
-            <a href="#" class="btn btn-sm btn-default" id="btn_add_product">
+            <a href="#" class="btn_add_product btn btn-sm btn-default">
                 <i class="fa fa-database"></i>
                 <?php echo lang('add_product'); ?>
             </a>
@@ -209,6 +238,11 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo $invoice->client_name; ?></a>
+                            <?php if ($invoice->invoice_status_id == 1) { ?>
+                            <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
+                                  data-toggle="tooltip" data-placement="bottom"
+                                  title="<?php echo lang('change_client'); ?>"></span>
+                            <?php } ?>
                         </h2><br>
                         <span>
                             <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
@@ -237,112 +271,114 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
                         <div class=" row">
 
-                        <?php if ($invoice->invoice_sign == -1) { ?>
-                            <div class="col-xs-12">
+                            <?php if ($invoice->invoice_sign == -1) { ?>
+                                <div class="col-xs-12">
                                 <span class="label label-warning">
                                     <i class="fa fa-credit-invoice"></i>&nbsp;
                                     <?php echo lang('credit_invoice_for_invoice') . ' ';
                                     echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id,
                                         $invoice->creditinvoice_parent_id) ?>
                                 </span>
-                            </div>
-                        <?php } ?>
+                                </div>
+                            <?php } ?>
 
-                        <div class="col-xs-12 col-sm-6">
+                            <div class="col-xs-12 col-sm-6">
 
-                            <div class="invoice-properties">
-                                <label><?php echo lang('invoice'); ?> #</label>
-                                <input type="text" id="invoice_number"
-                                       class="input-sm form-control"
-                                       value="<?php echo $invoice->invoice_number; ?>"
-                                    <?php if ($invoice->is_read_only == 1) {
-                                        echo 'disabled="disabled"';
-                                    } ?>>
-                            </div>
-
-                            <div class="invoice-properties has-feedback">
-                                <label><?php echo lang('date'); ?></label>
-                                <div class="input-group">
-                                    <input name="invoice_date_created" id="invoice_date_created"
-                                           class="form-control datepicker"
-                                           value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
+                                <div class="invoice-properties">
+                                    <label><?php echo lang('invoice'); ?> #</label>
+                                    <input type="text" id="invoice_number"
+                                           class="input-sm form-control"
+                                           value="<?php echo $invoice->invoice_number; ?>"
                                         <?php if ($invoice->is_read_only == 1) {
                                             echo 'disabled="disabled"';
                                         } ?>>
+                                </div>
+
+                                <div class="invoice-properties has-feedback">
+                                    <label><?php echo lang('date'); ?></label>
+
+                                    <div class="input-group">
+                                        <input name="invoice_date_created" id="invoice_date_created"
+                                               class="form-control datepicker"
+                                               value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
+                                            <?php if ($invoice->is_read_only == 1) {
+                                                echo 'disabled="disabled"';
+                                            } ?>>
                                     <span class="input-group-addon">
                                         <i class="fa fa-calendar fa-fw"></i>
                                     </span>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="invoice-properties has-feedback">
-                                <label><?php echo lang('due_date'); ?></label>
-                                <div class="input-group">
-                                    <input name="invoice_date_due" id="invoice_date_due"
-                                           class="form-control datepicker"
-                                           value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
-                                        <?php if ($invoice->is_read_only == 1) {
-                                            echo 'disabled="disabled"';
-                                        } ?>>
+                                <div class="invoice-properties has-feedback">
+                                    <label><?php echo lang('due_date'); ?></label>
+
+                                    <div class="input-group">
+                                        <input name="invoice_date_due" id="invoice_date_due"
+                                               class="form-control datepicker"
+                                               value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
+                                            <?php if ($invoice->is_read_only == 1) {
+                                                echo 'disabled="disabled"';
+                                            } ?>>
 		                                <span class="input-group-addon">
 		                                    <i class="fa fa-calendar fa-fw"></i>
 		                                </span>
+                                    </div>
                                 </div>
+
                             </div>
 
-                        </div>
 
+                            <div class="col-xs-12 col-sm-6">
 
-                        <div class="col-xs-12 col-sm-6">
+                                <div class="invoice-properties">
+                                    <label><?php echo lang('status');
+                                        if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
+                                            echo ' <span class="small">(' . lang('can_be_changed') . ')</span>';
+                                        }
+                                        ?>
+                                    </label>
+                                    <select name="invoice_status_id" id="invoice_status_id"
+                                            class="form-control"
+                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                            echo 'disabled="disabled"';
+                                        } ?>>
+                                        <?php foreach ($invoice_statuses as $key => $status) { ?>
+                                            <option value="<?php echo $key; ?>"
+                                                    <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
+                                                <?php echo $status['label']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
 
-                            <div class="invoice-properties">
-                                <label><?php echo lang('status');
-                                    if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
-                                        echo ' <span class="small">(' . lang('can_be_changed') . ')</span>';
-                                    }
-                                    ?>
-                                </label>
-                                <select name="invoice_status_id" id="invoice_status_id"
-                                        class="form-control"
-                                    <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
-                                        echo 'disabled="disabled"';
-                                    } ?>>
-                                    <?php foreach ($invoice_statuses as $key => $status) { ?>
-                                        <option value="<?php echo $key; ?>"
-                                                <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
-                                            <?php echo $status['label']; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
+                                <div class="invoice-properties">
+                                    <label><?php echo lang('payment_method'); ?></label>
+                                    <select name="payment_method" id="payment_method" class="form-control"
+                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                            echo 'disabled="disabled"';
+                                        } ?>>
+                                        <option value=""><?php echo lang('select_payment_method'); ?></option>
+                                        <?php foreach ($payment_methods as $payment_method) { ?>
+                                            <option <?php if ($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?>
+                                                value="<?php echo $payment_method->payment_method_id; ?>">
+                                                <?php echo $payment_method->payment_method_name; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+
+                                <div class="invoice-properties">
+                                    <label><?php echo lang('invoice_password'); ?></label>
+                                    <input type="text" id="invoice_password"
+                                           class="input-sm form-control"
+                                           value="<?php echo $invoice->invoice_password; ?>"
+                                        <?php if ($invoice->is_read_only == 1) {
+                                            echo 'disabled="disabled"';
+                                        } ?>>
+                                </div>
+
                             </div>
-
-                            <div class="invoice-properties">
-                                <label><?php echo lang('payment_method'); ?></label>
-                                <select name="payment_method" id="payment_method" class="form-control"
-                                    <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
-                                        echo 'disabled="disabled"';
-                                    } ?>>
-                                    <option value=""><?php echo lang('select_payment_method'); ?></option>
-                                    <?php foreach ($payment_methods as $payment_method) { ?>
-                                        <option <?php if ($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?>
-                                            value="<?php echo $payment_method->payment_method_id; ?>">
-                                            <?php echo $payment_method->payment_method_name; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-
-                            <div class="invoice-properties">
-                                <label><?php echo lang('invoice_password'); ?></label>
-                                <input type="text" id="invoice_password"
-                                       class="input-sm form-control"
-                                       value="<?php echo $invoice->invoice_password; ?>"
-                                    <?php if ($invoice->is_read_only == 1) {
-                                        echo 'disabled="disabled"';
-                                    } ?>>
-                            </div>
-
-                        </div>
                         </div>
                     </div>
                 </div>

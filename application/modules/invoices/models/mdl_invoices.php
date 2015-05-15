@@ -128,7 +128,11 @@ class Mdl_Invoices extends Response_Model
                 'field' => 'user_id',
                 'label' => lang('user'),
                 'rule' => 'required'
-            )
+            ),
+            'payment_method' => array(
+                'field' => 'payment_method',
+                'label' => lang('payment_method')
+            ),
         );
     }
 

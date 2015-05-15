@@ -304,6 +304,20 @@
     </div>
 
     <hr/>
+    <h4><?php echo lang('system_settings'); ?></h4>
+    <br/>
+
+    <div class="form-group">
+        <label for="settings[bcc_mails_to_admin]" class="control-label">
+            <?php echo lang('bcc_mails_to_admin'); ?>
+        </label>
+        <select name="settings[bcc_mails_to_admin]" class="input-sm form-control">
+            <option value="0"><?php echo lang('no'); ?></option>
+            <option value="1"
+                    <?php if ($this->mdl_settings->setting('bcc_mails_to_admin') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+        </select>
+        <p class="help-block"><?php echo lang('bcc_mails_to_admin_hint'); ?></p>
+    </div>
 
     <div class="form-group">
         <label for="settings[cron_key]" class="control-label">

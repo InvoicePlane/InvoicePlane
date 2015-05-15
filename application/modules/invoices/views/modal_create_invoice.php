@@ -9,20 +9,23 @@
             $("#client_name").focus();
         });
 
-        $('#client_name').typeahead();
+        $().ready(function () {
+            $("[name='client_name']").select2({allowClear: true});
+            $("#client_name").focus();
+        });
 
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
-            // will create the new client if necessary
+            // will create the new client if necessar
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
                     client_name: $('#client_name').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_password: $('#invoice_password').val(),
-                    user_id: '<?php echo $this->session->userdata('user_id'); ?>'
-
+                    user_id: '<?php echo $this->session->userdata('user_id'); ?>',
+                    payment_method: $('#payment_method_id').val()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -53,10 +56,19 @@
         </div>
         <div class="modal-body">
 
+            <input class="hidden" id="payment_method_id" value="<?php echo $this->mdl_settings->setting('invoice_default_payment_method'); ?>">
+
             <div class="form-group">
                 <label for="client_name"><?php echo lang('client'); ?></label>
-                <input type="text" name="client_name" id="client_name" class="form-control"
-                       value="<?php echo $client_name; ?>" style="margin: 0 auto;" autocomplete="off">
+                <select name="client_name" id="client_name" class="input-sm form-control" autofocus>
+                    <option></option>
+                    <?php foreach ($clients as $client) { ?>
+                        <option value="<?php echo $client->client_name; ?>"
+                                <?php if ($client_name == $client->client_name) { ?>selected="selected"<?php } ?>
+                            > <?php echo $client->client_name; ?>     </option>
+
+                    <?php } ?>
+                </select>
             </div>
 
             <div class="form-group has-feedback">
