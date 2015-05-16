@@ -262,6 +262,7 @@
                         <li><?php echo anchor('custom_fields/index', lang('custom_fields')); ?></li>
                         <li><?php echo anchor('email_templates/index', lang('email_templates')); ?></li>
                         <li><?php echo anchor('invoice_groups/index', lang('invoice_groups')); ?></li>
+                        <li><?php echo anchor('invoices/archive', lang('invoice_archive')); ?></li>
                         <!-- // temporarily disabled
                         <li><?php echo anchor('item_lookups/index', lang('item_lookups')); ?></li>
                         -->

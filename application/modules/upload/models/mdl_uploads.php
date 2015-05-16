@@ -32,36 +32,6 @@ class Mdl_Uploads extends Response_Model
     {
     }
 
-    public function validation_rules()
-    {
-        return array(
-            'client_name' => array(
-                'field' => 'client_name',
-                'label' => lang('client'),
-                'rules' => 'required'
-            ),
-            'quote_date_created' => array(
-                'field' => 'quote_date_created',
-                'label' => lang('quote_date'),
-                'rules' => 'required'
-            ),
-            'invoice_group_id' => array(
-                'field' => 'invoice_group_id',
-                'label' => lang('quote_group'),
-                'rules' => 'required'
-            ),
-            'quote_password' => array(
-                'field' => 'quote_password',
-                'label' => lang('quote_password')
-            ),
-            'user_id' => array(
-                'field' => 'user_id',
-                'label' => lang('user'),
-                'rule' => 'required'
-            )
-        );
-    }
-
     public function create($db_array = NULL)
     {
         $upload_id = parent::save(NULL, $db_array);

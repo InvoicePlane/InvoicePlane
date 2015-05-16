@@ -192,6 +192,7 @@ $lang = array(
     'invoice_aging_16_30' => '16 - 30 Days',
     'invoice_aging_1_15' => '1 - 15 Days',
     'invoice_aging_above_30' => 'Above 30 Days',
+    'invoice_archive' => 'Invoice archive',
     'invoice_count' => 'Invoice Count',
     'invoice_date' => 'Invoice Date',
     'invoice_deletion_forbidden' => 'Deleting invoices is forbidden. Please contact the administrator or consult the documentation.',

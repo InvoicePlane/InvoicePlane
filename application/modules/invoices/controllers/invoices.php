@@ -69,7 +69,37 @@ class Invoices extends Admin_Controller
         $this->layout->buffer('content', 'invoices/index');
         $this->layout->render();
     }
+    public function archive()
+    {
+        $invoice_array = array();
+        if(isset($_POST['invoice_number'])) {
+            $invoiceNumber = $_POST['invoice_number'];
+            $invoice_array = glob('./uploads/archiv/*' . '_' . $invoiceNumber . '.pdf');
+                $this->layout->set(
+                    array(
+                        'invoices_archive' => $invoice_array));
+                $this->layout->buffer('content', 'invoices/archive');
+                $this->layout->render();
 
+        }else {
+            foreach (glob('./uploads/archiv/*.pdf') as $file) {
+                array_push($invoice_array, $file);
+            }
+            rsort($invoice_array);
+            $this->layout->set(
+                array(
+                    'invoices_archive' => $invoice_array));
+            $this->layout->buffer('content', 'invoices/archive');
+            $this->layout->render();
+        }
+
+    }
+    public function download($invoice)
+    {
+        header('Content-type: application/pdf');
+        header('Content-Disposition: attachment; filename="'.$invoice.'"');
+        readfile('./uploads/archiv/'.$invoice);
+    }
     public function view($invoice_id)
     {
         $this->load->model(
