@@ -66,7 +66,7 @@ class View extends Base_Controller
 
             $this->load->helper('pdf');
 
-            generate_invoice_pdf($invoice->invoice_id, $stream, $invoice_template);
+            generate_invoice_pdf($invoice->invoice_id, $stream, $invoice_template,1);
         }
     }
 

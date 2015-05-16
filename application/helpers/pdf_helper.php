@@ -16,7 +16,7 @@ if (!defined('BASEPATH'))
  * 
  */
 
-function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
+function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL,$isGuest = NULL)
 {
     $CI = &get_instance();
 
@@ -27,14 +27,13 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     $CI->load->library('encrypt');
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-
     if (!$invoice_template) {
         $CI->load->helper('template');
         $invoice_template = select_pdf_invoice_template($invoice);
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-    if ($invoice->payment_method == 0 ) $payment_method = NULL; 
+    if ($invoice->payment_method == 0) $payment_method = NULL;
 
     $data = array(
         'invoice' => $invoice,
@@ -43,12 +42,11 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
         'payment_method' => $payment_method,
         'output_type' => 'pdf'
     );
-    
+
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, TRUE);
 
     $CI->load->helper('mpdf');
-
-    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream,$invoice->invoice_password);
+    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream, $invoice->invoice_password,1,$isGuest);
 }
 
 function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
