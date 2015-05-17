@@ -238,6 +238,8 @@ class Setup extends MX_Controller
         $writables = array(
             './uploads',
             './uploads/temp',
+            './uploads/archive',
+            './uploads/customer_files',
             './' . APPPATH . 'config/database.php',
             './' . APPPATH . 'helpers/mpdf/tmp',
             './' . APPPATH . 'logs'

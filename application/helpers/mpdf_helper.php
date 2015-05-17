@@ -23,8 +23,8 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
     $mpdf = new mPDF();
     $mpdf->SetAutoFont();
     $mpdf->SetProtection(array('copy','print'), $password, $password);
-    if(!(is_dir('./uploads/archiv/') OR is_link('./uploads/archiv/') ))
-        mkdir ('./uploads/archiv/','0777');
+    if(!(is_dir('./uploads/archive/') OR is_link('./uploads/archive/') ))
+        mkdir ('./uploads/archive/','0777');
 
     if (strpos($filename, lang('invoice')) !== false) {
         $CI = &get_instance();
@@ -39,7 +39,7 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
             return $mpdf->Output($filename . '.pdf', 'I');
         }
 
-        foreach (glob('./uploads/archiv/*' . $filename . '.pdf') as $file) {
+        foreach (glob('./uploads/archive/*' . $filename . '.pdf') as $file) {
             array_push($invoice_array, $file);
         }
 
@@ -53,23 +53,23 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
             //$CI->session->flashdata('alert_error', 'sorry no Invoice found!');
             redirect('guest/view/invoice/' . end($CI->uri->segment_array()));
         }
-        $mpdf->Output('./uploads/archiv/' . date('Y-m-d') . '_' . $filename . '.pdf', 'F');
-        return $mpdf->Output('./uploads/archiv/' . date('Y-m-d') . '_' . $filename . '.pdf', 'I');
+        $mpdf->Output('./uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf', 'F');
+        return $mpdf->Output('./uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf', 'I');
     }
 
     else {
 
         if($isInvoice) {
 
-            foreach (glob('./uploads/archiv/*' .  $filename . '.pdf') as $file) {
+            foreach (glob('./uploads/archive/*' .  $filename . '.pdf') as $file) {
                 array_push($invoice_array, $file);
             }
             if (!empty($invoice_array) && !is_null($isGuest)) {
                 rsort($invoice_array);
                 return $invoice_array[0];
             }
-            $mpdf->Output('./uploads/archiv/' . date('Y-m-d') .'_'. $filename . '.pdf', 'F');
-            return './uploads/archiv/'.date('Y-m-d').'_'. $filename . '.pdf';
+            $mpdf->Output('./uploads/archive/' . date('Y-m-d') .'_'. $filename . '.pdf', 'F');
+            return './uploads/archive/'.date('Y-m-d').'_'. $filename . '.pdf';
         }
         $mpdf->Output('./uploads/temp/' . $filename . '.pdf', 'F');
 
