@@ -72,6 +72,19 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
             return './uploads/archiv/'.date('Y-m-d').'_'. $filename . '.pdf';
         }
         $mpdf->Output('./uploads/temp/' . $filename . '.pdf', 'F');
+
+        // DELETE OLD TEMP FILES - Housekeeping
+        // Delete any files in temp/ directory that are >1 hrs old
+        $interval = 3600;
+        if ($handle = @opendir(preg_replace('/\/$/','','./uploads/temp/'))) {
+            while (false !== ($file = readdir($handle))) {
+                if (($file != "..") && ($file != ".") && !is_dir($file) && ((filemtime('./uploads/temp/'.$file)+$interval) < time()) && (substr($file, 0, 1) !== '.') && ($file !='remove.txt')) { // mPDF 5.7.3
+                    unlink('./uploads/temp/'.$file);
+                }
+            }
+            closedir($handle);
+        }
+        //==============================================================================================================
         return './uploads/temp/' . $filename . '.pdf';
     }
 }
