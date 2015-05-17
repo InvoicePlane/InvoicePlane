@@ -44,9 +44,9 @@ class Mdl_Uploads extends Response_Model
         $this->load->model('quotes/mdl_quotes');
         $quote = $this->mdl_quotes->get_by_id($id);
         $query = $this->db->query("Select file_name_new,file_name_original from ip_uploads where url_key = '". $quote->quote_url_key ."'");
+        $names = array();
         if ($query->num_rows() > 0)
         {
-            $names = array();
             foreach ($query->result() as $row)
             {
                 array_push($names,array(
@@ -62,9 +62,9 @@ class Mdl_Uploads extends Response_Model
         $this->load->model('invoices/mdl_invoices');
         $invoice = $this->mdl_invoices->get_by_id($id);
         $query = $this->db->query("Select file_name_new,file_name_original from ip_uploads where url_key = '". $invoice->invoice_url_key ."'");
+        $names = array();
         if ($query->num_rows() > 0)
         {
-            $names = array();
             foreach ($query->result() as $row)
             {
                 array_push($names,array(
