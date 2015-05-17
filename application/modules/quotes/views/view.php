@@ -405,8 +405,14 @@
                         $.each(data, function(index, val) {
                             var mockFile = { fullname: val.fullname, size:val.size, name:val.name};
                             thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                            thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                                '<?php echo base_url(); ?>uploads/customer_files/'+val.fullname);
+                            if(val.fullname.match(/\.(jpg|jpeg|png|gif)$/))
+                            {
+                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
+                                    '<?php echo base_url(); ?>uploads/customer_files/' + val.fullname);
+                            }else {
+                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
+                                    '<?php echo base_url(); ?>assets/default/img/favicon.png');
+                            }
                             thisDropzone.emit("complete", mockFile);
                             thisDropzone.emit("success", mockFile);
                         });
@@ -415,6 +421,7 @@
             });
 
             myDropzone.on("addedfile", function(file) {
+                myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
             });
 
             // Update the total progress bar
