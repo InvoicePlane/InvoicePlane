@@ -169,7 +169,7 @@
             <?php echo lang('add_product'); ?>
         </a>
 
-        <a href="#" class="btn btn-sm btn-success" id="btn_save_quote">
+        <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_quote">
             <i class="fa fa-check"></i>
             <?php echo lang('save'); ?>
         </a>

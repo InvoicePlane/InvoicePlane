@@ -193,4 +193,8 @@ $(document).ready(function () {
     $('#email-template-preview-reload').click(function () {
         update_email_template_preview();
     });
+
+    $('.ajax-loader').bind( "click", function() {
+        $('#fullpage-loader').fadeIn(200);
+    });
 });
