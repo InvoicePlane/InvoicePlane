@@ -533,6 +533,26 @@ div.table-content {
     margin-right: 0 !important;
 }
 
+#fullpage-loader {
+    z-index: 99999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 200px;
+        opacity: 0.75;
+        margin-left: -100px;
+        margin-top: -100px;
+    }
+}
+
 /*
 |   =========================================================
 |   Tabs
@@ -1074,4 +1094,9 @@ legend, .install-step h2 {
         margin-left: 5px !important;
     }
 
+    #fullpage-loader i {
+        font-size: 100px;
+        margin-left: -500px;
+        margin-top: -500px;
+    }
 }
