@@ -1,88 +1,36 @@
 "use strict";
 
-$(document).ready(function () {
-
-    // Correct the height of the content area
-    var documentHeight = $('html').outerHeight(),
-        navbarHeight = $('.navbar').outerHeight(),
-        headerbarHeight = $('#headerbar').outerHeight(),
-        contentHeight = documentHeight - navbarHeight - headerbarHeight;
-    if ($('#content').outerHeight() < contentHeight) {
-        $('#content').outerHeight(contentHeight);
-    }
-
-    // Dropdown Datepicker fix
-    $('html').click(function () {
-        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
-    });
-
-    // Tooltips
-    $('[data-toggle="tooltip"]').tooltip();
-
-    // Handle click event for Email Template Tags insertion
-    // Example Usage
-    // <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>
-    var lastTaggableClicked;
-    $('.text-tag').bind('click', function () {
-        var templateTag = this.getAttribute("data-tag");
-        insert_at_caret(lastTaggableClicked.id, templateTag);
-        return false;
-    });
-
-    // Keep track of the last "taggable" input/textarea
-    $('.taggable').on('focus', function () {
-        lastTaggableClicked = this;
-    });
-
-    // HTML tags to email templates textarea
-    $('.html-tag').click(function (event) {
-        var tag_type = $(this).data('tagType');
-        var body_id = $('.email-template-body').attr('id');
-        insert_html_tag(tag_type, body_id);
-    });
-
-    // Email Template Preview handling
-    var email_template_body_id = $('.email-template-body').attr('id');
-
-    if ($('#email_template_preview').empty()) {
-        update_email_template_preview();
-    }
-
-    $(email_template_body_id).bind('input propertychange', function () {
-        update_email_template_preview();
-    });
-
-    $('#email-template-preview-reload').click(function () {
-        update_email_template_preview();
-    });
-});
-
 // Insert text into textarea at Caret Position
 function insert_at_caret(areaId, text) {
-    var txtarea = document.getElementById(areaId);
-    var scrollPos = txtarea.scrollTop;
-    var strPos = 0;
-    var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ?
-        "ff" : (document.selection ? "ie" : false));
-    if (br == "ie") {
+    var txtarea = document.getElementById(areaId),
+        scrollPos = txtarea.scrollTop,
+        strPos = 0,
+        br = ((txtarea.selectionStart || txtarea.selectionStart === '0') ?
+            "ff" : (document.selection ? "ie" : false)),
+        range;
+
+    if (br === "ie") {
         txtarea.focus();
-        var range = document.selection.createRange();
+        range = document.selection.createRange();
         range.moveStart('character', -txtarea.value.length);
         strPos = range.text.length;
-    } else if (br == "ff") strPos = txtarea.selectionStart;
+    } else if (br === "ff") {
+        strPos = txtarea.selectionStart;
+    }
 
-    var front = (txtarea.value).substring(0, strPos);
-    var back = (txtarea.value).substring(strPos, txtarea.value.length);
+    var front = (txtarea.value).substring(0, strPos),
+        back = (txtarea.value).substring(strPos, txtarea.value.length);
+
     txtarea.value = front + text + back;
     strPos = strPos + text.length;
-    if (br == "ie") {
+    if (br === "ie") {
         txtarea.focus();
-        var range = document.selection.createRange();
+        range = document.selection.createRange();
         range.moveStart('character', -txtarea.value.length);
         range.moveStart('character', strPos);
         range.moveEnd('character', 0);
         range.select();
-    } else if (br == "ff") {
+    } else if (br === "ff") {
         txtarea.selectionStart = strPos;
         txtarea.selectionEnd = strPos;
         txtarea.focus();
@@ -106,9 +54,13 @@ function inject_email_template(template_fields, email_template) {
     });
 }
 
+function update_email_template_preview() {
+    $('#email-template-preview').contents().find("body").html($('.email-template-body').val());
+}
+
 // Insert HTML tags into textarea
 function insert_html_tag(tag_type, destination_id) {
-    var text;
+    var text, sel, text_area, selectedText, startPos, endPos, replace, replaceText, len;
     switch (tag_type) {
         case 'text-bold':
             text = ['<b>', '</b>'];
@@ -145,22 +97,21 @@ function insert_html_tag(tag_type, destination_id) {
     }
 
     // Get the selected text
-    var text_area = document.getElementById(destination_id);
-    var selectedText;
-    if (document.selection != undefined) {
+    text_area = document.getElementById(destination_id);
+    if (document.selection !== undefined) {
         text_area.focus();
-        var sel = document.selection.createRange();
+        sel = document.selection.createRange();
         selectedText = sel.text;
     }
-    else if (text_area.selectionStart != undefined) {
-        var startPos = text_area.selectionStart;
-        var endPos = text_area.selectionEnd;
-        selectedText = text_area.value.substring(startPos, endPos)
+    else if (text_area.selectionStart !== '') {
+        startPos = text_area.selectionStart;
+        endPos = text_area.selectionEnd;
+        selectedText = text_area.value.substring(startPos, endPos);
     }
 
     // Check if <style> should be added
     if (tag_type === 'text-css') {
-        var replace = text[0] + '\n\r' + text_area.value;
+        replace = text[0] + '\n\r' + text_area.value;
         $(text_area).val(replace);
         update_email_template_preview();
         return true;
@@ -179,14 +130,67 @@ function insert_html_tag(tag_type, destination_id) {
         insert_at_caret(destination_id, text);
         update_email_template_preview();
     } else {
-        var replaceText = text[0] + selectedText + text[1];
-        var len = text_area.value.length;
-        var replace = text_area.value.substring(0, startPos) + replaceText + text_area.value.substring(endPos, len);
+        replaceText = text[0] + selectedText + text[1];
+        len = text_area.value.length;
+        replace = text_area.value.substring(0, startPos) + replaceText + text_area.value.substring(endPos, len);
         $(text_area).val(replace);
         update_email_template_preview();
     }
 }
 
-function update_email_template_preview() {
-    $('#email-template-preview').contents().find("body").html($('.email-template-body').val());
-}
+$(document).ready(function () {
+
+    // Correct the height of the content area
+    var documentHeight = $('html').outerHeight(),
+        navbarHeight = $('.navbar').outerHeight(),
+        headerbarHeight = $('#headerbar').outerHeight(),
+        contentHeight = documentHeight - navbarHeight - headerbarHeight;
+    if ($('#content').outerHeight() < contentHeight) {
+        $('#content').outerHeight(contentHeight);
+    }
+
+    // Dropdown Datepicker fix
+    $('html').click(function () {
+        $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
+    });
+
+    // Tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // Handle click event for Email Template Tags insertion
+    // Example Usage
+    // <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>
+    var lastTaggableClicked;
+    $('.text-tag').bind('click', function () {
+        var templateTag = this.getAttribute("data-tag");
+        insert_at_caret(lastTaggableClicked.id, templateTag);
+        return false;
+    });
+
+    // Keep track of the last "taggable" input/textarea
+    $('.taggable').on('focus', function () {
+        lastTaggableClicked = this;
+    });
+
+    // HTML tags to email templates textarea
+    $('.html-tag').click(function () {
+        var tag_type = $(this).data('tagType');
+        var body_id = $('.email-template-body').attr('id');
+        insert_html_tag(tag_type, body_id);
+    });
+
+    // Email Template Preview handling
+    var email_template_body_id = $('.email-template-body').attr('id');
+
+    if ($('#email_template_preview').empty()) {
+        update_email_template_preview();
+    }
+
+    $(email_template_body_id).bind('input propertychange', function () {
+        update_email_template_preview();
+    });
+
+    $('#email-template-preview-reload').click(function () {
+        update_email_template_preview();
+    });
+});
