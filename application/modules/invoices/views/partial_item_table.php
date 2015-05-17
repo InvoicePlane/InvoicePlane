@@ -209,7 +209,6 @@
 
 <div class="row">
     <div class="col-xs-12 col-md-4">
-
         <div class="btn-group">
             <?php if ($invoice->is_read_only != 1) { ?>
                 <a href="#" class="btn_add_row btn btn-sm btn-default">

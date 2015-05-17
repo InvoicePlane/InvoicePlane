@@ -83,7 +83,8 @@
             return $helper;
         };
 
-        $("#item_table tbody").sortable({
+        $("#item_table").sortable({
+            items: 'tbody',
             helper: fixHelper
         });
         <?php } ?>

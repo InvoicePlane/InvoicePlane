@@ -89,7 +89,7 @@
         </tbody>
 
         <?php foreach ($items as $item) { ?>
-            <tbody class="item">
+        <tbody class="item">
             <tr>
                 <td rowspan="2" class="td-icon"><i class="fa fa-arrows cursor-move"></i></td>
                 <td class="td-text">
@@ -187,7 +187,20 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-12 col-md-6 col-md-offset-6 col-lg-4 col-lg-offset-8">
+    <div class="col-xs-12 col-md-4">
+        <div class="btn-group">
+            <a href="#" class="btn_add_row btn btn-sm btn-default">
+                <i class="fa fa-plus"></i>
+                <?php echo lang('add_new_row'); ?>
+            </a>
+            <a href="#" class="btn_add_product btn btn-sm btn-default">
+                <i class="fa fa-database"></i>
+                <?php echo lang('add_product'); ?>
+            </a>
+        </div>
+        <br/><br/>
+    </div>
+    <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-condensed text-right">
             <tr>
                 <td style="width: 40%;"><?php echo lang('subtotal'); ?></td>
