@@ -35,7 +35,7 @@ class Upload extends Admin_Controller
         if (!empty($_FILES)) 
         {
                 $tempFile = $_FILES['file']['tmp_name'];
-                $fileName = $_FILES['file']['name'];
+                $fileName = preg_replace('/\s+/', '_',$_FILES['file']['name']);
                 $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
                 $file_exists = file_exists ( $targetFile );
 
