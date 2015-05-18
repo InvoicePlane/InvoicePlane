@@ -19,7 +19,10 @@
         });
 
         $('#invoice_change_client').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {invoice_id: <?php echo $invoice_id; ?>, client_name: "<?php echo $this->db->escape_str($invoice->client_name); ?>"});
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {
+                invoice_id: <?php echo $invoice_id; ?>,
+                client_name: "<?php echo $this->db->escape_str($invoice->client_name); ?>"
+            });
         });
 
         $('#btn_save_invoice').click(function () {
@@ -240,9 +243,9 @@ if ($this->config->item('disable_read_only') == TRUE) {
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo $invoice->client_name; ?></a>
                             <?php if ($invoice->invoice_status_id == 1) { ?>
-                            <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
-                                  data-toggle="tooltip" data-placement="bottom"
-                                  title="<?php echo lang('change_client'); ?>"></span>
+                                <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
+                                      data-toggle="tooltip" data-placement="bottom"
+                                      title="<?php echo lang('change_client'); ?>"></span>
                             <?php } ?>
                         </h2><br>
                         <span>
@@ -388,13 +391,81 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
             <?php $this->layout->load_view('invoices/partial_item_table'); ?>
 
-            <label><?php echo lang('invoice_terms'); ?></label>
-            <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
-                <?php if ($invoice->is_read_only == 1) {
-                    echo 'disabled="disabled"';
-                } ?>
-                ><?php echo $invoice->invoice_terms; ?></textarea>
+            <hr/>
 
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+
+                    <label><?php echo lang('invoice_terms'); ?></label>
+                    <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>
+                        ><?php echo $invoice->invoice_terms; ?></textarea>
+
+                </div>
+                <div class="col-xs-12 col-sm-8">
+
+                    <label class="control-label"><?php echo lang('attachments'); ?></label>
+                    <br/>
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="btn btn-default fileinput-button">
+                        <i class="fa fa-plus"></i>
+                        <span><?php echo lang('add_files'); ?></span>
+                    </span>
+
+                    <!-- dropzone -->
+                    <div class="row">
+                        <div id="actions" class="col-xs-12 col-sm-12">
+                            <div class="col-lg-7"></div>
+                            <div class="col-lg-5">
+                                <!-- The global file processing state -->
+                                <span class="fileupload-process">
+                                    <div id="total-progress" class="progress progress-striped active" role="progressbar"
+                                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                        <div class="progress-bar progress-bar-success" style="width:0%;"
+                                             data-dz-uploadprogress></div>
+                                    </div>
+                                </span>
+                            </div>
+
+                            <div id="previews" class="table table-condensed table-striped files">
+                                <div id="template" class="file-row">
+                                    <!-- This is used as the file preview template -->
+                                    <div>
+                                        <span class="preview"><img data-dz-thumbnail/></span>
+                                    </div>
+                                    <div>
+                                        <p class="name" data-dz-name></p>
+                                        <strong class="error text-danger" data-dz-errormessage></strong>
+                                    </div>
+                                    <div>
+                                        <p class="size" data-dz-size></p>
+
+                                        <div class="progress progress-striped active" role="progressbar"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100" aria-valuenow="0">
+                                            <div class="progress-bar progress-bar-success" style="..."
+                                                 data-dz-uploadprogress></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button data-dz-remove class="btn btn-danger btn-sm delete">
+                                            <i class="fa fa-trash-o"></i>
+                                            <span><?php echo lang('delete'); ?></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- stop dropzone -->
+                    </div>
+                </div>
+            </div>
+
+            <?php if ($custom_fields): ?>
+                <h4 class="no-margin"><?php echo lang('custom_fields'); ?></h4>
+            <?php endif; ?>
             <?php foreach ($custom_fields as $custom_field) { ?>
                 <label><?php echo $custom_field->custom_field_label; ?></label>
                 <input type="text" class="form-control"
@@ -407,60 +478,13 @@ if ($this->config->item('disable_read_only') == TRUE) {
             <?php } ?>
 
 
-            <label class="control-label"><?php echo lang('attachments'); ?>: </label>
-            <!-- The fileinput-button span is used to style the file input field as button -->
-            <span class="btn btn-success fileinput-button">
-                <i class="glyphicon glyphicon-plus"></i>
-                <span><?php echo lang('add_files'); ?></span>
-            </span>
+            <?php if ($invoice->invoice_status_id != 1) { ?>
+                <p class="padded">
+                    <?php echo lang('guest_url'); ?>:
+                    <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
+                </p>
+            <?php } ?>
 
-
-            <!-- dropzone -->
-            <div id="actions" class="col-xs-12 col-sm-12 row">
-                <div class="col-lg-7">
-                </div>
-                <div class="col-lg-5">
-                    <!-- The global file processing state -->
-                    <span class="fileupload-process">
-                        <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                            <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
-                        </div>
-                    </span>
-                </div>
-
-                <div class="table table-striped" class="files" id="previews">
-
-                    <div id="template" class="file-row">
-                        <!-- This is used as the file preview template -->
-                        <div>
-                            <span class="preview"><img data-dz-thumbnail /></span>
-                        </div>
-                        <div>
-                            <p class="name" data-dz-name></p>
-                            <strong class="error text-danger" data-dz-errormessage></strong>
-                        </div>
-                        <div>
-                            <p class="size" data-dz-size></p>
-                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                                <div class="progress-bar progress-bar-success" style="..." data-dz-uploadprogress></div>
-                            </div>
-                        </div>
-                        <div>
-                            <button data-dz-remove class="btn btn-danger delete">
-                                <i class="glyphicon glyphicon-trash"></i>
-                                <span><?php echo lang('delete'); ?></span>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- stop dropzone -->
-            <p class="padded">
-                <?php if ($invoice->invoice_status_id != 1) { ?>
-                    <?php echo lang('guest_url'); ?>: <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
-                <?php } ?>
-            </p>
         </div>
 
     </form>
@@ -479,20 +503,19 @@ if ($this->config->item('disable_read_only') == TRUE) {
         parallelUploads: 20,
         uploadMultiple: false,
         previewTemplate: previewTemplate,
-        autoQueue:  true, // Make sure the files aren't queued until manually added
+        autoQueue: true, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews
         clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
-        init: function() {
+        init: function () {
             thisDropzone = this;
-            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'. $invoice->invoice_url_key) ?>", function(data) {
-                $.each(data, function(index, val) {
-                    var mockFile = { fullname: val.fullname, size:val.size, name:val.name};
+            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'. $invoice->invoice_url_key) ?>", function (data) {
+                $.each(data, function (index, val) {
+                    var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                    if(val.fullname.match(/\.(jpg|jpeg|png|gif)$/))
-                    {
+                    if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo base_url(); ?>uploads/customer_files/' + val.fullname);
-                    }else {
+                    } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo base_url(); ?>assets/default/img/favicon.png');
                     }
@@ -503,30 +526,30 @@ if ($this->config->item('disable_read_only') == TRUE) {
         }
     });
 
-    myDropzone.on("addedfile", function(file) {
+    myDropzone.on("addedfile", function (file) {
         myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
     });
 
     // Update the total progress bar
-    myDropzone.on("totaluploadprogress", function(progress) {
+    myDropzone.on("totaluploadprogress", function (progress) {
         document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
     });
 
-    myDropzone.on("sending", function(file) {
+    myDropzone.on("sending", function (file) {
         // Show the total progress bar when upload starts
         document.querySelector("#total-progress").style.opacity = "1";
     });
 
     // Hide the total progress bar when nothing's uploading anymore
-    myDropzone.on("queuecomplete", function(progress) {
+    myDropzone.on("queuecomplete", function (progress) {
         document.querySelector("#total-progress").style.opacity = "0";
     });
 
-    myDropzone.on("removedfile", function(file) {
+    myDropzone.on("removedfile", function (file) {
         $.ajax({
             url: "<?php echo site_url('upload/delete_file/'.$invoice->invoice_url_key) ?>",
             type: "POST",
-            data: { 'name': file.name}
+            data: {'name': file.name}
         });
     });
 </script>

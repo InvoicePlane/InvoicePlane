@@ -11,10 +11,19 @@
 */
 // Bootstrap
 @import "bootstrap/bootstrap";
+
 // Font: Font-Awesome
 @import "fonts/font-awesome/font-awesome";
-// Import Noto Font
+
+// Import Source Sans Font
 @import "fonts/source-sans-pro";
+
+@import "select2/select2";
+@import "select2/select2-bootstrap";
+@import "bootstrap-datepicker";
+
+@import "dropzone";
+@import "upload";
 
 /*
 |   =========================================================
@@ -123,6 +132,7 @@ fieldset legend {
 
 label {
     margin-right: 10px;
+    font-weight: normal;
 }
 
 textarea {
@@ -551,6 +561,11 @@ div.table-content {
         margin-left: -100px;
         margin-top: -100px;
     }
+}
+
+// Dropzone / Attachments
+#actions {
+    margin: 15px 0;
 }
 
 /*
@@ -995,16 +1010,6 @@ legend, .install-step h2 {
 #login .alert {
     margin-bottom: 20px;
 }
-
-/*
-|   =========================================================
-|   Datepicker
-|   =========================================================
-*/
-
-@import "select2/select2";
-@import "select2/select2-bootstrap";
-@import "bootstrap-datepicker";
 
 /*
 |   =========================================================
