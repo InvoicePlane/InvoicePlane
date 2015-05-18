@@ -46,8 +46,8 @@
             <?php echo lang('default_notes'); ?>
         </label>
 	<textarea name="settings[default_quote_notes]" rows="3"
-                  class="input-sm form-control"><?php echo $this->mdl_settings->setting('default_quote_notes'); ?></textarea>
-    </div>  
+              class="input-sm form-control"><?php echo $this->mdl_settings->setting('default_quote_notes'); ?></textarea>
+    </div>
 
     <div class="form-group">
         <hr/>

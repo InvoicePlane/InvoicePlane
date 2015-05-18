@@ -74,7 +74,8 @@
                 <div class="form-group">
                     <div class="checkbox">
                         <label for="IVA">
-                            <input type="checkbox" id="checkboxTax" name="checkboxTax"> <?php echo lang('values_with_taxes'); ?>
+                            <input type="checkbox" id="checkboxTax"
+                                   name="checkboxTax"> <?php echo lang('values_with_taxes'); ?>
                         </label>
                     </div>
                 </div>

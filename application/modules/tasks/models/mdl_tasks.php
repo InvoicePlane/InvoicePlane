@@ -16,9 +16,10 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Tasks extends Response_Model {
+class Mdl_Tasks extends Response_Model
+{
 
-    public $table       = 'ip_tasks';
+    public $table = 'ip_tasks';
     public $primary_key = 'ip_tasks.task_id';
 
     public function default_select()
@@ -36,13 +37,14 @@ class Mdl_Tasks extends Response_Model {
     public function default_join()
     {
         $this->db->join('ip_projects', 'ip_projects.project_id = ip_tasks.project_id', 'left');
-    } 
-  	public function by_task($match)
-  	{
-  		$this->db->like('task_name', $match); 
-  		$this->db->or_like('task_description', $match); 
-  	}
-	
+    }
+
+    public function by_task($match)
+    {
+        $this->db->like('task_name', $match);
+        $this->db->or_like('task_description', $match);
+    }
+
     public function validation_rules()
     {
         return array(
@@ -82,28 +84,26 @@ class Mdl_Tasks extends Response_Model {
     public function db_array()
     {
         $db_array = parent::db_array();
-        
+
         $db_array['task_finish_date'] = date_to_mysql($db_array['task_finish_date']);
         $db_array['task_price'] = standardize_amount($db_array['task_price']);
 
         return $db_array;
     }
-    
+
     public function prep_form($id = NULL)
     {
-        if (!parent::prep_form($id))
-        {
+        if (!parent::prep_form($id)) {
             return FALSE;
         }
 
-        if (!$id)
-        {
+        if (!$id) {
             parent::set_form_value('task_finish_date', date('Y-m-d'));
         }
-        
+
         return TRUE;
     }
-    
+
     public function statuses()
     {
         return array(
@@ -125,7 +125,7 @@ class Mdl_Tasks extends Response_Model {
             )
         );
     }
-    
+
 }
 
 ?>

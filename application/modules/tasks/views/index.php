@@ -2,7 +2,8 @@
     <h1><?php echo lang('tasks'); ?></h1>
 
     <div class="pull-right">
-        <a class="btn btn-sm btn-primary" href="<?php echo site_url('tasks/form'); ?>"><i class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
+        <a class="btn btn-sm btn-primary" href="<?php echo site_url('tasks/form'); ?>"><i
+                class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -41,10 +42,14 @@
                     </td>
                     <td><?php echo $task->project_name; ?></td>
                     <td><?php echo format_currency($task->task_price); ?></td>
-					<td>
-						<a href="<?php echo site_url('tasks/form/'   . $task->task_id); ?>" title="<?php echo lang('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
-						<a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>" title="<?php echo lang('delete'); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');"><i class="fa fa-trash-o fa-margin"></i></a>
-					</td>
+                    <td>
+                        <a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"
+                           title="<?php echo lang('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
+                        <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
+                           title="<?php echo lang('delete'); ?>"
+                           onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');"><i
+                                class="fa fa-trash-o fa-margin"></i></a>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>

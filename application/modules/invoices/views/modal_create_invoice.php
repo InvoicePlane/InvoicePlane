@@ -74,13 +74,14 @@
         </div>
         <div class="modal-body">
 
-            <input class="hidden" id="payment_method_id" value="<?php echo $this->mdl_settings->setting('invoice_default_payment_method'); ?>">
+            <input class="hidden" id="payment_method_id"
+                   value="<?php echo $this->mdl_settings->setting('invoice_default_payment_method'); ?>">
 
             <div class="form-group">
                 <label for="client_name"><?php echo lang('client'); ?></label>
                 <input type="text" name="client_name" id="client_name" class="form-control"
                        autofocus="autofocus"
-                    <?php if ($client_name) echo 'value="'.html_escape($client_name).'"'; ?>>
+                    <?php if ($client_name) echo 'value="' . html_escape($client_name) . '"'; ?>>
             </div>
 
             <div class="form-group has-feedback">
@@ -99,7 +100,11 @@
             <div class="form-group">
                 <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('invoice_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
+                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == '') {
+                           echo '';
+                       } else {
+                           echo $this->mdl_settings->setting('invoice_pre_password');
+                       } ?>" style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">

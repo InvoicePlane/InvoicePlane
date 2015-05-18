@@ -26,7 +26,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="client_id" id="client_id" class="form-control">
-                    <option value=""><?php echo lang('no_client'); ?></option> 
+                    <option value=""><?php echo lang('no_client'); ?></option>
                     <?php foreach ($clients as $client) { ?>
                         <option value="<?php echo $client->client_id; ?>"
                             <?php if ($this->mdl_projects->form_value('client_id') == $client->client_id) { ?> selected="selected" <?php } ?>

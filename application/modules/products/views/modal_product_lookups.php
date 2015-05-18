@@ -98,7 +98,8 @@
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" name="filter_product" id="filter_product"
-                                   placeholder="<?php echo lang('product_name'); ?>" value="<?php echo $filter_product ?>">
+                                   placeholder="<?php echo lang('product_name'); ?>"
+                                   value="<?php echo $filter_product ?>">
                         </div>
                         <button type="button" id="filter-button"
                                 class="btn btn-default"><?php echo lang('search_product'); ?></button>
@@ -172,7 +173,7 @@
                     <i class="fa fa-times"></i>
                     <?php echo lang('cancel'); ?>
                 </button>
-                <button class="select-items-confirm btn btn-success"  type="button">
+                <button class="select-items-confirm btn btn-success" type="button">
                     <i class="fa fa-check"></i>
                     <?php echo lang('submit'); ?>
                 </button>
