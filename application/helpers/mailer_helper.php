@@ -39,7 +39,7 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
 
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
-    $message = nl2br(parse_template($db_invoice, $body));
+    $message = parse_template($db_invoice, $body);
     $subject = parse_template($db_invoice, $subject);
     $cc = parse_template($db_invoice, $cc);
     $bcc = parse_template($db_invoice, $bcc);
@@ -60,7 +60,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
-    $message = nl2br(parse_template($db_quote, $body));
+    $message = parse_template($db_quote, $body);
     $subject = parse_template($db_quote, $subject);
     $cc = parse_template($db_quote, $cc);
     $bcc = parse_template($db_quote, $bcc);
