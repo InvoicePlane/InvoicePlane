@@ -316,6 +316,7 @@
             <option value="1"
                     <?php if ($this->mdl_settings->setting('bcc_mails_to_admin') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
         </select>
+
         <p class="help-block"><?php echo lang('bcc_mails_to_admin_hint'); ?></p>
     </div>
 

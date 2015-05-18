@@ -13,12 +13,12 @@
             <div class="col-xs-12 col-sm-7">
                 <fieldset>
                     <legend>
-                    <?php if($this->mdl_tasks->form_value('task_id')) : ?>
-                        #<?php echo $this->mdl_tasks->form_value('task_id'); ?>&nbsp;
-                        <?php echo $this->mdl_tasks->form_value('task_name'); ?>
-                    <?php else : ?>
-                        <?php echo lang('new_task'); ?>
-                    <?php endif; ?>
+                        <?php if ($this->mdl_tasks->form_value('task_id')) : ?>
+                            #<?php echo $this->mdl_tasks->form_value('task_id'); ?>&nbsp;
+                            <?php echo $this->mdl_tasks->form_value('task_name'); ?>
+                        <?php else : ?>
+                            <?php echo lang('new_task'); ?>
+                        <?php endif; ?>
                     </legend>
 
                     <div class="form-group">
@@ -73,8 +73,9 @@
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <select name="task_status" id="task_status" class="form-control">
-                                <?php foreach ($task_statuses as $key=>$status) { ?>
-                                    <option value="<?php echo $key; ?>" <?php if ($key == $this->mdl_tasks->form_value('task_status')) { ?>selected="selected"<?php } ?>><?php echo $status['label']; ?></option>
+                                <?php foreach ($task_statuses as $key => $status) { ?>
+                                    <option value="<?php echo $key; ?>"
+                                            <?php if ($key == $this->mdl_tasks->form_value('task_status')) { ?>selected="selected"<?php } ?>><?php echo $status['label']; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -95,7 +96,8 @@
                             <select name="project_id" id="project_id" class="form-control">
                                 <option value=""><?php echo lang('select_project'); ?></option>
                                 <?php foreach ($projects as $project) { ?>
-                                    <option value="<?php echo $project->project_id; ?>" <?php if ($this->mdl_tasks->form_value('project_id') == $project->project_id) { ?>selected="selected"<?php } ?>><?php echo $project->project_name; ?></option>
+                                    <option value="<?php echo $project->project_id; ?>"
+                                            <?php if ($this->mdl_tasks->form_value('project_id') == $project->project_id) { ?>selected="selected"<?php } ?>><?php echo $project->project_name; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -103,7 +105,7 @@
                 </fieldset>
             </div>
         </div>
-		
-	</div>
+
+    </div>
 
 </form>

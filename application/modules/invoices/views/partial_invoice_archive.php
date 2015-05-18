@@ -10,17 +10,17 @@
 
         <tbody>
         <?php foreach ($invoices_archive as $invoice) {
-        ?>
+            ?>
             <tr>
                 <td>
-                    <a href="<?php echo site_url('invoices/download/'.basename($invoice)); ?>"
+                    <a href="<?php echo site_url('invoices/download/' . basename($invoice)); ?>"
                        title="<?php echo lang('invoice'); ?>" target="_blank">
                         <?php echo basename($invoice); ?>
                     </a>
                 </td>
 
                 <td>
-                    <?php echo date("F d Y H:i:s.",filemtime($invoice)); ?>
+                    <?php echo date("F d Y H:i:s.", filemtime($invoice)); ?>
                 </td>
 
             </tr>

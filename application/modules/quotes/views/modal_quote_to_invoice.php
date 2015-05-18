@@ -63,7 +63,11 @@
             <div class="form-group">
                 <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('invoice_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
+                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == '') {
+                           echo '';
+                       } else {
+                           echo $this->mdl_settings->setting('invoice_pre_password');
+                       } ?>" style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">

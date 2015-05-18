@@ -133,13 +133,14 @@ class Mdl_Quote_Amounts extends CI_Model
         }
     }
 
-    public function calculate_discount($quote_id, $quote_total) {
+    public function calculate_discount($quote_id, $quote_total)
+    {
         $this->db->where('quote_id', $quote_id);
         $quote_data = $this->db->get('ip_quotes')->row();
 
-        $total              = (float) number_format($quote_total,2,'.','');
-        $discount_amount    = (float) number_format($quote_data->quote_discount_amount,2,'.','');
-        $discount_percent   = (float) number_format($quote_data->quote_discount_percent,2,'.','');
+        $total = (float)number_format($quote_total, 2, '.', '');
+        $discount_amount = (float)number_format($quote_data->quote_discount_amount, 2, '.', '');
+        $discount_percent = (float)number_format($quote_data->quote_discount_percent, 2, '.', '');
 
         $total = $total - $discount_amount;
         $total = $total - round(($total / 100 * $discount_percent), 2);

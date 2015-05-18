@@ -2,7 +2,8 @@
     <h1><?php echo lang('projects'); ?></h1>
 
     <div class="pull-right">
-        <a class="btn btn-sm btn-primary" href="<?php echo site_url('projects/form'); ?>"><i class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
+        <a class="btn btn-sm btn-primary" href="<?php echo site_url('projects/form'); ?>"><i
+                class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -30,7 +31,7 @@
             <?php foreach ($projects as $project) { ?>
                 <tr>
                     <td><?php echo $project->project_name; ?></td>
-                    <td><?php echo($project->client_id) ? $project->client_name : lang('none'); ?></td> 
+                    <td><?php echo ($project->client_id) ? $project->client_name : lang('none'); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"
@@ -44,7 +45,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo site_url('projects/delete/' . $project->project_id); ?>" onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                    <a href="<?php echo site_url('projects/delete/' . $project->project_id); ?>"
+                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
                                     </a>
                                 </li>

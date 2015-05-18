@@ -77,7 +77,7 @@
                 <label for="client_name"><?php echo lang('client'); ?></label>
                 <input type="text" name="client_name" id="client_name" class="form-control"
                        autofocus="autofocus"
-                    <?php if ($client_name) echo 'value="'.html_escape($client_name).'"'; ?>>
+                    <?php if ($client_name) echo 'value="' . html_escape($client_name) . '"'; ?>>
             </div>
 
             <div class="form-group has-feedback">
@@ -98,7 +98,11 @@
             <div class="form-group">
                 <label for="quote_password"><?php echo lang('quote_password'); ?></label>
                 <input type="text" name="quote_password" id="quote_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('quote_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('quote_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
+                       value="<?php if ($this->mdl_settings->setting('quote_pre_password') == '') {
+                           echo '';
+                       } else {
+                           echo $this->mdl_settings->setting('quote_pre_password');
+                       } ?>" style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">

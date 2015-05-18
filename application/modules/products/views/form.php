@@ -61,7 +61,8 @@
                             <label class="control-label"><?php echo lang('product_description'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
-                            <textarea name="product_description" id="product_description" class="form-control" rows="3"><?php echo $this->mdl_products->form_value('product_description'); ?></textarea>
+                            <textarea name="product_description" id="product_description" class="form-control"
+                                      rows="3"><?php echo $this->mdl_products->form_value('product_description'); ?></textarea>
                         </div>
                     </div>
 

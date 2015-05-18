@@ -193,7 +193,7 @@ class Mdl_Setup extends CI_Model
          * therefore check if it's an update, if the time difference between v1.1.2 and v1.2.0 is
          * greater than 100 and if v1.2.0 was not installed within this update process
          */
-        $this->db->where_in("version_file", array("006_1.2.0.sql","005_1.1.2.sql"));
+        $this->db->where_in("version_file", array("006_1.2.0.sql", "005_1.1.2.sql"));
         $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
 

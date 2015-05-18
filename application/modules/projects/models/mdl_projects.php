@@ -16,9 +16,10 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class Mdl_Projects extends Response_Model {
+class Mdl_Projects extends Response_Model
+{
 
-    public $table       = 'ip_projects';
+    public $table = 'ip_projects';
     public $primary_key = 'ip_projects.project_id';
 
     public function default_select()
@@ -39,18 +40,18 @@ class Mdl_Projects extends Response_Model {
 
     public function validation_rules()
     {
-		return array(
-			'project_name' => array(
-				'field' => 'project_name',
-				'label' => lang('project_name'),
-				'rules' => 'required'
-			),
-      'client_id' => array(
-          'field' => 'client_id',
-          'label' => lang('client'),
-      )
-		);    
-	}
+        return array(
+            'project_name' => array(
+                'field' => 'project_name',
+                'label' => lang('project_name'),
+                'rules' => 'required'
+            ),
+            'client_id' => array(
+                'field' => 'client_id',
+                'label' => lang('client'),
+            )
+        );
+    }
 
 }
 

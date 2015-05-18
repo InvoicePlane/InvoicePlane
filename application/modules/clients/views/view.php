@@ -74,6 +74,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
                     <h3><?php echo $client->client_name; ?></h3>
+
                     <p>
                         <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>
                         <?php echo ($client->client_address_2) ? $client->client_address_2 . '<br>' : ''; ?>

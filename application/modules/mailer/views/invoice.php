@@ -204,7 +204,8 @@
                 <div class="col-lg-5">
                     <!-- The global file processing state -->
                     <span class="fileupload-process">
-                      <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                      <div id="total-progress" class="progress progress-striped active" role="progressbar"
+                           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                           <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
                       </div>
                     </span>
@@ -215,7 +216,7 @@
                     <div id="template" class="file-row">
                         <!-- This is used as the file preview template -->
                         <div>
-                            <span class="preview"><img data-dz-thumbnail /></span>
+                            <span class="preview"><img data-dz-thumbnail/></span>
                         </div>
                         <div>
                             <p class="name" data-dz-name></p>
@@ -223,8 +224,11 @@
                         </div>
                         <div>
                             <p class="size" data-dz-size></p>
-                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                                <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+
+                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0"
+                                 aria-valuemax="100" aria-valuenow="0">
+                                <div class="progress-bar progress-bar-success" style="width:0%;"
+                                     data-dz-uploadprogress></div>
                             </div>
                         </div>
                         <div>
@@ -238,7 +242,7 @@
                 </div>
             </div>
             <!-- stop dropzone -->
-    </div>
+        </div>
 
 </form>
 <script>
@@ -254,20 +258,19 @@
         parallelUploads: 20,
         uploadMultiple: false,
         previewTemplate: previewTemplate,
-        autoQueue:  true, // Make sure the files aren't queued until manually added
+        autoQueue: true, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews
         clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
-        init: function() {
+        init: function () {
             thisDropzone = this;
-            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'. $invoice->invoice_url_key) ?>", function(data) {
-                $.each(data, function(index, val) {
-                    var mockFile = { fullname: val.fullname, size:val.size, name:val.name};
+            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'. $invoice->invoice_url_key) ?>", function (data) {
+                $.each(data, function (index, val) {
+                    var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                    if(val.fullname.match(/\.(jpg|jpeg|png|gif)$/))
-                    {
+                    if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo base_url(); ?>uploads/customer_files/' + val.fullname);
-                    }else {
+                    } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo base_url(); ?>assets/default/img/favicon.png');
                     }
@@ -278,31 +281,31 @@
         }
     });
 
-    myDropzone.on("addedfile", function(file) {
+    myDropzone.on("addedfile", function (file) {
         myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
     });
 
     // Update the total progress bar
-    myDropzone.on("totaluploadprogress", function(progress) {
+    myDropzone.on("totaluploadprogress", function (progress) {
         document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
     });
 
-    myDropzone.on("sending", function(file) {
+    myDropzone.on("sending", function (file) {
         // Show the total progress bar when upload starts
         document.querySelector("#total-progress").style.opacity = "1";
     });
 
     // Hide the total progress bar when nothing's uploading anymore
-    myDropzone.on("queuecomplete", function(progress) {
+    myDropzone.on("queuecomplete", function (progress) {
         document.querySelector("#total-progress").style.opacity = "0";
 
     });
 
-    myDropzone.on("removedfile", function(file) {
+    myDropzone.on("removedfile", function (file) {
         $.ajax({
             url: "<?php echo site_url('upload/delete_file/'.$invoice->invoice_url_key) ?>",
             type: "POST",
-            data: { 'name': file.name}
+            data: {'name': file.name}
         });
     });
 </script>
