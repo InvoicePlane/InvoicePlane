@@ -21,7 +21,8 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
 
     $mpdf = new mPDF();
-    $mpdf->SetAutoFont();
+    $mpdf->useAdobeCJK = true;
+	$mpdf->SetAutoFont();
     $mpdf->SetProtection(array('copy','print'), $password, $password);
     if(!(is_dir('./uploads/archive/') OR is_link('./uploads/archive/') ))
         mkdir ('./uploads/archive/','0777');

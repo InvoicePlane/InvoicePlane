@@ -83,7 +83,8 @@
             return $helper;
         };
 
-        $("#item_table tbody").sortable({
+        $("#item_table").sortable({
+            items: 'tbody',
             helper: fixHelper
         });
         <?php } ?>
@@ -204,7 +205,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
             </a>
         <?php }
         if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
-            <a href="#" class="btn btn-sm btn-success" id="btn_save_invoice">
+            <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
                 <i class="fa fa-check"></i> <?php echo lang('save'); ?>
             </a>
         <?php } ?>
