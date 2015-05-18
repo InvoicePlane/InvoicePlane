@@ -66,3 +66,11 @@ CREATE TABLE `ip_uploads` (
 # Attach pdf on emails setting
 INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
 VALUES ('email_pdf_attachment', '1');
+
+# IP-283 - Allow larger item amounts
+ALTER TABLE ip_invoice_item_amounts MODIFY COLUMN item_subtotal DECIMAL(20, 2);
+ALTER TABLE ip_invoice_item_amounts MODIFY COLUMN item_tax_total DECIMAL(20, 2);
+ALTER TABLE ip_invoice_item_amounts MODIFY COLUMN item_total DECIMAL(20, 2);
+ALTER TABLE ip_quote_item_amounts MODIFY COLUMN item_subtotal DECIMAL(20, 2);
+ALTER TABLE ip_quote_item_amounts MODIFY COLUMN item_tax_total DECIMAL(20, 2);
+ALTER TABLE ip_quote_item_amounts MODIFY COLUMN item_total DECIMAL(20, 2);
