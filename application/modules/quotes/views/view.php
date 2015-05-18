@@ -97,8 +97,9 @@
             return $helper;
         };
 
-        $("#item_table tbody").sortable({
-            helper: fixHelper
+        $("#item_table").sortable({
+            helper: fixHelper,
+            items: 'tbody'
         });
 
     });
@@ -159,16 +160,16 @@
             </ul>
         </div>
 
-        <a href="#" class="btn btn-sm btn-default" id="btn_add_row">
+        <a href="#" class="btn_add_row btn btn-sm btn-default">
             <i class="fa fa-plus"></i>
             <?php echo lang('add_new_row'); ?>
         </a>
-        <a href="#" class="btn btn-sm btn-default" id="btn_add_product">
+        <a href="#" class="btn_add_product btn btn-sm btn-default">
             <i class="fa fa-database"></i>
             <?php echo lang('add_product'); ?>
         </a>
 
-        <a href="#" class="btn btn-sm btn-success" id="btn_save_quote">
+        <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_quote">
             <i class="fa fa-check"></i>
             <?php echo lang('save'); ?>
         </a>

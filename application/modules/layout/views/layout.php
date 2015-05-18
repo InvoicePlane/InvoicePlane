@@ -328,6 +328,10 @@
 
 </div>
 
+<div id="fullpage-loader" style="display: none;">
+    <i class="fa fa-cog fa-spin"></i>
+</div>
+
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
