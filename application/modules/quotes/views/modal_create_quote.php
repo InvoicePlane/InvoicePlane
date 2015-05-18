@@ -22,7 +22,10 @@
                     <?php
                     $i=0;
                     foreach ($clients as $client){
-                        echo "{id: ".$i.", text: '".str_replace("","",$client->client_name)."'}";
+                        echo "{
+                        id: '".str_replace("","",$client->client_name)."',
+                        text: '".str_replace("","",$client->client_name)."'
+                        }";
                         if (($i+1) != count($clients)) echo ',';
                         $i++;
                     }
