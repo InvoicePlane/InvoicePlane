@@ -50,7 +50,9 @@
 
 </head>
 
-<body>
+<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
+    echo 'hidden-sidebar';
+} ?>">
 
 <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
