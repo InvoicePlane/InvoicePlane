@@ -232,10 +232,12 @@
                             </div>
                         </div>
                         <div>
+                            <?php if ($invoice->is_read_only != 1) { ?>
                             <button data-dz-remove class="btn btn-danger delete">
                                 <i class="glyphicon glyphicon-trash"></i>
                                 <span><?php echo lang('delete'); ?></span>
                             </button>
+                            <?php } ?>
                         </div>
                     </div>
 
