@@ -450,10 +450,12 @@ if ($this->config->item('disable_read_only') == TRUE) {
                                         </div>
                                     </div>
                                     <div>
+                                        <?php if ($invoice->is_read_only != 1) { ?>
                                         <button data-dz-remove class="btn btn-danger btn-sm delete">
                                             <i class="fa fa-trash-o"></i>
                                             <span><?php echo lang('delete'); ?></span>
                                         </button>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
