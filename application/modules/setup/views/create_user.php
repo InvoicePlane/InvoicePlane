@@ -1,3 +1,9 @@
+<script type="text/javascript">
+    $().ready(function () {
+        $("[name='user_country']").select2({allowClear: true});
+    });
+</script>
+
 <div class="container">
     <div class="install-panel">
 
@@ -61,7 +67,8 @@
                     <?php echo lang('street_address_2'); ?>
                 </label>
                 <input type="text" name="user_address_2" id="user_address_2" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <div class="form-group">
@@ -69,7 +76,8 @@
                     <?php echo lang('city'); ?>
                 </label>
                 <input type="text" name="user_city" id="user_city" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_city'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_city'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <div class="form-group">
@@ -77,7 +85,8 @@
                     <?php echo lang('state'); ?>
                 </label>
                 <input type="text" name="user_state" id="user_state" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_state'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_state'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <div class="form-group">
@@ -85,15 +94,21 @@
                     <?php echo lang('zip_code'); ?>
                 </label>
                 <input type="text" name="user_zip" id="user_zip" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_zip'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_zip'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
                     <?php echo lang('country'); ?>
                 </label>
-                <input type="text" name="user_country" id="user_country" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_country'); ?>">
+                <select name="user_country" class="form-control">
+                    <option></option>
+                    <?php foreach ($countries as $cldr => $country) { ?>
+                        <option value="<?php echo $cldr; ?>"
+                                <?php if ($this->mdl_users->form_value('user_country') == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                    <?php } ?>
+                </select>
             </div>
 
             <legend><?php echo lang('setup_other_contact'); ?></legend>
@@ -105,7 +120,8 @@
                     <?php echo lang('phone'); ?>
                 </label>
                 <input type="text" name="user_phone" id="user_phone" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_phone'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_phone'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <div class="form-group">
@@ -113,7 +129,8 @@
                     <?php echo lang('fax'); ?>
                 </label>
                 <input type="text" name="user_fax" id="user_fax" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_fax'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_fax'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <div class="form-group">
@@ -121,7 +138,8 @@
                     <?php echo lang('mobile'); ?>
                 </label>
                 <input type="text" name="user_mobile" id="user_mobile" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <div class="form-group">
@@ -129,7 +147,8 @@
                     <?php echo lang('web'); ?>
                 </label>
                 <input type="text" name="user_web" id="user_web" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_web'); ?>">
+                        value="<?php echo $this->mdl_users->form_value('user_web'); ?>"
+                        placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <input type="submit" class="btn btn-success" name="btn_continue"
