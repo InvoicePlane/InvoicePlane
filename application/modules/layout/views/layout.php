@@ -198,7 +198,7 @@
                     </ul>
                 </li>
 
-                <li class="dropdown">
+                <li class="dropdown hidden">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
                             class="hidden-sm"><?php echo lang('tasks'); ?></span><i
