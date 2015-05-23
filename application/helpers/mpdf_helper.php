@@ -55,7 +55,7 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
             redirect('guest/view/invoice/' . end($CI->uri->segment_array()));
         }
         $mpdf->Output('./uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf', 'F');
-        return $mpdf->Output('./uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf', 'I');
+        return $mpdf->Output( $filename . '.pdf', 'I');
     }
 
     else {
