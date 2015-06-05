@@ -4,12 +4,15 @@
 
         amounts = JSON.parse('<?php echo $amounts; ?>');
         invoice_payment_methods = JSON.parse('<?php echo $invoice_payment_methods; ?>');
-
         $('#invoice_id').change(function () {
             var invoice_identifier = "invoice" + $('#invoice_id').val();
             $('#payment_amount').val(amounts[invoice_identifier]);
-            $('#payment_method_id option[value="' + invoice_payment_methods[invoice_identifier] + '"]').attr('selected', 'selected');
-            $('#payment_method_id').attr('disabled', 'disabled');
+            $('#payment_method_id option[value="' + invoice_payment_methods[invoice_identifier] + '"]').prop('selected', true);
+            if (invoice_payment_methods[invoice_identifier] != 0) {
+                $('#payment_method_id').prop('disabled', true);
+            } else {
+                $('#payment_method_id').prop('disabled', false);
+            };
         });
 
     });
@@ -85,7 +88,7 @@
             <div class="col-xs-12 col-sm-6">
                 <select id="payment_method_id" name="payment_method_id" class="form-control"
                     <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
-                    <option value="0"></option>
+
                     <?php foreach ($payment_methods as $payment_method) { ?>
                         <option value="<?php echo $payment_method->payment_method_id; ?>"
                                 <?php if ($this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id) { ?>selected="selected"<?php } ?>>
