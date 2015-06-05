@@ -141,7 +141,7 @@ class Mdl_Invoices extends Response_Model
         return array(
             'invoice_number' => array(
                 'field' => 'invoice_number',
-                'label' => lang('invoice_number'),
+                'label' => lang('invoice').' #',
                 'rules' => 'required|is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
             ),
             'invoice_date_created' => array(
