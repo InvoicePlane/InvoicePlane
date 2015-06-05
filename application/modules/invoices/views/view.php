@@ -61,13 +61,16 @@
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     }
                     else {
-                        $('.control-group').removeClass('error');
+                        $('#fullpage-loader').hide();
+                        $('.control-group').removeClass('has-error');
                         $('div.alert[class*="alert-"]').remove();
-                        var resp_errors = response.validation_errors;
+                        var resp_errors = response.validation_errors,
+                            all_resp_errors = '';
                         for (var key in resp_errors) {
-                            $('#' + key).parent().parent().addClass('error');
-                            $('#invoice_form').prepend('<div class="alert alert-danger">' + resp_errors[key] + '</div>');
+                            $('#' + key).parent().addClass('has-error');
+                            all_resp_errors += resp_errors[key];
                         }
+                        $('#invoice_form').prepend('<div class="alert alert-danger">' + all_resp_errors + '</div>');
                     }
                 });
         });
