@@ -161,8 +161,7 @@
                 </td>
                 <td class="td-icon text-right td-vert-middle">
                     <?php if ($invoice->is_read_only != 1): ?>
-                        <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>"
-                           title="<?php echo lang('delete'); ?>">
+                        <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>" title="<?php echo lang('delete'); ?>">
                             <i class="fa fa-trash-o text-danger"></i>
                         </a>
                     <?php endif; ?>
