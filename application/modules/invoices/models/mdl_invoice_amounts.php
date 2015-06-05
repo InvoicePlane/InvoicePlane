@@ -41,14 +41,22 @@ class Mdl_Invoice_Amounts extends CI_Model
     public function calculate($invoice_id)
     {
         // Get the basic totals
-        $query = $this->db->query("SELECT SUM(item_subtotal) AS invoice_item_subtotal,	
-		SUM(item_tax_total) AS invoice_item_tax_total,
-		SUM(item_subtotal) + SUM(item_tax_total) AS invoice_total
-		FROM ip_invoice_item_amounts WHERE item_id IN (SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . ")");
+        $query = $this->db->query("
+        SELECT  SUM(item_subtotal) AS invoice_item_subtotal,
+		        SUM(item_tax_total) AS invoice_item_tax_total,
+		        SUM(item_subtotal) + SUM(item_tax_total) AS invoice_total,
+		        SUM(item_discount) AS invoice_item_discount
+		FROM ip_invoice_item_amounts
+		WHERE item_id IN (
+		    SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . "
+		    )
+        ");
 
         $invoice_amounts = $query->row();
 
-        $invoice_total = $this->calculate_discount($invoice_id, $invoice_amounts->invoice_total);
+        $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
+        $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+        $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
 
         // Get the amount already paid
         $query = $this->db->query("SELECT SUM(payment_amount) AS invoice_paid FROM ip_payments WHERE invoice_id = " . $this->db->escape($invoice_id));
@@ -58,11 +66,11 @@ class Mdl_Invoice_Amounts extends CI_Model
         // Create the database array and insert or update
         $db_array = array(
             'invoice_id' => $invoice_id,
-            'invoice_item_subtotal' => $invoice_amounts->invoice_item_subtotal,
+            'invoice_item_subtotal' => $invoice_item_subtotal,
             'invoice_item_tax_total' => $invoice_amounts->invoice_item_tax_total,
-            'invoice_total' => $invoice_amounts->invoice_total,
+            'invoice_total' => $invoice_total,
             'invoice_paid' => ($invoice_paid) ? $invoice_paid : 0,
-            'invoice_balance' => $invoice_amounts->invoice_total - $invoice_paid
+            'invoice_balance' => $invoice_total - $invoice_paid
         );
 
         $this->db->where('invoice_id', $invoice_id);
