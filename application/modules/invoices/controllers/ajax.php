@@ -34,28 +34,37 @@ class Ajax extends Admin_Controller
             $items = json_decode($this->input->post('items'));
 
             foreach ($items as $item) {
-                if ($item->item_name) {
+                // Check if an item has either a quantity + price or name or description
+                if ($item->item_quantity != 0 && $item->item_price != 0
+                    || $item->item_name  != 0
+                    || $item->item_description != 0
+                ) {
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price = standardize_amount($item->item_price);
                     $item->item_discount_amount = standardize_amount($item->item_discount_amount);
-
                     $item_id = ($item->item_id) ?: NULL;
-
-                    $save_item_as_lookup = (isset($item->save_item_as_lookup)) ? $item->save_item_as_lookup : 0;
-
                     unset($item->item_id, $item->save_item_as_lookup);
-
                     $this->mdl_items->save($invoice_id, $item_id, $item);
+                } else {
+                    // Throw an error message and use the form validation for that
+                    $this->load->library('form_validation');
+                    $this->form_validation->set_rules('item_name', lang('item'), 'required');
+                    $this->form_validation->set_rules('item_description', lang('description'), 'required');
+                    $this->form_validation->set_rules('item_quantity', lang('quantity'), 'required');
+                    $this->form_validation->set_rules('item_price', lang('price'), 'required');
+                    $this->form_validation->run();
 
-                    if ($save_item_as_lookup) {
-                        $db_array = array(
-                            'item_name' => $item->item_name,
-                            'item_description' => $item->item_description,
-                            'item_price' => $item->item_price
-                        );
-
-                        $this->mdl_item_lookups->save(NULL, $db_array);
-                    }
+                    $response = array(
+                        'success' => 0,
+                        'validation_errors' => array(
+                            'item_name' => form_error('item_name','',''),
+                            'item_description' => form_error('item_description','',''),
+                            'item_quantity' => form_error('item_quantity','',''),
+                            'item_price' => form_error('item_price','',''),
+                        )
+                    );
+                    echo json_encode($response);
+                    exit;
                 }
             }
 
