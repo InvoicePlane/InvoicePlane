@@ -27,7 +27,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <select name="family_id" id="family_id" class="form-control">
-                                <option value=""><?php echo lang('select_family'); ?></option>
+                                <option value="0"><?php echo lang('select_family'); ?></option>
                                 <?php foreach ($families as $family) { ?>
                                     <option value="<?php echo $family->family_id; ?>"
                                             <?php if ($this->mdl_products->form_value('family_id') == $family->family_id) { ?>selected="selected"<?php } ?>><?php echo $family->family_name; ?></option>
@@ -86,7 +86,10 @@
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php if ($this->mdl_products->form_value('tax_rate_id') == $tax_rate->tax_rate_id) { ?> selected="selected" <?php } ?>
-                                        ><?php echo $tax_rate->tax_rate_name; ?></option>
+                                        >
+                                        <?php echo $tax_rate->tax_rate_name
+                                            . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
+                                    </option>
                                 <?php } ?>
                             </select>
                         </div>
