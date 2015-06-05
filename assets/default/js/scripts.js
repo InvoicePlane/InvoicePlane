@@ -196,5 +196,6 @@ $(document).ready(function () {
 
     $('.ajax-loader').bind( "click", function() {
         $('#fullpage-loader').fadeIn(200);
+        $('#loader-error').delay(5000).fadeIn(200);
     });
 });
