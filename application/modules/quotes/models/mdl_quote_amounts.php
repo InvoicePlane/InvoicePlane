@@ -42,7 +42,8 @@ class Mdl_Quote_Amounts extends CI_Model
         $query = $this->db->query("
             SELECT SUM(item_subtotal) AS quote_item_subtotal,
 		        SUM(item_tax_total) AS quote_item_tax_total,
-		        SUM(item_subtotal) + SUM(item_tax_total) AS quote_total
+		        SUM(item_subtotal) + SUM(item_tax_total) AS quote_total,
+		        SUM(item_discount) AS quote_item_discount
 		    FROM ip_quote_item_amounts
 		    WHERE item_id
 		        IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")
@@ -50,12 +51,14 @@ class Mdl_Quote_Amounts extends CI_Model
 
         $quote_amounts = $query->row();
 
-        $quote_total = $this->calculate_discount($quote_id, $quote_amounts->quote_total);
+        $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount;
+        $quote_subtotal = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
+        $quote_total = $this->calculate_discount($quote_id, $quote_subtotal);
 
         // Create the database array and insert or update
         $db_array = array(
             'quote_id' => $quote_id,
-            'quote_item_subtotal' => $quote_amounts->quote_item_subtotal,
+            'quote_item_subtotal' => $quote_item_subtotal,
             'quote_item_tax_total' => $quote_amounts->quote_item_tax_total,
             'quote_total' => $quote_total,
         );
