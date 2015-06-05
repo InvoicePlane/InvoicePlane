@@ -74,7 +74,7 @@
     </div>
 
     <hr/>
-    <h4><?php echo lang('amounts'); ?></h4>
+    <h4><?php echo lang('amount_settings'); ?></h4>
     <br/>
 
     <div class="row">
