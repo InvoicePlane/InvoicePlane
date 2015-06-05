@@ -76,7 +76,7 @@
             window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
         });
 
-        <?php if ($invoice->is_read_only != 1) { ?>
+        <?php if ($invoice->is_read_only != 1): ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
@@ -90,7 +90,6 @@
             items: 'tbody',
             helper: fixHelper
         });
-        <?php } ?>
 
         $(document).ready(function () {
             if ($('#invoice_discount_percent').val().length > 0) {
@@ -114,6 +113,7 @@
                 $('#invoice_discount_amount').prop('disabled', false);
             }
         });
+        <?php endif; ?>
     });
 
 </script>
