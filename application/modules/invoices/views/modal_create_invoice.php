@@ -23,8 +23,8 @@
                     $i=0;
                     foreach ($clients as $client){
                         echo "{
-                        id: '".str_replace("","",$client->client_name)."',
-                        text: '".str_replace("","",$client->client_name)."'
+                        id: '".str_replace("'","\'",$client->client_name)."',
+                        text: '".str_replace("'","\'",$client->client_name)."'
                         }";
                         if (($i+1) != count($clients)) echo ',';
                         $i++;
