@@ -35,9 +35,9 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if ($item->item_quantity != 0 && $item->item_price != 0
-                    || $item->item_name  != 0
-                    || $item->item_description != 0
+                if (!empty($item->item_quantity) && !empty($item->item_price)
+                    || !empty($item->item_name)
+                    || !empty($item->item_description)
                 ) {
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price = standardize_amount($item->item_price);
