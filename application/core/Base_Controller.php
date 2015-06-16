@@ -57,10 +57,6 @@ class Base_Controller extends MX_Controller
 
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
             
-            //---it---inizio
-            $this->lang->load('custom', 'italian');
-            //---it---fine
-            
             $this->lang->load('form_validation', $this->mdl_settings->setting('default_language'));
             $this->lang->load('custom', $this->mdl_settings->setting('default_language'));
 
