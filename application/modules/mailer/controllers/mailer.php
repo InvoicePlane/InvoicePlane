@@ -70,6 +70,7 @@ class Mailer extends Admin_Controller
 
         $this->load->model('invoices/mdl_templates');
         $this->load->model('quotes/mdl_quotes');
+        $this->load->model('upload/mdl_uploads');
         $this->load->model('email_templates/mdl_email_templates');
 
         $email_template_id = $this->mdl_settings->setting('email_quote_template');
@@ -81,7 +82,6 @@ class Mailer extends Admin_Controller
         } else {
             $this->layout->set('email_template', '{}');
         }
-
         $this->layout->set('selected_pdf_template', $this->mdl_settings->setting('pdf_quote_template'));
         $this->layout->set('selected_email_template', $email_template_id);
         $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
@@ -100,16 +100,22 @@ class Mailer extends Admin_Controller
 
         if (!$this->mailer_configured) return;
 
+        $this->load->model('upload/mdl_uploads');
         $from = array($this->input->post('from_email'),
             $this->input->post('from_name'));
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
-        $body = htmlspecialchars_decode($this->input->post('body'));
+        if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
+            $body = htmlspecialchars_decode($this->input->post('body'));
+        } else {
+            $body = htmlspecialchars_decode(nl2br($this->input->post('body')));
+        }
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
+        $attachment_files = $this->mdl_uploads->get_invoice_uploads($invoice_id);
 
-        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc)) {
+        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_invoices->mark_sent($invoice_id);
 
             $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));
@@ -128,16 +134,22 @@ class Mailer extends Admin_Controller
 
         if (!$this->mailer_configured) return;
 
+        $this->load->model('upload/mdl_uploads');
         $from = array($this->input->post('from_email'),
             $this->input->post('from_name'));
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
-        $body = htmlspecialchars_decode($this->input->post('body'));
+        if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
+            $body = htmlspecialchars_decode($this->input->post('body'));
+        } else {
+            $body = htmlspecialchars_decode(nl2br($this->input->post('body')));
+        }
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
+        $attachment_files = $this->mdl_uploads->get_quote_uploads($quote_id);
 
-        if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc)) {
+        if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_quotes->mark_sent($quote_id);
 
             $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));

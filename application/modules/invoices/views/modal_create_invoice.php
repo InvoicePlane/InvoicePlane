@@ -1,5 +1,3 @@
-<?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
-
 <script type="text/javascript">
     $(function () {
         // Display the create invoice modal
@@ -9,20 +7,46 @@
             $("#client_name").focus();
         });
 
-        $('#client_name').typeahead();
+        $().ready(function () {
+            $("[name='client_name']").select2({
+                createSearchChoice: function (term, data) {
+                    if ($(data).filter(function () {
+                            return this.text.localeCompare(term) === 0;
+                        }).length === 0) {
+                        return {id: term, text: term};
+                    }
+                },
+                multiple: false,
+                allowClear: true,
+                data: [
+                    <?php
+                    $i=0;
+                    foreach ($clients as $client){
+                        echo "{
+                        id: '".str_replace("'","\'",$client->client_name)."',
+                        text: '".str_replace("'","\'",$client->client_name)."'
+                        }";
+                        if (($i+1) != count($clients)) echo ',';
+                        $i++;
+                    }
+                    ?>
+                ]
+            });
+            $("#client_name").focus();
+        });
 
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
-            // will create the new client if necessary
+            // will create the new client if necessar
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
                     client_name: $('#client_name').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_password: $('#invoice_password').val(),
-                    user_id: '<?php echo $this->session->userdata('user_id'); ?>'
-
+                    user_id: '<?php echo $this->session->userdata('user_id'); ?>',
+                    payment_method: $('#payment_method_id').val()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -53,10 +77,14 @@
         </div>
         <div class="modal-body">
 
+            <input class="hidden" id="payment_method_id"
+                   value="<?php echo $this->mdl_settings->setting('invoice_default_payment_method'); ?>">
+
             <div class="form-group">
                 <label for="client_name"><?php echo lang('client'); ?></label>
                 <input type="text" name="client_name" id="client_name" class="form-control"
-                       value="<?php echo $client_name; ?>" style="margin: 0 auto;" autocomplete="off">
+                       autofocus="autofocus"
+                    <?php if ($client_name) echo 'value="' . html_escape($client_name) . '"'; ?>>
             </div>
 
             <div class="form-group has-feedback">
@@ -75,7 +103,11 @@
             <div class="form-group">
                 <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('invoice_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
+                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == '') {
+                           echo '';
+                       } else {
+                           echo $this->mdl_settings->setting('invoice_pre_password');
+                       } ?>" style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -99,7 +131,7 @@
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
                     <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
                 </button>
-                <button class="btn btn-success" id="invoice_create_confirm" type="button">
+                <button class="btn btn-success ajax-loader" id="invoice_create_confirm" type="button">
                     <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
                 </button>
             </div>

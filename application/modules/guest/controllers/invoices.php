@@ -95,7 +95,7 @@ class Invoices extends Guest_Controller
 
         $this->mdl_invoices->mark_viewed($invoice_id);
 
-        generate_invoice_pdf($invoice_id, $stream, $invoice_template);
+        generate_invoice_pdf($invoice_id, $stream, $invoice_template, 1);
     }
 
 }

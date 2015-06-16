@@ -50,6 +50,26 @@
     </div>
 
     <div class="form-group">
+        <label for="settings[invoice_default_payment_method]" class="control-label">
+            <?php echo lang('default_payment_method'); ?>
+        </label>
+        <select name="settings[invoice_default_payment_method]" class="input-sm form-control">
+            <option value=""></option>
+            <?php
+            $setting = $this->mdl_settings->setting('invoice_default_payment_method');
+            foreach ($payment_methods as $payment_method) {
+                echo '<option value="' . $payment_method->payment_method_id . '"';
+                if ($payment_method->payment_method_id == $setting) {
+                    echo 'selected="selected"';
+                }
+                echo '>' . $payment_method->payment_method_name;
+                echo '</option>';
+            }
+            ?>
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="settings[automatic_email_on_recur]" class="control-label">
             <?php echo lang('automatic_email_on_recur'); ?>
         </label>

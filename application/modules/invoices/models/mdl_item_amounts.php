@@ -34,12 +34,14 @@ class Mdl_Item_Amounts extends CI_Model
 
         $item_subtotal = $item->item_quantity * $item->item_price;
         $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
-        $item_total = $item_subtotal + $item_tax_total;
+        $item_discount_total = $item->item_discount_amount * $item->item_quantity;
+        $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
 
         $db_array = array(
             'item_id' => $item_id,
             'item_subtotal' => $item_subtotal,
             'item_tax_total' => $item_tax_total,
+            'item_discount' => $item_discount_total,
             'item_total' => $item_total
         );
 

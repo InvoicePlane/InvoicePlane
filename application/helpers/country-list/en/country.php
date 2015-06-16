@@ -158,7 +158,7 @@
   'NA' => 'Namibia',
   'NR' => 'Nauru',
   'NP' => 'Nepal',
-  'NL' => 'Netherlands',
+  'NL' => 'The Netherlands',
   'AN' => 'Netherlands Antilles',
   'NT' => 'Neutral Zone',
   'NC' => 'New Caledonia',

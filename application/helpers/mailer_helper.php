@@ -26,7 +26,7 @@ function mailer_configured()
     );
 }
 
-function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL)
+function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
 {
     $CI = &get_instance();
 
@@ -39,16 +39,16 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
 
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
-    $message = nl2br(parse_template($db_invoice, $body));
+    $message = parse_template($db_invoice, $body);
     $subject = parse_template($db_invoice, $subject);
     $cc = parse_template($db_invoice, $cc);
     $bcc = parse_template($db_invoice, $bcc);
     $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
 
-    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc);
+    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc,$attachments);
 }
 
-function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL)
+function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
 {
     $CI = &get_instance();
 
@@ -60,13 +60,13 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
-    $message = nl2br(parse_template($db_quote, $body));
+    $message = parse_template($db_quote, $body);
     $subject = parse_template($db_quote, $subject);
     $cc = parse_template($db_quote, $cc);
     $bcc = parse_template($db_quote, $bcc);
     $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
 
-    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc);
+    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc,$attachments);
 }
 
 /**

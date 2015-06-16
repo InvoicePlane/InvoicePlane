@@ -1,6 +1,6 @@
 # Remove index.php
 RewriteEngine on
-RewriteBase /
+RewriteBase /invoiceplane_it/
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]

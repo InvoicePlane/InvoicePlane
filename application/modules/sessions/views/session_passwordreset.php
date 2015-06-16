@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="<?php echo base_url(); ?>assets/default/css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/default/css/custom.css" rel="stylesheet">
 
     <style>
         body {

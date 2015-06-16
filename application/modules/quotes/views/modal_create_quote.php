@@ -1,5 +1,3 @@
-<?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
-
 <script type="text/javascript">
     $(function () {
         // Display the create quote modal
@@ -9,7 +7,33 @@
             $("#client_name").focus();
         });
 
-        $('#client_name').typeahead();
+        $().ready(function () {
+            $("[name='client_name']").select2({
+                createSearchChoice: function (term, data) {
+                    if ($(data).filter(function () {
+                            return this.text.localeCompare(term) === 0;
+                        }).length === 0) {
+                        return {id: term, text: term};
+                    }
+                },
+                multiple: false,
+                allowClear: true,
+                data: [
+                    <?php
+                    $i=0;
+                    foreach ($clients as $client){
+                        echo "{
+                        id: '".str_replace("'","\'",$client->client_name)."',
+                        text: '".str_replace("'","\'",$client->client_name)."'
+                        }";
+                        if (($i+1) != count($clients)) echo ',';
+                        $i++;
+                    }
+                    ?>
+                ]
+            });
+            $("#client_name").focus();
+        });
 
         // Creates the quote
         $('#quote_create_confirm').click(function () {
@@ -51,15 +75,13 @@
             <h3><?php echo lang('create_quote'); ?></h3>
         </div>
         <div class="modal-body">
-            <div class="form-group">
-                <label for="client_name">
-                    <?php echo lang('client'); ?>
-                </label>
-                <input type="text" name="client_name" id="client_name"
-                       class="form-control" value="<?php echo $client_name; ?>"
-                       autocomplete="off">
-            </div>
 
+            <div class="form-group">
+                <label for="client_name"><?php echo lang('client'); ?></label>
+                <input type="text" name="client_name" id="client_name" class="form-control"
+                       autofocus="autofocus"
+                    <?php if ($client_name) echo 'value="' . html_escape($client_name) . '"'; ?>>
+            </div>
 
             <div class="form-group has-feedback">
                 <label for="quote_date_created">
@@ -79,7 +101,11 @@
             <div class="form-group">
                 <label for="quote_password"><?php echo lang('quote_password'); ?></label>
                 <input type="text" name="quote_password" id="quote_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('quote_pre_password') == ''){echo '';}else{echo $this->mdl_settings->setting('quote_pre_password');}?>" style="margin: 0 auto;" autocomplete="off">
+                       value="<?php if ($this->mdl_settings->setting('quote_pre_password') == '') {
+                           echo '';
+                       } else {
+                           echo $this->mdl_settings->setting('quote_pre_password');
+                       } ?>" style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -104,7 +130,7 @@
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
                     <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
                 </button>
-                <button class="btn btn-success" id="quote_create_confirm" type="button">
+                <button class="btn btn-success ajax-loader" id="quote_create_confirm" type="button">
                     <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
                 </button>
             </div>

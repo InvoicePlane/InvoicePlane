@@ -67,7 +67,7 @@ class Mdl_Users extends Response_Model
             'user_password' => array(
                 'field' => 'user_password',
                 'label' => lang('password'),
-                'rules' => 'required'
+                'rules' => 'required|min_length[8]'
             ),
             'user_passwordv' => array(
                 'field' => 'user_passwordv',
@@ -95,7 +95,6 @@ class Mdl_Users extends Response_Model
             'user_country' => array(
                 'field' => 'user_country',
                 'label' => lang('country'),
-                'rules' => 'required'
             ),
             'user_phone' => array(
                 'field' => 'user_phone'

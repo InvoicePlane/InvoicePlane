@@ -75,12 +75,12 @@ class Mdl_Products extends Response_Model
             'family_id' => array(
                 'field' => 'family_id',
                 'label' => lang('family'),
-                'rules' => ''
+                'rules' => 'numeric'
             ),
             'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
                 'label' => lang('tax_rate'),
-                'rules' => ''
+                'rules' => 'numeric'
             ),
 
         );

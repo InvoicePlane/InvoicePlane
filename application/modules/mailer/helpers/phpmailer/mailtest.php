@@ -17,8 +17,8 @@ $subject = 'Test';
 $message = 'This is just a test.';
 
 $headers = 'From: ' . $from . "\r\n" .
-	'Reply-To: ' . $from . "\r\n" .
-	'X-Mailer: PHP/' . phpversion();
+    'Reply-To: ' . $from . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
 
 mail($to, $subject, $message);
 

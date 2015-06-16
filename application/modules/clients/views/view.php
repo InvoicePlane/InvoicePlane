@@ -31,6 +31,9 @@
 </script>
 
 <div id="headerbar">
+    <div class="pull-left">
+        <h1><?php echo $client->client_name; ?></h1>
+    </div>
     <div class="pull-right btn-group">
         <a href="#" class="btn btn-sm btn-default client-create-quote"
            data-client-name="<?php echo $client->client_name; ?>">
@@ -70,8 +73,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
-                    <h2><?php echo $client->client_name; ?></h2>
-                    <br/>
+                    <h3><?php echo $client->client_name; ?></h3>
 
                     <p>
                         <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>

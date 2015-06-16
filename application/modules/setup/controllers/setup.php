@@ -195,6 +195,8 @@ class Setup extends MX_Controller
 
         $this->load->model('users/mdl_users');
 
+        $this->load->helper('country');
+
         if ($this->mdl_users->run_validation()) {
             $db_array = $this->mdl_users->db_array();
             $db_array['user_type'] = 1;
@@ -205,6 +207,11 @@ class Setup extends MX_Controller
             redirect('setup/complete');
         }
 
+        $this->layout->set(
+            array(
+                'countries' => get_country_list(lang('cldr')),
+            )
+        );
         $this->layout->buffer('content', 'setup/create_user');
         $this->layout->render('setup');
     }
@@ -245,6 +252,8 @@ class Setup extends MX_Controller
         $writables = array(
             './uploads',
             './uploads/temp',
+            './uploads/archive',
+            './uploads/customer_files',
             './' . APPPATH . 'config/database.php',
             './' . APPPATH . 'helpers/mpdf/tmp',
             './' . APPPATH . 'logs'

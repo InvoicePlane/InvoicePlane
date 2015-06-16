@@ -37,7 +37,7 @@
                     <td><?php echo $product->family_name; ?></td>
                     <td><?php echo $product->product_sku; ?></td>
                     <td><?php echo $product->product_name; ?></td>
-                    <td><?php echo $product->product_description; ?></td>
+                    <td><?php echo nl2br($product->product_description); ?></td>
                     <td><?php echo format_currency($product->product_price); ?></td>
                     <td><?php echo ($product->tax_rate_id) ? $product->tax_rate_name : lang('none'); ?></td>
                     <td>
