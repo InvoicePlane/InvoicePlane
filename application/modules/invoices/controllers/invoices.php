@@ -214,7 +214,7 @@ class Invoices extends Admin_Controller
     {
     	$this->load->helper('pdf');
     
-    	generate_invoice_pdf($invoice_id, $stream, $invoice_template, TRUE);
+    	generate_invoice_pdf($invoice_id, $stream, $invoice_template, NULL, TRUE);
     }
     //---it---fine
     
