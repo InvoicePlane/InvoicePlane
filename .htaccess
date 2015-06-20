@@ -4,3 +4,7 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
+
+# remove the comments after successful setup and replace the
+# domain name with your domain to secure the /setup URL
+#Redirect /setup http://yourdomain.com/
