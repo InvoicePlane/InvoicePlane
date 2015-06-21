@@ -1,7 +1,5 @@
 <script type="text/javascript">
     $(function () {
-        $('#smtp_password').val('');
-
         toggle_smtp_settings();
 
         $('#email_send_method').change(function () {
@@ -85,8 +83,8 @@
         <label for="smtp_password" class="control-label">
             <?php echo lang('smtp_password'); ?>
         </label>
-        <input type="password" id="smtp_password" class="input-sm form-control"
-               name="settings[smtp_password]">
+        <input type="password" id="smtp_password" class="input-sm form-control" name="settings[smtp_password]"
+               value="<?php $this->load->library('encrypt'); echo $this->encrypt->decode($this->mdl_settings->setting('smtp_password')); ?>">
     </div>
 
     <div class="form-group">
