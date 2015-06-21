@@ -42,6 +42,7 @@ class Ajax extends Admin_Controller
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price = standardize_amount($item->item_price);
                     $item->item_discount_amount = standardize_amount($item->item_discount_amount);
+
                     $item_id = ($item->item_id) ?: NULL;
                     unset($item->item_id, $item->save_item_as_lookup);
                     $this->mdl_items->save($invoice_id, $item_id, $item);
@@ -57,10 +58,10 @@ class Ajax extends Admin_Controller
                     $response = array(
                         'success' => 0,
                         'validation_errors' => array(
-                            'item_name' => form_error('item_name','',''),
-                            'item_description' => form_error('item_description','',''),
-                            'item_quantity' => form_error('item_quantity','',''),
-                            'item_price' => form_error('item_price','',''),
+                            'item_name' => form_error('item_name', '', ''),
+                            'item_description' => form_error('item_description', '', ''),
+                            'item_quantity' => form_error('item_quantity', '', ''),
+                            'item_price' => form_error('item_price', '', ''),
                         )
                     );
                     echo json_encode($response);
@@ -70,6 +71,18 @@ class Ajax extends Admin_Controller
 
             $invoice_status = $this->input->post('invoice_status_id');
 
+            if ($this->input->post('invoice_discount_amount') === '') {
+                $invoice_discount_amount = floatval(0);
+            } else {
+                $invoice_discount_amount = $this->input->post('invoice_discount_amount');
+            }
+
+            if ($this->input->post('invoice_discount_percent') === '') {
+                $invoice_discount_percent = floatval(0);
+            } else {
+                $invoice_discount_percent = $this->input->post('invoice_discount_percent');
+            }
+
             $db_array = array(
                 'invoice_number' => $this->input->post('invoice_number'),
                 'invoice_terms' => $this->input->post('invoice_terms'),
@@ -78,8 +91,8 @@ class Ajax extends Admin_Controller
                 'invoice_password' => $this->input->post('invoice_password'),
                 'invoice_status_id' => $invoice_status,
                 'payment_method' => $this->input->post('payment_method'),
-                'invoice_discount_amount' => $this->input->post('invoice_discount_amount'),
-                'invoice_discount_percent' => $this->input->post('invoice_discount_percent'),
+                'invoice_discount_amount' => $invoice_discount_amount,
+                'invoice_discount_percent' => $invoice_discount_percent,
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
