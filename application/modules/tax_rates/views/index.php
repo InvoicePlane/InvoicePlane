@@ -32,7 +32,7 @@
             <?php foreach ($tax_rates as $tax_rate) { ?>
                 <tr>
                     <td><?php echo $tax_rate->tax_rate_name; ?></td>
-                    <td><?php echo $tax_rate->tax_rate_percent; ?>%</td>
+                    <td><?php echo format_amount($tax_rate->tax_rate_percent); ?>%</td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
