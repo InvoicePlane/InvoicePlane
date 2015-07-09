@@ -271,7 +271,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href=""<?php echo site_url('users/form/'.$this->session->userdata('user_id')); ?>" ><?php echo $this->session->userdata('user_name'); ?></a>
+                    <a href="<?php echo site_url('users/form/'.$this->session->userdata('user_id')); ?>" ><?php echo $this->session->userdata('user_name'); ?></a>
                 </li>
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
