@@ -270,7 +270,9 @@
                         <li><?php echo anchor('import', lang('import_data')); ?></li>
                     </ul>
                 </li>
-
+                <li>
+                    <a href=""<?php echo site_url('users/form/'.$this->session->userdata('user_id')); ?>" ><?php echo $this->session->userdata('user_name'); ?></a>
+                </li>
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
