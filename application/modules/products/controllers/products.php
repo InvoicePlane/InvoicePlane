@@ -42,7 +42,13 @@ class Products extends Admin_Controller
         }
 
         if ($this->mdl_products->run_validation()) {
-            $this->mdl_products->save($id);
+            
+            // We need to use the correct decimal point for sql IPT-310
+            $db_array = $this->mdl_products->db_array();
+            $db_array['product_price'] = standardize_amount($db_array['product_price']);
+            $db_array['purchase_price'] = standardize_amount($db_array['purchase_price']);
+
+            $this->mdl_products->save($id, $db_array);
             redirect('products');
         }
 
