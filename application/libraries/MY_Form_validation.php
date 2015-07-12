@@ -20,6 +20,21 @@ class MY_Form_validation extends CI_Form_validation
         return $query->num_rows() === 0;
     }
 
+    /**
+     * Valid Email taken from CI 3
+     *
+     * @param   string
+     * @return  bool
+     */
+    
+    public function valid_email($str)
+    {
+        if (function_exists('idn_to_ascii') && $atpos = strpos($str, '@'))
+        {
+            $str = substr($str, 0, ++$atpos).idn_to_ascii(substr($str, $atpos));
+        }
+        return (bool) filter_var($str, FILTER_VALIDATE_EMAIL);
+    }
 }
 
 ?>
