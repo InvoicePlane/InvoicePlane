@@ -21,6 +21,28 @@ If you need support or want to help developing please visit the [official wiki](
 [![Gitter chat](https://badges.gitter.im/InvoicePlane/InvoicePlane.png)](https://gitter.im/InvoicePlane/InvoicePlane)   
 [![Freenode](https://invoiceplane.com/content/badges/badge_freenode.png)](irc://irc.freenode.net/InvoicePlane)
 
+### Developing with Vagrant
+
+*Prerequisites*
+
+
+1. http://www.ansible.com/home
+2. https://www.vagrantup.com/
+3. https://github.com/cogitatio/vagrant-hostsupdater
+4. https://www.virtualbox.org/wiki/Downloads
+5. Be sure to also download VirtualBox Extensions!
+6. Clone the repo to your local machine with `git clone`
+7. Run `vagrant up` from the cloned directory
+8. If provisioning fails just run `vagrant provision` from the terminal
+
+You should be able to navigate to your local though by doing www.invoiceplane.local  
+
+When on the setup screen specify localhost, root, *blank password*, invoiceplane as the database.
+
+*Note:* When the VM is booted you can change the `php.ini` file to setup xdebug or other preferences.
+
+__Ask questions!__ Please ask questions related to this process if you are unclear.
+
 ---
   
 *Please notice: The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
