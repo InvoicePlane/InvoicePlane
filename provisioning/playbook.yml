@@ -1,0 +1,84 @@
+---
+- hosts: invoiceplane
+  tasks:
+  - include_vars: variables.yml
+  # To get previous version, replace with php5-oldstable or for new use php5
+  - name: Add repo php5 to get lastest php
+    apt_repository: repo='ppa:ondrej/php5' update_cache=yes
+  # Installing AMP stack
+  - name: Install AMP stack
+    apt: pkg={{ item }} state=present update_cache=yes
+    with_items:
+        - apache2
+        - php5
+        - php5-common
+        - php5-tidy
+        - php5-mcrypt
+        - php5-mysql
+        - php5-curl
+        - php5-cli
+        - php5-dev
+        - git
+        - mysql-server
+        - curl
+        - python-mysqldb # required for mysql commands below
+        - make #for building xdebug
+
+  # Download and install XDebug for PHP integration @see https://www.jetbrains.com/phpstorm/help/configuring-xdebug.html
+  - name: download and build xdebug
+    get_url: url=http://xdebug.org/files/xdebug-{{ xdebug_version }}.tgz dest=~/
+  - command: tar -xvf ~/xdebug-{{ xdebug_version }}.tgz
+  - shell: phpize
+    args:
+      chdir: /home/vagrant/xdebug-{{ xdebug_version }}
+  - shell: ./configure --enable-xdebug
+    args:
+      chdir: /home/vagrant/xdebug-{{ xdebug_version }}
+  - command: make
+    args:
+      chdir: /home/vagrant/xdebug-{{ xdebug_version }}
+  - command: make install
+    args:
+      chdir: /home/vagrant/xdebug-{{ xdebug_version }}
+
+  # Update PHP INI
+  - template: src=templates/php.ini.j2 dest=/etc/php5/apache2/php.ini mode=0644
+    notify: restart apache
+
+
+  # Copy down vhost.conf and disable default site
+  - template: src=templates/invoiceplane.conf.j2 dest=/etc/apache2/sites-available/invoiceplane.conf mode=0644
+  - command: a2ensite invoiceplane
+    notify: restart apache
+  - command: a2dissite 000-default
+    notify: restart apache
+  - command: a2enmod rewrite
+    notify: restart apache
+
+
+  - name: http service state
+    service: name=apache2 state=started enabled=yes
+
+  - name: Start Mysql Service
+    service: name=mysql state=started enabled=true
+
+  # Setup the services to run on start
+  - name: http service state
+    service: name=apache2 state=started enabled=yes
+  - name: Start Mysql Service
+    service: name=mysql state=started enabled=true
+
+  # Create a new database
+  - name: make InvoicePlane database
+    mysql_db: name={{mysql_dbName}} state=present
+#  - name: copy sql file
+#    copy: src=data/base-scema.sql dest=/tmp
+#  - name: update database with schema file
+#    mysql_db: name=invoiceplane state=import target=/tmp/base-scema.sql
+
+  - name: Make the development directory
+    shell: mkdir -p /var/www/application/config/development
+
+  handlers:
+    - name: restart apache
+      action: service name=apache2 state=restarted
