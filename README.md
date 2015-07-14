@@ -25,19 +25,20 @@ If you need support or want to help developing please visit the [official wiki](
 
 *Prerequisites*
 
+Download the following to setup the InvoicePlane VM.  Please note: the VM is for development purposes only.
 
 1. http://www.ansible.com/home
 2. https://www.vagrantup.com/
 3. https://github.com/cogitatio/vagrant-hostsupdater
 4. https://www.virtualbox.org/wiki/Downloads
-5. Be sure to also download VirtualBox Extensions!
+5. On the virtualbox.org page you will also need to download the appropriate VirtualBox Extension Pack
 6. Clone the repo to your local machine with `git clone`
 7. Run `vagrant up` from the cloned directory
 8. If provisioning fails just run `vagrant provision` from the terminal
 
 You should be able to navigate to your local though by doing www.invoiceplane.local  
 
-When on the setup screen specify localhost, root, *blank password*, invoiceplane as the database.
+On the setup screen specify localhost, root, *blank password*, invoiceplane as the database configuration.
 
 *Note:* When the VM is booted you can change the `php.ini` file to setup xdebug or other preferences.
 
