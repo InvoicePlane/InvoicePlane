@@ -100,7 +100,41 @@ class Settings extends Admin_Controller
         $this->load->helper('directory');
         $this->load->helper('country');
 
-        $this->load->library('merchant');
+        // Collect array of drivers allowed - just the defaults... minus dummy and other non-essentials
+        $omnipay = new \Omnipay\Omnipay();
+        $allowedDrivers = array(
+            "AuthorizeNet_AIM",
+            "AuthorizeNet_SIM",
+            "Buckaroo_Ideal",
+            "Buckaroo_PayPal",
+            "CardSave",
+            "Coinbase",
+            "Eway_Rapid",
+            "FirstData_Connect",
+            "GoCardless",
+            "Migs_ThreeParty",
+            "Migs_TwoParty",
+            "Mollie",
+            "MultiSafepay",
+            "Netaxept",
+            "NetBanx",
+            "PayFast",
+            "Payflow_Pro",
+            "PaymentExpress_PxPay",
+            "PaymentExpress_PxPost",
+            "PayPal_Express",
+            "PayPal_Pro",
+            "Pin",
+            "SagePay_Direct",
+            "SagePay_Server",
+            "SecurePay_DirectPost",
+            "Stripe",
+            "TargetPay_Directebanking",
+            "TargetPay_Ideal",
+            "TargetPay_Mrcash",
+            "TwoCheckout",
+            "WorldPay");
+        $merchantDrivers = array_intersect($omnipay->getFactory()->getSupportedGateways(),$allowedDrivers);
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
@@ -132,8 +166,8 @@ class Settings extends Admin_Controller
                 'current_date' => new DateTime(),
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'merchant_drivers' => $this->merchant->valid_drivers(),
-                'merchant_currency_codes' => Merchant::$NUMERIC_CURRENCY_CODES,
+                'merchant_drivers' => $merchantDrivers,
+                'merchant_currency_codes' => \Omnipay\Common\Currency::all(),
                 'current_version' => $current_version,
                 'first_days_of_weeks' => array("0" => lang("sunday"), "1" => lang("monday"))
             )

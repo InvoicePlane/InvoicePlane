@@ -22,7 +22,6 @@ class Payment_Handler extends Base_Controller
     {
         parent::__construct();
 
-        $this->load->library('merchant');
         $this->load->library('encrypt');
 
         $this->load->model('invoices/mdl_invoices');
@@ -36,8 +35,46 @@ class Payment_Handler extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
+            /**
+             * @todo This needs to be refactored and implemented! Below is a test! ^ Chris Smith <chris@cgsmith.net>
+             */
+            die('This needs to be implemented in modules/guest/controllers/payment_handler.php');
             // Load the merchant driver
-            $this->merchant->load($this->mdl_settings->setting('merchant_driver'));
+            $gateway = \Omnipay\Omnipay::create($this->mdl_settings->setting('merchant_driver'));
+            $gateway->setApiKey($this->mdl_settings->setting('merchant_username'));
+
+
+            $formData = array(
+                'number' => '4242424242424242',
+                'expiryMonth' => '6',
+                'expiryYear' => '2016',
+                'cvv' => '123'
+            );
+
+            $response = $gateway->purchase(
+                [
+                    'amount' => '10.00',
+                    'currency' => 'USD',
+                    'card' => $formData
+                ]
+            )->send();
+
+            // Process response
+            if ($response->isSuccessful()) {
+
+                // Payment was successful
+                print_r($response);
+
+            } elseif ($response->isRedirect()) {
+
+                // Redirect to offsite payment gateway
+                $response->redirect();
+
+            } else {
+
+                // Payment failed
+                echo $response->getMessage();
+            }
 
             // Pass the required settings
             $settings = array(

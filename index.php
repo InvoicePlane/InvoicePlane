@@ -1,5 +1,8 @@
 <?php
 
+/** Loading the Composer autoloader */
+require 'vendor/autoload.php';
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
