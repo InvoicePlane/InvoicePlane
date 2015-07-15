@@ -1,0 +1,2 @@
+[invoiceplane]
+192.168.56.130 ansible_connection=ssh ansible_ssh_user=vagrant

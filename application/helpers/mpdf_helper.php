@@ -27,7 +27,7 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
     if(!(is_dir('./uploads/archive/') OR is_link('./uploads/archive/') ))
         mkdir ('./uploads/archive/','0777');
 
-    if (strpos($filename, lang('invoice')) !== false) {
+    if (strpos($filename, lang('invoice')) !== false OR strpos($filename, lang('quote')) !== false) {
         $CI = &get_instance();
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');

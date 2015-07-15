@@ -1,0 +1,17 @@
+---
+vm:
+  box: hashicorp/precise64
+  box_url: hashicorp/precise64
+  ip_address: 192.168.56.130
+  hostname: invoiceplane.local
+  alias1: invoiceplane.local
+  alias2: www.invoiceplane.local
+  sync_host: ~/invoiceplane
+  sync_vm: /var/www
+
+xdebug_version: 2.3.3
+
+# Database information to use during playbook
+mysql_dbName: invoiceplane
+
+

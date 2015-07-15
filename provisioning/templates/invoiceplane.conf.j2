@@ -1,0 +1,12 @@
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName {{ vm.hostname }}
+        ServerAlias {{ vm.alias1 }}
+        DocumentRoot {{ vm.sync_vm }}
+        <Directory {{ vm.sync_vm }}/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+</VirtualHost>
