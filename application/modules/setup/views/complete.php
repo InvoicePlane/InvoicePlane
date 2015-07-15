@@ -16,7 +16,7 @@
         <p class="alert alert-warning">
             <?php echo lang('setup_complete_secure_setup'); ?>
             <br/>
-            <code>Redirect /setup http://yourdomain.com/</code>
+            <code>Redirect /setup http://<?php echo $_SERVER['HTTP_HOST'];?>/</code>
         </p>
 
         <?php if ($this->session->userdata('setup_notice')) {
