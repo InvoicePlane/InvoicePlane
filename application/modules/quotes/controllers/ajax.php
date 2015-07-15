@@ -60,7 +60,18 @@ class Ajax extends Admin_Controller
                 }
             }
 
-            // @TODO Add checks / formatting for discounts!
+            if ($this->input->post('quote_discount_amount') === '') {
+                $quote_discount_amount = floatval(0);
+            } else {
+                $quote_discount_amount = $this->input->post('quote_discount_amount');
+            }
+
+            if ($this->input->post('quote_discount_percent') === '') {
+                $quote_discount_percent = floatval(0);
+            } else {
+                $quote_discount_percent = $this->input->post('quote_discount_percent');
+            }
+
             $db_array = array(
                 'quote_number' => $this->input->post('quote_number'),
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
@@ -68,8 +79,8 @@ class Ajax extends Admin_Controller
                 'quote_status_id' => $this->input->post('quote_status_id'),
                 'quote_password' => $this->input->post('quote_password'),
                 'notes' => $this->input->post('notes'),
-                'quote_discount_amount' => $this->input->post('quote_discount_amount'),
-                'quote_discount_percent' => $this->input->post('quote_discount_percent'),
+                'quote_discount_amount' => $quote_discount_amount,
+                'quote_discount_percent' => $quote_discount_percent,
             );
 
             $this->mdl_quotes->save($quote_id, $db_array);
