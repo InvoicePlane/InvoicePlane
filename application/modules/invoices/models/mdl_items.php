@@ -28,11 +28,30 @@ class Mdl_Items extends Response_Model
 		 $query = $this->where('invoice_id', $invoice_id)->get();
 
 		 foreach($query->result() as $item) {
-			 $item->item_description = str_replace('{{{nextYear}}}', date('Y') + 1, $item->item_description);
+			 $item->item_description = $this->parse_item($item->item_description);
 			 $items[] = $item;
 		 }
 		 return $items;
 	 }
+
+    private function parse_item($string)
+    {
+        if (preg_match_all('/{{{([^{|}]*)}}}/', $string, $template_vars)) {
+            foreach ($template_vars[1] as $var) {
+                switch ($var) {
+                    case 'nextYear':
+                        $replace = date('Y') + 1;
+                        break;
+                    default:
+                        $replace = '';
+                }
+
+                $string = str_replace('{{{' . $var . '}}}', $replace, $string);
+            }
+        }
+
+        return $string;
+    }
 
     public function default_select()
     {
