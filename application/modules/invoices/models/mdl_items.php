@@ -22,6 +22,18 @@ class Mdl_Items extends Response_Model
     public $primary_key = 'ip_invoice_items.item_id';
     public $date_created_field = 'item_date_added';
 
+	 public function get_items_and_replace_vars($invoice_id)
+	 {
+		 $items = array();
+		 $query = $this->where('invoice_id', $invoice_id)->get();
+
+		 foreach($query->result() as $item) {
+			 $item->item_description = str_replace('{{{nextYear}}}', date('Y') + 1, $item->item_description);
+			 $items[] = $item;
+		 }
+		 return $items;
+	 }
+
     public function default_select()
     {
         $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');

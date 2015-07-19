@@ -40,7 +40,7 @@ class View extends Base_Controller
 
             $data = array(
                 'invoice' => $invoice,
-                'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+                'items' => $this->mdl_items->get_items_and_replace_vars($invoice->invoice_id),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_url_key' => $invoice_url_key,
                 'flash_message' => $this->session->flashdata('flash_message'),

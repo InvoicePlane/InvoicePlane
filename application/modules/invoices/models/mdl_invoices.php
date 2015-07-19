@@ -208,7 +208,7 @@ class Mdl_Invoices extends Response_Model
     {
         $this->load->model('invoices/mdl_items');
 
-        $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
+        $invoice_items = $this->mdl_items->get_items_and_replace_vars($source_id);
 
         foreach ($invoice_items as $invoice_item) {
             $db_array = array(
@@ -247,7 +247,7 @@ class Mdl_Invoices extends Response_Model
     {
         $this->load->model('invoices/mdl_items');
 
-        $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
+        $invoice_items = $this->mdl_items->get_items_and_replace_vars($source_id);
 
         foreach ($invoice_items as $invoice_item) {
             $db_array = array(

@@ -142,7 +142,7 @@ class Invoices extends Admin_Controller
         $this->layout->set(
             array(
                 'invoice' => $invoice,
-                'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+                'items' => $this->mdl_items->get_items_and_replace_vars($invoice_id),
                 'invoice_id' => $invoice_id,
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
