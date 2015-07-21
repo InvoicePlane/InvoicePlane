@@ -38,7 +38,7 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     $data = array(
         'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-        'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+		  'items' => $CI->mdl_items->get_items_and_replace_vars($invoice_id, $invoice->invoice_date_created),
         'payment_method' => $payment_method,
         'output_type' => 'pdf'
     );
