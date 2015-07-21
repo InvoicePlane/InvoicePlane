@@ -28,6 +28,7 @@ class Mdl_Items extends Response_Model
 		 $query = $this->where('invoice_id', $invoice_id)->get();
 
 		 foreach($query->result() as $item) {
+			 $item->item_name = $this->parse_item($item->item_description, $invoice_date_created);
 			 $item->item_description = $this->parse_item($item->item_description, $invoice_date_created);
 			 $items[] = $item;
 		 }
