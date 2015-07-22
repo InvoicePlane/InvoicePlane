@@ -33,9 +33,9 @@ function &DB($params = '', $active_record_override = NULL)
 		// Is the config file in the environment folder?
 		if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php'))
 		{
-			if ( ! file_exists($file_path = APPPATH.'config/database.php'))
+			if ( ! is_file($file_path = APPPATH.'config/database.php'))
 			{
-				show_error('The configuration file database.php does not exist.');
+				show_error('The configuration file database.php does not exist. Please start the <a href="/setup">setup procedure</a>.');
 			}
 		}
 
