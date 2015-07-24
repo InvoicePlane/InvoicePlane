@@ -18,7 +18,9 @@ if (!defined('BASEPATH'))
 
 function format_currency($amount)
 {
-    global $CI;
+    // like in application/helpers/pdf_helper.php - generate_invoice_pdf()
+    $CI =& get_instance();
+
     $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator = format_thousands_separator($CI->mdl_settings->setting('thousands_separator'));
@@ -36,7 +38,7 @@ function format_currency($amount)
 function format_amount($amount = NULL)
 {
     if ($amount) {
-        global $CI;
+        $CI =& get_instance();
         $thousands_separator = format_thousands_separator($CI->mdl_settings->setting('thousands_separator'));
         $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
@@ -47,7 +49,7 @@ function format_amount($amount = NULL)
 
 function standardize_amount($amount)
 {
-    global $CI;
+    $CI =& get_instance();
     $thousands_separator = format_thousands_separator($CI->mdl_settings->setting('thousands_separator'));
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
