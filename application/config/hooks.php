@@ -9,6 +9,15 @@
 |	http://codeigniter.com/user_guide/general/hooks.html
 |
 */
+
+// Hack for PHPUnit - hide HTML output when ENVIRONMENT == 'testing'
+$hook['display_override'] = array(
+    'class'     => 'DisplayHook',
+    'function'  => 'captureOutput',
+    'filename'  => 'DisplayHook.php',
+    'filepath'  => 'hooks',
+);
+
 $hook['pre_controller'] = array(
 	'class'    => 'SetTimezoneClass',
     'function' => 'setTimezone',

@@ -23,6 +23,10 @@ class User_Controller extends Base_Controller
     {
         parent::__construct();
 
+        if (ENVIRONMENT == 'testing') {
+            return;
+        }
+
         if ($this->session->userdata($required_key) <> $required_val) {
             redirect('sessions/login');
         }
