@@ -27,11 +27,14 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
     if(!(is_dir('./uploads/archive/') OR is_link('./uploads/archive/') ))
         mkdir ('./uploads/archive/','0777');
 
-    if (strpos($filename, lang('invoice')) !== false OR strpos($filename, lang('quote')) !== false) {
         $CI = &get_instance();
+    if ( (strpos($filename, lang('invoice')) !== false OR strpos($filename, lang('quote')) !== false) && !empty($CI->mdl_settings->settings['pdf_invoice_footer']) ) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
+	 else {
+        $mpdf->SetHTMLFooter('<div id="footer" class="footer-including-page-number">' . lang('page') . ' {PAGENO} / {nb}</div>');
+	 }
     $invoice_array = array();
     $mpdf->WriteHTML($html);
 
