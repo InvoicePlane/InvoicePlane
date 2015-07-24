@@ -44,6 +44,22 @@ On the setup screen specify localhost, root, *blank password*, invoiceplane as t
 
 __Ask questions!__ Please ask questions related to this process if you are unclear.
 
+### Running Tests
+
+Tested with:
+```bash
+$> phpunit -V
+PHPUnit 3.7.21 by Sebastian Bergmann.
+```
+
+In project root directory run:
+```bash
+$> phpunit
+```
+Please ask questions related to this process if you are unclear.
+
+[![Community Forums](https://invoiceplane.com/content/badges/badge_community.png)](https://community.invoiceplane.com/)   
+
 ---
   
 *Please notice: The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
