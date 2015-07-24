@@ -57,6 +57,7 @@ In project root directory run:
 $> phpunit
 ```
 Please ask questions related to this process if you are unclear.
+
 [![Community Forums](https://invoiceplane.com/content/badges/badge_community.png)](https://community.invoiceplane.com/)   
 
 ---
