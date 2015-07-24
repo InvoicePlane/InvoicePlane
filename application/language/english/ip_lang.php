@@ -283,6 +283,7 @@ $lang = array(
     'options' => 'Options',
     'overdue' => 'Overdue',
     'overdue_invoices' => 'Overdue Invoices',
+    'page' => 'Page',
     'paid' => 'Paid',
     'password' => 'Password',
     'password_changed' => 'Password successfully changed',
