@@ -30,7 +30,9 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
         $CI = &get_instance();
     if ( (strpos($filename, lang('invoice')) !== false OR strpos($filename, lang('quote')) !== false) && !empty($CI->mdl_settings->settings['pdf_invoice_footer']) ) {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
+		  $footerHTML = '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>';
+		  $footerHTML .= '<div class="footer-including-page-number">' . lang('page') . ' {PAGENO} / {nb}</div>';
+        $mpdf->SetHTMLFooter($footerHTML);
     }
 	 else {
         $mpdf->SetHTMLFooter('<div id="footer" class="footer-including-page-number">' . lang('page') . ' {PAGENO} / {nb}</div>');
