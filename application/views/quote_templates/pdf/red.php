@@ -28,7 +28,7 @@
         <div id="header">
             <table>
                 <tr>
-                    <td style="width:70%">
+                    <td style="width:60%">
                         <div style="display: block; height: 2cm"></div>
 
                         <div class="invoice-to">
@@ -64,7 +64,7 @@
 
                     </td>
 
-                    <td class="text-right" style="width:30%;">
+                    <td class="text-right" style="width:40%;">
                         <div class="company-details">
                             <?php echo invoice_logo_pdf(); ?>
                             <h3 class="company-name text-right">
