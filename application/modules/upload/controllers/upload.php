@@ -40,7 +40,12 @@ class Upload extends Admin_Controller
 
             if (!$file_exists) //If file does not exists then upload
             {
-                $data = ['client_id' => $customerId, 'url_key' => $url_key, 'file_name_original' => $fileName, 'file_name_new' => $url_key . '_' . $fileName];
+                $data = array(
+                    'client_id' => $customerId,
+                    'url_key' => $url_key,
+                    'file_name_original' => $fileName,
+                    'file_name_new' => $url_key . '_' . $fileName
+                );
                 $this->mdl_uploads->create($data);
 
                 move_uploaded_file($tempFile, $targetFile);
