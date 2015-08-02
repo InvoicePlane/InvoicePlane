@@ -40,8 +40,8 @@ div.table .file-row:nth-child(odd) {
     display: none;
 }
 img{
-    width:80px;
-    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
 }
 /* Hide the start and cancel buttons and show the delete button */
 

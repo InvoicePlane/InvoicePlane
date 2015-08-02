@@ -173,6 +173,7 @@
                 </div>
             </div>
 
+<<<<<<< HEAD
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <h4><?php echo lang('custom_fields'); ?></h4>
@@ -185,8 +186,24 @@
                             </tr>
                         <?php } ?>
                     </table>
+=======
+            <?php if ($custom_fields) { ?>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <h4><?php echo lang('custom_fields'); ?></h4>
+                        <br/>
+                        <table class="table table-condensed table-striped">
+                            <?php foreach ($custom_fields as $custom_field) { ?>
+                                <tr>
+                                    <td><?php echo $custom_field->custom_field_label ?></td>
+                                    <td><?php echo $client->{$custom_field->custom_field_column}; ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
+>>>>>>> 30045d5d3ec7306182ca0dd5094118361014f8cc
                 </div>
-            </div>
+            <?php } ?>
 
             <hr/>
 

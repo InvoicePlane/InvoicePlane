@@ -1,4 +1,5 @@
 /application/config/development
+/application/config/database.php
 /application/logs/*
 !/application/logs/index.html
 /uploads/temp/*
@@ -8,7 +9,7 @@
 /uploads/import/*
 /uploads/temp/*
 /application/helpers/mpdf/ttfontdata/*
-
+.vagrant
 .idea
 .sass-cache
 adminer.php

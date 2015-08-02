@@ -2,7 +2,9 @@
 
 (defined('EXT')) OR define('EXT', '.php');
 
-global $CFG;
+// InvoicePlane: Hack for PHPUnit (tested on PHPUnit 3.7.21) - $CFG must be loaded (global doesn't work)
+//global $CFG;
+$CFG =& load_class('Config', 'core');
 
 /* get module locations from config settings or use the default module location and offset */
 is_array(Modules::$locations = $CFG->item('modules_locations')) OR Modules::$locations = array(
