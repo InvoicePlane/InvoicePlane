@@ -13,5 +13,6 @@
  */
 
 $lang = array(
-
+	'input_field' => 'Shortfield',
+	'textarea_field' => 'Longfield',
 );
