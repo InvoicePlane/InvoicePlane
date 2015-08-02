@@ -173,7 +173,6 @@
                 </div>
             </div>
 
-<<<<<<< HEAD
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <h4><?php echo lang('custom_fields'); ?></h4>
@@ -186,7 +185,6 @@
                             </tr>
                         <?php } ?>
                     </table>
-=======
             <?php if ($custom_fields) { ?>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
@@ -201,7 +199,6 @@
                             <?php } ?>
                         </table>
                     </div>
->>>>>>> 30045d5d3ec7306182ca0dd5094118361014f8cc
                 </div>
             <?php } ?>
 
