@@ -249,6 +249,8 @@ class Setup extends MX_Controller
             './uploads/customer_files',
             './' . APPPATH . 'config/', // for database.php
             './' . APPPATH . 'helpers/mpdf/tmp',
+            './' . APPPATH . 'helpers/mpdf/ttfontdata',
+            './' . APPPATH . 'helpers/mpdf/graph_cache',
             './' . APPPATH . 'logs'
         );
 
