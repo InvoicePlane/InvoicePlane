@@ -70,7 +70,7 @@ class Mdl_Settings extends CI_Model
 
     public function set_setting($key, $value)
     {
-        $this->settings->$key = $value;
+        $this->settings[$key] = $value;
     }
 
 }
