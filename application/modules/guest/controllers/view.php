@@ -61,7 +61,7 @@ class View extends Base_Controller
             $invoice = $invoice->row();
 
             if (!$invoice_template) {
-                $invoice_template = $this->mdl_settings->setting('default_pdf_invoice_template');
+                $invoice_template = $this->mdl_settings->setting('pdf_invoice_template');
             }
 
             $this->load->helper('pdf');
