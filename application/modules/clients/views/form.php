@@ -192,7 +192,6 @@
         </div>
 
         <?php if ($custom_fields) { ?>
-            <?php print_r($custom_fields); ?>
             <div class="row">
                 <div class="col-xs-12">
                     <fieldset>
