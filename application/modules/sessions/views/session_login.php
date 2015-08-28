@@ -49,8 +49,8 @@
                     <label for="email" class="control-label"><?php echo lang('email'); ?></label>
                 </div>
                 <div class="col-xs-12 col-sm-9">
-                    <input type="text" name="email" id="email" class="form-control"
-                           placeholder="<?php echo lang('email'); ?>">
+                    <input type="email" name="email" id="email" class="form-control"
+                           placeholder="<?php echo lang('email'); ?>"<?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
             <div class="form-group">
@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="password" id="password" class="form-control"
-                           placeholder="<?php echo lang('password'); ?>">
+                           placeholder="<?php echo lang('password'); ?>"<?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
 
