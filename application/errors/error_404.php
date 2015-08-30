@@ -2,9 +2,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Page Not Found - InvoicePlane</title>
+        <title><?php echo $heading; ?> - InvoicePlane</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style type="text/css">
+        <style>
             
             * {
                 line-height: 1.2;
@@ -37,17 +37,6 @@
                 width: 280px;
             }
             
-            code {
-            	font-family: Consolas, Monaco, Courier New, Courier, monospace;
-            	background-color: #f9f9f9;
-            	border: 1px solid #eee;
-            	color: #555;
-            	display: inline-block;
-            	margin: 1em;
-            	padding: .5em .75em;
-            	border-radius: 6px;
-            }
-            
             @media only screen and (max-width: 280px) {
             
                 body, p {
@@ -60,6 +49,7 @@
                 }
             
             }
+            
         </style>
     </head>
     <body>
