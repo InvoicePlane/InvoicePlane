@@ -40,7 +40,7 @@ class MY_Utf8 extends CI_Utf8 {
 	 */
 	function __construct()
 	{
-		log_message('debug', "MY Utf8 Initialized - Hack for PHPUnit to run");
+		log_message('debug', 'MY Utf8 Initialized - Hack for PHPUnit to run');
 
 		// global $CFG;
         $CFG =& load_class('Config', 'core');
@@ -54,7 +54,7 @@ class MY_Utf8 extends CI_Utf8 {
 			AND $CFG->item('charset') == 'UTF-8'			// Application charset must be UTF-8
 			)
 		{
-			log_message('debug', "UTF-8 Support Enabled");
+			log_message('debug', 'UTF-8 Support Enabled');
 
 			define('UTF8_ENABLED', TRUE);
 
@@ -73,7 +73,7 @@ class MY_Utf8 extends CI_Utf8 {
 		}
 		else
 		{
-			log_message('debug', "UTF-8 Support Disabled");
+			log_message('debug', 'UTF-8 Support Disabled');
 			define('UTF8_ENABLED', FALSE);
 		}
 	}
