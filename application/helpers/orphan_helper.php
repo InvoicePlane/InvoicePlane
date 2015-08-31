@@ -42,5 +42,3 @@ function delete_orphans()
         $CI->db->query($query);
     }
 }
-
-?>
