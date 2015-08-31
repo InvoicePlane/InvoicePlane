@@ -330,20 +330,22 @@ class Merchant
 			$message = lang('merchant_payment_redirect');
 		}
 
-		?><!DOCTYPE html>
-<html>
-<head><title>Redirecting...</title></head>
-<body onload="document.forms[0].submit();">
-	<form name="payment" action="<?php echo htmlspecialchars($url); ?>" method="post">
-		<p><?php echo htmlspecialchars($message); ?></p>
-		<p>
-			<?php foreach ($data as $key => $value): ?>
-				<input type="hidden" name="<?php echo htmlspecialchars($key); ?>" value="<?php echo htmlspecialchars($value); ?>" />
-			<?php endforeach ?>
-			<input type="submit" value="Continue" />
-		</p>
-	</form>
-</body>
+		?><!doctype html>
+<html lang="en">
+    <head>
+        <title>Redirecting...</title>
+    </head>
+    <body onload="document.forms[0].submit();">
+    	<form name="payment" action="<?php echo htmlspecialchars($url); ?>" method="post">
+    		<p><?php echo htmlspecialchars($message); ?></p>
+    		<p>
+    			<?php foreach ($data as $key => $value) : ?>
+    				<input type="hidden" name="<?php echo htmlspecialchars($key); ?>" value="<?php echo htmlspecialchars($value); ?>" />
+    			<?php endforeach; ?>
+    			<input type="submit" value="Continue">
+    		</p>
+    	</form>
+    </body>
 </html>
 <?php
 		exit();
