@@ -36,5 +36,3 @@ class MY_Form_validation extends CI_Form_validation
         return (bool) filter_var($str, FILTER_VALIDATE_EMAIL);
     }
 }
-
-?>
