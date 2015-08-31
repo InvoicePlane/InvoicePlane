@@ -1,7 +1,7 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#save_client_note').click(function () {
-            $.post("<?php echo site_url('clients/ajax/save_client_note'); ?>",
+            $.post('<?php echo site_url('clients/ajax/save_client_note'); ?>',
                 {
                     client_id: $('#client_id').val(),
                     client_note: $('#client_note').val()
