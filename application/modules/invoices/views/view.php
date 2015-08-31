@@ -6,6 +6,10 @@
             );
         });
 
+        $('.btn_add_task').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
+        });
+
         $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         });
@@ -127,6 +131,7 @@
             }
         });
         <?php endif; ?>
+
     });
 </script>
 
@@ -182,14 +187,13 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php echo trans('download_pdf'); ?>
                     </a>
                 </li>
-                <?php if($this->mdl_settings->setting('sumex') == "1"): ?>
-                <li>
-                    <a href="#" id="btn_sumex"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-user-md fa-margin"></i>
-                        <?php echo trans('generate_sumex'); ?>
-                    </a>
-                </li>
+                <?php if ($this->mdl_settings->setting('sumex') == "1"): ?>
+                    <li>
+                        <a href="#" id="btn_sumex" data-invoice-id="<?php echo $invoice_id; ?>">
+                            <i class="fa fa-user-md fa-margin"></i>
+                            <?php echo trans('generate_sumex'); ?>
+                        </a>
+                    </li>
                 <?php endif; ?>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
