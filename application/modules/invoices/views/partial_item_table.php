@@ -23,6 +23,7 @@
                 <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                 <input type="hidden" name="item_id" value="">
                 <input type="hidden" name="item_product_id" value="">
+                <input type="hidden" name="item_task_id" class="item-task-id" value="">
 
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('item'); ?></span>
@@ -129,6 +130,7 @@
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>>
+                    <input type="hidden" name="item_task_id" class="item-task-id" value="<?php if ($item->item_task_id) echo $item->item_task_id; ?>">
                     <input type="hidden" name="item_product_id" value="<?php echo $item->item_product_id; ?>">
 
                     <div class="input-group">
@@ -281,6 +283,9 @@
                 <a href="#" class="btn_add_product btn btn-sm btn-default">
                     <i class="fa fa-database"></i>
                     <?php echo trans('add_product'); ?>
+                </a>
+                <a href="#" class="btn_add_task btn btn-sm btn-default">
+                    <i class="fa fa-database"></i> <?php echo lang('add_task'); ?>
                 </a>
             <?php } ?>
         </div>

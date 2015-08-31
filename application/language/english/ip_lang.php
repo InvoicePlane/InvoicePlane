@@ -562,6 +562,9 @@ $lang = array(
     'zip_code'                                     => 'Zip Code',
 
     //Time Management
+    'default_hourly_rate'                          => 'Default hourly rate',
+    'project_help'                                 => 'A number greater than 0.00 enables the projects/tasks feature.',
+    'add_task'                                     => 'Add task',
     'tasks'                                        => 'Tasks',
     'project'                                      => 'Project',
     'projects'                                     => 'Projects',

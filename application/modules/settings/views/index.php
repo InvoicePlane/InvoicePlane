@@ -35,6 +35,9 @@
         <a data-toggle="tab" href="#settings-merchant"><?php echo trans('merchant_account'); ?></a>
     </li>
     <li>
+        <a data-toggle="tab" href="#settings-projects-tasks"><?php echo trans('projects'); ?></a>
+    </li>
+    <li>
         <a data-toggle="tab" href="#settings-updates"><?php echo trans('updates'); ?></a>
     </li>
 </ul>
@@ -71,6 +74,10 @@
 
             <div id="settings-merchant" class="tab-pane">
                 <?php $this->layout->load_view('settings/partial_settings_merchant'); ?>
+            </div>
+
+            <div id="settings-projects-tasks" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_projects_tasks'); ?>
             </div>
 
             <div id="settings-updates" class="tab-pane">

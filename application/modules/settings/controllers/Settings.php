@@ -47,7 +47,17 @@ class Settings extends Admin_Controller
                         $this->mdl_settings->save($key, $this->crypt->encode($value));
                     }
                 } else {
-                    $this->mdl_settings->save($key, $value);
+                    if ($key == 'default_hourly_rate') {
+                        $this->load->library('form_validation');
+                        if ($value == '') {
+                            $value = '0.00';
+                        }
+                        if ($this->form_validation->integer($value) or $this->form_validation->decimal($value)) {
+                            $this->mdl_settings->save($key, sprintf("%01.2f", $value));
+                        }
+                    } else {
+                        $this->mdl_settings->save($key, $value);
+                    }
                 }
             }
 
@@ -157,5 +167,4 @@ class Settings extends Admin_Controller
 
         redirect('settings');
     }
-
 }
