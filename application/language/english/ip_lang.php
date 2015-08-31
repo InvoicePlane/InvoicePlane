@@ -1,9 +1,5 @@
 <?php
 
-// concated new lines for quote_status_email_body
-// replace <br/> with <br>, closing not needed in HTML5
-// replace <b> with <strong>. Better semantics.
-
 $lang = array(
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
