@@ -20,17 +20,17 @@
     <table class="table table-striped">
 
         <thead>
-        <tr>
-            <th><?php echo lang('table'); ?></th>
-            <th><?php echo lang('label'); ?></th>
-            <th><?php echo lang('column'); ?></th>
-            <th><?php echo lang('type'); ?></th>
-            <th><?php echo lang('options'); ?></th>
-        </tr>
+            <tr>
+                <th><?php echo lang('table'); ?></th>
+                <th><?php echo lang('label'); ?></th>
+                <th><?php echo lang('column'); ?></th>
+                <th><?php echo lang('type'); ?></th>
+                <th><?php echo lang('options'); ?></th>
+            </tr>
         </thead>
 
         <tbody>
-        <?php foreach ($custom_fields as $custom_field) { ?>
+        <?php foreach ($custom_fields as $custom_field) : ?>
             <tr>
                 <td><?php echo $custom_field->custom_field_table; ?></td>
                 <td><?php echo $custom_field->custom_field_label; ?></td>
@@ -57,7 +57,7 @@
                     </div>
                 </td>
             </tr>
-        <?php } ?>
+        <?php endforeach; ?>
         </tbody>
 
     </table>

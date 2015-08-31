@@ -29,18 +29,18 @@ class Mdl_Custom_Fields extends MY_Model
     public function custom_tables()
     {
         return array(
-            'ip_client_custom' => 'client',
+            'ip_client_custom'  => 'client',
             'ip_invoice_custom' => 'invoice',
             'ip_payment_custom' => 'payment',
-            'ip_quote_custom' => 'quote',
-            'ip_user_custom' => 'user'
+            'ip_quote_custom'   => 'quote',
+            'ip_user_custom'    => 'user'
         );
     }
 
     public function custom_types()
     {
         return array(
-            'ip_fieldtype_input' => 'input_field',
+            'ip_fieldtype_input'    => 'input_field',
             'ip_fieldtype_textarea' => 'textarea_field'
         );
     }
