@@ -1,17 +1,17 @@
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th><?php echo lang('client_name'); ?></th>
-            <th><?php echo lang('email_address'); ?></th>
-            <th><?php echo lang('phone_number'); ?></th>
-            <th style="text-align: right;"><?php echo lang('balance'); ?></th>
-            <th><?php echo lang('active'); ?></th>
-            <th><?php echo lang('options'); ?></th>
-        </tr>
+            <tr>
+                <th><?php echo lang('client_name'); ?></th>
+                <th><?php echo lang('email_address'); ?></th>
+                <th><?php echo lang('phone_number'); ?></th>
+                <th style="text-align: right;"><?php echo lang('balance'); ?></th>
+                <th><?php echo lang('active'); ?></th>
+                <th><?php echo lang('options'); ?></th>
+            </tr>
         </thead>
         <tbody>
-        <?php foreach ($records as $client) { ?>
+        <?php foreach ($records as $client) : ?>
             <tr>
                 <td><?php echo anchor('clients/view/' . $client->client_id, $client->client_name); ?></td>
                 <td><?php echo $client->client_email; ?></td>
@@ -56,7 +56,7 @@
                     </div>
                 </td>
             </tr>
-        <?php } ?>
+        <?php endforeach; ?>
         </tbody>
     </table>
 </div>
