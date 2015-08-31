@@ -27,7 +27,7 @@ function format_currency($amount)
     if ($currency_symbol_placement == 'before') {
         return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
     } elseif ($currency_symbol_placement == 'afterspace') {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . "&nbsp;" . $currency_symbol;
+        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . '&nbsp;' . $currency_symbol;
     } else {
         return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . $currency_symbol;
     }
@@ -58,6 +58,6 @@ function standardize_amount($amount)
 }
 
 function format_thousands_separator($thousands_separator) {
-    if (preg_match("/\\s+/",$thousands_separator)) $thousands_separator = "&nbsp;";
+    if (preg_match('/\\s+/',$thousands_separator)) $thousands_separator = '&nbsp;';
     return $thousands_separator;     
 }
