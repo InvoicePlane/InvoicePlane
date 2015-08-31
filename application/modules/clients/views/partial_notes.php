@@ -4,4 +4,4 @@
             <?php echo nl2br($client_note->client_note); ?>
         </p>
     </div>
-<?php endif; ?>
+<?php endforeach; ?>
