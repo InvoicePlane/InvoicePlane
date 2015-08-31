@@ -15,7 +15,7 @@ $hook['display_override'] = array(
     'class'     => 'DisplayHook',
     'function'  => 'captureOutput',
     'filename'  => 'DisplayHook.php',
-    'filepath'  => 'hooks',
+    'filepath'  => 'hooks'
 );
 
 $hook['pre_controller'] = array(
