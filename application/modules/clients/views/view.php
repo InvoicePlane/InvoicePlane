@@ -41,7 +41,7 @@
         </a>
         <a href="#" class="btn btn-sm btn-default client-create-invoice"
            data-client-name="<?php echo $client->client_name; ?>"><i
-                class="fa fa-file-text""></i> <?php echo lang('create_invoice'); ?></a>
+                class="fa fa-file-text"></i> <?php echo lang('create_invoice'); ?></a>
         <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
            class="btn btn-sm btn-default">
             <i class="fa fa-edit"></i> <?php echo lang('edit'); ?>
@@ -173,7 +173,6 @@
                 </div>
             </div>
 
-            <div class="row">
             <?php if ($custom_fields) { ?>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
