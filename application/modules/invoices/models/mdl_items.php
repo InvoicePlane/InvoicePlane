@@ -87,10 +87,17 @@ class Mdl_Items extends Response_Model
 
     public function delete($item_id)
     {
-        // Get the invoice id so we can recalculate invoice amounts
-        $this->db->select('invoice_id');
-        $this->db->where('item_id', $item_id);
-        $invoice_id = $this->db->get('ip_invoice_items')->row()->invoice_id;
+        // Get item:
+        // the invoice id is needed to recalculate invoice amounts
+        // and the task id to update status if the item refers a task
+        $query = $this->db->get_where($this->table,
+            array('item_id' => $item_id));
+        if ($query->num_rows() == 0) {
+            return null;
+        }
+
+        $row = $query->row();
+        $invoice_id = $row->invoice_id;
 
         // Delete the item
         parent::delete($item_id);
@@ -102,6 +109,6 @@ class Mdl_Items extends Response_Model
         // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
         $this->mdl_invoice_amounts->calculate($invoice_id);
+        return $row;
     }
-
 }
