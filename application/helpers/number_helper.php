@@ -35,14 +35,14 @@ function format_currency($amount)
     }
 }
 
-function format_amount($amount = NULL)
+function format_amount($amount = NULL, $decimals = 2)
 {
     if ($amount) {
         $CI =& get_instance();
         $thousands_separator = format_thousands_separator($CI->mdl_settings->setting('thousands_separator'));
         $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point, $thousands_separator);
     }
     return NULL;
 }
