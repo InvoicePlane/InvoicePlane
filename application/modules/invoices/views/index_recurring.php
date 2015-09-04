@@ -6,7 +6,7 @@
     </div>
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <div id="filter_results">
         <div class="table-responsive">

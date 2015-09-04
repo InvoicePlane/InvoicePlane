@@ -14,7 +14,7 @@
 
                 <div class="btn-group btn-group-justified no-margin">
                     <a href="<?php echo site_url('clients/form'); ?>" class="btn btn-default">
-                        <i class="fa fa-user fa-margin"></i>
+                        <i class="fa fa-user-plus fa-margin"></i>
                         <span class="hidden-xs"><?php echo lang('add_client'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">

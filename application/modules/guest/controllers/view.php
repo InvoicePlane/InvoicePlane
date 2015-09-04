@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class View extends Base_Controller
@@ -40,7 +40,7 @@ class View extends Base_Controller
 
             $data = array(
                 'invoice' => $invoice,
-                'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+					 'items' => $this->mdl_items->get_items_and_replace_vars($invoice->invoice_id),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_url_key' => $invoice_url_key,
                 'flash_message' => $this->session->flashdata('flash_message'),
@@ -61,7 +61,7 @@ class View extends Base_Controller
             $invoice = $invoice->row();
 
             if (!$invoice_template) {
-                $invoice_template = $this->mdl_settings->setting('default_pdf_invoice_template');
+                $invoice_template = $this->mdl_settings->setting('pdf_invoice_template');
             }
 
             $this->load->helper('pdf');
@@ -109,7 +109,7 @@ class View extends Base_Controller
             $quote = $quote->row();
 
             if (!$quote_template) {
-                $quote_template = $this->mdl_settings->setting('default_pdf_quote_template');
+                $quote_template = $this->mdl_settings->setting('pdf_quote_template');
             }
 
             $this->load->helper('pdf');

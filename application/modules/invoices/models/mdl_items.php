@@ -22,6 +22,50 @@ class Mdl_Items extends Response_Model
     public $primary_key = 'ip_invoice_items.item_id';
     public $date_created_field = 'item_date_added';
 
+	 public function get_items_and_replace_vars($invoice_id, $invoice_date_created = 'now')
+	 {
+		 $items = array();
+		 $query = $this->where('invoice_id', $invoice_id)->get();
+
+		 foreach($query->result() as $item) {
+			 $item->item_name = $this->parse_item($item->item_name, $invoice_date_created);
+			 $item->item_description = $this->parse_item($item->item_description, $invoice_date_created);
+			 $items[] = $item;
+		 }
+		 return $items;
+	 }
+
+    private function parse_item($string, $invoice_date_created)
+    {
+        if (preg_match_all('/{{{(?<format>[yYmMdD])(?:(?<=[Yy])ear|(?<=[Mm])onth|(?<=[Dd])ay)(?:(?<operation>[-+])(?<amount>[1-9]+))?}}}/m', $string, $template_vars, PREG_SET_ORDER)) {
+			  try {
+				$formattedDate = new DateTime($invoice_date_created);
+			  }
+			  catch(Exception $e) { // If creating a date based on the invoice_date_created isn't possible, use current date
+				$formattedDate = new DateTime();
+			  }
+
+			  /* Calculate the date first, before starting replacing the variables */
+			  foreach($template_vars as $var) {
+				  if(!isset($var['operation'], $var['amount'])) continue;
+
+				  if($var['operation'] == '-') {
+					  $formattedDate->sub( new DateInterval('P' . $var['amount'] . strtoupper($var['format'])) );
+				  }
+				  else if($var['operation'] == '+') {
+					  $formattedDate->add( new DateInterval('P' . $var['amount'] . strtoupper($var['format'])) );
+				  }
+			  }
+
+			  /* Let's replace all variables */
+			  foreach($template_vars as $var) {
+				  $string = str_replace($var[0], $formattedDate->format($var['format']), $string);
+			  }
+        }
+
+        return $string;
+    }
+
     public function default_select()
     {
         $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');

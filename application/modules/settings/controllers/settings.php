@@ -35,6 +35,20 @@ class Settings extends Admin_Controller
                 $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
             }
 
+            if ($settings['item_price_decimal_places'] <> $this->mdl_settings->setting('item_price_decimal_places')) {
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_price` `item_price` DECIMAL( 10, {$settings['item_price_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_invoice_item_amounts` CHANGE `item_subtotal` `item_subtotal` DECIMAL( 10, {$settings['item_price_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_item_amounts` CHANGE `item_subtotal` `item_subtotal` DECIMAL( 10, {$settings['item_price_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_price` `item_price` DECIMAL( 10, {$settings['item_price_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_invoice_item_amounts` CHANGE `item_subtotal` `item_subtotal` DECIMAL( 10, {$settings['item_price_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_price` `item_price` DECIMAL( 10, {$settings['item_price_decimal_places']} ) NOT NULL");
+            }
+
+            if ($settings['item_amount_decimal_places'] <> $this->mdl_settings->setting('item_amount_decimal_places')) {
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_quantity` `item_quantity` DECIMAL( 10, {$settings['item_amount_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_quantity` `item_quantity` DECIMAL( 10, {$settings['item_amount_decimal_places']} ) NOT NULL");
+            }
+
             // Save the submitted settings
             foreach ($settings as $key => $value) {
                 // Don't save empty passwords

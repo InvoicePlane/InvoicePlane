@@ -29,11 +29,19 @@ class Mdl_Custom_Fields extends MY_Model
     public function custom_tables()
     {
         return array(
-            'ip_client_custom' => 'client',
+            'ip_client_custom'  => 'client',
             'ip_invoice_custom' => 'invoice',
             'ip_payment_custom' => 'payment',
-            'ip_quote_custom' => 'quote',
-            'ip_user_custom' => 'user'
+            'ip_quote_custom'   => 'quote',
+            'ip_user_custom'    => 'user'
+        );
+    }
+
+    public function custom_types()
+    {
+        return array(
+            'ip_fieldtype_input'    => 'input_field',
+            'ip_fieldtype_textarea' => 'textarea_field'
         );
     }
 
@@ -43,6 +51,11 @@ class Mdl_Custom_Fields extends MY_Model
             'custom_field_table' => array(
                 'field' => 'custom_field_table',
                 'label' => lang('table'),
+                'rules' => 'required'
+            ),
+            'custom_field_type' => array(
+                'field' => 'custom_field_type',
+                'label' => lang('type'),
                 'rules' => 'required'
             ),
             'custom_field_label' => array(
@@ -57,6 +70,9 @@ class Mdl_Custom_Fields extends MY_Model
     {
         // Get the default db array
         $db_array = parent::db_array();
+
+        // Get the array of custom types
+        $custom_types = $this->custom_types();
 
         // Get the array of custom tables
         $custom_tables = $this->custom_tables();
@@ -113,8 +129,7 @@ class Mdl_Custom_Fields extends MY_Model
 
         $column = array(
             $column_name => array(
-                'type' => 'VARCHAR',
-                'constraint' => 255
+                'type' => 'TEXT'
             )
         );
 
@@ -128,8 +143,7 @@ class Mdl_Custom_Fields extends MY_Model
         $column = array(
             $old_column_name => array(
                 'name' => $new_column_name,
-                'type' => 'VARCHAR',
-                'constraint' => 255
+                'type' => 'TEXT'
             )
         );
 

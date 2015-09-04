@@ -27,11 +27,16 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
     if(!(is_dir('./uploads/archive/') OR is_link('./uploads/archive/') ))
         mkdir ('./uploads/archive/','0777');
 
-    if (strpos($filename, lang('invoice')) !== false) {
         $CI = &get_instance();
+    if ( (strpos($filename, lang('invoice')) !== false OR strpos($filename, lang('quote')) !== false) && !empty($CI->mdl_settings->settings['pdf_invoice_footer']) ) {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
+		  $footerHTML = '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>';
+		  $footerHTML .= '<div class="footer-including-page-number">' . lang('page') . ' {PAGENO} / {nb}</div>';
+        $mpdf->SetHTMLFooter($footerHTML);
     }
+	 else {
+        $mpdf->SetHTMLFooter('<div id="footer" class="footer-including-page-number">' . lang('page') . ' {PAGENO} / {nb}</div>');
+	 }
     $invoice_array = array();
     $mpdf->WriteHTML($html);
 
@@ -79,7 +84,7 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
         $interval = 3600;
         if ($handle = @opendir(preg_replace('/\/$/','','./uploads/temp/'))) {
             while (false !== ($file = readdir($handle))) {
-                if (($file != "..") && ($file != ".") && !is_dir($file) && ((filemtime('./uploads/temp/'.$file)+$interval) < time()) && (substr($file, 0, 1) !== '.') && ($file !='remove.txt')) { // mPDF 5.7.3
+                if (($file != '..') && ($file != '.') && !is_dir($file) && ((filemtime('./uploads/temp/'.$file)+$interval) < time()) && (substr($file, 0, 1) !== '.') && ($file !='remove.txt')) { // mPDF 5.7.3
                     unlink('./uploads/temp/'.$file);
                 }
             }
