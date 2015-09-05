@@ -299,27 +299,27 @@
 } ?>">
     <ul>
         <li>
-            <a href="<?php echo site_url('dashboard'); ?>">
+            <a href="<?php echo site_url('dashboard'); ?>" title="<?php echo lang('dashboard'); ?>" class="tip" data-placement="right">
                 <i class="fa fa-dashboard"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('clients/index'); ?>">
+            <a href="<?php echo site_url('clients/index'); ?>" title="<?php echo lang('clients'); ?>" class="tip" data-placement="right">
                 <i class="fa fa-users"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('quotes/index'); ?>">
+            <a href="<?php echo site_url('quotes/index'); ?>" title="<?php echo lang('quotes'); ?>" class="tip" data-placement="right">
                 <i class="fa fa-file"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('invoices/index'); ?>">
+            <a href="<?php echo site_url('invoices/index'); ?>" title="<?php echo lang('invoices'); ?>" class="tip" data-placement="right">
                 <i class="fa fa-file-text"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('payments/index'); ?>">
+            <a href="<?php echo site_url('payments/index'); ?>" title="<?php echo lang('payments'); ?>" class="tip" data-placement="right">
                 <i class="fa fa-money"></i>
             </a>
         </li>
