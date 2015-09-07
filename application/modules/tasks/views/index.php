@@ -50,9 +50,8 @@
                         </a>
                         <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
                            title="<?php echo trans('delete'); ?>"
-                           onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
-                            <i class="fa fa-trash-o fa-margin"></i>
-                        </a>
+                           onclick="return confirm('<?php if ($task->task_status == 4) echo trans('alert_task_delete') . ' '; echo trans('delete_record_warning'); ?>');">
+                           <i class="fa fa-trash-o fa-margin"></i></a>
                     </td>
                 </tr>
             <?php } ?>

@@ -102,8 +102,13 @@ class Mdl_Tasks extends Response_Model
             ),
             'task_status' => array(
                 'field' => 'task_status',
-                'label' => trans('status')
-            )
+                'label' => lang('status')
+            ),
+            'tax_rate_id' => array(
+                'field' => 'tax_rate_id',
+                'label' => lang('tax_rate'),
+                'rules' => 'numeric'
+            ),
         );
     }
 
