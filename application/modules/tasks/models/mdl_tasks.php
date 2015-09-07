@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -25,7 +26,7 @@ class Mdl_Tasks extends Response_Model
     {
         $this->db->select('SQL_CALC_FOUND_ROWS *,
           (CASE WHEN DATEDIFF(NOW(), task_finish_date) > 0 THEN 1 ELSE 0 END) is_overdue
-        ', FALSE);
+        ', false);
     }
 
     public function default_order_by()
@@ -75,7 +76,12 @@ class Mdl_Tasks extends Response_Model
             'task_status' => array(
                 'field' => 'task_status',
                 'label' => lang('status')
-            )
+            ),
+            'tax_rate_id' => array(
+                'field' => 'tax_rate_id',
+                'label' => lang('tax_rate'),
+                'rules' => 'numeric'
+            ),
         );
     }
 
@@ -93,7 +99,7 @@ class Mdl_Tasks extends Response_Model
     public function prep_form($id = null)
     {
         if (!parent::prep_form($id)) {
-            return FALSE;
+            return false;
         }
 
         if (!$id) {
@@ -101,7 +107,7 @@ class Mdl_Tasks extends Response_Model
             parent::set_form_value('task_price', $this->mdl_settings->setting('default_hourly_rate'));
         }
 
-        return TRUE;
+        return true;
     }
 
     public function statuses()
