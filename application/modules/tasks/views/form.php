@@ -1,4 +1,17 @@
-<form method="post" class="form-horizontal">
+<?php
+if ($this->mdl_tasks->form_value('task_id') && 
+    ($this->mdl_tasks->form_value('task_status') == 4) ):
+?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#task-form').find(':input').prop('disabled', true);
+        $('#btn-submit').hide();
+        $('#btn-cancel').prop('disabled', false);
+    });
+</script>
+<?php endif ?>
+
+<form method="post" class="form-horizontal" id="task-form">
 
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
@@ -50,6 +63,25 @@
                         <div class="col-xs-12 col-sm-9">
                             <input type="text" name="task_price" id="task_price" class="form-control"
                                    value="<?php echo $this->mdl_tasks->form_value('task_price'); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
+                            <label class="control-label"><?php echo trans('tax_rate'); ?>: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-8 col-lg-8">
+                            <select name="tax_rate_id" id="tax_rate_id" class="form-control">
+                                <option value="0"><?php echo trans('none'); ?></option>
+                                <?php foreach ($tax_rates as $tax_rate) { ?>
+                                    <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                        <?php if ($this->mdl_tasks->form_value('tax_rate_id') == $tax_rate->tax_rate_id) { ?> selected="selected" <?php } ?>
+                                        >
+                                        <?php echo $tax_rate->tax_rate_name
+                                            . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
 

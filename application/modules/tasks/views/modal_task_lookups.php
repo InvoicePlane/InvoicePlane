@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create invoice modal
         $('#modal-choose-items').modal('show');
@@ -34,8 +34,10 @@
             });
 
             $.post("<?php echo site_url('tasks/ajax/process_task_selections'); ?>", {
-                task_ids: task_ids
+                task_ids: task_ids,
+                _ip_csrf: csrf()
             }, function (data) {
+                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 var items = JSON.parse(data);
 
                 for (var key in items) {
@@ -53,6 +55,7 @@
                     $('#item_table tbody:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
 
                     $('#modal-choose-items').modal('hide');
+                    $('#invoice_change_client').hide();
                 }
             });
         });

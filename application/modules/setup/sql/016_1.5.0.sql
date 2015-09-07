@@ -7,3 +7,8 @@ AFTER `item_date_added`;
 # Add default hourly rate for tasks
 INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
 VALUES ('default_hourly_rate', '0.00');
+
+# Add tax rate to tasks
+ALTER TABLE `ip_tasks`
+ADD COLUMN `tax_rate_id` int(11) NOT NULL
+AFTER `task_status`;

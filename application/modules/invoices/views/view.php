@@ -1,5 +1,13 @@
 <script>
     $(function () {
+        $('.item-task-id').each(function () {
+            // Disable client chaning if at least one item already has a task id assigned
+            if ($(this).val().length > 0) {
+                $('#invoice_change_client').hide();
+                return false;
+            }
+        });
+
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load(
                 "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000)
