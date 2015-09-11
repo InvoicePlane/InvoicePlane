@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -32,9 +33,9 @@ class Mdl_Uploads extends Response_Model
     {
     }
 
-    public function create($db_array = NULL)
+    public function create($db_array = null)
     {
-        $upload_id = parent::save(NULL, $db_array);
+        $upload_id = parent::save(null, $db_array);
 
         return $upload_id;
     }
@@ -49,7 +50,8 @@ class Mdl_Uploads extends Response_Model
             foreach ($query->result() as $row) {
                 array_push($names, array(
                     'path' => getcwd() . '/uploads/customer_files/' . $row->file_name_new,
-                    'filename' => $row->file_name_original));
+                    'filename' => $row->file_name_original
+                ));
             }
         }
         return $names;
@@ -66,7 +68,8 @@ class Mdl_Uploads extends Response_Model
             foreach ($query->result() as $row) {
                 array_push($names, array(
                     'path' => getcwd() . '/uploads/customer_files/' . $row->file_name_new,
-                    'filename' => $row->file_name_original));
+                    'filename' => $row->file_name_original
+                ));
             }
         }
         return $names;

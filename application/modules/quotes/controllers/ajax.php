@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -18,7 +19,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function save()
     {
@@ -40,7 +41,7 @@ class Ajax extends Admin_Controller
                     $item->item_price = standardize_amount($item->item_price);
                     $item->item_discount_amount = standardize_amount($item->item_discount_amount);
 
-                    $item_id = ($item->item_id) ?: NULL;
+                    $item_id = ($item->item_id) ?: null;
 
                     $save_item_as_lookup = (isset($item->save_item_as_lookup)) ? $item->save_item_as_lookup : 0;
 
@@ -55,7 +56,7 @@ class Ajax extends Admin_Controller
                             'item_price' => $item->item_price
                         );
 
-                        $this->mdl_item_lookups->save(NULL, $db_array);
+                        $this->mdl_item_lookups->save(null, $db_array);
                     }
                 }
             }
@@ -306,7 +307,7 @@ class Ajax extends Admin_Controller
         );
 
         if ($this->mdl_invoices->run_validation()) {
-            $invoice_id = $this->mdl_invoices->create(NULL, FALSE);
+            $invoice_id = $this->mdl_invoices->create(null, false);
 
             $this->db->where('quote_id', $this->input->post('quote_id'));
             $this->db->set('invoice_id', $invoice_id);
@@ -325,10 +326,11 @@ class Ajax extends Admin_Controller
                     'item_order' => $quote_item->item_order
                 );
 
-                $this->mdl_items->save($invoice_id, NULL, $db_array);
+                $this->mdl_items->save($invoice_id, null, $db_array);
             }
 
-            $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))->get()->result();
+            $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id',
+                $this->input->post('quote_id'))->get()->result();
 
             foreach ($quote_tax_rates as $quote_tax_rate) {
                 $db_array = array(
@@ -338,7 +340,7 @@ class Ajax extends Admin_Controller
                     'invoice_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
                 );
 
-                $this->mdl_invoice_tax_rates->save($invoice_id, NULL, $db_array);
+                $this->mdl_invoice_tax_rates->save($invoice_id, null, $db_array);
             }
 
             $response = array(

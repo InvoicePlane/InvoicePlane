@@ -52,7 +52,7 @@
 
                     <div class="controls">
                         <input type="text" name="payment_amount" id="payment_amount" class="form-control"
-                               value="<?php echo (isset($invoice_balance) ? format_amount($invoice_balance):''); ?>">
+                               value="<?php echo(isset($invoice_balance) ? format_amount($invoice_balance) : ''); ?>">
                     </div>
                 </div>
 
@@ -81,9 +81,10 @@
                             <?php foreach ($payment_methods as $payment_method) { ?>
                                 <option value="<?php echo $payment_method->payment_method_id; ?>"
                                     <?php if (isset($invoice_payment_method)
-                                            && $invoice_payment_method == $payment_method->payment_method_id) {
+                                        && $invoice_payment_method == $payment_method->payment_method_id
+                                    ) {
                                         echo 'selected="selected"';
-                                    }?>>
+                                    } ?>>
                                     <?php echo $payment_method->payment_method_name; ?>
                                 </option>
                             <?php } ?>

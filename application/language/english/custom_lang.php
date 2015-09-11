@@ -11,8 +11,3 @@
  * If you are not sure take a look at the ip_lang.php file or visit the
  * community forums.
  */
-
-$lang = array(
-	'input_field'    => 'Shortfield',
-	'textarea_field' => 'Longfield',
-);

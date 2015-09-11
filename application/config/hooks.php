@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 /*
 | -------------------------------------------------------------------------
 | Hooks
@@ -12,14 +14,14 @@
 
 // Hack for PHPUnit - hide HTML output when ENVIRONMENT == 'testing'
 $hook['display_override'] = array(
-    'class'     => 'DisplayHook',
-    'function'  => 'captureOutput',
-    'filename'  => 'DisplayHook.php',
-    'filepath'  => 'hooks'
+    'class' => 'DisplayHook',
+    'function' => 'captureOutput',
+    'filename' => 'DisplayHook.php',
+    'filepath' => 'hooks'
 );
 
 $hook['pre_controller'] = array(
-	'class'    => 'SetTimezoneClass',
+    'class' => 'SetTimezoneClass',
     'function' => 'setTimezone',
     'filename' => 'SetTimezoneClass.php',
     'filepath' => 'hooks'

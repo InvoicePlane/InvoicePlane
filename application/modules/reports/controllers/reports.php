@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -30,14 +31,15 @@ class Reports extends Admin_Controller
     {
         if ($this->input->post('btn_submit')) {
             $data = array(
-                'results' => $this->mdl_reports->sales_by_client($this->input->post('from_date'), $this->input->post('to_date'))
+                'results' => $this->mdl_reports->sales_by_client($this->input->post('from_date'),
+                    $this->input->post('to_date'))
             );
 
-            $html = $this->load->view('reports/sales_by_client', $data, TRUE);
+            $html = $this->load->view('reports/sales_by_client', $data, true);
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('sales_by_client'), TRUE);
+            pdf_create($html, lang('sales_by_client'), true);
         }
 
         $this->layout->buffer('content', 'reports/sales_by_client_index')->render();
@@ -47,14 +49,15 @@ class Reports extends Admin_Controller
     {
         if ($this->input->post('btn_submit')) {
             $data = array(
-                'results' => $this->mdl_reports->payment_history($this->input->post('from_date'), $this->input->post('to_date'))
+                'results' => $this->mdl_reports->payment_history($this->input->post('from_date'),
+                    $this->input->post('to_date'))
             );
 
-            $html = $this->load->view('reports/payment_history', $data, TRUE);
+            $html = $this->load->view('reports/payment_history', $data, true);
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('payment_history'), TRUE);
+            pdf_create($html, lang('payment_history'), true);
         }
 
         $this->layout->buffer('content', 'reports/payment_history_index')->render();
@@ -67,11 +70,11 @@ class Reports extends Admin_Controller
                 'results' => $this->mdl_reports->invoice_aging()
             );
 
-            $html = $this->load->view('reports/invoice_aging', $data, TRUE);
+            $html = $this->load->view('reports/invoice_aging', $data, true);
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('invoice_aging'), TRUE);
+            pdf_create($html, lang('invoice_aging'), true);
         }
 
         $this->layout->buffer('content', 'reports/invoice_aging_index')->render();
@@ -82,14 +85,16 @@ class Reports extends Admin_Controller
 
         if ($this->input->post('btn_submit')) {
             $data = array(
-                'results' => $this->mdl_reports->sales_by_year($this->input->post('from_date'), $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax'))
+                'results' => $this->mdl_reports->sales_by_year($this->input->post('from_date'),
+                    $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'),
+                    $this->input->post('checkboxTax'))
             );
 
-            $html = $this->load->view('reports/sales_by_year', $data, TRUE);
+            $html = $this->load->view('reports/sales_by_year', $data, true);
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('sales_by_date'), TRUE);
+            pdf_create($html, lang('sales_by_date'), true);
         }
 
         $this->layout->buffer('content', 'reports/sales_by_year_index')->render();

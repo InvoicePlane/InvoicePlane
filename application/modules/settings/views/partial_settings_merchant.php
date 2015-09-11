@@ -19,7 +19,8 @@
             <option value=""></option>
             <?php foreach ($merchant_drivers as $merchant_driver) { ?>
                 <option value="<?php echo $merchant_driver; ?>"
-                        <?php if ($this->mdl_settings->setting('merchant_driver') == $merchant_driver) { ?>selected="selected"<?php } ?>><?php echo ucwords(str_replace('_', ' ', $merchant_driver)); ?></option>
+                        <?php if ($this->mdl_settings->setting('merchant_driver') == $merchant_driver) { ?>selected="selected"<?php } ?>><?php echo ucwords(str_replace('_',
+                        ' ', $merchant_driver)); ?></option>
             <?php } ?>
         </select>
     </div>
@@ -48,7 +49,8 @@
             <?php echo lang('password'); ?>
         </label>
         <input type="password" name="settings[merchant_password]" class="input-sm form-control"
-               value="<?php $this->load->library('encrypt'); echo $this->encrypt->decode($this->mdl_settings->setting('merchant_password')); ?>">
+               value="<?php $this->load->library('encrypt');
+               echo $this->encrypt->decode($this->mdl_settings->setting('merchant_password')); ?>">
     </div>
 
     <div class="form-group">

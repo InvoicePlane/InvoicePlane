@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -23,24 +24,24 @@ class Mdl_Custom_Fields extends MY_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', FALSE);
+        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
     }
 
     public function custom_tables()
     {
         return array(
-            'ip_client_custom'  => 'client',
+            'ip_client_custom' => 'client',
             'ip_invoice_custom' => 'invoice',
             'ip_payment_custom' => 'payment',
-            'ip_quote_custom'   => 'quote',
-            'ip_user_custom'    => 'user'
+            'ip_quote_custom' => 'quote',
+            'ip_user_custom' => 'user'
         );
     }
 
     public function custom_types()
     {
         return array(
-            'ip_fieldtype_input'    => 'input_field',
+            'ip_fieldtype_input' => 'input_field',
             'ip_fieldtype_textarea' => 'textarea_field'
         );
     }
@@ -97,7 +98,7 @@ class Mdl_Custom_Fields extends MY_Model
         return $db_array;
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         if ($id) {
             // Get the original record before saving
@@ -113,7 +114,8 @@ class Mdl_Custom_Fields extends MY_Model
         if (isset($original_record)) {
             if ($original_record->custom_field_column <> $db_array['custom_field_column']) {
                 // The column name differs from the original - rename it
-                $this->rename_column($db_array['custom_field_table'], $original_record->custom_field_column, $db_array['custom_field_column']);
+                $this->rename_column($db_array['custom_field_table'], $original_record->custom_field_column,
+                    $db_array['custom_field_column']);
             }
         } else {
             // This is a new column - add it

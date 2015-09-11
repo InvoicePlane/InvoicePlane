@@ -140,15 +140,15 @@ class Mdl_Tasks extends Response_Model
         }
 
         $query = $this->db->select($this->table . '.*, ip_projects.project_name')
-                 ->from($this->table)
-                 ->join('ip_projects', 'ip_projects.project_id = ' . $this->table . '.project_id')
-                 ->join('ip_invoices', 'ip_invoices.client_id = ip_projects.client_id')
-                 ->where('ip_invoices.invoice_id', $invoice_id)
-                 ->where($this->table . '.task_status', 3)
-                 ->order_by($this->table . '.task_finish_date', 'asc')
-                 ->order_by('ip_projects.project_name', 'asc')
-                 ->order_by($this->table . '.task_name', 'asc')
-                 ->get();
+            ->from($this->table)
+            ->join('ip_projects', 'ip_projects.project_id = ' . $this->table . '.project_id')
+            ->join('ip_invoices', 'ip_invoices.client_id = ip_projects.client_id')
+            ->where('ip_invoices.invoice_id', $invoice_id)
+            ->where($this->table . '.task_status', 3)
+            ->order_by($this->table . '.task_finish_date', 'asc')
+            ->order_by('ip_projects.project_name', 'asc')
+            ->order_by($this->table . '.task_name', 'asc')
+            ->get();
         foreach ($query->result() as $row) {
             $result[] = $row;
         }

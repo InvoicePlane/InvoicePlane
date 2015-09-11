@@ -6,10 +6,17 @@
         margin: 0 auto;
         max-width: 500px;
     }
-    a { color: #003399; }
-    a:hover { color: #002166; }
+
+    a {
+        color: #003399;
+    }
+
+    a:hover {
+        color: #002166;
+    }
 </style>
 <div>
     <p><?php echo lang('password_reset_email'); ?></p>
-    <p><a href="<?php echo $resetlink?>"><?php echo $resetlink?></a></p>
+
+    <p><a href="<?php echo $resetlink ?>"><?php echo $resetlink ?></a></p>
 </div>

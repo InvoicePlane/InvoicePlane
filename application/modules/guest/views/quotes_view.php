@@ -85,6 +85,7 @@
         </div>
 
         <br/>
+
         <div class="table-responsive">
             <table id="item_table" class="items table table-striped table-bordered">
                 <thead>
@@ -168,7 +169,7 @@
                     </td>
                     <td class="amount"><?php
                         if ($quote->quote_discount_percent == floatval(0)) {
-                            echo $quote->quote_discount_percent.'%';
+                            echo $quote->quote_discount_percent . '%';
                         } else {
                             echo format_currency($quote->quote_discount_amount);
                         }

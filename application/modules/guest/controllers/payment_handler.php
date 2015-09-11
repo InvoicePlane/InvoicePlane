@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -44,7 +45,7 @@ class Payment_Handler extends Base_Controller
                 'username' => $this->mdl_settings->setting('merchant_username'),
                 'password' => $this->encrypt->decode($this->mdl_settings->setting('merchant_password')),
                 'signature' => $this->mdl_settings->setting('merchant_signature'),
-                'test_mode' => ($this->mdl_settings->setting('merchant_test_mode')) ? TRUE : FALSE
+                'test_mode' => ($this->mdl_settings->setting('merchant_test_mode')) ? true : false
             );
 
             // Init the driver
@@ -95,7 +96,7 @@ class Payment_Handler extends Base_Controller
                     'payment_method_id' => ($this->mdl_settings->setting('online_payment_method')) ? $this->mdl_settings->setting('online_payment_method') : 0
                 );
 
-                $this->mdl_payments->save(NULL, $db_array);
+                $this->mdl_payments->save(null, $db_array);
             }
         } else {
             // Set the failure flash message
@@ -134,7 +135,7 @@ class Payment_Handler extends Base_Controller
                 'username' => $this->mdl_settings->setting('merchant_username'),
                 'password' => $this->encrypt->decode($this->mdl_settings->setting('merchant_password')),
                 'signature' => $this->mdl_settings->setting('merchant_signature'),
-                'test_mode' => ($this->mdl_settings->setting('merchant_test_mode')) ? TRUE : FALSE
+                'test_mode' => ($this->mdl_settings->setting('merchant_test_mode')) ? true : false
             );
 
             // Init the driver

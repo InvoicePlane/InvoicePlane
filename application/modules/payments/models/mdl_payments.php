@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -32,7 +33,7 @@ class Mdl_Payments extends Response_Model
         	ip_clients.client_id,
             ip_invoices.invoice_number,
             ip_invoices.invoice_date_created,
-            ip_payments.*", FALSE);
+            ip_payments.*", false);
     }
 
     public function default_order_by()
@@ -45,7 +46,8 @@ class Mdl_Payments extends Response_Model
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id');
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id');
-        $this->db->join('ip_payment_methods', 'ip_payment_methods.payment_method_id = ip_payments.payment_method_id', 'left');
+        $this->db->join('ip_payment_methods', 'ip_payment_methods.payment_method_id = ip_payments.payment_method_id',
+            'left');
         $this->db->join('ip_payment_custom', 'ip_payment_custom.payment_id = ip_payments.payment_id', 'left');
     }
 
@@ -83,7 +85,8 @@ class Mdl_Payments extends Response_Model
         $invoice_id = $this->input->post('invoice_id');
         $payment_id = $this->input->post('payment_id');
 
-        $invoice_balance = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row()->invoice_balance;
+        $invoice_balance = $this->db->where('invoice_id',
+            $invoice_id)->get('ip_invoice_amounts')->row()->invoice_balance;
 
         if ($payment_id) {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
@@ -93,13 +96,13 @@ class Mdl_Payments extends Response_Model
 
         if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', lang('payment_cannot_exceed_balance'));
-            return FALSE;
+            return false;
         }
 
-        return TRUE;
+        return true;
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         $db_array = ($db_array) ? $db_array : $this->db_array();
 
@@ -113,7 +116,7 @@ class Mdl_Payments extends Response_Model
         return $id;
     }
 
-    public function delete($id = NULL)
+    public function delete($id = null)
     {
         // Get the invoice id before deleting payment
         $this->db->select('invoice_id');
@@ -152,17 +155,17 @@ class Mdl_Payments extends Response_Model
         return $db_array;
     }
 
-    public function prep_form($id = NULL)
+    public function prep_form($id = null)
     {
         if (!parent::prep_form($id)) {
-            return FALSE;
+            return false;
         }
 
         if (!$id) {
             parent::set_form_value('payment_date', date('Y-m-d'));
         }
 
-        return TRUE;
+        return true;
     }
 
     public function by_client($client_id)

@@ -133,7 +133,8 @@
         <div class="collapse navbar-collapse" id="ip-navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><?php echo anchor('dashboard', lang('dashboard'), 'class="hidden-sm"') ?>
-                    <?php echo anchor('dashboard', '<i class="fa fa-dashboard"></i>', 'class="visible-sm-inline-block"') ?>
+                    <?php echo anchor('dashboard', '<i class="fa fa-dashboard"></i>',
+                        'class="visible-sm-inline-block"') ?>
                 </li>
 
                 <li class="dropdown">
@@ -199,8 +200,8 @@
                 </li>
 
                 <li class="dropdown <?php if (!$this->mdl_settings->setting('default_hourly_rate')) {
-    echo 'hidden';
-} ?>">
+                    echo 'hidden';
+                } ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
                             class="hidden-sm"><?php echo lang('tasks'); ?></span><i
@@ -229,7 +230,7 @@
 
             </ul>
 
-            <?php if (isset($filter_display) and $filter_display == TRUE) { ?>
+            <?php if (isset($filter_display) and $filter_display == true) { ?>
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
                 <form class="navbar-form navbar-left" role="search" onsubmit="return false;">
                     <div class="form-group">
@@ -274,13 +275,13 @@
                 </li>
                 <li>
                     <a href="<?php echo site_url('users/form/' .
-                           $this->session->userdata('user_id')); ?>" >
-                    <?php
+                        $this->session->userdata('user_id')); ?>">
+                        <?php
                         print($this->session->userdata('user_name'));
-                        if ( $this->session->userdata('user_company')) {
-                          print(" (" . $this->session->userdata('user_company') . ")");
+                        if ($this->session->userdata('user_company')) {
+                            print(" (" . $this->session->userdata('user_company') . ")");
                         }
-                    ?>
+                        ?>
                     </a>
                 </li>
                 <li>
@@ -301,27 +302,32 @@
 } ?>">
     <ul>
         <li>
-            <a href="<?php echo site_url('dashboard'); ?>" title="<?php echo lang('dashboard'); ?>" class="tip" data-placement="right">
+            <a href="<?php echo site_url('dashboard'); ?>" title="<?php echo lang('dashboard'); ?>" class="tip"
+               data-placement="right">
                 <i class="fa fa-dashboard"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('clients/index'); ?>" title="<?php echo lang('clients'); ?>" class="tip" data-placement="right">
+            <a href="<?php echo site_url('clients/index'); ?>" title="<?php echo lang('clients'); ?>" class="tip"
+               data-placement="right">
                 <i class="fa fa-users"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('quotes/index'); ?>" title="<?php echo lang('quotes'); ?>" class="tip" data-placement="right">
+            <a href="<?php echo site_url('quotes/index'); ?>" title="<?php echo lang('quotes'); ?>" class="tip"
+               data-placement="right">
                 <i class="fa fa-file"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('invoices/index'); ?>" title="<?php echo lang('invoices'); ?>" class="tip" data-placement="right">
+            <a href="<?php echo site_url('invoices/index'); ?>" title="<?php echo lang('invoices'); ?>" class="tip"
+               data-placement="right">
                 <i class="fa fa-file-text"></i>
             </a>
         </li>
         <li>
-            <a href="<?php echo site_url('payments/index'); ?>" title="<?php echo lang('payments'); ?>" class="tip" data-placement="right">
+            <a href="<?php echo site_url('payments/index'); ?>" title="<?php echo lang('payments'); ?>" class="tip"
+               data-placement="right">
                 <i class="fa fa-money"></i>
             </a>
         </li>
@@ -339,6 +345,7 @@
 <div id="fullpage-loader" style="display: none">
     <div class="loader-content">
         <i class="fa fa-cog fa-spin"></i>
+
         <div id="loader-error" style="display: none">
             <?php echo lang('loading_error'); ?><br/>
             <a href="https://wiki.invoiceplane.com/<?php echo lang('cldr'); ?>/1.0/general/faq"

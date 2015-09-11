@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -62,7 +63,7 @@ class Quotes extends Admin_Controller
             array(
                 'quotes' => $quotes,
                 'status' => $status,
-                'filter_display' => TRUE,
+                'filter_display' => true,
                 'filter_placeholder' => lang('filter_quotes'),
                 'filter_method' => 'filter_quotes',
                 'quote_statuses' => $this->mdl_quotes->statuses()
@@ -148,7 +149,7 @@ class Quotes extends Admin_Controller
         redirect('quotes/view/' . $quote_id);
     }
 
-    public function generate_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
+    public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
         $this->load->helper('pdf');
 

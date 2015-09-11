@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -33,7 +34,7 @@ class Mdl_Users extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_users.*', FALSE);
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_users.*', false);
     }
 
     public function default_join()
@@ -231,7 +232,7 @@ class Mdl_Users extends Response_Model
         $this->session->set_flashdata('alert_success', 'Password Successfully Changed');
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
 
@@ -239,7 +240,7 @@ class Mdl_Users extends Response_Model
             $this->load->model('users/mdl_user_clients');
 
             foreach ($user_clients as $user_client) {
-                $this->mdl_user_clients->save(NULL, array('user_id' => $id, 'client_id' => $user_client));
+                $this->mdl_user_clients->save(null, array('user_id' => $id, 'client_id' => $user_client));
             }
 
             $this->session->unset_userdata('user_clients');

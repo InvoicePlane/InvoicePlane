@@ -218,7 +218,8 @@
                     <?php if ($quote_tax_rates) {
                         foreach ($quote_tax_rates as $quote_tax_rate) { ?>
                             <span class="text-muted">
-                            <?php echo anchor('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id, '<i class="fa fa-trash-o"></i>');
+                            <?php echo anchor('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id,
+                                '<i class="fa fa-trash-o"></i>');
                             echo ' ' . $quote_tax_rate->quote_tax_rate_name . ' ' . $quote_tax_rate->quote_tax_rate_percent; ?>
                                 %</span>&nbsp;
                             <span class="amount">

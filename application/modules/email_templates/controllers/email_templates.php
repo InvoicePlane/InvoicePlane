@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -35,14 +36,15 @@ class Email_Templates extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('email_templates');
         }
 
         if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
-            $check = $this->db->get_where('ip_email_templates', array('email_template_title' => $this->input->post('email_template_title')))->result();
+            $check = $this->db->get_where('ip_email_templates',
+                array('email_template_title' => $this->input->post('email_template_title')))->result();
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', lang('email_template_already_exists'));
                 redirect('email_templates/form');
@@ -71,7 +73,8 @@ class Email_Templates extends Admin_Controller
         $this->layout->set('custom_fields', $custom_fields);
         $this->layout->set('invoice_templates', $this->mdl_templates->get_invoice_templates());
         $this->layout->set('quote_templates', $this->mdl_templates->get_quote_templates());
-        $this->layout->set('selected_pdf_template', $this->mdl_email_templates->form_value('email_template_pdf_template'));
+        $this->layout->set('selected_pdf_template',
+            $this->mdl_email_templates->form_value('email_template_pdf_template'));
         $this->layout->buffer('content', 'email_templates/form');
         $this->layout->render();
     }

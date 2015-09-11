@@ -60,7 +60,7 @@
     </div>
     <div id="updatecheck-results">
         <span id="updatecheck-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i>  <?php echo lang('checking_for_updates'); ?>
+            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo lang('checking_for_updates'); ?>
 		</span>
 
         <span id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
@@ -83,7 +83,7 @@
 
     <div id="ipnews-results">
         <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i>  <?php echo lang('checking_for_news'); ?>
+            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo lang('checking_for_news'); ?>
 		</span>
 
         <div id="ipnews-container"></div>

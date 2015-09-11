@@ -1,4 +1,5 @@
 <?php
+
 /**
  * InvoicePlane Tests
  *
@@ -7,7 +8,6 @@
  * phpunit application/tests/NumberHelperTest.php
  * phpunit -v
  */
-
 class NumberHelperTest extends \PHPUnit_Framework_TestCase
 {
     public $CI;
@@ -32,8 +32,7 @@ class NumberHelperTest extends \PHPUnit_Framework_TestCase
         $this->Mdl_Settings
             ->expects($this->any())
             ->method('setting')
-            ->will($this->returnValueMap($map))
-        ;
+            ->will($this->returnValueMap($map));
 
         $this->CI = $this->getMock('CI');
         $this->CI->mdl_settings = $this->Mdl_Settings;
@@ -82,7 +81,8 @@ class NumberHelperTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(format_thousands_separator('.'), '.', 'The separator is not the same');
         $this->assertEquals(format_thousands_separator(','), ',', 'The separator is not the same');
-        $this->assertEquals(format_thousands_separator('  '), '&nbsp;', 'The space (spaces) separator is not the "&nbsp;"');
+        $this->assertEquals(format_thousands_separator('  '), '&nbsp;',
+            'The space (spaces) separator is not the "&nbsp;"');
     }
 
 }

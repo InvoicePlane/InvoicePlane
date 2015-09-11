@@ -84,7 +84,8 @@
             <?php echo lang('smtp_password'); ?>
         </label>
         <input type="password" id="smtp_password" class="input-sm form-control" name="settings[smtp_password]"
-               value="<?php $this->load->library('encrypt'); echo $this->encrypt->decode($this->mdl_settings->setting('smtp_password')); ?>">
+               value="<?php $this->load->library('encrypt');
+               echo $this->encrypt->decode($this->mdl_settings->setting('smtp_password')); ?>">
     </div>
 
     <div class="form-group">

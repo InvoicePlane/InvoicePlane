@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -23,7 +24,7 @@ class Mdl_Quote_Custom extends MY_Model
 
     public function save_custom($quote_id, $db_array)
     {
-        $quote_custom_id = NULL;
+        $quote_custom_id = null;
 
         $db_array['quote_id'] = $quote_id;
 

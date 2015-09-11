@@ -20,13 +20,13 @@
     <table class="table table-striped">
 
         <thead>
-            <tr>
-                <th><?php echo lang('table'); ?></th>
-                <th><?php echo lang('label'); ?></th>
-                <th><?php echo lang('column'); ?></th>
-                <th><?php echo lang('type'); ?></th>
-                <th><?php echo lang('options'); ?></th>
-            </tr>
+        <tr>
+            <th><?php echo lang('table'); ?></th>
+            <th><?php echo lang('label'); ?></th>
+            <th><?php echo lang('column'); ?></th>
+            <th><?php echo lang('type'); ?></th>
+            <th><?php echo lang('options'); ?></th>
+        </tr>
         </thead>
 
         <tbody>

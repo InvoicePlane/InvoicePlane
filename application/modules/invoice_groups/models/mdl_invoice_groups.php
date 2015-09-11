@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -23,7 +24,7 @@ class Mdl_Invoice_Groups extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', FALSE);
+        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
     }
 
     public function default_order_by()
@@ -57,7 +58,7 @@ class Mdl_Invoice_Groups extends Response_Model
         );
     }
 
-    public function generate_invoice_number($invoice_group_id, $set_next = TRUE)
+    public function generate_invoice_number($invoice_group_id, $set_next = true)
     {
         $invoice_group = $this->get_by_id($invoice_group_id);
 
@@ -105,7 +106,7 @@ class Mdl_Invoice_Groups extends Response_Model
     public function set_next_invoice_number($invoice_group_id)
     {
         $this->db->where($this->primary_key, $invoice_group_id);
-        $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', FALSE);
+        $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', false);
         $this->db->update($this->table);
     }
 

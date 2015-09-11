@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -27,15 +28,18 @@ function format_currency($amount)
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
     if ($currency_symbol_placement == 'before') {
-        return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+        return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point,
+            $thousands_separator);
     } elseif ($currency_symbol_placement == 'afterspace') {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . '&nbsp;' . $currency_symbol;
+        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point,
+            $thousands_separator) . '&nbsp;' . $currency_symbol;
     } else {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . $currency_symbol;
+        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point,
+            $thousands_separator) . $currency_symbol;
     }
 }
 
-function format_amount($amount = NULL)
+function format_amount($amount = null)
 {
     if ($amount) {
         $CI =& get_instance();
@@ -44,7 +48,7 @@ function format_amount($amount = NULL)
 
         return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
     }
-    return NULL;
+    return null;
 }
 
 function standardize_amount($amount)
@@ -59,7 +63,10 @@ function standardize_amount($amount)
     return $amount;
 }
 
-function format_thousands_separator($thousands_separator) {
-    if (preg_match('/\\s+/',$thousands_separator)) $thousands_separator = '&nbsp;';
-    return $thousands_separator;     
+function format_thousands_separator($thousands_separator)
+{
+    if (preg_match('/\\s+/', $thousands_separator)) {
+        $thousands_separator = '&nbsp;';
+    }
+    return $thousands_separator;
 }

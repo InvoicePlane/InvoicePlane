@@ -1,14 +1,15 @@
 <?php
-if ($this->mdl_tasks->form_value('task_id') && 
-    ($this->mdl_tasks->form_value('task_status') == 4) ):
-?>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#task-form').find(':input').prop('disabled', true);
-        $('#btn-submit').hide();
-        $('#btn-cancel').prop('disabled', false);
-    });
-</script>
+if ($this->mdl_tasks->form_value('task_id') &&
+    ($this->mdl_tasks->form_value('task_status') == 4)
+):
+    ?>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#task-form').find(':input').prop('disabled', true);
+            $('#btn-submit').hide();
+            $('#btn-cancel').prop('disabled', false);
+        });
+    </script>
 <?php endif ?>
 
 <form method="post" class="form-horizontal" id="task-form">

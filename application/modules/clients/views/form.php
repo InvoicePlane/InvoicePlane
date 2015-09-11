@@ -16,8 +16,8 @@
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
-        <input class="hidden" name="is_update" type="hidden" 
-            value="<?php if ($this->mdl_clients->form_value('is_update')) : ?>1<?php else : ?>0<?php endif; ?>">
+        <input class="hidden" name="is_update" type="hidden"
+               value="<?php if ($this->mdl_clients->form_value('is_update')) : ?>1<?php else : ?>0<?php endif; ?>">
 
         <fieldset>
             <legend><?php echo lang('personal_information'); ?></legend>
@@ -196,21 +196,21 @@
 
                                 <div class="controls">
                                     <?php switch ($custom_field->custom_field_type) : ?>
-                                    
-                                    <?php case 'ip_fieldtype_input': ?>
-                                    <input type="text" class="form-control"
-                                           name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                           id="<?php echo $custom_field->custom_field_column; ?>"
-                                           value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
-                                    <?php break; ?>
-                                    
-                                    <?php case 'ip_fieldtype_textarea':?>
-                                    <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                              id="<?php echo $custom_field->custom_field_column; ?>"
-                                              class="form-control"><?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?></textarea>
-                                    <?php break; ?>
-                                    
-                                    <?php endswitch;?>
+
+<?php case 'ip_fieldtype_input': ?>
+                                            <input type="text" class="form-control"
+                                                   name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                                   id="<?php echo $custom_field->custom_field_column; ?>"
+                                                   value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                                            <?php break; ?>
+
+                                        <?php case 'ip_fieldtype_textarea': ?>
+                                            <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                                      id="<?php echo $custom_field->custom_field_column; ?>"
+                                                      class="form-control"><?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?></textarea>
+                                            <?php break; ?>
+
+                                        <?php endswitch; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>

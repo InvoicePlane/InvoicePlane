@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -29,20 +30,20 @@ class Mdl_Setup extends CI_Model
         $this->save_version('000_1.0.0.sql');
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_data();
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     public function upgrade_tables()
     {
         // Collect the available SQL files
-        $sql_files = directory_map(APPPATH . 'modules/setup/sql', TRUE);
+        $sql_files = directory_map(APPPATH . 'modules/setup/sql', true);
 
         // Sort them so they're in natural order
         sort($sql_files);
@@ -77,12 +78,12 @@ class Mdl_Setup extends CI_Model
         }
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     private function execute_contents($contents)
@@ -100,8 +101,13 @@ class Mdl_Setup extends CI_Model
 
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1));
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Quote Default', 'invoice_group_prefix' => 'QUO', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups',
+            array('invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array(
+            'invoice_group_name' => 'Quote Default',
+            'invoice_group_prefix' => 'QUO',
+            'invoice_group_next_id' => 1
+        ));
     }
 
     private function install_default_settings()

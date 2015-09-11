@@ -2,7 +2,7 @@
 
     $(function () {
 
-        $('.item-task-id').each(function() {
+        $('.item-task-id').each(function () {
             if ($(this).val().length > 0) {
                 $('#invoice_change_client').hide();
                 return false;
@@ -136,7 +136,7 @@
 <?php
 echo $modal_delete_invoice;
 echo $modal_add_invoice_tax;
-if ($this->config->item('disable_read_only') == TRUE) {
+if ($this->config->item('disable_read_only') == true) {
     $invoice->is_read_only = 0;
 }
 ?>
@@ -202,7 +202,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
                         <?php echo lang('copy_invoice'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === TRUE && $invoice->is_read_only != 1)) { ?>
+                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
                     <li>
                         <a href="#delete-invoice" data-toggle="modal">
                             <i class="fa fa-trash-o fa-margin"></i>
@@ -469,10 +469,10 @@ if ($this->config->item('disable_read_only') == TRUE) {
                                     </div>
                                     <div>
                                         <?php if ($invoice->is_read_only != 1) { ?>
-                                        <button data-dz-remove class="btn btn-danger btn-sm delete">
-                                            <i class="fa fa-trash-o"></i>
-                                            <span><?php echo lang('delete'); ?></span>
-                                        </button>
+                                            <button data-dz-remove class="btn btn-danger btn-sm delete">
+                                                <i class="fa fa-trash-o"></i>
+                                                <span><?php echo lang('delete'); ?></span>
+                                            </button>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -491,26 +491,26 @@ if ($this->config->item('disable_read_only') == TRUE) {
                 <?php
                 switch ($custom_field->custom_field_type) {
                     case 'ip_fieldtype_input':
-                ?>
-                <input type="text" class="form-control"
-                       name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                       id="<?php echo $custom_field->custom_field_column; ?>"
-                       value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
-                    <?php if ($invoice->is_read_only == 1) {
-                        echo 'disabled="disabled"';
-                    } ?>>
-                <?php
+                        ?>
+                        <input type="text" class="form-control"
+                               name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                               id="<?php echo $custom_field->custom_field_column; ?>"
+                               value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
+                            <?php if ($invoice->is_read_only == 1) {
+                                echo 'disabled="disabled"';
+                            } ?>>
+                        <?php
                         break;
 
                     case 'ip_fieldtype_textarea':
-                ?>
-                <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                          id="<?php echo $custom_field->custom_field_column; ?>"
-                          class="form-control"
-                          <?php if ($invoice->is_read_only == 1) {
-                            echo 'disabled="disabled"';
-                          } ?>><?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?></textarea>
-                <?php
+                        ?>
+                        <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                  id="<?php echo $custom_field->custom_field_column; ?>"
+                                  class="form-control"
+                            <?php if ($invoice->is_read_only == 1) {
+                                echo 'disabled="disabled"';
+                            } ?>><?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?></textarea>
+                        <?php
                         break;
                 }
                 ?>

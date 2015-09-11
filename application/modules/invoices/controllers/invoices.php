@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -59,7 +60,7 @@ class Invoices extends Admin_Controller
             array(
                 'invoices' => $invoices,
                 'status' => $status,
-                'filter_display' => TRUE,
+                'filter_display' => true,
                 'filter_placeholder' => lang('filter_invoices'),
                 'filter_method' => 'filter_invoices',
                 'invoice_statuses' => $this->mdl_invoices->statuses()
@@ -78,7 +79,8 @@ class Invoices extends Admin_Controller
             $invoice_array = glob('./uploads/archive/*' . '_' . $invoiceNumber . '.pdf');
             $this->layout->set(
                 array(
-                    'invoices_archive' => $invoice_array));
+                    'invoices_archive' => $invoice_array
+                ));
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
         } else {
@@ -88,7 +90,8 @@ class Invoices extends Admin_Controller
             rsort($invoice_array);
             $this->layout->set(
                 array(
-                    'invoices_archive' => $invoice_array));
+                    'invoices_archive' => $invoice_array
+                ));
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
         }
@@ -97,7 +100,7 @@ class Invoices extends Admin_Controller
     public function download($invoice)
     {
         header('Content-type: application/pdf');
-        header('Content-Disposition: attachment; filename='.basename($invoice));
+        header('Content-Disposition: attachment; filename=' . basename($invoice));
         readfile('./uploads/archive/' . urldecode(basename($invoice)));
     }
 
@@ -174,7 +177,7 @@ class Invoices extends Admin_Controller
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_status = $invoice->invoice_status_id;
 
-        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === TRUE) {
+        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
             // If invoice refers to tasks, mark those tasks back to 'Complete'
             $this->load->model('tasks/mdl_tasks');
             $tasks = $this->mdl_tasks->update_on_invoice_delete($invoice_id);
@@ -206,7 +209,7 @@ class Invoices extends Admin_Controller
         redirect('invoices/view/' . $invoice_id);
     }
 
-    public function generate_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
+    public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
 

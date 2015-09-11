@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -76,13 +77,13 @@ class Sessions extends Base_Controller
         $this->load->model('mdl_sessions');
 
         if ($this->mdl_sessions->auth($email_address, $password)) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
-    public function passwordreset($token = NULL)
+    public function passwordreset($token = null)
     {
         // Check if a token was provided
         if ($token) {
@@ -162,7 +163,7 @@ class Sessions extends Base_Controller
                 $email_resetlink = base_url() . 'sessions/passwordreset/' . $token;
                 $email_message = $this->load->view('emails/passwordreset', array(
                     'resetlink' => $email_resetlink
-                ), TRUE);
+                ), true);
                 $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", "$1", base_url());
 
                 // Set email configuration

@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -43,10 +44,10 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             array(
-                'records'            => $clients,
-                'filter_display'     => TRUE,
+                'records' => $clients,
+                'filter_display' => true,
                 'filter_placeholder' => lang('filter_clients'),
-                'filter_method'      => 'filter_clients'
+                'filter_method' => 'filter_clients'
             )
         );
 
@@ -54,7 +55,7 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
@@ -62,7 +63,8 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
-            $check = $this->db->get_where('ip_clients', array('client_name' => $this->input->post('client_name')))->result();
+            $check = $this->db->get_where('ip_clients',
+                array('client_name' => $this->input->post('client_name')))->result();
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', lang('client_already_exists'));
                 redirect('clients/form');
@@ -126,7 +128,8 @@ class Clients extends Admin_Controller
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
 
-        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
+        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id',
+            $client_id)->get()->row();
 
         if (!$client) {
             show_404();
@@ -134,13 +137,13 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             array(
-                'client'           => $client,
-                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices'         => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
-                'quotes'           => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
-                'payments'         => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
-                'custom_fields'    => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
-                'quote_statuses'   => $this->mdl_quotes->statuses(),
+                'client' => $client,
+                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
+                'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
+                'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
+                'custom_fields' => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
+                'quote_statuses' => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
             )
         );

@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -151,7 +152,7 @@ class Mdl_Quote_Amounts extends CI_Model
         return $total;
     }
 
-    public function get_total_quoted($period = NULL)
+    public function get_total_quoted($period = null)
     {
         switch ($period) {
             case 'month':
