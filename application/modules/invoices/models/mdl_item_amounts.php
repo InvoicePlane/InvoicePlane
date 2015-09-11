@@ -32,10 +32,23 @@ class Mdl_Item_Amounts extends CI_Model
 
         $tax_rate_percent = 0;
 
-        $item_subtotal = $item->item_quantity * $item->item_price;
-        $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
-        $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-        $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        if(extension_loaded("bcmath"))
+        {
+            $scale = max($this->mdl_settings->setting('item_price_decimal_places'), $this->mdl_settings->setting('item_amount_decimal_places'));
+            bcscale($scale);
+
+            $item_subtotal = bcmul($item->item_quantity, $item->item_price);
+            $item_tax_total = bcmul($item_subtotal, ($item->item_tax_rate_percent / 100));
+            $item_discount_total = bcmul($item->item_discount_amount, $item->item_quantity);
+            $item_total = bcsub(bcadd($item_subtotal, $item_tax_total), $item_discount_total);
+        }
+        else
+        {
+            $item_subtotal = $item->item_quantity * $item->item_price;
+            $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
+            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
+            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        }
 
         $db_array = array(
             'item_id' => $item_id,
