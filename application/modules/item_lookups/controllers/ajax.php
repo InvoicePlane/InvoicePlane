@@ -40,7 +40,7 @@ class Ajax extends Admin_Controller
             $this->input->post('item_lookup_ids'))->get()->result();
 
         foreach ($items as $item) {
-            $item->item_price = format_amount($item->item_price);
+            $item->item_price = format_amount($item->item_price, $this->mdl_settings->setting('item_price_decimal_places'));
         }
 
         echo json_encode($items);

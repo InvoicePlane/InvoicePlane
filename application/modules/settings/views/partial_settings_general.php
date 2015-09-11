@@ -150,6 +150,52 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
+                    <?php echo lang('item_price_decimal_places'); ?>
+                </label>
+                <select name="settings[item_price_decimal_places]" class="input-sm form-control"
+                        id="item_price_decimal_places">
+                    <option value="2"
+                            <?php if ($this->mdl_settings->setting('item_price_decimal_places') == '2') { ?>selected="selected"<?php } ?>>
+                        2
+                    </option>
+                    <option value="3"
+                            <?php if ($this->mdl_settings->setting('item_price_decimal_places') == '3') { ?>selected="selected"<?php } ?>>
+                        3
+                    </option>
+                    <option value="4"
+                            <?php if ($this->mdl_settings->setting('item_price_decimal_places') == '4') { ?>selected="selected"<?php } ?>>
+                        4
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo lang('item_amount_decimal_places'); ?>
+                </label>
+                <select name="settings[item_amount_decimal_places]" class="input-sm form-control"
+                        id="item_amount_decimal_places">
+                    <option value="2"
+                            <?php if ($this->mdl_settings->setting('item_amount_decimal_places') == '2') { ?>selected="selected"<?php } ?>>
+                        2
+                    </option>
+                    <option value="3"
+                            <?php if ($this->mdl_settings->setting('item_amount_decimal_places') == '3') { ?>selected="selected"<?php } ?>>
+                        3
+                    </option>
+                    <option value="4"
+                            <?php if ($this->mdl_settings->setting('item_amount_decimal_places') == '4') { ?>selected="selected"<?php } ?>>
+                        4
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">
                     <?php echo lang('default_list_limit'); ?>
                 </label>
                 <select name="settings[default_list_limit]" class="input-sm form-control"

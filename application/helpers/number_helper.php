@@ -17,7 +17,7 @@ if (!defined('BASEPATH')) {
  * 
  */
 
-function format_currency($amount)
+function format_currency($amount, $decimals = 2)
 {
     // like in application/helpers/pdf_helper.php - generate_invoice_pdf()
     $CI =& get_instance();
@@ -28,25 +28,25 @@ function format_currency($amount)
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
     if ($currency_symbol_placement == 'before') {
-        return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point,
+        return $currency_symbol . number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
             $thousands_separator);
     } elseif ($currency_symbol_placement == 'afterspace') {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point,
+        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
             $thousands_separator) . '&nbsp;' . $currency_symbol;
     } else {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point,
+        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point,
             $thousands_separator) . $currency_symbol;
     }
 }
 
-function format_amount($amount = null)
+function format_amount($amount = NULL, $decimals = 2)
 {
     if ($amount) {
         $CI =& get_instance();
         $thousands_separator = format_thousands_separator($CI->mdl_settings->setting('thousands_separator'));
         $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+        return number_format($amount, ($decimal_point) ? $decimals : 0, $decimal_point, $thousands_separator);
     }
     return null;
 }

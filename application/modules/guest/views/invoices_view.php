@@ -135,7 +135,7 @@
                             <td>
                                 <span class="pull-left"><?php echo lang('price'); ?></span>
                                 <span class="pull-right amount">
-                                    <?php echo format_currency($item->item_price); ?>
+                                    <?php echo format_currency($item->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?>
                                 </span>
                             </td>
                             <td>

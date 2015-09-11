@@ -127,6 +127,8 @@ class Mdl_Setup extends CI_Model
             'decimal_point' => '.',
             'cron_key' => random_string('alnum', 16),
             'tax_rate_decimal_places' => 2,
+            'item_price_decimal_places' => 2,
+            'item_amount_decimal_places' => 2,
             'pdf_invoice_template' => 'default',
             'pdf_invoice_template_paid' => 'default',
             'pdf_invoice_template_overdue' => 'default',

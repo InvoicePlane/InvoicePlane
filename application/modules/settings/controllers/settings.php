@@ -36,6 +36,25 @@ class Settings extends Admin_Controller
                 $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
             }
 
+            if ($settings['item_price_decimal_places'] <> $this->mdl_settings->setting('item_price_decimal_places')) {
+                $decimals = intval($settings['item_price_decimal_places']);
+                $precision = 8 + $decimals;
+                $higher_precision = 10 + $precision;
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_price` `item_price` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_price` `item_price` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_discount_amount` `item_discount_amount` DECIMAL( {$higher_precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_discount_amount` `item_discount_amount` DECIMAL( {$higher_precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_products` CHANGE `product_price` `product_price` FLOAT( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_products` CHANGE `purchase_price` `purchase_price` FLOAT( {$precision}, {$decimals} ) NOT NULL");
+            }
+
+            if ($settings['item_amount_decimal_places'] <> $this->mdl_settings->setting('item_amount_decimal_places')) {
+                $decimals = intval($settings['item_amount_decimal_places']);
+                $precision = 8 + $decimals;
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_quantity` `item_quantity` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_quantity` `item_quantity` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+            }
+
             // Save the submitted settings
             foreach ($settings as $key => $value) {
                 // Don't save empty passwords

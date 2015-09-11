@@ -68,7 +68,7 @@ class Mdl_Item_Lookups extends MY_Model
         if ($id) {
             $return = parent::prep_form($id);
 
-            $this->set_form_value('item_price', format_amount($this->form_value('item_price')));
+            $this->set_form_value('item_price', format_amount($this->form_value('item_price'), $this->mdl_settings->setting('item_price_decimal_places')));
         }
         return $return;
     }
