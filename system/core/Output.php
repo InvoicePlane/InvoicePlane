@@ -327,9 +327,7 @@ class CI_Output {
 		// Note:  We use globals because we can't use $CI =& get_instance()
 		// since this function is sometimes called by the caching mechanism,
 		// which happens before the CI super object is available.
-		// global $BM, $CFG;
-        $BM =& load_class('Benchmark', 'core');
-        $CFG =& load_class('Config', 'core');
+		global $BM, $CFG;
 
 		// Grab the super object if we can.
 		if (class_exists('CI_Controller'))
