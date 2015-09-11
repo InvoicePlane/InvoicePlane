@@ -45,6 +45,12 @@ class Ajax extends Admin_Controller
 
                     $item_id = ($item->item_id) ?: NULL;
                     unset($item->item_id, $item->save_item_as_lookup);
+                    if (!$item->item_task_id) {
+                        unset($item->item_task_id);
+                    } else {
+                        $this->load->model('tasks/mdl_tasks');
+                        $this->mdl_tasks->update_status(4, $item->item_task_id);
+                    }
                     $this->mdl_items->save($invoice_id, $item_id, $item);
                 } else {
                     // Throw an error message and use the form validation for that
@@ -405,5 +411,4 @@ class Ajax extends Admin_Controller
 
         echo json_encode($response);
     }
-
 }

@@ -198,7 +198,9 @@
                     </ul>
                 </li>
 
-                <li class="dropdown hidden">
+                <li class="dropdown <?php if (!$this->mdl_settings->setting('default_hourly_rate')) {
+    echo 'hidden';
+} ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
                             class="hidden-sm"><?php echo lang('tasks'); ?></span><i

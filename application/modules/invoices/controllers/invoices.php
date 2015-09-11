@@ -81,7 +81,6 @@ class Invoices extends Admin_Controller
                     'invoices_archive' => $invoice_array));
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
-
         } else {
             foreach (glob('./uploads/archive/*.pdf') as $file) {
                 array_push($invoice_array, $file);
@@ -93,7 +92,6 @@ class Invoices extends Admin_Controller
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
         }
-
     }
 
     public function download($invoice)
@@ -177,6 +175,10 @@ class Invoices extends Admin_Controller
         $invoice_status = $invoice->invoice_status_id;
 
         if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === TRUE) {
+            // If invoice refers to tasks, mark those tasks back to 'Complete'
+            $this->load->model('tasks/mdl_tasks');
+            $tasks = $this->mdl_tasks->update_on_invoice_delete($invoice_id);
+
             // Delete the invoice
             $this->mdl_invoices->delete($invoice_id);
         } else {
@@ -192,7 +194,13 @@ class Invoices extends Admin_Controller
     {
         // Delete invoice item
         $this->load->model('mdl_items');
-        $this->mdl_items->delete($item_id);
+        $item = $this->mdl_items->delete($item_id);
+
+        // Mark item back to complete:
+        if ($item && $item->item_task_id) {
+            $this->load->model('tasks/mdl_tasks');
+            $this->mdl_tasks->update_status(3, $item->item_task_id);
+        }
 
         // Redirect to invoice view
         redirect('invoices/view/' . $invoice_id);
@@ -231,5 +239,4 @@ class Invoices extends Admin_Controller
             $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
         }
     }
-
 }

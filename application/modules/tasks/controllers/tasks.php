@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -18,13 +19,11 @@ if (!defined('BASEPATH'))
 
 class Tasks extends Admin_Controller
 {
-
     public function __construct()
     {
         parent::__construct();
 
         $this->load->model('mdl_tasks');
-
     }
 
     public function index($page = 0)
@@ -38,7 +37,7 @@ class Tasks extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('tasks');
@@ -57,11 +56,13 @@ class Tasks extends Admin_Controller
         }
 
         $this->load->model('projects/mdl_projects');
+        $this->load->model('tax_rates/mdl_tax_rates');
 
         $this->layout->set(
             array(
                 'projects' => $this->mdl_projects->get()->result(),
-                'task_statuses' => $this->mdl_tasks->statuses()
+                'task_statuses' => $this->mdl_tasks->statuses(),
+                'tax_rates' => $this->mdl_tax_rates->get()->result(),
             )
         );
         $this->layout->buffer('content', 'tasks/form');
@@ -79,7 +80,4 @@ class Tasks extends Admin_Controller
         $this->filter_having('is_overdue', 1);
         return $this;
     }
-
 }
-
-?>

@@ -2,8 +2,19 @@
 
     $(function () {
 
+        $('.item-task-id').each(function() {
+            if ($(this).val().length > 0) {
+                $('#invoice_change_client').hide();
+                return false;
+            }
+        });
+
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
+        });
+
+        $('.btn_add_task').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
@@ -117,6 +128,7 @@
             }
         });
         <?php endif; ?>
+
     });
 
 </script>
@@ -202,12 +214,15 @@ if ($this->config->item('disable_read_only') == TRUE) {
         </div>
 
         <?php if ($invoice->is_read_only != 1) { ?>
+
             <a href="#" class="btn_add_row btn btn-sm btn-default">
                 <i class="fa fa-plus"></i> <?php echo lang('add_new_row'); ?>
             </a>
             <a href="#" class="btn_add_product btn btn-sm btn-default">
-                <i class="fa fa-database"></i>
-                <?php echo lang('add_product'); ?>
+                <i class="fa fa-database"></i> <?php echo lang('add_product'); ?>
+            </a>
+            <a href="#" class="btn_add_task btn btn-sm btn-default">
+                <i class="fa fa-database"></i> <?php echo lang('add_task'); ?>
             </a>
         <?php }
         if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
