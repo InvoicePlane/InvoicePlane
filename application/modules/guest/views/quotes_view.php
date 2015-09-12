@@ -125,7 +125,7 @@
                         <td class="text-muted"><?php echo $item->item_description; ?></td>
                         <td>
                             <span class="pull-left"><?php echo lang('price'); ?></span>
-                            <span class="pull-right amount"><?php format_amount($item->item_price); ?></span>
+                            <span class="pull-right amount"><?php format_amount($item->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?></span>
                         </td>
                         <td>
                             <span class="pull-left"><?php echo lang('tax'); ?></span>

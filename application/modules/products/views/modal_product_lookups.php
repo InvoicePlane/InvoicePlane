@@ -156,7 +156,7 @@
                                 <?php echo nl2br($product->product_description); ?>
                             </td>
                             <td class="text-right">
-                                <?php echo format_currency($product->product_price); ?>
+                                <?php echo format_currency($product->product_price, $this->mdl_settings->setting('item_price_decimal_places')); ?>
                             </td>
                         </tr>
                         <!-- Todo
