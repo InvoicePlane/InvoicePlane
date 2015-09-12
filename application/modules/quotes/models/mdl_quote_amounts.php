@@ -51,8 +51,18 @@ class Mdl_Quote_Amounts extends CI_Model
 
         $quote_amounts = $query->row();
 
-        $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount;
-        $quote_subtotal = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
+        if (extension_loaded("bcmath"))
+        {
+            bcscale(2);
+
+            $quote_item_subtotal = bcsub($quote_amounts->quote_item_subtotal, $quote_amounts->quote_item_discount);
+            $quote_subtotal = bcadd($quote_item_subtotal, $quote_amounts->quote_item_tax_total);
+        }
+        else
+        {
+            $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount;
+            $quote_subtotal = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
+        }
         $quote_total = $this->calculate_discount($quote_id, $quote_subtotal);
 
         // Create the database array and insert or update
@@ -88,14 +98,23 @@ class Mdl_Quote_Amounts extends CI_Model
             // Get the current quote amount record
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
 
+            if (extension_loaded("bcmath"))
+                bcscale(2);
+
             // Loop through the quote taxes and update the amount for each of the applied quote taxes
             foreach ($quote_tax_rates as $quote_tax_rate) {
                 if ($quote_tax_rate->include_item_tax) {
                     // The quote tax rate should include the applied item tax
-                    $quote_tax_rate_amount = ($quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total) * ($quote_tax_rate->quote_tax_rate_percent / 100);
+                    if (extension_loaded("bcmath"))
+                        $quote_tax_rate_amount = bcmul(bcadd($quote_amount->quote_item_subtotal, $quote_amount->quote_item_tax_total), $quote_tax_rate->quote_tax_rate_percent / 100);
+                    else 
+                        $quote_tax_rate_amount = ($quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total) * ($quote_tax_rate->quote_tax_rate_percent / 100);
                 } else {
                     // The quote tax rate should not include the applied item tax
-                    $quote_tax_rate_amount = $quote_amount->quote_item_subtotal * ($quote_tax_rate->quote_tax_rate_percent / 100);
+                    if (extension_loaded("bcmath"))
+                        $quote_tax_rate_amount = bcmul($quote_amount->quote_item_subtotal, $quote_tax_rate->quote_tax_rate_percent / 100);
+                    else
+                        $quote_tax_rate_amount = $quote_amount->quote_item_subtotal * ($quote_tax_rate->quote_tax_rate_percent / 100);
                 }
 
                 // Update the quote tax rate record
@@ -113,7 +132,10 @@ class Mdl_Quote_Amounts extends CI_Model
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
 
             // Recalculate the quote total
-            $quote_total = $quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total + $quote_amount->quote_tax_total;
+            if (extension_loaded("bcmath"))
+                $quote_total = bcadd(bcadd($quote_amount->quote_item_subtotal, $quote_amount->quote_item_tax_total), $quote_amount->quote_tax_total);
+            else
+                $quote_total = $quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total + $quote_amount->quote_tax_total;
 
             $quote_total = $this->calculate_discount($quote_id, $quote_total);
 
@@ -141,12 +163,22 @@ class Mdl_Quote_Amounts extends CI_Model
         $this->db->where('quote_id', $quote_id);
         $quote_data = $this->db->get('ip_quotes')->row();
 
-        $total = (float)number_format($quote_total, 2, '.', '');
-        $discount_amount = (float)number_format($quote_data->quote_discount_amount, 2, '.', '');
-        $discount_percent = (float)number_format($quote_data->quote_discount_percent, 2, '.', '');
+        $total = $quote_total;
+        $discount_amount = $quote_data->quote_discount_amount;
+        $discount_percent = $quote_data->quote_discount_percent;
 
-        $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), 2);
+        if (extension_loaded("bcmath"))
+        {
+            bcscale(2);
+
+            $total = bcsub($total, $discount_amount);
+            $total = bcsub($total, bcmul($total, $discount_percent / 100));
+        }
+        else
+        {
+            $total = $total - $discount_amount;
+            $total = $total - round(($total / 100 * $discount_percent), 2);
+        }
 
         return $total;
     }

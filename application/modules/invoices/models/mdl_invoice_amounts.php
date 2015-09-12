@@ -54,8 +54,19 @@ class Mdl_Invoice_Amounts extends CI_Model
 
         $invoice_amounts = $query->row();
 
-        $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
-        $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+        if (extension_loaded("bcmath"))
+        {
+            bcscale(2);
+
+            $invoice_item_subtotal = bcsub($invoice_amounts->invoice_item_subtotal, $invoice_amounts->invoice_item_discount);
+            $invoice_subtotal = bcadd($invoice_item_subtotal, $invoice_amounts->invoice_item_tax_total);
+        }
+        else
+        {
+            $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
+            $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+        }
+
         $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
 
         // Get the amount already paid
@@ -112,6 +123,9 @@ class Mdl_Invoice_Amounts extends CI_Model
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result();
 
+        if (extension_loaded("bcmath"))
+            bcscale(2);
+
         if ($invoice_tax_rates) {
             // There are invoice taxes applied
             // Get the current invoice amount record
@@ -121,10 +135,16 @@ class Mdl_Invoice_Amounts extends CI_Model
             foreach ($invoice_tax_rates as $invoice_tax_rate) {
                 if ($invoice_tax_rate->include_item_tax) {
                     // The invoice tax rate should include the applied item tax
-                    $invoice_tax_rate_amount = ($invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total) * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
+                    if (extension_loaded("bcmath"))
+                        $invoice_tax_rate_amount = bcmul(bcadd($invoice_amount->invoice_item_subtotal, $invoice_amount->invoice_item_tax_total), $invoice_tax_rate->invoice_tax_rate_percent / 100);
+                    else
+                        $invoice_tax_rate_amount = ($invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total) * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
                 } else {
                     // The invoice tax rate should not include the applied item tax
-                    $invoice_tax_rate_amount = $invoice_amount->invoice_item_subtotal * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
+                    if (extension_loaded("bcmath"))
+                        $invoice_tax_rate_amount = bcmul($invoice_amount->invoice_item_subtotal, $invoice_tax_rate->invoice_tax_rate_percent / 100);
+                    else
+                        $invoice_tax_rate_amount = $invoice_amount->invoice_item_subtotal * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
                 }
 
                 // Update the invoice tax rate record
@@ -142,9 +162,18 @@ class Mdl_Invoice_Amounts extends CI_Model
             $invoice_amount = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
             // Recalculate the invoice total and balance
-            $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
-            $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
-            $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
+            if (extension_loaded("bcmath"))
+            {
+                $invoice_total = bcadd(bcadd($invoice_amount->invoice_item_subtotal, $invoice_amount->invoice_item_tax_total), $invoice_amount->invoice_tax_total);
+                $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
+                $invoice_balance = bcsub($invoice_total, $invoice_amount->invoice_paid);
+            }
+            else
+            {
+                $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
+                $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
+                $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
+            }
 
             // Update the invoice amount record
             $db_array = array(
@@ -183,12 +212,22 @@ class Mdl_Invoice_Amounts extends CI_Model
         $this->db->where('invoice_id', $invoice_id);
         $invoice_data = $this->db->get('ip_invoices')->row();
 
-        $total = (float)number_format($invoice_total, 2, '.', '');
-        $discount_amount = (float)number_format($invoice_data->invoice_discount_amount, 2, '.', '');
-        $discount_percent = (float)number_format($invoice_data->invoice_discount_percent, 2, '.', '');
+        $total = $invoice_total;
+        $discount_amount = $invoice_data->invoice_discount_amount;
+        $discount_percent = $invoice_data->invoice_discount_percent;
 
-        $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), 2);
+        if (extension_loaded("bcmath"))
+        {
+            bcscale(2);
+
+            $total = bcsub($total, $discount_amount);
+            $total = bcsub($total, bcmul($total, $discount_percent / 100));
+        }
+        else
+        {
+            $total = $total - $discount_amount;
+            $total = $total - round(($total / 100 * $discount_percent), 2);
+        }
 
         return $total;
     }
