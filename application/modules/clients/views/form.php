@@ -196,7 +196,6 @@
 
                                 <div class="controls">
                                     <?php switch ($custom_field->custom_field_type) : ?>
-
 <?php case 'ip_fieldtype_input': ?>
                                             <input type="text" class="form-control"
                                                    name="custom[<?php echo $custom_field->custom_field_column; ?>]"
