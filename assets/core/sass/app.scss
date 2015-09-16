@@ -1,0 +1,36 @@
+/*
+|   =========================================================
+|   InvoicePlane
+|   Sass Stylesheet
+|   =========================================================
+*/
+/*
+|   =========================================================
+|   Import Bootstrap and other assets
+|   =========================================================
+*/
+// Import Bootstrap
+@import "dependencies/bootstrap";
+// Import fonts
+@import "fonts/source-sans-pro";
+@import "fonts/font-awesome";
+// Import other needed assets
+@import "dependencies/dropzone";
+@import "dependencies/select2";
+@import "dependencies/bs-datepicker";
+// Load modules
+@import "modules/upload";
+
+/*
+|   =========================================================
+|   Status variables
+|   =========================================================
+*/
+
+$color-status-draft: #999999;
+$color-status-sent: #3A87AD;
+$color-status-viewed: #F89406;
+$color-status-paid-approved: #468847;
+$color-status-rejected-overdue: #B94A48;
+$color-status-canceled: #333333;
+

@@ -1,0 +1,12 @@
+{
+  "name": "InvoicePlane-v2",
+  "devDependencies": {
+    "bootstrap": "~4.0.0-alpha",
+    "bootstrap-datepicker": "~1.4.1",
+    "dropzone": "~4.0.1",
+    "fontawesome": "~4.4.0",
+    "jquery": "~1.11.3",
+    "jqueryui": "~1.11.4",
+    "select2": "~4.0.0"
+  }
+}
