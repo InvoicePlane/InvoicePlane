@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -91,7 +92,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 
             // Get the payment method id first
             $this->db->where('invoice_id', $invoice_id);
-            $payment = $this->db->get('ip_payments');
+            $payment = $this->db->get('ip_payments')->row();
             $payment_method_id = (isset($payment->payment_method_id) ? $payment->payment_method_id : 0);
 
             $this->db->where('invoice_id', $invoice_id);
@@ -99,7 +100,7 @@ class Mdl_Invoice_Amounts extends CI_Model
             $this->db->set('payment_method', $payment_method_id);
             $this->db->update('ip_invoices');
         }
-        if ($this->config->item('disable_read_only') == FALSE && $db_array['invoice_balance'] == 0 && $db_array['invoice_total'] != 0) {
+        if ($this->config->item('disable_read_only') == false && $db_array['invoice_balance'] == 0 && $db_array['invoice_total'] != 0) {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('is_read_only', 1);
             $this->db->update('ip_invoices');
@@ -161,7 +162,7 @@ class Mdl_Invoice_Amounts extends CI_Model
                 $this->db->set('invoice_status_id', 4);
                 $this->db->update('ip_invoices');
             }
-            if ($this->config->item('disable_read_only') == FALSE && $invoice_balance == 0 && $invoice_total != 0) {
+            if ($this->config->item('disable_read_only') == false && $invoice_balance == 0 && $invoice_total != 0) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
@@ -193,7 +194,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         return $total;
     }
 
-    public function get_total_invoiced($period = NULL)
+    public function get_total_invoiced($period = null)
     {
         switch ($period) {
             case 'month':
@@ -229,7 +230,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
-    public function get_total_paid($period = NULL)
+    public function get_total_paid($period = null)
     {
         switch ($period) {
             case 'month':
@@ -262,7 +263,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
-    public function get_total_balance($period = NULL)
+    public function get_total_balance($period = null)
     {
         switch ($period) {
             case 'month':
@@ -322,6 +323,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW())
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
 					GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'last-quarter':
@@ -330,6 +332,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
 					GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'this-year':

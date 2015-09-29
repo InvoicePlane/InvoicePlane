@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -33,7 +34,7 @@ class Mdl_Quote_Tax_Rates extends Response_Model
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_quote_tax_rates.tax_rate_id');
     }
 
-    public function save($quote_id, $id = NULL, $db_array = NULL)
+    public function save($quote_id, $id = null, $db_array = null)
     {
         parent::save($id, $db_array);
 

@@ -65,7 +65,7 @@
                 <div class="input-group">
                     <input name="quote_date_created" id="quote_date_created"
                            class="form-control datepicker"
-                           value="<?php echo date_from_mysql($quote->quote_date_created, TRUE); ?>">
+                           value="<?php echo date_from_mysql($quote->quote_date_created, true); ?>">
 										<span class="input-group-addon">
 												<i class="fa fa-calendar fa-fw"></i>
 										</span>

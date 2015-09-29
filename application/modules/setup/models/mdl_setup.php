@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -29,20 +30,20 @@ class Mdl_Setup extends CI_Model
         $this->save_version('000_1.0.0.sql');
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_data();
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     public function upgrade_tables()
     {
         // Collect the available SQL files
-        $sql_files = directory_map(APPPATH . 'modules/setup/sql', TRUE);
+        $sql_files = directory_map(APPPATH . 'modules/setup/sql', true);
 
         // Sort them so they're in natural order
         sort($sql_files);
@@ -77,12 +78,12 @@ class Mdl_Setup extends CI_Model
         }
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     private function execute_contents($contents)
@@ -100,8 +101,13 @@ class Mdl_Setup extends CI_Model
 
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1));
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Quote Default', 'invoice_group_prefix' => 'QUO', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups',
+            array('invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array(
+            'invoice_group_name' => 'Quote Default',
+            'invoice_group_prefix' => 'QUO',
+            'invoice_group_next_id' => 1
+        ));
     }
 
     private function install_default_settings()
@@ -121,6 +127,8 @@ class Mdl_Setup extends CI_Model
             'decimal_point' => '.',
             'cron_key' => random_string('alnum', 16),
             'tax_rate_decimal_places' => 2,
+            'item_price_decimal_places' => 2,
+            'item_amount_decimal_places' => 2,
             'pdf_invoice_template' => 'default',
             'pdf_invoice_template_paid' => 'default',
             'pdf_invoice_template_overdue' => 'default',

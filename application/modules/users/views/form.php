@@ -310,10 +310,26 @@
                                 </label>
                             </div>
                             <div class="col-xs-12 col-sm-6">
-                                <input type="text" class="form-control"
-                                       name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                       id="<?php echo $custom_field->custom_field_column; ?>"
-                                       value="<?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                                <?php
+                                switch ($custom_field->custom_field_type) {
+                                    case 'ip_fieldtype_input':
+                                        ?>
+                                        <input type="text" class="form-control"
+                                               name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                               id="<?php echo $custom_field->custom_field_column; ?>"
+                                               value="<?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                                        <?php
+                                        break;
+
+                                    case 'ip_fieldtype_textarea':
+                                        ?>
+                                        <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                                  id="<?php echo $custom_field->custom_field_column; ?>"
+                                                  class="form-control"><?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?></textarea>
+                                        <?php
+                                        break;
+                                }
+                                ?>
                             </div>
                         </div>
                     <?php } ?>

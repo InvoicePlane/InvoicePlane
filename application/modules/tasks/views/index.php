@@ -47,8 +47,11 @@
                            title="<?php echo lang('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
                         <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
                            title="<?php echo lang('delete'); ?>"
-                           onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');"><i
-                                class="fa fa-trash-o fa-margin"></i></a>
+                           onclick="return confirm('<?php if ($task->task_status == 4) {
+                               echo lang('alert_task_delete') . ' ';
+                           }
+                           echo lang('delete_record_warning'); ?>');">
+                            <i class="fa fa-trash-o fa-margin"></i></a>
                     </td>
                 </tr>
             <?php } ?>

@@ -16,7 +16,7 @@
 
         <tbody>
         <?php foreach ($invoices as $invoice) {
-            if ($this->config->item('disable_read_only') == TRUE) {
+            if ($this->config->item('disable_read_only') == true) {
                 $invoice->is_read_only = 0;
             }
             ?>
@@ -102,7 +102,7 @@
                                     <?php echo lang('enter_payment'); ?>
                                 </a>
                             </li>
-                            <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === TRUE && $invoice->is_read_only != 1)) { ?>
+                            <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
                                 <li>
                                     <a href="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
                                        onclick="return confirm('<?php echo lang('delete_invoice_warning'); ?>');">

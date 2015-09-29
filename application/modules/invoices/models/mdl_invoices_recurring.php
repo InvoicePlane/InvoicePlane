@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -33,7 +34,8 @@ class Mdl_Invoices_Recurring extends Response_Model
         $this->db->select("SQL_CALC_FOUND_ROWS ip_invoices.*,
             ip_clients.client_name,
             ip_invoices_recurring.*,
-            IF(recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00', 'active', 'inactive') AS recur_status", FALSE);
+            IF(recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00', 'active', 'inactive') AS recur_status",
+            false);
     }
 
     public function default_join()

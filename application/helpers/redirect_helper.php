@@ -1,6 +1,6 @@
 <?php
 
-function redirect_to($fallback_url_string, $redirect = TRUE)
+function redirect_to($fallback_url_string, $redirect = true)
 {
     $CI = &get_instance();
 

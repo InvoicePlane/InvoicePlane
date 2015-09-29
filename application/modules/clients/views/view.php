@@ -1,7 +1,7 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#save_client_note').click(function () {
-            $.post("<?php echo site_url('clients/ajax/save_client_note'); ?>",
+            $.post('<?php echo site_url('clients/ajax/save_client_note'); ?>',
                 {
                     client_id: $('#client_id').val(),
                     client_note: $('#client_note').val()
@@ -41,7 +41,7 @@
         </a>
         <a href="#" class="btn btn-sm btn-default client-create-invoice"
            data-client-name="<?php echo $client->client_name; ?>"><i
-                class="fa fa-file-text""></i> <?php echo lang('create_invoice'); ?></a>
+                class="fa fa-file-text"></i> <?php echo lang('create_invoice'); ?></a>
         <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
            class="btn btn-sm btn-default">
             <i class="fa fa-edit"></i> <?php echo lang('edit'); ?>
@@ -87,25 +87,25 @@
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                     <table class="table table-condensed table-bordered">
                         <tr>
-                            <td>
-                                <b><?php echo lang('total_billed'); ?></b>
-                            </td>
+                            <th>
+                                <?php echo lang('total_billed'); ?>
+                            </th>
                             <td class="td-amount">
                                 <?php echo format_currency($client->client_invoice_total); ?>
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <b><?php echo lang('total_paid'); ?></b>
-                            </td>
-                            <td class="td-amount">
+                            <th>
+                                <?php echo lang('total_paid'); ?>
+                            </th>
+                            <th class="td-amount">
                                 <?php echo format_currency($client->client_invoice_paid); ?>
-                            </td>
+                            </th>
                         </tr>
                         <tr>
-                            <td>
-                                <b><?php echo lang('total_balance'); ?></b>
-                            </td>
+                            <th>
+                                <?php echo lang('total_balance'); ?>
+                            </th>
                             <td class="td-amount">
                                 <?php echo format_currency($client->client_invoice_balance); ?>
                             </td>
@@ -114,85 +114,87 @@
                 </div>
             </div>
 
-            <hr/>
+            <hr>
 
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <h4><?php echo lang('contact_information'); ?></h4>
-                    <br/>
+                    <br>
                     <table class="table table-condensed table-striped">
-                        <?php if ($client->client_email) { ?>
+                        <?php if ($client->client_email) : ?>
                             <tr>
-                                <td><?php echo lang('email'); ?></td>
+                                <th><?php echo lang('email'); ?></th>
                                 <td><?php echo auto_link($client->client_email, 'email'); ?></td>
                             </tr>
-                        <?php } ?>
-                        <?php if ($client->client_phone) { ?>
+                        <?php endif; ?>
+                        <?php if ($client->client_phone) : ?>
                             <tr>
-                                <td><?php echo lang('phone'); ?></td>
+                                <th><?php echo lang('phone'); ?></th>
                                 <td><?php echo $client->client_phone; ?></td>
                             </tr>
-                        <?php } ?>
-                        <?php if ($client->client_mobile) { ?>
+                        <?php endif; ?>
+                        <?php if ($client->client_mobile) : ?>
                             <tr>
-                                <td><?php echo lang('mobile'); ?></td>
+                                <th><?php echo lang('mobile'); ?></th>
                                 <td><?php echo $client->client_mobile; ?></td>
                             </tr>
-                        <?php } ?>
-                        <?php if ($client->client_fax) { ?>
+                        <?php endif; ?>
+                        <?php if ($client->client_fax) : ?>
                             <tr>
-                                <td><?php echo lang('fax'); ?></td>
+                                <th><?php echo lang('fax'); ?></th>
                                 <td><?php echo $client->client_fax; ?></td>
                             </tr>
-                        <?php } ?>
-                        <?php if ($client->client_web) { ?>
+                        <?php endif; ?>
+                        <?php if ($client->client_web) : ?>
                             <tr>
-                                <td><?php echo lang('web'); ?></td>
-                                <td><?php echo auto_link($client->client_web, 'url', TRUE); ?></td>
+                                <th><?php echo lang('web'); ?></th>
+                                <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
                             </tr>
-                        <?php } ?>
+                        <?php endif; ?>
                     </table>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <h4><?php echo lang('tax_information'); ?></h4>
                     <br/>
                     <table class="table table-condensed table-striped">
-                        <?php if ($client->client_vat_id) { ?>
+                        <?php if ($client->client_vat_id) : ?>
                             <tr>
-                                <td><?php echo lang('vat_id'); ?></td>
+                                <th><?php echo lang('vat_id'); ?></th>
                                 <td><?php echo $client->client_vat_id; ?></td>
                             </tr>
-                        <?php } ?>
-                        <?php if ($client->client_tax_code) { ?>
+                        <?php endif; ?>
+                        <?php if ($client->client_tax_code) : ?>
                             <tr>
-                                <td><?php echo lang('tax_code'); ?></td>
+                                <th><?php echo lang('tax_code'); ?></th>
                                 <td><?php echo $client->client_tax_code; ?></td>
                             </tr>
-                        <?php } ?>
+                        <?php endif; ?>
                     </table>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <h4><?php echo lang('custom_fields'); ?></h4>
-                    <br/>
-                    <table class="table table-condensed table-striped">
-                        <?php foreach ($custom_fields as $custom_field) { ?>
-                            <tr>
-                                <td><?php echo $custom_field->custom_field_label ?></td>
-                                <td><?php echo $client->{$custom_field->custom_field_column}; ?></td>
-                            </tr>
-                        <?php } ?>
-                    </table>
+            <?php if ($custom_fields) : ?>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <h4><?php echo lang('custom_fields'); ?></h4>
+                        <br>
+                        <table class="table table-condensed table-striped">
+                            <?php foreach ($custom_fields as $custom_field) : ?>
+                                <tr>
+                                    <th><?php echo $custom_field->custom_field_label ?></th>
+                                    <td><?php echo nl2br($client->{$custom_field->custom_field_column}); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
-            <hr/>
+            <hr>
 
             <div>
                 <h4><?php echo lang('notes'); ?></h4>
-                <br/>
+                <br>
 
                 <div id="notes_list">
                     <?php echo $partial_notes; ?>

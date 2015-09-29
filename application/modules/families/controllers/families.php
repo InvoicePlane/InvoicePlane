@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -35,14 +36,15 @@ class Families extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('families');
         }
 
         if ($this->input->post('is_update') == 0 && $this->input->post('family_name') != '') {
-            $check = $this->db->get_where('ip_families', array('family_name' => $this->input->post('family_name')))->result();
+            $check = $this->db->get_where('ip_families',
+                array('family_name' => $this->input->post('family_name')))->result();
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', lang('family_already_exists'));
                 redirect('families/form');

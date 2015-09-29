@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -25,10 +26,10 @@ function parse_template($object, $body)
                     $replace = site_url('guest/view/invoice/' . $object->invoice_url_key);
                     break;
                 case 'invoice_date_due':
-                    $replace = date_from_mysql($object->invoice_date_due, TRUE);
+                    $replace = date_from_mysql($object->invoice_date_due, true);
                     break;
                 case 'invoice_date_created':
-                    $replace = date_from_mysql($object->invoice_date_created, TRUE);
+                    $replace = date_from_mysql($object->invoice_date_created, true);
                     break;
                 case 'invoice_total':
                     $replace = format_currency($object->invoice_total);
@@ -43,10 +44,10 @@ function parse_template($object, $body)
                     $replace = format_currency($object->quote_total);
                     break;
                 case 'quote_date_created':
-                    $replace = date_from_mysql($object->quote_date_created, TRUE);
+                    $replace = date_from_mysql($object->quote_date_created, true);
                     break;
                 case 'quote_date_expires':
-                    $replace = date_from_mysql($object->quote_date_expires, TRUE);
+                    $replace = date_from_mysql($object->quote_date_expires, true);
                     break;
                 case 'quote_guest_url':
                     $replace = site_url('guest/view/quote/' . $object->quote_url_key);

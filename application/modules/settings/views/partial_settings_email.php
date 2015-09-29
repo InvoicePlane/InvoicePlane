@@ -84,7 +84,8 @@
             <?php echo lang('smtp_password'); ?>
         </label>
         <input type="password" id="smtp_password" class="input-sm form-control" name="settings[smtp_password]"
-               value="<?php $this->load->library('encrypt'); echo $this->encrypt->decode($this->mdl_settings->setting('smtp_password')); ?>">
+               value="<?php $this->load->library('encrypt');
+               echo $this->encrypt->decode($this->mdl_settings->setting('smtp_password')); ?>">
     </div>
 
     <div class="form-group">
@@ -110,20 +111,20 @@
                     <?php if ($this->mdl_settings->setting('smtp_security') == 'tls') { ?>selected="selected"<?php } ?>><?php echo lang('smtp_tls'); ?></option>
         </select>
     </div>
+</div>
 
-    <div class="form-group">
-        <label for="settings[email_pdf_attachment]">
-            <?php echo lang('email_pdf_attachment'); ?>
-        </label>
-        <select name="settings[email_pdf_attachment]" class="input-sm form-control">
-            <option value="0"
-                    <?php if (!$this->mdl_settings->setting('email_pdf_attachment')) { ?>selected="selected"<?php } ?>>
-                <?php echo lang('no'); ?>
-            </option>
-            <option value="1"
-                    <?php if ($this->mdl_settings->setting('email_pdf_attachment')) { ?>selected="selected"<?php } ?>>
-                <?php echo lang('yes'); ?>
-            </option>
-        </select>
-    </div>
+<div class="form-group">
+    <label for="settings[email_pdf_attachment]">
+        <?php echo lang('email_pdf_attachment'); ?>
+    </label>
+    <select name="settings[email_pdf_attachment]" class="input-sm form-control">
+        <option value="0"
+                <?php if (!$this->mdl_settings->setting('email_pdf_attachment')) { ?>selected="selected"<?php } ?>>
+            <?php echo lang('no'); ?>
+        </option>
+        <option value="1"
+                <?php if ($this->mdl_settings->setting('email_pdf_attachment')) { ?>selected="selected"<?php } ?>>
+            <?php echo lang('yes'); ?>
+        </option>
+    </select>
 </div>

@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -16,8 +17,16 @@ if (!defined('BASEPATH'))
  * 
  */
 
-function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $cc = NULL, $bcc = NULL, $more_attachments = NULL)
-{
+function phpmail_send(
+    $from,
+    $to,
+    $subject,
+    $message,
+    $attachment_path = null,
+    $cc = null,
+    $bcc = null,
+    $more_attachments = null
+) {
     require_once(APPPATH . 'modules/mailer/helpers/phpmailer/class.phpmailer.php');
 
     $CI = &get_instance();
@@ -38,7 +47,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
 
             // Is SMTP authentication required?
             if ($CI->mdl_settings->setting('smtp_authentication')) {
-                $mail->SMTPAuth = TRUE;
+                $mail->SMTPAuth = true;
                 $mail->Username = $CI->mdl_settings->setting('smtp_username');
                 $mail->Password = $CI->encrypt->decode($CI->mdl_settings->setting('smtp_password'));
             }
@@ -122,10 +131,10 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
     // And away it goes...
     if ($mail->Send()) {
         $CI->session->set_flashdata('alert_success', 'The email has been sent');
-        return TRUE;
+        return true;
     } else {
         // Or not...
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-        return FALSE;
+        return false;
     }
 }

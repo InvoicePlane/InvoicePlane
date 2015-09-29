@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -18,7 +19,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function save()
     {
@@ -43,8 +44,14 @@ class Ajax extends Admin_Controller
                     $item->item_price = standardize_amount($item->item_price);
                     $item->item_discount_amount = standardize_amount($item->item_discount_amount);
 
-                    $item_id = ($item->item_id) ?: NULL;
+                    $item_id = ($item->item_id) ?: null;
                     unset($item->item_id, $item->save_item_as_lookup);
+                    if (!$item->item_task_id) {
+                        unset($item->item_task_id);
+                    } else {
+                        $this->load->model('tasks/mdl_tasks');
+                        $this->mdl_tasks->update_status(4, $item->item_task_id);
+                    }
                     $this->mdl_items->save($invoice_id, $item_id, $item);
                 } else {
                     // Throw an error message and use the form validation for that
@@ -96,17 +103,17 @@ class Ajax extends Admin_Controller
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($invoice_status == 2 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
+            if ($invoice_status == 2 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
                 $db_array['is_read_only'] = 1;
             }
 
             // check if status changed to viewed, the feature is enabled and settings is set to viewed
-            if ($invoice_status == 3 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
+            if ($invoice_status == 3 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
                 $db_array['is_read_only'] = 1;
             }
 
             // check if status changed to paid and the feature is enabled
-            if ($invoice_status == 4 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'paid') {
+            if ($invoice_status == 4 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'paid') {
                 $db_array['is_read_only'] = 1;
             }
 
@@ -315,7 +322,8 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'invoice_id' => $this->input->post('invoice_id'),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))->get()->row()
+            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id',
+                $this->input->post('invoice_id'))->get()->row()
         );
 
         $this->layout->load_view('invoices/modal_copy_invoice', $data);
@@ -360,7 +368,8 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'invoice_id' => $this->input->post('invoice_id'),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))->get()->row()
+            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id',
+                $this->input->post('invoice_id'))->get()->row()
         );
 
         $this->layout->load_view('invoices/modal_create_credit', $data);
@@ -379,7 +388,7 @@ class Ajax extends Admin_Controller
             $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
             // Set source invoice to read-only
-            if ($this->config->item('disable_read_only') == FALSE) {
+            if ($this->config->item('disable_read_only') == false) {
                 $this->mdl_invoices->where('invoice_id', $source_id);
                 $this->mdl_invoices->update('ip_invoices', array('is_read_only' => '1'));
             }
@@ -405,5 +414,4 @@ class Ajax extends Admin_Controller
 
         echo json_encode($response);
     }
-
 }

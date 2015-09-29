@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -59,7 +60,7 @@ class Ajax extends Admin_Controller
         $products = $this->mdl_products->where_in('product_id', $this->input->post('product_ids'))->get()->result();
 
         foreach ($products as $product) {
-            $product->product_price = format_amount($product->product_price);
+            $product->product_price = format_amount($product->product_price, $this->mdl_settings->setting('item_price_decimal_places'));
         }
 
         echo json_encode($products);

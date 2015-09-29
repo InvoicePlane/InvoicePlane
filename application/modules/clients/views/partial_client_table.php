@@ -11,7 +11,7 @@
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($records as $client) { ?>
+        <?php foreach ($records as $client) : ?>
             <tr>
                 <td><?php echo anchor('clients/view/' . $client->client_id, $client->client_name); ?></td>
                 <td><?php echo $client->client_email; ?></td>
@@ -56,7 +56,7 @@
                     </div>
                 </td>
             </tr>
-        <?php } ?>
+        <?php endforeach; ?>
         </tbody>
     </table>
 </div>

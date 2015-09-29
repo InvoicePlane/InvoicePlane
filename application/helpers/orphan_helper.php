@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -42,5 +43,3 @@ function delete_orphans()
         $CI->db->query($query);
     }
 }
-
-?>

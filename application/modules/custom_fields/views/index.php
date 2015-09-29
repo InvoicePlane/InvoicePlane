@@ -13,7 +13,7 @@
 
 </div>
 
-<div id="content table-content">
+<div id="content" class="table-content">
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
@@ -24,16 +24,18 @@
             <th><?php echo lang('table'); ?></th>
             <th><?php echo lang('label'); ?></th>
             <th><?php echo lang('column'); ?></th>
+            <th><?php echo lang('type'); ?></th>
             <th><?php echo lang('options'); ?></th>
         </tr>
         </thead>
 
         <tbody>
-        <?php foreach ($custom_fields as $custom_field) { ?>
+        <?php foreach ($custom_fields as $custom_field) : ?>
             <tr>
                 <td><?php echo $custom_field->custom_field_table; ?></td>
                 <td><?php echo $custom_field->custom_field_label; ?></td>
                 <td><?php echo $custom_field->custom_field_column; ?></td>
+                <td><?php echo $custom_field->custom_field_type; ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
@@ -55,7 +57,7 @@
                     </div>
                 </td>
             </tr>
-        <?php } ?>
+        <?php endforeach; ?>
         </tbody>
 
     </table>

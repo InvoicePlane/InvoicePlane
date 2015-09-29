@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -35,6 +36,25 @@ class Settings extends Admin_Controller
                 $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
             }
 
+            if ($settings['item_price_decimal_places'] <> $this->mdl_settings->setting('item_price_decimal_places')) {
+                $decimals = intval($settings['item_price_decimal_places']);
+                $precision = 8 + $decimals;
+                $higher_precision = 10 + $precision;
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_price` `item_price` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_price` `item_price` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_discount_amount` `item_discount_amount` DECIMAL( {$higher_precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_discount_amount` `item_discount_amount` DECIMAL( {$higher_precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_products` CHANGE `product_price` `product_price` FLOAT( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_products` CHANGE `purchase_price` `purchase_price` FLOAT( {$precision}, {$decimals} ) NOT NULL");
+            }
+
+            if ($settings['item_amount_decimal_places'] <> $this->mdl_settings->setting('item_amount_decimal_places')) {
+                $decimals = intval($settings['item_amount_decimal_places']);
+                $precision = 8 + $decimals;
+                $this->db->query("ALTER TABLE `ip_invoice_items` CHANGE `item_quantity` `item_quantity` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_quote_items` CHANGE `item_quantity` `item_quantity` DECIMAL( {$precision}, {$decimals} ) NOT NULL");
+            }
+
             // Save the submitted settings
             foreach ($settings as $key => $value) {
                 // Don't save empty passwords
@@ -44,7 +64,17 @@ class Settings extends Admin_Controller
                         $this->mdl_settings->save($key, $this->encrypt->encode($value));
                     }
                 } else {
-                    $this->mdl_settings->save($key, $value);
+                    if ($key == 'default_hourly_rate') {
+                        $this->load->library('form_validation');
+                        if ($value == '') {
+                            $value = '0.00';
+                        }
+                        if ($this->form_validation->integer($value) or $this->form_validation->decimal($value)) {
+                            $this->mdl_settings->save($key, sprintf("%01.2f", $value));
+                        }
+                    } else {
+                        $this->mdl_settings->save($key, $value);
+                    }
                 }
             }
 
@@ -109,7 +139,7 @@ class Settings extends Admin_Controller
         $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
 
         // Collect the list of languages
-        $languages = directory_map(APPPATH . 'language', TRUE);
+        $languages = directory_map(APPPATH . 'language', true);
         sort($languages);
 
         // Get the current version
@@ -130,8 +160,10 @@ class Settings extends Admin_Controller
                 'countries' => get_country_list(lang('cldr')),
                 'date_formats' => date_formats(),
                 'current_date' => new DateTime(),
-                'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'email_templates_quote' => $this->mdl_email_templates->where('email_template_type',
+                    'quote')->get()->result(),
+                'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type',
+                    'invoice')->get()->result(),
                 'merchant_drivers' => $this->merchant->valid_drivers(),
                 'merchant_currency_codes' => Merchant::$NUMERIC_CURRENCY_CODES,
                 'current_version' => $current_version,
@@ -153,5 +185,4 @@ class Settings extends Admin_Controller
 
         redirect('settings');
     }
-
 }

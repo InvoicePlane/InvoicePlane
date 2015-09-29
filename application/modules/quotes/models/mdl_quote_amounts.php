@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -151,7 +152,7 @@ class Mdl_Quote_Amounts extends CI_Model
         return $total;
     }
 
-    public function get_total_quoted($period = NULL)
+    public function get_total_quoted($period = null)
     {
         switch ($period) {
             case 'month':
@@ -221,6 +222,7 @@ class Mdl_Quote_Amounts extends CI_Model
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
                         AND QUARTER(ip_quotes.quote_date_created) = QUARTER(NOW())
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
 					GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
             case 'last-quarter':
@@ -231,6 +233,7 @@ class Mdl_Quote_Amounts extends CI_Model
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
                         AND QUARTER(ip_quotes.quote_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
 					GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
             case 'this-year':

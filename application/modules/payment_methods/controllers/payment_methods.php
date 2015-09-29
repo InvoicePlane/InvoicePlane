@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -35,14 +36,15 @@ class Payment_Methods extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('payment_methods');
         }
 
         if ($this->input->post('is_update') == 0 && $this->input->post('payment_method_name') != '') {
-            $check = $this->db->get_where('ip_payment_methods', array('payment_method_name' => $this->input->post('payment_method_name')))->result();
+            $check = $this->db->get_where('ip_payment_methods',
+                array('payment_method_name' => $this->input->post('payment_method_name')))->result();
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', lang('payment_method_already_exists'));
                 redirect('payment_methods/form');

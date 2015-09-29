@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -23,7 +24,7 @@ class Mdl_Client_Custom extends MY_Model
 
     public function save_custom($client_id, $db_array)
     {
-        $client_custom_id = NULL;
+        $client_custom_id = null;
 
         $db_array['client_id'] = $client_id;
 

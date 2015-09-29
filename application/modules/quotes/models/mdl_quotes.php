@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -86,7 +87,7 @@ class Mdl_Quotes extends Response_Model
 			IFNULL(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
 			IFNULL(ip_quote_amounts.quote_total, '0.00') AS quote_total,
             ip_invoices.invoice_number,
-			ip_quotes.*", FALSE);
+			ip_quotes.*", false);
     }
 
     public function default_order_by()
@@ -140,7 +141,7 @@ class Mdl_Quotes extends Response_Model
         return array(
             'quote_number' => array(
                 'field' => 'quote_number',
-                'label' => lang('quote_number'),
+                'label' => lang('quote') . ' #',
                 'rules' => 'required|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'
             ),
             'quote_date_created' => array(
@@ -160,9 +161,9 @@ class Mdl_Quotes extends Response_Model
         );
     }
 
-    public function create($db_array = NULL)
+    public function create($db_array = null)
     {
-        $quote_id = parent::save(NULL, $db_array);
+        $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
         $db_array = array(
@@ -214,7 +215,7 @@ class Mdl_Quotes extends Response_Model
                 'item_order' => $quote_item->item_order
             );
 
-            $this->mdl_quote_items->save($target_id, NULL, $db_array);
+            $this->mdl_quote_items->save($target_id, null, $db_array);
         }
 
         $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $source_id)->get()->result();
@@ -227,7 +228,7 @@ class Mdl_Quotes extends Response_Model
                 'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
             );
 
-            $this->mdl_quote_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_quote_tax_rates->save($target_id, null, $db_array);
         }
     }
 

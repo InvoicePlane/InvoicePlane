@@ -54,7 +54,7 @@
                                 <b><?php echo $item_lookup->item_name; ?></b>
                             </td>
                             <td class="text-right">
-                                <?php echo format_currency($item_lookup->item_price); ?>
+                                <?php echo format_currency($item_lookup->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?>
                             </td>
                         </tr>
                         <tr class="bold-border">

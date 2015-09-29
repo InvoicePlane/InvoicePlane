@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -18,7 +19,7 @@ if (!defined('BASEPATH'))
 
 class Cron extends Base_Controller
 {
-    public function recur($cron_key = NULL)
+    public function recur($cron_key = null)
     {
         if ($cron_key == $this->mdl_settings->setting('cron_key')) {
             $this->load->model('invoices/mdl_invoices_recurring');
@@ -49,7 +50,7 @@ class Cron extends Base_Controller
                 );
 
                 // This is the new invoice id
-                $target_id = $this->mdl_invoices->create($db_array, FALSE);
+                $target_id = $this->mdl_invoices->create($db_array, false);
 
                 // Copy the original invoice to the new invoice
                 $this->mdl_invoices->copy_invoice($source_id, $target_id);
@@ -79,8 +80,10 @@ class Cron extends Base_Controller
                     $tpl = $email_template->row();
 
                     $from = !empty($tpl->email_template_from_email) ?
-                        array($tpl->email_template_from_email,
-                            $tpl->email_template_from_name) :
+                        array(
+                            $tpl->email_template_from_email,
+                            $tpl->email_template_from_name
+                        ) :
                         array($invoice->user_email, "");
                     $subject = !empty($tpl->email_template_subject) ?
                         $tpl->email_template_subject :

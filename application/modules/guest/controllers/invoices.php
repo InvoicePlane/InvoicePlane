@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -63,7 +64,8 @@ class Invoices extends Guest_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
+        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id',
+            $this->user_clients)->get()->row();
 
         if (!$invoice) {
             show_404();
@@ -89,7 +91,7 @@ class Invoices extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
-    public function generate_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
+    public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
 

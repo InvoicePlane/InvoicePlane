@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -26,8 +27,17 @@ function mailer_configured()
     );
 }
 
-function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
-{
+function email_invoice(
+    $invoice_id,
+    $invoice_template,
+    $from,
+    $to,
+    $subject,
+    $body,
+    $cc = null,
+    $bcc = null,
+    $attachments = null
+) {
     $CI = &get_instance();
 
     $CI->load->helper('mailer/phpmailer');
@@ -35,7 +45,7 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     $CI->load->helper('invoice');
     $CI->load->helper('pdf');
 
-    $invoice = generate_invoice_pdf($invoice_id, FALSE, $invoice_template);
+    $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
 
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
@@ -45,18 +55,27 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     $bcc = parse_template($db_invoice, $bcc);
     $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
 
-    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc,$attachments);
+    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments);
 }
 
-function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
-{
+function email_quote(
+    $quote_id,
+    $quote_template,
+    $from,
+    $to,
+    $subject,
+    $body,
+    $cc = null,
+    $bcc = null,
+    $attachments = null
+) {
     $CI = &get_instance();
 
     $CI->load->helper('mailer/phpmailer');
     $CI->load->helper('template');
     $CI->load->helper('pdf');
 
-    $quote = generate_quote_pdf($quote_id, FALSE, $quote_template);
+    $quote = generate_quote_pdf($quote_id, false, $quote_template);
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
@@ -66,7 +85,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
     $bcc = parse_template($db_quote, $bcc);
     $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
 
-    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc,$attachments);
+    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc, $attachments);
 }
 
 /**
@@ -76,10 +95,12 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
  */
 function email_quote_status($quote_id, $status)
 {
-    ini_set("display_errors", "on");
+    ini_set('display_errors', 'on');
     error_reporting(E_ALL);
 
-    if (!mailer_configured()) return false;
+    if (!mailer_configured()) {
+        return false;
+    }
 
     $CI = &get_instance();
     $CI->load->helper('mailer/phpmailer');

@@ -26,7 +26,7 @@
                         id: '".str_replace("'","\'",$client->client_name)."',
                         text: '".str_replace("'","\'",$client->client_name)."'
                         }";
-                        if (($i+1) != count($clients)) echo ',';
+                        if (($i+1) != count($clients)) {echo ',';}
                         $i++;
                     }
                     ?>
@@ -80,7 +80,9 @@
                 <label for="client_name"><?php echo lang('client'); ?></label>
                 <input type="text" name="client_name" id="client_name" class="form-control"
                        autofocus="autofocus"
-                    <?php if ($client_name) echo 'value="' . html_escape($client_name) . '"'; ?>>
+                    <?php if ($client_name) {
+                        echo 'value="' . html_escape($client_name) . '"';
+                    } ?>>
             </div>
 
             <div class="form-group has-feedback">

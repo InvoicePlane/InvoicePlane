@@ -72,7 +72,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="product_price" id="product_price" class="form-control"
-                                   value="<?php echo format_amount($this->mdl_products->form_value('product_price')); ?>">
+                                   value="<?php echo format_amount($this->mdl_products->form_value('product_price'), $this->mdl_settings->setting('item_price_decimal_places')); ?>">
                         </div>
                     </div>
 
@@ -119,7 +119,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="purchase_price" id="purchase_price" class="form-control"
-                                   value="<?php echo format_amount($this->mdl_products->form_value('purchase_price')); ?>">
+                                   value="<?php echo format_amount($this->mdl_products->form_value('purchase_price'), $this->mdl_settings->setting('item_price_decimal_places')); ?>">
                         </div>
                     </div>
 

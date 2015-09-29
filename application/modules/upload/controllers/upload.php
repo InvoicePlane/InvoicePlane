@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -40,7 +41,12 @@ class Upload extends Admin_Controller
 
             if (!$file_exists) //If file does not exists then upload
             {
-                $data = ['client_id' => $customerId, 'url_key' => $url_key, 'file_name_original' => $fileName, 'file_name_new' => $url_key . '_' . $fileName];
+                $data = array(
+                    'client_id' => $customerId,
+                    'url_key' => $url_key,
+                    'file_name_original' => $fileName,
+                    'file_name_new' => $url_key . '_' . $fileName
+                );
                 $this->mdl_uploads->create($data);
 
                 move_uploaded_file($tempFile, $targetFile);
@@ -68,13 +74,14 @@ class Upload extends Admin_Controller
 
     public function create_dir($path, $chmod = '0777')
     {
-        if (!(is_dir($path) OR is_link($path)))
+        if (!(is_dir($path) OR is_link($path))) {
             return mkdir($path, $chmod);
-        else
+        } else {
             return false;
+        }
     }
 
-    public function show_files($url_key, $customerId = NULL)
+    public function show_files($url_key, $customerId = null)
     {
 
         $result = array();

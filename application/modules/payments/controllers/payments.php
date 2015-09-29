@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -33,7 +34,7 @@ class Payments extends Admin_Controller
         $this->layout->set(
             array(
                 'payments' => $payments,
-                'filter_display' => TRUE,
+                'filter_display' => true,
                 'filter_placeholder' => lang('filter_payments'),
                 'filter_method' => 'filter_payments'
             )
@@ -43,7 +44,7 @@ class Payments extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('payments');

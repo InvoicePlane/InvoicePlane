@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -16,7 +17,7 @@ if (!defined('BASEPATH'))
  * 
  */
 
-function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL,$isGuest = NULL)
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null)
 {
     $CI = &get_instance();
 
@@ -33,23 +34,26 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-    if ($invoice->payment_method == 0) $payment_method = NULL;
+    if ($invoice->payment_method == 0) {
+        $payment_method = null;
+    }
 
     $data = array(
         'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-        'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+        'items' => $CI->mdl_items->get_items_and_replace_vars($invoice_id, $invoice->invoice_date_created),
         'payment_method' => $payment_method,
         'output_type' => 'pdf'
     );
 
-    $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, TRUE);
+    $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     $CI->load->helper('mpdf');
-    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream, $invoice->invoice_password,1,$isGuest);
+    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
+        $stream, $invoice->invoice_password, 1, $isGuest);
 }
 
-function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
+function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 {
     $CI = &get_instance();
 
@@ -70,9 +74,10 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
         'output_type' => 'pdf'
     );
 
-    $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, TRUE);
+    $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);
 
     $CI->load->helper('mpdf');
 
-    return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream,$quote->quote_password);
+    return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream,
+        $quote->quote_password);
 }

@@ -21,6 +21,7 @@
             <td class="td-text">
                 <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                 <input type="hidden" name="item_id" value="">
+                <input type="hidden" name="item_task_id" class="item-task-id" value="">
 
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo lang('item'); ?></span>
@@ -99,6 +100,10 @@
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>>
+                    <input type="hidden" name="item_task_id" class="item-task-id"
+                           value="<?php if ($item->item_task_id) {
+                               echo $item->item_task_id;
+                           } ?>">
 
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('item'); ?></span>
@@ -113,7 +118,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('quantity'); ?></span>
                         <input type="text" name="item_quantity" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_quantity); ?>"
+                               value="<?php echo format_amount($item->item_quantity, $this->mdl_settings->setting('item_amount_decimal_places')); ?>"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
@@ -123,7 +128,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('price'); ?></span>
                         <input type="text" name="item_price" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_price); ?>"
+                               value="<?php echo format_amount($item->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?>"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
@@ -133,7 +138,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('item_discount'); ?></span>
                         <input type="text" name="item_discount_amount" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_discount_amount); ?>"
+                               value="<?php echo format_amount($item->item_discount_amount, $this->mdl_settings->setting('item_price_decimal_places')); ?>"
                                data-toggle="tooltip" data-placement="bottom"
                                title="<?php echo $this->mdl_settings->setting('currency_symbol') . ' ' . lang('per_item'); ?>"
                             <?php if ($invoice->is_read_only == 1) {
@@ -161,7 +166,8 @@
                 </td>
                 <td class="td-icon text-right td-vert-middle">
                     <?php if ($invoice->is_read_only != 1): ?>
-                        <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>" title="<?php echo lang('delete'); ?>">
+                        <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>"
+                           title="<?php echo lang('delete'); ?>">
                             <i class="fa fa-trash-o text-danger"></i>
                         </a>
                     <?php endif; ?>
@@ -218,8 +224,10 @@
                     <i class="fa fa-plus"></i> <?php echo lang('add_new_row'); ?>
                 </a>
                 <a href="#" class="btn_add_product btn btn-sm btn-default">
-                    <i class="fa fa-database"></i>
-                    <?php echo lang('add_product'); ?>
+                    <i class="fa fa-database"></i> <?php echo lang('add_product'); ?>
+                </a>
+                <a href="#" class="btn_add_task btn btn-sm btn-default">
+                    <i class="fa fa-database"></i> <?php echo lang('add_task'); ?>
                 </a>
             <?php } ?>
         </div>
@@ -243,7 +251,8 @@
                     <?php if ($invoice_tax_rates) {
                         foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
                             <span class="text-muted">
-                            <?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id, '<i class="fa fa-trash-o"></i>');
+                            <?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id,
+                                '<i class="fa fa-trash-o"></i>');
                             echo ' ' . $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>
                                 %</span>&nbsp;
                             <span class="amount">
@@ -264,8 +273,8 @@
                                    class="discount-option form-control input-sm amount"
                                    value="<?php echo($invoice->invoice_discount_amount != 0 ? $invoice->invoice_discount_amount : ''); ?>"
                                 <?php if ($invoice->is_read_only == 1) {
-                                echo 'disabled="disabled"';
-                            } ?>>
+                                    echo 'disabled="disabled"';
+                                } ?>>
 
                             <div
                                 class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
@@ -279,6 +288,7 @@
                                 <?php if ($invoice->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>>
+
                             <div class="input-group-addon">&percnt;</div>
                         </div>
                     </div>

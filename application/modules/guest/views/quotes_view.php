@@ -85,6 +85,7 @@
         </div>
 
         <br/>
+
         <div class="table-responsive">
             <table id="item_table" class="items table table-striped table-bordered">
                 <thead>
@@ -124,7 +125,7 @@
                         <td class="text-muted"><?php echo $item->item_description; ?></td>
                         <td>
                             <span class="pull-left"><?php echo lang('price'); ?></span>
-                            <span class="pull-right amount"><?php format_amount($item->item_price); ?></span>
+                            <span class="pull-right amount"><?php format_amount($item->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?></span>
                         </td>
                         <td>
                             <span class="pull-left"><?php echo lang('tax'); ?></span>
@@ -168,7 +169,7 @@
                     </td>
                     <td class="amount"><?php
                         if ($quote->quote_discount_percent == floatval(0)) {
-                            echo $quote->quote_discount_percent.'%';
+                            echo $quote->quote_discount_percent . '%';
                         } else {
                             echo format_currency($quote->quote_discount_amount);
                         }

@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -18,7 +19,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function name_query()
     {
@@ -28,7 +29,8 @@ class Ajax extends Admin_Controller
         // Get the post input
         $query = $this->input->post('query');
 
-        $clients = $this->mdl_clients->select('client_name')->like('client_name', $query)->order_by('client_name')->get(array(), FALSE)->result();
+        $clients = $this->mdl_clients->select('client_name')->like('client_name',
+            $query)->order_by('client_name')->get(array(), false)->result();
 
         $response = array();
 
@@ -65,7 +67,8 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_client_notes');
 
         $data = array(
-            'client_notes' => $this->mdl_client_notes->where('client_id', $this->input->post('client_id'))->get()->result()
+            'client_notes' => $this->mdl_client_notes->where('client_id',
+                $this->input->post('client_id'))->get()->result()
         );
 
         $this->layout->load_view('clients/partial_notes', $data);

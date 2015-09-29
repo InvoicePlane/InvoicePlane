@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#client_name').focus();
         $("#client_country").select2({allowClear: true});
@@ -17,12 +17,7 @@
         <?php $this->layout->load_view('layout/alerts'); ?>
 
         <input class="hidden" name="is_update" type="hidden"
-            <?php if ($this->mdl_clients->form_value('is_update')) {
-                echo 'value="1"';
-            } else {
-                echo 'value="0"';
-            } ?>
-            >
+               value="<?php if ($this->mdl_clients->form_value('is_update')) : ?>1<?php else : ?>0<?php endif; ?>">
 
         <fieldset>
             <legend><?php echo lang('personal_information'); ?></legend>
@@ -32,10 +27,9 @@
                 <input id="client_active" name="client_active" type="checkbox" value="1"
                     <?php if ($this->mdl_clients->form_value('client_active') == 1
                         or !is_numeric($this->mdl_clients->form_value('client_active'))
-                    ) {
-                        echo 'checked="checked"';
-                    } ?>
-                    >
+                    ) : ?>
+                        checked="checked"
+                    <?php endif; ?>>
               </span>
                 <input id="client_name" name="client_name" type="text" class="form-control"
                        placeholder="<?php echo lang('client_name'); ?>"
@@ -100,10 +94,10 @@
                         <div class="controls">
                             <select name="client_country" id="client_country" class="form-control">
                                 <option></option>
-                                <?php foreach ($countries as $cldr => $country) { ?>
+                                <?php foreach ($countries as $cldr => $country) : ?>
                                     <option value="<?php echo $cldr; ?>"
-                                            <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
-                                <?php } ?>
+                                            <?php if ($selected_country == $cldr) : ?>selected="selected"<?php endif; ?>><?php echo $country ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
@@ -191,26 +185,37 @@
 
         </div>
 
-        <?php if ($custom_fields) { ?>
+        <?php if ($custom_fields) : ?>
             <div class="row">
                 <div class="col-xs-12">
                     <fieldset>
                         <legend><?php echo lang('custom_fields'); ?></legend>
-                        <?php foreach ($custom_fields as $custom_field) { ?>
+                        <?php foreach ($custom_fields as $custom_field) : ?>
                             <div class="form-group">
                                 <label><?php echo $custom_field->custom_field_label; ?>: </label>
 
                                 <div class="controls">
-                                    <input type="text" class="form-control"
-                                           name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                           id="<?php echo $custom_field->custom_field_column; ?>"
-                                           value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                                    <?php switch ($custom_field->custom_field_type) : ?>
+<?php case 'ip_fieldtype_input': ?>
+                                            <input type="text" class="form-control"
+                                                   name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                                   id="<?php echo $custom_field->custom_field_column; ?>"
+                                                   value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                                            <?php break; ?>
+
+                                        <?php case 'ip_fieldtype_textarea': ?>
+                                            <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                                                      id="<?php echo $custom_field->custom_field_column; ?>"
+                                                      class="form-control"><?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?></textarea>
+                                            <?php break; ?>
+
+                                        <?php endswitch; ?>
                                 </div>
                             </div>
-                        <?php } ?>
+                        <?php endforeach; ?>
                     </fieldset>
                 </div>
             </div>
-        <?php } ?>
+        <?php endif; ?>
     </div>
 </form>

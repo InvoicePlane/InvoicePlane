@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -18,7 +19,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function modal_item_lookups()
     {
@@ -35,10 +36,11 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('mdl_item_lookups');
 
-        $items = $this->mdl_item_lookups->where_in('item_lookup_id', $this->input->post('item_lookup_ids'))->get()->result();
+        $items = $this->mdl_item_lookups->where_in('item_lookup_id',
+            $this->input->post('item_lookup_ids'))->get()->result();
 
         foreach ($items as $item) {
-            $item->item_price = format_amount($item->item_price);
+            $item->item_price = format_amount($item->item_price, $this->mdl_settings->setting('item_price_decimal_places'));
         }
 
         echo json_encode($items);

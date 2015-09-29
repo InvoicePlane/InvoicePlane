@@ -14,7 +14,7 @@
 
                 <div class="btn-group btn-group-justified no-margin">
                     <a href="<?php echo site_url('clients/form'); ?>" class="btn btn-default">
-                        <i class="fa fa-user fa-margin"></i>
+                        <i class="fa fa-user-plus fa-margin"></i>
                         <span class="hidden-xs"><?php echo lang('add_client'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">
@@ -103,7 +103,8 @@
                 }
                 ?>
                 <div class="panel panel-danger panel-heading">
-                    <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> ' . lang('overdue_invoices'), 'class="text-danger"'); ?>
+                    <?php echo anchor('invoices/status/overdue',
+                        '<i class="fa fa-external-link"></i> ' . lang('overdue_invoices'), 'class="text-danger"'); ?>
                     <span class="pull-right text-danger">
                         <?php echo format_currency($overdue_invoices_total); ?>
                     </span>
@@ -196,7 +197,7 @@
                         <tbody>
 
                         <?php foreach ($invoices as $invoice) {
-                            if ($this->config->item('disable_read_only') == TRUE) {
+                            if ($this->config->item('disable_read_only') == true) {
                                 $invoice->is_read_only = 0;
                             } ?>
                             <tr>
@@ -220,7 +221,8 @@
                                 </span>
                                 </td>
                                 <td>
-                                    <?php echo anchor('invoices/view/' . $invoice->invoice_id, $invoice->invoice_number); ?>
+                                    <?php echo anchor('invoices/view/' . $invoice->invoice_id,
+                                        $invoice->invoice_number); ?>
                                 </td>
                                 <td>
                                     <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>

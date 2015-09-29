@@ -15,9 +15,9 @@
         <?php if ($invoice->invoice_status_id == 4) { ?>
             <span class="btn btn-success btn-sm disabled">
                 <i class="fa fa-check"></i>
-                <?php echo lang('paid')?>
+                <?php echo lang('paid') ?>
             </span>
-        <?php }?>
+        <?php } ?>
         <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
            class="btn btn-default btn-sm" id="btn_generate_pdf"
            data-invoice-id="<?php echo $invoice_id; ?>"
@@ -91,6 +91,7 @@
             </div>
 
             <br/>
+
             <div class="table-responsive">
                 <table id="item_table" class="items table table-striped table-bordered">
                     <thead>
@@ -108,7 +109,8 @@
                         <tbody class="item">
                         <tr>
                             <td rowspan="2" style="max-width: 20px;" class="text-center">
-                                <?php echo $i; $i++; ?>
+                                <?php echo $i;
+                                $i++; ?>
                             </td>
                             <td><?php echo $item->item_name; ?></td>
                             <td>
@@ -133,7 +135,7 @@
                             <td>
                                 <span class="pull-left"><?php echo lang('price'); ?></span>
                                 <span class="pull-right amount">
-                                    <?php echo format_currency($item->item_price); ?>
+                                    <?php echo format_currency($item->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?>
                                 </span>
                             </td>
                             <td>
@@ -183,7 +185,7 @@
                         </td>
                         <td class="amount"><?php
                             if ($invoice->invoice_discount_amount == floatval(0)) {
-                                echo $invoice->invoice_discount_percent.'%';
+                                echo $invoice->invoice_discount_percent . '%';
                             } else {
                                 echo format_currency($invoice->invoice_discount_amount);
                             }
@@ -198,10 +200,10 @@
             </div>
 
             <?php if ($invoice->invoice_terms): ?>
-            <p>
-                <strong><?php echo lang('invoice_terms'); ?></strong><br/>
-                <?php echo nl2br($invoice->invoice_terms); ?>
-            </p>
+                <p>
+                    <strong><?php echo lang('invoice_terms'); ?></strong><br/>
+                    <?php echo nl2br($invoice->invoice_terms); ?>
+                </p>
             <?php endif; ?>
 
         </div>

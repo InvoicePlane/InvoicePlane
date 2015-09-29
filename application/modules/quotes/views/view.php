@@ -48,7 +48,7 @@
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
-                    custom: $('input[name^=custom]').serializeArray()
+                    custom: $('[name^=custom]').serializeArray()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -392,10 +392,26 @@
             <label class="control-label">
                 <?php echo $custom_field->custom_field_label; ?>
             </label>
-            <input type="text" class="form-control"
-                   name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                   id="<?php echo $custom_field->custom_field_column; ?>"
-                   value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+            <?php
+            switch ($custom_field->custom_field_type) {
+                case 'ip_fieldtype_input':
+                    ?>
+                    <input type="text" class="form-control"
+                           name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                           id="<?php echo $custom_field->custom_field_column; ?>"
+                           value="<?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+                    <?php
+                    break;
+
+                case 'ip_fieldtype_textarea':
+                    ?>
+                    <textarea name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+                              id="<?php echo $custom_field->custom_field_column; ?>"
+                              class="form-control"><?php echo form_prep($this->mdl_quotes->form_value('custom[' . $custom_field->custom_field_column . ']')); ?></textarea>
+                    <?php
+                    break;
+            }
+            ?>
         <?php } ?>
 
         <?php if ($quote->quote_status_id != 1) { ?>

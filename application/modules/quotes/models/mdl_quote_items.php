@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -35,7 +36,8 @@ class Mdl_Quote_Items extends Response_Model
     public function default_join()
     {
         $this->db->join('ip_quote_item_amounts', 'ip_quote_item_amounts.item_id = ip_quote_items.item_id', 'left');
-        $this->db->join('ip_tax_rates AS item_tax_rates', 'item_tax_rates.tax_rate_id = ip_quote_items.item_tax_rate_id', 'left');
+        $this->db->join('ip_tax_rates AS item_tax_rates',
+            'item_tax_rates.tax_rate_id = ip_quote_items.item_tax_rate_id', 'left');
     }
 
     public function validation_rules()
@@ -72,7 +74,7 @@ class Mdl_Quote_Items extends Response_Model
         );
     }
 
-    public function save($quote_id, $id = NULL, $db_array = NULL)
+    public function save($quote_id, $id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
 

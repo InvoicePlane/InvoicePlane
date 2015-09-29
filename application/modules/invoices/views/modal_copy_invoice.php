@@ -64,7 +64,7 @@
                 <div class="input-group">
                     <input name="invoice_date_created" id="invoice_date_created"
                            class="form-control datepicker"
-                           value="<?php echo date_from_mysql(date('Y-m-d', time()), TRUE) ?>">
+                           value="<?php echo date_from_mysql(date('Y-m-d', time()), true) ?>">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>

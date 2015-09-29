@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -23,7 +24,7 @@ class Mdl_Custom_Fields extends MY_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', FALSE);
+        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
     }
 
     public function custom_tables()
@@ -37,12 +38,25 @@ class Mdl_Custom_Fields extends MY_Model
         );
     }
 
+    public function custom_types()
+    {
+        return array(
+            'ip_fieldtype_input' => 'input_field',
+            'ip_fieldtype_textarea' => 'textarea_field'
+        );
+    }
+
     public function validation_rules()
     {
         return array(
             'custom_field_table' => array(
                 'field' => 'custom_field_table',
                 'label' => lang('table'),
+                'rules' => 'required'
+            ),
+            'custom_field_type' => array(
+                'field' => 'custom_field_type',
+                'label' => lang('type'),
                 'rules' => 'required'
             ),
             'custom_field_label' => array(
@@ -57,6 +71,9 @@ class Mdl_Custom_Fields extends MY_Model
     {
         // Get the default db array
         $db_array = parent::db_array();
+
+        // Get the array of custom types
+        $custom_types = $this->custom_types();
 
         // Get the array of custom tables
         $custom_tables = $this->custom_tables();
@@ -81,7 +98,7 @@ class Mdl_Custom_Fields extends MY_Model
         return $db_array;
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         if ($id) {
             // Get the original record before saving
@@ -97,7 +114,8 @@ class Mdl_Custom_Fields extends MY_Model
         if (isset($original_record)) {
             if ($original_record->custom_field_column <> $db_array['custom_field_column']) {
                 // The column name differs from the original - rename it
-                $this->rename_column($db_array['custom_field_table'], $original_record->custom_field_column, $db_array['custom_field_column']);
+                $this->rename_column($db_array['custom_field_table'], $original_record->custom_field_column,
+                    $db_array['custom_field_column']);
             }
         } else {
             // This is a new column - add it
@@ -113,8 +131,7 @@ class Mdl_Custom_Fields extends MY_Model
 
         $column = array(
             $column_name => array(
-                'type' => 'VARCHAR',
-                'constraint' => 255
+                'type' => 'TEXT'
             )
         );
 
@@ -128,8 +145,7 @@ class Mdl_Custom_Fields extends MY_Model
         $column = array(
             $old_column_name => array(
                 'name' => $new_column_name,
-                'type' => 'VARCHAR',
-                'constraint' => 255
+                'type' => 'TEXT'
             )
         );
 

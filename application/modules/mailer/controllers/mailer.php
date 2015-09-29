@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -28,7 +29,7 @@ class Mailer extends Admin_Controller
 
         $this->mailer_configured = mailer_configured();
 
-        if ($this->mailer_configured == FALSE) {
+        if ($this->mailer_configured == false) {
             $this->layout->buffer('content', 'mailer/not_configured');
             $this->layout->render();
         }
@@ -36,7 +37,9 @@ class Mailer extends Admin_Controller
 
     public function invoice($invoice_id)
     {
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $this->load->model('invoices/mdl_templates');
         $this->load->model('invoices/mdl_invoices');
@@ -57,7 +60,8 @@ class Mailer extends Admin_Controller
 
         $this->layout->set('selected_pdf_template', select_pdf_invoice_template($invoice));
         $this->layout->set('selected_email_template', $email_template_id);
-        $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result());
+        $this->layout->set('email_templates',
+            $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result());
         $this->layout->set('invoice', $invoice);
         $this->layout->set('pdf_templates', $this->mdl_templates->get_invoice_templates());
         $this->layout->buffer('content', 'mailer/invoice');
@@ -66,7 +70,9 @@ class Mailer extends Admin_Controller
 
     public function quote($quote_id)
     {
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $this->load->model('invoices/mdl_templates');
         $this->load->model('quotes/mdl_quotes');
@@ -84,7 +90,8 @@ class Mailer extends Admin_Controller
         }
         $this->layout->set('selected_pdf_template', $this->mdl_settings->setting('pdf_quote_template'));
         $this->layout->set('selected_email_template', $email_template_id);
-        $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
+        $this->layout->set('email_templates',
+            $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
         $this->layout->set('quote', $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row());
         $this->layout->set('pdf_templates', $this->mdl_templates->get_quote_templates());
         $this->layout->buffer('content', 'mailer/quote');
@@ -98,11 +105,15 @@ class Mailer extends Admin_Controller
             redirect('invoices');
         }
 
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $this->load->model('upload/mdl_uploads');
-        $from = array($this->input->post('from_email'),
-            $this->input->post('from_name'));
+        $from = array(
+            $this->input->post('from_email'),
+            $this->input->post('from_name')
+        );
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
@@ -132,11 +143,15 @@ class Mailer extends Admin_Controller
             redirect('quotes');
         }
 
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $this->load->model('upload/mdl_uploads');
-        $from = array($this->input->post('from_email'),
-            $this->input->post('from_name'));
+        $from = array(
+            $this->input->post('from_email'),
+            $this->input->post('from_name')
+        );
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');

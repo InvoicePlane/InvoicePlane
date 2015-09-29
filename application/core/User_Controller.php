@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -22,6 +23,10 @@ class User_Controller extends Base_Controller
     public function __construct($required_key, $required_val)
     {
         parent::__construct();
+
+        if (ENVIRONMENT == 'testing') {
+            return;
+        }
 
         if ($this->session->userdata($required_key) <> $required_val) {
             redirect('sessions/login');

@@ -107,21 +107,21 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('quantity'); ?></span>
                         <input type="text" name="item_quantity" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_quantity); ?>">
+                               value="<?php echo format_amount($item->item_quantity, $this->mdl_settings->setting('item_amount_decimal_places')); ?>">
                     </div>
                 </td>
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('price'); ?></span>
                         <input type="text" name="item_price" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_price); ?>">
+                               value="<?php echo format_amount($item->item_price, $this->mdl_settings->setting('item_price_decimal_places')); ?>">
                     </div>
                 </td>
                 <td class="td-amount ">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('item_discount'); ?></span>
                         <input type="text" name="item_discount_amount" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_discount_amount); ?>"
+                               value="<?php echo format_amount($item->item_discount_amount, $this->mdl_settings->setting('item_price_decimal_places')); ?>"
                                data-toggle="tooltip" data-placement="bottom"
                                title="<?php echo $this->mdl_settings->setting('currency_symbol') . ' ' . lang('per_item'); ?>">
                     </div>
@@ -218,7 +218,8 @@
                     <?php if ($quote_tax_rates) {
                         foreach ($quote_tax_rates as $quote_tax_rate) { ?>
                             <span class="text-muted">
-                            <?php echo anchor('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id, '<i class="fa fa-trash-o"></i>');
+                            <?php echo anchor('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id,
+                                '<i class="fa fa-trash-o"></i>');
                             echo ' ' . $quote_tax_rate->quote_tax_rate_name . ' ' . $quote_tax_rate->quote_tax_rate_percent; ?>
                                 %</span>&nbsp;
                             <span class="amount">
