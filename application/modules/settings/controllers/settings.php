@@ -164,7 +164,7 @@ class Settings extends Admin_Controller
             "TargetPay_Mrcash",
             "TwoCheckout",
             "WorldPay");
-        $merchantDrivers = array_intersect($omnipay->getFactory()->getSupportedGateways(),$allowedDrivers);
+        $merchantDrivers = array_intersect($omnipay->getFactory()->getSupportedGateways(), $allowedDrivers);
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
@@ -194,19 +194,10 @@ class Settings extends Admin_Controller
                 'countries' => get_country_list(lang('cldr')),
                 'date_formats' => date_formats(),
                 'current_date' => new DateTime(),
-<<<<<<< HEAD
-                'email_templates_quote' => $this->mdl_email_templates->where('email_template_type',
-                    'quote')->get()->result(),
-                'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type',
-                    'invoice')->get()->result(),
-                'merchant_drivers' => $this->merchant->valid_drivers(),
-                'merchant_currency_codes' => Merchant::$NUMERIC_CURRENCY_CODES,
-=======
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
                 'merchant_drivers' => $merchantDrivers,
                 'merchant_currency_codes' => \Omnipay\Common\Currency::all(),
->>>>>>> 785536fdc713695508424cd10b578da7466c4c31
                 'current_version' => $current_version,
                 'first_days_of_weeks' => array("0" => lang("sunday"), "1" => lang("monday"))
             )

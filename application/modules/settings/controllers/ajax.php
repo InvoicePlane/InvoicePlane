@@ -43,7 +43,7 @@ class Ajax extends Admin_Controller
 
     /**
      * Renders element for payment merchant form
-     * 
+     *
      * @todo Cleanup, allow values to be passed through
      * @param $element
      * @param $type
@@ -51,17 +51,17 @@ class Ajax extends Admin_Controller
     protected function renderElement($element, $type)
     {
         if (is_array($type)) {
-            echo '<select name="settings[merchant_settings]['.$element.']" class="input-sm form-control">';
+            echo '<select name="settings[merchant_settings][' . $element . ']" class="input-sm form-control">';
             foreach ($type as $option) {
-                echo '<option value="'.$option.'">'.$option.'</option>';
+                echo '<option value="' . $option . '">' . $option . '</option>';
             }
             echo '</select>';
-        }elseif (is_string($type)) {
-            echo '<input type="text" name="settings[merchant_settings]['.$element.']" class="input-sm form-control">';
-        }elseif (is_bool($type)) {
-            echo '<select name="settings[merchant_settings]['.$element.']" class="input-sm form-control">
-                    <option value="0">'. lang('no').'</option>
-                    <option value="1">'.lang('yes').'</option></select>';
+        } elseif (is_string($type)) {
+            echo '<input type="text" name="settings[merchant_settings][' . $element . ']" class="input-sm form-control">';
+        } elseif (is_bool($type)) {
+            echo '<select name="settings[merchant_settings][' . $element . ']" class="input-sm form-control">
+                    <option value="0">' . lang('no') . '</option>
+                    <option value="1">' . lang('yes') . '</option></select>';
         }
     }
 

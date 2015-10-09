@@ -53,11 +53,11 @@ class Payment_Handler extends Base_Controller
             );
 
             $response = $gateway->purchase(
-                [
+                array(
                     'amount' => '10.00',
                     'currency' => 'USD',
                     'card' => $formData
-                ]
+                )
             )->send();
 
             // Process response
