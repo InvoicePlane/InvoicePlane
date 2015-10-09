@@ -9,6 +9,8 @@
 /uploads/temp/*
 /application/helpers/mpdf/ttfontdata/*
 .vagrant
+/vendor
+
 .idea
 .sass-cache
 adminer.php
