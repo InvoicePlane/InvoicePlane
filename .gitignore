@@ -8,6 +8,7 @@
 /uploads/import/*
 /uploads/temp/*
 /application/helpers/mpdf/ttfontdata/*
+/vendor
 
 .idea
 .sass-cache
