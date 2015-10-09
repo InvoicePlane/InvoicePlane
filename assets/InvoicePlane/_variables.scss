@@ -60,7 +60,7 @@ $enable-hover-media-query: false !default;
 // Control the default styling of most Bootstrap elements by modifying these
 // variables. Mostly focused on spacing.
 
-$spacer: 1rem !default;
+$spacer: 1.5rem !default;
 $spacer-x: $spacer !default;
 $spacer-y: $spacer !default;
 $border-width: .0625rem !default;
@@ -202,7 +202,7 @@ $table-bg-accent: #f9f9f9 !default;
 $table-bg-hover: #f5f5f5 !default;
 $table-bg-active: $table-bg-hover !default;
 
-$table-border-color: $gray-lighter !default;
+$table-border-color: darken($gray-lighter, 5%) !default;
 
 // Buttons
 //
@@ -265,7 +265,7 @@ $input-border-radius: $border-radius !default;
 $input-border-radius-lg: $border-radius-lg !default;
 $input-border-radius-sm: $border-radius-sm !default;
 
-$input-border-focus: #66afe9 !default;
+$input-border-focus: lighten($brand-primary, 10%) !default;
 $input-box-shadow-focus: rgba(102, 175, 233, .6) !default;
 
 $input-color-placeholder: #999 !default;
@@ -298,7 +298,7 @@ $form-icon-error: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGl
 
 $dropdown-bg: #fff !default;
 $dropdown-border: rgba(0, 0, 0, .15) !default;
-$dropdown-divider-bg: #e5e5e5 !default;
+$dropdown-divider-bg: $gray-lighter !default;
 
 $dropdown-link-color: $gray-dark !default;
 $dropdown-link-hover-color: darken($gray-dark, 5%) !default;
@@ -470,9 +470,9 @@ $label-link-hover-color: #fff !default;
 // Modals
 
 // Padding applied to the modal body
-$modal-inner-padding: 15px !default;
+$modal-inner-padding: 1rem !default;
 
-$modal-title-padding: 15px !default;
+$modal-title-padding: 1rem !default;
 $modal-title-line-height: $line-height !default;
 
 $modal-content-bg: #fff !default;
@@ -491,7 +491,7 @@ $modal-sm: 300px !default;
 //
 // Define alert colors, border radius, and padding.
 
-$alert-padding: 15px !default;
+$alert-padding: 1rem !default;
 $alert-border-radius: $border-radius !default;
 $alert-link-font-weight: bold !default;
 

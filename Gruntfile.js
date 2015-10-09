@@ -64,6 +64,24 @@ module.exports = function (grunt) {
                 }
             }
         },
+        copy: {
+            bsdatepicker: {
+                files: {
+                    cwd: 'assets/vendor/bootstrap-datepicker/dist/locales',
+                    src: ['**'],
+                    dest: 'assets/core/js/locales',
+                    expand: true
+                }
+            },
+            fontawesome: {
+                files: {
+                    cwd: 'assets/vendor/fontawesome/fonts',
+                    src: ['**'],
+                    dest: 'assets/core/fonts/fonta-wesome',
+                    expand: true
+                }
+            }
+        },
         watch: {
             sass: {
                 files: [
@@ -81,21 +99,26 @@ module.exports = function (grunt) {
         },
         clean: {
             dist: [
+                'assets/core/fonts/font-awesome/*',
+                'assets/core/js/locales/*',
                 'assets/InvoicePlane/css/*.min.css',
                 'assets/InvoicePlane/css/*.min.css.map',
-                'assets/core/js/app.min.js'
+                'assets/core/js/*.min.js',
+                'assets/core/js/*.min.js.map'
             ]
         }
     });
 
     // Register tasks
-    grunt.registerTask('built', [
+    grunt.registerTask('build', [
         'clean',
         'sass',
-        'uglify'
+        'uglify',
+        'copy:bsdatepicker',
+        'copy:fontawesome'
     ]);
     grunt.registerTask('dev', [
-        'built',
+        'build',
         'watch'
     ]);
 

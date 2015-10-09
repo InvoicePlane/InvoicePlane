@@ -9,8 +9,10 @@
 /uploads/temp/*
 /application/helpers/mpdf/ttfontdata/*
 /node_modules
-/assets/core/js/app.min.js
-/assets/core/js/dependencies.min.js
+/assets/core/fonts/font-awesome
+/assets/core/js/locales
+/assets/core/js/*.min.js
+/assets/core/js/*.min.js.map
 /assets/InvoicePlane/css/*.min.css
 /assets/InvoicePlane/css/*.min.css.map
 /assets/vendor
