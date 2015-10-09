@@ -4,6 +4,13 @@
             $('#form-settings').submit();
         });
         $("[name='settings[default_country]']").select2({allowClear: true});
+
+        $("[name='settings[merchant_driver]']").change(function(){
+            $.post("<?php echo site_url('settings/ajax/get_gateway_params'); ?>/"+$(this).val(),
+                function (data) {
+                    $('#gateway_settings').html(data);
+            });
+        });
     });
 </script>
 

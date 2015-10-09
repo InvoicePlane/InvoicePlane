@@ -25,25 +25,10 @@
         </select>
     </div>
 
-    <div class="form-group">
-        <label for="settings[merchant_test_mode]" class="control-label">
-            <?php echo lang('merchant_test_mode'); ?>
-        </label>
-        <select name="settings[merchant_test_mode]" class="input-sm form-control">
-            <option value="0"><?php echo lang('no'); ?></option>
-            <option value="1"
-                    <?php if ($this->mdl_settings->setting('merchant_test_mode') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
-        </select>
-    </div>
 
-    <div class="form-group">
-        <label for="settings[merchant_username]" class="control-label">
-            <?php echo lang('username'); ?>
-        </label>
-        <input type="text" name="settings[merchant_username]" class="input-sm form-control"
-               value="<?php echo $this->mdl_settings->setting('merchant_username'); ?>">
-    </div>
+    <div id="gateway_settings">
 
+<<<<<<< HEAD
     <div class="form-group">
         <label for="settings[merchant_password]" class="control-label">
             <?php echo lang('password'); ?>
@@ -85,6 +70,8 @@
                         <?php if ($this->mdl_settings->setting('online_payment_method') == $payment_method->payment_method_id) { ?>selected="selected"<?php } ?>><?php echo $payment_method->payment_method_name; ?></option>
             <?php } ?>
         </select>
+=======
+>>>>>>> 785536fdc713695508424cd10b578da7466c4c31
     </div>
 
 </div>
