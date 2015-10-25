@@ -46,6 +46,17 @@
 
         <hr>
 
+		<div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_to_email" class="control-label"><?php echo lang('to_email'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="email_template_to_email" id="email_template_to_email"
+                       class="form-control taggable"
+                       value="<?php echo $this->mdl_email_templates->form_value('email_template_to_email'); ?>">
+            </div>
+        </div>
+
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="email_template_from_name" class="control-label"><?php echo lang('from_name'); ?>: </label>
@@ -122,6 +133,46 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_send_pdf" class="control-label">
+                    <?php echo lang('send_pdf'); ?>:
+                </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="email_template_send_pdf" class="input-sm form-control">
+                    <option value="1"
+                        <?php if ($this->mdl_email_templates->form_value('email_template_send_pdf')) { ?>selected="selected"<?php } ?>>
+                        <?php echo lang('yes'); ?>
+                    </option>
+                    <option value="0"
+                        <?php if (!$this->mdl_email_templates->form_value('email_template_send_pdf')) { ?>selected="selected"<?php } ?>>
+                        <?php echo lang('no'); ?>
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="email_template_send_attachments" class="control-label">
+                    <?php echo lang('send_attachments'); ?>:
+                </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="email_template_send_attachments" class="input-sm form-control">
+                    <option value="1"
+                        <?php if ($this->mdl_email_templates->form_value('email_template_send_attachments')) { ?>selected="selected"<?php } ?>>
+                        <?php echo lang('yes'); ?>
+                    </option>
+                    <option value="0"
+                        <?php if (!$this->mdl_email_templates->form_value('email_template_send_attachments')) { ?>selected="selected"<?php } ?>>
+                        <?php echo lang('no'); ?>
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="email_template_body">
                     <?php echo lang('body'); ?>:
                 </label>
@@ -184,6 +235,7 @@
             <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
                 <strong><?php echo lang('client'); ?></strong><br>
                 <a href="#" class="text-tag" data-tag="{{{client_name}}}"><?php echo lang('client_name'); ?></a><br>
+                <a href="#" class="text-tag" data-tag="{{{client_email}}}"><?php echo lang('client_email'); ?></a><br>
                 <a href="#" class="text-tag"
                    data-tag="{{{client_address_1}}}"><?php echo lang('client'); ?> <?php echo lang('address'); ?>
                     1</a><br>

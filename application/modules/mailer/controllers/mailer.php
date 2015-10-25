@@ -125,8 +125,10 @@ class Mailer extends Admin_Controller
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
         $attachment_files = $this->mdl_uploads->get_invoice_uploads($invoice_id);
-
-        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
+        $send_pdf = $this->input->post('send_pdf');
+        $send_attachments = $this->input->post('send_attachments');
+        
+        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files, $send_pdf, $send_attachments)) {
             $this->mdl_invoices->mark_sent($invoice_id);
 
             $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));
