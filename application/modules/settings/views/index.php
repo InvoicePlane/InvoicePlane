@@ -36,7 +36,7 @@
         <a data-toggle="tab" href="#settings-email"><?php echo lang('email'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-merchant"><?php echo lang('merchant_account'); ?></a>
+        <a data-toggle="tab" href="#settings-online-payment"><?php echo lang('online_payment'); ?></a>
     </li>
     <li>
         <a data-toggle="tab" href="#settings-projects-tasks"><?php echo lang('projects'); ?></a>
@@ -74,8 +74,8 @@
                 <?php $this->layout->load_view('settings/partial_settings_email'); ?>
             </div>
 
-            <div id="settings-merchant" class="tab-pane">
-                <?php $this->layout->load_view('settings/partial_settings_merchant'); ?>
+            <div id="settings-online-payment" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_online_payment'); ?>
             </div>
 
             <div id="settings-projects-tasks" class="tab-pane">
