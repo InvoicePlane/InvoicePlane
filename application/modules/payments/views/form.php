@@ -6,7 +6,7 @@
         invoice_payment_methods = JSON.parse('<?php echo $invoice_payment_methods; ?>');
         $('#invoice_id').change(function () {
             var invoice_identifier = "invoice" + $('#invoice_id').val();
-            $('#payment_amount').val(amounts[invoice_identifier]);
+            $('#payment_amount').val(amounts[invoice_identifier].replace("&nbsp;", " "));
             $('#payment_method_id option[value="' + invoice_payment_methods[invoice_identifier] + '"]').prop('selected', true);
 
             if (invoice_payment_methods[invoice_identifier] != 0) {
