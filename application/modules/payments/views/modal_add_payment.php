@@ -75,6 +75,14 @@
                     <label for="payment_method_id"><?php echo lang('payment_method'); ?></label>
 
                     <div class="controls">
+
+                        <?php
+                        // Add a hidden input field if a payment method was set to pass the disabled attribute
+                        if ($this->mdl_payments->form_value('payment_method_id')) { ?>
+                            <input type="hidden" name="payment_method_id" class="hidden"
+                                   value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
+                        <?php } ?>
+
                         <select name="payment_method_id" id="payment_method_id" class="form-control"
                             <?php echo(!empty($invoice_payment_method) ? 'disabled="disabled"' : ''); ?>>
                             <option value=""></option>
