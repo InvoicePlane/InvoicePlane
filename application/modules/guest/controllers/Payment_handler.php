@@ -34,13 +34,51 @@ class Payment_Handler extends Base_Controller
     public function make_payment($invoice_url_key)
     {
         // Attempt to get the invoice
-        $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get();
+        $invoice = $this->mdl_invoices->where('invoice_url_key', $this->input->post('invoice_url_key'))->get();
 
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
+            /**
+             * @todo This needs to be refactored and implemented! Below is a test! ^ Chris Smith <chris@cgsmith.net>
+             * @todo credit card data will be passed by the form from view/payment_information.php, invoice data needs to be taken from the database ^ Kovah <mail@kovah.de>
+             */
+            die('This needs to be implemented in modules/guest/controllers/payment_handler.php');
             // Load the merchant driver
-            $this->merchant->load(get_setting('merchant_driver'));
+            $gateway = \Omnipay\Omnipay::create("Stripe");
+            $gateway->setApiKey($this->mdl_settings->setting('merchant_username'));
+
+            $formData = array(
+                'number' => '4242424242424242',
+                'expiryMonth' => '6',
+                'expiryYear' => '2016',
+                'cvv' => '123'
+            );
+
+            $response = $gateway->purchase(
+                array(
+                    'amount' => '10.00',
+                    'currency' => 'USD',
+                    'card' => $formData
+                )
+            )->send();
+
+            // Process response
+            if ($response->isSuccessful()) {
+
+                // Payment was successful
+                print_r($response);
+
+            } elseif ($response->isRedirect()) {
+
+                // Redirect to offsite payment gateway
+                $response->redirect();
+
+            } else {
+
+                // Payment failed
+                echo $response->getMessage();
+            }
 
             // Pass the required settings
             $settings = array(
