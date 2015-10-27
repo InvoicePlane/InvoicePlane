@@ -65,39 +65,48 @@ class Cron extends Base_Controller
                     $this->load->model('email_templates/mdl_email_templates');
 
                     $email_template_id = $this->mdl_settings->setting('email_invoice_template');
-
                     if (!$email_template_id) {
                         return;
                     }
 
                     $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
-
                     if ($email_template->num_rows() == 0) {
                         return;
                     }
 
                     $tpl = $email_template->row();
 
+                    // Prepare the attachments
+                    $this->load->model('upload/mdl_uploads');
+                    $attachment_files = $this->mdl_uploads->get_invoice_uploads($target_id);
+
+                    // Prepare the body
+                    $body = $tpl->email_template_body;
+                    if (strlen($body) != strlen(strip_tags($body))) {
+                        $body = htmlspecialchars_decode($body);
+                    } else {
+                        $body = htmlspecialchars_decode(nl2br($body));
+                    }
+
                     $from = !empty($tpl->email_template_from_email) ?
                         array($tpl->email_template_from_email,
                             $tpl->email_template_from_name) :
                         array($invoice->user_email, "");
+
                     $subject = !empty($tpl->email_template_subject) ?
                         $tpl->email_template_subject :
                         lang('invoice') . ' #' . $new_invoice->invoice_number;
 
-                    email_invoice(
-                        $target_id,
-                        $tpl->email_template_pdf_template,
-                        $from,
-                        $invoice->client_email,
-                        $subject,
-                        $tpl->email_template_body,
-                        $tpl->email_template_cc,
-                        $tpl->email_template_bcc
-                    );
+                    $pdf_template = $tpl->email_template_pdf_template;
+                    $to = $invoice->client_email;
+                    $cc = $tpl->email_template_cc;
+                    $bcc = $tpl->email_template_bcc;
 
-                    $this->mdl_invoices->mark_sent($target_id);
+                    if (email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
+                        $this->mdl_invoices->mark_sent($target_id);
+                    } else {
+                        log_message("warning", "Invoice " . $target_id . "could not be sent. Please review your Email settings.");
+                    }
                 }
             }
         }
