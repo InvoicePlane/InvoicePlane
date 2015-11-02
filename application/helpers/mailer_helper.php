@@ -36,7 +36,9 @@ function email_invoice(
     $body,
     $cc = null,
     $bcc = null,
-    $attachments = null
+    $attachments = null,
+    $send_pdf,
+    $send_attachments
 ) {
     $CI = &get_instance();
 
@@ -45,10 +47,17 @@ function email_invoice(
     $CI->load->helper('invoice');
     $CI->load->helper('pdf');
 
-    $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
+    $invoice = null;
+    if($send_pdf) {
+        $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
+    }
+    if (!$send_attachments) {
+        $attachments = null;
+    }
 
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
+    $to = parse_template($db_invoice, $to);
     $message = parse_template($db_invoice, $body);
     $subject = parse_template($db_invoice, $subject);
     $cc = parse_template($db_invoice, $cc);

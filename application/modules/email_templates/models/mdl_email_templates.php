@@ -44,6 +44,10 @@ class Mdl_Email_Templates extends Response_Model
                 'field' => 'email_template_pdf_quote_template',
                 'label' => lang('type')
             ),
+            'email_template_to_email' => array(
+                'field' => 'email_template_to_email',
+                'label' => lang('to_email')
+            ),
             'email_template_subject' => array(
                 'field' => 'email_template_subject',
                 'label' => lang('subject')
@@ -67,6 +71,14 @@ class Mdl_Email_Templates extends Response_Model
             'email_template_pdf_template' => array(
                 'field' => 'email_template_pdf_template',
                 'label' => lang('default_pdf_template')
+            ),
+            'email_template_send_pdf' => array(
+                'field' => 'email_template_send_pdf',
+                'label' => lang('send_pdf')
+            ),
+            'email_template_send_attachments' => array(
+               'field' => 'email_template_send_attachments',
+               'label' => lang('send_attachments')
             ),
             'email_template_body' => array(
                 'field' => 'email_template_body',

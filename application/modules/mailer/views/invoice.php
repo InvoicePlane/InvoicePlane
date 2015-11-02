@@ -1,6 +1,6 @@
 <script type="text/javascript">
     $(function () {
-        var template_fields = ["body", "subject", "from_name", "from_email", "cc", "bcc", "pdf_template"];
+        var template_fields = ["to_email", "body", "subject", "from_name", "from_email", "cc", "bcc", "pdf_template", "send_pdf", "send_attachments"];
 
         $('#email_template').change(function () {
             var email_template_id = $(this).val();
@@ -43,18 +43,6 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="to_email" class="control-label"><?php echo lang('to_email'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <input type="text" name="to_email" id="to_email" class="form-control"
-                       value="<?php echo $invoice->client_email; ?>">
-            </div>
-        </div>
-
-        <hr>
-
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="email_template" class="control-label"><?php echo lang('email_template'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
@@ -65,6 +53,18 @@
                                 <?php if ($selected_email_template == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
                     <?php endforeach; ?>
                 </select>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="to_email" class="control-label"><?php echo lang('to_email'); ?>: </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <input type="text" name="to_email" id="to_email" class="form-control"
+                       value="<?php echo $invoice->client_email; ?>">
             </div>
         </div>
 
@@ -132,6 +132,42 @@
                             <?php echo $pdf_template; ?>
                         </option>
                     <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="send_pdf" class="control-label">
+                    <?php echo lang('send_pdf'); ?>:
+                </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="send_pdf" id="send_pdf" class="form-control">
+                    <option value="1" selected="selected">
+                        <?php echo lang('yes'); ?>
+                    </option>
+                    <option value="0">
+                        <?php echo lang('no'); ?>
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="send_attachments" class="control-label">
+                    <?php echo lang('send_attachments'); ?>:
+                </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="send_attachments" id="send_attachments" class="form-control">
+                    <option value="1" selected="selected">
+                        <?php echo lang('yes'); ?>
+                    </option>
+                    <option value="0">
+                        <?php echo lang('no'); ?>
+                    </option>
                 </select>
             </div>
         </div>
