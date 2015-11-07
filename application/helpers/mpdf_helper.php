@@ -22,6 +22,15 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
 
     $mpdf = new mPDF();
+
+    $base_template = './uploads/pdf_base.pdf';
+    if (file_exists($base_template)) {
+        $mpdf->SetImportUse();
+        $mpdf->SetSourceFile($base_template);
+        $base = $mpdf->ImportPage(1);
+        $mpdf->SetPageTemplate($base);
+    }
+
     $mpdf->useAdobeCJK = true;
     $mpdf->SetAutoFont();
     $mpdf->SetProtection(array('copy', 'print'), $password, $password);
