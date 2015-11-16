@@ -56,16 +56,17 @@ class Settings extends Admin_Controller
             }
 
             // Save the submitted settings
+            $this->load->library('encrypt');
+            $this->load->library('form_validation');
+
             foreach ($settings as $key => $value) {
                 // Encrypt passwords but don't save empty passwords
                 if ($key == 'smtp_password' or strpos($key, 'gateway_password') === 0) {
                     if ($value <> '') {
-                        $this->load->library('encrypt');
                         $this->mdl_settings->save($key, $this->encrypt->encode($value));
                     }
                 } else {
                     if ($key == 'default_hourly_rate') {
-                        $this->load->library('form_validation');
                         if ($value == '') {
                             $value = '0.00';
                         }

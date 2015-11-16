@@ -15,3 +15,8 @@
 <?php if ($this->session->flashdata('alert_error')) { ?>
     <div class="alert alert-danger"><?php echo $this->session->flashdata('alert_error'); ?></div>
 <?php } ?>
+
+<?php if ($this->session->userdata('alert_error')) { ?>
+    <div class="alert alert-danger"><?php echo $this->session->userdata('alert_error'); ?></div>
+<?php }
+$this->session->unset_userdata('alert_error');?>
