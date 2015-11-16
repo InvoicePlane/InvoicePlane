@@ -39,12 +39,14 @@ class Settings extends Admin_Controller
             }
 
             // Save the submitted settings
+            $this->load->library('encrypt');
+            $this->load->library('form_validation');
+
             foreach ($settings as $key => $value) {
                 // Encrypt passwords but don't save empty passwords
                 if ($key == 'smtp_password' or strpos($key, 'gateway_password') === 0) {
-                    if ($value <> '') {
-                        $this->load->library('crypt');
-                        $this->mdl_settings->save($key, $this->crypt->encode($value));
+                    if ($value != '') {
+                        $this->mdl_settings->save($key, $this->encrypt->encode($value));
                     }
                 } else {
                     if ($key == 'default_hourly_rate') {
@@ -107,8 +109,10 @@ class Settings extends Admin_Controller
         $this->load->helper('country');
 
         // Collect array of drivers allowed - just the defaults... minus dummy and other non-essentials
+        require_once(FCPATH . 'vendor/autoload.php');
         $omnipay = new \Omnipay\Omnipay();
         $this->config->load('payment_gateways');
+
         $allowed_drivers = $this->config->item('payment_gateways');
         $gateway_drivers = array_intersect($omnipay->getFactory()->getSupportedGateways(), $allowed_drivers);
 

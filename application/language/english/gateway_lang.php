@@ -1,7 +1,8 @@
 <?php
-
+/**
+ * Contains the language translations for the payment gateways
+ */
 $lang = array(
-    // payment gateway settings
     'online_payment_api_login_id'              => 'API Login ID',
     'online_payment_transaction_key'           => 'Transaction Key',
     'online_payment_test_mode'                 => 'Test Mode',
@@ -71,7 +72,9 @@ $lang = array(
     'online_payment_invalid_status'            => 'Invalid payment status',
     'online_payment_invalid_method'            => 'Method not supported by this gateway.',
     'online_payment_invalid_response'          => 'Invalid response from payment gateway.',
+    'online_payment_payment_cancelled'         => 'Payment cancelled.',
     'online_payment_payment_failed'            => 'Payment failed. Please try again.',
+    'online_payment_payment_successful'        => 'Payment successful!',
     'online_payment_payment_redirect'          => 'Please wait while we redirect you to the payment page...',
     'online_payment_3dauth_redirect'           => 'Please wait while we redirect you to your card issuer for authentication...'
 );
