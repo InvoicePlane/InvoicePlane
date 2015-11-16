@@ -77,11 +77,13 @@
                                 <?php echo lang('pdf'); ?>
                             </a>
 
-                            <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_id); ?>"
-                               class="btn btn-success btn-sm">
-                                <i class="fa fa-credit-card"></i>
-                                <?php echo lang('pay_now'); ?>
-                            </a>
+                            <?php if ($status != 'paid') { ?>
+                                <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
+                                   class="btn btn-success btn-sm">
+                                    <i class="fa fa-credit-card"></i>
+                                    <?php echo lang('pay_now'); ?>
+                                </a>
+                            <?php } ?>
                         </td>
                     </tr>
                 <?php } ?>
