@@ -67,22 +67,23 @@
                         <td>
                             <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>"
                                class="btn btn-default btn-sm">
-                                <i class="glyphicon glyphicon-eye-open"></i>
+                                <i class="fa fa-eye"></i>
                                 <?php echo lang('view'); ?>
                             </a>
 
                             <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                class="btn btn-default btn-sm">
-                                <i class="icon ion-printer"></i>
+                                <i class="fa fa-print"></i>
                                 <?php echo lang('pdf'); ?>
                             </a>
 
-                            <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
-                            <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
-                               class="btn btn-success btn-sm">
-                                <i class="glyphicon glyphicon-ok"></i>
-                                <?php echo lang('pay_now'); ?>
-                                </a><?php } ?>
+                            <?php if ($status != 'paid') { ?>
+                                <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
+                                   class="btn btn-success btn-sm">
+                                    <i class="fa fa-credit-card"></i>
+                                    <?php echo lang('pay_now'); ?>
+                                </a>
+                            <?php } ?>
                         </td>
                     </tr>
                 <?php } ?>
