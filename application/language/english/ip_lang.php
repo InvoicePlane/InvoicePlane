@@ -135,6 +135,7 @@ $lang = array(
     'disable_sidebar'                              => 'Disable the Sidebar',
     'discount'                                     => 'Discount',
     'documentation'                                => 'Documentation',
+    'dont_send_email'                              => 'Don\'t send email',
     'download'                                     => 'Download',
     'download_pdf'                                 => 'Download PDF',
     'draft'                                        => 'Draft',

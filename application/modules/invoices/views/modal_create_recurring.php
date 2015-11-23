@@ -15,7 +15,9 @@
                     invoice_id: <?php echo $invoice_id; ?>,
                     recur_start_date: $('#recur_start_date').val(),
                     recur_end_date: $('#recur_end_date').val(),
-                    recur_frequency: $('#recur_frequency').val()
+                    recur_frequency: $('#recur_frequency').val(),
+                    recur_invoices_due_after: $('#recur_invoices_due_after').val(),
+                    recur_email_invoice_template: $('#recur_email_invoice_template').val()
                 },
                 function (data) {
                     var response = JSON.parse(data);
@@ -90,6 +92,30 @@
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="recur_invoices_due_after" class="control-label">
+                    <?php echo lang('invoices_due_after'); ?>
+                </label>
+                <div class="controls">
+                    <input type="text" name="recur_invoices_due_after" id="recur_invoices_due_after" class="form-control"
+                           value="<?php echo $this->mdl_settings->setting('invoices_due_after'); ?>">
+               </div>
+            </div>
+
+            <div class="form-group">
+                <label for="recur_email_invoice_template">
+                    <?php echo lang('email_template'); ?>
+                </label>
+                <div class="controls">
+                <select name="recur_email_invoice_template" id="recur_email_invoice_template" class="form-control">
+                    <option value=""><?php echo lang('dont_send_email'); ?></option>
+                    <?php foreach ($email_templates_invoice as $email_template) { ?>
+                        <option value="<?php echo $email_template->email_template_id; ?>"><?php echo $email_template->email_template_title; ?></option>
+                    <?php } ?>
+                </select>
                 </div>
             </div>
 
