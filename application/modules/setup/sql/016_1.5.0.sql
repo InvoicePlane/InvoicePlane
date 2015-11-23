@@ -24,3 +24,9 @@ ADD COLUMN `email_template_to_email` VARCHAR(255) NOT NULL,
 ADD COLUMN `email_template_send_pdf` INT(11) NOT NULL,
 ADD COLUMN `email_template_send_attachments` INT(11) NOT NULL
 AFTER `email_template_pdf_template`;
+
+# Add recur_invoices_due_after, recur_email_invoice_template to table ip_invoices_recurring
+ALTER TABLE `ip_invoices_recurring`
+ADD COLUMN `recur_invoices_due_after` INT(11) DEFAULT 30 NOT NULL,
+ADD COLUMN `recur_email_invoice_template` INT(11) NOT NULL
+AFTER `recur_next_date`;

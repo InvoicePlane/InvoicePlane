@@ -218,4 +218,13 @@ class Mdl_Setup extends CI_Model
     {
         // Nothing to do here
     }
+
+    public function upgrade_016_1_5_0()
+    {
+        // Copy Email invoice template from settings to each recuring invoice
+        $settings = $this->db->where('setting_key', 'email_invoice_template')->get('ip_settings')->result();
+        if ($settings[0]->setting_key == 'email_invoice_template') {
+            $this->db->update('ip_invoices_recurring', ['recur_email_invoice_template' => $settings[0]->setting_value]);
+        }
+    }
 }
