@@ -17,3 +17,10 @@ VALUES ('default_hourly_rate', '0.00');
 ALTER TABLE `ip_tasks`
 ADD COLUMN `tax_rate_id` INT(11) NOT NULL
 AFTER `task_status`;
+
+# Add email_template_to_email, email_template_send_pdf, email_template_send_attachments to table ip_email_templates
+ALTER TABLE `ip_email_templates`
+ADD COLUMN `email_template_to_email` VARCHAR(255) NOT NULL,
+ADD COLUMN `email_template_send_pdf` INT(11) NOT NULL,
+ADD COLUMN `email_template_send_attachments` INT(11) NOT NULL
+AFTER `email_template_pdf_template`;
