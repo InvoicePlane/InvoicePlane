@@ -244,10 +244,12 @@ class Ajax extends Admin_Controller
         $this->load->module('layout');
 
         $this->load->model('mdl_invoices_recurring');
+        $this->load->model('email_templates/mdl_email_templates');
 
         $data = array(
             'invoice_id' => $this->input->post('invoice_id'),
-            'recur_frequencies' => $this->mdl_invoices_recurring->recur_frequencies
+            'recur_frequencies' => $this->mdl_invoices_recurring->recur_frequencies,
+            'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result()
         );
 
         $this->layout->load_view('invoices/modal_create_recurring', $data);

@@ -65,6 +65,16 @@ class Mdl_Invoices_Recurring extends Response_Model
                 'label' => lang('every'),
                 'rules' => 'required'
             ),
+            'recur_invoices_due_after' => array(
+                    'field' => 'recur_invoices_due_after',
+                    'label' => lang('invoices_due_after'),
+                    'rules' => 'required'
+            ),
+            'recur_email_invoice_template' => array(
+                    'field' => 'recur_email_invoice_template',
+                    'label' => lang('email_invoice_template'),
+                    'rules' => 'required'
+            )
         );
     }
 

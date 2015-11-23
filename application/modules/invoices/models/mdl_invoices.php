@@ -308,10 +308,13 @@ class Mdl_Invoices extends Response_Model
         return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
     }
 
-    public function get_date_due($invoice_date_created)
+    public function get_date_due($invoice_date_created, $invoices_due_after = null)
     {
+        if ($invoices_due_after == null) {
+            $invoices_due_after = $this->mdl_settings->setting('invoices_due_after');
+        }
         $invoice_date_due = new DateTime($invoice_date_created);
-        $invoice_date_due->add(new DateInterval('P' . $this->mdl_settings->setting('invoices_due_after') . 'D'));
+        $invoice_date_due->add(new DateInterval('P' . $invoices_due_after . 'D'));
         return $invoice_date_due->format('Y-m-d');
     }
 

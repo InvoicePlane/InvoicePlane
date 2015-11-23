@@ -41,7 +41,7 @@ class Cron extends Base_Controller
                 $db_array = array(
                     'client_id' => $invoice->client_id,
                     'invoice_date_created' => $invoice_recurring->recur_next_date,
-                    'invoice_date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date),
+                    'invoice_date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date, $invoice_recurring->recur_invoices_due_after),
                     'invoice_group_id' => $invoice->invoice_group_id,
                     'user_id' => $invoice->user_id,
                     'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
@@ -65,7 +65,7 @@ class Cron extends Base_Controller
                     // Set the email body, use default email template if available
                     $this->load->model('email_templates/mdl_email_templates');
 
-                    $email_template_id = $this->mdl_settings->setting('email_invoice_template');
+                    $email_template_id = $invoice_recurring->recur_email_invoice_template;
                     if (!$email_template_id) {
                         return;
                     }
@@ -101,11 +101,13 @@ class Cron extends Base_Controller
                         lang('invoice') . ' #' . $new_invoice->invoice_number;
 
                     $pdf_template = $tpl->email_template_pdf_template;
-                    $to = $invoice->client_email;
+                    $to = $tpl->email_template_to_email;
                     $cc = $tpl->email_template_cc;
                     $bcc = $tpl->email_template_bcc;
-
-                    if (email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
+                    $send_pdf = $tpl->email_template_send_pdf;
+                    $send_attachments = $tpl->email_template_send_attachments;
+                    
+                    if (email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files, $send_pdf, $send_attachments)) {
                         $this->mdl_invoices->mark_sent($target_id);
                     } else {
                         log_message("warning", "Invoice " . $target_id . "could not be sent. Please review your Email settings.");
