@@ -114,7 +114,7 @@ class Mdl_Custom_Fields extends MY_Model
         $column = array(
             $column_name => array(
                 'type' => 'VARCHAR',
-                'constraint' => 255
+                'constraint' => 2000
             )
         );
 
@@ -129,7 +129,7 @@ class Mdl_Custom_Fields extends MY_Model
             $old_column_name => array(
                 'name' => $new_column_name,
                 'type' => 'VARCHAR',
-                'constraint' => 255
+                'constraint' => 2000
             )
         );
 
