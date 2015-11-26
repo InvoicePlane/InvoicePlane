@@ -24,7 +24,7 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     $CI->load->model('invoices/mdl_items');
     $CI->load->model('invoices/mdl_invoice_tax_rates');
     $CI->load->model('payment_methods/mdl_payment_methods');
-    $CI->load->library('encrypt');
+    $CI->load->helper('country');
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     if (!$invoice_template) {
@@ -33,7 +33,7 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-    if ($invoice->payment_method == 0) $payment_method = NULL;
+    if ($invoice->payment_method == 0) $payment_method = false;
 
     $data = array(
         'invoice' => $invoice,
@@ -56,6 +56,7 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
     $CI->load->model('quotes/mdl_quotes');
     $CI->load->model('quotes/mdl_quote_items');
     $CI->load->model('quotes/mdl_quote_tax_rates');
+    $CI->load->helper('country');
 
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
 
