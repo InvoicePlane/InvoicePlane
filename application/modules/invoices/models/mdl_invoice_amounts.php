@@ -91,7 +91,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 
             // Get the payment method id first
             $this->db->where('invoice_id', $invoice_id);
-            $payment = $this->db->get('ip_payments');
+            $payment = $this->db->get('ip_payments')->row();
             $payment_method_id = (isset($payment->payment_method_id) ? $payment->payment_method_id : 0);
 
             $this->db->where('invoice_id', $invoice_id);
@@ -322,6 +322,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW())
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
 					GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'last-quarter':
@@ -330,6 +331,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
 					GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'this-year':

@@ -37,5 +37,3 @@ function invoice_logo_pdf()
     }
     return '';
 }
-
-?>

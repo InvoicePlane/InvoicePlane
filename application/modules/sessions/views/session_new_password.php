@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -18,7 +18,7 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
 
     <script type="text/javascript">
         $(function () {

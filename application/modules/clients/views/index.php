@@ -18,13 +18,13 @@
 
     <div class="pull-right visible-lg">
         <ul class="nav nav-pills index-options">
-            <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) { ?>class="active"<?php } ?>>
+            <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) : ?>class="active"<?php endif; ?>>
                 <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo lang('active'); ?></a>
             </li>
-            <li <?php if ($this->uri->segment(3) == 'inactive') { ?>class="active"<?php } ?>>
+            <li <?php if ($this->uri->segment(3) == 'inactive') : ?>class="active"<?php endif; ?>>
                 <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo lang('inactive'); ?></a>
             </li>
-            <li <?php if ($this->uri->segment(3) == 'all') { ?>class="active"<?php } ?>>
+            <li <?php if ($this->uri->segment(3) == 'all') : ?>class="active"<?php endif; ?>>
                 <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo lang('all'); ?></a>
             </li>
         </ul>
@@ -41,13 +41,13 @@
 
         <div class="submenu-row">
             <ul class="nav nav-pills index-options">
-                <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) { ?>class="active"<?php } ?>>
+                <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) : ?>class="active"<?php endif; ?>>
                     <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo lang('active'); ?></a>
                 </li>
-                <li <?php if ($this->uri->segment(3) == 'inactive') { ?>class="active"<?php } ?>>
+                <li <?php if ($this->uri->segment(3) == 'inactive') : ?>class="active"<?php endif; ?>>
                     <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo lang('inactive'); ?></a>
                 </li>
-                <li <?php if ($this->uri->segment(3) == 'all') { ?>class="active"<?php } ?>>
+                <li <?php if ($this->uri->segment(3) == 'all') : ?>class="active"<?php endif; ?>>
                     <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo lang('all'); ?></a>
                 </li>
             </ul>

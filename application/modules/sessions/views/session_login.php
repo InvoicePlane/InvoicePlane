@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -17,7 +17,7 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
@@ -49,8 +49,8 @@
                     <label for="email" class="control-label"><?php echo lang('email'); ?></label>
                 </div>
                 <div class="col-xs-12 col-sm-9">
-                    <input type="text" name="email" id="email" class="form-control"
-                           placeholder="<?php echo lang('email'); ?>">
+                    <input type="email" name="email" id="email" class="form-control"
+                           placeholder="<?php echo lang('email'); ?>"<?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
             <div class="form-group">
@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="password" id="password" class="form-control"
-                           placeholder="<?php echo lang('password'); ?>">
+                           placeholder="<?php echo lang('password'); ?>"<?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
 
