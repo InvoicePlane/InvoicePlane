@@ -40,314 +40,320 @@ define('MERCHANT_VENDOR_PATH', realpath(dirname(__FILE__).'/../vendor'));
  */
 class Merchant
 {
-	public static $CURRENCIES_WITHOUT_DECIMALS = array('JPY');
+public static $CURRENCIES_WITHOUT_DECIMALS = array('JPY');
 
-	public static $NUMERIC_CURRENCY_CODES = array(
+public static $NUMERIC_CURRENCY_CODES = array(
 		'AUD' => '036',
 		'CAD' => '124',
 		'EUR' => '978',
 		'GBP' => '826',
 		'NZD' => '554',
 		'USD' => '840',
-	);
+);
 
-	private $_driver;
+private $_driver;
 
-	public function __construct($driver = NULL)
+public function __construct($driver = NULL)
+{
+	if ( ! empty($driver))
 	{
-		if ( ! empty($driver))
-		{
-			$this->load($driver);
-		}
+		$this->load($driver);
+	}
+}
+
+public function __call($function, $arguments)
+{
+	if ( ! empty($this->_driver))
+	{
+		return call_user_func_array(array($this->_driver, $function), $arguments);
+	}
+}
+
+/**
+ * Load the specified driver
+ */
+public function load($driver)
+{
+	$this->_driver = $this->_create_instance($driver);
+	return $this->_driver !== FALSE;
+}
+
+/**
+ * Returns the name of the currently loaded driver
+ */
+public function active_driver()
+{
+	$class_name = get_class($this->_driver);
+	if ($class_name === FALSE) return FALSE;
+	return str_replace('Merchant_', '', $class_name);
+}
+
+/**
+ * Load and create a new instance of a driver.
+ * $driver can be specified either as a class name (Merchant_paypal) or a short name (paypal)
+ */
+private function _create_instance($driver)
+{
+	if (stripos($driver, 'merchant_') === 0)
+	{
+		$driver_class = ucfirst(strtolower($driver));
+	}
+	else
+	{
+		$driver_class = 'Merchant_'.strtolower($driver);
 	}
 
-	public function __call($function, $arguments)
+	if ( ! class_exists($driver_class))
 	{
-		if ( ! empty($this->_driver))
-		{
-			return call_user_func_array(array($this->_driver, $function), $arguments);
-		}
+		// attempt to load driver file
+		$driver_path = MERCHANT_DRIVER_PATH.'/'.strtolower($driver_class).'.php';
+		if ( ! file_exists($driver_path)) return FALSE;
+		require_once($driver_path);
+
+		// did the driver file implement the class?
+		if ( ! class_exists($driver_class)) return FALSE;
 	}
 
-	/**
-	 * Load the specified driver
-	 */
-	public function load($driver)
+	// ensure class is not abstract
+	$reflection_class = new ReflectionClass($driver_class);
+	if ($reflection_class->isAbstract()) return FALSE;
+
+	return new $driver_class();
+}
+
+public function valid_drivers()
+{
+	static $valid_drivers = array();
+
+	if (empty($valid_drivers))
 	{
-		$this->_driver = $this->_create_instance($driver);
-		return $this->_driver !== FALSE;
-	}
-
-	/**
-	 * Returns the name of the currently loaded driver
-	 */
-	public function active_driver()
-	{
-		$class_name = get_class($this->_driver);
-		if ($class_name === FALSE) return FALSE;
-		return str_replace('Merchant_', '', $class_name);
-	}
-
-	/**
-	 * Load and create a new instance of a driver.
-	 * $driver can be specified either as a class name (Merchant_paypal) or a short name (paypal)
-	 */
-	private function _create_instance($driver)
-	{
-		if (stripos($driver, 'merchant_') === 0)
+		foreach (scandir(MERCHANT_DRIVER_PATH) as $file_name)
 		{
-			$driver_class = ucfirst(strtolower($driver));
-		}
-		else
-		{
-			$driver_class = 'Merchant_'.strtolower($driver);
-		}
-
-		if ( ! class_exists($driver_class))
-		{
-			// attempt to load driver file
-			$driver_path = MERCHANT_DRIVER_PATH.'/'.strtolower($driver_class).'.php';
-			if ( ! file_exists($driver_path)) return FALSE;
-			require_once($driver_path);
-
-			// did the driver file implement the class?
-			if ( ! class_exists($driver_class)) return FALSE;
-		}
-
-		// ensure class is not abstract
-		$reflection_class = new ReflectionClass($driver_class);
-		if ($reflection_class->isAbstract()) return FALSE;
-
-		return new $driver_class();
-	}
-
-	public function valid_drivers()
-	{
-		static $valid_drivers = array();
-
-		if (empty($valid_drivers))
-		{
-			foreach (scandir(MERCHANT_DRIVER_PATH) as $file_name)
+			$driver_path = MERCHANT_DRIVER_PATH.'/'.$file_name;
+			if (stripos($file_name, 'merchant_') === 0 AND is_file($driver_path))
 			{
-				$driver_path = MERCHANT_DRIVER_PATH.'/'.$file_name;
-				if (stripos($file_name, 'merchant_') === 0 AND is_file($driver_path))
-				{
-					require_once($driver_path);
+				require_once($driver_path);
 
-					// does the file implement an appropriately named class?
-					$driver_class = ucfirst(str_replace('.php', '', $file_name));
-					if ( ! class_exists($driver_class)) continue;
+				// does the file implement an appropriately named class?
+				$driver_class = ucfirst(str_replace('.php', '', $file_name));
+				if ( ! class_exists($driver_class)) continue;
 
-					// ensure class is not abstract
-					$reflection_class = new ReflectionClass($driver_class);
-					if ($reflection_class->isAbstract()) continue;
+				// ensure class is not abstract
+				$reflection_class = new ReflectionClass($driver_class);
+				if ($reflection_class->isAbstract()) continue;
 
-					$valid_drivers[] = str_replace('Merchant_', '', $driver_class);
-				}
+				$valid_drivers[] = str_replace('Merchant_', '', $driver_class);
 			}
 		}
-
-		return $valid_drivers;
 	}
 
-	public function authorize($params)
+	return $valid_drivers;
+}
+
+public function authorize($params)
+{
+	return $this->_do_authorize_or_purchase('authorize', $params);
+}
+
+public function authorize_return($params)
+{
+	return $this->_do_authorize_or_purchase('authorize_return', $params);
+}
+
+public function capture($params)
+{
+	return $this->_do_capture_or_refund('capture', $params);
+}
+
+public function purchase($params)
+{
+	return $this->_do_authorize_or_purchase('purchase', $params);
+}
+
+public function purchase_return($params)
+{
+	return $this->_do_authorize_or_purchase('purchase_return', $params);
+}
+
+public function refund($params)
+{
+	return $this->_do_capture_or_refund('refund', $params);
+}
+
+private function _do_authorize_or_purchase($method, $params)
+{
+	$this->_normalize_card_params($params);
+	$this->_normalize_currency_params($params);
+
+	try
 	{
-		return $this->_do_authorize_or_purchase('authorize', $params);
-	}
+		// load driver params
+		$this->_driver->set_params($params);
 
-	public function authorize_return($params)
-	{
-		return $this->_do_authorize_or_purchase('authorize_return', $params);
-	}
+		// all payments require amount and currency
+		$this->_driver->require_params('amount', 'currency');
 
-	public function capture($params)
-	{
-		return $this->_do_capture_or_refund('capture', $params);
-	}
-
-	public function purchase($params)
-	{
-		return $this->_do_authorize_or_purchase('purchase', $params);
-	}
-
-	public function purchase_return($params)
-	{
-		return $this->_do_authorize_or_purchase('purchase_return', $params);
-	}
-
-	public function refund($params)
-	{
-		return $this->_do_capture_or_refund('refund', $params);
-	}
-
-	private function _do_authorize_or_purchase($method, $params)
-	{
-		$this->_normalize_card_params($params);
-		$this->_normalize_currency_params($params);
-
-		try
-		{
-			// load driver params
-			$this->_driver->set_params($params);
-
-			// all payments require amount and currency
-			$this->_driver->require_params('amount', 'currency');
-
-			// support drivers using deprecated required_fields array
-			if (($method == 'authorize' OR $method == 'purchase') AND
+		// support drivers using deprecated required_fields array
+		if (($method == 'authorize' OR $method == 'purchase') AND
 				! empty($this->_driver->required_fields))
-			{
-				$this->_driver->require_params($this->_driver->required_fields);
-			}
-
-			// validate card_no
-			$this->_driver->validate_card();
-
-			// begin the actual processing
-			return $this->_driver->$method();
-		}
-		catch (Merchant_exception $e)
 		{
-			return new Merchant_response(Merchant_response::FAILED, $e->getMessage());
+			$this->_driver->require_params($this->_driver->required_fields);
+		}
+
+		// validate card_no
+		$this->_driver->validate_card();
+
+		// begin the actual processing
+		return $this->_driver->$method();
+	}
+	catch (Merchant_exception $e)
+	{
+		return new Merchant_response(Merchant_response::FAILED, $e->getMessage());
+	}
+}
+
+private function _do_capture_or_refund($method, $params)
+{
+	$this->_normalize_currency_params($params);
+
+	try
+	{
+		// load driver params
+		$this->_driver->set_params($params);
+
+		// begin the actual processing
+		return $this->_driver->$method();
+	}
+	catch (Merchant_exception $e)
+	{
+		return new Merchant_response(Merchant_response::FAILED, $e->getMessage());
+	}
+}
+
+private function _normalize_card_params(&$params)
+{
+	// normalize months to 2 digits and years to 4
+	if ( ! empty($params['exp_month'])) $params['exp_month'] = sprintf('%02d', (int)$params['exp_month']);
+	if ( ! empty($params['exp_year'])) $params['exp_year'] = sprintf('%04d', (int)$params['exp_year']);
+	if ( ! empty($params['start_month'])) $params['start_month'] = sprintf('%02d', (int)$params['start_month']);
+	if ( ! empty($params['start_year'])) $params['start_year'] = sprintf('%04d', (int)$params['start_year']);
+
+	// normalize card_type to lowercase
+	if (isset($params['card_type'])) $params['card_type'] = strtolower($params['card_type']);
+
+	// support deprecated card_name parameter
+	if (isset($params['card_name']))
+	{
+		$params['name'] = $params['card_name'];
+	}
+	if (isset($params['name']))
+	{
+		$params['card_name'] = $params['name'];
+		// split first/last names
+		if (empty($params['first_name']) AND empty($params['last_name']))
+		{
+			$names = explode(' ', (string)$params['name'], 2);
+			$params['first_name'] = $names[0];
+			$params['last_name'] = isset($names[1]) ? $names[1] : '';
 		}
 	}
 
-	private function _do_capture_or_refund($method, $params)
+	// automatically fix incorrect 'uk' country code (which is hard coded in EE)
+	if (isset($params['country']) AND strtolower($params['country']) == 'uk')
 	{
-		$this->_normalize_currency_params($params);
-
-		try
-		{
-			// load driver params
-			$this->_driver->set_params($params);
-
-			// begin the actual processing
-			return $this->_driver->$method();
-		}
-		catch (Merchant_exception $e)
-		{
-			return new Merchant_response(Merchant_response::FAILED, $e->getMessage());
-		}
+		$params['country'] = 'gb';
 	}
 
-	private function _normalize_card_params(&$params)
+	// support deprecated address parameter
+	if (isset($params['address']))
 	{
-		// normalize months to 2 digits and years to 4
-		if ( ! empty($params['exp_month'])) $params['exp_month'] = sprintf('%02d', (int)$params['exp_month']);
-		if ( ! empty($params['exp_year'])) $params['exp_year'] = sprintf('%04d', (int)$params['exp_year']);
-		if ( ! empty($params['start_month'])) $params['start_month'] = sprintf('%02d', (int)$params['start_month']);
-		if ( ! empty($params['start_year'])) $params['start_year'] = sprintf('%04d', (int)$params['start_year']);
+		$params['address1'] = $params['address'];
+	}
+	elseif (isset($params['address1']))
+	{
+		$params['address'] = $params['address1'];
+	}
+}
 
-		// normalize card_type to lowercase
-		if (isset($params['card_type'])) $params['card_type'] = strtolower($params['card_type']);
+private function _normalize_currency_params(&$params)
+{
+	// support deprecated currency_code parameter
+	if (isset($params['currency_code']))
+	{
+		$params['currency'] = $params['currency_code'];
+	}
+	if (isset($params['currency']))
+	{
+		// currency should always be uppercase
+		$params['currency'] = strtoupper($params['currency']);
+		$params['currency_code'] = $params['currency'];
+	}
+}
 
-		// support deprecated card_name parameter
-		if (isset($params['card_name']))
-		{
-			$params['name'] = $params['card_name'];
-		}
-		if (isset($params['name']))
-		{
-			$params['card_name'] = $params['name'];
-			// split first/last names
-			if (empty($params['first_name']) AND empty($params['last_name']))
-			{
-				$names = explode(' ', (string)$params['name'], 2);
-				$params['first_name'] = $names[0];
-				$params['last_name'] = isset($names[1]) ? $names[1] : '';
-			}
-		}
+/**
+ * Deprecated. Please use Merchant_driver::get_request() or
+ * Merchant_driver::post_request() instead.
+ */
+public static function curl_helper($url, $post_data = NULL, $username = NULL, $password = NULL)
+{
+	// errors are now thrown as Merchant_exception()
+	$response = array('error' => NULL);
 
-		// support deprecated address parameter
-		if (isset($params['address']))
-		{
-			$params['address1'] = $params['address'];
-		}
-		elseif (isset($params['address1']))
-		{
-			$params['address'] = $params['address1'];
-		}
+	if (is_null($post_data))
+	{
+		$response['data'] = get_instance()->merchant->get_request($url, $username, $password);
+	}
+	else
+	{
+		$response['data'] = get_instance()->merchant->post_request($url, $post_data, $username, $password);
 	}
 
-	private function _normalize_currency_params(&$params)
-	{
-		// support deprecated currency_code parameter
-		if (isset($params['currency_code']))
-		{
-			$params['currency'] = $params['currency_code'];
-		}
-		if (isset($params['currency']))
-		{
-			// currency should always be uppercase
-			$params['currency'] = strtoupper($params['currency']);
-			$params['currency_code'] = $params['currency'];
-		}
-	}
+	return $response;
+}
 
-	/**
-	 * Deprecated. Please use Merchant_driver::get_request() or
-	 * Merchant_driver::post_request() instead.
-	 */
-	public static function curl_helper($url, $post_data = NULL, $username = NULL, $password = NULL)
-	{
-		// errors are now thrown as Merchant_exception()
-		$response = array('error' => NULL);
+/**
+ * Redirect the user's browser to a URL.
+ *
+ * @param string $url
+ */
+public static function redirect($url)
+{
+	get_instance()->load->helper('url');
+	redirect($url);
+}
 
-		if (is_null($post_data))
-		{
-			$response['data'] = get_instance()->merchant->get_request($url, $username, $password);
-		}
-		else
-		{
-			$response['data'] = get_instance()->merchant->post_request($url, $post_data, $username, $password);
-		}
+/**
+ * Redirect the user's browser to a URL using a POST request.
+ *
+ * @param string $url
+ * @param array $data
+ * @param string $message
+ */
+public static function post_redirect($url, $data, $message = NULL)
+{
+if (empty($message))
+{
+	$message = lang('merchant_payment_redirect');
+}
 
-		return $response;
-	}
-
-	/**
-	 * Redirect the user's browser to a URL.
-	 *
-	 * @param string $url
-	 */
-	public static function redirect($url)
-	{
-		get_instance()->load->helper('url');
-		redirect($url);
-	}
-
-	/**
-	 * Redirect the user's browser to a URL using a POST request.
-	 *
-	 * @param string $url
-	 * @param array $data
-	 * @param string $message
-	 */
-	public static function post_redirect($url, $data, $message = NULL)
-	{
-		if (empty($message))
-		{
-			$message = lang('merchant_payment_redirect');
-		}
-
-		?><!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
 <head><title>Redirecting...</title></head>
 <body onload="document.forms[0].submit();">
-	<form name="payment" action="<?php echo htmlspecialchars($url); ?>" method="post">
-		<p><?php echo htmlspecialchars($message); ?></p>
-		<p>
-			<?php foreach ($data as $key => $value): ?>
-				<input type="hidden" name="<?php echo htmlspecialchars($key); ?>" value="<?php echo htmlspecialchars($value); ?>" />
-			<?php endforeach ?>
-			<input type="submit" value="Continue" />
-		</p>
-	</form>
+<form name="payment" action="<?php echo htmlspecialchars($url); ?>" method="post">
+	<p><?php echo htmlspecialchars($message); ?></p>
+	<p>
+		<?php foreach ($data as $key => $value): ?>
+			<input type="hidden" name="<?php echo htmlspecialchars($key); ?>" value="<?php echo htmlspecialchars($value); ?>" />
+		<?php endforeach ?>
+		<input type="submit" value="Continue" />
+	</p>
+</form>
 </body>
 </html>
 <?php
-		exit();
-	}
+exit();
+}
 }
 
 abstract class Merchant_driver
@@ -555,7 +561,7 @@ abstract class Merchant_driver
 		}
 
 		if ($this->param('exp_month') AND $this->param('exp_year') AND
-			$this->validate_expiry($this->param('exp_month'), $this->param('exp_year')) == FALSE)
+				$this->validate_expiry($this->param('exp_month'), $this->param('exp_year')) == FALSE)
 		{
 			throw new Merchant_exception(lang('merchant_card_expired'));
 		}

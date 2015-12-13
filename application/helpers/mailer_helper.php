@@ -76,7 +76,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
  */
 function email_quote_status($quote_id, $status)
 {
-    ini_set("display_errors", "on");
+    ini_set('display_errors', 'on');
     error_reporting(E_ALL);
 
     if (!mailer_configured()) return false;

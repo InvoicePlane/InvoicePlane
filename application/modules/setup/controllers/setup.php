@@ -247,8 +247,10 @@ class Setup extends MX_Controller
             './uploads/temp',
             './uploads/archive',
             './uploads/customer_files',
-            './' . APPPATH . 'config/database.php',
+            './' . APPPATH . 'config/', // for database.php
             './' . APPPATH . 'helpers/mpdf/tmp',
+            './' . APPPATH . 'helpers/mpdf/ttfontdata',
+            './' . APPPATH . 'helpers/mpdf/graph_cache',
             './' . APPPATH . 'logs'
         );
 
@@ -275,7 +277,13 @@ class Setup extends MX_Controller
     {
         $this->load->library('lib_mysql');
 
-        require(APPPATH . '/config/database.php');
+        if (is_file(APPPATH . '/config/database.php')) {
+            // There is alread a (hopefully working?) database.php file.
+            require(APPPATH . '/config/database.php');
+        } else {
+            // No database.php file existent. Use the _empty template.
+            require(APPPATH . '/config/database_empty.php');
+        }
 
         $db = $db['default'];
 

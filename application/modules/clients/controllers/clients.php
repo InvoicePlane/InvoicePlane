@@ -43,10 +43,10 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             array(
-                'records' => $clients,
-                'filter_display' => TRUE,
+                'records'            => $clients,
+                'filter_display'     => TRUE,
                 'filter_placeholder' => lang('filter_clients'),
-                'filter_method' => 'filter_clients'
+                'filter_method'      => 'filter_clients'
             )
         );
 
@@ -134,24 +134,39 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             array(
-                'client' => $client,
-                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
-                'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
-                'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
-                'quote_statuses' => $this->mdl_quotes->statuses(),
+                'client'           => $client,
+                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices'         => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
+                'quotes'           => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
+                'payments'         => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
+                'custom_fields'    => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
+                'quote_statuses'   => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
             )
         );
 
         $this->layout->buffer(
             array(
-                array('invoice_table', 'invoices/partial_invoice_table'),
-                array('quote_table', 'quotes/partial_quote_table'),
-                array('payment_table', 'payments/partial_payment_table'),
-                array('partial_notes', 'clients/partial_notes'),
-                array('content', 'clients/view')
+                array(
+                    'invoice_table',
+                    'invoices/partial_invoice_table'
+                ),
+                array(
+                    'quote_table',
+                    'quotes/partial_quote_table'
+                ),
+                array(
+                    'payment_table',
+                    'payments/partial_payment_table'
+                ),
+                array(
+                    'partial_notes',
+                    'clients/partial_notes'
+                ),
+                array(
+                    'content',
+                    'clients/view'
+                )
             )
         );
 
