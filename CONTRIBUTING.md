@@ -5,10 +5,14 @@
 Every help is welcome, you don't have to be a professional PHP developer or SQL database engineer.
 If you are not familiar with PHP or coding in general you could also help us in other ways.
 
-### 1. Our development tools
+### 1. Community links
 
-* [![Community Forums](https://invoiceplane.com/content/badges/badge_community.png)](https://community.invoiceplane.com/)
-* [![Gitter chat](https://badges.gitter.im/InvoicePlane/InvoicePlane.png)](https://gitter.im/InvoicePlane/InvoicePlane)
+[![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)    
+[![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)    
+[![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://development.invoiceplane.com/)    
+[![Roadmap](https://img.shields.io/badge/Development%3A-Roadmap-429ae1.svg)](https://go.invoiceplane.com/roadmapv1)    
+[![Gitter chat](https://img.shields.io/badge/Chat%3A-Gitter-green.svg)](https://gitter.im/InvoicePlane/InvoicePlane)    
+[![Freenode](https://img.shields.io/badge/Chat%3A-Freenode%20(IRC)-green.svg)](irc://irc.freenode.net/InvoicePlane) 
 
 ### 2. Get familiar with our Development Guidelines
 We are following some strict development guidelines while developing.
