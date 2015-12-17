@@ -8,10 +8,15 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 
 1. Download the [latest version](https://invoiceplane.com/downloads)
 2. Extract the package and copy all files to your webserver / webspace. Don't forget to copy the `.htaccess` file!
-3. Make sure that [mod_rewrite](https://go.invoiceplane.com/apachemodrewrite) is enabled on your webserver.
-4. Open `http://your-invoiceplane-domain.com/setup` and follow the instructions.
+3. Open `http://your-invoiceplane-domain.com/setup` and follow the instructions.
 
 ===
+
+### Remove `index.php` from the URL
+
+1. Make sure that [mod_rewrite](https://go.invoiceplane.com/apachemodrewrite) is enabled on your webserver.
+2.Remove `index.php` from `$config['index_page'] = 'index.php';` in the file `/application/config/config.php`
+3. Rename the `htaccess` file to `.htaccess`
 
 ### Support / Development / Chat
 
