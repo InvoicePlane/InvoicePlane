@@ -35,12 +35,22 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
     if ($invoice->payment_method == 0) $payment_method = false;
 
+    // Determine if discounts should be displayed
+    $items = $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+    $show_discounts = false;
+    foreach ($items as $item) {
+        if ($item->item_discount != '0.00') {
+            $show_discounts = true;
+        }
+    }
+
     $data = array(
         'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-        'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+        'items' => $items,
         'payment_method' => $payment_method,
-        'output_type' => 'pdf'
+        'output_type' => 'pdf',
+        'show_discounts' => $show_discounts,
     );
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, TRUE);
@@ -64,11 +74,21 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
     }
 
+    // Determine if discounts should be displayed
+    $items = $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
+    $show_discounts = false;
+    foreach ($items as $item) {
+        if ($item->item_discount != '0.00') {
+            $show_discounts = true;
+        }
+    }
+
     $data = array(
         'quote' => $quote,
         'quote_tax_rates' => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-        'items' => $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
-        'output_type' => 'pdf'
+        'items' => $items,
+        'output_type' => 'pdf',
+        'show_discounts' => $show_discounts,
     );
 
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, TRUE);

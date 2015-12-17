@@ -106,6 +106,10 @@ table.item-table {
     padding: 10px 15px;
     border-bottom: 1px solid $color_base_light;
     white-space: nowrap;
+    text-align: left;
+    &.text-right {
+      text-align: right;
+    }
   }
 
   td {
