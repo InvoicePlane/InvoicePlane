@@ -113,6 +113,17 @@
     </div>
 
     <div class="form-group">
+        <label class="control-label">
+            <?php echo lang('invoice_background'); ?>
+        </label>
+        <?php if ($this->mdl_settings->setting('invoice_background')) { ?><br>
+            <?php echo $this->mdl_settings->setting('invoice_background'); ?><br>
+            <?php echo anchor('settings/remove_background', 'Remove Background'); ?><br>
+        <?php } ?>
+        <input type="file" name="invoice_background" size="40" class="input-sm form-control"/>
+    </div>
+
+    <div class="form-group">
         <hr/>
         <h4><?php echo lang('invoice_template'); ?></h4>
     </div>

@@ -17,16 +17,15 @@ if (!defined('BASEPATH')) {
  * 
  */
 
-function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null)
+function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null, $baseTemplate = null)
 {
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
 
     $mpdf = new mPDF();
 
-    $base_template = './uploads/pdf_base.pdf';
-    if (file_exists($base_template)) {
+    if (!empty($baseTemplate) && file_exists('./uploads/'.$baseTemplate)) {
         $mpdf->SetImportUse();
-        $mpdf->SetSourceFile($base_template);
+        $mpdf->SetSourceFile('./uploads/'.$baseTemplate);
         $base = $mpdf->ImportPage(1);
         $mpdf->SetPageTemplate($base);
     }

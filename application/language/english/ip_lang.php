@@ -212,6 +212,7 @@ $lang = array(
     'invoice_aging_above_30'                       => 'Above 30 Days',
     'invoice_already_paid'                         => 'This invoice was already paid.',
     'invoice_archive'                              => 'Invoice archive',
+	'invoice_background'                           => 'Invoice Background PDF',
     'invoice_count'                                => 'Invoice Count',
     'invoice_date'                                 => 'Invoice Date',
     'invoice_deletion_forbidden'                   => 'Deleting invoices is forbidden. Please contact the administrator or consult the documentation.',

@@ -115,6 +115,26 @@ class Settings extends Admin_Controller
                 $this->mdl_settings->save('login_logo', $upload_data['file_name']);
             }
 
+            $upload_pdf_config = array(
+                'upload_path' => './uploads/',
+                'allowed_types' => 'pdf',
+                'max_size' => '9999',
+            );
+
+            // Check for invoice background (pdf template) upload
+            if ($_FILES['invoice_background']['name']) {
+                $this->load->library('upload', $upload_pdf_config);
+
+                if (!$this->upload->do_upload('invoice_background')) {
+                    $this->session->set_flashdata('alert_error', $this->upload->display_errors());
+                    redirect('settings');
+                }
+
+                $upload_data = $this->upload->data();
+
+                $this->mdl_settings->save('invoice_background', $upload_data['file_name']);
+            }
+
             $this->session->set_flashdata('alert_success', lang('settings_successfully_saved'));
 
             redirect('settings');
@@ -185,6 +205,18 @@ class Settings extends Admin_Controller
         $this->mdl_settings->save($type . '_logo', '');
 
         $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
+
+        redirect('settings');
+    }
+
+    public function remove_background()
+    {
+        // Maybe merge this with remove_logo and rename is to a more generic function
+        unlink('./uploads/' . $this->mdl_settings->setting('invoice_background'));
+
+        $this->mdl_settings->save('invoice_background', '');
+
+        $this->session->set_flashdata('alert_success', lang('invoice_background_removed'));
 
         redirect('settings');
     }
