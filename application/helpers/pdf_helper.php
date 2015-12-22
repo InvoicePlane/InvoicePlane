@@ -24,6 +24,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->model('invoices/mdl_invoices');
     $CI->load->model('invoices/mdl_items');
     $CI->load->model('invoices/mdl_invoice_tax_rates');
+    $CI->load->model('mdl_settings');
     $CI->load->model('payment_methods/mdl_payment_methods');
     $CI->load->library('encrypt');
 
@@ -50,13 +51,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper('mpdf');
     return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, 1, $isGuest);
+        $stream, $invoice->invoice_password, 1, $isGuest, $CI->mdl_settings->setting('invoice_background'));
 }
 
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 {
     $CI = &get_instance();
 
+    $CI->load->model('mdl_settings');
     $CI->load->model('quotes/mdl_quotes');
     $CI->load->model('quotes/mdl_quote_items');
     $CI->load->model('quotes/mdl_quote_tax_rates');
@@ -79,5 +81,5 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     $CI->load->helper('mpdf');
 
     return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream,
-        $quote->quote_password);
+        $quote->quote_password, null, null, $CI->mdl_settings->setting('invoice_background'));
 }

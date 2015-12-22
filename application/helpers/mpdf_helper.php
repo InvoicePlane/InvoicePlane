@@ -17,11 +17,19 @@ if (!defined('BASEPATH')) {
  * 
  */
 
-function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null)
+function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null, $baseTemplate = null)
 {
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
 
     $mpdf = new mPDF();
+
+    if (!empty($baseTemplate) && file_exists('./uploads/'.$baseTemplate)) {
+        $mpdf->SetImportUse();
+        $mpdf->SetSourceFile('./uploads/'.$baseTemplate);
+        $base = $mpdf->ImportPage(1);
+        $mpdf->SetPageTemplate($base);
+    }
+
     $mpdf->useAdobeCJK = true;
     $mpdf->SetAutoFont();
     $mpdf->SetProtection(array('copy', 'print'), $password, $password);
