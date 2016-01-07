@@ -230,6 +230,14 @@ class Mdl_Quotes extends Response_Model
 
             $this->mdl_quote_tax_rates->save($target_id, null, $db_array);
         }
+
+        $this->load->model('custom_fields/mdl_quote_custom');
+        $db_array = $this->mdl_quote_custom->where('quote_id', $source_id)->get()->row_array();
+        if (count($db_array) > 2) {
+            unset($db_array['quote_custom_id']);
+            $db_array['quote_id'] = $target_id;
+            $this->mdl_quote_custom->save_custom($target_id, $db_array);
+        }
     }
 
     public function db_array()
