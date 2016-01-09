@@ -35,6 +35,8 @@ class Mdl_Import extends Response_Model
             'client_mobile',
             'client_email',
             'client_web',
+            'client_vat_id',
+            'client_tax_code',
             'client_active'
         ),
         'invoices.csv' => array(
