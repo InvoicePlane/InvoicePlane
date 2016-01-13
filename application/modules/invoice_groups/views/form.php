@@ -51,6 +51,24 @@
                        value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_left_pad'); ?>">
             </div>
         </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
+                <label for="invoice_group_pdf_template" class="control-label">
+                    <?php echo lang('default_pdf_template'); ?>
+                </label>
+            </div>
+            <div class="col-xs-12 col-sm-8 col-lg-8">
+                <select name="invoice_group_pdf_template" id="invoice_group_pdf_template" class="input-sm form-control">
+                    <option value=""></option>
+                    <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                        <option value="<?php echo $invoice_template; ?>"
+                                <?php if ($this->mdl_invoice_groups->form_value('invoice_group_pdf_template') == $invoice_template) { ?>selected="selected"<?php } ?>><?php echo $invoice_template; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
         <br>
 
         <div class="row">

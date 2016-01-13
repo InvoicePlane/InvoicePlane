@@ -55,6 +55,10 @@ class Invoice_Groups extends Admin_Controller
             $this->mdl_invoice_groups->set_form_value('invoice_group_next_id', 1);
         }
 
+        $this->load->model('invoices/mdl_templates');
+        $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
+        $this->layout->set('pdf_invoice_templates', $pdf_invoice_templates);
+
         $this->layout->buffer('content', 'invoice_groups/form');
         $this->layout->render();
     }
