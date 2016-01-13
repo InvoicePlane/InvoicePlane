@@ -27,8 +27,16 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->model('mdl_settings');
     $CI->load->model('payment_methods/mdl_payment_methods');
     $CI->load->library('encrypt');
+    $CI->load->model('invoice_groups/mdl_invoice_groups');
+    $CI->load->helper('country');
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+
+    if (!$invoice_template) {
+        $invoice_group = $CI->mdl_invoice_groups->get_by_id($invoice->invoice_group_id);
+        $invoice_template = $invoice_group->invoice_group_pdf_template;
+    }
+
     if (!$invoice_template) {
         $CI->load->helper('template');
         $invoice_template = select_pdf_invoice_template($invoice);
