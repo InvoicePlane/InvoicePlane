@@ -31,8 +31,8 @@
         if ($invoice->client_city && $invoice->client_zip) {
             echo '<div>' . $invoice->client_city . ' ' . $invoice->client_zip . '</div>';
         } else {
-            if ($invoice->client_zip) {
-                echo '<div>' . $invoice->client_zip . '</div>';
+            if ($invoice->client_city) {
+                echo '<div>' . $invoice->client_city . '</div>';
             }
             if ($invoice->client_zip) {
                 echo '<div>' . $invoice->client_zip . '</div>';
@@ -69,8 +69,8 @@
         if ($invoice->user_city && $invoice->user_zip) {
             echo '<div>' . $invoice->user_city . ' ' . $invoice->user_zip . '</div>';
         } else {
-            if ($invoice->user_zip) {
-                echo '<div>' . $invoice->user_zip . '</div>';
+            if ($invoice->user_city) {
+                echo '<div>' . $invoice->user_city . '</div>';
             }
             if ($invoice->user_zip) {
                 echo '<div>' . $invoice->user_zip . '</div>';
