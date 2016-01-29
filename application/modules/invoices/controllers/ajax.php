@@ -45,7 +45,7 @@ class Ajax extends Admin_Controller
 
                     $item_id = ($item->item_id) ?: NULL;
                     unset($item->item_id, $item->save_item_as_lookup);
-                    $this->mdl_items->save($invoice_id, $item_id, $item);
+                    $this->mdl_items->save($item_id, $item);
                 } else {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
@@ -64,6 +64,7 @@ class Ajax extends Admin_Controller
                             'item_price' => form_error('item_price', '', ''),
                         )
                     );
+                    
                     echo json_encode($response);
                     exit;
                 }
@@ -147,7 +148,7 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
         if ($this->mdl_invoice_tax_rates->run_validation()) {
-            $this->mdl_invoice_tax_rates->save($this->input->post('invoice_id'));
+            $this->mdl_invoice_tax_rates->save();
 
             $response = array(
                 'success' => 1
