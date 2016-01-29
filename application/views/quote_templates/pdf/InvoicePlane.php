@@ -31,8 +31,8 @@
         if ($quote->client_city && $quote->client_zip) {
             echo '<div>' . $quote->client_city . ' ' . $quote->client_zip . '</div>';
         } else {
-            if ($quote->client_zip) {
-                echo '<div>' . $quote->client_zip . '</div>';
+            if ($quote->client_city) {
+                echo '<div>' . $quote->client_city . '</div>';
             }
             if ($quote->client_zip) {
                 echo '<div>' . $quote->client_zip . '</div>';
@@ -69,8 +69,8 @@
         if ($quote->user_city && $quote->user_zip) {
             echo '<div>' . $quote->user_city . ' ' . $quote->user_zip . '</div>';
         } else {
-            if ($quote->user_zip) {
-                echo '<div>' . $quote->user_zip . '</div>';
+            if ($quote->user_city) {
+                echo '<div>' . $quote->user_city . '</div>';
             }
             if ($quote->user_zip) {
                 echo '<div>' . $quote->user_zip . '</div>';
