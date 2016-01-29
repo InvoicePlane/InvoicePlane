@@ -46,7 +46,7 @@ class Ajax extends Admin_Controller
 
                     unset($item->item_id, $item->save_item_as_lookup);
 
-                    $this->mdl_quote_items->save($quote_id, $item_id, $item);
+                    $this->mdl_quote_items->save($item_id, $item);
 
                     if ($save_item_as_lookup) {
                         $db_array = array(
@@ -120,7 +120,7 @@ class Ajax extends Admin_Controller
         $this->load->model('quotes/mdl_quote_tax_rates');
 
         if ($this->mdl_quote_tax_rates->run_validation()) {
-            $this->mdl_quote_tax_rates->save($this->input->post('quote_id'));
+            $this->mdl_quote_tax_rates->save();
 
             $response = array(
                 'success' => 1
