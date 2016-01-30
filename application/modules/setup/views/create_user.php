@@ -1,6 +1,9 @@
 <script type="text/javascript">
     $().ready(function () {
-        $("[name='user_country']").select2({allowClear: true});
+        $("[name='user_country']").select2({
+            placeholder: "<?php echo lang('country'); ?>",
+            allowClear: true
+        });
     });
 </script>
 
@@ -106,7 +109,10 @@
                     <option></option>
                     <?php foreach ($countries as $cldr => $country) { ?>
                         <option value="<?php echo $cldr; ?>"
-                                <?php if ($this->mdl_users->form_value('user_country') == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                                <?php if ($this->mdl_users->form_value('user_country') == $cldr) {
+                                    echo 'selected="selected"';
+                                } ?>
+                        ><?php echo $country ?></option>
                     <?php } ?>
                 </select>
             </div>

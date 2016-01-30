@@ -3,7 +3,10 @@
         $('#btn-submit').click(function () {
             $('#form-settings').submit();
         });
-        $("[name='settings[default_country]']").select2({allowClear: true});
+        $("[name='settings[default_country]']").select2({
+            placeholder: "<?php echo lang('country'); ?>",
+            allowClear: true
+        });
     });
 </script>
 
