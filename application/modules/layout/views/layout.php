@@ -33,14 +33,17 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/monospace.css">
     <?php } ?>
 
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.8.3.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
-
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.2.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.2.custom.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/html5shiv-3.7.2.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
+    <![endif]-->
+    
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-typeahead.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.1.full.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone-4.2.0.min.js"></script>
 
     <script type="text/javascript">
         Dropzone.autoDiscover = false;
