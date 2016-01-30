@@ -1,7 +1,10 @@
 <script type="text/javascript">
     $(function () {
         $('#client_name').focus();
-        $("#client_country").select2({allowClear: true});
+        $("#client_country").select2({
+            placeholder: "<?php echo lang('country'); ?>",
+            allowClear: true
+        });
     });
 </script>
 
@@ -39,7 +42,7 @@
               </span>
                 <input id="client_name" name="client_name" type="text" class="form-control"
                        placeholder="<?php echo lang('client_name'); ?>"
-                       value="<?php echo $this->mdl_clients->form_value('client_name'); ?>">
+                       value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_name')); ?>">
             </div>
         </fieldset>
 
@@ -54,7 +57,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_address_1" id="client_address_1" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_address_1'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_address_1')); ?>">
                         </div>
                     </div>
 
@@ -63,7 +66,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_address_2" id="client_address_2" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_address_2'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_address_2')); ?>">
                         </div>
                     </div>
 
@@ -72,7 +75,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_city" id="client_city" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_city'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_city')); ?>">
                         </div>
                     </div>
 
@@ -81,7 +84,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_state" id="client_state" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_state'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_state')); ?>">
                         </div>
                     </div>
 
@@ -90,7 +93,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_zip" id="client_zip" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_zip'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_zip')); ?>">
                         </div>
                     </div>
 
@@ -102,7 +105,10 @@
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
                                     <option value="<?php echo $cldr; ?>"
-                                            <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                                            <?php if ($selected_country == $cldr) {
+                                                echo 'selected="selected"';
+                                            } ?>
+                                    ><?php echo $country ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -120,7 +126,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_phone" id="client_phone" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_phone'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_phone')); ?>">
                         </div>
                     </div>
 
@@ -129,7 +135,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_fax" id="client_fax" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_fax'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_fax')); ?>">
                         </div>
                     </div>
 
@@ -138,7 +144,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_mobile" id="client_mobile" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_mobile'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_mobile')); ?>">
                         </div>
                     </div>
 
@@ -147,7 +153,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_email" id="client_email" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_email'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_email')); ?>">
                         </div>
                     </div>
 
@@ -156,7 +162,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_web" id="client_web" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_web'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_web')); ?>">
                         </div>
                     </div>
 
@@ -173,7 +179,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_vat_id'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_vat_id')); ?>">
                         </div>
                     </div>
 
@@ -182,7 +188,7 @@
 
                         <div class="controls">
                             <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
-                                   value="<?php echo $this->mdl_clients->form_value('client_tax_code'); ?>">
+                                   value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_tax_code')); ?>">
                         </div>
                     </div>
 
