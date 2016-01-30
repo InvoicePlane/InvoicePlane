@@ -1,5 +1,5 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 1.4.4_
+#### _Version 1.4.5_
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or take a look at the __[demo](https://demo.invoiceplane.com)__
@@ -7,16 +7,16 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 ### Quick Installation
 
 1. Download the [latest version](https://invoiceplane.com/downloads)
-2. Extract the package and copy all files to your webserver / webspace. Don't forget to copy the `.htaccess` file!
-3. Open `http://your-invoiceplane-domain.com/setup` and follow the instructions.
-
-===
+2. Extract the package and copy all files to your webserver / webspace.
+3. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
 
 ### Remove `index.php` from the URL
 
 1. Make sure that [mod_rewrite](https://go.invoiceplane.com/apachemodrewrite) is enabled on your webserver.
-2.Remove `index.php` from `$config['index_page'] = 'index.php';` in the file `/application/config/config.php`
+2. Remove `index.php` from `$config['index_page'] = 'index.php';` in the file `/application/config/config.php`
 3. Rename the `htaccess` file to `.htaccess`
+
+If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoiceplane-domain.com/invoices/`) you have to change the .htaccess file. The instructions can be found within the file.
 
 ### Support / Development / Chat
 
@@ -25,10 +25,10 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 [![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://development.invoiceplane.com/)    
 [![Roadmap](https://img.shields.io/badge/Development%3A-Roadmap-429ae1.svg)](https://go.invoiceplane.com/roadmapv1)    
 [![Gitter chat](https://img.shields.io/badge/Chat%3A-Gitter-green.svg)](https://gitter.im/InvoicePlane/InvoicePlane)    
-[![Freenode](https://img.shields.io/badge/Chat%3A-Freenode%20(IRC)-green.svg)](irc://irc.freenode.net/InvoicePlane)    
+[![Freenode](https://img.shields.io/badge/Chat%3A-Freenode%20IRC-green.svg)](https://go.invoiceplane.com/irc)    
 
 ---
   
-*Please notice: The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
+*The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
 and their usage is restricted! For more information visit invoiceplane.com/license-copyright*
 
