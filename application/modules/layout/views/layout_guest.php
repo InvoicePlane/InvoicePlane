@@ -125,20 +125,5 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
 
-<!--[if lt IE 7 ]>
-<script src="<?php echo base_url(); ?>assets/default/js/dd_belatedpng.js"></script>
-<script
-    type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
-<![endif]-->
-
-<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-     chromium.org/developers/how-tos/chrome-frame-getting-started -->
-<!--[if lt IE 7 ]>
-<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-<script type="text/javascript">window.attachEvent('onload', function () {
-    CFInstall.check({mode: 'overlay'})
-})</script>
-<![endif]-->
-
 </body>
 </html>
