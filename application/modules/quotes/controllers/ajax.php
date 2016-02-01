@@ -338,7 +338,7 @@ class Ajax extends Admin_Controller
                     'invoice_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
                 );
 
-                $this->mdl_invoice_tax_rates->save($invoice_id, NULL, $db_array);
+                $this->mdl_invoice_tax_rates->save(NULL, $db_array);
             }
 
             $response = array(
