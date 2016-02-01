@@ -214,7 +214,7 @@ class Mdl_Quotes extends Response_Model
                 'item_order' => $quote_item->item_order
             );
 
-            $this->mdl_quote_items->save($target_id, NULL, $db_array);
+            $this->mdl_quote_items->save(NULL, $db_array);
         }
 
         $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $source_id)->get()->result();
@@ -227,7 +227,7 @@ class Mdl_Quotes extends Response_Model
                 'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
             );
 
-            $this->mdl_quote_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_quote_tax_rates->save(NULL, $db_array);
         }
     }
 
