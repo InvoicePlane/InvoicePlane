@@ -227,7 +227,7 @@ class Mdl_Quotes extends Response_Model
                 'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
             );
 
-            $this->mdl_quote_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_quote_tax_rates->save(NULL, $db_array);
         }
     }
 
