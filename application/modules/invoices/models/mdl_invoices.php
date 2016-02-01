@@ -221,7 +221,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save($target_id, NULL, $db_array);
+            $this->mdl_items->save(NULL, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -234,7 +234,7 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save(NULL, $db_array);
         }
     }
 
@@ -260,7 +260,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save($target_id, NULL, $db_array);
+            $this->mdl_items->save(NULL, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -273,7 +273,7 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save(NULL, $db_array);
         }
     }
 
