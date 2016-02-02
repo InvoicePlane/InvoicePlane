@@ -79,11 +79,13 @@ class Mdl_Quote_Items extends Response_Model
         $this->load->model('quotes/mdl_quote_item_amounts');
         $this->mdl_quote_item_amounts->calculate($id);
 
-        $this->load->model('quotes/mdl_quote_amounts');
+        // Get the quote id so we can recalculate quote amounts
+        $item = $this->get_by_id($id);
+        $quote_id = $item->quote_id;
 
-        if (isset($db_array->quote_id)){
-            $this->mdl_quote_amounts->calculate($db_array->quote_id);
-        }
+        // Recalculate quote amounts
+        $this->load->model('quotes/mdl_quote_amounts');
+        $this->mdl_quote_amounts->calculate($quote_id);
 
         return $id;
     }
