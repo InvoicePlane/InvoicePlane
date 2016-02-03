@@ -81,8 +81,10 @@ class Mdl_Quote_Items extends Response_Model
 
         $this->load->model('quotes/mdl_quote_amounts');
 
-        if (isset($db_array->quote_id)){
+        if (is_object($db_array) && isset($db_array->quote_id)){
             $this->mdl_quote_amounts->calculate($db_array->quote_id);
+        } elseif (is_array($db_array) && isset($db_array['quote_id'])){
+            $this->mdl_quote_amounts->calculate($db_array['quote_id']);
         }
 
         return $id;
