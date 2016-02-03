@@ -41,7 +41,6 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.0.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-typeahead.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.1.full.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone-4.2.0.min.js"></script>
 
@@ -57,7 +56,8 @@
                     autoclose: true,
                     format: '<?php echo date_format_datepicker(); ?>',
                     language: '<?php echo lang('cldr'); ?>',
-                    weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>'
+                    weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>',
+                    todayBtn: true
                 });
             });
 
@@ -352,7 +352,7 @@
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.min.js"></script>
 <?php if (lang('cldr') != 'en') { ?>
     <script
         src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo lang('cldr'); ?>.js"></script>
