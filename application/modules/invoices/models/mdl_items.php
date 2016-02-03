@@ -81,8 +81,10 @@ class Mdl_Items extends Response_Model
 
         $this->load->model('invoices/mdl_invoice_amounts');
         
-        if (isset($db_array->invoice_id)){
+        if (is_object($db_array) && isset($db_array->invoice_id)){
             $this->mdl_invoice_amounts->calculate($db_array->invoice_id);
+        } elseif (is_array($db_array) && isset($db_array['invoice_id'])){
+            $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
         }
 
         return $id;
