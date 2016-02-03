@@ -117,7 +117,11 @@
 
 <script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script defer src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.js"></script>
+<script defer src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.min.js"></script>
+<?php if (lang('cldr') != 'en') { ?>
+    <script
+        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo lang('cldr'); ?>.js"></script>
+<?php } ?>
 
 </body>
 </html>
