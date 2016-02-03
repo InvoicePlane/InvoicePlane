@@ -36,6 +36,18 @@
             });
         });
 
+        $('.btn_item_recurring').click(function (e) {
+            form = e.target.parentNode.parentNode.getElementsByTagName('input')[0];
+            image = e.target;
+            if (form.value == 0) {
+                image.style.opacity = 1;
+                form.value = 1
+            } else {
+                image.style.opacity = 0.3;
+                form.value = 0;
+            }
+        });
+
         $('#btn_save_invoice').click(function () {
             var items = [];
             var item_order = 1;

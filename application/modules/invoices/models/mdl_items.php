@@ -118,6 +118,10 @@ class Mdl_Items extends Response_Model
             'item_tax_rate_id' => array(
                 'field' => 'item_tax_rate_id',
                 'label' => lang('item_tax_rate')
+            ),
+            'is_recurring' => array(
+                'field' => 'is_recurring',
+                'label' => lang('item_recurring')
             )
         );
     }
