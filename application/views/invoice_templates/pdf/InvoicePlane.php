@@ -4,15 +4,6 @@
     <title><?php echo lang('invoice'); ?></title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom-pdf.css">
-    <?php //---it---inizio ?>
-    <style>
-		<?php if (!empty($preview_pdf)): ?>
-			html, body {
-				overflow-y: visible;
-			}
-		<?php endif; ?>
-    </style>
-    <?php //---it---fine ?>
 </head>
 <body>
 <header class="clearfix">
