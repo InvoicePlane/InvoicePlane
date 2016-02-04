@@ -285,7 +285,7 @@ class Mdl_Import extends Response_Model
 
                 if (!$record_error) {
                     // No errors, go ahead and create the record
-                    $ids[] = $this->mdl_items->save($db_array['invoice_id'], NULL, $db_array);
+                    $ids[] = $this->mdl_items->save(NULL, $db_array);
                 }
             }
 

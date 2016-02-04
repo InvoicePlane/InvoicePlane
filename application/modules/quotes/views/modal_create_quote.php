@@ -8,30 +8,7 @@
         });
 
         $().ready(function () {
-            $("[name='client_name']").select2({
-                createSearchChoice: function (term, data) {
-                    if ($(data).filter(function () {
-                            return this.text.localeCompare(term) === 0;
-                        }).length === 0) {
-                        return {id: term, text: term};
-                    }
-                },
-                multiple: false,
-                allowClear: true,
-                data: [
-                    <?php
-                    $i=0;
-                    foreach ($clients as $client){
-                        echo "{
-                        id: '".str_replace("'","\'",$client->client_name)."',
-                        text: '".str_replace("'","\'",$client->client_name)."'
-                        }";
-                        if (($i+1) != count($clients)) echo ',';
-                        $i++;
-                    }
-                    ?>
-                ]
-            });
+            $("[name='client_name']").select2();
             $("#client_name").focus();
         });
 
@@ -78,9 +55,15 @@
 
             <div class="form-group">
                 <label for="client_name"><?php echo lang('client'); ?></label>
-                <input type="text" name="client_name" id="client_name" class="form-control"
-                       autofocus="autofocus"
-                    <?php if ($client_name) echo 'value="' . html_escape($client_name) . '"'; ?>>
+                <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
+                    <?php
+                    foreach ($clients as $client){
+                        echo "<option value='".htmlentities($client->client_name)."' ";
+                        if ($client_name == $client->client_name) echo 'selected';
+                        echo ">".htmlentities($client->client_name)."</option>";
+                    }
+                    ?>
+                </select>
             </div>
 
             <div class="form-group has-feedback">

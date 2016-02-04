@@ -38,29 +38,29 @@ class Merchant_paypal_express extends Merchant_paypal_base
 	public function default_settings()
 	{
 		return array(
-			'username' => '',
-			'password' => '',
-			'signature' => '',
-			'test_mode' => FALSE,
-			'solution_type' => array('type' => 'select', 'default' => 'Sole', 'options' => array(
-				'Sole' => 'merchant_solution_type_sole',
-				'Mark' => 'merchant_solution_type_mark')),
-			'landing_page' => array('type' => 'select', 'default' => 'Billing', 'options' => array(
-				'Billing'	=> 'merchant_landing_page_billing',
-				'Login'		=> 'merchant_landing_page_login'))
+				'username' => '',
+				'password' => '',
+				'signature' => '',
+				'test_mode' => FALSE,
+				'solution_type' => array('type' => 'select', 'default' => 'Sole', 'options' => array(
+						'Sole' => 'merchant_solution_type_sole',
+						'Mark' => 'merchant_solution_type_mark')),
+				'landing_page' => array('type' => 'select', 'default' => 'Billing', 'options' => array(
+						'Billing'	=> 'merchant_landing_page_billing',
+						'Login'		=> 'merchant_landing_page_login'))
 		);
 	}
-	
+
 	public function authorize()
 	{
 		$request = $this->_build_authorize_or_purchase();
 		$response = $this->_post_paypal_request($request);
 
 		$this->redirect($this->_checkout_url().'?'.http_build_query(array(
-			'cmd' => '_express-checkout',
-			'useraction' => 'commit',
-			'token' => $response['TOKEN'],
-		)));
+						'cmd' => '_express-checkout',
+						'useraction' => 'commit',
+						'token' => $response['TOKEN'],
+				)));
 	}
 
 	public function authorize_return()

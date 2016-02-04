@@ -10,7 +10,10 @@
         });
 
         $().ready(function () {
-            $("[name='client_name']").select2({allowClear: true});
+            $("[name='client_name']").select2({
+                placeholder: "<?php echo lang('client'); ?>",
+                allowClear: true
+            });
             $("#client_name").focus();
         });
 

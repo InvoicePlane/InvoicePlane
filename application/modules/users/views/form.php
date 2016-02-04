@@ -20,7 +20,10 @@
             }
         }
 
-        $("#user_country").select2({allowClear: true});
+        $("#user_country").select2({
+            placeholder: "<?php echo lang('country'); ?>",
+            allowClear: true
+        });
     });
 </script>
 
@@ -207,7 +210,10 @@
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
                                     <option value="<?php echo $cldr; ?>"
-                                            <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
+                                            <?php if ($selected_country == $cldr) {
+                                                echo 'selected="selected"';
+                                            } ?>
+                                    ><?php echo $country ?></option>
                                 <?php } ?>
                             </select>
                         </div>

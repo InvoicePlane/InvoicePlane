@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Mdl_Invoices extends Response_Model
@@ -141,7 +141,7 @@ class Mdl_Invoices extends Response_Model
         return array(
             'invoice_number' => array(
                 'field' => 'invoice_number',
-                'label' => lang('invoice').' #',
+                'label' => lang('invoice') . ' #',
                 'rules' => 'required|is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
             ),
             'invoice_date_created' => array(
@@ -221,7 +221,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save($target_id, NULL, $db_array);
+            $this->mdl_items->save(NULL, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -234,7 +234,7 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save(NULL, $db_array);
         }
     }
 
@@ -260,7 +260,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save($target_id, NULL, $db_array);
+            $this->mdl_items->save(NULL, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -273,7 +273,7 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save($target_id, NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save(NULL, $db_array);
         }
     }
 

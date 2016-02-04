@@ -1,4 +1,5 @@
 /application/config/development
+/application/config/database.php
 /application/logs/*
 !/application/logs/index.html
 /uploads/temp/*

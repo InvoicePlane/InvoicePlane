@@ -18,12 +18,10 @@
 // Import Source Sans Font
 @import "fonts/source-sans-pro";
 
-@import "select2/select2";
-@import "select2/select2-bootstrap";
-@import "bootstrap-datepicker";
-
-@import "dropzone";
-@import "upload";
+@import "includes/select2/select2";
+@import "includes/bootstrap-datepicker";
+@import "includes/dropzone";
+@import "includes/upload";
 
 /*
 |   =========================================================
