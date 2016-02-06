@@ -149,6 +149,7 @@ $lang = array(
     'email_template_tags'                          => 'Email Template Tags',
     'email_template_tags_instructions'             => 'First select a text field, then click on a template tag below to insert the tag into the field.',
     'email_templates'                              => 'Email Templates',
+    'enable_debug_mode'                            => 'Enable the Debug Mode',
     'end_date'                                     => 'End Date',
     'enter_payment'                                => 'Enter Payment',
     'errors'                                       => 'Errors',
