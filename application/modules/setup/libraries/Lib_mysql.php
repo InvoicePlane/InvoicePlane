@@ -24,27 +24,27 @@ class Lib_mysql
             return FALSE;
         }
 
-        if (@mysql_connect($server, $username, $password)) {
+        if (@mysqli_connect($server, $username, $password)) {
+            return mysqli_connect($server, $username, $password);
+        }
+
+        return FALSE;
+    }
+
+    function select_db($link, $database)
+    {
+        if (@mysqli_select_db($link, $database)) {
             return TRUE;
         }
 
         return FALSE;
     }
 
-    function select_db($database)
+    function query($link, $sql)
     {
-        if (@mysql_select_db($database)) {
-            return TRUE;
-        }
+        $result = mysqli_query($link, $sql);
 
-        return FALSE;
-    }
-
-    function query($sql)
-    {
-        $result = mysql_query($sql);
-
-        return mysql_fetch_object($result);
+        return mysqli_fetch_object($result);
     }
 
 }
