@@ -54,6 +54,14 @@ class Base_Controller extends MX_Controller
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
+            
+            // Debug Mode
+            if ($this->mdl_settings->setting('enable_debug')) {
+                $this->config->set_item('log_threshold', 2);
+                define('IP_DEBUG', true);
+            } else {
+                define('IP_DEBUG', false);
+            }
 
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
             $this->lang->load('form_validation', $this->mdl_settings->setting('default_language'));

@@ -7,6 +7,7 @@
                     include_item_tax: $('#include_item_tax').val()
                 },
                 function (data) {
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success == 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;

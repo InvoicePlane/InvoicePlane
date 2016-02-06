@@ -38,11 +38,13 @@ class Sessions extends Base_Controller
             // Check if the user exists
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
+                redirect('sessions/login');
             } else {
 
                 // Check if the user is marked as active
                 if ($user->user_active == 0) {
                     $this->session->set_flashdata('alert_error', lang('loginalert_user_inactive'));
+                    redirect('sessions/login');
                 } else {
 
                     if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
@@ -53,6 +55,7 @@ class Sessions extends Base_Controller
                         }
                     } else {
                         $this->session->set_flashdata('alert_error', lang('loginalert_credentials_incorrect'));
+                        redirect('sessions/login');
                     }
 
                 }
@@ -82,7 +85,7 @@ class Sessions extends Base_Controller
         return FALSE;
     }
 
-    public function passwordreset($token = NULL)
+    public function passwordreset($token = null)
     {
         // Check if a token was provided
         if ($token) {
@@ -93,7 +96,7 @@ class Sessions extends Base_Controller
             if (empty($user)) {
                 // Redirect back to the login screen with an alert
                 $this->session->set_flashdata('alert_success', lang('wrong_passwordreset_token'));
-                redirect('sessions/login');
+                redirect('sessions/passwordreset');
             }
 
             $formdata = array(
@@ -159,7 +162,7 @@ class Sessions extends Base_Controller
                 $this->load->library('email');
 
                 // Preprare some variables for the email
-                $email_resetlink = base_url() . 'sessions/passwordreset/' . $token;
+                $email_resetlink = site_url('sessions/passwordreset/' . $token);
                 $email_message = $this->load->view('emails/passwordreset', array(
                     'resetlink' => $email_resetlink
                 ), TRUE);

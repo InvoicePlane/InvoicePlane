@@ -8,7 +8,7 @@
                 user_id: '<?php echo $id; ?>',
                 client_name: $('#client_name').val()
             }, function (data) {
-
+                <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
                 $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', {user_id: '<?php echo $id; ?>'});
             });
 
