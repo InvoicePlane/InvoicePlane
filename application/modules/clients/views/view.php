@@ -6,6 +6,7 @@
                     client_id: $('#client_id').val(),
                     client_note: $('#client_note').val()
                 }, function (data) {
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         // The validation was successful

@@ -10,6 +10,7 @@
             $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
                 email_template_id: email_template_id
             }, function (data) {
+                <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
                 inject_email_template(template_fields, JSON.parse(data));
             });
         });

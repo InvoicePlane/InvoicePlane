@@ -14,8 +14,8 @@
             $.post("<?php echo site_url('products/ajax/process_product_selections'); ?>", {
                 product_ids: product_ids
             }, function (data) {
+                <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
                 items = JSON.parse(data);
-
                 for (var key in items) {
                     // Set default tax rate id if empty
                     if (!items[key].tax_rate_id) items[key].tax_rate_id = 0;

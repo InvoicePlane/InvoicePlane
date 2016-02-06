@@ -9,7 +9,8 @@
 
         // Get the latest version from updates.invoiceplane.com
         $.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {
-
+            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+            
             var updatecheck = data.current_version.replace(/\./g, '');
 
             // Compare each versions and replace the placeholder with a download button
@@ -23,14 +24,16 @@
                     $('#updatecheck-no-updates').removeClass('hidden');
                 }
             }, checktime);
-        }).error(function () {
+        }).error(function (data) {
+            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
             $('#updatecheck-loading').addClass('hidden');
             $('#updatecheck-failed').removeClass('hidden');
         });
 
         // Get the latest news
         $.getJSON("https://ids.invoiceplane.com/get_news", function (data) {
-            //console.log(data);
+            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+            
             setTimeout(function () {
                 $('#ipnews-loading').addClass('hidden');
                 data.forEach(function (news) {
@@ -42,7 +45,8 @@
                     $('#ipnews-container').append(ipnews);
                 })
             }, checktime);
-        }).error(function () {
+        }).error(function (data) {
+            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
             $('#ipnews-loading').addClass('hidden');
             $('#ipnews-failed').removeClass('hidden');
         });
