@@ -305,7 +305,7 @@ class Setup extends MX_Controller
             );
         }
 
-        $can_select_db = $this->lib_mysql->select_db($db['database']);
+        $can_select_db = $this->lib_mysql->select_db($can_connect, $db['database']);
 
         if (!$can_select_db) {
             $this->errors += 1;

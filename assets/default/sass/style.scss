@@ -4,24 +4,6 @@
 |   Sass Stylesheet
 |   =========================================================
 */
-/*
-|   =========================================================
-|   Import Bootstrap and other assets
-|   =========================================================
-*/
-// Bootstrap
-@import "bootstrap/bootstrap";
-
-// Font: Font-Awesome
-@import "fonts/font-awesome/font-awesome";
-
-// Import Source Sans Font
-@import "fonts/source-sans-pro";
-
-@import "includes/select2/select2";
-@import "includes/bootstrap-datepicker";
-@import "includes/dropzone";
-@import "includes/upload";
 
 /*
 |   =========================================================
@@ -40,6 +22,25 @@ $color_status_viewed: #F89406;
 $color_status_paid_approved: #468847;
 $color_status_rejected_overdue: #B94A48;
 $color_status_canceled: #333333;
+
+/*
+|   =========================================================
+|   Import Bootstrap and other assets
+|   =========================================================
+*/
+// Bootstrap
+@import "bootstrap/bootstrap";
+
+// Font: Font-Awesome
+@import "fonts/font-awesome/font-awesome";
+
+// Import Source Sans Font
+@import "fonts/source-sans-pro";
+
+@import "includes/select2/select2";
+@import "includes/bootstrap-datepicker";
+@import "includes/dropzone";
+@import "includes/upload";
 
 /*
 |   =========================================================

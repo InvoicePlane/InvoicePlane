@@ -21,9 +21,14 @@
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/welcome.css">
 
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/modernizr-2.8.3.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.11.2.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/html5shiv-3.7.2.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
+    <![endif]-->
+    
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.1.full.min.js"></script>
 
 </head>
 
@@ -34,15 +39,6 @@
 </noscript>
 
 <?php echo $content; ?>
-
-<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-     chromium.org/developers/how-tos/chrome-frame-getting-started -->
-<!--[if lt IE 7 ]>
-<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-<script>window.attachEvent('onload', function () {
-    CFInstall.check({mode: 'overlay'})
-})</script>
-<![endif]-->
 
 </body>
 </html>

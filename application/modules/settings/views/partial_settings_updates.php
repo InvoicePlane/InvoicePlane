@@ -11,6 +11,8 @@
         //$.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {	// ---it--- ORIGINALE
 		//$.getJSON("http://127.0.0.1:8080/invoiceplane.it/updatecheck?callback=?", function (data) {		// ---it--- Check versione italiana DEBUG
 		$.getJSON("https://api.github.com/repos/InvoicePlane-it/InvoicePlane/releases/latest?callback=?", function (response) {		// ---it--- Check versione italiana da GitHub
+			<?php //echo (IP_DEBUG ? 'console.log(data);' : ''); // ---it--- ORIGINALE ?>
+			<?php echo (IP_DEBUG ? 'console.log(response);' : ''); ?>
 			
 			var updatecheck = response.data.tag_name.replace(/\./g, '');		// ---it---
             //var updatecheck = data.current_version.replace(/\./g, '');	// ---it--- ORIGINALE
@@ -26,14 +28,16 @@
                     $('#updatecheck-no-updates').removeClass('hidden');
                 }
             }, checktime);
-        }).error(function () {
+        }).error(function (data) {
+            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
             $('#updatecheck-loading').addClass('hidden');
             $('#updatecheck-failed').removeClass('hidden');
         });
 
         // Get the latest news
         $.getJSON("https://ids.invoiceplane.com/get_news", function (data) {
-            //console.log(data);
+            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+            
             setTimeout(function () {
                 $('#ipnews-loading').addClass('hidden');
                 data.forEach(function (news) {
@@ -45,7 +49,8 @@
                     $('#ipnews-container').append(ipnews);
                 })
             }, checktime);
-        }).error(function () {
+        }).error(function (data) {
+            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
             $('#ipnews-loading').addClass('hidden');
             $('#ipnews-failed').removeClass('hidden');
         });
