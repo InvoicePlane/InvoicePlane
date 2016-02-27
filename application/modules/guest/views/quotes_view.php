@@ -121,7 +121,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-muted"><?php echo $item->item_description; ?></td>
+                        <td class="text-muted"><?php echo nl2br($item->item_description); ?></td>
                         <td>
                             <span class="pull-left"><?php echo lang('price'); ?></span>
                             <span class="pull-right amount"><?php format_amount($item->item_price); ?></span>
