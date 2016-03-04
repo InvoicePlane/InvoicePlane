@@ -24,6 +24,7 @@ class Payment_Methods extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_payment_methods');
+        $this->load->model('invoice_groups/mdl_invoice_groups');
     }
 
     public function index($page = 0)
@@ -62,6 +63,9 @@ class Payment_Methods extends Admin_Controller
             }
             $this->mdl_payment_methods->set_form_value('is_update', true);
         }
+
+        $this->load->model('invoice_groups/mdl_invoice_groups');
+        $this->layout->set('invoice_groups', $this->mdl_invoice_groups->get()->result());
 
         $this->layout->buffer('content', 'payment_methods/form');
         $this->layout->render();

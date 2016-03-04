@@ -29,6 +29,21 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label><?php echo lang('receipt_numbering_group'); ?></label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="receipt_group_id" id="receipt_group_id" class="form-control">
+                    <option value=""></option>
+                    <?php foreach ($invoice_groups as $invoice_group) { ?>
+                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                                <?php if ($this->mdl_payment_methods->form_value('receipt_group_id') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
     </div>
 
 </form>

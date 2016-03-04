@@ -28,6 +28,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->model('payment_methods/mdl_payment_methods');
     $CI->load->library('encrypt');
     $CI->load->model('invoice_groups/mdl_invoice_groups');
+    $CI->load->model('payments/mdl_payments');
     $CI->load->helper('country');
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
@@ -47,12 +48,15 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $payment_method = null;
     }
 
+    $payments = $CI->mdl_payments->where('ip_payments.invoice_id', $invoice_id)->get()->result();
+
     $data = array(
         'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
         'items' => $CI->mdl_items->get_items_and_replace_vars($invoice_id, $invoice->invoice_date_created),
         'payment_method' => $payment_method,
-        'output_type' => 'pdf'
+        'payments' => $payments,
+        'output_type' => 'pdf',
     );
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);

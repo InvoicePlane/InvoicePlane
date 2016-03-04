@@ -108,6 +108,11 @@ class Mdl_Setup extends CI_Model
             'invoice_group_prefix' => 'QUO',
             'invoice_group_next_id' => 1
         ));
+        $this->db->insert('ip_invoice_groups', array(
+            'invoice_group_name' => 'Receipt Default',
+            'invoice_group_prefix' => 'RCP',
+            'invoice_group_next_id' => 1
+        ));
     }
 
     private function install_default_settings()
@@ -121,8 +126,8 @@ class Mdl_Setup extends CI_Model
             'currency_symbol_placement' => 'before',
             'invoices_due_after' => 30,
             'quotes_expire_after' => 15,
-            'default_invoice_group' => 1,
-            'default_quote_group' => 2,
+            'default_invoice_group' => 3,
+            'default_quote_group' => 4,
             'thousands_separator' => ',',
             'decimal_point' => '.',
             'cron_key' => random_string('alnum', 16),

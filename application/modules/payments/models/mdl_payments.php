@@ -151,6 +151,7 @@ class Mdl_Payments extends Response_Model
 
         $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
         $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
+        $db_array['receipt_number'] = $this->get_receipt_number($db_array['payment_method_id']);
 
         return $db_array;
     }
@@ -172,6 +173,18 @@ class Mdl_Payments extends Response_Model
     {
         $this->filter_where('ip_clients.client_id', $client_id);
         return $this;
+    }
+
+    public function get_receipt_number($payment_method_id)
+    {
+        $this->db->select('receipt_group_id');
+        $this->db->where('payment_method_id', $payment_method_id);
+        $invoice_group_id = $this->db->get('ip_payment_methods')->row()->receipt_group_id;
+        if(!$invoice_group_id)
+            return null;
+
+        $this->load->model('invoice_groups/mdl_invoice_groups');
+        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
     }
 
 }
