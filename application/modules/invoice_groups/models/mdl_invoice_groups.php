@@ -61,14 +61,15 @@ class Mdl_Invoice_Groups extends Response_Model
         );
     }
 
-    public function generate_invoice_number($invoice_group_id, $set_next = true)
+    public function generate_invoice_number($invoice_group_id, $client_id, $set_next = true)
     {
         $invoice_group = $this->get_by_id($invoice_group_id);
 
         $invoice_identifier = $this->parse_identifier_format(
             $invoice_group->invoice_group_identifier_format,
             $invoice_group->invoice_group_next_id,
-            $invoice_group->invoice_group_left_pad
+            $invoice_group->invoice_group_left_pad,
+            $client_id
         );
 
         if ($set_next) {
@@ -78,32 +79,58 @@ class Mdl_Invoice_Groups extends Response_Model
         return $invoice_identifier;
     }
 
-    private function parse_identifier_format($identifier_format, $next_id, $left_pad)
+    private function parse_identifier_format($identifier_format, $next_id, $left_pad, $client_id)
     {
         if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
             foreach ($template_vars[1] as $var) {
-                switch ($var) {
-                    case 'year':
-                        $replace = date('Y');
-                        break;
-                    case 'month':
-                        $replace = date('m');
-                        break;
-                    case 'day':
-                        $replace = date('d');
-                        break;
-                    case 'id':
-                        $replace = str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
-                        break;
-                    default:
-                        $replace = '';
-                }
-
+                $replace = $this->parse_identifier_variable($var, $next_id, $left_pad, $client_id);
                 $identifier_format = str_replace('{{{' . $var . '}}}', $replace, $identifier_format);
             }
         }
 
         return $identifier_format;
+    }
+
+    private function parse_identifier_variable($name, $next_id, $left_pad, $client_id)
+    {
+        if ($name == 'year') {
+            return date('Y');
+        }
+
+        if ($name == 'month') {
+            return date('m');
+        }
+
+        if ($name == 'day') {
+            return date('d');
+        }
+
+        if ($name == 'id') {
+            return str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
+        }
+
+        if (strpos($name, 'client:') === 0) {
+            $label = substr($name, 7);
+
+            $this->load->model('custom_fields/mdl_custom_fields');
+            $field = $this->mdl_custom_fields->by_table('ip_client_custom')
+                          ->where('custom_field_label', $label)->get()->row();
+
+            if (!$field) {
+                return '';
+            }
+
+            $this->load->model('custom_fields/mdl_client_custom');
+            $value_row = $this->mdl_client_custom->where('client_id', $client_id)->get()->row();
+
+            if (!$value_row) {
+                return '';
+            }
+
+            return $value_row->{$field->custom_field_column};
+        }
+
+        return '';
     }
 
     public function set_next_invoice_number($invoice_group_id)

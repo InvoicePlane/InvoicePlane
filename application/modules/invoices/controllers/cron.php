@@ -44,7 +44,7 @@ class Cron extends Base_Controller
                     'invoice_date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date, $invoice_recurring->recur_invoices_due_after),
                     'invoice_group_id' => $invoice->invoice_group_id,
                     'user_id' => $invoice->user_id,
-                    'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
+                    'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id, $invoice->client_id),
                     'invoice_url_key' => $this->mdl_invoices->get_url_key(),
                     'invoice_terms' => $invoice->invoice_terms
                 );

@@ -305,7 +305,7 @@ class Mdl_Invoices extends Response_Model
 
         $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
-        $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
+        $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id'], $db_array['client_id']);
         $db_array['invoice_terms'] = $this->mdl_settings->setting('default_invoice_terms');
 
         if (!isset($db_array['invoice_status_id'])) {
@@ -318,10 +318,10 @@ class Mdl_Invoices extends Response_Model
         return $db_array;
     }
 
-    public function get_invoice_number($invoice_group_id)
+    public function get_invoice_number($invoice_group_id, $client_id)
     {
         $this->load->model('invoice_groups/mdl_invoice_groups');
-        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
+        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id, $client_id);
     }
 
     public function get_date_due($invoice_date_created, $invoices_due_after = null)

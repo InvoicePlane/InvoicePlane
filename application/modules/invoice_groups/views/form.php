@@ -83,6 +83,10 @@
                 <a href="#" class="text-tag" data-tag="{{{year}}}"><?php echo lang('current_year'); ?></a><br>
                 <a href="#" class="text-tag" data-tag="{{{month}}}"><?php echo lang('current_month'); ?></a><br>
                 <a href="#" class="text-tag" data-tag="{{{day}}}"><?php echo lang('current_day'); ?></a><br>
+
+                <?php foreach ($client_custom_fields as $field) { ?>
+                    <a href="#" class="text-tag" data-tag="{{{client:<?php echo $field->custom_field_label; ?>}}}"><?php echo $field->custom_field_label; ?></a><br>
+                <?php } ?>
             </div>
         </div>
     </div>

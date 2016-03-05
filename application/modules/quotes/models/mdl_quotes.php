@@ -251,7 +251,7 @@ class Mdl_Quotes extends Response_Model
 
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);
         $db_array['quote_date_expires'] = $this->get_date_due($db_array['quote_date_created']);
-        $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
+        $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id'], $db_array['client_id']);
         $db_array['notes'] = $this->mdl_settings->setting('default_quote_notes');
 
         if (!isset($db_array['quote_status_id'])) {
@@ -264,10 +264,10 @@ class Mdl_Quotes extends Response_Model
         return $db_array;
     }
 
-    public function get_quote_number($invoice_group_id)
+    public function get_quote_number($invoice_group_id, $client_id)
     {
         $this->load->model('invoice_groups/mdl_invoice_groups');
-        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
+        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id, $client_id);
     }
 
     public function get_date_due($quote_date_created)

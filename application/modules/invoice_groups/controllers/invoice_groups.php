@@ -60,6 +60,10 @@ class Invoice_Groups extends Admin_Controller
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
         $this->layout->set('pdf_invoice_templates', $pdf_invoice_templates);
 
+        $this->load->model('custom_fields/mdl_custom_fields');
+        $client_custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
+        $this->layout->set('client_custom_fields', $client_custom_fields);
+
         $this->layout->buffer('content', 'invoice_groups/form');
         $this->layout->render();
     }
