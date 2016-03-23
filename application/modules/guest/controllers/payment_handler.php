@@ -143,6 +143,7 @@ class Payment_Handler extends Base_Controller
 
             // Create the parameters
             $params = array(
+                'description' => lang('invoice') . ' ' . $invoice->invoice_number, 
                 'amount' => $invoice->invoice_balance,
                 'currency' => $this->mdl_settings->setting('merchant_currency_code')
             );
