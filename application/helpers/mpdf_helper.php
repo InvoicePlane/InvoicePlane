@@ -32,7 +32,11 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
 
     $mpdf->useAdobeCJK = true;
     $mpdf->SetAutoFont();
-    $mpdf->SetProtection(array('copy', 'print'), $password, $password);
+    // Avoid setting protection when password is blank/empty
+    if(!empty($password)) {
+        $mpdf->SetProtection(array('copy', 'print'), $password, $password);
+    }
+
     if (!(is_dir('./uploads/archive/') OR is_link('./uploads/archive/'))) {
         mkdir('./uploads/archive/', '0777');
     }
