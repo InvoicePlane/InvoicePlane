@@ -22,10 +22,16 @@ function pdf_create($html, $filename, $stream = TRUE, $password = NULL,$isInvoic
 
     $mpdf = new mPDF();
     $mpdf->useAdobeCJK = true;
-	$mpdf->SetAutoFont();
-    $mpdf->SetProtection(array('copy','print'), $password, $password);
-    if(!(is_dir('./uploads/archive/') OR is_link('./uploads/archive/') ))
-        mkdir ('./uploads/archive/','0777');
+    $mpdf->SetAutoFont();
+
+    // Avoid setting protection when password is blank/empty
+    if (!empty($password)) {
+        $mpdf->SetProtection(array('copy', 'print'), $password, $password);
+    }
+
+    if (!(is_dir('./uploads/archive/') || is_link('./uploads/archive/'))) {
+        mkdir('./uploads/archive/', '0777');
+    }
 
     if (strpos($filename, lang('invoice')) !== false) {
         $CI = &get_instance();
