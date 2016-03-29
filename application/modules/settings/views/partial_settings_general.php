@@ -135,6 +135,10 @@
                 </label>
                 <select name="settings[tax_rate_decimal_places]" class="input-sm form-control"
                         id="tax_rate_decimal_places">
+                    <option value="0"
+                            <?php if ($this->mdl_settings->setting('tax_rate_decimal_places') == '0') { ?>selected="selected"<?php } ?>>
+                        0
+                    </option>
                     <option value="2"
                             <?php if ($this->mdl_settings->setting('tax_rate_decimal_places') == '2') { ?>selected="selected"<?php } ?>>
                         2
