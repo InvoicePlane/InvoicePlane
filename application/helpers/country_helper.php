@@ -29,7 +29,6 @@ function get_country_list($cldr)
     } else {
         return (include APPPATH . 'helpers/country-list/en/country.php');
     }
-
 }
 
 /**

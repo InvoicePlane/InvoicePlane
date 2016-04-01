@@ -44,12 +44,12 @@
                         <h3><?php echo $invoice->client_name; ?></h3>
 
 					<span>
-						<?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-                        <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
-                        <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
+            <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+						<?php echo <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
                         <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-                        <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-                        <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+                        <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
+                        ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
+                        <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
 					</span>
                         <br><br>
 
