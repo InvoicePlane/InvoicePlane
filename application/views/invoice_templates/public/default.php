@@ -102,11 +102,12 @@
                             <h2><?php echo $invoice->user_name; ?></h2>
                             <p><?php if ($invoice->user_vat_id) { echo lang("vat_id_short") . ": " . $invoice->user_vat_id . '<br>'; } ?>
                                 <?php if ($invoice->user_tax_code) { echo lang("tax_code_short") . ": " . $invoice->user_tax_code . '<br>'; } ?>
+
+                                <?php if ($invoice->user_zip) { echo $invoice->user_zip . '<br>'; } ?>
+                                <?php if ($invoice->user_state) { echo $invoice->user_state . ' '; } ?>
+                                <?php if ($invoice->user_city) { echo $invoice->user_city . ' '; } ?>
                                 <?php if ($invoice->user_address_1) { echo $invoice->user_address_1 . '<br>'; } ?>
                                 <?php if ($invoice->user_address_2) { echo $invoice->user_address_2 . '<br>'; } ?>
-                                <?php if ($invoice->user_city) { echo $invoice->user_city . ' '; } ?>
-                                <?php if ($invoice->user_state) { echo $invoice->user_state . ' '; } ?>
-                                <?php if ($invoice->user_zip) { echo $invoice->user_zip . '<br>'; } ?>
                                 <?php if ($invoice->user_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $invoice->user_phone; ?><br><?php } ?>
                                 <?php if ($invoice->user_fax) { ?><?php echo lang('fax_abbr'); ?>: <?php echo $invoice->user_fax; ?><?php } ?>
                             </p>
@@ -122,11 +123,11 @@
                             <h3><?php echo $invoice->client_name; ?></h3>
                             <p><?php if ($invoice->client_vat_id) { echo lang("vat_id_short") . ": " . $invoice->client_vat_id . '<br>'; } ?>
                                 <?php if ($invoice->client_tax_code) { echo lang("tax_code_short") . ": " . $invoice->client_tax_code . '<br>'; } ?>
+                                <?php if ($invoice->client_zip) { echo $invoice->client_zip . '<br>'; } ?>
+                                <?php if ($invoice->client_state) { echo $invoice->client_state . ' '; } ?>
+                                <?php if ($invoice->client_city) { echo $invoice->client_city . ' '; } ?>
                                 <?php if ($invoice->client_address_1) { echo $invoice->client_address_1 . '<br>'; } ?>
                                 <?php if ($invoice->client_address_2) { echo $invoice->client_address_2 . '<br>'; } ?>
-                                <?php if ($invoice->client_city) { echo $invoice->client_city . ' '; } ?>
-                                <?php if ($invoice->client_state) { echo $invoice->client_state . ' '; } ?>
-                                <?php if ($invoice->client_zip) { echo $invoice->client_zip . '<br>'; } ?>
                                 <?php if ($invoice->client_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $invoice->client_phone; ?><br><?php } ?>
                             </p>
                         </td>
