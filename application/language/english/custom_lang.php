@@ -13,5 +13,7 @@
  */
 
 $lang = array(
-
+    'files' => 'Files',
+    'add_file' => 'Add File',
+    'view_files' => 'View Files',
 );

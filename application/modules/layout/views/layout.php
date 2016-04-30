@@ -37,7 +37,7 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/html5shiv-3.7.2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
     <![endif]-->
-    
+
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.0.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
@@ -148,6 +148,18 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', lang('add_client')); ?></li>
                         <li><?php echo anchor('clients/index', lang('view_clients')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('files'); ?></span><i
+                            class="visible-sm-inline fa fa-users"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('files/form', lang('add_file')); ?></li>
+                        <li><?php echo anchor('files/index', lang('view_files')); ?></li>
                     </ul>
                 </li>
 

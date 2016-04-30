@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Base_Controller extends MX_Controller
@@ -37,6 +37,7 @@ class Base_Controller extends MX_Controller
         $this->load->database();
 
         // Check if database has been configured
+        // @todo: fix this, what if other setting of db not set
         if (empty($this->db->hostname)) {
 
             $this->load->helper('redirect');
@@ -54,7 +55,7 @@ class Base_Controller extends MX_Controller
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
-            
+
             // Debug Mode
             if ($this->mdl_settings->setting('enable_debug')) {
                 $this->config->set_item('log_threshold', 2);
