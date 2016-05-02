@@ -43,6 +43,7 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.1.full.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone-4.2.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootbox.min.js"></script>
 
     <script type="text/javascript">
         Dropzone.autoDiscover = false;
@@ -67,6 +68,10 @@
 
             $('.create-quote').click(function () {
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>");
+            });
+
+            $('.create-file').click(function () {
+                $('#modal-placeholder').load("<?php echo site_url('files/ajax/modal_create_file'); ?>");
             });
 
             $('#btn_quote_to_invoice').click(function () {
@@ -254,7 +259,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="http://docs.invoiceplane.com/" target="_blank"
+                    <a href="#" target="_blank"
                        class="tip icon" data-original-title="<?php echo lang('documentation'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-question-circle"></i>

@@ -17,6 +17,10 @@
                         <i class="fa fa-user fa-margin"></i>
                         <span class="hidden-xs"><?php echo lang('add_client'); ?></span>
                     </a>
+                    <a href="javascript:void(0)" class="create-file btn btn-default">
+                        <i class="fa fa-file fa-margin"></i>
+                        <span class="hidden-xs"><?php echo lang('create_file'); ?></span>
+                    </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">
                         <i class="fa fa-file fa-margin"></i>
                         <span class="hidden-xs"><?php echo lang('create_quote'); ?></span>

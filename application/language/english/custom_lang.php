@@ -16,4 +16,12 @@ $lang = array(
     'files' => 'Files',
     'add_file' => 'Add File',
     'view_files' => 'View Files',
+    'filter_files' => 'Filter Files',
+    'file_name' => 'File Name',
+    'file_size' => 'Size',
+    'date_uploaded' => 'Date uploaded',
+    'actions' => 'Actions',
+    'select-file' => 'Select File',
+    'delete_file_warning' => 'Are you sure to delete this file',
+    'create_file' => 'Create File',
 );
