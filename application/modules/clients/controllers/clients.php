@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Clients extends Admin_Controller
@@ -125,6 +125,7 @@ class Clients extends Admin_Controller
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('files/mdl_files');
 
         $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
 
@@ -137,6 +138,7 @@ class Clients extends Admin_Controller
                 'client'           => $client,
                 'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
                 'invoices'         => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
+                'records'            => $this->mdl_files->by_client($client_id)->limit(20)->get()->result(),
                 'quotes'           => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
                 'payments'         => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
                 'custom_fields'    => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
@@ -150,6 +152,10 @@ class Clients extends Admin_Controller
                 array(
                     'invoice_table',
                     'invoices/partial_invoice_table'
+                ),
+                array(
+                    'file_table',
+                    'files/partial_file_table'
                 ),
                 array(
                     'quote_table',

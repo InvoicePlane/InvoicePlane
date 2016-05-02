@@ -1,34 +1,49 @@
-![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 1.4.6_
+app url 'http://dev.invoiceplane/'
 
-InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
-For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or take a look at the __[demo](https://demo.invoiceplane.com)__
+in ~/invoiceplane/application/config/database.php
+```
+$db['default']['hostname'] = '127.0.0.1';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '';
+$db['default']['database'] = 'invoiceplane';
+$db['default']['dbdriver'] = 'mysqli';
+```
+nginx configuration
 
-### Quick Installation
+```
+server {
+    listen   80;
+    server_name    dev.invoiceplane;
+    #access_log    /var/log/nginx/dev.invoiceplance.access.log;
+    error_log    /var/log/nginx/dev.invoiceplane.error.log;
+    root    /home/longnguyen/sandbox/invoiceplane;
+    index index.html index.php index.htm;
 
-1. Download the [latest version](https://invoiceplane.com/downloads)
-2. Extract the package and copy all files to your webserver / webspace.
-3. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
+    # set expiration of assets to MAX for caching
+    location ~* \.(ico|css|js|gif|jpe?g|png)(\?[0-9]+)?$ {
+        expires max;
+        log_not_found off;
+    }
 
-#### Remove `index.php` from the URL
 
-1. Make sure that [mod_rewrite](https://go.invoiceplane.com/apachemodrewrite) is enabled on your web server.
-2. Remove `index.php` from `$config['index_page'] = 'index.php';` in the file `/application/config/config.php`
-3. Rename the `htaccess` file to `.htaccess`
+    location / {
+        index       index.php;
+        try_files   $uri $uri/ /index.php;    
+    }
 
-If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoiceplane-domain.com/invoices/`) you have to change the .htaccess file. The instructions can be found within the file.
+    location ~* \.php(/|$) {
+	fastcgi_pass php-fpm;
+        #fastcgi_split_path_info ^(.+\.php)(/.+)$;
+	#fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;    
+     }
 
-### Support / Development / Chat
+     # deny access to .htaccess files
+    location ~ /\.ht {
+        deny        all;
+    }
 
-[![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)    
-[![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)    
-[![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://development.invoiceplane.com/)    
-[![Roadmap](https://img.shields.io/badge/Development%3A-Roadmap-429ae1.svg)](https://go.invoiceplane.com/roadmapv1)    
-[![Gitter chat](https://img.shields.io/badge/Chat%3A-Gitter-green.svg)](https://gitter.im/InvoicePlane/InvoicePlane)    
-[![Freenode](https://img.shields.io/badge/Chat%3A-Freenode%20IRC-green.svg)](https://go.invoiceplane.com/irc)    
-
----
-  
-*The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
-and their usage is restricted! For more information visit invoiceplane.com/license-copyright*
-
+}
+```
+run http://dev.invoiceplane/setup

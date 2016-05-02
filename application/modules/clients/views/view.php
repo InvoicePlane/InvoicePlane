@@ -59,6 +59,7 @@
 
 <ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">
     <li class="active"><a data-toggle="tab" href="#clientDetails"><?php echo lang('details'); ?></a></li>
+    <li><a data-toggle="tab" href="#clientFiles"><?php echo lang('files'); ?></a></li>
     <li><a data-toggle="tab" href="#clientQuotes"><?php echo lang('quotes'); ?></a></li>
     <li><a data-toggle="tab" href="#clientInvoices"><?php echo lang('invoices'); ?></a></li>
     <li><a data-toggle="tab" href="#clientPayments"><?php echo lang('payments'); ?></a></li>
@@ -215,6 +216,10 @@
                 </div>
             </div>
 
+        </div>
+
+        <div id="clientFiles" class="tab-pane table-content">
+            <?php echo $file_table; ?>
         </div>
 
         <div id="clientQuotes" class="tab-pane table-content">

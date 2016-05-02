@@ -37,12 +37,13 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/html5shiv-3.7.2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
     <![endif]-->
-    
+
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.0.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.1.full.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone-4.2.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootbox.min.js"></script>
 
     <script type="text/javascript">
         Dropzone.autoDiscover = false;
@@ -67,6 +68,10 @@
 
             $('.create-quote').click(function () {
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>");
+            });
+
+            $('.create-file').click(function () {
+                $('#modal-placeholder').load("<?php echo site_url('files/ajax/modal_create_file'); ?>");
             });
 
             $('#btn_quote_to_invoice').click(function () {
@@ -148,6 +153,18 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', lang('add_client')); ?></li>
                         <li><?php echo anchor('clients/index', lang('view_clients')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('files'); ?></span><i
+                            class="visible-sm-inline fa fa-users"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('files/form', lang('add_file')); ?></li>
+                        <li><?php echo anchor('files/index', lang('view_files')); ?></li>
                     </ul>
                 </li>
 
@@ -242,7 +259,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="http://docs.invoiceplane.com/" target="_blank"
+                    <a href="#" target="_blank"
                        class="tip icon" data-original-title="<?php echo lang('documentation'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-question-circle"></i>
