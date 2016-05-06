@@ -79,6 +79,7 @@ $lang = array(
     'credit_invoice_details'                       => 'Credit invoice details',
     'credit_invoice_for_invoice'                   => 'Credit invoice for invoice',
     'cron_key'                                     => 'CRON Key',
+    'currency_code'                                => 'Currency Code',
     'currency_symbol'                              => 'Currency Symbol',
     'currency_symbol_placement'                    => 'Currency Symbol Placement',
     'current_day'                                  => 'Current day',
