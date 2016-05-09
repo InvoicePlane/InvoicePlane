@@ -306,8 +306,18 @@ class Ajax extends Admin_Controller
         );
 
         if ($this->mdl_invoices->run_validation()) {
-            $invoice_id = $this->mdl_invoices->create(NULL, FALSE);
+            // Get the quote
+            $quote = $this->mdl_quotes->get_by_id($this->input->post('quote_id'));
 
+            $invoice_id = $this->mdl_invoices->create(null, FALSE);
+
+            // Update the discounts
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('invoice_discount_amount', $quote->quote_discount_amount);
+            $this->db->set('invoice_discount_percent', $quote->quote_discount_percent);
+            $this->db->update('ip_invoices');
+
+            // Save the invoice id to the quote
             $this->db->where('quote_id', $this->input->post('quote_id'));
             $this->db->set('invoice_id', $invoice_id);
             $this->db->update('ip_quotes');
