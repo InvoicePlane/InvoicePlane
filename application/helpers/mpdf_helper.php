@@ -33,6 +33,11 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         mkdir('./uploads/archive/', '0777');
     }
 
+    // Enable image error logging
+    if (IP_DEBUG) {
+        $mpdf->showImageErrors = true;
+    }
+
     if (strpos($filename, lang('invoice')) !== false) {
         $CI = &get_instance();
         $mpdf->setAutoBottomMargin = 'stretch';
