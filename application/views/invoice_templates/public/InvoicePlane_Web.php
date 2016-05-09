@@ -156,86 +156,89 @@
             <br>
 
             <div class="invoice-items">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th><?php echo lang('item'); ?></th>
-                        <th><?php echo lang('description'); ?></th>
-                        <th class="text-right"><?php echo lang('qty'); ?></th>
-                        <th class="text-right"><?php echo lang('price'); ?></th>
-                        <th class="text-right"><?php echo lang('discount'); ?></th>
-                        <th class="text-right"><?php echo lang('total'); ?></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($items as $item) : ?>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
                         <tr>
-                            <td><?php echo $item->item_name; ?></td>
-                            <td><?php echo nl2br($item->item_description); ?></td>
-                            <td class="amount"><?php echo format_amount($item->item_quantity); ?></td>
-                            <td class="amount"><?php echo format_currency($item->item_price); ?></td>
-                            <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
-                            <td class="amount"><?php echo format_currency($item->item_subtotal); ?></td>
+                            <th><?php echo lang('item'); ?></th>
+                            <th><?php echo lang('description'); ?></th>
+                            <th class="text-right"><?php echo lang('qty'); ?></th>
+                            <th class="text-right"><?php echo lang('price'); ?></th>
+                            <th class="text-right"><?php echo lang('discount'); ?></th>
+                            <th class="text-right"><?php echo lang('total'); ?></th>
                         </tr>
-                    <?php endforeach ?>
-                    <tr>
-                        <td colspan="4"></td>
-                        <td class="text-right"><?php echo lang('subtotal'); ?>:</td>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
-                    </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($items as $item) : ?>
+                            <tr>
+                                <td><?php echo $item->item_name; ?></td>
+                                <td><?php echo nl2br($item->item_description); ?></td>
+                                <td class="amount"><?php echo format_amount($item->item_quantity); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_price); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_subtotal); ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                        <tr>
+                            <td colspan="4"></td>
+                            <td class="text-right"><?php echo lang('subtotal'); ?>:</td>
+                            <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
+                        </tr>
 
-                    <?php if ($invoice->invoice_item_tax_total > 0) { ?>
+                        <?php if ($invoice->invoice_item_tax_total > 0) { ?>
+                            <tr>
+                                <td class="no-bottom-border" colspan="4"></td>
+                                <td class="text-right"><?php echo lang('item_tax'); ?></td>
+                                <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
+                            <tr>
+                                <td class="no-bottom-border" colspan="4"></td>
+                                <td class="text-right">
+                                    <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>
+                                    %
+                                </td>
+                                <td class="amount"><?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?></td>
+                            </tr>
+                        <?php endforeach ?>
+
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo lang('item_tax'); ?></td>
-                            <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
-                        </tr>
-                    <?php } ?>
-
-                    <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
-                        <tr>
-                            <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right">
-                                <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>
-                                %
+                            <td class="text-right"><?php echo lang('discount'); ?>:</td>
+                            <td class="amount">
+                                <?php
+                                if ($invoice->invoice_discount_percent > 0) {
+                                    echo format_amount($invoice->invoice_discount_percent) . ' %';
+                                } else {
+                                    echo format_amount($invoice->invoice_discount_amount);
+                                }
+                                ?>
                             </td>
-                            <td class="amount"><?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?></td>
                         </tr>
-                    <?php endforeach ?>
 
-                    <tr>
-                        <td class="no-bottom-border" colspan="4"></td>
-                        <td class="text-right"><?php echo lang('total'); ?>:</td>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_total); ?></td>
-                    </tr>
+                        <tr>
+                            <td class="no-bottom-border" colspan="4"></td>
+                            <td class="text-right"><?php echo lang('total'); ?>:</td>
+                            <td class="amount"><?php echo format_currency($invoice->invoice_total); ?></td>
+                        </tr>
 
-                    <tr>
-                        <td class="no-bottom-border" colspan="4"></td>
-                        <td class="text-right"><?php echo lang('discount'); ?>:</td>
-                        <td class="amount">
-                            <?php
-                            if ($invoice->invoice_discount_percent > 0) {
-                                echo format_amount($invoice->invoice_discount_percent) . ' %';
-                            } else {
-                                echo format_amount($invoice->invoice_discount_amount);
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="no-bottom-border" colspan="4"></td>
-                        <td class="text-right"><?php echo lang('paid'); ?></td>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_paid) ?></td>
-                    </tr>
-                    <tr class="<?php echo ($invoice->invoice_balance > 0) ? 'overdue' : 'text-success'; ?>">
-                        <td class="no-bottom-border" colspan="4"></td>
-                        <td class="text-right"><?php echo lang('balance'); ?></td>
-                        <td class="amount">
-                            <b><?php echo format_currency($invoice->invoice_balance) ?></b>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <tr>
+                            <td class="no-bottom-border" colspan="4"></td>
+                            <td class="text-right"><?php echo lang('paid'); ?></td>
+                            <td class="amount"><?php echo format_currency($invoice->invoice_paid) ?></td>
+                        </tr>
+                        <tr class="<?php echo ($invoice->invoice_balance > 0) ? 'overdue' : 'text-success'; ?>">
+                            <td class="no-bottom-border" colspan="4"></td>
+                            <td class="text-right"><?php echo lang('balance'); ?></td>
+                            <td class="amount">
+                                <b><?php echo format_currency($invoice->invoice_balance) ?></b>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <?php if ($invoice->invoice_balance == 0) {
                     echo '<img src="'.base_url('assets/default/img/paid.png').'" class="paid-stamp">';
