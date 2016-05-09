@@ -16,7 +16,7 @@ if (!defined('BASEPATH'))
  * 
  */
 
-function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $cc = NULL, $bcc = NULL, $more_attachments = NULL)
+function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $cc = null, $bcc = null, $more_attachments = null)
 {
     require 'phpmailer/PHPMailerAutoload.php';
 
@@ -122,10 +122,10 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = NULL, $
     // And away it goes...
     if ($mail->send()) {
         $CI->session->set_flashdata('alert_success', 'The email has been sent');
-        return TRUE;
+        return true;
     } else {
         // Or not...
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-        return FALSE;
+        return false;
     }
 }
