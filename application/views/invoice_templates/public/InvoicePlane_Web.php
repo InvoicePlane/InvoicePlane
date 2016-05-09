@@ -50,7 +50,7 @@
             </div>
         <?php } else {
             echo '<br>';
-        }?>
+        } ?>
 
         <div class="invoice">
 
@@ -131,13 +131,13 @@
                             <td><?php echo lang('invoice_date'); ?></td>
                             <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                         </tr>
-                        <tr class="<?php echo ($is_overdue ? 'overdue' : '') ?>">
-                            <td><?php echo lang('due_date');?></td>
+                        <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                            <td><?php echo lang('due_date'); ?></td>
                             <td class="text-right">
                                 <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                             </td>
                         </tr>
-                        <tr class="<?php echo ($is_overdue ? 'overdue' : '') ?>">
+                        <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
                             <td><?php echo lang('amount_due'); ?></td>
                             <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
                         </tr>
@@ -241,14 +241,44 @@
                 </div>
 
                 <?php if ($invoice->invoice_balance == 0) {
-                    echo '<img src="'.base_url('assets/default/img/paid.png').'" class="paid-stamp">';
+                    echo '<img src="' . base_url('assets/default/img/paid.png') . '" class="paid-stamp">';
                 } ?>
 
-                <?php if ($invoice->invoice_terms) { ?>
-                    <hr>
-                    <h4><?php echo lang('terms'); ?></h4>
-                    <p><?php echo nl2br($invoice->invoice_terms); ?></p>
-                <?php } ?>
+                <hr>
+
+                <div class="row">
+
+                    <?php if ($invoice->invoice_terms) { ?>
+                        <div class="col-xs-12 col-md-6">
+                            <h4><?php echo lang('terms'); ?></h4>
+                            <p><?php echo nl2br($invoice->invoice_terms); ?></p>
+                        </div>
+                    <?php } ?>
+
+                    <?php
+                    if (count($attachments) > 0) { ?>
+                        <div class="col-xs-12 col-md-6">
+                            <h4><?php echo lang('attachments'); ?></h4>
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <?php foreach ($attachments as $attachment) { ?>
+                                        <tr class="attachments">
+                                            <td><?php echo $attachment['name']; ?></td>
+                                            <td>
+                                                <a href="<?php echo $attachment['fullpath']; ?>"
+                                                   class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-download"></i> <?php echo lang('download') ?>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </table>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                </div>
+
             </div>
 
         </div>

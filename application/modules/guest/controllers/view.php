@@ -38,6 +38,23 @@ class View extends Base_Controller
             $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
             if ($invoice->payment_method == 0) $payment_method = NULL;
 
+            // Attachments
+            $path = '/uploads/customer_files';
+            $files = scandir(getcwd() . $path);
+            $attachments = array();
+
+            if ($files !== false) {
+                foreach ($files as $file) {
+                    if ('.' != $file && '..' != $file && strpos($file, $invoice_url_key) !== false) {
+                        $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                        $obj['fullname'] = $file;
+                        $obj['size'] = filesize($path . '/' . $file);
+                        $obj['fullpath'] = base_url($path . '/' . $file);
+                        $attachments[] = $obj;
+                    }
+                }
+            }
+
             $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
             $data = array(
@@ -48,6 +65,7 @@ class View extends Base_Controller
                 'flash_message' => $this->session->flashdata('flash_message'),
                 'payment_method' => $payment_method,
                 'is_overdue' => $is_overdue,
+                'attachments' => $attachments,
             );
 
             $this->load->view('invoice_templates/public/' . $this->mdl_settings->setting('public_invoice_template') . '.php', $data);
@@ -90,6 +108,23 @@ class View extends Base_Controller
                 $this->mdl_quotes->mark_viewed($quote->quote_id);
             }
 
+            // Attachments
+            $path = '/uploads/customer_files';
+            $files = scandir(getcwd() . $path);
+            $attachments = array();
+
+            if ($files !== false) {
+                foreach ($files as $file) {
+                    if ('.' != $file && '..' != $file && strpos($file, $quote_url_key) !== false) {
+                        $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                        $obj['fullname'] = $file;
+                        $obj['size'] = filesize($path . '/' . $file);
+                        $obj['fullpath'] = base_url($path . '/' . $file);
+                        $attachments[] = $obj;
+                    }
+                }
+            }
+
             $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
 
             $data = array(
@@ -99,6 +134,7 @@ class View extends Base_Controller
                 'quote_url_key' => $quote_url_key,
                 'flash_message' => $this->session->flashdata('flash_message'),
                 'is_expired' => $is_expired,
+                'attachments' => $attachments,
             );
 
             $this->load->view('quote_templates/public/' . $this->mdl_settings->setting('public_quote_template') . '.php', $data);
