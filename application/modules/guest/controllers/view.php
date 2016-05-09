@@ -38,13 +38,16 @@ class View extends Base_Controller
             $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
             if ($invoice->payment_method == 0) $payment_method = NULL;
 
+            $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
+
             $data = array(
                 'invoice' => $invoice,
                 'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_url_key' => $invoice_url_key,
                 'flash_message' => $this->session->flashdata('flash_message'),
-                'payment_method' => $payment_method
+                'payment_method' => $payment_method,
+                'is_overdue' => $is_overdue,
             );
 
             $this->load->view('invoice_templates/public/' . $this->mdl_settings->setting('public_invoice_template') . '.php', $data);
