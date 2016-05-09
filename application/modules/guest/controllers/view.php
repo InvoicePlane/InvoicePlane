@@ -90,12 +90,15 @@ class View extends Base_Controller
                 $this->mdl_quotes->mark_viewed($quote->quote_id);
             }
 
+            $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
+
             $data = array(
                 'quote' => $quote,
                 'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
                 'quote_url_key' => $quote_url_key,
-                'flash_message' => $this->session->flashdata('flash_message')
+                'flash_message' => $this->session->flashdata('flash_message'),
+                'is_expired' => $is_expired,
             );
 
             $this->load->view('quote_templates/public/' . $this->mdl_settings->setting('public_quote_template') . '.php', $data);
