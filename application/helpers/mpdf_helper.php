@@ -65,7 +65,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
             }
 
         $mpdf->Output('./uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf', 'F');
-        
+
         return $mpdf->Output($filename . '.pdf', 'I');
 
     } else {

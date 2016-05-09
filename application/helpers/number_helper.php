@@ -33,7 +33,7 @@ function format_currency($amount)
     }
 }
 
-function format_amount($amount = NULL)
+function format_amount($amount = null)
 {
     if ($amount) {
         $CI =& get_instance();
@@ -42,7 +42,7 @@ function format_amount($amount = NULL)
 
         return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
     }
-    return NULL;
+    return null;
 }
 
 function standardize_amount($amount)
