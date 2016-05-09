@@ -221,11 +221,39 @@
                     </table>
                 </div>
 
-                <?php if ($quote->notes) { ?>
-                    <hr>
-                    <h4><?php echo lang('notes'); ?></h4>
-                    <p><?php echo nl2br($quote->notes); ?></p>
-                <?php } ?>
+                <div class="row">
+
+                    <?php if ($quote->notes) { ?>
+                        <div class="col-xs-12 col-md-6">
+                            <h4><?php echo lang('notes'); ?></h4>
+                            <p><?php echo nl2br($quote->notes); ?></p>
+                        </div>
+                    <?php } ?>
+
+                    <?php
+                    if (count($attachments) > 0) { ?>
+                        <div class="col-xs-12 col-md-6">
+                            <h4><?php echo lang('attachments'); ?></h4>
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <?php foreach ($attachments as $attachment) { ?>
+                                        <tr class="attachments">
+                                            <td><?php echo $attachment['name']; ?></td>
+                                            <td>
+                                                <a href="<?php echo $attachment['fullpath']; ?>"
+                                                   class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-download"></i> <?php echo lang('download') ?>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </table>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                </div>
+                
             </div>
 
         </div>
