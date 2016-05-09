@@ -237,8 +237,10 @@ class Mdl_Invoices extends Response_Model
             $this->mdl_invoice_tax_rates->save(NULL, $db_array);
         }
 
+        // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
         $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+
         if (count($db_array) > 2) {
             unset($db_array['invoice_custom_id']);
             $db_array['invoice_id'] = $target_id;
@@ -284,8 +286,10 @@ class Mdl_Invoices extends Response_Model
             $this->mdl_invoice_tax_rates->save(NULL, $db_array);
         }
 
+        // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
         $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+
         if (count($db_array) > 2) {
             unset($db_array['invoice_custom_id']);
             $db_array['invoice_id'] = $target_id;
