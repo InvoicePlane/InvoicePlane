@@ -319,7 +319,7 @@ class Setup extends MX_Controller
     {
         $checks = array();
 
-        $php_required = '5.3';
+        $php_required = '5.4';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
         if ($php_installed < $php_required) {
