@@ -21,6 +21,7 @@
             <td class="td-text">
                 <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
                 <input type="hidden" name="item_id" value="">
+                <input type="hidden" name="item_product_id" value="">
 
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo lang('item'); ?></span>
@@ -96,6 +97,7 @@
                 <td class="td-text">
                     <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">
+                    <input type="hidden" name="item_product_id" value="<?php echo $item->item_product_id; ?>">
 
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo lang('item'); ?></span>
