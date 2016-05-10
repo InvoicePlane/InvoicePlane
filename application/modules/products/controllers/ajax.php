@@ -35,9 +35,9 @@ class Ajax extends Admin_Controller
         */
 
         if (!empty($filter_product)) {
-            $products = $this->mdl_products->by_product($filter_product);
+            $this->mdl_products->by_product($filter_product);
         }
-        $products = $this->mdl_products->get();
+        $this->mdl_products->get();
         $products = $this->mdl_products->result();
 
         $families = $this->mdl_families->get()->result();

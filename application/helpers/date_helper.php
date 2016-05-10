@@ -66,18 +66,29 @@ function date_formats()
     );
 }
 
-function date_from_mysql($date, $ignore_post_check = FALSE)
+/**
+ * Converts a given date from the MySQL format into the defined one
+ * @param $date
+ * @param bool $ignore_post_check
+ * @return string Formatted date or the original date
+ */
+function date_from_mysql($date, $ignore_post_check = false)
 {
-    if ($date <> '0000-00-00') {
-        if (!$_POST or $ignore_post_check) {
+    if ($date != '0000-00-00') {
+        if (!$_POST || $ignore_post_check) {
             $CI = &get_instance();
 
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-            return $date->format($CI->mdl_settings->setting('date_format'));
+            $new_date = DateTime::createFromFormat('Y-m-d', $date);
+
+            if ($new_date === false) {
+                return $date;
+            }
+
+            return $new_date->format($CI->mdl_settings->setting('date_format'));
         }
         return $date;
     }
-    return '';
+    return $date;
 }
 
 function date_from_timestamp($timestamp)
@@ -86,6 +97,7 @@ function date_from_timestamp($timestamp)
 
     $date = new DateTime();
     $date->setTimestamp($timestamp);
+
     return $date->format($CI->mdl_settings->setting('date_format'));
 }
 
@@ -94,6 +106,7 @@ function date_to_mysql($date)
     $CI = &get_instance();
 
     $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
+
     return $date->format('Y-m-d');
 }
 
@@ -148,5 +161,6 @@ function increment_date($date, $increment)
 {
     $new_date = new DateTime($date);
     $new_date->add(new DateInterval('P' . $increment));
+
     return $new_date->format('Y-m-d');
 }
