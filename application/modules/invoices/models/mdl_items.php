@@ -24,7 +24,9 @@ class Mdl_Items extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
+        $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*,
+            item_tax_rates.tax_rate_percent AS item_tax_rate_percent,
+            item_tax_rates.tax_rate_name AS item_tax_rate_name');
     }
 
     public function default_order_by()
