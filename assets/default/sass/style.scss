@@ -224,6 +224,12 @@ textarea {
         font-size: 12px;
         padding: 4px 8px;
     }
+
+    &.table-borderless {
+        tr, td,th {
+            border: 0;
+        }
+    }
 }
 
 .table-responsive {
@@ -991,6 +997,34 @@ legend, .install-step h2 {
 #email-template-preview {
     width: 100%;
     border: 0;
+}
+
+.webpreview-header {
+    h2 {
+        display: inline-block;
+        vertical-align: baseline;
+    }
+
+    .btn-group {
+        display: inline-block;
+        vertical-align: baseline;
+        float: right;
+    }
+}
+
+.invoice-items {
+    position: relative;
+}
+
+.paid-stamp {
+    position: absolute;
+    bottom: 0;
+    left: -20px;
+    -moz-transform: rotate(22deg);
+    -ms-transform: rotate(22deg);
+    -o-transform: rotate(22deg);
+    -webkit-transform: rotate(22deg);
+    transform: rotate(22deg);
 }
 
 /*

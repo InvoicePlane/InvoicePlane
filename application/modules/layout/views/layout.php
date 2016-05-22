@@ -38,11 +38,11 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
     <![endif]-->
     
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.3.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.1.full.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone-4.2.0.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.2.full.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone-4.3.0.min.js"></script>
 
     <script type="text/javascript">
         Dropzone.autoDiscover = false;

@@ -293,6 +293,7 @@ $lang = array(
     'password_reset'                               => 'Password Reset',
     'password_reset_email'                         => 'You requested a new password for your Installation of InvoicePlane. Please click the following link to reset your password:',
     'password_reset_info'                          => 'You will get an Email with a link to reset your password.',
+    'password_reset_failed'                        => 'An error occurred while trying to send your password reset email. Please review the application logs or contact the system administrator.',
     'pay_now'                                      => 'Pay Now',
     'payment'                                      => 'Payment',
     'payment_cannot_exceed_balance'                => 'Payment amount cannot exceed invoice balance.',

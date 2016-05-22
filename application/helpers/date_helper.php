@@ -16,6 +16,12 @@ if (!defined('BASEPATH'))
  * 
  */
 
+/**
+ * Available date formats
+ * The setting value represents the PHP date() formatting, the datepicker value represents the
+ * DatePicker formatting (see http://bootstrap-datepicker.readthedocs.io/en/stable/options.html#format)
+ * @return array
+ */
 function date_formats()
 {
     return array(
@@ -62,7 +68,11 @@ function date_formats()
         'j.n.Y' => array(
             'setting' => 'j.n.Y',
             'datepicker' => 'd.m.yyyy'
-        )
+        ),
+        'd M,Y' => array(
+            'setting' => 'd M,Y',
+            'datepicker' => 'dd M,yyyy'
+        ),
     );
 }
 

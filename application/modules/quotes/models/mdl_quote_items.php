@@ -68,7 +68,11 @@ class Mdl_Quote_Items extends Response_Model
             'item_tax_rate_id' => array(
                 'field' => 'item_tax_rate_id',
                 'label' => lang('item_tax_rate')
-            )
+            ),
+            'item_product_id' => array(
+                'field' => 'item_product_id',
+                'label' => lang('original_product')
+            ),
         );
     }
 
