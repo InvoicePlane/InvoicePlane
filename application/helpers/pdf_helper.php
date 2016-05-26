@@ -16,7 +16,7 @@ if (!defined('BASEPATH'))
  *
  */
 
-function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null, $include_zugferd_xml = false)
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null)
 {
     $CI = &get_instance();
 
@@ -45,17 +45,19 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     // PDF associated files
-    if ($include_zugferd_xml) {
+    $include_zugferd = $CI->mdl_settings->setting('include_zugferd');
+
+    if ($include_zugferd) {
         $CI->load->helper('zugferd');
-        $associatedFiles = [[
+        $associatedFiles = array(array(
             'name' => 'ZUGFeRD-invoice.xml',
             'description' => 'ZUGFeRD Invoice',
             'AFRelationship' => 'Alternative',
             'mime' => 'text/xml',
             'path' => generate_invoice_zugferd_xml_temp_file($invoice, $items)
-        ]];
+        ));
     } else {
-        $associatedFiles = NULL;
+        $associatedFiles = null;
     }
 
     $data = array(
@@ -71,7 +73,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper('mpdf');
     return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), 
-        $stream, $invoice->invoice_password, 1, $isGuest, $include_zugferd_xml, $associatedFiles);
+        $stream, $invoice->invoice_password, 1, $isGuest, $include_zugferd, $associatedFiles);
 }
 
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)

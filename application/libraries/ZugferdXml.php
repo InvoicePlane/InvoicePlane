@@ -1,18 +1,21 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class ZugferdXml {
+class ZugferdXml
+{
     var $invoice;
     var $doc;
     var $root;
 
-    public function ZugferdXml($params){
+    public function ZugferdXml($params)
+    {
         $CI = &get_instance();
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
-    public function xml(){
+    public function xml()
+    {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->formatOutput = true;
 
@@ -25,7 +28,8 @@ class ZugferdXml {
         return $this->doc->saveXML();
     }
 
-    protected function xmlRoot(){
+    protected function xmlRoot()
+    {
         $node = $this->doc->createElement('rsm:CrossIndustryDocument');
         $node->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $node->setAttribute('xmlns:rsm', 'urn:ferd:CrossIndustryDocument:invoice:1p0');
@@ -34,7 +38,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlSpecifiedExchangedDocumentContext(){
+    protected function xmlSpecifiedExchangedDocumentContext()
+    {
         $node = $this->doc->createElement('rsm:SpecifiedExchangedDocumentContext');
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:ferd:CrossIndustryDocument:invoice:1p0:basic'));
@@ -42,7 +47,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlHeaderExchangedDocument(){
+    protected function xmlHeaderExchangedDocument()
+    {
         $node = $this->doc->createElement('rsm:HeaderExchangedDocument');
 
         $node->appendChild($this->doc->createElement('ram:ID', $this->invoice->invoice_number));
@@ -62,7 +68,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlSpecifiedSupplyChainTradeTransaction(){
+    protected function xmlSpecifiedSupplyChainTradeTransaction()
+    {
         $node = $this->doc->createElement('rsm:SpecifiedSupplyChainTradeTransaction');
         $node->appendChild($this->xmlApplicableSupplyChainTradeAgreement());
         $node->appendChild($this->xmlApplicableSupplyChainTradeDelivery());
@@ -73,14 +80,16 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlApplicableSupplyChainTradeAgreement(){
+    protected function xmlApplicableSupplyChainTradeAgreement()
+    {
         $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeAgreement');
         $node->appendChild($this->xmlSellerTradeParty());
         $node->appendChild($this->xmlBuyerTradeParty());
         return $node;
     }
 
-    protected function xmlApplicableSupplyChainTradeDelivery(){
+    protected function xmlApplicableSupplyChainTradeDelivery()
+    {
         $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeDelivery');
 
         // ActualDeliverySupplyChainEvent
@@ -93,14 +102,15 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlApplicableSupplyChainTradeSettlement(){
+    protected function xmlApplicableSupplyChainTradeSettlement()
+    {
         $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeSettlement');
 
         $node->appendChild($this->doc->createElement('ram:PaymentReference', $this->invoice->invoice_number));
         $node->appendChild($this->doc->createElement('ram:InvoiceCurrencyCode', $this->currencyCode));
 
         // taxes
-        foreach ($this->itemsSubtotalGroupedByTaxPercent() as $percent=>$subtotal) {
+        foreach ($this->itemsSubtotalGroupedByTaxPercent() as $percent => $subtotal) {
             $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal));
         }
 
@@ -110,7 +120,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlIncludedSupplyChainTradeLineItem($lineNumber, $item){
+    protected function xmlIncludedSupplyChainTradeLineItem($lineNumber, $item)
+    {
         $node = $this->doc->createElement('ram:IncludedSupplyChainTradeLineItem');
 
         // AssociatedDocumentLineDocument
@@ -137,7 +148,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlSellerTradeParty($index, $item){
+    protected function xmlSellerTradeParty($index = '', $item = '')
+    {
         $node = $this->doc->createElement('ram:SellerTradeParty');
         $node->appendChild($this->doc->createElement('ram:Name', $this->invoice->user_name));
 
@@ -153,7 +165,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlBuyerTradeParty($index, $item){
+    protected function xmlBuyerTradeParty($index = '', $item = '')
+    {
         $node = $this->doc->createElement('ram:BuyerTradeParty');
         $node->appendChild($this->doc->createElement('ram:Name', $this->invoice->client_name));
 
@@ -173,7 +186,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlSpecifiedTaxRegistration($schemeID, $content){
+    protected function xmlSpecifiedTaxRegistration($schemeID, $content)
+    {
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
         $el = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
@@ -181,7 +195,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlApplicableTradeTax($percent, $subtotal){
+    protected function xmlApplicableTradeTax($percent, $subtotal)
+    {
         $node = $this->doc->createElement('ram:ApplicableTradeTax');
         $node->appendChild($this->currencyElement('ram:CalculatedAmount', $subtotal * $percent / 100));
         $node->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
@@ -191,7 +206,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlSpecifiedTradeSettlementMonetarySummation(){
+    protected function xmlSpecifiedTradeSettlementMonetarySummation()
+    {
         $node = $this->doc->createElement('ram:SpecifiedTradeSettlementMonetarySummation');
         $node->appendChild($this->currencyElement('ram:LineTotalAmount', $this->invoice->invoice_item_subtotal));
         $node->appendChild($this->currencyElement('ram:ChargeTotalAmount', 0));
@@ -204,7 +220,8 @@ class ZugferdXml {
         return $node;
     }
 
-    protected function xmlSpecifiedSupplyChainTradeAgreement($item) {
+    protected function xmlSpecifiedSupplyChainTradeAgreement($item)
+    {
         $node = $this->doc->createElement('ram:SpecifiedSupplyChainTradeAgreement');
 
         // GrossPriceProductTradePrice
@@ -218,9 +235,10 @@ class ZugferdXml {
         $node->appendChild($netPriceNode);
 
         return $node;
-     }
+    }
 
-    protected function xmlSpecifiedSupplyChainTradeSettlement($item) {
+    protected function xmlSpecifiedSupplyChainTradeSettlement($item)
+    {
         $node = $this->doc->createElement('ram:SpecifiedSupplyChainTradeSettlement');
 
         // ApplicableTradeTax
@@ -237,25 +255,28 @@ class ZugferdXml {
         $node->appendChild($sumNode);
 
         return $node;
-     }
+    }
 
     // ===========================================================================
     // elements helpers
     // ===========================================================================
 
-    protected function currencyElement($name, $amount, $nb_decimals = 2){
+    protected function currencyElement($name, $amount, $nb_decimals = 2)
+    {
         $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
         $el->setAttribute('currencyID', $this->currencyCode);
         return $el;
     }
 
-    protected function quantityElement($name, $quantity){
+    protected function quantityElement($name, $quantity)
+    {
         $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));
         $el->setAttribute('unitCode', 'C62');
         return $el;
     }
 
-    protected function dateElement($date){
+    protected function dateElement($date)
+    {
         $el = $this->doc->createElement('udt:DateTimeString', $this->zugferdFormattedDate($date));
         $el->setAttribute('format', 102);
         return $el;
@@ -279,7 +300,8 @@ class ZugferdXml {
         return number_format((float)$amount, $nb_decimals);
     }
 
-    function itemsSubtotalGroupedByTaxPercent(){
+    function itemsSubtotalGroupedByTaxPercent()
+    {
         $result = [];
         foreach ($this->items as $item) {
             if ($item->item_tax_rate_percent == 0) continue;

@@ -206,8 +206,7 @@ class Invoices extends Admin_Controller
             $this->mdl_invoices->mark_sent($invoice_id);
         }
 
-        $include_zugferd_xml = $this->input->get('include_zugferd_xml') == 'true';
-        generate_invoice_pdf($invoice_id, $stream, $invoice_template, NULL, $include_zugferd_xml);
+        generate_invoice_pdf($invoice_id, $stream, $invoice_template, NULL);
     }
 
     public function generate_zugferd_xml($invoice_id)
