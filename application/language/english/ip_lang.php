@@ -211,6 +211,8 @@ $lang = array(
     'invoice_overview'                             => 'Invoice Overview',
     'invoice_overview_period'                      => 'Invoice Overview Period',
     'invoice_password'                             => 'PDF password (optional)',
+    'invoice_pdf_include_zugferd'                  => 'Include ZUGFeRD',
+    'invoice_pdf_include_zugferd_help'             => 'Enabling this option will include ZUGFeRD XML in invoice PDFs, which is an XML standard for invoices. <a href="https://go.invoiceplane.com/zugferdinfo">More information</a>',
     'invoice_pre_password'                         => 'Invoice standard PDF password (optional)',
     'invoice_tax'                                  => 'Invoice Tax',
     'invoice_tax_rate'                             => 'Invoice Tax Rate',
