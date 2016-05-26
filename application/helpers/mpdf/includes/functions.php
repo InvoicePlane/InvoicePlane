@@ -78,6 +78,11 @@ function _fgets (&$h, $force=false) {
 	return $s;
 }
 
+function pdfFormattedDate($date){
+  $z = date('O'); // +0200
+  $offset = substr($z,0,3)."'".substr($z,3,2)."'"; // +02'00'
+  return date('YmdHis', $date) . $offset;
+}
 
 // For PHP4 compatability
 if(!function_exists('str_ireplace')) {

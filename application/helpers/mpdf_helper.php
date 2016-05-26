@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,10 +13,10 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
-function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null)
+function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null, $zugferd_invoice = false, $associatedFiles = null)
 {
     require_once(APPPATH . 'helpers/mpdf/mpdf.php');
 
@@ -24,9 +24,18 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     $mpdf->useAdobeCJK = true;
     $mpdf->SetAutoFont();
 
-    // Avoid setting protection when password is blank/empty
-    if (!empty($password)) {
-        $mpdf->SetProtection(array('copy', 'print'), $password, $password);
+    if ($zugferd_invoice) {
+        $CI = &get_instance();
+        $CI->load->helper('zugferd');
+        $mpdf->PDFA = true;
+        $mpdf->PDFAauto = true;
+        $mpdf->SetAdditionalRdf(zugferd_rdf());
+        $mpdf->SetAssociatedFiles($associatedFiles);
+    } else {
+        // Avoid setting protection when password is blank/empty
+        if (!empty($password)) {
+            $mpdf->SetProtection(array('copy', 'print'), $password, $password);
+        }
     }
 
     if (!(is_dir('./uploads/archive/') || is_link('./uploads/archive/'))) {

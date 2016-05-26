@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,10 +13,10 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
-function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null)
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null, $include_zugferd_xml = false)
 {
     $CI = &get_instance();
 
@@ -44,6 +44,20 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         }
     }
 
+    // PDF associated files
+    if ($include_zugferd_xml) {
+        $CI->load->helper('zugferd');
+        $associatedFiles = [[
+            'name' => 'ZUGFeRD-invoice.xml',
+            'description' => 'ZUGFeRD Invoice',
+            'AFRelationship' => 'Alternative',
+            'mime' => 'text/xml',
+            'path' => generate_invoice_zugferd_xml_temp_file($invoice, $items)
+        ]];
+    } else {
+        $associatedFiles = NULL;
+    }
+
     $data = array(
         'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
@@ -56,7 +70,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     $CI->load->helper('mpdf');
-    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream, $invoice->invoice_password, 1, $isGuest);
+    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), 
+        $stream, $invoice->invoice_password, 1, $isGuest, $include_zugferd_xml, $associatedFiles);
 }
 
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
