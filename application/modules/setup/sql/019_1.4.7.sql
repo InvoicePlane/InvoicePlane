@@ -18,6 +18,26 @@ ALTER TABLE `ip_quote_items`
 ADD COLUMN `item_product_id` INT(11) DEFAULT NULL
 AFTER `item_tax_rate_id`;
 
+# IP-303 - Incorrect decimal value: '' for column 'item_discount_amount'
+ALTER TABLE `ip_invoices`
+  MODIFY COLUMN invoice_discount_amount DECIMAL(20, 2) NULL DEFAULT NULL,
+  MODIFY COLUMN invoice_discount_percent DECIMAL(20, 2) NULL DEFAULT NULL;
+
+ALTER TABLE `ip_invoice_item_amounts`
+  MODIFY COLUMN item_discount DECIMAL(20, 2) NULL DEFAULT NULL;
+ALTER TABLE `ip_invoice_items`
+  MODIFY COLUMN item_discount_amount DECIMAL(20, 2) NULL DEFAULT NULL;
+
+ALTER TABLE `ip_quotes`
+  MODIFY COLUMN quote_discount_amount DECIMAL(20, 2) NULL DEFAULT NULL,
+  MODIFY COLUMN quote_discount_percent DECIMAL(20, 2) NULL DEFAULT NULL;
+
+ALTER TABLE `ip_quote_item_amounts`
+  MODIFY COLUMN item_discount DECIMAL(20, 2) NULL DEFAULT NULL;
+ALTER TABLE `ip_quote_items`
+  MODIFY COLUMN item_discount_amount DECIMAL(20, 2) NULL DEFAULT NULL;
+
+
 # IP-322 - Invoice item_name database field should be larger + additional db changes
 ALTER TABLE ip_invoice_items MODIFY COLUMN item_name VARCHAR(500);
 ALTER TABLE ip_quote_items MODIFY COLUMN item_name VARCHAR(500);
