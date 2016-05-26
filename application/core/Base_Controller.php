@@ -58,9 +58,9 @@ class Base_Controller extends MX_Controller
             // Debug Mode
             if ($this->mdl_settings->setting('enable_debug')) {
                 $this->config->set_item('log_threshold', 2);
-                define('IP_DEBUG', true);
+                defined('IP_DEBUG') ?: define('IP_DEBUG', true);
             } else {
-                define('IP_DEBUG', false);
+                defined('IP_DEBUG') ?: define('IP_DEBUG', false);
             }
 
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
@@ -75,5 +75,3 @@ class Base_Controller extends MX_Controller
     }
 
 }
-
-?>

@@ -2,13 +2,13 @@
 /application/config/database.php
 /application/logs/*
 !/application/logs/index.html
+/application/helpers/mpdf/ttfontdata/*
 /uploads/temp/*
 !/uploads/temp/remove.txt
 /uploads/archive/*
 /uploads/customer_files/*
 /uploads/import/*
-/uploads/temp/*
-/application/helpers/mpdf/ttfontdata/*
+/uploads/*.jpg
 
 .idea
 .sass-cache
