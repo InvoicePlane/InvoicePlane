@@ -37,6 +37,11 @@ ALTER TABLE `ip_quote_item_amounts`
 ALTER TABLE `ip_quote_items`
   MODIFY COLUMN item_discount_amount DECIMAL(20, 2) NULL DEFAULT NULL;
 
+ALTER TABLE `ip_products`
+  MODIFY COLUMN purchase_price DECIMAL(20, 2) NULL DEFAULT NULL;
+ALTER TABLE `ip_products`
+  MODIFY COLUMN product_price DECIMAL(20, 2) NULL DEFAULT NULL;
+
 
 # IP-322 - Invoice item_name database field should be larger + additional db changes
 ALTER TABLE ip_clients MODIFY COLUMN client_name VARCHAR(500);
