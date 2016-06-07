@@ -36,7 +36,7 @@ class Projects extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('projects');

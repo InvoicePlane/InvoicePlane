@@ -87,8 +87,8 @@
                                 <option value="0"><?php echo lang('none'); ?></option>
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                        <?php if ($this->mdl_products->form_value('tax_rate_id') == $tax_rate->tax_rate_id) {
-                                        ?>selected="selected" <?php } ?>>
+                                            <?php if ($this->mdl_products->form_value('tax_rate_id') == $tax_rate->tax_rate_id) {
+                                            ?>selected="selected" <?php } ?>>
                                         <?php echo $tax_rate->tax_rate_name
                                             . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
                                     </option>

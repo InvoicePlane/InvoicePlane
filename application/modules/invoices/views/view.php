@@ -125,7 +125,7 @@
 <?php
 echo $modal_delete_invoice;
 echo $modal_add_invoice_tax;
-if ($this->config->item('disable_read_only') == TRUE) {
+if ($this->config->item('disable_read_only') == true) {
     $invoice->is_read_only = 0;
 }
 ?>
@@ -196,7 +196,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
                         <?php echo lang('copy_invoice'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === TRUE && $invoice->is_read_only != 1)) { ?>
+                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
                     <li>
                         <a href="#delete-invoice" data-toggle="modal">
                             <i class="fa fa-trash-o fa-margin"></i>

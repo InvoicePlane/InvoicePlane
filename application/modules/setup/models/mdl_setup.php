@@ -29,20 +29,20 @@ class Mdl_Setup extends CI_Model
         $this->save_version('000_1.0.0.sql');
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_data();
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     public function upgrade_tables()
     {
         // Collect the available SQL files
-        $sql_files = directory_map(APPPATH . 'modules/setup/sql', TRUE);
+        $sql_files = directory_map(APPPATH . 'modules/setup/sql', true);
 
         // Sort them so they're in natural order
         sort($sql_files);
@@ -77,12 +77,12 @@ class Mdl_Setup extends CI_Model
         }
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     private function execute_contents($contents)

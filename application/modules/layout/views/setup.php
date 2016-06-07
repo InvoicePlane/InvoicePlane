@@ -25,7 +25,7 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/html5shiv-3.7.2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
     <![endif]-->
-    
+
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.3.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/select2-4.0.2.full.min.js"></script>

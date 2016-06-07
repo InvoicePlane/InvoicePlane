@@ -11,4 +11,5 @@ SET `setting_value` = "this-year"
 WHERE `setting_value` = "year";
 
 # Solves IP-198
-ALTER TABLE ip_tax_rates CHANGE tax_rate_name tax_rate_name VARCHAR(60) NOT NULL;
+ALTER TABLE ip_tax_rates
+  CHANGE tax_rate_name tax_rate_name VARCHAR(60) NOT NULL;

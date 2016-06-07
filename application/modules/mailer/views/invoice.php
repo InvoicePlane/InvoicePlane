@@ -10,7 +10,7 @@
             $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
                 email_template_id: email_template_id
             }, function (data) {
-                <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 inject_email_template(template_fields, JSON.parse(data));
             });
         });
@@ -253,7 +253,7 @@
     var previewTemplate = previewNode.parentNode.innerHTML;
     previewNode.parentNode.removeChild(previewNode);
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'.$invoice->invoice_url_key) ?>", // Set the url
+        url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", // Set the url
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
@@ -264,7 +264,7 @@
         clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
         init: function () {
             thisDropzone = this;
-            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'. $invoice->invoice_url_key) ?>", function (data) {
+            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", function (data) {
                 $.each(data, function (index, val) {
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
@@ -304,7 +304,7 @@
 
     myDropzone.on("removedfile", function (file) {
         $.ajax({
-            url: "<?php echo site_url('upload/delete_file/'.$invoice->invoice_url_key) ?>",
+            url: "<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>",
             type: "POST",
             data: {'name': file.name}
         });

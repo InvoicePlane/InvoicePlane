@@ -38,7 +38,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
 
             // Is SMTP authentication required?
             if ($CI->mdl_settings->setting('smtp_authentication')) {
-                $mail->SMTPAuth = TRUE;
+                $mail->SMTPAuth = true;
                 $mail->Username = $CI->mdl_settings->setting('smtp_username');
                 $mail->Password = $CI->encrypt->decode($CI->mdl_settings->setting('smtp_password'));
             }

@@ -1,29 +1,29 @@
 # Discounts
 ALTER TABLE `ip_quotes`
-ADD COLUMN `quote_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `quote_number`,
-ADD COLUMN `quote_discount_percent` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `quote_discount_amount`;
+  ADD COLUMN `quote_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `quote_number`,
+  ADD COLUMN `quote_discount_percent` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `quote_discount_amount`;
 
 ALTER TABLE `ip_quote_item_amounts`
-ADD COLUMN `item_discount` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `item_tax_total`;
+  ADD COLUMN `item_discount` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `item_tax_total`;
 ALTER TABLE `ip_quote_items`
-ADD COLUMN `item_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `item_price`;
+  ADD COLUMN `item_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `item_price`;
 
 ALTER TABLE `ip_invoices`
-ADD COLUMN `invoice_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `invoice_number`,
-ADD COLUMN `invoice_discount_percent` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `invoice_discount_amount`;
+  ADD COLUMN `invoice_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `invoice_number`,
+  ADD COLUMN `invoice_discount_percent` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `invoice_discount_amount`;
 
 ALTER TABLE `ip_invoice_item_amounts`
-ADD COLUMN `item_discount` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `item_tax_total`;
+  ADD COLUMN `item_discount` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `item_tax_total`;
 ALTER TABLE `ip_invoice_items`
-ADD COLUMN `item_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
-AFTER `item_price`;
+  ADD COLUMN `item_discount_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0
+  AFTER `item_price`;
 
 # Feature IP-162
 # For module "projects" 
@@ -68,9 +68,15 @@ INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
 VALUES ('email_pdf_attachment', '1');
 
 # IP-283 - Allow larger item amounts
-ALTER TABLE ip_invoice_item_amounts MODIFY COLUMN item_subtotal DECIMAL(20, 2);
-ALTER TABLE ip_invoice_item_amounts MODIFY COLUMN item_tax_total DECIMAL(20, 2);
-ALTER TABLE ip_invoice_item_amounts MODIFY COLUMN item_total DECIMAL(20, 2);
-ALTER TABLE ip_quote_item_amounts MODIFY COLUMN item_subtotal DECIMAL(20, 2);
-ALTER TABLE ip_quote_item_amounts MODIFY COLUMN item_tax_total DECIMAL(20, 2);
-ALTER TABLE ip_quote_item_amounts MODIFY COLUMN item_total DECIMAL(20, 2);
+ALTER TABLE ip_invoice_item_amounts
+  MODIFY COLUMN item_subtotal DECIMAL(20, 2);
+ALTER TABLE ip_invoice_item_amounts
+  MODIFY COLUMN item_tax_total DECIMAL(20, 2);
+ALTER TABLE ip_invoice_item_amounts
+  MODIFY COLUMN item_total DECIMAL(20, 2);
+ALTER TABLE ip_quote_item_amounts
+  MODIFY COLUMN item_subtotal DECIMAL(20, 2);
+ALTER TABLE ip_quote_item_amounts
+  MODIFY COLUMN item_tax_total DECIMAL(20, 2);
+ALTER TABLE ip_quote_item_amounts
+  MODIFY COLUMN item_total DECIMAL(20, 2);

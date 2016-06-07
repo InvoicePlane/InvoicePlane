@@ -71,17 +71,17 @@ class Mdl_Invoices extends Response_Model
 			ip_users.user_tax_code,
 			ip_clients.*,
 			ip_invoice_amounts.invoice_amount_id,
-			IFNULL(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
-			IFNULL(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
-			IFNULL(ip_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
-			IFNULL(ip_invoice_amounts.invoice_total, '0.00') AS invoice_total,
-			IFNULL(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
-			IFNULL(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
+			IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
+			IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
+			IFnull(ip_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
+			IFnull(ip_invoice_amounts.invoice_total, '0.00') AS invoice_total,
+			IFnull(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
+			IFnull(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
 			ip_invoice_amounts.invoice_sign AS invoice_sign,
             (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
 			DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> '0000-00-00') WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
-			ip_invoices.*", FALSE);
+			ip_invoices.*", false);
     }
 
     public function default_order_by()
@@ -164,10 +164,10 @@ class Mdl_Invoices extends Response_Model
         );
     }
 
-    public function create($db_array = NULL, $include_invoice_tax_rates = TRUE)
+    public function create($db_array = null, $include_invoice_tax_rates = true)
     {
 
-        $invoice_id = parent::save(NULL, $db_array);
+        $invoice_id = parent::save(null, $db_array);
 
         // Create an invoice amount record
         $db_array = array(
@@ -221,7 +221,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save(NULL, $db_array);
+            $this->mdl_items->save(null, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -234,7 +234,7 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save(NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
 
         // Copy the custom fields
@@ -270,7 +270,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order
             );
 
-            $this->mdl_items->save(NULL, $db_array);
+            $this->mdl_items->save(null, $db_array);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -283,7 +283,7 @@ class Mdl_Invoices extends Response_Model
                 'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save(NULL, $db_array);
+            $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
 
         // Copy the custom fields
@@ -424,7 +424,7 @@ class Mdl_Invoices extends Response_Model
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is view
-            if ($this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
+            if ($this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
@@ -447,7 +447,7 @@ class Mdl_Invoices extends Response_Model
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is sent
-            if ($this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
+            if ($this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');

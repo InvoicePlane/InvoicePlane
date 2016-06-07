@@ -163,7 +163,8 @@
                 </td>
                 <td class="td-icon text-right td-vert-middle">
                     <?php if ($invoice->is_read_only != 1): ?>
-                        <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>" title="<?php echo lang('delete'); ?>">
+                        <a href="<?php echo site_url('invoices/delete_item/' . $invoice->invoice_id . '/' . $item->item_id); ?>"
+                           title="<?php echo lang('delete'); ?>">
                             <i class="fa fa-trash-o text-danger"></i>
                         </a>
                     <?php endif; ?>
@@ -266,8 +267,8 @@
                                    class="discount-option form-control input-sm amount"
                                    value="<?php echo($invoice->invoice_discount_amount != 0 ? $invoice->invoice_discount_amount : ''); ?>"
                                 <?php if ($invoice->is_read_only == 1) {
-                                echo 'disabled="disabled"';
-                            } ?>>
+                                    echo 'disabled="disabled"';
+                                } ?>>
 
                             <div
                                 class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>

@@ -9,8 +9,8 @@
 
         // Get the latest version from updates.invoiceplane.com
         $.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {
-            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
-            
+            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+
             var updatecheck = data.current_version.replace(/\./g, '');
 
             // Compare each versions and replace the placeholder with a download button
@@ -25,15 +25,15 @@
                 }
             }, checktime);
         }).error(function (data) {
-            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
             $('#updatecheck-loading').addClass('hidden');
             $('#updatecheck-failed').removeClass('hidden');
         });
 
         // Get the latest news
         $.getJSON("https://ids.invoiceplane.com/get_news", function (data) {
-            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
-            
+            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+
             setTimeout(function () {
                 $('#ipnews-loading').addClass('hidden');
                 data.forEach(function (news) {
@@ -46,7 +46,7 @@
                 })
             }, checktime);
         }).error(function (data) {
-            <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
             $('#ipnews-loading').addClass('hidden');
             $('#ipnews-failed').removeClass('hidden');
         });
@@ -64,7 +64,7 @@
     </div>
     <div id="updatecheck-results">
         <span id="updatecheck-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i>  <?php echo lang('checking_for_updates'); ?>
+            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo lang('checking_for_updates'); ?>
 		</span>
 
         <span id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
@@ -87,7 +87,7 @@
 
     <div id="ipnews-results">
         <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i>  <?php echo lang('checking_for_news'); ?>
+            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo lang('checking_for_news'); ?>
 		</span>
 
         <div id="ipnews-container"></div>

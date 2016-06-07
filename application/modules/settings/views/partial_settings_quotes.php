@@ -89,7 +89,7 @@
 
         </div>
         <div class="col-xs-12 col-md-6">
-            
+
             <h4><?php echo lang('quote_template'); ?></h4>
             <br/>
 

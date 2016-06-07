@@ -17,13 +17,13 @@
             <?php echo lang('setup_complete_secure_setup'); ?>
             <br/>
             <code>Redirect /setup
-            <?php 
-              if($_SERVER['HTTPS']) 
-                echo 'https';
-              else 
-                echo 'http';
-              echo '://' . $_SERVER['HTTP_HOST'] . '/'
-            ?>
+                <?php
+                if ($_SERVER['HTTPS'])
+                    echo 'https';
+                else
+                    echo 'http';
+                echo '://' . $_SERVER['HTTP_HOST'] . '/'
+                ?>
             </code>
         </p>
 
