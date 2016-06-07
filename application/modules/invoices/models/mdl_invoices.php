@@ -142,7 +142,7 @@ class Mdl_Invoices extends Response_Model
             'invoice_number' => array(
                 'field' => 'invoice_number',
                 'label' => lang('invoice') . ' #',
-                'rules' => 'required|is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
+                'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
             ),
             'invoice_date_created' => array(
                 'field' => 'invoice_date_created',
@@ -308,11 +308,20 @@ class Mdl_Invoices extends Response_Model
 
         $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
-        $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
         $db_array['invoice_terms'] = $this->mdl_settings->setting('default_invoice_terms');
 
         if (!isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;
+        }
+
+        $generate_invoice_number = $this->mdl_settings->setting('generate_invoice_number_for_draft');
+
+        if ($db_array['invoice_status_id'] === 1 && $generate_invoice_number === 1) {
+            $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
+        } elseif ($db_array['invoice_status_id'] != 1) {
+            $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
+        } else {
+            $db_array['invoice_number'] = '';
         }
 
         // Set default values
@@ -322,6 +331,12 @@ class Mdl_Invoices extends Response_Model
         $db_array['invoice_url_key'] = $this->get_url_key();
 
         return $db_array;
+    }
+
+    public function get_invoice_group_id($invoice_id)
+    {
+        $invoice = $this->get_by_id($invoice_id);
+        return $invoice->invoice_group_id;
     }
 
     public function get_invoice_number($invoice_group_id)

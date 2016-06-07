@@ -9,6 +9,21 @@ SET setting_value='InvoicePlane_Web'
 WHERE setting_key='public_quote_template' AND
       setting_value='default';
 
+
+# IP-255 - Do not generate invoice number for draft invoices, set default value
+INSERT INTO ip_settings (setting_key, setting_value)
+VALUES ('generate_invoice_number_for_draft', '1');
+
+INSERT INTO ip_settings (setting_key, setting_value)
+VALUES ('generate_quote_number_for_draft', '1');
+
+ALTER TABLE `ip_invoices`
+  MODIFY COLUMN invoice_number VARCHAR(100) NULL DEFAULT NULL;
+
+ALTER TABLE `ip_quotes`
+  MODIFY COLUMN quote_number VARCHAR(100) NULL DEFAULT NULL;
+
+
 # IP-408 - Add reference to products to items
 ALTER TABLE `ip_invoice_items`
 ADD COLUMN `item_product_id` INT(11) DEFAULT NULL
@@ -17,6 +32,7 @@ AFTER `item_tax_rate_id`;
 ALTER TABLE `ip_quote_items`
 ADD COLUMN `item_product_id` INT(11) DEFAULT NULL
 AFTER `item_tax_rate_id`;
+
 
 # IP-303 - Incorrect decimal value: '' for column 'item_discount_amount'
 ALTER TABLE `ip_invoices`
@@ -103,6 +119,7 @@ ALTER TABLE ip_users MODIFY COLUMN user_vat_id VARCHAR(500);
 ALTER TABLE ip_users MODIFY COLUMN user_tax_code VARCHAR(500);
 ALTER TABLE ip_users MODIFY COLUMN user_psalt VARCHAR(500);
 ALTER TABLE ip_users MODIFY COLUMN user_tax_code VARCHAR(500);
+
 
 # IP-417 - Improve product database handling
 ALTER TABLE ip_products MODIFY COLUMN family_id INT(11) NULL DEFAULT NULL;
