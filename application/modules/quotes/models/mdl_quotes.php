@@ -141,7 +141,7 @@ class Mdl_Quotes extends Response_Model
             'quote_number' => array(
                 'field' => 'quote_number',
                 'label' => lang('quote').' #',
-                'rules' => 'required|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'
+                'rules' => 'is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'
             ),
             'quote_date_created' => array(
                 'field' => 'quote_date_created',
@@ -252,17 +252,33 @@ class Mdl_Quotes extends Response_Model
 
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);
         $db_array['quote_date_expires'] = $this->get_date_due($db_array['quote_date_created']);
-        $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
+
         $db_array['notes'] = $this->mdl_settings->setting('default_quote_notes');
 
         if (!isset($db_array['quote_status_id'])) {
             $db_array['quote_status_id'] = 1;
         }
 
+        $generate_quote_number = $this->mdl_settings->setting('generate_quote_number_for_draft');
+
+        if ($db_array['quote_status_id'] === 1 && $generate_quote_number === 1) {
+            $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
+        } elseif ($db_array['quote_status_id'] != 1) {
+            $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
+        } else {
+            $db_array['quote_number'] = '';
+        }
+
         // Generate the unique url key
         $db_array['quote_url_key'] = $this->get_url_key();
 
         return $db_array;
+    }
+
+    public function get_invoice_group_id($invoice_id)
+    {
+        $invoice = $this->get_by_id($invoice_id);
+        return $invoice->invoice_group_id;
     }
 
     public function get_quote_number($invoice_group_id)

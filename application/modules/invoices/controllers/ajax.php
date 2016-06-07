@@ -88,8 +88,16 @@ class Ajax extends Admin_Controller
                 $invoice_discount_percent = $this->input->post('invoice_discount_percent');
             }
 
+            // Generate new invoice number if needed
+            $invoice_number = $this->input->post('invoice_number');
+
+            if (empty($invoice_number) && $invoice_status != 1) {
+                $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
+                $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
+            }
+
             $db_array = array(
-                'invoice_number' => $this->input->post('invoice_number'),
+                'invoice_number' => $invoice_number,
                 'invoice_terms' => $this->input->post('invoice_terms'),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
