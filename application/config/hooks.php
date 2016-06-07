@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------------
 | Hooks
@@ -10,7 +10,7 @@
 |
 */
 $hook['pre_controller'] = array(
-	'class'    => 'SetTimezoneClass',
+    'class' => 'SetTimezoneClass',
     'function' => 'setTimezone',
     'filename' => 'SetTimezoneClass.php',
     'filepath' => 'hooks'

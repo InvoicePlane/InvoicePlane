@@ -72,7 +72,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     $CI->load->helper('mpdf');
-    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), 
+    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
         $stream, $invoice->invoice_password, 1, $isGuest, $include_zugferd, $associatedFiles);
 }
 

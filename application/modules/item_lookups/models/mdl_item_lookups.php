@@ -23,7 +23,7 @@ class Mdl_Item_Lookups extends MY_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', FALSE);
+        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
     }
 
     public function default_order_by()
@@ -60,9 +60,9 @@ class Mdl_Item_Lookups extends MY_Model
         return $db_array;
     }
 
-    public function prep_form($id = NULL)
+    public function prep_form($id = null)
     {
-        $return = FALSE;
+        $return = false;
 
         if ($id) {
             $return = parent::prep_form($id);

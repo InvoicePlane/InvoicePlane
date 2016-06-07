@@ -23,7 +23,7 @@ class Mdl_Invoice_Custom extends MY_Model
 
     public function save_custom($invoice_id, $db_array)
     {
-        $invoice_custom_id = NULL;
+        $invoice_custom_id = null;
 
         $db_array['invoice_id'] = $invoice_id;
 

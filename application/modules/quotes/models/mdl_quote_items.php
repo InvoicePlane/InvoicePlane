@@ -76,7 +76,7 @@ class Mdl_Quote_Items extends Response_Model
         );
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
 

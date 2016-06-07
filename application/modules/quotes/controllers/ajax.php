@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function save()
     {
@@ -308,7 +308,7 @@ class Ajax extends Admin_Controller
             // Get the quote
             $quote = $this->mdl_quotes->get_by_id($this->input->post('quote_id'));
 
-            $invoice_id = $this->mdl_invoices->create(null, FALSE);
+            $invoice_id = $this->mdl_invoices->create(null, false);
 
             // Update the discounts
             $this->db->where('invoice_id', $invoice_id);
@@ -334,7 +334,7 @@ class Ajax extends Admin_Controller
                     'item_order' => $quote_item->item_order
                 );
 
-                $this->mdl_items->save(NULL, $db_array);
+                $this->mdl_items->save(null, $db_array);
             }
 
             $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))->get()->result();
@@ -347,7 +347,7 @@ class Ajax extends Admin_Controller
                     'invoice_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
                 );
 
-                $this->mdl_invoice_tax_rates->save(NULL, $db_array);
+                $this->mdl_invoice_tax_rates->save(null, $db_array);
             }
 
             $response = array(

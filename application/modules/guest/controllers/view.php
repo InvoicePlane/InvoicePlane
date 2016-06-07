@@ -36,7 +36,7 @@ class View extends Base_Controller
             }
 
             $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-            if ($invoice->payment_method == 0) $payment_method = NULL;
+            if ($invoice->payment_method == 0) $payment_method = null;
 
             // Attachments
             $path = '/uploads/customer_files';
@@ -72,7 +72,7 @@ class View extends Base_Controller
         }
     }
 
-    public function generate_invoice_pdf($invoice_url_key, $stream = TRUE, $invoice_template = NULL)
+    public function generate_invoice_pdf($invoice_url_key, $stream = true, $invoice_template = null)
     {
         $this->load->model('invoices/mdl_invoices');
 
@@ -141,7 +141,7 @@ class View extends Base_Controller
         }
     }
 
-    public function generate_quote_pdf($quote_url_key, $stream = TRUE, $quote_template = NULL)
+    public function generate_quote_pdf($quote_url_key, $stream = true, $quote_template = null)
     {
         $this->load->model('quotes/mdl_quotes');
 

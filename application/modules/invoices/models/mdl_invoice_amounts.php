@@ -104,7 +104,7 @@ class Mdl_Invoice_Amounts extends CI_Model
             $this->db->update('ip_invoices');
         }
 
-        if ($this->config->item('disable_read_only') == FALSE && $db_array['invoice_balance'] == 0 && $db_array['invoice_total'] != 0) {
+        if ($this->config->item('disable_read_only') == false && $db_array['invoice_balance'] == 0 && $db_array['invoice_total'] != 0) {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('is_read_only', 1);
             $this->db->update('ip_invoices');
@@ -172,7 +172,7 @@ class Mdl_Invoice_Amounts extends CI_Model
                 $this->db->set('invoice_status_id', 4);
                 $this->db->update('ip_invoices');
             }
-            if ($this->config->item('disable_read_only') == FALSE && $invoice_balance == 0 && $invoice_total != 0) {
+            if ($this->config->item('disable_read_only') == false && $invoice_balance == 0 && $invoice_total != 0) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
@@ -204,7 +204,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         return $total;
     }
 
-    public function get_total_invoiced($period = NULL)
+    public function get_total_invoiced($period = null)
     {
         switch ($period) {
             case 'month':
@@ -240,7 +240,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
-    public function get_total_paid($period = NULL)
+    public function get_total_paid($period = null)
     {
         switch ($period) {
             case 'month':
@@ -273,7 +273,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
-    public function get_total_balance($period = NULL)
+    public function get_total_balance($period = null)
     {
         switch ($period) {
             case 'month':

@@ -15,7 +15,7 @@
             } else {
                 echo 'value="0"';
             } ?>
-            >
+        >
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">

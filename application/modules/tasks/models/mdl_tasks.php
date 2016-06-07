@@ -26,7 +26,7 @@ class Mdl_Tasks extends Response_Model
     {
         $this->db->select('SQL_CALC_FOUND_ROWS *,
           (CASE WHEN DATEDIFF(NOW(), task_finish_date) > 0 THEN 1 ELSE 0 END) is_overdue
-        ', FALSE);
+        ', false);
     }
 
     public function default_order_by()
@@ -91,17 +91,17 @@ class Mdl_Tasks extends Response_Model
         return $db_array;
     }
 
-    public function prep_form($id = NULL)
+    public function prep_form($id = null)
     {
         if (!parent::prep_form($id)) {
-            return FALSE;
+            return false;
         }
 
         if (!$id) {
             parent::set_form_value('task_finish_date', date('Y-m-d'));
         }
 
-        return TRUE;
+        return true;
     }
 
     public function statuses()

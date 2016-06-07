@@ -79,10 +79,10 @@ class Sessions extends Base_Controller
         $this->load->model('mdl_sessions');
 
         if ($this->mdl_sessions->auth($email_address, $password)) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     public function passwordreset($token = null)
@@ -206,7 +206,7 @@ class Sessions extends Base_Controller
                 } else {
                     $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));
                 }
-                
+
                 redirect('sessions/login');
             }
         }

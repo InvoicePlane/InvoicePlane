@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 class Cron extends Base_Controller
 {
-    public function recur($cron_key = NULL)
+    public function recur($cron_key = null)
     {
         if ($cron_key == $this->mdl_settings->setting('cron_key')) {
             $this->load->model('invoices/mdl_invoices_recurring');
@@ -49,7 +49,7 @@ class Cron extends Base_Controller
                 );
 
                 // This is the new invoice id
-                $target_id = $this->mdl_invoices->create($db_array, FALSE);
+                $target_id = $this->mdl_invoices->create($db_array, false);
 
                 // Copy the original invoice to the new invoice
                 $this->mdl_invoices->copy_invoice($source_id, $target_id);
