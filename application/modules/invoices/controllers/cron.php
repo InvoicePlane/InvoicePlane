@@ -89,8 +89,7 @@ class Cron extends Base_Controller
                     }
 
                     $from = !empty($tpl->email_template_from_email) ?
-                        array($tpl->email_template_from_email,
-                            $tpl->email_template_from_name) :
+                        array($tpl->email_template_from_email, $tpl->email_template_from_name) :
                         array($invoice->user_email, "");
 
                     $subject = !empty($tpl->email_template_subject) ?
@@ -104,8 +103,9 @@ class Cron extends Base_Controller
 
                     if (email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
                         $this->mdl_invoices->mark_sent($target_id);
+                        $this->mdl_invoice_amounts->calculate($target_id);
                     } else {
-                        log_message("warning", "Invoice " . $target_id . "could not be sent. Please review your Email settings.");
+                        log_message('warning', 'Invoice ' . $target_id . 'could not be sent. Please review your Email settings.');
                     }
                 }
             }
