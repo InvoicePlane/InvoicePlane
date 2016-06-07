@@ -182,7 +182,7 @@ class Mdl_Invoices extends Response_Model
                 $db_array = array(
                     'invoice_id' => $invoice_id,
                     'tax_rate_id' => $this->mdl_settings->setting('default_invoice_tax_rate'),
-                    'include_item_tax' => $this->mdl_settings->setting('default_include_item_tax'),
+                    'include_item_tax' => $this->mdl_settings->setting('default_include_item_tax', 0),
                     'invoice_tax_rate_amount' => 0
                 );
 
@@ -314,6 +314,9 @@ class Mdl_Invoices extends Response_Model
         if (!isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;
         }
+
+        // Set default values
+        $db_array['payment_method'] = (empty($db_array['payment_method']) ? 0 : $db_array['payment_method']);
 
         // Generate the unique url key
         $db_array['invoice_url_key'] = $this->get_url_key();

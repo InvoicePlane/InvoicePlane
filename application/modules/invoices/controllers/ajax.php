@@ -41,10 +41,14 @@ class Ajax extends Admin_Controller
                 ) {
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price = standardize_amount($item->item_price);
-                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
 
-                    $item_id = ($item->item_id) ?: NULL;
-                    unset($item->item_id, $item->save_item_as_lookup);
+                    // Prepare default values
+                    $item->item_discount_amount = empty($item->item_discount_amount) ? null :
+                        standardize_amount($item->item_discount_amount);
+
+                    $item_id = ($item->item_id) ?: null;
+                    unset($item->item_id);
+
                     $this->mdl_items->save($item_id, $item);
                 } else {
                     // Throw an error message and use the form validation for that
