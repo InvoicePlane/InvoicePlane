@@ -56,7 +56,7 @@
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
-                    <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
@@ -131,7 +131,12 @@ if ($this->config->item('disable_read_only') == TRUE) {
 ?>
 
 <div id="headerbar">
-    <h1><?php echo lang('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+    <h1>
+        <?php
+        echo lang('invoice') . ' ';
+        echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
+        ?>
+    </h1>
 
     <div
         class="pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
@@ -296,7 +301,11 @@ if ($this->config->item('disable_read_only') == TRUE) {
                                     <label><?php echo lang('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number"
                                            class="input-sm form-control"
-                                           value="<?php echo $invoice->invoice_number; ?>"
+                                        <?php if ($invoice->invoice_number) : ?>
+                                            value="<?php echo $invoice->invoice_number; ?>"
+                                        <?php else : ?>
+                                            placeholder="<?php echo lang('not_set'); ?>"
+                                        <?php endif; ?>
                                         <?php if ($invoice->is_read_only == 1) {
                                             echo 'disabled="disabled"';
                                         } ?>>
@@ -405,7 +414,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>
-                        ><?php echo $invoice->invoice_terms; ?></textarea>
+                    ><?php echo $invoice->invoice_terms; ?></textarea>
 
                 </div>
                 <div class="col-xs-12 col-sm-8">
@@ -455,14 +464,14 @@ if ($this->config->item('disable_read_only') == TRUE) {
                                     </div>
                                     <div class="pull-left btn-group">
                                         <button data-dz-download class="btn btn-sm btn-primary">
-                                             <i class="fa fa-download"></i>
-                                             <span><?php echo lang('download'); ?></span>
+                                            <i class="fa fa-download"></i>
+                                            <span><?php echo lang('download'); ?></span>
                                         </button>
                                         <?php if ($invoice->is_read_only != 1) { ?>
-                                        <button data-dz-remove class="btn btn-danger btn-sm delete">
-                                            <i class="fa fa-trash-o"></i>
-                                            <span><?php echo lang('delete'); ?></span>
-                                        </button>
+                                            <button data-dz-remove class="btn btn-danger btn-sm delete">
+                                                <i class="fa fa-trash-o"></i>
+                                                <span><?php echo lang('delete'); ?></span>
+                                            </button>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -507,19 +516,19 @@ if ($this->config->item('disable_read_only') == TRUE) {
     var previewTemplate = previewNode.parentNode.innerHTML;
     previewNode.parentNode.removeChild(previewNode);
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'.$invoice->invoice_url_key) ?>", // Set the url
+        url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", // Set the url
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
         uploadMultiple: false,
-        dictRemoveFileConfirmation: '<?php echo lang('delete_attachment_warning'); ?>' ,
+        dictRemoveFileConfirmation: '<?php echo lang('delete_attachment_warning'); ?>',
         previewTemplate: previewTemplate,
         autoQueue: true, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews
         clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
         init: function () {
             thisDropzone = this;
-            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id. '/'. $invoice->invoice_url_key) ?>", function (data) {
+            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", function (data) {
                 $.each(data, function (index, val) {
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
@@ -540,7 +549,7 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
     myDropzone.on("addedfile", function (file) {
         myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
-        createDownloadButton(file, '<?php echo base_url() . 'uploads/customer_files/' .$invoice->invoice_url_key . '_' ?>' + file.name.replace( /\s+/g ,'_'));
+        createDownloadButton(file, '<?php echo base_url() . 'uploads/customer_files/' . $invoice->invoice_url_key . '_' ?>' + file.name.replace(/\s+/g, '_'));
     });
 
     // Update the total progress bar
@@ -560,13 +569,13 @@ if ($this->config->item('disable_read_only') == TRUE) {
 
     myDropzone.on("removedfile", function (file) {
         $.ajax({
-            url: "<?php echo site_url('upload/delete_file/'.$invoice->invoice_url_key) ?>",
+            url: "<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>",
             type: "POST",
-            data: {'name': file.name.replace( /\s+/g ,'_')}
+            data: {'name': file.name.replace(/\s+/g, '_')}
         });
     });
 
-    function createDownloadButton (file, fileUrl) {
+    function createDownloadButton(file, fileUrl) {
         var downloadButtonList = file.previewElement.querySelectorAll("[data-dz-download]");
         for (_i = 0; _i < downloadButtonList.length; _i++) {
             downloadButtonList[_i].addEventListener("click", function (e) {

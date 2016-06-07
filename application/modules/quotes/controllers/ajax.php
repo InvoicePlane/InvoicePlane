@@ -62,11 +62,20 @@ class Ajax extends Admin_Controller
                 $quote_discount_percent = $this->input->post('quote_discount_percent');
             }
 
+            // Generate new quote number if needed
+            $quote_number = $this->input->post('quote_number');
+            $quote_status_id = $this->input->post('quote_status_id');
+
+            if (empty($quote_number) && $quote_status_id != 1) {
+                $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
+                $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
+            }
+
             $db_array = array(
-                'quote_number' => $this->input->post('quote_number'),
+                'quote_number' => $quote_number,
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
-                'quote_status_id' => $this->input->post('quote_status_id'),
+                'quote_status_id' => $quote_status_id,
                 'quote_password' => $this->input->post('quote_password'),
                 'notes' => $this->input->post('notes'),
                 'quote_discount_amount' => $quote_discount_amount,

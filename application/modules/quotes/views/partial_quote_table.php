@@ -23,7 +23,7 @@
                 <td>
                     <a href="<?php echo site_url('quotes/view/' . $quote->quote_id); ?>"
                        title="<?php echo lang('edit'); ?>">
-                        <?php echo $quote->quote_number; ?>
+                        <?php echo($quote->quote_number ? $quote->quote_number : $quote->quote_id); ?>
                     </a>
                 </td>
                 <td>
