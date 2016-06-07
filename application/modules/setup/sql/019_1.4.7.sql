@@ -95,3 +95,8 @@ ALTER TABLE ip_users MODIFY COLUMN user_vat_id VARCHAR(500);
 ALTER TABLE ip_users MODIFY COLUMN user_tax_code VARCHAR(500);
 ALTER TABLE ip_users MODIFY COLUMN user_psalt VARCHAR(500);
 ALTER TABLE ip_users MODIFY COLUMN user_tax_code VARCHAR(500);
+
+# IP-417 - Improve product database handling
+ALTER TABLE ip_products MODIFY COLUMN family_id INT(11) NULL DEFAULT NULL;
+ALTER TABLE ip_products MODIFY COLUMN tax_rate_id INT(11) NULL DEFAULT NULL;
+ALTER TABLE ip_products ADD COLUMN provider_name VARCHAR(500) NULL DEFAULT NULL AFTER purchase_price;
