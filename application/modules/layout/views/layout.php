@@ -201,6 +201,18 @@
                     </ul>
                 </li>
 
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('expenses'); ?></span><i
+                            class="visible-sm-inline fa fa-coin"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('expenses/form', lang('enter_expense')); ?></li>
+                        <li><?php echo anchor('expenses/index', lang('view_expenses')); ?></li>
+                    </ul>
+                </li>
+
                 <li class="dropdown hidden">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
@@ -225,6 +237,7 @@
                         <li><?php echo anchor('reports/payment_history', lang('payment_history')); ?></li>
                         <li><?php echo anchor('reports/sales_by_client', lang('sales_by_client')); ?></li>
                         <li><?php echo anchor('reports/sales_by_year', lang('sales_by_date')); ?></li>
+                        <li><?php echo anchor('reports/yearly', lang('yearly_report')); ?></li>
                     </ul>
                 </li>
 

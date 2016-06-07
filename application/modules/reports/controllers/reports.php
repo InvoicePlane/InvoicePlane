@@ -95,4 +95,14 @@ class Reports extends Admin_Controller
         $this->layout->buffer('content', 'reports/sales_by_year_index')->render();
     }
 
+    public function yearly()
+    {
+
+        $data = array(
+            'results' => $this->mdl_reports->yearly()
+        );
+
+        $this->layout->buffer('content', 'reports/yearly', $data)->render();
+    }
+
 }

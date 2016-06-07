@@ -1,3 +1,4 @@
+
 # IP-406 - Update the web preview for invoices and quotes
 UPDATE ip_settings
 SET setting_value = 'InvoicePlane_Web'
@@ -180,3 +181,27 @@ ALTER TABLE ip_products
 ALTER TABLE ip_products
   ADD COLUMN provider_name VARCHAR(500) NULL DEFAULT NULL
   AFTER purchase_price;
+
+# Expense module
+CREATE TABLE `ip_expense_custom` (
+	`expense_custom_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`expense_id` INT(11) NOT NULL,
+	PRIMARY KEY (`expense_custom_id`),
+	INDEX `expense_id` (`expense_id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=MyISAM
+AUTO_INCREMENT=1;
+
+CREATE TABLE `ip_expenses` (
+	`expense_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`payment_method_id` INT(11) NOT NULL DEFAULT '0',
+	`expense_date` DATE NOT NULL,
+	`expense_amount` DECIMAL(10,2) NOT NULL,
+	`expense_note` LONGTEXT NOT NULL,
+	`client_id` INT(11) NOT NULL,
+	PRIMARY KEY (`expense_id`),
+	INDEX `payment_method_id` (`payment_method_id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=MyISAM;

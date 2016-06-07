@@ -74,6 +74,58 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
+    public function yearly()
+    {
+        $this->db->select('ip_clients.client_name, SUM(ip_invoice_amounts.invoice_total) invoice_total, SUM(ip_invoice_amounts.invoice_tax_total) invoice_tax_total, SUM(ip_invoice_amounts.invoice_item_tax_total) item_tax_total, SUM(ip_invoice_amounts.invoice_paid) invoice_paid_total, YEAR(ip_invoices.invoice_date_created) year', FALSE);
+
+        $this->db->join('ip_invoices', 'ip_invoices.client_id = ip_clients.client_id', 'left');
+        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
+
+        $this->db->where('YEAR(ip_invoices.invoice_date_created) IS NOT NULL');
+
+        $this->db->group_by('YEAR(ip_invoices.invoice_date_created), ip_clients.client_id');
+
+        $invoice_data = $this->db->get('ip_clients')->result();
+
+        $this->db->select('ip_clients.client_name, SUM(ip_expenses.expense_amount) expense_total, ip_expenses.expense_amount * (ip_tax_rates.tax_rate_percent / 100) expense_tax_total, YEAR(ip_expenses.expense_date) year', FALSE);
+
+        $this->db->join('ip_expenses', 'ip_expenses.client_id = ip_clients.client_id', 'left');
+        $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_expenses.tax_rate_id', 'left');
+
+        $this->db->where('YEAR(ip_expenses.expense_date) IS NOT NULL');
+
+        $expense_data = $this->db->get('ip_clients')->result();
+
+        $combined = [];
+        $available_fields = [
+            'invoice_total',
+            'invoice_tax_total',
+            'invoice_paid_total',
+            'expense_total',
+            'expense_tax_total',
+            'item_tax_total'
+        ];
+
+        foreach([$invoice_data, $expense_data] as $data) {
+            foreach ($data as $row) {
+                if (!isset($combined[$row->year][$row->client_name])) {
+                    $combined[$row->year][$row->client_name] = [];
+                }
+
+                foreach($available_fields as $field) {
+                    if (!isset($combined[$row->year][$row->client_name][$field])) {
+                        $combined[$row->year][$row->client_name][$field] = 0;
+                    }
+                    if (isset($row->$field)) {
+                        $combined[$row->year][$row->client_name][$field] = $row->$field;
+                    }
+                }
+            }
+        }
+
+        return $combined;
+    }
+
     public function sales_by_year($from_date = null, $to_date = null, $minQuantity = null, $maxQuantity = null, $taxChecked = False)
     {
         if ($minQuantity == "") $minQuantity = 0;

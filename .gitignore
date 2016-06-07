@@ -9,7 +9,6 @@
 /uploads/customer_files/*
 /uploads/import/*
 /uploads/*.jpg
-
 .idea
 .sass-cache
 adminer.php

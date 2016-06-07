@@ -544,4 +544,12 @@ $lang = array(
     'complete'                                     => 'Complete', 
     'invoiced'                                     => 'Invoiced', 
 
+    'expense' => 'Expense',
+    'expenses' => 'Expenses',
+    'enter_expense' => 'Enter Expense',
+    'view_expenses' => 'View Expenses',
+    'expense_form' => 'Expense Form',
+    'yearly_report' => 'Yearly Report',
+    'tax_paid' => 'Tax Paid',
+    'expense_tax' => 'Expense Tax'
 );
