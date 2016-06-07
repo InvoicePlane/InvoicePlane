@@ -42,7 +42,7 @@ class Quotes extends Guest_Controller
                 break;
             case 'rejected':
                 $this->mdl_quotes->is_rejected()->where_in('ip_quotes.client_id', $this->user_clients);
-                $this->layout->set('show_invoice_column', TRUE);
+                $this->layout->set('show_invoice_column', true);
                 break;
             default:
                 $this->mdl_quotes->is_open()->where_in('ip_quotes.client_id', $this->user_clients);
@@ -86,7 +86,7 @@ class Quotes extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
-    public function generate_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
+    public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
         $this->load->helper('pdf');
 

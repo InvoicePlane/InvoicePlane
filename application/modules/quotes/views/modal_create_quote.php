@@ -25,7 +25,7 @@
                     invoice_group_id: $('#invoice_group_id').val()
                 },
                 function (data) {
-                    <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         // The validation was successful and quote was created
@@ -58,10 +58,10 @@
                 <label for="client_name"><?php echo lang('client'); ?></label>
                 <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
                     <?php
-                    foreach ($clients as $client){
-                        echo "<option value='".htmlentities($client->client_name)."' ";
+                    foreach ($clients as $client) {
+                        echo "<option value='" . htmlentities($client->client_name) . "' ";
                         if ($client_name == $client->client_name) echo 'selected';
-                        echo ">".htmlentities($client->client_name)."</option>";
+                        echo ">" . htmlentities($client->client_name) . "</option>";
                     }
                     ?>
                 </select>

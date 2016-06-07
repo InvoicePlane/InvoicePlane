@@ -25,7 +25,7 @@
             } else {
                 echo 'value="0"';
             } ?>
-            >
+        >
 
         <fieldset>
             <legend><?php echo lang('personal_information'); ?></legend>
@@ -38,7 +38,7 @@
                     ) {
                         echo 'checked="checked"';
                     } ?>
-                    >
+                >
               </span>
                 <input id="client_name" name="client_name" type="text" class="form-control"
                        placeholder="<?php echo lang('client_name'); ?>"
@@ -105,9 +105,9 @@
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
                                     <option value="<?php echo $cldr; ?>"
-                                            <?php if ($selected_country == $cldr) {
-                                                echo 'selected="selected"';
-                                            } ?>
+                                        <?php if ($selected_country == $cldr) {
+                                            echo 'selected="selected"';
+                                        } ?>
                                     ><?php echo $country ?></option>
                                 <?php } ?>
                             </select>

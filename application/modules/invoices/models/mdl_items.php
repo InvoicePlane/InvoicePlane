@@ -24,7 +24,9 @@ class Mdl_Items extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
+        $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*,
+            item_tax_rates.tax_rate_percent AS item_tax_rate_percent,
+            item_tax_rates.tax_rate_name AS item_tax_rate_name');
     }
 
     public function default_order_by()
@@ -68,11 +70,15 @@ class Mdl_Items extends Response_Model
             'item_tax_rate_id' => array(
                 'field' => 'item_tax_rate_id',
                 'label' => lang('item_tax_rate')
-            )
+            ),
+            'item_product_id' => array(
+                'field' => 'item_product_id',
+                'label' => lang('original_product')
+            ),
         );
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
 
@@ -80,10 +86,10 @@ class Mdl_Items extends Response_Model
         $this->mdl_item_amounts->calculate($id);
 
         $this->load->model('invoices/mdl_invoice_amounts');
-        
-        if (is_object($db_array) && isset($db_array->invoice_id)){
+
+        if (is_object($db_array) && isset($db_array->invoice_id)) {
             $this->mdl_invoice_amounts->calculate($db_array->invoice_id);
-        } elseif (is_array($db_array) && isset($db_array['invoice_id'])){
+        } elseif (is_array($db_array) && isset($db_array['invoice_id'])) {
             $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
         }
 

@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 class Cron extends Base_Controller
 {
-    public function recur($cron_key = NULL)
+    public function recur($cron_key = null)
     {
         if ($cron_key == $this->mdl_settings->setting('cron_key')) {
             $this->load->model('invoices/mdl_invoices_recurring');
@@ -49,7 +49,7 @@ class Cron extends Base_Controller
                 );
 
                 // This is the new invoice id
-                $target_id = $this->mdl_invoices->create($db_array, FALSE);
+                $target_id = $this->mdl_invoices->create($db_array, false);
 
                 // Copy the original invoice to the new invoice
                 $this->mdl_invoices->copy_invoice($source_id, $target_id);
@@ -89,8 +89,7 @@ class Cron extends Base_Controller
                     }
 
                     $from = !empty($tpl->email_template_from_email) ?
-                        array($tpl->email_template_from_email,
-                            $tpl->email_template_from_name) :
+                        array($tpl->email_template_from_email, $tpl->email_template_from_name) :
                         array($invoice->user_email, "");
 
                     $subject = !empty($tpl->email_template_subject) ?
@@ -104,8 +103,9 @@ class Cron extends Base_Controller
 
                     if (email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
                         $this->mdl_invoices->mark_sent($target_id);
+                        $this->mdl_invoice_amounts->calculate($target_id);
                     } else {
-                        log_message("warning", "Invoice " . $target_id . "could not be sent. Please review your Email settings.");
+                        log_message('warning', 'Invoice ' . $target_id . 'could not be sent. Please review your Email settings.');
                     }
                 }
             }

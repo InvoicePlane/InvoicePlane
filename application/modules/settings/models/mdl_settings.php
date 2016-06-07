@@ -29,7 +29,7 @@ class Mdl_Settings extends CI_Model
         if ($query->row()) {
             return $query->row()->setting_value;
         } else {
-            return NULL;
+            return null;
         }
     }
 
@@ -40,7 +40,7 @@ class Mdl_Settings extends CI_Model
             'setting_value' => $value
         );
 
-        if ($this->get($key) !== NULL) {
+        if ($this->get($key) !== null) {
             $this->db->where('setting_key', $key);
             $this->db->update('ip_settings', $db_array);
         } else {
@@ -63,9 +63,9 @@ class Mdl_Settings extends CI_Model
         }
     }
 
-    public function setting($key)
+    public function setting($key, $default = '')
     {
-        return (isset($this->settings[$key])) ? $this->settings[$key] : '';
+        return (isset($this->settings[$key])) ? $this->settings[$key] : $default;
     }
 
     public function set_setting($key, $value)

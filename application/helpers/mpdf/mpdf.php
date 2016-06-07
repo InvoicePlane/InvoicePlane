@@ -321,6 +321,8 @@ var $watermarkImgAlpha;
 var $PDFAXwarnings;
 var $MetadataRoot; 
 var $OutputIntentRoot;
+var $associatedFiles;
+var $associatedFilesRoot;
 var $InfoRoot; 
 var $current_filename;
 var $parsers;
@@ -805,6 +807,7 @@ var $subject;            //subject
 var $author;             //author
 var $keywords;           //keywords
 var $creator;            //creator
+var $additionalRdf;      //additional rdf added in xmp
 
 var $aliasNbPg;       //alias for total number of pages
 var $aliasNbPgGp;       //alias for total number of pages in page group
@@ -1665,6 +1668,13 @@ function SetCreator($creator) {
 	$this->creator= $creator;
 }
 
+function SetAdditionalRdf($rdf){
+	$this->additionalRdf = $rdf;
+}
+
+function SetAssociatedFiles($files){
+	$this->associatedFiles = $files;
+}
 
 function SetAnchor2Bookmark($x) {
 	$this->anchor2Bookmark = $x;
@@ -9272,6 +9282,10 @@ function _putmetadata() {
 	$m .= '   </rdf:Description>'."\n";
 
 
+  if(!empty($this->additionalRdf)) {
+    $m .= $this->additionalRdf;
+  }
+
 	// This bit is specific to PDFX-1a
 	if ($this->PDFX) {
 		$m .= '   <rdf:Description rdf:about="uuid:'.$uuid.'" xmlns:pdfx="http://ns.adobe.com/pdfx/1.3/" pdfx:Apag_PDFX_Checkup="1.3" pdfx:GTS_PDFXConformance="PDF/X-1a:2003" pdfx:GTS_PDFXVersion="PDF/X-1:2003"/>'."\n";
@@ -9353,6 +9367,51 @@ function _putoutputintent() {
 	$this->_out('endobj');
 }
 
+function _putoutputAssociatedFiles() {
+	// for each file, we create the spec object + the stream object
+	foreach($this->associatedFiles as $k=>$file) {
+		// spec
+		$this->_newobj();
+		$this->associatedFiles[$k]['_root'] = $this->n;
+		$this->_out('<</F ' . $this->_textstring($file['name']));
+		$this->_out('/Desc ' . $this->_textstring($file['description']));
+		$this->_out('/Type /Filespec');
+		$this->_out('/EF <<');
+		$this->_out('/F ' . ($this->n + 1) . ' 0 R');
+		$this->_out('>>');
+		if ($file['AFRelationship']) {
+		  $this->_out('/AFRelationship /' . $file['AFRelationship']);
+		}
+		$this->_out('>>');
+		$this->_out('endobj');
+
+		// stream
+		$fileContent = @file_get_contents($file['path']) or die('mPDF Error: Cannot access associated file - ' . $file['path']);
+		$filestream = gzcompress($fileContent);
+		$this->_newobj();
+		$this->_out('<</Type /EmbeddedFile');
+		if ($file['mime']) {
+			$this->_out('/Subtype /' . $this->_escapeName($file['mime']));
+		}
+		$this->_out('/Length '.strlen($filestream));
+		$this->_out('/Filter /FlateDecode');
+		$this->_out('/Params <</ModDate ' . $this->_textstring('D:' . pdfFormattedDate(filemtime($file['path']))) . ' >>');
+
+		$this->_out('>>');
+		$this->_putstream($filestream);
+		$this->_out('endobj');
+	}
+
+	// AF array
+	$this->_newobj();
+	$refs = [];
+	foreach($this->associatedFiles as $file) {
+		array_push($refs, '' . $file['_root'] . ' 0 R');
+	}
+	$this->_out('[' . join(' ', $refs) . ']');
+	$this->_out('endobj');
+	$this->associatedFilesRoot = $this->n;
+}
 
 function _putcatalog() {
 	$this->_out('/Type /Catalog');
@@ -9386,6 +9445,16 @@ function _putcatalog() {
 	// OutputIntents
 	if ($this->PDFA || $this->PDFX || $this->ICCProfile) { 
 		$this->_out('/OutputIntents ['.$this->OutputIntentRoot.' 0 R]');
+	}
+	// Associated files
+	if ($this->associatedFilesRoot) { 
+		$this->_out('/AF '. $this->associatedFilesRoot .' 0 R');
+		
+	$names = [];
+	foreach($this->associatedFiles as $file) {
+		array_push($names, $this->_textstring($file['name']) . ' ' . $file['_root'] . ' 0 R');
+	}
+		$this->_out('/Names << /EmbeddedFiles << /Names [' . join(' ', $names) .  '] >> >>');
 	}
 
 /*-- FORMS --*/
@@ -9519,6 +9588,8 @@ function _enddoc() {
 	if ($this->PDFA || $this->PDFX) { $this->_putmetadata(); }
 	// OUTPUTINTENT
 	if ($this->PDFA || $this->PDFX || $this->ICCProfile) { $this->_putoutputintent(); }
+	// Associated files
+	if ($this->associatedFiles) { $this->_putoutputAssociatedFiles(); }
 
 	//Catalog
 	$this->_newobj();
@@ -10770,6 +10841,13 @@ function _escape($s)
 {
 	// the chr(13) substitution fixes the Bugs item #1421290.
 	return strtr($s, array(')' => '\\)', '(' => '\\(', '\\' => '\\\\', chr(13) => '\r'));
+}
+
+//
+// as described in 3.2.4 “Name Objects' of PDF1.7 reference
+//
+function _escapeName($s) {
+	return strtr($s, array('/' => '#2F'));
 }
 
 function _putstream($s) {

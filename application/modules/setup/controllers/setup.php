@@ -60,7 +60,7 @@ class Setup extends MX_Controller
 
         $this->load->helper('directory');
 
-        $languages = directory_map(APPPATH . '/language', TRUE);
+        $languages = directory_map(APPPATH . '/language', true);
 
         sort($languages);
 
@@ -109,7 +109,7 @@ class Setup extends MX_Controller
                 redirect('setup/install_tables');
             } else {
                 // This appears to be an upgrade
-                $this->session->set_userdata('is_upgrade', TRUE);
+                $this->session->set_userdata('is_upgrade', true);
                 $this->session->set_userdata('install_step', 'upgrade_tables');
                 redirect('setup/upgrade_tables');
             }
@@ -194,7 +194,7 @@ class Setup extends MX_Controller
             $db_array = $this->mdl_users->db_array();
             $db_array['user_type'] = 1;
 
-            $this->mdl_users->save(NULL, $db_array);
+            $this->mdl_users->save(null, $db_array);
 
             $this->session->set_userdata('install_step', 'complete');
             redirect('setup/complete');
@@ -319,7 +319,7 @@ class Setup extends MX_Controller
     {
         $checks = array();
 
-        $php_required = '5.3';
+        $php_required = '5.4';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
         if ($php_installed < $php_required) {

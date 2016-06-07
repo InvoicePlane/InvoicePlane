@@ -28,7 +28,7 @@ class Mailer extends Admin_Controller
 
         $this->mailer_configured = mailer_configured();
 
-        if ($this->mailer_configured == FALSE) {
+        if ($this->mailer_configured == false) {
             $this->layout->buffer('content', 'mailer/not_configured');
             $this->layout->render();
         }

@@ -34,7 +34,7 @@ class Payments extends Guest_Controller
         $this->layout->set(
             array(
                 'payments' => $payments,
-                'filter_display' => TRUE,
+                'filter_display' => true,
                 'filter_placeholder' => lang('filter_payments'),
                 'filter_method' => 'filter_payments'
             )
