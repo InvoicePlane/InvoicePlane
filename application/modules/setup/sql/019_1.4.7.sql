@@ -28,6 +28,9 @@ ALTER TABLE `ip_invoice_item_amounts`
 ALTER TABLE `ip_invoice_items`
   MODIFY COLUMN item_discount_amount DECIMAL(20, 2) NULL DEFAULT NULL;
 
+ALTER TABLE `ip_invoice_tax_rates`
+  MODIFY COLUMN invoice_tax_rate_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00;
+
 ALTER TABLE `ip_quotes`
   MODIFY COLUMN quote_discount_amount DECIMAL(20, 2) NULL DEFAULT NULL,
   MODIFY COLUMN quote_discount_percent DECIMAL(20, 2) NULL DEFAULT NULL;
