@@ -50,7 +50,7 @@ class Mdl_Products extends Response_Model
             'product_sku' => array(
                 'field' => 'product_sku',
                 'label' => lang('product_sku'),
-                'rules' => 'required'
+                'rules' => ''
             ),
             'product_name' => array(
                 'field' => 'product_name',
@@ -72,6 +72,11 @@ class Mdl_Products extends Response_Model
                 'label' => lang('purchase_price'),
                 'rules' => ''
             ),
+            'provider_name' => array(
+                'field' => 'provider_name',
+                'label' => lang('provider_name'),
+                'rules' => ''
+            ),
             'family_id' => array(
                 'field' => 'family_id',
                 'label' => lang('family'),
@@ -86,4 +91,15 @@ class Mdl_Products extends Response_Model
         );
     }
 
+    public function db_array()
+    {
+        $db_array = parent::db_array();
+
+        $db_array['product_price'] = (empty($db_array['product_price']) ? null : standardize_amount($db_array['product_price']));
+        $db_array['purchase_price'] = (empty($db_array['purchase_price']) ? null : standardize_amount($db_array['purchase_price']));
+        $db_array['family_id'] = (empty($db_array['family_id']) ? null : $db_array['family_id']);
+        $db_array['tax_rate_id'] = (empty($db_array['tax_rate_id']) ? null : $db_array['tax_rate_id']);
+
+        return $db_array;
+    }
 }
