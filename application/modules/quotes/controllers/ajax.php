@@ -38,25 +38,15 @@ class Ajax extends Admin_Controller
                 if ($item->item_name) {
                     $item->item_quantity = standardize_amount($item->item_quantity);
                     $item->item_price = standardize_amount($item->item_price);
-                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
 
-                    $item_id = ($item->item_id) ?: NULL;
+                    // Prepare default values
+                    $item->item_discount_amount = empty($item->item_discount_amount) ? null :
+                        standardize_amount($item->item_discount_amount);
 
-                    $save_item_as_lookup = (isset($item->save_item_as_lookup)) ? $item->save_item_as_lookup : 0;
-
-                    unset($item->item_id, $item->save_item_as_lookup);
+                    $item_id = ($item->item_id) ?: null;
+                    unset($item->item_id);
 
                     $this->mdl_quote_items->save($item_id, $item);
-
-                    if ($save_item_as_lookup) {
-                        $db_array = array(
-                            'item_name' => $item->item_name,
-                            'item_description' => $item->item_description,
-                            'item_price' => $item->item_price
-                        );
-
-                        $this->mdl_item_lookups->save(NULL, $db_array);
-                    }
                 }
             }
 
