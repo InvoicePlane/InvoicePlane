@@ -107,7 +107,7 @@
         </label>
         <?php if ($this->mdl_settings->setting('invoice_logo')) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('invoice_logo'); ?>"><br>
-            <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
+            <?php echo anchor('settings/remove_logo/invoice', lang('remove_logo')); ?><br>
         <?php } ?>
         <input type="file" name="invoice_logo" size="40" class="input-sm form-control"/>
     </div>
