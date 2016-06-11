@@ -175,6 +175,18 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo lang('currency_code'); ?>
+                </label>
+                <input type="text" name="settings[currency_code]" class="input-sm form-control"
+                       value="<?php echo $this->mdl_settings->setting('currency_code'); ?>">
+            </div>
+        </div>
+    </div>
+
     <hr/>
     <h4><?php echo lang('dashboard'); ?></h4>
     <br/>

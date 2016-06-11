@@ -118,6 +118,23 @@
     </div>
 
     <div class="form-group">
+        <label for="settings[include_zugferd]" class="control-label">
+            <?php echo lang('invoice_pdf_include_zugferd'); ?>
+        </label>
+        <select name="settings[include_zugferd]" class="input-sm form-control">
+            <option value="0"
+                    <?php if (!$this->mdl_settings->setting('include_zugferd')) { ?>selected="selected"<?php } ?>>
+                <?php echo lang('no'); ?>
+            </option>
+            <option value="1"
+                    <?php if ($this->mdl_settings->setting('include_zugferd')) { ?>selected="selected"<?php } ?>>
+                <?php echo lang('yes'); ?>
+            </option>
+        </select>
+        <p class="help-block"><?php echo lang('invoice_pdf_include_zugferd_help'); ?></p>
+    </div>
+
+    <div class="form-group">
         <label for="settings[pdf_invoice_template]" class="control-label">
             <?php echo lang('default_pdf_template'); ?>
         </label>
