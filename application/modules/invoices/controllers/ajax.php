@@ -43,7 +43,7 @@ class Ajax extends Admin_Controller
                     $item->item_price = standardize_amount($item->item_price);
 
                     // Prepare default values
-                    $item->item_discount_amount = empty($item->item_discount_amount) ? null :
+                    $item->item_discount_amount = empty($item->item_discount_amount) ? floatval(0) :
                         standardize_amount($item->item_discount_amount);
 
                     $item_id = ($item->item_id) ?: null;
@@ -119,16 +119,32 @@ class Ajax extends Admin_Controller
             }
 
             // check if status changed to paid and the feature is enabled
-            if ($invoice_status == 4 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'paid') {
-                $db_array['is_read_only'] = 1;
+            if ($invoice_status == 4 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle')) {
+ 	      		$db_array['is_read_only'] = 1;
+             	$this->mdl_invoices->save($invoice_id, $db_array);
+             	
+             	// Recalculate for discounts
+             	$this->load->model('invoices/mdl_invoice_amounts');
+             	$this->mdl_invoice_amounts->calculate($invoice_id);
+
+             	$_POST['invoice_id'] 			=  $invoice_id;
+            	$_POST['payment_amount']		=  $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row()->invoice_balance;
+            	$_POST['payment_method_id']		=  $this->input->post('payment_method');
+            	$_POST['payment_date']			=  date(date_format_setting());
+            	$_POST['payment_over_invoice']  =  1;
+            	
+            	$this->load->model('payments/mdl_payments');
+
+				if ($this->mdl_payments->run_validation()) {
+             		$this->mdl_payments->save();
+				}
             }
-
-            $this->mdl_invoices->save($invoice_id, $db_array);
-
-            // Recalculate for discounts
-            $this->load->model('invoices/mdl_invoice_amounts');
-            $this->mdl_invoice_amounts->calculate($invoice_id);
-
+            else{
+            	$this->mdl_invoices->save($invoice_id, $db_array);
+            	// Recalculate for discounts
+            	$this->load->model('invoices/mdl_invoice_amounts');
+            	$this->mdl_invoice_amounts->calculate($invoice_id);
+            }
             $response = array(
                 'success' => 1
             );

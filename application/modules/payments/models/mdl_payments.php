@@ -147,8 +147,9 @@ class Mdl_Payments extends Response_Model
         $db_array = parent::db_array();
 
         $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
-        $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
-
+        if($_POST['payment_over_invoice'] != 1){
+        	$db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
+        }
         return $db_array;
     }
 
