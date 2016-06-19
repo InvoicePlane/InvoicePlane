@@ -327,10 +327,12 @@ class Ajax extends Admin_Controller
                 $db_array = array(
                     'invoice_id' => $invoice_id,
                     'item_tax_rate_id' => $quote_item->item_tax_rate_id,
+                    'item_product_id' => $quote_item->item_product_id,
                     'item_name' => $quote_item->item_name,
                     'item_description' => $quote_item->item_description,
                     'item_quantity' => $quote_item->item_quantity,
                     'item_price' => $quote_item->item_price,
+                    'item_discount_amount' => $quote_item->item_discount_amount,
                     'item_order' => $quote_item->item_order
                 );
 
