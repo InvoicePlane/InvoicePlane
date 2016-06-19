@@ -45,6 +45,7 @@ class Ajax extends Admin_Controller
                     // Prepare default values
                     $item->item_discount_amount = empty($item->item_discount_amount) ? null :
                         standardize_amount($item->item_discount_amount);
+                    $item->item_product_id = empty($item->item_product_id) ? null : $item->item_product_id;
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
