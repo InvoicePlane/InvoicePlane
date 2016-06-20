@@ -35,17 +35,11 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if (!empty($item->item_quantity) && !empty($item->item_price)
-                    || !empty($item->item_name)
-                    || !empty($item->item_description)
-                ) {
-                    $item->item_quantity = standardize_amount($item->item_quantity);
-                    $item->item_price = standardize_amount($item->item_price);
-
-                    // Prepare default values
-                    $item->item_discount_amount = empty($item->item_discount_amount) ? null :
-                        standardize_amount($item->item_discount_amount);
-                    $item->item_product_id = empty($item->item_product_id) ? null : $item->item_product_id;
+                if (!empty($item->item_name)) {
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
+                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
@@ -55,18 +49,12 @@ class Ajax extends Admin_Controller
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', lang('item'), 'required');
-                    $this->form_validation->set_rules('item_description', lang('description'), 'required');
-                    $this->form_validation->set_rules('item_quantity', lang('quantity'), 'required');
-                    $this->form_validation->set_rules('item_price', lang('price'), 'required');
                     $this->form_validation->run();
 
                     $response = array(
                         'success' => 0,
                         'validation_errors' => array(
                             'item_name' => form_error('item_name', '', ''),
-                            'item_description' => form_error('item_description', '', ''),
-                            'item_quantity' => form_error('item_quantity', '', ''),
-                            'item_price' => form_error('item_price', '', ''),
                         )
                     );
 

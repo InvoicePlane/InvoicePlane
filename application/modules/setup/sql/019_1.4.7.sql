@@ -110,9 +110,11 @@ ALTER TABLE ip_families
 ALTER TABLE ip_invoice_groups
   MODIFY COLUMN invoice_group_name VARCHAR(500);
 ALTER TABLE ip_invoice_items
-  MODIFY COLUMN item_name VARCHAR(500);
+  MODIFY COLUMN item_name VARCHAR(500) DEFAULT NULL;
 ALTER TABLE ip_invoice_items
-  MODIFY COLUMN item_price DECIMAL(20, 2);
+  MODIFY COLUMN item_description LONGTEXT DEFAULT NULL;
+ALTER TABLE ip_invoice_items
+  MODIFY COLUMN item_price DECIMAL(20, 2) DEFAULT NULL;
 ALTER TABLE ip_payment_methods
   MODIFY COLUMN payment_method_name VARCHAR(500);
 ALTER TABLE ip_payments
@@ -124,9 +126,11 @@ ALTER TABLE ip_products
 ALTER TABLE ip_projects
   MODIFY COLUMN project_name DECIMAL(20, 2);
 ALTER TABLE ip_quote_items
-  MODIFY COLUMN item_name VARCHAR(500);
+  MODIFY COLUMN item_name VARCHAR(500) DEFAULT NULL;
 ALTER TABLE ip_quote_items
-  MODIFY COLUMN item_quantity DECIMAL(20, 2);
+  MODIFY COLUMN item_description LONGTEXT DEFAULT NULL;
+ALTER TABLE ip_quote_items
+  MODIFY COLUMN item_quantity DECIMAL(20, 2) DEFAULT NULL;
 ALTER TABLE ip_quote_items
   MODIFY COLUMN item_price DECIMAL(20, 2);
 ALTER TABLE ip_quote_tax_rates
