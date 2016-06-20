@@ -110,18 +110,10 @@ class Ajax extends Admin_Controller
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($invoice_status == 2 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
-                $db_array['is_read_only'] = 1;
-            }
-
-            // check if status changed to viewed, the feature is enabled and settings is set to viewed
-            if ($invoice_status == 3 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
-                $db_array['is_read_only'] = 1;
-            }
-
-            // check if status changed to paid and the feature is enabled
-            if ($invoice_status == 4 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'paid') {
-                $db_array['is_read_only'] = 1;
+            if ($this->config->item('disable_read_only') === false) {
+                if ($invoice_status == $this->mdl_settings->setting('read_only_toggle')) {
+                    $db_array['is_read_only'] = 1;
+                }
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
@@ -131,7 +123,7 @@ class Ajax extends Admin_Controller
             $this->mdl_invoice_amounts->calculate($invoice_id);
 
             $response = array(
-                'success' => 1
+                'success' => 1,
             );
         } else {
             $this->load->helper('json_error');
@@ -141,11 +133,11 @@ class Ajax extends Admin_Controller
             );
         }
 
+        // Save all custom fields
         if ($this->input->post('custom')) {
             $db_array = array();
 
             foreach ($this->input->post('custom') as $custom) {
-                // I hate myself for this...
                 $db_array[str_replace(']', '', str_replace('custom[', '', $custom['name']))] = $custom['value'];
             }
 
