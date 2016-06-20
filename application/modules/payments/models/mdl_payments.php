@@ -106,6 +106,11 @@ class Mdl_Payments extends Response_Model
         // Save the payment
         $id = parent::save($id, $db_array);
 
+        // Set proper status for the invoice
+        $this->db->where('invoice_id', $db_array['invoice_id']);
+        $this->db->set('invoice_status_id', 4);
+        $this->db->update('ip_invoices');
+
         // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
         $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
