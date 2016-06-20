@@ -78,6 +78,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         );
 
         $this->db->where('invoice_id', $invoice_id);
+
         if ($this->db->get('ip_invoice_amounts')->num_rows()) {
             // The record already exists; update it
             $this->db->where('invoice_id', $invoice_id);
@@ -90,24 +91,37 @@ class Mdl_Invoice_Amounts extends CI_Model
         // Calculate the invoice taxes
         $this->calculate_invoice_taxes($invoice_id);
 
-        // Set to paid if applicable
-        if ($db_array['invoice_balance'] == 0) {
+        // Get invoice status
+        $this->load->model('invoices/mdl_invoices');
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0 ? true : false);
 
-            // Get the payment method id first
-            $this->db->where('invoice_id', $invoice_id);
-            $payment = $this->db->get('ip_payments')->row();
-            $payment_method_id = ($payment->payment_method_id ? $payment->payment_method_id : 0);
+        // Set to paid if applicable (status should not be draft)
+        if ($invoice->invoice_status_id && $invoice->invoice_status_id > 1) {
+            // Set to paid if balance is zero and the invoice total is
+            if ($invoice->invoice_balance == 0) {
+                // Check if the invoice total is not zero or negative
+                if ($invoice->invoice_total != 0 || $invoice_is_credit) {
+                    $this->db->where('invoice_id', $invoice_id);
+                    $payment = $this->db->get('ip_payments')->row();
+                    $payment_method_id = ($payment->payment_method_id ? $payment->payment_method_id : 0);
 
-            $this->db->where('invoice_id', $invoice_id);
-            $this->db->set('invoice_status_id', 4);
-            $this->db->set('payment_method', $payment_method_id);
-            $this->db->update('ip_invoices');
-        }
+                    $this->db->where('invoice_id', $invoice_id);
+                    $this->db->set('invoice_status_id', 4);
+                    $this->db->set('payment_method', $payment_method_id);
+                    $this->db->update('ip_invoices');
 
-        if ($this->config->item('disable_read_only') == false && $db_array['invoice_balance'] == 0 && $db_array['invoice_total'] != 0) {
-            $this->db->where('invoice_id', $invoice_id);
-            $this->db->set('is_read_only', 1);
-            $this->db->update('ip_invoices');
+                    // Set to read-only if applicable
+                    if (
+                        $this->config->item('disable_read_only') == false
+                        && $invoice->invoice_status_id == $this->mdl_settings->setting('read_only_toggle')
+                    ) {
+                        $this->db->where('invoice_id', $invoice_id);
+                        $this->db->set('is_read_only', 1);
+                        $this->db->update('ip_invoices');
+                    }
+                }
+            }
         }
     }
 
@@ -165,18 +179,6 @@ class Mdl_Invoice_Amounts extends CI_Model
 
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('ip_invoice_amounts', $db_array);
-
-            // Set to paid if applicable
-            if ($invoice_balance <= 0) {
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->set('invoice_status_id', 4);
-                $this->db->update('ip_invoices');
-            }
-            if ($this->config->item('disable_read_only') == false && $invoice_balance == 0 && $invoice_total != 0) {
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->set('is_read_only', 1);
-                $this->db->update('ip_invoices');
-            }
         } else {
             // No invoice taxes applied
 

@@ -180,3 +180,19 @@ ALTER TABLE ip_products
 ALTER TABLE ip_products
   ADD COLUMN provider_name VARCHAR(500) NULL DEFAULT NULL
   AFTER purchase_price;
+
+# Change values for read-only setting
+UPDATE ip_settings
+SET setting_value = 2
+WHERE setting_key = 'read_only_toggle' AND
+      setting_value = 'sent';
+
+UPDATE ip_settings
+SET setting_value = 3
+WHERE setting_key = 'read_only_toggle' AND
+      setting_value = 'viewed';
+
+UPDATE ip_settings
+SET setting_value = 4
+WHERE setting_key = 'read_only_toggle' AND
+      setting_value = 'paid';
