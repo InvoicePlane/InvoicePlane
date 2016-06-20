@@ -314,16 +314,16 @@
                     <?php echo lang('set_to_read_only'); ?>
                 </label>
                 <select name="settings[read_only_toggle]" class="input-sm form-control">
-                    <option value="sent"
-                        <?php echo($this->mdl_settings->setting('read_only_toggle') == 'sent' ? 'selected="selected"' : ''); ?>>
+                    <option value="2"
+                        <?php echo($this->mdl_settings->setting('read_only_toggle') == 2 ? 'selected="selected"' : ''); ?>>
                         <?php echo lang('sent'); ?>
                     </option>
-                    <option value="viewed"
-                        <?php echo($this->mdl_settings->setting('read_only_toggle') == 'viewed' ? 'selected="selected"' : ''); ?>>
+                    <option value="3"
+                        <?php echo($this->mdl_settings->setting('read_only_toggle') == 3 ? 'selected="selected"' : ''); ?>>
                         <?php echo lang('viewed'); ?>
                     </option>
-                    <option value="paid"
-                        <?php echo($this->mdl_settings->setting('read_only_toggle') == 'paid' ? 'selected="selected"' : ''); ?>>
+                    <option value="4"
+                        <?php echo($this->mdl_settings->setting('read_only_toggle') == 4 ? 'selected="selected"' : ''); ?>>
                         <?php echo lang('paid'); ?>
                     </option>
                 </select>
