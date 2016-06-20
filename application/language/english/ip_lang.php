@@ -436,6 +436,7 @@ $lang = array(
     'setup_user_password_info'                     => 'Remember to use a strong password. A combination of upper and lower case letters, numbers and symbols is recommended. Minimum length: 8 characters',
     'setup_user_password_verify_info'              => 'Verify your password by providing the same password again.',
     'setup_v120_alert'                             => '<strong>Attention!</strong><br>It\'s very important that you read <a href="https://go.invoiceplane.com/v120update" target="_blank">this update notice</a> about some significant changes of the InvoicePlane application.',
+    'setup_v147_alert'                             => '<strong>Attention!</strong><br>Please open the file <code>application/config/config.php</code> and change the line <code>$config[\'sess_use_database\'] = false;</code> to <code>$config[\'sess_use_database\'] = true;</code>.<br>More details can be found <a href="https://go.invoiceplane.com/v147update" target="_blank">here</a>',
     'set_to_read_only'                             => 'Set the Invoice to read-only on',
     'six_months'                                   => 'Six Months',
     'smtp_password'                                => 'SMTP Password',
