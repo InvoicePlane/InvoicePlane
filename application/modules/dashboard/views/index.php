@@ -146,7 +146,7 @@
                                     <?php echo date_from_mysql($quote->quote_date_created); ?>
                                 </td>
                                 <td>
-                                    <?php echo anchor('quotes/view/' . $quote->quote_id, $quote->quote_number); ?>
+                                    <?php echo anchor('quotes/view/' . $quote->quote_id, ($quote->quote_number ? $quote->quote_number : $quote->quote_id)); ?>
                                 </td>
                                 <td>
                                     <?php echo anchor('clients/view/' . $quote->client_id, $quote->client_name); ?>
@@ -220,7 +220,7 @@
                                 </span>
                                 </td>
                                 <td>
-                                    <?php echo anchor('invoices/view/' . $invoice->invoice_id, $invoice->invoice_number); ?>
+                                    <?php echo anchor('invoices/view/' . $invoice->invoice_id, ($invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id)); ?>
                                 </td>
                                 <td>
                                     <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
