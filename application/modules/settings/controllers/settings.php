@@ -32,7 +32,7 @@ class Settings extends Admin_Controller
 
             // Only execute if the setting is different
             if ($settings['tax_rate_decimal_places'] <> $this->mdl_settings->setting('tax_rate_decimal_places')) {
-                $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT NULL");
+                $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null");
             }
 
             // Save the submitted settings
@@ -109,7 +109,7 @@ class Settings extends Admin_Controller
         $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
 
         // Collect the list of languages
-        $languages = directory_map(APPPATH . 'language', TRUE);
+        $languages = directory_map(APPPATH . 'language', true);
         sort($languages);
 
         // Get the current version

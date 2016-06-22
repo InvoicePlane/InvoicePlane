@@ -30,14 +30,14 @@ class Layout extends MX_Controller
                 $view = explode('/', $arg[1]);
                 $data = array_merge(isset($arg[2]) ? $arg[2] : array(), $this->view_data);
 
-                $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, TRUE);
+                $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, true);
             }
         } else {
             $key = $args[0];
             $view = explode('/', $args[1]);
             $data = array_merge(isset($args[2]) ? $args[2] : array(), $this->view_data);
 
-            $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, TRUE);
+            $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, true);
         }
         return $this;
     }

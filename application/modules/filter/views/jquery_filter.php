@@ -16,7 +16,7 @@
                     {
                         filter_query: $('#filter').val()
                     }, function (data) {
-                        <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+                        <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                         $('#filter_results').html(data);
                     });
             }, 1000);

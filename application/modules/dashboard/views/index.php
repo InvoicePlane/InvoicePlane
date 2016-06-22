@@ -196,7 +196,7 @@
                         <tbody>
 
                         <?php foreach ($invoices as $invoice) {
-                            if ($this->config->item('disable_read_only') == TRUE) {
+                            if ($this->config->item('disable_read_only') == true) {
                                 $invoice->is_read_only = 0;
                             } ?>
                             <tr>

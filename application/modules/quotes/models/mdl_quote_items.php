@@ -68,11 +68,15 @@ class Mdl_Quote_Items extends Response_Model
             'item_tax_rate_id' => array(
                 'field' => 'item_tax_rate_id',
                 'label' => lang('item_tax_rate')
-            )
+            ),
+            'item_product_id' => array(
+                'field' => 'item_product_id',
+                'label' => lang('original_product')
+            ),
         );
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
 
@@ -81,9 +85,9 @@ class Mdl_Quote_Items extends Response_Model
 
         $this->load->model('quotes/mdl_quote_amounts');
 
-        if (is_object($db_array) && isset($db_array->quote_id)){
+        if (is_object($db_array) && isset($db_array->quote_id)) {
             $this->mdl_quote_amounts->calculate($db_array->quote_id);
-        } elseif (is_array($db_array) && isset($db_array['quote_id'])){
+        } elseif (is_array($db_array) && isset($db_array['quote_id'])) {
             $this->mdl_quote_amounts->calculate($db_array['quote_id']);
         }
 

@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function save()
     {
@@ -35,36 +35,29 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if (!empty($item->item_quantity) && !empty($item->item_price)
-                    || !empty($item->item_name)
-                    || !empty($item->item_description)
-                ) {
-                    $item->item_quantity = standardize_amount($item->item_quantity);
-                    $item->item_price = standardize_amount($item->item_price);
-                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
+                if (!empty($item->item_name)) {
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
+                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
 
-                    $item_id = ($item->item_id) ?: NULL;
-                    unset($item->item_id, $item->save_item_as_lookup);
+                    $item_id = ($item->item_id) ?: null;
+                    unset($item->item_id);
+
                     $this->mdl_items->save($item_id, $item);
                 } else {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', lang('item'), 'required');
-                    $this->form_validation->set_rules('item_description', lang('description'), 'required');
-                    $this->form_validation->set_rules('item_quantity', lang('quantity'), 'required');
-                    $this->form_validation->set_rules('item_price', lang('price'), 'required');
                     $this->form_validation->run();
 
                     $response = array(
                         'success' => 0,
                         'validation_errors' => array(
                             'item_name' => form_error('item_name', '', ''),
-                            'item_description' => form_error('item_description', '', ''),
-                            'item_quantity' => form_error('item_quantity', '', ''),
-                            'item_price' => form_error('item_price', '', ''),
                         )
                     );
-                    
+
                     echo json_encode($response);
                     exit;
                 }
@@ -84,8 +77,16 @@ class Ajax extends Admin_Controller
                 $invoice_discount_percent = $this->input->post('invoice_discount_percent');
             }
 
+            // Generate new invoice number if needed
+            $invoice_number = $this->input->post('invoice_number');
+
+            if (empty($invoice_number) && $invoice_status != 1) {
+                $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
+                $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
+            }
+
             $db_array = array(
-                'invoice_number' => $this->input->post('invoice_number'),
+                'invoice_number' => $invoice_number,
                 'invoice_terms' => $this->input->post('invoice_terms'),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
@@ -97,18 +98,10 @@ class Ajax extends Admin_Controller
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($invoice_status == 2 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
-                $db_array['is_read_only'] = 1;
-            }
-
-            // check if status changed to viewed, the feature is enabled and settings is set to viewed
-            if ($invoice_status == 3 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
-                $db_array['is_read_only'] = 1;
-            }
-
-            // check if status changed to paid and the feature is enabled
-            if ($invoice_status == 4 && $this->config->item('disable_read_only') == FALSE && $this->mdl_settings->setting('read_only_toggle') == 'paid') {
-                $db_array['is_read_only'] = 1;
+            if ($this->config->item('disable_read_only') === false) {
+                if ($invoice_status == $this->mdl_settings->setting('read_only_toggle')) {
+                    $db_array['is_read_only'] = 1;
+                }
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
@@ -118,7 +111,7 @@ class Ajax extends Admin_Controller
             $this->mdl_invoice_amounts->calculate($invoice_id);
 
             $response = array(
-                'success' => 1
+                'success' => 1,
             );
         } else {
             $this->load->helper('json_error');
@@ -128,11 +121,11 @@ class Ajax extends Admin_Controller
             );
         }
 
+        // Save all custom fields
         if ($this->input->post('custom')) {
             $db_array = array();
 
             foreach ($this->input->post('custom') as $custom) {
-                // I hate myself for this...
                 $db_array[str_replace(']', '', str_replace('custom[', '', $custom['name']))] = $custom['value'];
             }
 
@@ -380,7 +373,7 @@ class Ajax extends Admin_Controller
             $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
             // Set source invoice to read-only
-            if ($this->config->item('disable_read_only') == FALSE) {
+            if ($this->config->item('disable_read_only') == false) {
                 $this->mdl_invoices->where('invoice_id', $source_id);
                 $this->mdl_invoices->update('ip_invoices', array('is_read_only' => '1'));
             }

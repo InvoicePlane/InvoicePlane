@@ -36,7 +36,26 @@ class View extends Base_Controller
             }
 
             $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-            if ($invoice->payment_method == 0) $payment_method = NULL;
+            if ($invoice->payment_method == 0) $payment_method = null;
+
+            // Attachments
+            $path = '/uploads/customer_files';
+            $files = scandir(getcwd() . $path);
+            $attachments = array();
+
+            if ($files !== false) {
+                foreach ($files as $file) {
+                    if ('.' != $file && '..' != $file && strpos($file, $invoice_url_key) !== false) {
+                        $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                        $obj['fullname'] = $file;
+                        $obj['size'] = filesize($path . '/' . $file);
+                        $obj['fullpath'] = base_url($path . '/' . $file);
+                        $attachments[] = $obj;
+                    }
+                }
+            }
+
+            $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
             $data = array(
                 'invoice' => $invoice,
@@ -44,14 +63,16 @@ class View extends Base_Controller
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
                 'invoice_url_key' => $invoice_url_key,
                 'flash_message' => $this->session->flashdata('flash_message'),
-                'payment_method' => $payment_method
+                'payment_method' => $payment_method,
+                'is_overdue' => $is_overdue,
+                'attachments' => $attachments,
             );
 
             $this->load->view('invoice_templates/public/' . $this->mdl_settings->setting('public_invoice_template') . '.php', $data);
         }
     }
 
-    public function generate_invoice_pdf($invoice_url_key, $stream = TRUE, $invoice_template = NULL)
+    public function generate_invoice_pdf($invoice_url_key, $stream = true, $invoice_template = null)
     {
         $this->load->model('invoices/mdl_invoices');
 
@@ -87,19 +108,40 @@ class View extends Base_Controller
                 $this->mdl_quotes->mark_viewed($quote->quote_id);
             }
 
+            // Attachments
+            $path = '/uploads/customer_files';
+            $files = scandir(getcwd() . $path);
+            $attachments = array();
+
+            if ($files !== false) {
+                foreach ($files as $file) {
+                    if ('.' != $file && '..' != $file && strpos($file, $quote_url_key) !== false) {
+                        $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                        $obj['fullname'] = $file;
+                        $obj['size'] = filesize($path . '/' . $file);
+                        $obj['fullpath'] = base_url($path . '/' . $file);
+                        $attachments[] = $obj;
+                    }
+                }
+            }
+
+            $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
+
             $data = array(
                 'quote' => $quote,
                 'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
                 'quote_url_key' => $quote_url_key,
-                'flash_message' => $this->session->flashdata('flash_message')
+                'flash_message' => $this->session->flashdata('flash_message'),
+                'is_expired' => $is_expired,
+                'attachments' => $attachments,
             );
 
             $this->load->view('quote_templates/public/' . $this->mdl_settings->setting('public_quote_template') . '.php', $data);
         }
     }
 
-    public function generate_quote_pdf($quote_url_key, $stream = TRUE, $quote_template = NULL)
+    public function generate_quote_pdf($quote_url_key, $stream = true, $quote_template = null)
     {
         $this->load->model('quotes/mdl_quotes');
 

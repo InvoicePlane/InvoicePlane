@@ -79,7 +79,7 @@ class Upload extends Admin_Controller
             return false;
     }
 
-    public function show_files($url_key, $customerId = NULL)
+    public function show_files($url_key, $customerId = null)
     {
 
         $result = array();
