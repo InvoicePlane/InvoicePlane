@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url'] = (strpos($_SERVER['SERVER_PROTOCOL'], 'https') ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']);
+$config['base_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']);
 
 /*
 |--------------------------------------------------------------------------
