@@ -58,12 +58,10 @@ class Mdl_Quote_Items extends Response_Model
             'item_quantity' => array(
                 'field' => 'item_quantity',
                 'label' => lang('quantity'),
-                'rules' => 'required'
             ),
             'item_price' => array(
                 'field' => 'item_price',
                 'label' => lang('price'),
-                'rules' => 'required'
             ),
             'item_tax_rate_id' => array(
                 'field' => 'item_tax_rate_id',
