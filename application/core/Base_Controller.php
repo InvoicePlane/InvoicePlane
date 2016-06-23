@@ -34,16 +34,16 @@ class Base_Controller extends MX_Controller
 
         $this->load->library('session');
         $this->load->helper('url');
-        $this->load->database();
 
         // Check if database has been configured
-        if (empty($this->db->hostname)) {
+        if (!file_exists(APPPATH . 'config/database.php')) {
 
             $this->load->helper('redirect');
             redirect('/welcome');
 
         } else {
 
+            $this->load->database();
             $this->load->library('form_validation');
             $this->load->helper('number');
             $this->load->helper('pager');
