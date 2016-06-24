@@ -110,9 +110,11 @@ ALTER TABLE ip_families
 ALTER TABLE ip_invoice_groups
   MODIFY COLUMN invoice_group_name VARCHAR(500);
 ALTER TABLE ip_invoice_items
-  MODIFY COLUMN item_name VARCHAR(500);
+  MODIFY COLUMN item_name VARCHAR(500) DEFAULT NULL;
 ALTER TABLE ip_invoice_items
-  MODIFY COLUMN item_price DECIMAL(20, 2);
+  MODIFY COLUMN item_description LONGTEXT DEFAULT NULL;
+ALTER TABLE ip_invoice_items
+  MODIFY COLUMN item_price DECIMAL(20, 2) DEFAULT NULL;
 ALTER TABLE ip_payment_methods
   MODIFY COLUMN payment_method_name VARCHAR(500);
 ALTER TABLE ip_payments
@@ -124,9 +126,11 @@ ALTER TABLE ip_products
 ALTER TABLE ip_projects
   MODIFY COLUMN project_name DECIMAL(20, 2);
 ALTER TABLE ip_quote_items
-  MODIFY COLUMN item_name VARCHAR(500);
+  MODIFY COLUMN item_name VARCHAR(500) DEFAULT NULL;
 ALTER TABLE ip_quote_items
-  MODIFY COLUMN item_quantity DECIMAL(20, 2);
+  MODIFY COLUMN item_description LONGTEXT DEFAULT NULL;
+ALTER TABLE ip_quote_items
+  MODIFY COLUMN item_quantity DECIMAL(20, 2) DEFAULT NULL;
 ALTER TABLE ip_quote_items
   MODIFY COLUMN item_price DECIMAL(20, 2);
 ALTER TABLE ip_quote_tax_rates
@@ -180,3 +184,30 @@ ALTER TABLE ip_products
 ALTER TABLE ip_products
   ADD COLUMN provider_name VARCHAR(500) NULL DEFAULT NULL
   AFTER purchase_price;
+
+# Change values for read-only setting
+UPDATE ip_settings
+SET setting_value = 2
+WHERE setting_key = 'read_only_toggle' AND
+      setting_value = 'sent';
+
+UPDATE ip_settings
+SET setting_value = 3
+WHERE setting_key = 'read_only_toggle' AND
+      setting_value = 'viewed';
+
+UPDATE ip_settings
+SET setting_value = 4
+WHERE setting_key = 'read_only_toggle' AND
+      setting_value = 'paid';
+
+# IP-422 - Improve session security
+CREATE TABLE IF NOT EXISTS  `ip_sessions` (
+  session_id varchar(40) DEFAULT '0' NOT NULL,
+  ip_address varchar(45) DEFAULT '0' NOT NULL,
+  user_agent varchar(120) NOT NULL,
+  last_activity int(10) unsigned DEFAULT 0 NOT NULL,
+  user_data text NOT NULL,
+  PRIMARY KEY (session_id),
+  KEY `last_activity_idx` (`last_activity`)
+);

@@ -35,16 +35,11 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if (!empty($item->item_quantity) && !empty($item->item_price)
-                    || !empty($item->item_name)
-                    || !empty($item->item_description)
-                ) {
-                    $item->item_quantity = standardize_amount($item->item_quantity);
-                    $item->item_price = standardize_amount($item->item_price);
-
-                    // Prepare default values
-                    $item->item_discount_amount = empty($item->item_discount_amount) ? null :
-                        standardize_amount($item->item_discount_amount);
+                if (!empty($item->item_name)) {
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
+                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
@@ -54,18 +49,12 @@ class Ajax extends Admin_Controller
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', lang('item'), 'required');
-                    $this->form_validation->set_rules('item_description', lang('description'), 'required');
-                    $this->form_validation->set_rules('item_quantity', lang('quantity'), 'required');
-                    $this->form_validation->set_rules('item_price', lang('price'), 'required');
                     $this->form_validation->run();
 
                     $response = array(
                         'success' => 0,
                         'validation_errors' => array(
                             'item_name' => form_error('item_name', '', ''),
-                            'item_description' => form_error('item_description', '', ''),
-                            'item_quantity' => form_error('item_quantity', '', ''),
-                            'item_price' => form_error('item_price', '', ''),
                         )
                     );
 
@@ -109,18 +98,10 @@ class Ajax extends Admin_Controller
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($invoice_status == 2 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'sent') {
-                $db_array['is_read_only'] = 1;
-            }
-
-            // check if status changed to viewed, the feature is enabled and settings is set to viewed
-            if ($invoice_status == 3 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'viewed') {
-                $db_array['is_read_only'] = 1;
-            }
-
-            // check if status changed to paid and the feature is enabled
-            if ($invoice_status == 4 && $this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 'paid') {
-                $db_array['is_read_only'] = 1;
+            if ($this->config->item('disable_read_only') === false) {
+                if ($invoice_status == $this->mdl_settings->setting('read_only_toggle')) {
+                    $db_array['is_read_only'] = 1;
+                }
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
@@ -130,7 +111,7 @@ class Ajax extends Admin_Controller
             $this->mdl_invoice_amounts->calculate($invoice_id);
 
             $response = array(
-                'success' => 1
+                'success' => 1,
             );
         } else {
             $this->load->helper('json_error');
@@ -140,11 +121,11 @@ class Ajax extends Admin_Controller
             );
         }
 
+        // Save all custom fields
         if ($this->input->post('custom')) {
             $db_array = array();
 
             foreach ($this->input->post('custom') as $custom) {
-                // I hate myself for this...
                 $db_array[str_replace(']', '', str_replace('custom[', '', $custom['name']))] = $custom['value'];
             }
 

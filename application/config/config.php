@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url'] = '';
+$config['base_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']) . URL_SUBFOLDER;
 
 /*
 |--------------------------------------------------------------------------
@@ -271,13 +271,13 @@ $config['encryption_key'] = 'invoiceplane';
 | 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name'] = 'ci_session';
+$config['sess_cookie_name'] = 'ip_session';
 $config['sess_expiration'] = 864000; // 10 Days
 $config['sess_expire_on_close'] = false;
-$config['sess_encrypt_cookie'] = false;
+$config['sess_encrypt_cookie'] = true;
 $config['sess_use_database'] = false;
-$config['sess_table_name'] = 'ci_sessions';
-$config['sess_match_ip'] = false;
+$config['sess_table_name'] = 'ip_sessions';
+$config['sess_match_ip'] = true;
 $config['sess_match_useragent'] = true;
 $config['sess_time_to_update'] = 300;
 

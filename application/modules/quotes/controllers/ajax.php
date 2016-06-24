@@ -36,12 +36,10 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 if ($item->item_name) {
-                    $item->item_quantity = standardize_amount($item->item_quantity);
-                    $item->item_price = standardize_amount($item->item_price);
-
-                    // Prepare default values
-                    $item->item_discount_amount = empty($item->item_discount_amount) ? null :
-                        standardize_amount($item->item_discount_amount);
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
+                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
@@ -327,10 +325,12 @@ class Ajax extends Admin_Controller
                 $db_array = array(
                     'invoice_id' => $invoice_id,
                     'item_tax_rate_id' => $quote_item->item_tax_rate_id,
+                    'item_product_id' => $quote_item->item_product_id,
                     'item_name' => $quote_item->item_name,
                     'item_description' => $quote_item->item_description,
                     'item_quantity' => $quote_item->item_quantity,
                     'item_price' => $quote_item->item_price,
+                    'item_discount_amount' => $quote_item->item_discount_amount,
                     'item_order' => $quote_item->item_order
                 );
 
