@@ -14,8 +14,9 @@
             $.post("<?php echo site_url('products/ajax/process_product_selections'); ?>", {
                 product_ids: product_ids
             }, function (data) {
-                <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 items = JSON.parse(data);
+
                 for (var key in items) {
                     // Set default tax rate id if empty
                     if (!items[key].tax_rate_id) items[key].tax_rate_id = 0;
@@ -23,11 +24,15 @@
                     if ($('#item_table tbody:last input[name=item_name]').val() !== '') {
                         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
                     }
-                    $('#item_table tbody:last input[name=item_name]').val(items[key].product_name);
-                    $('#item_table tbody:last textarea[name=item_description]').val(items[key].product_description);
-                    $('#item_table tbody:last input[name=item_price]').val(items[key].product_price);
-                    $('#item_table tbody:last input[name=item_quantity]').val('1');
-                    $('#item_table tbody:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
+
+                    var last_item_row = $('#item_table tbody:last');
+
+                    last_item_row.find('input[name=item_name]').val(items[key].product_name);
+                    last_item_row.find('textarea[name=item_description]').val(items[key].product_description);
+                    last_item_row.find('input[name=item_price]').val(items[key].product_price);
+                    last_item_row.find('input[name=item_quantity]').val('1');
+                    last_item_row.find('select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
+                    last_item_row.find('input[name=item_product_id]').val(items[key].product_id);
 
                     $('#modal-choose-items').modal('hide');
                 }
@@ -35,7 +40,7 @@
         });
 
         // Toggle checkbox when click on row
-        $('#products_table tr').click(function (event) {
+        $('.product').click(function (event) {
             if (event.target.type !== 'checkbox') {
                 $(':checkbox', this).trigger('click');
             }
@@ -138,7 +143,7 @@
                         <th class="text-right"><?php echo lang('product_price'); ?></th>
                     </tr>
                     <?php foreach ($products as $product) { ?>
-                        <tr>
+                        <tr class="product">
                             <td class="text-left">
                                 <input type="checkbox" name="product_ids[]"
                                        value="<?php echo $product->product_id; ?>">

@@ -61,7 +61,7 @@ class Mdl_Sessions extends CI_Model
                     /**
                      * The password didn't verify against original md5
                      */
-                    return FALSE;
+                    return false;
                 }
             }
 
@@ -70,17 +70,17 @@ class Mdl_Sessions extends CI_Model
                     'user_type' => $user->user_type,
                     'user_id' => $user->user_id,
                     'user_name' => $user->user_name,
-                    'user_email' =>  $user->user_email,
+                    'user_email' => $user->user_email,
                     'user_company' => $user->user_company,
                 );
 
                 $this->session->set_userdata($session_data);
 
-                return TRUE;
+                return true;
             }
         }
 
-        return FALSE;
+        return false;
     }
 
 }

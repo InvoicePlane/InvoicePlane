@@ -29,20 +29,20 @@ class Mdl_Setup extends CI_Model
         $this->save_version('000_1.0.0.sql');
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_data();
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     public function upgrade_tables()
     {
         // Collect the available SQL files
-        $sql_files = directory_map(APPPATH . 'modules/setup/sql', TRUE);
+        $sql_files = directory_map(APPPATH . 'modules/setup/sql', true);
 
         // Sort them so they're in natural order
         sort($sql_files);
@@ -77,12 +77,12 @@ class Mdl_Setup extends CI_Model
         }
 
         if ($this->errors) {
-            return FALSE;
+            return false;
         }
 
         $this->install_default_settings();
 
-        return TRUE;
+        return true;
     }
 
     private function execute_contents($contents)
@@ -161,31 +161,6 @@ class Mdl_Setup extends CI_Model
      * public function upgrade_010_1_0_1() { ... }
      */
 
-    public function upgrade_001_1_0_1()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_002_1_0_1()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_003_1_1_0()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_004_1_1_1()
-    {
-        // Nothing to do here
-    }
-
-    public function upgrade_005_1_1_2()
-    {
-        // Nothing to do here
-    }
-
     public function upgrade_006_1_2_0()
     {
         /* Update alert to notify about the changes with invoice deletion and credit invoices
@@ -206,8 +181,22 @@ class Mdl_Setup extends CI_Model
         }
     }
 
-    public function upgrade_007_1_2_1()
+    public function upgrade_019_1_4_7()
     {
-        // Nothing to do here
+        /* Update alert to set the session configuration $config['sess_use_database'] = false to true
+         * but only display the warning when the previous version is 1.1.2 or lower and it's an update
+         * (see above for details)
+         */
+        $this->db->where_in("version_file", array("018_1.4.6.sql", "019_1.4.7.sql"));
+        $versions = $this->db->get('ip_versions')->result();
+        $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
+
+        if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
+            $setup_notice = array(
+                'type' => 'alert-danger',
+                'content' => lang('setup_v147_alert'),
+            );
+            $this->session->set_userdata('setup_notice', $setup_notice);
+        }
     }
 }

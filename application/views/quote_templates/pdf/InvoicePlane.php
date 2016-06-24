@@ -124,7 +124,7 @@
             <th class="item-desc"><?php echo lang('description'); ?></th>
             <th class="item-amount text-right"><?php echo lang('qty'); ?></th>
             <th class="item-price text-right"><?php echo lang('price'); ?></th>
-            <?php if ($show_discounts) :?>
+            <?php if ($show_discounts) : ?>
                 <th class="item-discount text-right"><?php echo lang('discount'); ?></th>
             <?php endif; ?>
             <th class="item-total text-right"><?php echo lang('total'); ?></th>
@@ -143,7 +143,7 @@
                 <td class="text-right">
                     <?php echo format_currency($item->item_price); ?>
                 </td>
-                <?php if ($show_discounts) :?>
+                <?php if ($show_discounts) : ?>
                     <td class="text-right">
                         <?php echo format_currency($item->item_discount); ?>
                     </td>
@@ -158,13 +158,14 @@
         <tbody class="invoice-sums">
 
         <tr>
-            <td <?php echo ($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right"><?php echo lang('subtotal'); ?></td>
+            <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?>
+                class="text-right"><?php echo lang('subtotal'); ?></td>
             <td class="text-right"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
         </tr>
 
         <?php if ($quote->quote_item_tax_total > 0) { ?>
             <tr>
-                <td <?php echo ($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+                <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                     <?php echo lang('item_tax'); ?>
                 </td>
                 <td class="text-right">
@@ -175,7 +176,7 @@
 
         <?php foreach ($quote_tax_rates as $quote_tax_rate) : ?>
             <tr>
-                <td <?php echo ($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+                <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                     <?php echo $quote_tax_rate->quote_tax_rate_name . ' (' . $quote_tax_rate->quote_tax_rate_percent . '%)'; ?>
                 </td>
                 <td class="text-right">
@@ -185,7 +186,7 @@
         <?php endforeach ?>
 
         <tr>
-            <td <?php echo ($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+            <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                 <b><?php echo lang('total'); ?></b>
             </td>
             <td class="text-right">
