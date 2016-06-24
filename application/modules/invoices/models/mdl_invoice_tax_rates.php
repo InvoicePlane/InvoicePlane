@@ -33,14 +33,14 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_invoice_tax_rates.tax_rate_id');
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         parent::save($id, $db_array);
 
         $this->load->model('invoices/mdl_invoice_amounts');
 
         $invoice_id = $this->input->post('invoice_id');
-        
+
         if ($invoice_id) {
             $this->mdl_invoice_amounts->calculate($invoice_id);
         }

@@ -210,9 +210,9 @@
                                 <option></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
                                     <option value="<?php echo $cldr; ?>"
-                                            <?php if ($selected_country == $cldr) {
-                                                echo 'selected="selected"';
-                                            } ?>
+                                        <?php if ($selected_country == $cldr) {
+                                            echo 'selected="selected"';
+                                        } ?>
                                     ><?php echo $country ?></option>
                                 <?php } ?>
                             </select>

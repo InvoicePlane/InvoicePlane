@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    //public $ajax_controller = TRUE;
+    //public $ajax_controller = true;
     public function modal_product_lookups()
     {
         //$filter_family  = $this->input->get('filter_family');

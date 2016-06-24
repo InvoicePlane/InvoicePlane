@@ -8,15 +8,17 @@ ALTER TABLE `ip_invoice_groups`
  * (based on existing schema)
  */
 UPDATE ip_invoice_groups
-  SET invoice_group_identifier_format = CONCAT(
+SET invoice_group_identifier_format = CONCAT(
     invoice_group_prefix,
     CASE invoice_group_prefix_year
-      WHEN 1 THEN '{{{year}}}'
-      ELSE ''
+    WHEN 1
+      THEN '{{{year}}}'
+    ELSE ''
     END,
     CASE invoice_group_prefix_month
-      WHEN 1 THEN '{{{month}}}'
-      ELSE ''
+    WHEN 1
+      THEN '{{{month}}}'
+    ELSE ''
     END,
     '{{{id}}}'
 );
@@ -60,18 +62,21 @@ INSERT INTO ip_products (
   tax_rate_id
 )
   SELECT
-    0 as family_id, -- default to 0 (no family)
-    concat('sku-',item_lookup_id) as product_sku, -- use ip_item_lookup primary key as new SKU
+    0                              AS family_id,
+    -- default to 0 (no family)
+    concat('sku-', item_lookup_id) AS product_sku,
+    -- use ip_item_lookup primary key as new SKU
     item_name,
     item_description,
     item_price,
-    0 as product_purchase_price, -- default purchase price to 0
-    0 as tax_rate_id -- default tax rate ID
+    0                              AS product_purchase_price,
+    -- default purchase price to 0
+    0                              AS tax_rate_id -- default tax rate ID
   FROM ip_item_lookups;
 
 /* Add the Invoice Sign */
 ALTER TABLE `ip_invoice_amounts`
-  ADD `invoice_sign` ENUM('1', '-1') NOT NULL DEFAULT '1'
+  ADD `invoice_sign` ENUM ('1', '-1') NOT NULL DEFAULT '1'
   AFTER `invoice_id`;
 
 ALTER TABLE `ip_invoices`

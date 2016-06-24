@@ -48,7 +48,8 @@
             <?php echo lang('password'); ?>
         </label>
         <input type="password" name="settings[merchant_password]" class="input-sm form-control"
-               value="<?php $this->load->library('encrypt'); echo $this->encrypt->decode($this->mdl_settings->setting('merchant_password')); ?>">
+               value="<?php $this->load->library('encrypt');
+               echo $this->encrypt->decode($this->mdl_settings->setting('merchant_password')); ?>">
     </div>
 
     <div class="form-group">

@@ -26,7 +26,7 @@
                     quote_id: $('#quote_id').val()
                 },
                 function (data) {
-                    <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         // The validation was successful and invoice was created
@@ -61,7 +61,7 @@
                     <?php foreach ($clients as $client) { ?>
                         <option value="<?php echo $client->client_name; ?>"
                                 <?php if ($client_name == $client->client_name) { ?>selected="selected"<?php } ?>
-                            > <?php echo $client->client_name; ?>     </option>
+                        > <?php echo $client->client_name; ?>     </option>
 
                     <?php } ?>
                 </select>

@@ -47,13 +47,13 @@
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
         <h3><?php echo lang('set_new_password'); ?></h3>
-        
+
         <br/>
 
         <form class="form-horizontal" method="post"
               action="<?php echo site_url('sessions/passwordreset'); ?>">
 
-            <input name="user_id" value="<?php echo $user_id; ?>" class="hidden" >
+            <input name="user_id" value="<?php echo $user_id; ?>" class="hidden">
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3">
@@ -71,7 +71,7 @@
         </form>
 
     </div>
-    
+
 </div>
 
 <script type="text/javascript">

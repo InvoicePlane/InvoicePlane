@@ -35,20 +35,18 @@ class Products extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = NULL)
+    public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('products');
         }
 
         if ($this->mdl_products->run_validation()) {
-            
-            // We need to use the correct decimal point for sql IPT-310
+            // Get the db array
             $db_array = $this->mdl_products->db_array();
-            $db_array['product_price'] = standardize_amount($db_array['product_price']);
-            $db_array['purchase_price'] = standardize_amount($db_array['purchase_price']);
 
             $this->mdl_products->save($id, $db_array);
+
             redirect('products');
         }
 

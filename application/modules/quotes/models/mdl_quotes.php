@@ -81,12 +81,12 @@ class Mdl_Quotes extends Response_Model
 			ip_users.user_tax_code,
 			ip_clients.*,
 			ip_quote_amounts.quote_amount_id,
-			IFNULL(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
-			IFNULL(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
-			IFNULL(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
-			IFNULL(ip_quote_amounts.quote_total, '0.00') AS quote_total,
+			IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
+			IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
+			IFnull(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
+			IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
             ip_invoices.invoice_number,
-			ip_quotes.*", FALSE);
+			ip_quotes.*", false);
     }
 
     public function default_order_by()
@@ -140,8 +140,8 @@ class Mdl_Quotes extends Response_Model
         return array(
             'quote_number' => array(
                 'field' => 'quote_number',
-                'label' => lang('quote').' #',
-                'rules' => 'required|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'
+                'label' => lang('quote') . ' #',
+                'rules' => 'is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'
             ),
             'quote_date_created' => array(
                 'field' => 'quote_date_created',
@@ -160,9 +160,9 @@ class Mdl_Quotes extends Response_Model
         );
     }
 
-    public function create($db_array = NULL)
+    public function create($db_array = null)
     {
-        $quote_id = parent::save(NULL, $db_array);
+        $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
         $db_array = array(
@@ -214,7 +214,7 @@ class Mdl_Quotes extends Response_Model
                 'item_order' => $quote_item->item_order
             );
 
-            $this->mdl_quote_items->save(NULL, $db_array);
+            $this->mdl_quote_items->save(null, $db_array);
         }
 
         $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $source_id)->get()->result();
@@ -227,7 +227,17 @@ class Mdl_Quotes extends Response_Model
                 'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
             );
 
-            $this->mdl_quote_tax_rates->save(NULL, $db_array);
+            $this->mdl_quote_tax_rates->save(null, $db_array);
+        }
+
+        // Copy the custom fields
+        $this->load->model('custom_fields/mdl_quote_custom');
+        $db_array = $this->mdl_quote_custom->where('quote_id', $source_id)->get()->row_array();
+
+        if (count($db_array) > 2) {
+            unset($db_array['quote_custom_id']);
+            $db_array['quote_id'] = $target_id;
+            $this->mdl_quote_custom->save_custom($target_id, $db_array);
         }
     }
 
@@ -242,17 +252,33 @@ class Mdl_Quotes extends Response_Model
 
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);
         $db_array['quote_date_expires'] = $this->get_date_due($db_array['quote_date_created']);
-        $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
+
         $db_array['notes'] = $this->mdl_settings->setting('default_quote_notes');
 
         if (!isset($db_array['quote_status_id'])) {
             $db_array['quote_status_id'] = 1;
         }
 
+        $generate_quote_number = $this->mdl_settings->setting('generate_quote_number_for_draft');
+
+        if ($db_array['quote_status_id'] === 1 && $generate_quote_number === 1) {
+            $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
+        } elseif ($db_array['quote_status_id'] != 1) {
+            $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
+        } else {
+            $db_array['quote_number'] = '';
+        }
+
         // Generate the unique url key
         $db_array['quote_url_key'] = $this->get_url_key();
 
         return $db_array;
+    }
+
+    public function get_invoice_group_id($invoice_id)
+    {
+        $invoice = $this->get_by_id($invoice_id);
+        return $invoice->invoice_group_id;
     }
 
     public function get_quote_number($invoice_group_id)
