@@ -39,7 +39,7 @@
         </p>
 
         <div class="btn-group btn-group-justified">
-            <a href="/setup" class="btn btn-success">
+            <a href="<?php echo site_url('setup'); ?>" class="btn btn-success">
                 <i class="fa fa-cogs"></i> Setup
             </a>
             <a href="https://wiki.invoiceplane.com/" class="btn btn-info">
