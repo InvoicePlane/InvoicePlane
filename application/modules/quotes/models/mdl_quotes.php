@@ -261,7 +261,7 @@ class Mdl_Quotes extends Response_Model
 
         $generate_quote_number = $this->mdl_settings->setting('generate_quote_number_for_draft');
 
-        if ($db_array['quote_status_id'] === 1 && $generate_quote_number === 1) {
+        if ($db_array['quote_status_id'] === 1 && $generate_quote_number == 1) {
             $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
         } elseif ($db_array['quote_status_id'] != 1) {
             $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
