@@ -316,7 +316,7 @@ class Mdl_Invoices extends Response_Model
 
         $generate_invoice_number = $this->mdl_settings->setting('generate_invoice_number_for_draft');
 
-        if ($db_array['invoice_status_id'] === 1 && $generate_invoice_number === 1) {
+        if ($db_array['invoice_status_id'] === 1 && $generate_invoice_number == 1) {
             $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
         } elseif ($db_array['invoice_status_id'] != 1) {
             $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
