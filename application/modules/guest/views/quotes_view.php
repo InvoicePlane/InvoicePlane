@@ -168,7 +168,7 @@
                     </td>
                     <td class="amount"><?php
                         if ($quote->quote_discount_percent == floatval(0)) {
-                            echo $quote->quote_discount_percent.'%';
+                            echo $quote->quote_discount_percent . '%';
                         } else {
                             echo format_currency($quote->quote_discount_amount);
                         }

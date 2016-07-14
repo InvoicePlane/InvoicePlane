@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,10 +13,10 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
-function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL,$isGuest = NULL, $preview = FALSE/*---it---*/)
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null, $preview = FALSE/*---it---*/)
 {
     $CI = &get_instance();
 
@@ -44,6 +44,22 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
         }
     }
 
+    // PDF associated files
+    $include_zugferd = $CI->mdl_settings->setting('include_zugferd');
+
+    if ($include_zugferd) {
+        $CI->load->helper('zugferd');
+        $associatedFiles = array(array(
+            'name' => 'ZUGFeRD-invoice.xml',
+            'description' => 'ZUGFeRD Invoice',
+            'AFRelationship' => 'Alternative',
+            'mime' => 'text/xml',
+            'path' => generate_invoice_zugferd_xml_temp_file($invoice, $items)
+        ));
+    } else {
+        $associatedFiles = null;
+    }
+
     $data = array(
         'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
@@ -52,10 +68,10 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
         'output_type' => 'pdf',
         'show_discounts' => $show_discounts,
     );
-
+    
     global $pdf_preview; $pdf_preview = $preview;    // ---it---
     $data['preview_pdf'] = $preview;    // ---it--- set preview to override default overflow-y: hidden; in html and body
-    $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, TRUE);
+    $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
     
     //---it---inizio
     if ($preview)
@@ -64,15 +80,16 @@ function generate_invoice_pdf($invoice_id, $stream = TRUE, $invoice_template = N
     }
     else
     {
-        //---it---fine
+    //---it---fine
 	    $CI->load->helper('mpdf');
-	    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number), $stream, $invoice->invoice_password,1,$isGuest);
+	    return pdf_create($html, lang('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
+            $stream, $invoice->invoice_password, 1, $isGuest, $include_zugferd, $associatedFiles);
 	//---it---inizio
     }
     //---it---fine
 }
 
-function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL, $preview = FALSE/*---it---*/)
+function generate_quote_pdf($quote_id, $stream = true, $quote_template = null, $preview = FALSE/*---it---*/)
 {
     $CI = &get_instance();
 
@@ -90,6 +107,7 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL, $
     // Determine if discounts should be displayed
     $items = $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
     $show_discounts = false;
+
     foreach ($items as $item) {
         if ($item->item_discount != '0.00') {
             $show_discounts = true;
@@ -106,7 +124,7 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL, $
     
     global $pdf_preview; $pdf_preview = $preview;    // ---it---
     $data['preview_pdf'] = $preview;    // ---it--- set preview to override default overflow-y: hidden; in html and body
-    $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, TRUE);
+    $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);
     
     //---it---inizio
     if ($preview)
@@ -115,10 +133,10 @@ function generate_quote_pdf($quote_id, $stream = TRUE, $quote_template = NULL, $
     }
     else
     {
-        //---it---fine
+    //---it---fine
         $CI->load->helper('mpdf');
         
-        return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream,$quote->quote_password);
+        return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
         //---it---inizio
     }
     //---it---fine

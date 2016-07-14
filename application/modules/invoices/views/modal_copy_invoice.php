@@ -17,7 +17,7 @@
                     user_id: $('#user_id').val()
                 },
                 function (data) {
-                    <?php echo (IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
@@ -65,7 +65,7 @@
                 <div class="input-group">
                     <input name="invoice_date_created" id="invoice_date_created"
                            class="form-control datepicker"
-                           value="<?php echo date_from_mysql(date('Y-m-d', time()), TRUE) ?>">
+                           value="<?php echo date_from_mysql(date('Y-m-d', time()), true) ?>">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>

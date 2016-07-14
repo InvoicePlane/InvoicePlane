@@ -47,7 +47,7 @@
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
         <h3><?php echo lang('password_reset'); ?></h3>
-        
+
         <br/>
 
         <p><?php echo lang('password_reset_info'); ?></p>

@@ -20,13 +20,13 @@ function mailer_configured()
 {
     $CI = &get_instance();
 
-    return (($CI->mdl_settings->setting('email_send_method') == 'phpmail') OR
-        ($CI->mdl_settings->setting('email_send_method') == 'sendmail') OR
-        (($CI->mdl_settings->setting('email_send_method') == 'smtp') AND ($CI->mdl_settings->setting('smtp_server_address')))
+    return (($CI->mdl_settings->setting('email_send_method') == 'phpmail') ||
+        ($CI->mdl_settings->setting('email_send_method') == 'sendmail') ||
+        (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')))
     );
 }
 
-function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
+function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = null, $bcc = null, $attachments = null)
 {
     $CI = &get_instance();
 
@@ -35,7 +35,7 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     $CI->load->helper('invoice');
     $CI->load->helper('pdf');
 
-    $invoice = generate_invoice_pdf($invoice_id, FALSE, $invoice_template);
+    $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
 
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
@@ -45,10 +45,10 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     $bcc = parse_template($db_invoice, $bcc);
     $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
 
-    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc,$attachments);
+    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments);
 }
 
-function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = NULL, $bcc = NULL,$attachments = NULL)
+function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = null, $bcc = null, $attachments = null)
 {
     $CI = &get_instance();
 
@@ -56,7 +56,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
     $CI->load->helper('template');
     $CI->load->helper('pdf');
 
-    $quote = generate_quote_pdf($quote_id, FALSE, $quote_template);
+    $quote = generate_quote_pdf($quote_id, false, $quote_template);
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
@@ -66,7 +66,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
     $bcc = parse_template($db_quote, $bcc);
     $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
 
-    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc,$attachments);
+    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc, $attachments);
 }
 
 /**

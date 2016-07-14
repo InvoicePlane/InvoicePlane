@@ -21,23 +21,23 @@ class Lib_mysql
     function connect($server, $username, $password)
     {
         if (!$server or !$username) {
-            return FALSE;
+            return false;
         }
 
         if (@mysqli_connect($server, $username, $password)) {
             return mysqli_connect($server, $username, $password);
         }
 
-        return FALSE;
+        return false;
     }
 
     function select_db($link, $database)
     {
         if (@mysqli_select_db($link, $database)) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     function query($link, $sql)

@@ -30,7 +30,7 @@
                     <?php foreach ($clients as $client) { ?>
                         <option value="<?php echo $client->client_id; ?>"
                             <?php if ($this->mdl_projects->form_value('client_id') == $client->client_id) { ?> selected="selected" <?php } ?>
-                            ><?php echo $client->client_name; ?></option>
+                        ><?php echo $client->client_name; ?></option>
                     <?php } ?>
                 </select>
             </div>

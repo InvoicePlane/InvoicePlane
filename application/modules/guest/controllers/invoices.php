@@ -89,7 +89,7 @@ class Invoices extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
-    public function generate_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
+    public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
 

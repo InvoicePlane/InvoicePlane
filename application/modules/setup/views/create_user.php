@@ -110,9 +110,9 @@
                     <option></option>
                     <?php foreach ($countries as $cldr => $country) { ?>
                         <option value="<?php echo $cldr; ?>"
-                                <?php if ($this->mdl_users->form_value('user_country') == $cldr) {
-                                    echo 'selected="selected"';
-                                } ?>
+                            <?php if ($this->mdl_users->form_value('user_country') == $cldr) {
+                                echo 'selected="selected"';
+                            } ?>
                         ><?php echo $country ?></option>
                     <?php } ?>
                 </select>
@@ -154,8 +154,8 @@
                     <?php echo lang('web'); ?>
                 </label>
                 <input type="text" name="user_web" id="user_web" class="form-control"
-                        value="<?php echo $this->mdl_users->form_value('user_web'); ?>"
-                        placeholder="<?php echo lang('optional'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_web'); ?>"
+                       placeholder="<?php echo lang('optional'); ?>">
             </div>
 
             <input type="submit" class="btn btn-success" name="btn_continue"

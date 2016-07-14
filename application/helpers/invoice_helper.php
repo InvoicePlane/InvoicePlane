@@ -18,10 +18,9 @@ if (!defined('BASEPATH'))
 
 function invoice_logo()
 {
-    $CI = & get_instance();
-	
-    if ($CI->mdl_settings->setting('invoice_logo'))
-    {
+    $CI = &get_instance();
+
+    if ($CI->mdl_settings->setting('invoice_logo')) {
         return '<img src="' . base_url() . 'uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';
     }
     return '';
@@ -29,17 +28,16 @@ function invoice_logo()
 
 function invoice_logo_pdf()
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
 
-    if ($CI->mdl_settings->setting('invoice_logo'))
-    {
+    if ($CI->mdl_settings->setting('invoice_logo')) {
         //---it---inizio
         global $pdf_preview;
         if(@$pdf_preview)
             return '<img src="' . base_url() . 'uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';    // Supporto anteprima PDF
         else
         //---it---fine
-        return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
+        	return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
     }
     return '';
 }

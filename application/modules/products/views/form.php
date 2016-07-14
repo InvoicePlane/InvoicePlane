@@ -10,7 +10,7 @@
         <?php $this->layout->load_view('layout/alerts'); ?>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-7">
+            <div class="col-xs-12 col-md-7">
                 <fieldset>
                     <legend>
                         <?php if ($this->mdl_products->form_value('product_id')) : ?>
@@ -30,7 +30,9 @@
                                 <option value="0"><?php echo lang('select_family'); ?></option>
                                 <?php foreach ($families as $family) { ?>
                                     <option value="<?php echo $family->family_id; ?>"
-                                            <?php if ($this->mdl_products->form_value('family_id') == $family->family_id) { ?>selected="selected"<?php } ?>><?php echo $family->family_name; ?></option>
+                                            <?php if ($this->mdl_products->form_value('family_id') == $family->family_id) {
+                                            ?>selected="selected"<?php } ?>
+                                    ><?php echo $family->family_name; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -85,8 +87,8 @@
                                 <option value="0"><?php echo lang('none'); ?></option>
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                        <?php if ($this->mdl_products->form_value('tax_rate_id') == $tax_rate->tax_rate_id) { ?> selected="selected" <?php } ?>
-                                        >
+                                            <?php if ($this->mdl_products->form_value('tax_rate_id') == $tax_rate->tax_rate_id) {
+                                            ?>selected="selected" <?php } ?>>
                                         <?php echo $tax_rate->tax_rate_name
                                             . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
                                     </option>
@@ -98,11 +100,10 @@
                 </fieldset>
             </div>
 
-            <div class="col-xs-12 col-sm-5">
+            <div class="col-xs-12 col-md-5">
                 <fieldset>
                     <legend><?php echo lang('extra_information'); ?></legend>
 
-                    <!--
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
                             <label class="control-label"><?php echo lang('provider_name'); ?>: </label>
@@ -112,7 +113,7 @@
                                    value="<?php echo $this->mdl_products->form_value('provider_name'); ?>">
                         </div>
                     </div>
-    -->
+
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
                             <label class="control-label"><?php echo lang('purchase_price'); ?>: </label>

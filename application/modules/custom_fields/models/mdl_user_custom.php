@@ -23,7 +23,7 @@ class Mdl_User_Custom extends MY_Model
 
     public function save_custom($user_id, $db_array)
     {
-        $user_custom_id = NULL;
+        $user_custom_id = null;
 
         $db_array['user_id'] = $user_id;
 

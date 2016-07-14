@@ -23,7 +23,7 @@ class Mdl_Payment_Custom extends MY_Model
 
     public function save_custom($payment_id, $db_array)
     {
-        $payment_custom_id = NULL;
+        $payment_custom_id = null;
 
         $db_array['payment_id'] = $payment_id;
 

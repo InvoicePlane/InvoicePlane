@@ -33,14 +33,14 @@ class Mdl_Quote_Tax_Rates extends Response_Model
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_quote_tax_rates.tax_rate_id');
     }
 
-    public function save($id = NULL, $db_array = NULL)
+    public function save($id = null, $db_array = null)
     {
         parent::save($id, $db_array);
 
         $this->load->model('quotes/mdl_quote_amounts');
-        
+
         $quote_id = $this->input->post('quote_id');
-        
+
         if ($quote_id) {
             $this->mdl_quote_amounts->calculate($quote_id);
         }

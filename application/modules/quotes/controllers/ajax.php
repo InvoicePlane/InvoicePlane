@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends Admin_Controller
 {
-    public $ajax_controller = TRUE;
+    public $ajax_controller = true;
 
     public function save()
     {
@@ -34,31 +34,17 @@ class Ajax extends Admin_Controller
         if ($this->mdl_quotes->run_validation('validation_rules_save_quote')) {
             $items = json_decode($this->input->post('items'));
 
-            foreach ($items as $item)
-            {
+            foreach ($items as $item) {
                 if ($item->item_name || $item->item_description)	// ---it--- or $item->item_description (tiene anche le righe senza cod.art. ma con la descr.)
-                {
-                    $item->item_quantity = standardize_amount($item->item_quantity);
-                    $item->item_price = standardize_amount($item->item_price);
-                    $item->item_discount_amount = standardize_amount($item->item_discount_amount);
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
+                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
 
-                    $item_id = ($item->item_id) ?: NULL;
-
-                    $save_item_as_lookup = (isset($item->save_item_as_lookup)) ? $item->save_item_as_lookup : 0;
-
-                    unset($item->item_id, $item->save_item_as_lookup);
+                    $item_id = ($item->item_id) ?: null;
+                    unset($item->item_id);
 
                     $this->mdl_quote_items->save($item_id, $item);
-
-                    if ($save_item_as_lookup) {
-                        $db_array = array(
-                            'item_name' => $item->item_name,
-                            'item_description' => $item->item_description,
-                            'item_price' => $item->item_price
-                        );
-
-                        $this->mdl_item_lookups->save(NULL, $db_array);
-                    }
                 }
             }
 
@@ -74,11 +60,20 @@ class Ajax extends Admin_Controller
                 $quote_discount_percent = $this->input->post('quote_discount_percent');
             }
 
+            // Generate new quote number if needed
+            $quote_number = $this->input->post('quote_number');
+            $quote_status_id = $this->input->post('quote_status_id');
+
+            if (empty($quote_number) && $quote_status_id != 1) {
+                $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
+                $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
+            }
+
             $db_array = array(
-                'quote_number' => $this->input->post('quote_number'),
+                'quote_number' => $quote_number,
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
-                'quote_status_id' => $this->input->post('quote_status_id'),
+                'quote_status_id' => $quote_status_id,
                 'quote_password' => $this->input->post('quote_password'),
                 'notes' => $this->input->post('notes'),
                 'quote_discount_amount' => $quote_discount_amount,
@@ -308,8 +303,18 @@ class Ajax extends Admin_Controller
         );
 
         if ($this->mdl_invoices->run_validation()) {
-            $invoice_id = $this->mdl_invoices->create(NULL, FALSE);
+            // Get the quote
+            $quote = $this->mdl_quotes->get_by_id($this->input->post('quote_id'));
 
+            $invoice_id = $this->mdl_invoices->create(null, false);
+
+            // Update the discounts
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('invoice_discount_amount', $quote->quote_discount_amount);
+            $this->db->set('invoice_discount_percent', $quote->quote_discount_percent);
+            $this->db->update('ip_invoices');
+
+            // Save the invoice id to the quote
             $this->db->where('quote_id', $this->input->post('quote_id'));
             $this->db->set('invoice_id', $invoice_id);
             $this->db->update('ip_quotes');
@@ -320,14 +325,16 @@ class Ajax extends Admin_Controller
                 $db_array = array(
                     'invoice_id' => $invoice_id,
                     'item_tax_rate_id' => $quote_item->item_tax_rate_id,
+                    'item_product_id' => $quote_item->item_product_id,
                     'item_name' => $quote_item->item_name,
                     'item_description' => $quote_item->item_description,
                     'item_quantity' => $quote_item->item_quantity,
                     'item_price' => $quote_item->item_price,
+                    'item_discount_amount' => $quote_item->item_discount_amount,
                     'item_order' => $quote_item->item_order
                 );
 
-                $this->mdl_items->save(NULL, $db_array);
+                $this->mdl_items->save(null, $db_array);
             }
 
             $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))->get()->result();
@@ -340,7 +347,7 @@ class Ajax extends Admin_Controller
                     'invoice_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
                 );
 
-                $this->mdl_invoice_tax_rates->save(NULL, $db_array);
+                $this->mdl_invoice_tax_rates->save(null, $db_array);
             }
 
             $response = array(

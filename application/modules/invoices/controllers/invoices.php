@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Invoices extends Admin_Controller
@@ -59,7 +59,7 @@ class Invoices extends Admin_Controller
             array(
                 'invoices' => $invoices,
                 'status' => $status,
-                'filter_display' => TRUE,
+                'filter_display' => true,
                 'filter_placeholder' => lang('filter_invoices'),
                 'filter_method' => 'filter_invoices',
                 'invoice_statuses' => $this->mdl_invoices->statuses()
@@ -176,7 +176,7 @@ class Invoices extends Admin_Controller
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_status = $invoice->invoice_status_id;
 
-        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === TRUE) {
+        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
             // Delete the invoice
             $this->mdl_invoices->delete($invoice_id);
         } else {
@@ -198,7 +198,7 @@ class Invoices extends Admin_Controller
         redirect('invoices/view/' . $invoice_id);
     }
 
-    public function generate_pdf($invoice_id, $stream = TRUE, $invoice_template = NULL)
+    public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
 
@@ -206,7 +206,19 @@ class Invoices extends Admin_Controller
             $this->mdl_invoices->mark_sent($invoice_id);
         }
 
-        generate_invoice_pdf($invoice_id, $stream, $invoice_template);
+        generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
+    }
+
+    public function generate_zugferd_xml($invoice_id)
+    {
+        $this->load->model('invoices/mdl_items');
+        $this->load->library('ZugferdXml', array(
+            'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
+            'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result()
+        ));
+
+        $this->output->set_content_type('text/xml');
+        $this->output->set_output($this->zugferdxml->xml());
     }
     
     //---it---inizio
