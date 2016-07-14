@@ -35,7 +35,7 @@ class Ajax extends Admin_Controller
             $items = json_decode($this->input->post('items'));
 
             foreach ($items as $item) {
-                if ($item->item_name || $item->item_description)	// ---it--- or $item->item_description (tiene anche le righe senza cod.art. ma con la descr.)
+                if ($item->item_name || $item->item_description) {	// ---it--- or $item->item_description (tiene anche le righe senza cod.art. ma con la descr.)
                     $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
                     $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
