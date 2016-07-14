@@ -14,7 +14,8 @@
 | path to your installation.
 |
 */
-$config['base_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']) . URL_SUBFOLDER;
+$http = empty($_SERVER['HTTPS']) ? 'http' : 'https';
+$config['base_url'] = $http.'://'.$_SERVER['HTTP_HOST'].str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 
 /*
 |--------------------------------------------------------------------------
