@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1><?php echo lang('payment_methods'); ?></h1>
+    <h1><?php echo trans('payment_methods'); ?></h1>
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('payment_methods/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
         </a>
     </div>
 
@@ -22,8 +22,8 @@
 
             <thead>
             <tr>
-                <th><?php echo lang('payment_method'); ?></th>
-                <th><?php echo lang('options'); ?></th>
+                <th><?php echo trans('payment_method'); ?></th>
+                <th><?php echo trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -36,20 +36,20 @@
                             <a class="btn btn-default btn-sm dropdown-toggle"
                                data-toggle="dropdown" href="#">
                                 <i class="fa fa-cog"></i>
-                                <?php echo lang('options'); ?>
+                                <?php echo trans('options'); ?>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('payment_methods/form/' . $payment_method->payment_method_id); ?>">
                                         <i class="fa fa-edit fa-margin"></i>
-                                        <?php echo lang('edit'); ?>
+                                        <?php echo trans('edit'); ?>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo site_url('payment_methods/delete/' . $payment_method->payment_method_id); ?>"
-                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                       onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i>
-                                        <?php echo lang('delete'); ?>
+                                        <?php echo trans('delete'); ?>
                                     </a>
                                 </li>
                             </ul>

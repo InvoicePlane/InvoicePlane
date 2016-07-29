@@ -48,7 +48,7 @@ class Ajax extends Admin_Controller
                 } else {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
-                    $this->form_validation->set_rules('item_name', lang('item'), 'required');
+                    $this->form_validation->set_rules('item_name', trans('item'), 'required');
                     $this->form_validation->run();
 
                     $response = array(
@@ -220,7 +220,7 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'client_name' => $this->input->post('client_name'),
-            'clients' => $this->mdl_clients->get()->result(),
+            'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
 
         $this->layout->load_view('invoices/modal_create_invoice', $data);
@@ -256,7 +256,7 @@ class Ajax extends Admin_Controller
         $data = array(
             'client_name' => $this->input->post('client_name'),
             'invoice_id' => $this->input->post('invoice_id'),
-            'clients' => $this->mdl_clients->get()->result(),
+            'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
 
         $this->layout->load_view('invoices/modal_change_client', $data);

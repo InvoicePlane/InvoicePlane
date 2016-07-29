@@ -2,18 +2,18 @@
 
     <div class="form-group">
         <label for="settings[merchant_enabled]" class="control-label">
-            <?php echo lang('merchant_enable'); ?>
+            <?php echo trans('merchant_enable'); ?>
         </label>
         <select name="settings[merchant_enabled]" class="input-sm form-control">
-            <option value="0"><?php echo lang('no'); ?></option>
+            <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
-                    <?php if ($this->mdl_settings->setting('merchant_enabled') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+                    <?php if ($this->mdl_settings->setting('merchant_enabled') == 1) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
         </select>
     </div>
 
     <div class="form-group">
         <label for="settings[merchant_driver]" class="control-label">
-            <?php echo lang('merchant_driver'); ?>
+            <?php echo trans('merchant_driver'); ?>
         </label>
         <select name="settings[merchant_driver]" class="input-sm form-control">
             <option value=""></option>
@@ -26,18 +26,18 @@
 
     <div class="form-group">
         <label for="settings[merchant_test_mode]" class="control-label">
-            <?php echo lang('merchant_test_mode'); ?>
+            <?php echo trans('merchant_test_mode'); ?>
         </label>
         <select name="settings[merchant_test_mode]" class="input-sm form-control">
-            <option value="0"><?php echo lang('no'); ?></option>
+            <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
-                    <?php if ($this->mdl_settings->setting('merchant_test_mode') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+                    <?php if ($this->mdl_settings->setting('merchant_test_mode') == 1) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
         </select>
     </div>
 
     <div class="form-group">
         <label for="settings[merchant_username]" class="control-label">
-            <?php echo lang('username'); ?>
+            <?php echo trans('username'); ?>
         </label>
         <input type="text" name="settings[merchant_username]" class="input-sm form-control"
                value="<?php echo $this->mdl_settings->setting('merchant_username'); ?>">
@@ -45,7 +45,7 @@
 
     <div class="form-group">
         <label for="settings[merchant_password]" class="control-label">
-            <?php echo lang('password'); ?>
+            <?php echo trans('password'); ?>
         </label>
         <input type="password" name="settings[merchant_password]" class="input-sm form-control"
                value="<?php $this->load->library('encrypt');
@@ -54,7 +54,7 @@
 
     <div class="form-group">
         <label for="settings[merchant_signature]" class="control-label">
-            <?php echo lang('merchant_signature'); ?>
+            <?php echo trans('merchant_signature'); ?>
         </label>
         <input type="text" name="settings[merchant_signature]" class="input-sm form-control"
                value="<?php echo $this->mdl_settings->setting('merchant_signature'); ?>">
@@ -62,7 +62,7 @@
 
     <div class="form-group">
         <label for="settings[merchant_currency_code]" class="control-label">
-            <?php echo lang('merchant_currency_code'); ?>
+            <?php echo trans('merchant_currency_code'); ?>
         </label>
         <select name="settings[merchant_currency_code]" class="input-sm form-control">
             <option value=""></option>
@@ -75,7 +75,7 @@
 
     <div class="form-group">
         <label for="settings[online_payment_method]" class="control-label">
-            <?php echo lang('online_payment_method'); ?>
+            <?php echo trans('online_payment_method'); ?>
         </label>
         <select name="settings[online_payment_method]" class="input-sm form-control">
             <option value=""></option>

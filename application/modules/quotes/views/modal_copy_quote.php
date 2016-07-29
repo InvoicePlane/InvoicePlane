@@ -38,7 +38,7 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('copy_quote'); ?></h3>
+            <h3><?php echo trans('copy_quote'); ?></h3>
         </div>
         <div class="modal-body">
 
@@ -47,7 +47,7 @@
 
             <div class="form-group">
                 <label for="client_name">
-                    <?php echo lang('client'); ?>
+                    <?php echo trans('client'); ?>
                 </label>
 
                 <div class="controls">
@@ -60,7 +60,7 @@
 
             <div class="form-group has-feedback">
                 <label for="quote_date_created">
-                    <?php echo lang('quote_date'); ?>
+                    <?php echo trans('quote_date'); ?>
                 </label>
 
                 <div class="input-group">
@@ -75,7 +75,7 @@
 
             <div class="form-group">
                 <label for="invoice_group_id">
-                    <?php echo lang('invoice_group'); ?>
+                    <?php echo trans('invoice_group'); ?>
                 </label>
 
                 <div class="controls">
@@ -94,10 +94,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success" id="copy_quote_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

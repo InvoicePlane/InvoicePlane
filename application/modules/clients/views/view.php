@@ -38,30 +38,30 @@
     <div class="pull-right btn-group">
         <a href="#" class="btn btn-sm btn-default client-create-quote"
            data-client-name="<?php echo $client->client_name; ?>">
-            <i class="fa fa-file"></i> <?php echo lang('create_quote'); ?>
+            <i class="fa fa-file"></i> <?php echo trans('create_quote'); ?>
         </a>
         <a href="#" class="btn btn-sm btn-default client-create-invoice"
            data-client-name="<?php echo $client->client_name; ?>"><i
-                class="fa fa-file-text""></i> <?php echo lang('create_invoice'); ?></a>
+                class="fa fa-file-text""></i> <?php echo trans('create_invoice'); ?></a>
         <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
            class="btn btn-sm btn-default">
-            <i class="fa fa-edit"></i> <?php echo lang('edit'); ?>
+            <i class="fa fa-edit"></i> <?php echo trans('edit'); ?>
         </a>
 
         <a class="btn btn-sm btn-danger"
            href="<?php echo site_url('clients/delete/' . $client->client_id); ?>"
-           onclick="return confirm('<?php echo lang('delete_client_warning'); ?>');">
-            <i class="fa fa-trash-o"></i> <?php echo lang('delete'); ?>
+           onclick="return confirm('<?php echo trans('delete_client_warning'); ?>');">
+            <i class="fa fa-trash-o"></i> <?php echo trans('delete'); ?>
         </a>
     </div>
 
 </div>
 
 <ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">
-    <li class="active"><a data-toggle="tab" href="#clientDetails"><?php echo lang('details'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientQuotes"><?php echo lang('quotes'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientInvoices"><?php echo lang('invoices'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientPayments"><?php echo lang('payments'); ?></a></li>
+    <li class="active"><a data-toggle="tab" href="#clientDetails"><?php echo trans('details'); ?></a></li>
+    <li><a data-toggle="tab" href="#clientQuotes"><?php echo trans('quotes'); ?></a></li>
+    <li><a data-toggle="tab" href="#clientInvoices"><?php echo trans('invoices'); ?></a></li>
+    <li><a data-toggle="tab" href="#clientPayments"><?php echo trans('payments'); ?></a></li>
 </ul>
 
 <div class="tabbable tabs-below">
@@ -89,7 +89,7 @@
                     <table class="table table-condensed table-bordered">
                         <tr>
                             <th>
-                                <?php echo lang('total_billed'); ?>
+                                <?php echo trans('total_billed'); ?>
                             </th>
                             <td class="td-amount">
                                 <?php echo format_currency($client->client_invoice_total); ?>
@@ -97,7 +97,7 @@
                         </tr>
                         <tr>
                             <th>
-                                <?php echo lang('total_paid'); ?>
+                                <?php echo trans('total_paid'); ?>
                             </th>
                             <th class="td-amount">
                                 <?php echo format_currency($client->client_invoice_paid); ?>
@@ -105,7 +105,7 @@
                         </tr>
                         <tr>
                             <th>
-                                <?php echo lang('total_balance'); ?>
+                                <?php echo trans('total_balance'); ?>
                             </th>
                             <td class="td-amount">
                                 <?php echo format_currency($client->client_invoice_balance); ?>
@@ -119,54 +119,54 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-6">
-                    <h4><?php echo lang('contact_information'); ?></h4>
+                    <h4><?php echo trans('contact_information'); ?></h4>
                     <br>
                     <table class="table table-condensed table-striped">
                         <?php if ($client->client_email) : ?>
                             <tr>
-                                <th><?php echo lang('email'); ?></th>
+                                <th><?php echo trans('email'); ?></th>
                                 <td><?php echo auto_link($client->client_email, 'email'); ?></td>
                             </tr>
                         <?php endif; ?>
                         <?php if ($client->client_phone) : ?>
                             <tr>
-                                <th><?php echo lang('phone'); ?></th>
+                                <th><?php echo trans('phone'); ?></th>
                                 <td><?php echo $client->client_phone; ?></td>
                             </tr>
                         <?php endif; ?>
                         <?php if ($client->client_mobile) : ?>
                             <tr>
-                                <th><?php echo lang('mobile'); ?></th>
+                                <th><?php echo trans('mobile'); ?></th>
                                 <td><?php echo $client->client_mobile; ?></td>
                             </tr>
                         <?php endif; ?>
                         <?php if ($client->client_fax) : ?>
                             <tr>
-                                <th><?php echo lang('fax'); ?></th>
+                                <th><?php echo trans('fax'); ?></th>
                                 <td><?php echo $client->client_fax; ?></td>
                             </tr>
                         <?php endif; ?>
                         <?php if ($client->client_web) : ?>
                             <tr>
-                                <th><?php echo lang('web'); ?></th>
+                                <th><?php echo trans('web'); ?></th>
                                 <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
                             </tr>
                         <?php endif; ?>
                     </table>
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <h4><?php echo lang('tax_information'); ?></h4>
+                    <h4><?php echo trans('tax_information'); ?></h4>
                     <br/>
                     <table class="table table-condensed table-striped">
                         <?php if ($client->client_vat_id) : ?>
                             <tr>
-                                <th><?php echo lang('vat_id'); ?></th>
+                                <th><?php echo trans('vat_id'); ?></th>
                                 <td><?php echo $client->client_vat_id; ?></td>
                             </tr>
                         <?php endif; ?>
                         <?php if ($client->client_tax_code) : ?>
                             <tr>
-                                <th><?php echo lang('tax_code'); ?></th>
+                                <th><?php echo trans('tax_code'); ?></th>
                                 <td><?php echo $client->client_tax_code; ?></td>
                             </tr>
                         <?php endif; ?>
@@ -177,7 +177,7 @@
             <?php if ($custom_fields) : ?>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-                        <h4><?php echo lang('custom_fields'); ?></h4>
+                        <h4><?php echo trans('custom_fields'); ?></h4>
                         <br>
                         <table class="table table-condensed table-striped">
                             <?php foreach ($custom_fields as $custom_field) : ?>
@@ -194,7 +194,7 @@
             <hr>
 
             <div>
-                <h4><?php echo lang('notes'); ?></h4>
+                <h4><?php echo trans('notes'); ?></h4>
                 <br>
 
                 <div id="notes_list">
@@ -209,7 +209,7 @@
                         </div>
                         <div class="col-xs-12 col-md-2 text-center">
                             <input type="button" id="save_client_note" class="btn btn-default btn-block"
-                                   value="<?php echo lang('add_notes'); ?>">
+                                   value="<?php echo trans('add_notes'); ?>">
                         </div>
                     </form>
                 </div>

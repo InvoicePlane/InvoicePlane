@@ -1,7 +1,7 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1><?php echo lang('change_password'); ?></h1>
+        <h1><?php echo trans('change_password'); ?></h1>
         <?php echo $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -10,11 +10,11 @@
         <?php $this->layout->load_view('layout/alerts'); ?>
 
         <fieldset>
-            <legend><?php echo lang('change_password'); ?></legend>
+            <legend><?php echo trans('change_password'); ?></legend>
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                    <label class="control-label"><?php echo lang('password'); ?>: </label>
+                    <label class="control-label"><?php echo trans('password'); ?>: </label>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <input type="password" name="user_password" id="user_password"
@@ -25,7 +25,7 @@
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                     <label class="control-label">
-                        <?php echo lang('verify_password'); ?>
+                        <?php echo trans('verify_password'); ?>
                     </label>
                 </div>
                 <div class="col-xs-12 col-sm-6">

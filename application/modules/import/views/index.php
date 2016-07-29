@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1><?php echo lang('import_data'); ?></h1>
+    <h1><?php echo trans('import_data'); ?></h1>
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('import/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
         </a>
     </div>
 
@@ -22,13 +22,13 @@
 
             <thead>
             <tr>
-                <th><?php echo lang('id'); ?></th>
-                <th><?php echo lang('date'); ?></th>
-                <th><?php echo lang('clients'); ?></th>
-                <th><?php echo lang('invoices'); ?></th>
-                <th><?php echo lang('invoice_items'); ?></th>
-                <th><?php echo lang('payments'); ?></th>
-                <th><?php echo lang('options'); ?></th>
+                <th><?php echo trans('id'); ?></th>
+                <th><?php echo trans('date'); ?></th>
+                <th><?php echo trans('clients'); ?></th>
+                <th><?php echo trans('invoices'); ?></th>
+                <th><?php echo trans('invoice_items'); ?></th>
+                <th><?php echo trans('payments'); ?></th>
+                <th><?php echo trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -44,12 +44,12 @@
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i
-                                    class="fa fa-cog"></i> <?php echo lang('options'); ?></a>
+                                    class="fa fa-cog"></i> <?php echo trans('options'); ?></a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('import/delete/' . $import->import_id); ?>"
-                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
-                                        <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
+                                       onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
+                                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
                                     </a>
                                 </li>
                             </ul>

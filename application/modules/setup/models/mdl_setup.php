@@ -175,7 +175,7 @@ class Mdl_Setup extends CI_Model
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
             $setup_notice = array(
                 'type' => 'alert-danger',
-                'content' => lang('setup_v120_alert'),
+                'content' => trans('setup_v120_alert'),
             );
             $this->session->set_userdata('setup_notice', $setup_notice);
         }
@@ -194,7 +194,7 @@ class Mdl_Setup extends CI_Model
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
             $setup_notice = array(
                 'type' => 'alert-danger',
-                'content' => lang('setup_v147_alert'),
+                'content' => trans('setup_v147_alert'),
             );
             $this->session->set_userdata('setup_notice', $setup_notice);
         }

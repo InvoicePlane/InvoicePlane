@@ -188,7 +188,7 @@ if (is_dir($application_folder)) {
 }
 
 // Detect the URL subfolder
-define('URL_SUBFOLDER', ($_SERVER['DOCUMENT_ROOT'] != dirname(__FILE__) ? str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname(__FILE__)) : ''));
+define('URL_SUBFOLDER', ($_SERVER['DOCUMENT_ROOT'] != str_replace('\\', '/', dirname(__FILE__)) ? str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', dirname(__FILE__))) : ''));
 
 /*
  * --------------------------------------------------------------------

@@ -30,7 +30,7 @@ class Guest_Controller extends User_Controller
         $user_clients = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
 
         if (!$user_clients) {
-            die(lang('guest_account_denied'));
+            die(trans('guest_account_denied'));
         }
 
         foreach ($user_clients as $user_client) {

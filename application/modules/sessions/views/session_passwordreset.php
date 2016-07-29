@@ -34,7 +34,7 @@
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
 </noscript>
 
 <br>
@@ -46,27 +46,27 @@
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
-        <h3><?php echo lang('password_reset'); ?></h3>
+        <h3><?php echo trans('password_reset'); ?></h3>
 
         <br/>
 
-        <p><?php echo lang('password_reset_info'); ?></p>
+        <p><?php echo trans('password_reset_info'); ?></p>
 
         <form class="form-horizontal" method="post"
               action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3">
-                    <label for="email" class="control-label"><?php echo lang('email'); ?></label>
+                    <label for="email" class="control-label"><?php echo trans('email'); ?></label>
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="text" name="email" id="email" class="form-control"
-                           placeholder="<?php echo lang('email'); ?>">
+                           placeholder="<?php echo trans('email'); ?>">
                 </div>
             </div>
 
             <input type="submit" name="btn_reset" class="btn btn-block btn-danger"
-                   value="<?php echo lang('reset_password'); ?>">
+                   value="<?php echo trans('reset_password'); ?>">
 
         </form>
 

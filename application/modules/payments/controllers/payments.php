@@ -34,7 +34,7 @@ class Payments extends Admin_Controller
             array(
                 'payments' => $payments,
                 'filter_display' => true,
-                'filter_placeholder' => lang('filter_payments'),
+                'filter_placeholder' => trans('filter_payments'),
                 'filter_method' => 'filter_payments'
             )
         );

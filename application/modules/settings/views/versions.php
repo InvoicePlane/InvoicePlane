@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1><?php echo lang('version_history'); ?></h1>
+    <h1><?php echo trans('version_history'); ?></h1>
 
     <div class="pull-right">
         <?php echo pager(site_url('settings/versions/index'), 'mdl_versions'); ?>
@@ -13,9 +13,9 @@
 
             <thead>
             <tr>
-                <th><?php echo lang('date_applied'); ?></th>
-                <th><?php echo lang('sql_file'); ?></th>
-                <th><?php echo lang('errors'); ?></th>
+                <th><?php echo trans('date_applied'); ?></th>
+                <th><?php echo trans('sql_file'); ?></th>
+                <th><?php echo trans('errors'); ?></th>
             </tr>
             </thead>
 

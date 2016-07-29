@@ -1,10 +1,10 @@
 <div id="headerbar">
 
-    <h1><?php echo lang('invoices'); ?></h1>
+    <h1><?php echo trans('invoices'); ?></h1>
 
     <div class="pull-right">
         <a class="create-invoice btn btn-sm btn-primary" href="#">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
         </a>
     </div>
 
@@ -15,13 +15,13 @@
     <div class="pull-right">
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'open') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/client/' . $client_id . '/open'); ?>"><?php echo lang('open'); ?></a>
+                    href="<?php echo site_url('invoices/client/' . $client_id . '/open'); ?>"><?php echo trans('open'); ?></a>
             </li>
             <li <?php if ($status == 'closed') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/client/' . $client_id . '/closed'); ?>"><?php echo lang('closed'); ?></a>
+                    href="<?php echo site_url('invoices/client/' . $client_id . '/closed'); ?>"><?php echo trans('closed'); ?></a>
             </li>
             <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/client/' . $client_id . '/overdue'); ?>"><?php echo lang('overdue'); ?></a>
+                    href="<?php echo site_url('invoices/client/' . $client_id . '/overdue'); ?>"><?php echo trans('overdue'); ?></a>
             </li>
         </ul>
     </div>
