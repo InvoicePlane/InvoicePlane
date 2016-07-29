@@ -60,7 +60,7 @@ class Invoices extends Admin_Controller
                 'invoices' => $invoices,
                 'status' => $status,
                 'filter_display' => true,
-                'filter_placeholder' => lang('filter_invoices'),
+                'filter_placeholder' => trans('filter_invoices'),
                 'filter_method' => 'filter_invoices',
                 'invoice_statuses' => $this->mdl_invoices->statuses()
             )
@@ -181,7 +181,7 @@ class Invoices extends Admin_Controller
             $this->mdl_invoices->delete($invoice_id);
         } else {
             // Add alert that invoices can't be deleted
-            $this->session->set_flashdata('alert_error', lang('invoice_deletion_forbidden'));
+            $this->session->set_flashdata('alert_error', trans('invoice_deletion_forbidden'));
         }
 
         // Redirect to invoice index

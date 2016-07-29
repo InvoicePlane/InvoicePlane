@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1><?php echo lang('payments'); ?></h1>
+    <h1><?php echo trans('payments'); ?></h1>
 
     <div class="pull-right">
         <?php echo pager(site_url('guest/payments/index'), 'mdl_payments'); ?>
@@ -17,11 +17,11 @@
 
                 <thead>
                 <tr>
-                    <th><?php echo lang('date'); ?></th>
-                    <th><?php echo lang('invoice'); ?></th>
-                    <th><?php echo lang('amount'); ?></th>
-                    <th><?php echo lang('payment_method'); ?></th>
-                    <th><?php echo lang('note'); ?></th>
+                    <th><?php echo trans('date'); ?></th>
+                    <th><?php echo trans('invoice'); ?></th>
+                    <th><?php echo trans('amount'); ?></th>
+                    <th><?php echo trans('payment_method'); ?></th>
+                    <th><?php echo trans('note'); ?></th>
                 </tr>
                 </thead>
 

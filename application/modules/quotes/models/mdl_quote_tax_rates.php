@@ -51,17 +51,17 @@ class Mdl_Quote_Tax_Rates extends Response_Model
         return array(
             'quote_id' => array(
                 'field' => 'quote_id',
-                'label' => lang('quote'),
+                'label' => trans('quote'),
                 'rules' => 'required'
             ),
             'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
-                'label' => lang('tax_rate'),
+                'label' => trans('tax_rate'),
                 'rules' => 'required'
             ),
             'include_item_tax' => array(
                 'field' => 'include_item_tax',
-                'label' => lang('tax_rate_placement'),
+                'label' => trans('tax_rate_placement'),
                 'rules' => 'required'
             )
         );

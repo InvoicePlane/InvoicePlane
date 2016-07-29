@@ -23,16 +23,16 @@
 <form method="post" class="form-horizontal" action="<?php echo site_url('mailer/send_quote/' . $quote->quote_id) ?>">
 
     <div id="headerbar">
-        <h1><?php echo lang('email_quote'); ?></h1>
+        <h1><?php echo trans('email_quote'); ?></h1>
 
         <div class="pull-right btn-group">
             <button class="btn btn-sm btn-primary ajax-loader" name="btn_send" value="1">
                 <i class="fa fa-send"></i>
-                <?php echo lang('send'); ?>
+                <?php echo trans('send'); ?>
             </button>
             <button class="btn btn-sm btn-danger" name="btn_cancel" value="1">
                 <i class="fa fa-times"></i>
-                <?php echo lang('cancel'); ?>
+                <?php echo trans('cancel'); ?>
             </button>
         </div>
     </div>
@@ -43,7 +43,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="to_email" class="control-label"><?php echo lang('to_email'); ?>: </label>
+                <label for="to_email" class="control-label"><?php echo trans('to_email'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="to_email" id="to_email" class="form-control"
@@ -55,7 +55,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="email_template" class="control-label"><?php echo lang('email_template'); ?>: </label>
+                <label for="email_template" class="control-label"><?php echo trans('email_template'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="email_template" id="email_template" class="form-control">
@@ -70,7 +70,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="from_name" class="control-label"><?php echo lang('from_name'); ?>: </label>
+                <label for="from_name" class="control-label"><?php echo trans('from_name'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="from_name" id="from_name" class="form-control"
@@ -80,7 +80,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="from_email" class="control-label"><?php echo lang('from_email'); ?>: </label>
+                <label for="from_email" class="control-label"><?php echo trans('from_email'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="from_email" id="from_email" class="form-control"
@@ -90,7 +90,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="cc" class="control-label"><?php echo lang('cc'); ?>: </label>
+                <label for="cc" class="control-label"><?php echo trans('cc'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="cc" id="cc" value="" class="form-control">
@@ -99,7 +99,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="bcc" class="control-label"><?php echo lang('bcc'); ?>: </label>
+                <label for="bcc" class="control-label"><?php echo trans('bcc'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="bcc" id="bcc" value="" class="form-control">
@@ -108,18 +108,18 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="subject" class="control-label"><?php echo lang('subject'); ?>: </label>
+                <label for="subject" class="control-label"><?php echo trans('subject'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="subject" id="subject" class="form-control"
-                       value="<?php echo lang('quote'); ?> #<?php echo $quote->quote_number; ?>">
+                       value="<?php echo trans('quote'); ?> #<?php echo $quote->quote_number; ?>">
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="pdf_template" class="control-label">
-                    <?php echo lang('pdf_template'); ?>:
+                    <?php echo trans('pdf_template'); ?>:
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
@@ -139,7 +139,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="email_template_body">
-                    <?php echo lang('body'); ?>:
+                    <?php echo trans('body'); ?>:
                 </label>
             </div>
 
@@ -178,7 +178,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php echo lang('preview'); ?>
+                        <?php echo trans('preview'); ?>
                         <span id="email-template-preview-reload" class="pull-right cursor-pointer">
                             <i class="fa fa-refresh"></i>
                         </span>
@@ -191,11 +191,11 @@
         </div>
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label class="control-label"><?php echo lang('attachments'); ?>: </label>
+                <label class="control-label"><?php echo trans('attachments'); ?>: </label>
                 <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="btn btn-success fileinput-button">
                         <i class="glyphicon glyphicon-plus"></i>
-                         <span><?php echo lang('add_files'); ?></span>
+                         <span><?php echo trans('add_files'); ?></span>
                     </span>
             </div>
             <!-- dropzone -->
@@ -234,7 +234,7 @@
                         <div>
                             <button data-dz-remove class="btn btn-danger delete">
                                 <i class="glyphicon glyphicon-trash"></i>
-                                <span><?php echo lang('delete'); ?></span>
+                                <span><?php echo trans('delete'); ?></span>
                             </button>
                         </div>
                     </div>
@@ -246,7 +246,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label class="control-label"><?php echo lang('guest_url'); ?>: </label>
+                <label class="control-label"><?php echo trans('guest_url'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <p class="control-label">

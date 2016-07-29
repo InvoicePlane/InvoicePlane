@@ -1,7 +1,7 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1><?php echo lang('products_form'); ?></h1>
+        <h1><?php echo trans('products_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -17,17 +17,17 @@
                             #<?php echo $this->mdl_products->form_value('product_id'); ?>&nbsp;
                             <?php echo $this->mdl_products->form_value('product_name'); ?>
                         <?php else : ?>
-                            <?php echo lang('new_product'); ?>
+                            <?php echo trans('new_product'); ?>
                         <?php endif; ?>
                     </legend>
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('family'); ?>: </label>
+                            <label class="control-label"><?php echo trans('family'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <select name="family_id" id="family_id" class="form-control">
-                                <option value="0"><?php echo lang('select_family'); ?></option>
+                                <option value="0"><?php echo trans('select_family'); ?></option>
                                 <?php foreach ($families as $family) { ?>
                                     <option value="<?php echo $family->family_id; ?>"
                                             <?php if ($this->mdl_products->form_value('family_id') == $family->family_id) {
@@ -40,7 +40,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('product_sku'); ?>: </label>
+                            <label class="control-label"><?php echo trans('product_sku'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="product_sku" id="product_sku" class="form-control"
@@ -50,7 +50,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('product_name'); ?>: </label>
+                            <label class="control-label"><?php echo trans('product_name'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="product_name" id="product_name" class="form-control"
@@ -60,7 +60,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('product_description'); ?>: </label>
+                            <label class="control-label"><?php echo trans('product_description'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <textarea name="product_description" id="product_description" class="form-control"
@@ -70,7 +70,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('product_price'); ?>: </label>
+                            <label class="control-label"><?php echo trans('product_price'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="product_price" id="product_price" class="form-control"
@@ -80,11 +80,11 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('tax_rate'); ?>: </label>
+                            <label class="control-label"><?php echo trans('tax_rate'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <select name="tax_rate_id" id="tax_rate_id" class="form-control">
-                                <option value="0"><?php echo lang('none'); ?></option>
+                                <option value="0"><?php echo trans('none'); ?></option>
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                             <?php if ($this->mdl_products->form_value('tax_rate_id') == $tax_rate->tax_rate_id) {
@@ -102,11 +102,11 @@
 
             <div class="col-xs-12 col-md-5">
                 <fieldset>
-                    <legend><?php echo lang('extra_information'); ?></legend>
+                    <legend><?php echo trans('extra_information'); ?></legend>
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('provider_name'); ?>: </label>
+                            <label class="control-label"><?php echo trans('provider_name'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="provider_name" id="provider_name" class="form-control"
@@ -116,7 +116,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('purchase_price'); ?>: </label>
+                            <label class="control-label"><?php echo trans('purchase_price'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <input type="text" name="purchase_price" id="purchase_price" class="form-control"
