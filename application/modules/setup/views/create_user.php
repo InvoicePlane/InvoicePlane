@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $().ready(function () {
         $("[name='user_country']").select2({
-            placeholder: "<?php echo lang('country'); ?>",
+            placeholder: "<?php echo trans('country'); ?>",
             allowClear: true
         });
     });
@@ -16,50 +16,50 @@
 
             <input type="hidden" name="user_type" value="1">
 
-            <legend><?php echo lang('setup_create_user'); ?></legend>
+            <legend><?php echo trans('setup_create_user'); ?></legend>
 
             <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-            <p><?php echo lang('setup_create_user_message'); ?></p>
+            <p><?php echo trans('setup_create_user_message'); ?></p>
 
             <div class="form-group">
-                <label><?php echo lang('email_address'); ?></label>
+                <label><?php echo trans('email_address'); ?></label>
                 <input type="email" name="user_email" id="user_email" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_email'); ?>">
-                <span class="help-block"><?php echo lang('setup_user_email_info'); ?></span>
+                <span class="help-block"><?php echo trans('setup_user_email_info'); ?></span>
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('name'); ?>
+                    <?php echo trans('name'); ?>
                 </label>
                 <input type="text" name="user_name" id="user_name" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_name'); ?>">
-                <span class="help-block"><?php echo lang('setup_user_name_info'); ?></span>
+                <span class="help-block"><?php echo trans('setup_user_name_info'); ?></span>
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('password'); ?>
+                    <?php echo trans('password'); ?>
                 </label>
                 <input type="password" name="user_password" id="user_password" class="form-control">
-                <span class="help-block"><?php echo lang('setup_user_password_info'); ?></span>
+                <span class="help-block"><?php echo trans('setup_user_password_info'); ?></span>
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('verify_password'); ?>
+                    <?php echo trans('verify_password'); ?>
                 </label>
                 <input type="password" name="user_passwordv" id="user_passwordv" class="form-control">
-                <span class="help-block"><?php echo lang('setup_user_password_verify_info'); ?></span>
+                <span class="help-block"><?php echo trans('setup_user_password_verify_info'); ?></span>
             </div>
 
-            <legend><?php echo lang('address'); ?></legend>
-            <p><?php echo lang('setup_user_address_info'); ?></p>
+            <legend><?php echo trans('address'); ?></legend>
+            <p><?php echo trans('setup_user_address_info'); ?></p>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('street_address'); ?>
+                    <?php echo trans('street_address'); ?>
                 </label>
                 <input type="text" name="user_address_1" id="user_address_1" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_address_1'); ?>">
@@ -67,43 +67,43 @@
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('street_address_2'); ?>
+                    <?php echo trans('street_address_2'); ?>
                 </label>
                 <input type="text" name="user_address_2" id="user_address_2" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('city'); ?>
+                    <?php echo trans('city'); ?>
                 </label>
                 <input type="text" name="user_city" id="user_city" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_city'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('state'); ?>
+                    <?php echo trans('state'); ?>
                 </label>
                 <input type="text" name="user_state" id="user_state" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_state'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('zip_code'); ?>
+                    <?php echo trans('zip_code'); ?>
                 </label>
                 <input type="text" name="user_zip" id="user_zip" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_zip'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('country'); ?>
+                    <?php echo trans('country'); ?>
                 </label>
                 <select name="user_country" class="form-control">
                     <option></option>
@@ -117,48 +117,48 @@
                 </select>
             </div>
 
-            <legend><?php echo lang('setup_other_contact'); ?></legend>
+            <legend><?php echo trans('setup_other_contact'); ?></legend>
 
-            <p><?php echo lang('setup_user_contact_info'); ?></p>
+            <p><?php echo trans('setup_user_contact_info'); ?></p>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('phone'); ?>
+                    <?php echo trans('phone'); ?>
                 </label>
                 <input type="text" name="user_phone" id="user_phone" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_phone'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('fax'); ?>
+                    <?php echo trans('fax'); ?>
                 </label>
                 <input type="text" name="user_fax" id="user_fax" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_fax'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('mobile'); ?>
+                    <?php echo trans('mobile'); ?>
                 </label>
                 <input type="text" name="user_mobile" id="user_mobile" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <div class="form-group">
                 <label>
-                    <?php echo lang('web'); ?>
+                    <?php echo trans('web'); ?>
                 </label>
                 <input type="text" name="user_web" id="user_web" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_web'); ?>"
-                       placeholder="<?php echo lang('optional'); ?>">
+                       placeholder="<?php echo trans('optional'); ?>">
             </div>
 
             <input type="submit" class="btn btn-success" name="btn_continue"
-                   value="<?php echo lang('continue'); ?>">
+                   value="<?php echo trans('continue'); ?>">
 
         </form>
 

@@ -116,7 +116,7 @@
 <div id="headerbar">
     <h1>
         <?php
-        echo lang('quote') . ' ';
+        echo trans('quote') . ' ';
         echo($quote->quote_number ? '#' . $quote->quote_number : $quote->quote_id);
         ?>
     </h1>
@@ -125,45 +125,45 @@
 
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                <?php echo lang('options'); ?> <i class="fa fa-chevron-down"></i>
+                <?php echo trans('options'); ?> <i class="fa fa-chevron-down"></i>
             </a>
             <ul class="dropdown-menu">
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
-                        <?php echo lang('add_quote_tax'); ?>
+                        <?php echo trans('add_quote_tax'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
-                        <?php echo lang('download_pdf'); ?>
+                        <?php echo trans('download_pdf'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
-                        <?php echo lang('send_email'); ?>
+                        <?php echo trans('send_email'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_quote_to_invoice"
                        data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-refresh fa-margin"></i>
-                        <?php echo lang('quote_to_invoice'); ?>
+                        <?php echo trans('quote_to_invoice'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_copy_quote"
                        data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
-                        <?php echo lang('copy_quote'); ?>
+                        <?php echo trans('copy_quote'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#delete-quote" data-toggle="modal">
-                        <i class="fa fa-trash-o fa-margin"></i> <?php echo lang('delete'); ?>
+                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
                     </a>
                 </li>
             </ul>
@@ -171,16 +171,16 @@
 
         <a href="#" class="btn_add_row btn btn-sm btn-default">
             <i class="fa fa-plus"></i>
-            <?php echo lang('add_new_row'); ?>
+            <?php echo trans('add_new_row'); ?>
         </a>
         <a href="#" class="btn_add_product btn btn-sm btn-default">
             <i class="fa fa-database"></i>
-            <?php echo lang('add_product'); ?>
+            <?php echo trans('add_product'); ?>
         </a>
 
         <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_quote">
             <i class="fa fa-check"></i>
-            <?php echo lang('save'); ?>
+            <?php echo trans('save'); ?>
         </a>
     </div>
 
@@ -204,7 +204,7 @@
                             <?php if ($quote->quote_status_id == 1) { ?>
                                 <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
                                       data-toggle="tooltip" data-placement="bottom"
-                                      title="<?php echo lang('change_client'); ?>"></span>
+                                      title="<?php echo trans('change_client'); ?>"></span>
                             <?php } ?>
                         </h2><br>
 					<span>
@@ -217,11 +217,11 @@
 					</span>
                         <br><br>
                         <?php if ($quote->client_phone) { ?>
-                            <span><strong><?php echo lang('phone'); ?>
+                            <span><strong><?php echo trans('phone'); ?>
                                     :</strong> <?php echo $quote->client_phone; ?></span><br>
                         <?php } ?>
                         <?php if ($quote->client_email) { ?>
-                            <span><strong><?php echo lang('email'); ?>
+                            <span><strong><?php echo trans('email'); ?>
                                     :</strong> <?php echo $quote->client_email; ?></span>
                         <?php } ?>
 
@@ -238,7 +238,7 @@
 
                                 <div class="quote-properties">
                                     <label for="quote_number">
-                                        <?php echo lang('quote'); ?> #
+                                        <?php echo trans('quote'); ?> #
                                     </label>
 
                                     <div class="controls">
@@ -246,14 +246,14 @@
                                             <?php if ($quote->quote_number) : ?>
                                                 value="<?php echo $quote->quote_number; ?>"
                                             <?php else : ?>
-                                                placeholder="<?php echo lang('not_set'); ?>"
+                                                placeholder="<?php echo trans('not_set'); ?>"
                                             <?php endif; ?>>
                                     </div>
                                 </div>
 
                                 <div class="quote-properties has-feedback">
                                     <label for="quote_date_created">
-                                        <?php echo lang('date'); ?>
+                                        <?php echo trans('date'); ?>
                                     </label>
 
                                     <div class="input-group">
@@ -268,7 +268,7 @@
 
                                 <div class="quote-properties has-feedback">
                                     <label for="quote_date_expires">
-                                        <?php echo lang('expires'); ?>
+                                        <?php echo trans('expires'); ?>
                                     </label>
 
                                     <div class="input-group">
@@ -287,7 +287,7 @@
 
                                 <div class="quote-properties">
                                     <label for="quote_status_id">
-                                        <?php echo lang('status'); ?>
+                                        <?php echo trans('status'); ?>
                                     </label>
                                     <select name="quote_status_id" id="quote_status_id"
                                             class="form-control input-sm">
@@ -302,7 +302,7 @@
 
                                 <div class="quote-properties">
                                     <label for="quote_password">
-                                        <?php echo lang('quote_password'); ?>
+                                        <?php echo trans('quote_password'); ?>
                                     </label>
 
                                     <div class="controls">
@@ -328,7 +328,7 @@
             <div class="col-xs-12 col-sm-4">
 
                 <div class="form-group">
-                    <label class="control-label"><?php echo lang('notes'); ?></label>
+                    <label class="control-label"><?php echo trans('notes'); ?></label>
                     <textarea name="notes" id="notes" rows="3"
                               class="input-sm form-control"><?php echo $quote->notes; ?></textarea>
                 </div>
@@ -337,12 +337,12 @@
             <div class="col-xs-12 col-sm-8">
 
                 <div class="form-group">
-                    <label class="control-label"><?php echo lang('attachments'); ?></label>
+                    <label class="control-label"><?php echo trans('attachments'); ?></label>
                     <br/>
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="btn btn-default fileinput-button">
                         <i class="fa fa-plus"></i>
-                        <span><?php echo lang('add_files'); ?></span>
+                        <span><?php echo trans('add_files'); ?></span>
                     </span>
                 </div>
                 <!-- dropzone -->
@@ -383,7 +383,7 @@
                             <div>
                                 <button data-dz-remove class="btn btn-danger btn-sm delete">
                                     <i class="fa fa-trash-o"></i>
-                                    <span><?php echo lang('delete'); ?></span>
+                                    <span><?php echo trans('delete'); ?></span>
                                 </button>
                             </div>
                         </div>
@@ -396,7 +396,7 @@
         </div>
 
         <?php if ($custom_fields): ?>
-            <h4 class="no-margin"><?php echo lang('custom_fields'); ?></h4>
+            <h4 class="no-margin"><?php echo trans('custom_fields'); ?></h4>
         <?php endif; ?>
         <?php foreach ($custom_fields as $custom_field) { ?>
             <label class="control-label">
@@ -410,7 +410,7 @@
 
         <?php if ($quote->quote_status_id != 1) { ?>
             <p class="padded">
-                <?php echo lang('guest_url'); ?>:
+                <?php echo trans('guest_url'); ?>:
                 <?php echo auto_link(site_url('guest/view/quote/' . $quote->quote_url_key)); ?>
             </p>
         <?php } ?>

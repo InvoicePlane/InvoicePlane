@@ -37,13 +37,13 @@ class Sessions extends Base_Controller
 
             // Check if the user exists
             if (empty($user)) {
-                $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
+                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
                 redirect('sessions/login');
             } else {
 
                 // Check if the user is marked as active
                 if ($user->user_active == 0) {
-                    $this->session->set_flashdata('alert_error', lang('loginalert_user_inactive'));
+                    $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
                     redirect('sessions/login');
                 } else {
 
@@ -54,7 +54,7 @@ class Sessions extends Base_Controller
                             redirect('guest');
                         }
                     } else {
-                        $this->session->set_flashdata('alert_error', lang('loginalert_credentials_incorrect'));
+                        $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
                         redirect('sessions/login');
                     }
 
@@ -95,7 +95,7 @@ class Sessions extends Base_Controller
 
             if (empty($user)) {
                 // Redirect back to the login screen with an alert
-                $this->session->set_flashdata('alert_success', lang('wrong_passwordreset_token'));
+                $this->session->set_flashdata('alert_success', trans('wrong_passwordreset_token'));
                 redirect('sessions/passwordreset');
             }
 
@@ -113,7 +113,7 @@ class Sessions extends Base_Controller
             $user_id = $this->input->post('user_id');
 
             if (empty($user_id) || empty($new_password)) {
-                $this->session->set_flashdata('alert_error', lang('loginalert_no_password'));
+                $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
                 redirect($_SERVER['HTTP_REFERER']);
             }
 
@@ -140,7 +140,7 @@ class Sessions extends Base_Controller
         if ($this->input->post('btn_reset')) {
             $email = $this->input->post('email');
             if (empty($email)) {
-                $this->session->set_flashdata('alert_error', lang('loginalert_user_not_found'));
+                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
                 redirect($_SERVER['HTTP_REFERER']);
             }
 
@@ -173,7 +173,7 @@ class Sessions extends Base_Controller
 
                     $this->load->helper('mailer/phpmailer');
 
-                    if (phpmail_send($email_from, $email, lang('password_reset'), $email_message)) {
+                    if (phpmail_send($email_from, $email, trans('password_reset'), $email_message)) {
                         $email_failed = true;
                         log_message('error', $this->email->print_debugger());
                     }
@@ -189,7 +189,7 @@ class Sessions extends Base_Controller
                     // Set the email params
                     $this->email->from($email_from);
                     $this->email->to($email);
-                    $this->email->subject(lang('password_reset'));
+                    $this->email->subject(trans('password_reset'));
                     $this->email->message($email_message);
 
                     // Send the reset email
@@ -202,9 +202,9 @@ class Sessions extends Base_Controller
 
                 // Redirect back to the login screen with an alert
                 if (isset($email_failed)) {
-                    $this->session->set_flashdata('alert_success', lang('password_reset_failed'));
+                    $this->session->set_flashdata('alert_success', trans('password_reset_failed'));
                 } else {
-                    $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));
+                    $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
                 }
 
                 redirect('sessions/login');

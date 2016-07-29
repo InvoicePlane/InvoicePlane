@@ -45,35 +45,35 @@ class Mdl_Items extends Response_Model
         return array(
             'invoice_id' => array(
                 'field' => 'invoice_id',
-                'label' => lang('invoice'),
+                'label' => trans('invoice'),
                 'rules' => 'required'
             ),
             'item_name' => array(
                 'field' => 'item_name',
-                'label' => lang('item_name'),
+                'label' => trans('item_name'),
                 'rules' => 'required'
             ),
             'item_description' => array(
                 'field' => 'item_description',
-                'label' => lang('description')
+                'label' => trans('description')
             ),
             'item_quantity' => array(
                 'field' => 'item_quantity',
-                'label' => lang('quantity'),
+                'label' => trans('quantity'),
                 'rules' => 'required'
             ),
             'item_price' => array(
                 'field' => 'item_price',
-                'label' => lang('price'),
+                'label' => trans('price'),
                 'rules' => 'required'
             ),
             'item_tax_rate_id' => array(
                 'field' => 'item_tax_rate_id',
-                'label' => lang('item_tax_rate')
+                'label' => trans('item_tax_rate')
             ),
             'item_product_id' => array(
                 'field' => 'item_product_id',
-                'label' => lang('original_product')
+                'label' => trans('original_product')
             ),
         );
     }

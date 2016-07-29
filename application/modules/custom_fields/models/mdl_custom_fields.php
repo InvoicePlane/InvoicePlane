@@ -42,12 +42,12 @@ class Mdl_Custom_Fields extends MY_Model
         return array(
             'custom_field_table' => array(
                 'field' => 'custom_field_table',
-                'label' => lang('table'),
+                'label' => trans('table'),
                 'rules' => 'required'
             ),
             'custom_field_label' => array(
                 'field' => 'custom_field_label',
-                'label' => lang('label'),
+                'label' => trans('label'),
                 'rules' => 'required|max_length[50]'
             )
         );

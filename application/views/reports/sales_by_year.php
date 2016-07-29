@@ -1,20 +1,20 @@
 <html>
 <head>
-    <title><?php echo lang('sales_by_date'); ?></title>
+    <title><?php echo trans('sales_by_date'); ?></title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/reports.css" type="text/css">
 
 </head>
 
 <body>
-<h3 class="report_title"><?php echo lang('sales_by_date'); ?></h3>
+<h3 class="report_title"><?php echo trans('sales_by_date'); ?></h3>
 
 <table>
 
     <tr>
-        <th style="width:15%;text-align:center;border-bottom: none;"> <?php echo lang('vat_id'); ?> </th>
-        <th style="width:50%;text-align:center;border-bottom: none;"> <?php echo lang('name'); ?> </th>
-        <th style="width:15%;text-align:center;border-bottom: none;"> <?php echo lang('period'); ?> </th>
-        <th style="width:20%;text-align:center;border-bottom: none;"> <?php echo lang('quantity'); ?> </th>
+        <th style="width:15%;text-align:center;border-bottom: none;"> <?php echo trans('vat_id'); ?> </th>
+        <th style="width:50%;text-align:center;border-bottom: none;"> <?php echo trans('name'); ?> </th>
+        <th style="width:15%;text-align:center;border-bottom: none;"> <?php echo trans('period'); ?> </th>
+        <th style="width:20%;text-align:center;border-bottom: none;"> <?php echo trans('quantity'); ?> </th>
     </tr>
 
     <tr>
@@ -63,7 +63,7 @@
             <td style="border-bottom: none;text-align:center;"> <?php echo $result->VAT_ID; ?> </td>
             <td style="border-bottom: none;text-align:center;" rowspan="<?php echo $numRows; ?>"
                 valign="top"> <?php echo $result->Name; ?> </td>
-            <td style="border-bottom: none;text-align:center;"> <?php echo lang('annual'); ?> </td>
+            <td style="border-bottom: none;text-align:center;"> <?php echo trans('annual'); ?> </td>
             <td style="border-bottom: none;text-align:center;"> <?php echo format_currency($result->total_payment); ?> </td>
         </tr>
 
@@ -80,10 +80,10 @@
                 <tr>
                     <td style="border-bottom: none;">&nbsp;</td>
                     <td style="border-bottom: none;text-align:center;"><?php
-                        if ($quarter == "t1") echo lang('Q1') . "/" . $year;
-                        else if ($quarter == "t2") echo lang('Q2') . "/" . $year;
-                        else if ($quarter == "t3") echo lang('Q3') . "/" . $year;
-                        else if ($quarter == "t4") echo lang('Q4') . "/" . $year;
+                        if ($quarter == "t1") echo trans('Q1') . "/" . $year;
+                        else if ($quarter == "t2") echo trans('Q2') . "/" . $year;
+                        else if ($quarter == "t3") echo trans('Q3') . "/" . $year;
+                        else if ($quarter == "t4") echo trans('Q4') . "/" . $year;
                         ?></td>
                     <td style="border-bottom: none;text-align:center;"><?php if ($value > 0) {
                             echo format_currency($value);

@@ -36,40 +36,40 @@ class Mdl_Email_Templates extends Response_Model
         return array(
             'email_template_title' => array(
                 'field' => 'email_template_title',
-                'label' => lang('title'),
+                'label' => trans('title'),
                 'rules' => 'required'
             ),
             'email_template_type' => array(
                 'field' => 'email_template_pdf_quote_template',
-                'label' => lang('type')
+                'label' => trans('type')
             ),
             'email_template_subject' => array(
                 'field' => 'email_template_subject',
-                'label' => lang('subject')
+                'label' => trans('subject')
             ),
             'email_template_from_name' => array(
                 'field' => 'email_template_from_name',
-                'label' => lang('from_name')
+                'label' => trans('from_name')
             ),
             'email_template_from_email' => array(
                 'field' => 'email_template_from_email',
-                'label' => lang('from_email')
+                'label' => trans('from_email')
             ),
             'email_template_cc' => array(
                 'field' => 'email_template_cc',
-                'label' => lang('cc')
+                'label' => trans('cc')
             ),
             'email_template_bcc' => array(
                 'field' => 'email_template_bcc',
-                'label' => lang('bcc')
+                'label' => trans('bcc')
             ),
             'email_template_pdf_template' => array(
                 'field' => 'email_template_pdf_template',
-                'label' => lang('default_pdf_template')
+                'label' => trans('default_pdf_template')
             ),
             'email_template_body' => array(
                 'field' => 'email_template_body',
-                'label' => lang('body')
+                'label' => trans('body')
             )
         );
     }

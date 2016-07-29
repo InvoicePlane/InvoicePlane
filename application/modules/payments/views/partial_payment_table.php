@@ -3,14 +3,14 @@
 
         <thead>
         <tr>
-            <th><?php echo lang('payment_date'); ?></th>
-            <th><?php echo lang('invoice_date'); ?></th>
-            <th><?php echo lang('invoice'); ?></th>
-            <th><?php echo lang('client'); ?></th>
-            <th><?php echo lang('amount'); ?></th>
-            <th><?php echo lang('payment_method'); ?></th>
-            <th><?php echo lang('note'); ?></th>
-            <th><?php echo lang('options'); ?></th>
+            <th><?php echo trans('payment_date'); ?></th>
+            <th><?php echo trans('invoice_date'); ?></th>
+            <th><?php echo trans('invoice'); ?></th>
+            <th><?php echo trans('client'); ?></th>
+            <th><?php echo trans('amount'); ?></th>
+            <th><?php echo trans('payment_method'); ?></th>
+            <th><?php echo trans('note'); ?></th>
+            <th><?php echo trans('options'); ?></th>
         </tr>
         </thead>
 
@@ -22,7 +22,7 @@
                 <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $payment->client_id); ?>"
-                       title="<?php echo lang('view_client'); ?>">
+                       title="<?php echo trans('view_client'); ?>">
                         <?php echo $payment->client_name; ?>
                     </a>
                 </td>
@@ -32,20 +32,20 @@
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-cog"></i> <?php echo lang('options'); ?>
+                            <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="<?php echo site_url('payments/form/' . $payment->payment_id); ?>">
                                     <i class="fa fa-edit fa-margin"></i>
-                                    <?php echo lang('edit'); ?>
+                                    <?php echo trans('edit'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('payments/delete/' . $payment->payment_id); ?>"
-                                   onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                   onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
                                     <i class="fa fa-trash-o fa-margin"></i>
-                                    <?php echo lang('delete'); ?>
+                                    <?php echo trans('delete'); ?>
                                 </a>
                             </li>
                         </ul>

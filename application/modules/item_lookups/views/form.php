@@ -1,7 +1,7 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1><?php echo lang('item_lookup_form'); ?></h1>
+        <h1><?php echo trans('item_lookup_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -12,7 +12,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="item_name" class="control-label">
-                    <?php echo lang('item_name'); ?>:
+                    <?php echo trans('item_name'); ?>:
                 </label>
             </div>
 
@@ -25,7 +25,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="item_description" class="control-label">
-                    <?php echo lang('description'); ?>:
+                    <?php echo trans('description'); ?>:
                 </label>
             </div>
 
@@ -38,7 +38,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="item_price" class="control-label">
-                    <?php echo lang('price'); ?>:
+                    <?php echo trans('price'); ?>:
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">

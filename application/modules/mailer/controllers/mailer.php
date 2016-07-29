@@ -118,7 +118,7 @@ class Mailer extends Admin_Controller
         if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_invoices->mark_sent($invoice_id);
 
-            $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));
+            $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
 
             redirect('dashboard');
         } else {
@@ -152,7 +152,7 @@ class Mailer extends Admin_Controller
         if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_quotes->mark_sent($quote_id);
 
-            $this->session->set_flashdata('alert_success', lang('email_successfully_sent'));
+            $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
 
             redirect('dashboard');
         } else {

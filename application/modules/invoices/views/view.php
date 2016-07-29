@@ -133,7 +133,7 @@ if ($this->config->item('disable_read_only') == true) {
 <div id="headerbar">
     <h1>
         <?php
-        echo lang('invoice') . ' ';
+        echo trans('invoice') . ' ';
         echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
         ?>
     </h1>
@@ -144,19 +144,19 @@ if ($this->config->item('disable_read_only') == true) {
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
                data-toggle="dropdown" href="#">
-                <i class="fa fa-caret-down no-margin"></i> <?php echo lang('options'); ?>
+                <i class="fa fa-caret-down no-margin"></i> <?php echo trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
                 <?php if ($invoice->is_read_only != 1) { ?>
                     <li>
                         <a href="#add-invoice-tax" data-toggle="modal">
-                            <i class="fa fa-plus fa-margin"></i> <?php echo lang('add_invoice_tax'); ?>
+                            <i class="fa fa-plus fa-margin"></i> <?php echo trans('add_invoice_tax'); ?>
                         </a>
                     </li>
                 <?php } ?>
                 <li>
                     <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-minus fa-margin"></i> <?php echo lang('create_credit_invoice'); ?>
+                        <i class="fa fa-minus fa-margin"></i> <?php echo trans('create_credit_invoice'); ?>
                     </a>
                 </li>
                 <li>
@@ -165,20 +165,20 @@ if ($this->config->item('disable_read_only') == true) {
                        data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
                        data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
                         <i class="fa fa-credit-card fa-margin"></i>
-                        <?php echo lang('enter_payment'); ?>
+                        <?php echo trans('enter_payment'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
-                        <?php echo lang('download_pdf'); ?>
+                        <?php echo trans('download_pdf'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
-                        <?php echo lang('send_email'); ?>
+                        <?php echo trans('send_email'); ?>
                     </a>
                 </li>
                 <li class="divider"></li>
@@ -186,21 +186,21 @@ if ($this->config->item('disable_read_only') == true) {
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-repeat fa-margin"></i>
-                        <?php echo lang('create_recurring'); ?>
+                        <?php echo trans('create_recurring'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_copy_invoice"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
-                        <?php echo lang('copy_invoice'); ?>
+                        <?php echo trans('copy_invoice'); ?>
                     </a>
                 </li>
                 <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
                     <li>
                         <a href="#delete-invoice" data-toggle="modal">
                             <i class="fa fa-trash-o fa-margin"></i>
-                            <?php echo lang('delete'); ?>
+                            <?php echo trans('delete'); ?>
                         </a>
                     </li>
                 <?php } ?>
@@ -209,27 +209,27 @@ if ($this->config->item('disable_read_only') == true) {
 
         <?php if ($invoice->is_read_only != 1) { ?>
             <a href="#" class="btn_add_row btn btn-sm btn-default">
-                <i class="fa fa-plus"></i> <?php echo lang('add_new_row'); ?>
+                <i class="fa fa-plus"></i> <?php echo trans('add_new_row'); ?>
             </a>
             <a href="#" class="btn_add_product btn btn-sm btn-default">
                 <i class="fa fa-database"></i>
-                <?php echo lang('add_product'); ?>
+                <?php echo trans('add_product'); ?>
             </a>
         <?php }
         if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
             <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
-                <i class="fa fa-check"></i> <?php echo lang('save'); ?>
+                <i class="fa fa-check"></i> <?php echo trans('save'); ?>
             </a>
         <?php } ?>
     </div>
 
     <div class="invoice-labels pull-right">
         <?php if ($invoice->invoice_is_recurring) { ?>
-            <span class="label label-info"><?php echo lang('recurring'); ?></span>
+            <span class="label label-info"><?php echo trans('recurring'); ?></span>
         <?php } ?>
         <?php if ($invoice->is_read_only == 1) { ?>
             <span class="label label-danger">
-                <i class="fa fa-read-only"></i> <?php echo lang('read_only'); ?>
+                <i class="fa fa-read-only"></i> <?php echo trans('read_only'); ?>
             </span>
         <?php } ?>
     </div>
@@ -254,7 +254,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php if ($invoice->invoice_status_id == 1) { ?>
                                 <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
                                       data-toggle="tooltip" data-placement="bottom"
-                                      title="<?php echo lang('change_client'); ?>"></span>
+                                      title="<?php echo trans('change_client'); ?>"></span>
                             <?php } ?>
                         </h2><br>
                         <span>
@@ -267,11 +267,11 @@ if ($this->config->item('disable_read_only') == true) {
                         </span>
                         <br><br>
                         <?php if ($invoice->client_phone) { ?>
-                            <span><strong><?php echo lang('phone'); ?>
+                            <span><strong><?php echo trans('phone'); ?>
                                     :</strong> <?php echo $invoice->client_phone; ?></span><br>
                         <?php } ?>
                         <?php if ($invoice->client_email) { ?>
-                            <span><strong><?php echo lang('email'); ?>
+                            <span><strong><?php echo trans('email'); ?>
                                     :</strong> <?php echo $invoice->client_email; ?></span>
                         <?php } ?>
 
@@ -288,7 +288,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <div class="col-xs-12">
                                 <span class="label label-warning">
                                     <i class="fa fa-credit-invoice"></i>&nbsp;
-                                    <?php echo lang('credit_invoice_for_invoice') . ' ';
+                                    <?php echo trans('credit_invoice_for_invoice') . ' ';
                                     echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id,
                                         $invoice->creditinvoice_parent_id) ?>
                                 </span>
@@ -298,13 +298,13 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-12 col-sm-6">
 
                                 <div class="invoice-properties">
-                                    <label><?php echo lang('invoice'); ?> #</label>
+                                    <label><?php echo trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number"
                                            class="input-sm form-control"
                                         <?php if ($invoice->invoice_number) : ?>
                                             value="<?php echo $invoice->invoice_number; ?>"
                                         <?php else : ?>
-                                            placeholder="<?php echo lang('not_set'); ?>"
+                                            placeholder="<?php echo trans('not_set'); ?>"
                                         <?php endif; ?>
                                         <?php if ($invoice->is_read_only == 1) {
                                             echo 'disabled="disabled"';
@@ -312,7 +312,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                                 <div class="invoice-properties has-feedback">
-                                    <label><?php echo lang('date'); ?></label>
+                                    <label><?php echo trans('date'); ?></label>
 
                                     <div class="input-group">
                                         <input name="invoice_date_created" id="invoice_date_created"
@@ -328,7 +328,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                                 <div class="invoice-properties has-feedback">
-                                    <label><?php echo lang('due_date'); ?></label>
+                                    <label><?php echo trans('due_date'); ?></label>
 
                                     <div class="input-group">
                                         <input name="invoice_date_due" id="invoice_date_due"
@@ -349,9 +349,9 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-12 col-sm-6">
 
                                 <div class="invoice-properties">
-                                    <label><?php echo lang('status');
+                                    <label><?php echo trans('status');
                                         if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
-                                            echo ' <span class="small">(' . lang('can_be_changed') . ')</span>';
+                                            echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
                                         }
                                         ?>
                                     </label>
@@ -370,12 +370,12 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                                 <div class="invoice-properties">
-                                    <label><?php echo lang('payment_method'); ?></label>
+                                    <label><?php echo trans('payment_method'); ?></label>
                                     <select name="payment_method" id="payment_method" class="form-control"
                                         <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
                                             echo 'disabled="disabled"';
                                         } ?>>
-                                        <option value="0"><?php echo lang('select_payment_method'); ?></option>
+                                        <option value="0"><?php echo trans('select_payment_method'); ?></option>
                                         <?php foreach ($payment_methods as $payment_method) { ?>
                                             <option <?php if ($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?>
                                                 value="<?php echo $payment_method->payment_method_id; ?>">
@@ -386,7 +386,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                                 <div class="invoice-properties">
-                                    <label><?php echo lang('invoice_password'); ?></label>
+                                    <label><?php echo trans('invoice_password'); ?></label>
                                     <input type="text" id="invoice_password"
                                            class="input-sm form-control"
                                            value="<?php echo $invoice->invoice_password; ?>"
@@ -409,7 +409,7 @@ if ($this->config->item('disable_read_only') == true) {
             <div class="row">
                 <div class="col-xs-12 col-sm-4">
 
-                    <label><?php echo lang('invoice_terms'); ?></label>
+                    <label><?php echo trans('invoice_terms'); ?></label>
                     <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
@@ -419,12 +419,12 @@ if ($this->config->item('disable_read_only') == true) {
                 </div>
                 <div class="col-xs-12 col-sm-8">
 
-                    <label class="control-label"><?php echo lang('attachments'); ?></label>
+                    <label class="control-label"><?php echo trans('attachments'); ?></label>
                     <br/>
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="btn btn-default fileinput-button">
                         <i class="fa fa-plus"></i>
-                        <span><?php echo lang('add_files'); ?></span>
+                        <span><?php echo trans('add_files'); ?></span>
                     </span>
 
                     <!-- dropzone -->
@@ -465,12 +465,12 @@ if ($this->config->item('disable_read_only') == true) {
                                     <div class="pull-left btn-group">
                                         <button data-dz-download class="btn btn-sm btn-primary">
                                             <i class="fa fa-download"></i>
-                                            <span><?php echo lang('download'); ?></span>
+                                            <span><?php echo trans('download'); ?></span>
                                         </button>
                                         <?php if ($invoice->is_read_only != 1) { ?>
                                             <button data-dz-remove class="btn btn-danger btn-sm delete">
                                                 <i class="fa fa-trash-o"></i>
-                                                <span><?php echo lang('delete'); ?></span>
+                                                <span><?php echo trans('delete'); ?></span>
                                             </button>
                                         <?php } ?>
                                     </div>
@@ -483,7 +483,7 @@ if ($this->config->item('disable_read_only') == true) {
             </div>
 
             <?php if ($custom_fields): ?>
-                <h4 class="no-margin"><?php echo lang('custom_fields'); ?></h4>
+                <h4 class="no-margin"><?php echo trans('custom_fields'); ?></h4>
             <?php endif; ?>
             <?php foreach ($custom_fields as $custom_field) { ?>
                 <label><?php echo $custom_field->custom_field_label; ?></label>
@@ -499,7 +499,7 @@ if ($this->config->item('disable_read_only') == true) {
 
             <?php if ($invoice->invoice_status_id != 1) { ?>
                 <p class="padded">
-                    <?php echo lang('guest_url'); ?>:
+                    <?php echo trans('guest_url'); ?>:
                     <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
                 </p>
             <?php } ?>
@@ -521,7 +521,7 @@ if ($this->config->item('disable_read_only') == true) {
         thumbnailHeight: 80,
         parallelUploads: 20,
         uploadMultiple: false,
-        dictRemoveFileConfirmation: '<?php echo lang('delete_attachment_warning'); ?>',
+        dictRemoveFileConfirmation: '<?php echo trans('delete_attachment_warning'); ?>',
         previewTemplate: previewTemplate,
         autoQueue: true, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews

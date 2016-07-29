@@ -84,7 +84,7 @@ class Settings extends Admin_Controller
                 $this->mdl_settings->save('login_logo', $upload_data['file_name']);
             }
 
-            $this->session->set_flashdata('alert_success', lang('settings_successfully_saved'));
+            $this->session->set_flashdata('alert_success', trans('settings_successfully_saved'));
 
             redirect('settings');
         }
@@ -127,7 +127,7 @@ class Settings extends Admin_Controller
                 'public_quote_templates' => $public_quote_templates,
                 'pdf_quote_templates' => $pdf_quote_templates,
                 'languages' => $languages,
-                'countries' => get_country_list(lang('cldr')),
+                'countries' => get_country_list(trans('cldr')),
                 'date_formats' => date_formats(),
                 'current_date' => new DateTime(),
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),

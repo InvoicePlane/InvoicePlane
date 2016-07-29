@@ -48,7 +48,7 @@ class Ajax extends Admin_Controller
                 } else {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
-                    $this->form_validation->set_rules('item_name', lang('item'), 'required');
+                    $this->form_validation->set_rules('item_name', trans('item'), 'required');
                     $this->form_validation->run();
 
                     $response = array(

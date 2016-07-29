@@ -37,7 +37,7 @@ class Reports extends Admin_Controller
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('sales_by_client'), true);
+            pdf_create($html, trans('sales_by_client'), true);
         }
 
         $this->layout->buffer('content', 'reports/sales_by_client_index')->render();
@@ -54,7 +54,7 @@ class Reports extends Admin_Controller
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('payment_history'), true);
+            pdf_create($html, trans('payment_history'), true);
         }
 
         $this->layout->buffer('content', 'reports/payment_history_index')->render();
@@ -71,7 +71,7 @@ class Reports extends Admin_Controller
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('invoice_aging'), true);
+            pdf_create($html, trans('invoice_aging'), true);
         }
 
         $this->layout->buffer('content', 'reports/invoice_aging_index')->render();
@@ -89,7 +89,7 @@ class Reports extends Admin_Controller
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, lang('sales_by_date'), true);
+            pdf_create($html, trans('sales_by_date'), true);
         }
 
         $this->layout->buffer('content', 'reports/sales_by_year_index')->render();

@@ -54,26 +54,26 @@ class Mdl_Payments extends Response_Model
         return array(
             'invoice_id' => array(
                 'field' => 'invoice_id',
-                'label' => lang('invoice'),
+                'label' => trans('invoice'),
                 'rules' => 'required'
             ),
             'payment_date' => array(
                 'field' => 'payment_date',
-                'label' => lang('date'),
+                'label' => trans('date'),
                 'rules' => 'required'
             ),
             'payment_amount' => array(
                 'field' => 'payment_amount',
-                'label' => lang('payment'),
+                'label' => trans('payment'),
                 'rules' => 'required|callback_validate_payment_amount'
             ),
             'payment_method_id' => array(
                 'field' => 'payment_method_id',
-                'label' => lang('payment_method')
+                'label' => trans('payment_method')
             ),
             'payment_note' => array(
                 'field' => 'payment_note',
-                'label' => lang('note')
+                'label' => trans('note')
             )
         );
     }
@@ -92,7 +92,7 @@ class Mdl_Payments extends Response_Model
         }
 
         if ($amount > $invoice_balance) {
-            $this->form_validation->set_message('validate_payment_amount', lang('payment_cannot_exceed_balance'));
+            $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
             return false;
         }
 

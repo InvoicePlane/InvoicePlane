@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1><?php echo lang('payment_history'); ?></h1>
+    <h1><?php echo trans('payment_history'); ?></h1>
 </div>
 
 <div id="content">
@@ -11,7 +11,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 <i class="fa fa-print"></i>
-                <?php echo lang('report_options'); ?>
+                <?php echo trans('report_options'); ?>
             </h3>
         </div>
 
@@ -22,7 +22,7 @@
 
                 <div class="form-group has-feedback">
                     <label for="from_date">
-                        <?php echo lang('from_date'); ?>
+                        <?php echo trans('from_date'); ?>
                     </label>
 
                     <div class="input-group">
@@ -36,7 +36,7 @@
 
                 <div class="form-group has-feedback">
                     <label for="to_date">
-                        <?php echo lang('to_date'); ?>
+                        <?php echo trans('to_date'); ?>
                     </label>
 
                     <div class="input-group">
@@ -49,7 +49,7 @@
                 </div>
 
                 <input type="submit" class="btn btn-success" name="btn_submit"
-                       value="<?php echo lang('run_report'); ?>">
+                       value="<?php echo trans('run_report'); ?>">
 
             </form>
 

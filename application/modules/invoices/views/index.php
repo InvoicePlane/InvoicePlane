@@ -1,14 +1,14 @@
 <div id="headerbar">
 
-    <h1><?php echo lang('invoices'); ?></h1>
+    <h1><?php echo trans('invoices'); ?></h1>
 
     <div class="pull-right">
         <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
                 data-toggle="collapse" data-target="#ip-submenu-collapse">
-            <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
+            <i class="fa fa-bars"></i> <?php echo trans('submenu'); ?>
         </button>
         <a class="create-invoice btn btn-sm btn-primary" href="#">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
         </a>
     </div>
 
@@ -19,17 +19,17 @@
     <div class="pull-right visible-lg">
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/all'); ?>"><?php echo lang('all'); ?></a></li>
+                    href="<?php echo site_url('invoices/status/all'); ?>"><?php echo trans('all'); ?></a></li>
             <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo lang('draft'); ?></a></li>
+                    href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
             <li <?php if ($status == 'sent') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo lang('sent'); ?></a></li>
+                    href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
             <li <?php if ($status == 'viewed') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo lang('viewed'); ?></a></li>
+                    href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
             <li <?php if ($status == 'paid') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo lang('paid'); ?></a></li>
+                    href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo trans('paid'); ?></a></li>
             <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo lang('overdue'); ?></a></li>
+                    href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo trans('overdue'); ?></a></li>
         </ul>
     </div>
 
@@ -45,17 +45,17 @@
         <div class="submenu-row">
             <ul class="nav nav-pills index-options">
                 <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/all'); ?>"><?php echo lang('all'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/all'); ?>"><?php echo trans('all'); ?></a></li>
                 <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo lang('draft'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
                 <li <?php if ($status == 'sent') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo lang('sent'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
                 <li <?php if ($status == 'viewed') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo lang('viewed'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
                 <li <?php if ($status == 'paid') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo lang('paid'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo trans('paid'); ?></a></li>
                 <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo lang('overdue'); ?></a>
+                        href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo trans('overdue'); ?></a>
                 </li>
             </ul>
         </div>
