@@ -49,42 +49,42 @@ class Mdl_Products extends Response_Model
         return array(
             'product_sku' => array(
                 'field' => 'product_sku',
-                'label' => lang('product_sku'),
+                'label' => trans('product_sku'),
                 'rules' => ''
             ),
             'product_name' => array(
                 'field' => 'product_name',
-                'label' => lang('product_name'),
+                'label' => trans('product_name'),
                 'rules' => 'required'
             ),
             'product_description' => array(
                 'field' => 'product_description',
-                'label' => lang('product_description'),
+                'label' => trans('product_description'),
                 'rules' => ''
             ),
             'product_price' => array(
                 'field' => 'product_price',
-                'label' => lang('product_price'),
+                'label' => trans('product_price'),
                 'rules' => 'required'
             ),
             'purchase_price' => array(
                 'field' => 'purchase_price',
-                'label' => lang('purchase_price'),
+                'label' => trans('purchase_price'),
                 'rules' => ''
             ),
             'provider_name' => array(
                 'field' => 'provider_name',
-                'label' => lang('provider_name'),
+                'label' => trans('provider_name'),
                 'rules' => ''
             ),
             'family_id' => array(
                 'field' => 'family_id',
-                'label' => lang('family'),
+                'label' => trans('family'),
                 'rules' => 'numeric'
             ),
             'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
-                'label' => lang('tax_rate'),
+                'label' => trans('tax_rate'),
                 'rules' => 'numeric'
             ),
 

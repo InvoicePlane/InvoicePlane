@@ -16,6 +16,6 @@
     }
 </style>
 <div>
-    <p><?php echo lang('password_reset_email'); ?></p>
+    <p><?php echo trans('password_reset_email'); ?></p>
     <p><a href="<?php echo $resetlink ?>"><?php echo $resetlink ?></a></p>
 </div>

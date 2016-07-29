@@ -35,7 +35,7 @@
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
 </noscript>
 
 <?php echo $content; ?>

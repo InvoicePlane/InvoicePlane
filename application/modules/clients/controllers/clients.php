@@ -45,7 +45,7 @@ class Clients extends Admin_Controller
             array(
                 'records' => $clients,
                 'filter_display' => true,
-                'filter_placeholder' => lang('filter_clients'),
+                'filter_placeholder' => trans('filter_clients'),
                 'filter_method' => 'filter_clients'
             )
         );
@@ -64,7 +64,7 @@ class Clients extends Admin_Controller
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', array('client_name' => $this->input->post('client_name')))->result();
             if (!empty($check)) {
-                $this->session->set_flashdata('alert_error', lang('client_already_exists'));
+                $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
             }
         }
@@ -110,7 +110,7 @@ class Clients extends Admin_Controller
         $this->load->helper('country');
 
         $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result());
-        $this->layout->set('countries', get_country_list(lang('cldr')));
+        $this->layout->set('countries', get_country_list(trans('cldr')));
         $this->layout->set('selected_country', $this->mdl_clients->form_value('client_country') ?:
             $this->mdl_settings->setting('default_country'));
 

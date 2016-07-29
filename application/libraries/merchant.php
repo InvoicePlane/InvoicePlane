@@ -305,7 +305,7 @@ public static function redirect($url)
 public static function post_redirect($url, $data, $message = null)
 {
 if (empty($message)) {
-    $message = lang('merchant_payment_redirect');
+    $message = trans('merchant_payment_redirect');
 }
 
 ?><!DOCTYPE html>
@@ -432,17 +432,17 @@ abstract class Merchant_driver
 
     public function authorize()
     {
-        throw new BadMethodCallException(lang('merchant_invalid_method'));
+        throw new BadMethodCallException(trans('merchant_invalid_method'));
     }
 
     public function authorize_return()
     {
-        throw new BadMethodCallException(lang('merchant_invalid_method'));
+        throw new BadMethodCallException(trans('merchant_invalid_method'));
     }
 
     public function capture()
     {
-        throw new BadMethodCallException(lang('merchant_invalid_method'));
+        throw new BadMethodCallException(trans('merchant_invalid_method'));
     }
 
     public function purchase()
@@ -456,7 +456,7 @@ abstract class Merchant_driver
             return $this->_process($this->_params);
         }
 
-        throw new BadMethodCallException(lang('merchant_invalid_method'));
+        throw new BadMethodCallException(trans('merchant_invalid_method'));
     }
 
     public function purchase_return()
@@ -470,12 +470,12 @@ abstract class Merchant_driver
             return $this->_process_return($this->_params);
         }
 
-        throw new BadMethodCallException(lang('merchant_invalid_method'));
+        throw new BadMethodCallException(trans('merchant_invalid_method'));
     }
 
     public function refund()
     {
-        throw new BadMethodCallException(lang('merchant_invalid_method'));
+        throw new BadMethodCallException(trans('merchant_invalid_method'));
     }
 
     public function param($name)
@@ -498,7 +498,7 @@ abstract class Merchant_driver
 
         foreach ($args as $name) {
             if (empty($this->_params[$name])) {
-                throw new Merchant_exception(str_replace('%s', lang("merchant_$name"), lang('merchant_required')));
+                throw new Merchant_exception(str_replace('%s', lang("merchant_$name"), trans('merchant_required')));
             }
         }
     }
@@ -509,20 +509,20 @@ abstract class Merchant_driver
         if (empty($this->_params['card_no'])) return;
 
         if (!$this->secure_request()) {
-            throw new Merchant_exception(lang('merchant_insecure_connection'));
+            throw new Merchant_exception(trans('merchant_insecure_connection'));
         }
 
         // strip any non-digits from card_no
         $this->_params['card_no'] = preg_replace('/\D/', '', $this->_params['card_no']);
 
         if ($this->validate_luhn($this->_params['card_no']) == false) {
-            throw new Merchant_exception(lang('merchant_invalid_card_no'));
+            throw new Merchant_exception(trans('merchant_invalid_card_no'));
         }
 
         if ($this->param('exp_month') AND $this->param('exp_year') AND
             $this->validate_expiry($this->param('exp_month'), $this->param('exp_year')) == false
         ) {
-            throw new Merchant_exception(lang('merchant_card_expired'));
+            throw new Merchant_exception(trans('merchant_card_expired'));
         }
     }
 
@@ -738,7 +738,7 @@ class Merchant_response
 
         // always require a valid status
         if (!in_array($status, array(self::AUTHORIZED, self::COMPLETE, self::FAILED, self::REDIRECT, self::REFUNDED))) {
-            throw new InvalidArgumentException(lang('merchant_invalid_status'));
+            throw new InvalidArgumentException(trans('merchant_invalid_status'));
         }
 
         $this->_status = $status;

@@ -4,38 +4,38 @@
             $('#form-settings').submit();
         });
         $("[name='settings[default_country]']").select2({
-            placeholder: "<?php echo lang('country'); ?>",
+            placeholder: "<?php echo trans('country'); ?>",
             allowClear: true
         });
     });
 </script>
 
 <div id="headerbar">
-    <h1><?php echo lang('settings'); ?></h1>
+    <h1><?php echo trans('settings'); ?></h1>
     <?php $this->layout->load_view('layout/header_buttons'); ?>
 </div>
 
 <ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">
     <li class="active">
-        <a data-toggle="tab" href="#settings-general"><?php echo lang('general'); ?></a>
+        <a data-toggle="tab" href="#settings-general"><?php echo trans('general'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-invoices"><?php echo lang('invoices'); ?></a>
+        <a data-toggle="tab" href="#settings-invoices"><?php echo trans('invoices'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-quotes"><?php echo lang('quotes'); ?></a>
+        <a data-toggle="tab" href="#settings-quotes"><?php echo trans('quotes'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-taxes"><?php echo lang('taxes'); ?></a>
+        <a data-toggle="tab" href="#settings-taxes"><?php echo trans('taxes'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-email"><?php echo lang('email'); ?></a>
+        <a data-toggle="tab" href="#settings-email"><?php echo trans('email'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-merchant"><?php echo lang('merchant_account'); ?></a>
+        <a data-toggle="tab" href="#settings-merchant"><?php echo trans('merchant_account'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-updates"><?php echo lang('updates'); ?></a>
+        <a data-toggle="tab" href="#settings-updates"><?php echo trans('updates'); ?></a>
     </li>
 </ul>
 

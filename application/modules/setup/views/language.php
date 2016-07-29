@@ -5,9 +5,9 @@
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <legend><?php echo lang('setup_choose_language'); ?></legend>
+            <legend><?php echo trans('setup_choose_language'); ?></legend>
 
-            <p><?php echo lang('setup_choose_language_message'); ?></p>
+            <p><?php echo trans('setup_choose_language_message'); ?></p>
 
             <select name="ip_lang" class="form-control">
                 <?php foreach ($languages as $language) { ?>
@@ -18,7 +18,7 @@
 
             <br/>
 
-            <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo lang('continue'); ?>">
+            <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo trans('continue'); ?>">
 
         </form>
 

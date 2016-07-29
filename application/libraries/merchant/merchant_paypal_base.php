@@ -116,7 +116,7 @@ abstract class Merchant_paypal_base extends Merchant_driver
 			throw new Merchant_exception($response_vars['L_LONGMESSAGE0']);
 		}
 
-		throw new Merchant_exception(lang('merchant_invalid_response'));
+		throw new Merchant_exception(trans('merchant_invalid_response'));
 	}
 
 	protected function _process_url()

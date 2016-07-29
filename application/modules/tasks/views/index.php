@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1><?php echo lang('tasks'); ?></h1>
+    <h1><?php echo trans('tasks'); ?></h1>
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('tasks/form'); ?>"><i
-                class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
+                class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -21,12 +21,12 @@
 
             <thead>
             <tr>
-                <th><?php echo lang('task_name'); ?></th>
-                <th><?php echo lang('status'); ?></th>
-                <th><?php echo lang('task_finish_date'); ?></th>
-                <th><?php echo lang('project'); ?></th>
-                <th><?php echo lang('task_price'); ?></th>
-                <th><?php echo lang('options'); ?></th>
+                <th><?php echo trans('task_name'); ?></th>
+                <th><?php echo trans('status'); ?></th>
+                <th><?php echo trans('task_finish_date'); ?></th>
+                <th><?php echo trans('project'); ?></th>
+                <th><?php echo trans('task_price'); ?></th>
+                <th><?php echo trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -44,10 +44,10 @@
                     <td><?php echo format_currency($task->task_price); ?></td>
                     <td>
                         <a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"
-                           title="<?php echo lang('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
+                           title="<?php echo trans('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
                         <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
-                           title="<?php echo lang('delete'); ?>"
-                           onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');"><i
+                           title="<?php echo trans('delete'); ?>"
+                           onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');"><i
                                 class="fa fa-trash-o fa-margin"></i></a>
                     </td>
                 </tr>

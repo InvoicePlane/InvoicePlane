@@ -53,7 +53,7 @@ class Payment_Handler extends Base_Controller
 
             // Create the parameters
             $params = array(
-                'description' => lang('invoice') . ' ' . $invoice->invoice_number,
+                'description' => trans('invoice') . ' ' . $invoice->invoice_number,
                 'amount' => $invoice->invoice_balance,
                 'currency' => $this->mdl_settings->setting('merchant_currency_code'),
                 'return_url' => site_url('guest/payment_handler/payment_return/' . $invoice_url_key . '/r'),
@@ -78,7 +78,7 @@ class Payment_Handler extends Base_Controller
         // See if the response can be validated
         if ($this->payment_validate($invoice_url_key)) {
             // Set the success flash message
-            $this->session->set_flashdata('flash_message', lang('merchant_payment_success'));
+            $this->session->set_flashdata('flash_message', trans('merchant_payment_success'));
 
             // Attempt to get the invoice
             $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get();
@@ -100,7 +100,7 @@ class Payment_Handler extends Base_Controller
             }
         } else {
             // Set the failure flash message
-            $this->session->set_flashdata('flash_message', lang('merchant_payment_fail'));
+            $this->session->set_flashdata('flash_message', trans('merchant_payment_fail'));
         }
 
         // Redirect to guest invoice view with flash message
@@ -113,7 +113,7 @@ class Payment_Handler extends Base_Controller
         $this->payment_validate($invoice_url_key);
 
         // Set the cancel flash message
-        $this->session->set_flashdata('flash_message', lang('merchant_payment_cancel'));
+        $this->session->set_flashdata('flash_message', trans('merchant_payment_cancel'));
 
         // Redirect to guest invoice view with flash message
         redirect('guest/view/invoice/' . $invoice_url_key);
@@ -143,7 +143,7 @@ class Payment_Handler extends Base_Controller
 
             // Create the parameters
             $params = array(
-                'description' => lang('invoice') . ' ' . $invoice->invoice_number,
+                'description' => trans('invoice') . ' ' . $invoice->invoice_number,
                 'amount' => $invoice->invoice_balance,
                 'currency' => $this->mdl_settings->setting('merchant_currency_code')
             );

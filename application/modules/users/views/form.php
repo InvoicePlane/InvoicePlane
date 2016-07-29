@@ -21,7 +21,7 @@
         }
 
         $("#user_country").select2({
-            placeholder: "<?php echo lang('country'); ?>",
+            placeholder: "<?php echo trans('country'); ?>",
             allowClear: true
         });
     });
@@ -34,7 +34,7 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1><?php echo lang('user_form'); ?></h1>
+        <h1><?php echo trans('user_form'); ?></h1>
         <?php echo $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -45,11 +45,11 @@
         <div id="userInfo">
 
             <fieldset>
-                <legend><?php echo lang('account_information'); ?></legend>
+                <legend><?php echo trans('account_information'); ?></legend>
 
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label><?php echo lang('name'); ?>: </label>
+                        <label><?php echo trans('name'); ?>: </label>
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         <input type="text" name="user_name" id="user_name" class="form-control"
@@ -60,7 +60,7 @@
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                         <label class="control-label">
-                            <?php echo lang('company'); ?>
+                            <?php echo trans('company'); ?>
                         </label>
                     </div>
                     <div class="col-xs-12 col-sm-6">
@@ -72,7 +72,7 @@
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                         <label class="control-label">
-                            <?php echo lang('email_address'); ?>
+                            <?php echo trans('email_address'); ?>
                         </label>
                     </div>
                     <div class="col-xs-12 col-sm-6">
@@ -85,7 +85,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('password'); ?>
+                                <?php echo trans('password'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -96,7 +96,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('verify_password'); ?>
+                                <?php echo trans('verify_password'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -107,11 +107,11 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label>
-                                <?php echo lang('change_password'); ?>
+                                <?php echo trans('change_password'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
-                            <?php echo anchor('users/change_password/' . $id, lang('change_password')); ?>
+                            <?php echo anchor('users/change_password/' . $id, trans('change_password')); ?>
                         </div>
                     </div>
                 <?php } ?>
@@ -119,7 +119,7 @@
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                         <label class="control-label">
-                            <?php echo lang('user_type'); ?>
+                            <?php echo trans('user_type'); ?>
                         </label>
                     </div>
                     <div class="col-xs-12 col-sm-6">
@@ -137,12 +137,12 @@
 
             <div id="administrator_fields">
                 <fieldset>
-                    <legend><?php echo lang('address'); ?></legend>
+                    <legend><?php echo trans('address'); ?></legend>
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('street_address'); ?>
+                                <?php echo trans('street_address'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -154,7 +154,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('street_address_2'); ?>
+                                <?php echo trans('street_address_2'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -166,7 +166,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('city'); ?>
+                                <?php echo trans('city'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -178,7 +178,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('state'); ?>
+                                <?php echo trans('state'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -190,7 +190,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('zip_code'); ?>
+                                <?php echo trans('zip_code'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -202,7 +202,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('country'); ?>
+                                <?php echo trans('country'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -222,12 +222,12 @@
 
                 <fieldset>
 
-                    <legend><?php echo lang('tax_information'); ?></legend>
+                    <legend><?php echo trans('tax_information'); ?></legend>
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('vat_id'); ?>
+                                <?php echo trans('vat_id'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -239,7 +239,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('tax_code'); ?>
+                                <?php echo trans('tax_code'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -252,12 +252,12 @@
 
                 <fieldset>
 
-                    <legend><?php echo lang('contact_information'); ?></legend>
+                    <legend><?php echo trans('contact_information'); ?></legend>
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('phone_number'); ?>
+                                <?php echo trans('phone_number'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -269,7 +269,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('fax_number'); ?>
+                                <?php echo trans('fax_number'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -281,7 +281,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('mobile_number'); ?>
+                                <?php echo trans('mobile_number'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -293,7 +293,7 @@
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label">
-                                <?php echo lang('web_address'); ?>
+                                <?php echo trans('web_address'); ?>
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
@@ -306,7 +306,7 @@
 
                 <fieldset>
 
-                    <legend><?php echo lang('custom_fields'); ?></legend>
+                    <legend><?php echo trans('custom_fields'); ?></legend>
 
                     <?php foreach ($custom_fields as $custom_field) { ?>
                         <div class="form-group">
@@ -332,12 +332,12 @@
                 <div id="open_invoices" class="widget">
 
                     <div class="widget-title">
-                        <h5 style="float: left;"><?php echo lang('client_access'); ?></h5>
+                        <h5 style="float: left;"><?php echo trans('client_access'); ?></h5>
 
                         <div class="pull-right">
                             <a href="#add-user-client" class="btn btn-default" data-toggle="modal">
                                 <i class="fa fa-plus"></i>
-                                <?php echo lang('add_client'); ?>
+                                <?php echo trans('add_client'); ?>
                             </a>
                         </div>
                     </div>

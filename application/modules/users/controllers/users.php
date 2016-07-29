@@ -89,7 +89,7 @@ class Users extends Admin_Controller
                 'user_types' => $this->mdl_users->user_types(),
                 'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
                 'custom_fields' => $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result(),
-                'countries' => get_country_list(lang('cldr')),
+                'countries' => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_users->form_value('user_country') ?:
                     $this->mdl_settings->setting('default_country')
             )

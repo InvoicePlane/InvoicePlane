@@ -1,14 +1,14 @@
 <div id="headerbar">
 
-    <h1><?php echo lang('clients'); ?></h1>
+    <h1><?php echo trans('clients'); ?></h1>
 
     <div class="pull-right">
         <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
                 data-toggle="collapse" data-target="#ip-submenu-collapse">
-            <i class="fa fa-bars"></i> <?php echo lang('submenu'); ?>
+            <i class="fa fa-bars"></i> <?php echo trans('submenu'); ?>
         </button>
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('clients/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
         </a>
     </div>
 
@@ -19,13 +19,13 @@
     <div class="pull-right visible-lg">
         <ul class="nav nav-pills index-options">
             <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) : ?>class="active"<?php endif; ?>>
-                <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo lang('active'); ?></a>
+                <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo trans('active'); ?></a>
             </li>
             <li <?php if ($this->uri->segment(3) == 'inactive') : ?>class="active"<?php endif; ?>>
-                <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo lang('inactive'); ?></a>
+                <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo trans('inactive'); ?></a>
             </li>
             <li <?php if ($this->uri->segment(3) == 'all') : ?>class="active"<?php endif; ?>>
-                <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo lang('all'); ?></a>
+                <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo trans('all'); ?></a>
             </li>
         </ul>
     </div>
@@ -42,13 +42,13 @@
         <div class="submenu-row">
             <ul class="nav nav-pills index-options">
                 <li <?php if ($this->uri->segment(3) == 'active' or !$this->uri->segment(3)) : ?>class="active"<?php endif; ?>>
-                    <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo lang('active'); ?></a>
+                    <a href="<?php echo site_url('clients/status/active'); ?>"><?php echo trans('active'); ?></a>
                 </li>
                 <li <?php if ($this->uri->segment(3) == 'inactive') : ?>class="active"<?php endif; ?>>
-                    <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo lang('inactive'); ?></a>
+                    <a href="<?php echo site_url('clients/status/inactive'); ?>"><?php echo trans('inactive'); ?></a>
                 </li>
                 <li <?php if ($this->uri->segment(3) == 'all') : ?>class="active"<?php endif; ?>>
-                    <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo lang('all'); ?></a>
+                    <a href="<?php echo site_url('clients/status/all'); ?>"><?php echo trans('all'); ?></a>
                 </li>
             </ul>
         </div>

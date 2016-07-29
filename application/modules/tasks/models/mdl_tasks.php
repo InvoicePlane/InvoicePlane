@@ -50,32 +50,32 @@ class Mdl_Tasks extends Response_Model
         return array(
             'task_name' => array(
                 'field' => 'task_name',
-                'label' => lang('task_name'),
+                'label' => trans('task_name'),
                 'rules' => 'required'
             ),
             'task_description' => array(
                 'field' => 'task_description',
-                'label' => lang('task_description'),
+                'label' => trans('task_description'),
                 'rules' => ''
             ),
             'task_price' => array(
                 'field' => 'task_price',
-                'label' => lang('task_price'),
+                'label' => trans('task_price'),
                 'rules' => 'required'
             ),
             'task_finish_date' => array(
                 'field' => 'task_finish_date',
-                'label' => lang('task_finish_date'),
+                'label' => trans('task_finish_date'),
                 'rules' => 'required'
             ),
             'project_id' => array(
                 'field' => 'project_id',
-                'label' => lang('project'),
+                'label' => trans('project'),
                 'rules' => ''
             ),
             'task_status' => array(
                 'field' => 'task_status',
-                'label' => lang('status')
+                'label' => trans('status')
             )
         );
     }
@@ -108,19 +108,19 @@ class Mdl_Tasks extends Response_Model
     {
         return array(
             '1' => array(
-                'label' => lang('not_started'),
+                'label' => trans('not_started'),
                 'class' => 'draft'
             ),
             '2' => array(
-                'label' => lang('in_progress'),
+                'label' => trans('in_progress'),
                 'class' => 'viewed'
             ),
             '3' => array(
-                'label' => lang('complete'),
+                'label' => trans('complete'),
                 'class' => 'sent'
             ),
             '4' => array(
-                'label' => lang('invoiced'),
+                'label' => trans('invoiced'),
                 'class' => 'paid'
             )
         );

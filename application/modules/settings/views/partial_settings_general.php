@@ -16,7 +16,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[default_language]" class="control-label">
-                    <?php echo lang('language'); ?>
+                    <?php echo trans('language'); ?>
                 </label>
                 <select name="settings[default_language]" class="input-sm form-control">
                     <?php foreach ($languages as $language) { ?>
@@ -30,7 +30,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[first_day_of_week]" class="control-label">
-                    <?php echo lang('first_day_of_week'); ?>
+                    <?php echo trans('first_day_of_week'); ?>
                 </label>
                 <select name="settings[first_day_of_week]" class="input-sm form-control">
                     <?php foreach ($first_days_of_weeks as $first_day_of_week_id => $first_day_of_week_name) { ?>
@@ -46,7 +46,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[default_country]" class="control-label">
-                    <?php echo lang('default_country'); ?>
+                    <?php echo trans('default_country'); ?>
                 </label>
                 <select name="settings[default_country]" class="input-sm form-control">
                     <option></option>
@@ -61,7 +61,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[date_format]" class="control-label">
-                    <?php echo lang('date_format'); ?>
+                    <?php echo trans('date_format'); ?>
                 </label>
                 <select name="settings[date_format]" class="input-sm form-control">
                     <?php foreach ($date_formats as $date_format) { ?>
@@ -74,14 +74,14 @@
     </div>
 
     <hr/>
-    <h4><?php echo lang('amount_settings'); ?></h4>
+    <h4><?php echo trans('amount_settings'); ?></h4>
     <br/>
 
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo lang('currency_symbol'); ?>
+                    <?php echo trans('currency_symbol'); ?>
                 </label>
                 <input type="text" name="settings[currency_symbol]" class="input-sm form-control"
                        value="<?php echo $this->mdl_settings->setting('currency_symbol'); ?>">
@@ -91,15 +91,15 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[currency_symbol_placement]" class="control-label">
-                    <?php echo lang('currency_symbol_placement'); ?>
+                    <?php echo trans('currency_symbol_placement'); ?>
                 </label>
                 <select name="settings[currency_symbol_placement]" class="input-sm form-control">
                     <option value="before"
-                            <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'before') { ?>selected="selected"<?php } ?>><?php echo lang('before_amount'); ?></option>
+                            <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'before') { ?>selected="selected"<?php } ?>><?php echo trans('before_amount'); ?></option>
                     <option value="after"
-                            <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'after') { ?>selected="selected"<?php } ?>><?php echo lang('after_amount'); ?></option>
+                            <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'after') { ?>selected="selected"<?php } ?>><?php echo trans('after_amount'); ?></option>
                     <option value="afterspace"
-                            <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'afterspace') { ?>selected="selected"<?php } ?>><?php echo lang('after_amount_space'); ?></option>
+                            <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'afterspace') { ?>selected="selected"<?php } ?>><?php echo trans('after_amount_space'); ?></option>
                 </select>
             </div>
         </div>
@@ -109,7 +109,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[thousands_separator]" class="control-label">
-                    <?php echo lang('thousands_separator'); ?>
+                    <?php echo trans('thousands_separator'); ?>
                 </label>
                 <input type="text" name="settings[thousands_separator]" class="input-sm form-control"
                        value="<?php echo $this->mdl_settings->setting('thousands_separator'); ?>">
@@ -119,7 +119,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[decimal_point]" class="control-label">
-                    <?php echo lang('decimal_point'); ?>
+                    <?php echo trans('decimal_point'); ?>
                 </label>
                 <input type="text" name="settings[decimal_point]" class="input-sm form-control"
                        value="<?php echo $this->mdl_settings->setting('decimal_point'); ?>">
@@ -131,7 +131,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo lang('tax_rate_decimal_places'); ?>
+                    <?php echo trans('tax_rate_decimal_places'); ?>
                 </label>
                 <select name="settings[tax_rate_decimal_places]" class="input-sm form-control"
                         id="tax_rate_decimal_places">
@@ -150,7 +150,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo lang('default_list_limit'); ?>
+                    <?php echo trans('default_list_limit'); ?>
                 </label>
                 <select name="settings[default_list_limit]" class="input-sm form-control"
                         id="default_list_limit">
@@ -179,7 +179,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo lang('currency_code'); ?>
+                    <?php echo trans('currency_code'); ?>
                 </label>
                 <input type="text" name="settings[currency_code]" class="input-sm form-control"
                        value="<?php echo $this->mdl_settings->setting('currency_code'); ?>">
@@ -188,28 +188,28 @@
     </div>
 
     <hr/>
-    <h4><?php echo lang('dashboard'); ?></h4>
+    <h4><?php echo trans('dashboard'); ?></h4>
     <br/>
 
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[quote_overview_period]" class="control-label">
-                    <?php echo lang('quote_overview_period'); ?>
+                    <?php echo trans('quote_overview_period'); ?>
                 </label>
                 <select name="settings[quote_overview_period]" class="input-sm form-control">
                     <option value="this-month"
-                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo lang('this_month'); ?></option>
+                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo trans('this_month'); ?></option>
                     <option value="last-month"
-                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo lang('last_month'); ?></option>
+                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo trans('last_month'); ?></option>
                     <option value="this-quarter"
-                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('this_quarter'); ?></option>
+                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('this_quarter'); ?></option>
                     <option value="last-quarter"
-                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('last_quarter'); ?></option>
+                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('last_quarter'); ?></option>
                     <option value="this-year"
-                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo lang('this_year'); ?></option>
+                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo trans('this_year'); ?></option>
                     <option value="last-year"
-                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo lang('last_year'); ?></option>
+                            <?php if ($this->mdl_settings->setting('quote_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo trans('last_year'); ?></option>
                 </select>
             </div>
         </div>
@@ -217,21 +217,21 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label for="settings[invoice_overview_period]" class="control-label">
-                    <?php echo lang('invoice_overview_period'); ?>
+                    <?php echo trans('invoice_overview_period'); ?>
                 </label>
                 <select name="settings[invoice_overview_period]" class="input-sm form-control">
                     <option value="this-month"
-                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo lang('this_month'); ?></option>
+                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo trans('this_month'); ?></option>
                     <option value="last-month"
-                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo lang('last_month'); ?></option>
+                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo trans('last_month'); ?></option>
                     <option value="this-quarter"
-                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('this_quarter'); ?></option>
+                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('this_quarter'); ?></option>
                     <option value="last-quarter"
-                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo lang('last_quarter'); ?></option>
+                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('last_quarter'); ?></option>
                     <option value="this-year"
-                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo lang('this_year'); ?></option>
+                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo trans('this_year'); ?></option>
                     <option value="last-year"
-                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo lang('last_year'); ?></option>
+                            <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo trans('last_year'); ?></option>
                 </select>
             </div>
         </div>
@@ -241,35 +241,35 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo lang('disable_quickactions'); ?>
+                    <?php echo trans('disable_quickactions'); ?>
                 </label>
                 <select name="settings[disable_quickactions]" class="input-sm form-control"
                         id="disable_quickactions">
                     <option value="0"
-                            <?php if (!$this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
+                            <?php if (!$this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo trans('no'); ?></option>
                     <option value="1"
-                            <?php if ($this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+                            <?php if ($this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
                 </select>
             </div>
         </div>
     </div>
 
     <hr/>
-    <h4><?php echo lang('interface'); ?></h4>
+    <h4><?php echo trans('interface'); ?></h4>
     <br/>
 
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo lang('disable_sidebar'); ?>
+                    <?php echo trans('disable_sidebar'); ?>
                 </label>
                 <select name="settings[disable_sidebar]" class="input-sm form-control"
                         id="disable_sidebar">
                     <option value="0"
-                            <?php if (!$this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('no'); ?></option>
+                            <?php if (!$this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo trans('no'); ?></option>
                     <option value="1"
-                            <?php if ($this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+                            <?php if ($this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
                 </select>
             </div>
         </div>
@@ -277,7 +277,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo lang('custom_title'); ?>
+                    <?php echo trans('custom_title'); ?>
                 </label>
                 <input type="text" name="settings[custom_title]" class="input-sm form-control"
                        value="<?php echo $this->mdl_settings->setting('custom_title'); ?>">
@@ -287,17 +287,17 @@
 
     <div class="form-group">
         <label class="control-label">
-            <?php echo lang('monospaced_font_for_amounts'); ?>
+            <?php echo trans('monospaced_font_for_amounts'); ?>
         </label>
         <select name="settings[monospace_amounts]" class="input-sm form-control"
                 id="monospace_amounts">
-            <option value="0"><?php echo lang('no'); ?></option>
+            <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
-                    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+                    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
         </select>
 
         <p class="help-block">
-            <?php echo lang('example'); ?>:
+            <?php echo trans('example'); ?>:
                     <span style="font-family: Monaco, Lucida Console, monospace">
                         <?php echo format_currency(123456.78); ?>
                     </span>
@@ -306,7 +306,7 @@
 
     <div class="form-group">
         <label class="control-label">
-            <?php echo lang('login_logo'); ?>
+            <?php echo trans('login_logo'); ?>
         </label>
         <?php if ($this->mdl_settings->setting('login_logo')) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('login_logo'); ?>"><br>
@@ -316,25 +316,25 @@
     </div>
 
     <hr/>
-    <h4><?php echo lang('system_settings'); ?></h4>
+    <h4><?php echo trans('system_settings'); ?></h4>
     <br/>
 
     <div class="form-group">
         <label for="settings[bcc_mails_to_admin]" class="control-label">
-            <?php echo lang('bcc_mails_to_admin'); ?>
+            <?php echo trans('bcc_mails_to_admin'); ?>
         </label>
         <select name="settings[bcc_mails_to_admin]" class="input-sm form-control">
-            <option value="0"><?php echo lang('no'); ?></option>
+            <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
-                    <?php if ($this->mdl_settings->setting('bcc_mails_to_admin') == 1) { ?>selected="selected"<?php } ?>><?php echo lang('yes'); ?></option>
+                    <?php if ($this->mdl_settings->setting('bcc_mails_to_admin') == 1) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
         </select>
 
-        <p class="help-block"><?php echo lang('bcc_mails_to_admin_hint'); ?></p>
+        <p class="help-block"><?php echo trans('bcc_mails_to_admin_hint'); ?></p>
     </div>
 
     <div class="form-group">
         <label for="settings[cron_key]" class="control-label">
-            <?php echo lang('cron_key'); ?>
+            <?php echo trans('cron_key'); ?>
         </label>
 
         <div class="row">
@@ -344,7 +344,7 @@
                        value="<?php echo $this->mdl_settings->setting('cron_key'); ?>">
             </div>
             <div class="col-xs-4 col-sm-3">
-                <input id="btn_generate_cron_key" value="<?php echo lang('generate'); ?>"
+                <input id="btn_generate_cron_key" value="<?php echo trans('generate'); ?>"
                        type="button" class="btn btn-primary btn-sm btn-block">
             </div>
         </div>
@@ -352,17 +352,17 @@
 
     <div class="form-group">
         <label class="control-label">
-            <?php echo lang('enable_debug_mode'); ?>
+            <?php echo trans('enable_debug_mode'); ?>
         </label>
         <select name="settings[enable_debug]" class="input-sm form-control"
                 id="disable_sidebar">
             <option value="0"
                     <?php if (!$this->mdl_settings->setting('enable_debug')) { ?>selected="selected"<?php } ?>>
-                <?php echo lang('no'); ?>
+                <?php echo trans('no'); ?>
             </option>
             <option value="1"
                     <?php if ($this->mdl_settings->setting('enable_debug')) { ?>selected="selected"<?php } ?>>
-                <?php echo lang('yes'); ?>
+                <?php echo trans('yes'); ?>
             </option>
         </select>
     </div>
