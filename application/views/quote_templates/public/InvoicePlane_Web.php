@@ -170,7 +170,7 @@
                                 <td class="amount"><?php echo format_amount($item->item_quantity); ?></td>
                                 <td class="amount"><?php echo format_currency($item->item_price); ?></td>
                                 <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
-                                <td class="amount"><?php echo format_currency($item->item_subtotal); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_total); ?></td>
                             </tr>
                         <?php endforeach ?>
                         <tr>

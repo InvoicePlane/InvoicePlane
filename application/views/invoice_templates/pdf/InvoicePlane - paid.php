@@ -155,7 +155,7 @@
                     </td>
                 <?php endif; ?>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_subtotal); ?>
+                    <?php echo format_currency($item->item_total); ?>
                 </td>
             </tr>
         <?php } ?>
