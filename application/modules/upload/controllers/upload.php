@@ -51,7 +51,7 @@ class Upload extends Admin_Controller
                 move_uploaded_file($tempFile, $targetFile);
             } else //If file exists then echo the error and set a http error response
             {
-                echo lang('error_dublicate_file');;
+                echo trans('error_dublicate_file');;
                 http_response_code(404);
             }
 

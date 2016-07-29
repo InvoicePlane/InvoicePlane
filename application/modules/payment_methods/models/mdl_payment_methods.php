@@ -36,7 +36,7 @@ class Mdl_Payment_Methods extends Response_Model
         return array(
             'payment_method_name' => array(
                 'field' => 'payment_method_name',
-                'label' => lang('payment_method'),
+                'label' => trans('payment_method'),
                 'rules' => 'required'
             )
         );

@@ -36,16 +36,16 @@ class Mdl_Item_Lookups extends MY_Model
         return array(
             'item_name' => array(
                 'field' => 'item_name',
-                'label' => lang('item_name'),
+                'label' => trans('item_name'),
                 'rules' => 'required'
             ),
             'item_description' => array(
                 'field' => 'item_description',
-                'label' => lang('description')
+                'label' => trans('description')
             ),
             'item_price' => array(
                 'field' => 'item_price',
-                'label' => lang('price'),
+                'label' => trans('price'),
                 'rules' => 'required'
             )
         );

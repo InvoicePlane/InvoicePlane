@@ -31,12 +31,12 @@ class Mdl_Client_Notes extends Response_Model
         return array(
             'client_id' => array(
                 'field' => 'client_id',
-                'label' => lang('client'),
+                'label' => trans('client'),
                 'rules' => 'required'
             ),
             'client_note' => array(
                 'field' => 'client_note',
-                'label' => lang('note'),
+                'label' => trans('note'),
                 'rules' => 'required'
             )
         );

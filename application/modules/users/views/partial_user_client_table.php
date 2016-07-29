@@ -3,8 +3,8 @@
 
         <thead>
         <tr>
-            <th><?php echo lang('client'); ?></th>
-            <th><?php echo lang('options'); ?></th>
+            <th><?php echo trans('client'); ?></th>
+            <th><?php echo trans('options'); ?></th>
         </tr>
         </thead>
 

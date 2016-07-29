@@ -51,16 +51,16 @@ class Mdl_Invoices_Recurring extends Response_Model
             ),
             'recur_start_date' => array(
                 'field' => 'recur_start_date',
-                'label' => lang('start_date'),
+                'label' => trans('start_date'),
                 'rules' => 'required'
             ),
             'recur_end_date' => array(
                 'field' => 'recur_end_date',
-                'label' => lang('end_date')
+                'label' => trans('end_date')
             ),
             'recur_frequency' => array(
                 'field' => 'recur_frequency',
-                'label' => lang('every'),
+                'label' => trans('every'),
                 'rules' => 'required'
             ),
         );

@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1><?php echo lang('item_lookups'); ?></h1>
+    <h1><?php echo trans('item_lookups'); ?></h1>
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('item_lookups/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?></a>
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -21,10 +21,10 @@
 
             <thead>
             <tr>
-                <th><?php echo lang('item_name'); ?></th>
-                <th><?php echo lang('description'); ?></th>
-                <th><?php echo lang('price'); ?></th>
-                <th><?php echo lang('options'); ?></th>
+                <th><?php echo trans('item_name'); ?></th>
+                <th><?php echo trans('description'); ?></th>
+                <th><?php echo trans('price'); ?></th>
+                <th><?php echo trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -39,20 +39,20 @@
                             <a class="btn btn-default btn-sm dropdown-toggle"
                                data-toggle="dropdown" href="#">
                                 <i class="fa fa-cog"></i>
-                                <?php echo lang('options'); ?>
+                                <?php echo trans('options'); ?>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('item_lookups/form/' . $item_lookup->item_lookup_id); ?>">
                                         <i class="fa fa-edit fa-margin"></i>
-                                        <?php echo lang('edit'); ?>
+                                        <?php echo trans('edit'); ?>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo site_url('item_lookups/delete/' . $item_lookup->item_lookup_id); ?>"
-                                       onclick="return confirm('<?php echo lang('delete_record_warning'); ?>');">
+                                       onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i>
-                                        <?php echo lang('delete'); ?>
+                                        <?php echo trans('delete'); ?>
                                     </a>
                                 </li>
                             </ul>

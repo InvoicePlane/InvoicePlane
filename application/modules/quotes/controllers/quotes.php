@@ -63,7 +63,7 @@ class Quotes extends Admin_Controller
                 'quotes' => $quotes,
                 'status' => $status,
                 'filter_display' => true,
-                'filter_placeholder' => lang('filter_quotes'),
+                'filter_placeholder' => trans('filter_quotes'),
                 'filter_method' => 'filter_quotes',
                 'quote_statuses' => $this->mdl_quotes->statuses()
             )

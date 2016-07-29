@@ -1,7 +1,7 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1><?php echo lang('tasks_form'); ?></h1>
+        <h1><?php echo trans('tasks_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -17,13 +17,13 @@
                             #<?php echo $this->mdl_tasks->form_value('task_id'); ?>&nbsp;
                             <?php echo $this->mdl_tasks->form_value('task_name'); ?>
                         <?php else : ?>
-                            <?php echo lang('new_task'); ?>
+                            <?php echo trans('new_task'); ?>
                         <?php endif; ?>
                     </legend>
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('task_name'); ?>: </label>
+                            <label class="control-label"><?php echo trans('task_name'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <input type="text" name="task_name" id="task_name" class="form-control"
@@ -33,7 +33,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('task_description'); ?>: </label>
+                            <label class="control-label"><?php echo trans('task_description'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <input type="text" name="task_description" id="task_description" class="form-control"
@@ -43,7 +43,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('task_price'); ?>: </label>
+                            <label class="control-label"><?php echo trans('task_price'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <input type="text" name="task_price" id="task_price" class="form-control"
@@ -53,7 +53,7 @@
 
                     <div class="form-group has-feedback">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label for="task_finish_date"><?php echo lang('task_finish_date'); ?>: </label>
+                            <label for="task_finish_date"><?php echo trans('task_finish_date'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <div class="input-group">
@@ -69,7 +69,7 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('status'); ?>: </label>
+                            <label class="control-label"><?php echo trans('status'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <select name="task_status" id="task_status" class="form-control">
@@ -86,15 +86,15 @@
 
             <div class="col-xs-12 col-sm-5">
                 <fieldset>
-                    <legend><?php echo lang('extra_information'); ?></legend>
+                    <legend><?php echo trans('extra_information'); ?></legend>
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                            <label class="control-label"><?php echo lang('project'); ?>: </label>
+                            <label class="control-label"><?php echo trans('project'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
                             <select name="project_id" id="project_id" class="form-control">
-                                <option value=""><?php echo lang('select_project'); ?></option>
+                                <option value=""><?php echo trans('select_project'); ?></option>
                                 <?php foreach ($projects as $project) { ?>
                                     <option value="<?php echo $project->project_id; ?>"
                                             <?php if ($this->mdl_tasks->form_value('project_id') == $project->project_id) { ?>selected="selected"<?php } ?>><?php echo $project->project_name; ?></option>

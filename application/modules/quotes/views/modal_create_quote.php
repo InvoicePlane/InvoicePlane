@@ -50,12 +50,12 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('create_quote'); ?></h3>
+            <h3><?php echo trans('create_quote'); ?></h3>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
-                <label for="client_name"><?php echo lang('client'); ?></label>
+                <label for="client_name"><?php echo trans('client'); ?></label>
                 <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
@@ -69,7 +69,7 @@
 
             <div class="form-group has-feedback">
                 <label for="quote_date_created">
-                    <?php echo lang('quote_date'); ?>
+                    <?php echo trans('quote_date'); ?>
                 </label>
 
                 <div class="input-group">
@@ -83,7 +83,7 @@
             </div>
 
             <div class="form-group">
-                <label for="quote_password"><?php echo lang('quote_password'); ?></label>
+                <label for="quote_password"><?php echo trans('quote_password'); ?></label>
                 <input type="text" name="quote_password" id="quote_password" class="form-control"
                        value="<?php if ($this->mdl_settings->setting('quote_pre_password') == '') {
                            echo '';
@@ -93,7 +93,7 @@
             </div>
 
             <div class="form-group">
-                <label for="invoice_group_id"><?php echo lang('invoice_group'); ?>: </label>
+                <label for="invoice_group_id"><?php echo trans('invoice_group'); ?>: </label>
 
                 <div class="controls">
                     <select name="invoice_group_id" id="invoice_group_id"
@@ -112,10 +112,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success ajax-loader" id="quote_create_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

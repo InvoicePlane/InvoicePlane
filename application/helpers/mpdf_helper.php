@@ -47,7 +47,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         $mpdf->showImageErrors = true;
     }
 
-    if (strpos($filename, lang('invoice')) !== false) {
+    if (strpos($filename, trans('invoice')) !== false) {
         $CI = &get_instance();
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');

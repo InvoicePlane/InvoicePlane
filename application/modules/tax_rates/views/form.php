@@ -1,7 +1,7 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1><?php echo lang('tax_rate_form'); ?></h1>
+        <h1><?php echo trans('tax_rate_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -12,7 +12,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label class="control-label">
-                    <?php echo lang('tax_rate_name'); ?>
+                    <?php echo trans('tax_rate_name'); ?>
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
@@ -24,7 +24,7 @@
         <div class="form-group has-feedback">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label class="control-label">
-                    <?php echo lang('tax_rate_percent'); ?>
+                    <?php echo trans('tax_rate_percent'); ?>
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">

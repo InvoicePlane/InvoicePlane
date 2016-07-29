@@ -40,7 +40,7 @@
                     var ipnews = '<div class="alert alert-' + news.type + '">';
                     ipnews += '<b>' + news.title + '</b><br/>';
                     ipnews += news.text + '<br/>';
-                    ipnews += '<small><?php echo lang('date')?>: ' + news.newsdate.date.substr(0, 11) + '</b><br/>';
+                    ipnews += '<small><?php echo trans('date')?>: ' + news.newsdate.date.substr(0, 11) + '</b><br/>';
                     ipnews += '</div>';
                     $('#ipnews-container').append(ipnews);
                 })
@@ -56,7 +56,7 @@
 
 <div class="tab-info">
 
-    <h4><?php echo lang('updatecheck'); ?></h4><br/>
+    <h4><?php echo trans('updatecheck'); ?></h4><br/>
 
     <div class="form-group">
         <input type="text" class="input-sm form-control"
@@ -64,30 +64,30 @@
     </div>
     <div id="updatecheck-results">
         <span id="updatecheck-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo lang('checking_for_updates'); ?>
+            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_updates'); ?>
 		</span>
 
         <span id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
-            <?php echo lang('no_updates_available'); ?>
+            <?php echo trans('no_updates_available'); ?>
         </span>
 
         <span id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
-            <?php echo lang('updatecheck_failed'); ?>
+            <?php echo trans('updatecheck_failed'); ?>
         </span>
 
         <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
            class="btn btn-success btn-sm hidden" target="_blank">
-            <?php echo lang('updates_available'); ?>
+            <?php echo trans('updates_available'); ?>
         </a>
     </div>
 
     <hr/>
 
-    <h4><?php echo lang('invoiceplane_news'); ?></h4>
+    <h4><?php echo trans('invoiceplane_news'); ?></h4>
 
     <div id="ipnews-results">
         <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo lang('checking_for_news'); ?>
+            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_news'); ?>
 		</span>
 
         <div id="ipnews-container"></div>

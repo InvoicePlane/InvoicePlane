@@ -41,7 +41,7 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('copy_invoice'); ?></h3>
+            <h3><?php echo trans('copy_invoice'); ?></h3>
         </div>
         <div class="modal-body">
 
@@ -49,7 +49,7 @@
                    value="<?php echo $invoice->user_id; ?>">
 
             <div class="form-group">
-                <label><?php echo lang('client'); ?>: </label>
+                <label><?php echo trans('client'); ?>: </label>
 
                 <div class="controls">
                     <input type="text" name="client_name" id="client_name" style="margin: 0 auto;"
@@ -60,7 +60,7 @@
             </div>
 
             <div class="form-group has-feedback">
-                <label for="invoice_date_created"><?php echo lang('invoice_date'); ?>: </label>
+                <label for="invoice_date_created"><?php echo trans('invoice_date'); ?>: </label>
 
                 <div class="input-group">
                     <input name="invoice_date_created" id="invoice_date_created"
@@ -73,7 +73,7 @@
             </div>
 
             <div class="form-group">
-                <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
+                <label for="invoice_password"><?php echo trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
                        value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == '') {
                            echo '';
@@ -83,7 +83,7 @@
             </div>
 
             <div class="form-group">
-                <label for="invoice_group_id"><?php echo lang('invoice_group'); ?>: </label>
+                <label for="invoice_group_id"><?php echo trans('invoice_group'); ?>: </label>
 
                 <div>
                     <select name="invoice_group_id" id="invoice_group_id" class="form-control">
@@ -101,10 +101,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success" id="copy_invoice_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

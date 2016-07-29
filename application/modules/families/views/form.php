@@ -1,7 +1,7 @@
 <form method="post" class="form-horizontal">
 
     <div id="headerbar">
-        <h1><?php echo lang('add_family'); ?></h1>
+        <h1><?php echo trans('add_family'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -20,7 +20,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="family_name" class="control-label">
-                    <?php echo lang('family_name'); ?>:
+                    <?php echo trans('family_name'); ?>:
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
