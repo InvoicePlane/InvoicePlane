@@ -30,6 +30,7 @@ class Setup extends MX_Controller
         $this->load->helper('directory');
         $this->load->helper('url');
         $this->load->helper('language');
+        $this->load->helper('trans');
 
         $this->load->model('mdl_setup');
 
