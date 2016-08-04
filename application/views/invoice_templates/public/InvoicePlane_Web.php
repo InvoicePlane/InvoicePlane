@@ -25,7 +25,7 @@
 
         <div class="webpreview-header">
 
-            <h2><?php echo trans('invoice'); ?><?php echo $invoice->invoice_number; ?></h2>
+            <h2><?php echo trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
 
             <div class="btn-group">
                 <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice_url_key); ?>"
