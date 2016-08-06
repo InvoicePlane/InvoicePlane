@@ -184,7 +184,7 @@
         <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
             <tr>
                 <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
-                    <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' (' . $invoice_tax_rate->invoice_tax_rate_percent . '%)'; ?>
+                    <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%)'; ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
