@@ -59,7 +59,7 @@
 </script>
 
 <div class="tab-info">
-
+    <?php if (FALSE): // ---it--- ORIGINALE ?>
     <h4><?php echo trans('updatecheck'); ?></h4><br/>
 	<?php else:	// ---it--- titolo modificato ?>
 	<h4>Controllo aggiornamenti (edizione italiana)</h4><br/>
