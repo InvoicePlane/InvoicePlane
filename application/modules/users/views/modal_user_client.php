@@ -23,12 +23,12 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('add_client'); ?></h3>
+            <h3><?php echo trans('add_client'); ?></h3>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
-                <label class="control-label"><?php echo lang('client'); ?>: </label>
+                <label class="control-label"><?php echo trans('client'); ?>: </label>
                 <input type="text" name="client_name" id="client_name" class="form-control"
                        data-provide="typeahead" data-items="8" data-source='' autocomplete="off">
             </div>
@@ -38,10 +38,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success" id="btn_user_client" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

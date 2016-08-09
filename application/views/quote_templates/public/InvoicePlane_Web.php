@@ -9,7 +9,7 @@
             echo $this->mdl_settings->setting('custom_title');
         } else {
             echo 'quotePlane';
-        } ?> - <?php echo lang('quote'); ?> <?php echo $quote->quote_number; ?></title>
+        } ?> - <?php echo trans('quote'); ?> <?php echo $quote->quote_number; ?></title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -25,18 +25,18 @@
 
         <div class="webpreview-header">
 
-            <h2><?php echo lang('quote') . ' ' . $quote->quote_number; ?></h2>
+            <h2><?php echo trans('quote') . ' ' . $quote->quote_number; ?></h2>
 
             <div class="btn-group">
                 <a href="<?php echo site_url('guest/view/generate_quote_pdf/' . $quote_url_key); ?>"
                    class="btn btn-primary">
                     <i
-                        class="fa fa-print"></i> <?php echo lang('download_pdf'); ?>
+                        class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                 </a>
                 <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $quote->quote_balance > 0) { ?>
                 <a
                     href="<?php echo site_url('guest/payment_handler/make_payment/' . $quote_url_key); ?>"
-                    class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo lang('pay_now'); ?>
+                    class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
                     </a><?php } ?>
             </div>
 
@@ -86,9 +86,9 @@
                         <?php if ($quote->user_zip) {
                             echo $quote->user_zip . '<br>';
                         } ?>
-                        <?php if ($quote->user_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $quote->user_phone; ?>
+                        <?php if ($quote->user_phone) { ?><?php echo trans('phone_abbr'); ?>: <?php echo $quote->user_phone; ?>
                             <br><?php } ?>
-                        <?php if ($quote->user_fax) { ?><?php echo lang('fax_abbr'); ?>: <?php echo $quote->user_fax; ?><?php } ?>
+                        <?php if ($quote->user_fax) { ?><?php echo trans('fax_abbr'); ?>: <?php echo $quote->user_fax; ?><?php } ?>
                     </p>
 
                 </div>
@@ -118,7 +118,7 @@
                             echo $quote->client_zip . '<br>';
                         } ?>
                         <?php if ($quote->client_phone) {
-                            echo lang('phone_abbr') . ': ' . $quote->client_phone; ?>
+                            echo trans('phone_abbr') . ': ' . $quote->client_phone; ?>
                             <br>
                         <?php } ?>
                     </p>
@@ -128,17 +128,17 @@
                     <table class="table table-condensed">
                         <tbody>
                         <tr>
-                            <td><?php echo lang('quote_date'); ?></td>
+                            <td><?php echo trans('quote_date'); ?></td>
                             <td style="text-align:right;"><?php echo date_from_mysql($quote->quote_date_created); ?></td>
                         </tr>
                         <tr class="<?php echo($is_expired ? 'overdue' : '') ?>">
-                            <td><?php echo lang('expires'); ?></td>
+                            <td><?php echo trans('expires'); ?></td>
                             <td class="text-right">
                                 <?php echo date_from_mysql($quote->quote_date_expires); ?>
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo lang('total'); ?></td>
+                            <td><?php echo trans('total'); ?></td>
                             <td class="text-right"><?php echo format_currency($quote->quote_total); ?></td>
                         </tr>
                         </tbody>
@@ -154,12 +154,12 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th><?php echo lang('item'); ?></th>
-                            <th><?php echo lang('description'); ?></th>
-                            <th class="text-right"><?php echo lang('qty'); ?></th>
-                            <th class="text-right"><?php echo lang('price'); ?></th>
-                            <th class="text-right"><?php echo lang('discount'); ?></th>
-                            <th class="text-right"><?php echo lang('total'); ?></th>
+                            <th><?php echo trans('item'); ?></th>
+                            <th><?php echo trans('description'); ?></th>
+                            <th class="text-right"><?php echo trans('qty'); ?></th>
+                            <th class="text-right"><?php echo trans('price'); ?></th>
+                            <th class="text-right"><?php echo trans('discount'); ?></th>
+                            <th class="text-right"><?php echo trans('total'); ?></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -170,19 +170,19 @@
                                 <td class="amount"><?php echo format_amount($item->item_quantity); ?></td>
                                 <td class="amount"><?php echo format_currency($item->item_price); ?></td>
                                 <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
-                                <td class="amount"><?php echo format_currency($item->item_subtotal); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_total); ?></td>
                             </tr>
                         <?php endforeach ?>
                         <tr>
                             <td colspan="4"></td>
-                            <td class="text-right"><?php echo lang('subtotal'); ?>:</td>
+                            <td class="text-right"><?php echo trans('subtotal'); ?>:</td>
                             <td class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
                         </tr>
 
                         <?php if ($quote->quote_item_tax_total > 0) { ?>
                             <tr>
                                 <td class="no-bottom-border" colspan="4"></td>
-                                <td class="text-right"><?php echo lang('item_tax'); ?></td>
+                                <td class="text-right"><?php echo trans('item_tax'); ?></td>
                                 <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
                             </tr>
                         <?php } ?>
@@ -200,7 +200,7 @@
 
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo lang('discount'); ?>:</td>
+                            <td class="text-right"><?php echo trans('discount'); ?>:</td>
                             <td class="amount">
                                 <?php
                                 if ($quote->quote_discount_percent > 0) {
@@ -214,7 +214,7 @@
 
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo lang('total'); ?></td>
+                            <td class="text-right"><?php echo trans('total'); ?></td>
                             <td class="amount"><?php echo format_currency($quote->quote_total) ?></td>
                         </tr>
                         </tbody>
@@ -225,7 +225,7 @@
 
                     <?php if ($quote->notes) { ?>
                         <div class="col-xs-12 col-md-6">
-                            <h4><?php echo lang('notes'); ?></h4>
+                            <h4><?php echo trans('notes'); ?></h4>
                             <p><?php echo nl2br($quote->notes); ?></p>
                         </div>
                     <?php } ?>
@@ -233,7 +233,7 @@
                     <?php
                     if (count($attachments) > 0) { ?>
                         <div class="col-xs-12 col-md-6">
-                            <h4><?php echo lang('attachments'); ?></h4>
+                            <h4><?php echo trans('attachments'); ?></h4>
                             <div class="table-responsive">
                                 <table class="table table-condensed">
                                     <?php foreach ($attachments as $attachment) { ?>
@@ -242,7 +242,7 @@
                                             <td>
                                                 <a href="<?php echo $attachment['fullpath']; ?>"
                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-download"></i> <?php echo lang('download') ?>
+                                                    <i class="fa fa-download"></i> <?php echo trans('download') ?>
                                                 </a>
                                             </td>
                                         </tr>

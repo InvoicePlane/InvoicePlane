@@ -1,7 +1,7 @@
-<html lang="<?php echo lang('cldr'); ?>">
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
     <meta charset="utf-8">
-    <title><?php echo lang('quote'); ?></title>
+    <title><?php echo trans('quote'); ?></title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom-pdf.css">
 </head>
@@ -17,10 +17,10 @@
             <b><?php echo $quote->client_name; ?></b>
         </div>
         <?php if ($quote->client_vat_id) {
-            echo '<div>' . lang('vat_id_short') . ': ' . $quote->client_vat_id . '</div>';
+            echo '<div>' . trans('vat_id_short') . ': ' . $quote->client_vat_id . '</div>';
         }
         if ($quote->client_tax_code) {
-            echo '<div>' . lang('tax_code_short') . ': ' . $quote->client_tax_code . '</div>';
+            echo '<div>' . trans('tax_code_short') . ': ' . $quote->client_tax_code . '</div>';
         }
         if ($quote->client_address_1) {
             echo '<div>' . $quote->client_address_1 . '</div>';
@@ -42,23 +42,23 @@
             echo '<div>' . $quote->client_state . '</div>';
         }
         if ($quote->client_country) {
-            echo '<div>' . get_country_name(lang('cldr'), $quote->client_country) . '</div>';
+            echo '<div>' . get_country_name(trans('cldr'), $quote->client_country) . '</div>';
         }
 
         echo '<br/>';
 
         if ($quote->client_phone) {
-            echo '<div>' . lang('phone_abbr') . ': ' . $quote->client_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . $quote->client_phone . '</div>';
         } ?>
 
     </div>
     <div id="company">
         <div><b><?php echo $quote->user_name; ?></b></div>
         <?php if ($quote->user_vat_id) {
-            echo '<div>' . lang('vat_id_short') . ': ' . $quote->user_vat_id . '</div>';
+            echo '<div>' . trans('vat_id_short') . ': ' . $quote->user_vat_id . '</div>';
         }
         if ($quote->user_tax_code) {
-            echo '<div>' . lang('tax_code_short') . ': ' . $quote->user_tax_code . '</div>';
+            echo '<div>' . trans('tax_code_short') . ': ' . $quote->user_tax_code . '</div>';
         }
         if ($quote->user_address_1) {
             echo '<div>' . $quote->user_address_1 . '</div>';
@@ -80,16 +80,16 @@
             echo '<div>' . $quote->user_state . '</div>';
         }
         if ($quote->user_country) {
-            echo '<div>' . get_country_name(lang('cldr'), $quote->user_country) . '</div>';
+            echo '<div>' . get_country_name(trans('cldr'), $quote->user_country) . '</div>';
         }
 
         echo '<br/>';
 
         if ($quote->user_phone) {
-            echo '<div>' . lang('phone_abbr') . ': ' . $quote->user_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . $quote->user_phone . '</div>';
         }
         if ($quote->user_fax) {
-            echo '<div>' . lang('fax_abbr') . ': ' . $quote->user_fax . '</div>';
+            echo '<div>' . trans('fax_abbr') . ': ' . $quote->user_fax . '</div>';
         }
         ?>
     </div>
@@ -101,33 +101,33 @@
     <div class="invoice-details clearfix">
         <table>
             <tr>
-                <td><?php echo lang('quote_date') . ':'; ?></td>
+                <td><?php echo trans('quote_date') . ':'; ?></td>
                 <td><?php echo date_from_mysql($quote->quote_date_created, true); ?></td>
             </tr>
             <tr>
-                <td><?php echo lang('expires') . ': '; ?></td>
+                <td><?php echo trans('expires') . ': '; ?></td>
                 <td><?php echo date_from_mysql($quote->quote_date_expires, true); ?></td>
             </tr>
             <tr>
-                <td><?php echo lang('total') . ': '; ?></td>
+                <td><?php echo trans('total') . ': '; ?></td>
                 <td><?php echo format_currency($quote->quote_total); ?></td>
             </tr>
         </table>
     </div>
 
-    <h1 class="invoice-title"><?php echo lang('quote') . ' ' . $quote->quote_number; ?></h1>
+    <h1 class="invoice-title"><?php echo trans('quote') . ' ' . $quote->quote_number; ?></h1>
 
     <table class="item-table">
         <thead>
         <tr>
-            <th class="item-name"><?php echo lang('item'); ?></th>
-            <th class="item-desc"><?php echo lang('description'); ?></th>
-            <th class="item-amount text-right"><?php echo lang('qty'); ?></th>
-            <th class="item-price text-right"><?php echo lang('price'); ?></th>
+            <th class="item-name"><?php echo trans('item'); ?></th>
+            <th class="item-desc"><?php echo trans('description'); ?></th>
+            <th class="item-amount text-right"><?php echo trans('qty'); ?></th>
+            <th class="item-price text-right"><?php echo trans('price'); ?></th>
             <?php if ($show_discounts) : ?>
-                <th class="item-discount text-right"><?php echo lang('discount'); ?></th>
+                <th class="item-discount text-right"><?php echo trans('discount'); ?></th>
             <?php endif; ?>
-            <th class="item-total text-right"><?php echo lang('total'); ?></th>
+            <th class="item-total text-right"><?php echo trans('total'); ?></th>
         </tr>
         </thead>
         <tbody>
@@ -149,7 +149,7 @@
                     </td>
                 <?php endif; ?>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_subtotal); ?>
+                    <?php echo format_currency($item->item_total); ?>
                 </td>
             </tr>
         <?php } ?>
@@ -159,14 +159,14 @@
 
         <tr>
             <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?>
-                class="text-right"><?php echo lang('subtotal'); ?></td>
+                class="text-right"><?php echo trans('subtotal'); ?></td>
             <td class="text-right"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
         </tr>
 
         <?php if ($quote->quote_item_tax_total > 0) { ?>
             <tr>
                 <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
-                    <?php echo lang('item_tax'); ?>
+                    <?php echo trans('item_tax'); ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($quote->quote_item_tax_total); ?>
@@ -187,7 +187,7 @@
 
         <tr>
             <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
-                <b><?php echo lang('total'); ?></b>
+                <b><?php echo trans('total'); ?></b>
             </td>
             <td class="text-right">
                 <b><?php echo format_currency($quote->quote_total); ?></b>
@@ -201,7 +201,7 @@
 <footer>
     <?php if ($quote->notes) : ?>
         <div class="notes">
-            <b><?php echo lang('notes'); ?></b><br/>
+            <b><?php echo trans('notes'); ?></b><br/>
             <?php echo nl2br($quote->notes); ?>
         </div>
     <?php endif; ?>

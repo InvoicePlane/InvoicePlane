@@ -6,11 +6,11 @@
         <form method="post" class="form-horizontal"
               action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <legend><?php echo lang('setup_upgrade_tables'); ?></legend>
+            <legend><?php echo trans('setup_upgrade_tables'); ?></legend>
 
             <?php if ($errors) { ?>
                 <p>
-                    <?php echo lang('setup_upgrade_message'); ?>
+                    <?php echo trans('setup_upgrade_message'); ?>
                 </p>
 
                 <?php foreach ($errors as $error) { ?>
@@ -23,16 +23,16 @@
             <?php } else { ?>
                 <p>
                     <i class="fa fa-check text-success fa-margin"></i>
-                    <?php echo lang('setup_upgrade_success'); ?>
+                    <?php echo trans('setup_upgrade_success'); ?>
                 </p>
             <?php } ?>
 
             <?php if ($errors) { ?>
                 <input type="submit" class="btn btn-danger" name="btn_try_again"
-                       value="<?php echo lang('try_again'); ?>">
+                       value="<?php echo trans('try_again'); ?>">
             <?php } else { ?>
                 <input type="submit" class="btn btn-success" name="btn_continue"
-                       value="<?php echo lang('continue'); ?>">
+                       value="<?php echo trans('continue'); ?>">
             <?php } ?>
 
         </form>

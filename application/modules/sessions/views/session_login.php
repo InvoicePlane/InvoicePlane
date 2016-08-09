@@ -34,7 +34,7 @@
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo lang('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
 </noscript>
 
 <br>
@@ -49,7 +49,7 @@
         <?php if ($login_logo) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
         <?php } else { ?>
-            <h1><?php echo lang('login'); ?></h1>
+            <h1><?php echo trans('login'); ?></h1>
         <?php } ?>
 
         <form class="form-horizontal" method="post"
@@ -57,32 +57,32 @@
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3">
-                    <label for="email" class="control-label"><?php echo lang('email'); ?></label>
+                    <label for="email" class="control-label"><?php echo trans('email'); ?></label>
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="email" name="email" id="email" class="form-control"
-                           placeholder="<?php echo lang('email'); ?>"<?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
+                           placeholder="<?php echo trans('email'); ?>"<?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3">
-                    <label for="password" class="control-label"><?php echo lang('password'); ?></label>
+                    <label for="password" class="control-label"><?php echo trans('password'); ?></label>
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="password" id="password" class="form-control"
-                           placeholder="<?php echo lang('password'); ?>"<?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
+                           placeholder="<?php echo trans('password'); ?>"<?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
 
             <input type="submit" name="btn_login" class="btn btn-block btn-primary"
-                   value="<?php echo lang('login'); ?>">
+                   value="<?php echo trans('login'); ?>">
 
         </form>
 
         <div class="text-right">
             <small>
                 <a href="<?php echo site_url('sessions/passwordreset'); ?>" class="text-muted">
-                    <?php echo lang('forgot_your_password'); ?>
+                    <?php echo trans('forgot_your_password'); ?>
                 </a>
             </small>
         </div>

@@ -3,8 +3,8 @@
 
         <thead>
         <tr>
-            <th><?php echo lang('invoice'); ?></th>
-            <th><?php echo lang('created'); ?></th>
+            <th><?php echo trans('invoice'); ?></th>
+            <th><?php echo trans('created'); ?></th>
         </tr>
         </thead>
 
@@ -14,7 +14,7 @@
             <tr>
                 <td>
                     <a href="<?php echo site_url('invoices/download/' . basename($invoice)); ?>"
-                       title="<?php echo lang('invoice'); ?>" target="_blank">
+                       title="<?php echo trans('invoice'); ?>" target="_blank">
                         <?php echo basename($invoice); ?>
                     </a>
                 </td>

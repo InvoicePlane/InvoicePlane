@@ -26,22 +26,22 @@ class Mdl_Invoices extends Response_Model
     {
         return array(
             '1' => array(
-                'label' => lang('draft'),
+                'label' => trans('draft'),
                 'class' => 'draft',
                 'href' => 'invoices/status/draft'
             ),
             '2' => array(
-                'label' => lang('sent'),
+                'label' => trans('sent'),
                 'class' => 'sent',
                 'href' => 'invoices/status/sent'
             ),
             '3' => array(
-                'label' => lang('viewed'),
+                'label' => trans('viewed'),
                 'class' => 'viewed',
                 'href' => 'invoices/status/viewed'
             ),
             '4' => array(
-                'label' => lang('paid'),
+                'label' => trans('paid'),
                 'class' => 'paid',
                 'href' => 'invoices/status/paid'
             )
@@ -104,12 +104,12 @@ class Mdl_Invoices extends Response_Model
         return array(
             'client_name' => array(
                 'field' => 'client_name',
-                'label' => lang('client'),
+                'label' => trans('client'),
                 'rules' => 'required'
             ),
             'invoice_date_created' => array(
                 'field' => 'invoice_date_created',
-                'label' => lang('invoice_date'),
+                'label' => trans('invoice_date'),
                 'rules' => 'required'
             ),
             'invoice_time_created' => array(
@@ -117,21 +117,21 @@ class Mdl_Invoices extends Response_Model
             ),
             'invoice_group_id' => array(
                 'field' => 'invoice_group_id',
-                'label' => lang('invoice_group'),
+                'label' => trans('invoice_group'),
                 'rules' => 'required'
             ),
             'invoice_password' => array(
                 'field' => 'invoice_password',
-                'label' => lang('invoice_password')
+                'label' => trans('invoice_password')
             ),
             'user_id' => array(
                 'field' => 'user_id',
-                'label' => lang('user'),
+                'label' => trans('user'),
                 'rule' => 'required'
             ),
             'payment_method' => array(
                 'field' => 'payment_method',
-                'label' => lang('payment_method')
+                'label' => trans('payment_method')
             ),
         );
     }
@@ -141,17 +141,17 @@ class Mdl_Invoices extends Response_Model
         return array(
             'invoice_number' => array(
                 'field' => 'invoice_number',
-                'label' => lang('invoice') . ' #',
+                'label' => trans('invoice') . ' #',
                 'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
             ),
             'invoice_date_created' => array(
                 'field' => 'invoice_date_created',
-                'label' => lang('date'),
+                'label' => trans('date'),
                 'rules' => 'required'
             ),
             'invoice_date_due' => array(
                 'field' => 'invoice_date_due',
-                'label' => lang('due_date'),
+                'label' => trans('due_date'),
                 'rules' => 'required'
             ),
             'invoice_time_created' => array(
@@ -159,7 +159,7 @@ class Mdl_Invoices extends Response_Model
             ),
             'invoice_password' => array(
                 'field' => 'invoice_password',
-                'label' => lang('invoice_password')
+                'label' => trans('invoice_password')
             )
         );
     }
@@ -316,7 +316,7 @@ class Mdl_Invoices extends Response_Model
 
         $generate_invoice_number = $this->mdl_settings->setting('generate_invoice_number_for_draft');
 
-        if ($db_array['invoice_status_id'] === 1 && $generate_invoice_number === 1) {
+        if ($db_array['invoice_status_id'] === 1 && $generate_invoice_number == 1) {
             $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
         } elseif ($db_array['invoice_status_id'] != 1) {
             $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);

@@ -43,7 +43,7 @@ class Mdl_Clients extends Response_Model
         return array(
             'client_name' => array(
                 'field' => 'client_name',
-                'label' => lang('client_name'),
+                'label' => trans('client_name'),
                 'rules' => 'required'
             ),
             'client_active' => array(

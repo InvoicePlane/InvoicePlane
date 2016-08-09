@@ -14,21 +14,21 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('delete_invoice'); ?></h3>
+            <h3><?php echo trans('delete_invoice'); ?></h3>
         </div>
         <div class="modal-body">
-            <p class="alert alert-danger"><?php echo lang('delete_invoice_warning'); ?></p>
+            <p class="alert alert-danger"><?php echo trans('delete_invoice_warning'); ?></p>
         </div>
         <div class="modal-footer">
             <div class="btn-group">
                 <a href="#" id="modal_delete_invoice_confirm" class="btn btn-danger"
                    data-invoice-id="<?php echo $invoice->invoice_id; ?>">
                     <i class="fa fa-trash-o"></i>
-                    <?php echo lang('confirm_deletion') ?>
+                    <?php echo trans('confirm_deletion') ?>
                 </a>
 
                 <a href="#" class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('no'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('no'); ?>
                 </a>
             </div>
         </div>

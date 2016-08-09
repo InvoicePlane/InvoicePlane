@@ -136,7 +136,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null, $
     //---it---fine
         $CI->load->helper('mpdf');
         
-        return pdf_create($html, lang('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
+        return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
         //---it---inizio
     }
     //---it---fine

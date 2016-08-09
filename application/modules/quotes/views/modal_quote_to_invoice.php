@@ -38,7 +38,7 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('quote_to_invoice'); ?></h3>
+            <h3><?php echo trans('quote_to_invoice'); ?></h3>
         </div>
         <div class="modal-body">
 
@@ -49,7 +49,7 @@
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created">
-                    <?php echo lang('invoice_date'); ?>
+                    <?php echo trans('invoice_date'); ?>
                 </label>
 
                 <div class="input-group">
@@ -62,7 +62,7 @@
             </div>
 
             <div class="form-group">
-                <label for="invoice_password"><?php echo lang('invoice_password'); ?></label>
+                <label for="invoice_password"><?php echo trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
                        value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == '') {
                            echo '';
@@ -73,7 +73,7 @@
 
             <div class="form-group">
                 <label for="invoice_group_id">
-                    <?php echo lang('invoice_group'); ?>
+                    <?php echo trans('invoice_group'); ?>
                 </label>
                 <select name="invoice_group_id" id="invoice_group_id" class="form-control">
                     <option value=""></option>
@@ -90,10 +90,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success" id="quote_to_invoice_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

@@ -43,12 +43,12 @@ class Mdl_Projects extends Response_Model
         return array(
             'project_name' => array(
                 'field' => 'project_name',
-                'label' => lang('project_name'),
+                'label' => trans('project_name'),
                 'rules' => 'required'
             ),
             'client_id' => array(
                 'field' => 'client_id',
-                'label' => lang('client'),
+                'label' => trans('client'),
             )
         );
     }

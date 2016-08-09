@@ -1,6 +1,6 @@
 <div id="headerbar">
 
-    <h1><?php echo lang('invoices'); ?></h1>
+    <h1><?php echo trans('invoices'); ?></h1>
 
     <div class="pull-right">
         <?php echo pager(site_url('guest/invoices/status/' . $this->uri->segment(4)), 'mdl_invoices'); ?>
@@ -10,12 +10,12 @@
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'open') { ?>class="active"<?php } ?>>
                 <a href="<?php echo site_url('guest/invoices/status/open'); ?>">
-                    <?php echo lang('open'); ?>
+                    <?php echo trans('open'); ?>
                 </a>
             </li>
             <li <?php if ($status == 'paid') { ?>class="active"<?php } ?>>
                 <a href="<?php echo site_url('guest/invoices/status/paid'); ?>">
-                    <?php echo lang('paid'); ?>
+                    <?php echo trans('paid'); ?>
                 </a>
             </li>
         </ul>
@@ -31,13 +31,13 @@
 
                 <thead>
                 <tr>
-                    <th><?php echo lang('invoice'); ?></th>
-                    <th><?php echo lang('created'); ?></th>
-                    <th><?php echo lang('due_date'); ?></th>
-                    <th><?php echo lang('client_name'); ?></th>
-                    <th><?php echo lang('amount'); ?></th>
-                    <th><?php echo lang('balance'); ?></th>
-                    <th><?php echo lang('options'); ?></th>
+                    <th><?php echo trans('invoice'); ?></th>
+                    <th><?php echo trans('created'); ?></th>
+                    <th><?php echo trans('due_date'); ?></th>
+                    <th><?php echo trans('client_name'); ?></th>
+                    <th><?php echo trans('amount'); ?></th>
+                    <th><?php echo trans('balance'); ?></th>
+                    <th><?php echo trans('options'); ?></th>
                 </tr>
                 </thead>
 
@@ -68,20 +68,20 @@
                             <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>"
                                class="btn btn-default btn-sm">
                                 <i class="glyphicon glyphicon-eye-open"></i>
-                                <?php echo lang('view'); ?>
+                                <?php echo trans('view'); ?>
                             </a>
 
                             <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                class="btn btn-default btn-sm">
                                 <i class="icon ion-printer"></i>
-                                <?php echo lang('pdf'); ?>
+                                <?php echo trans('pdf'); ?>
                             </a>
 
                             <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
                             <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
                                class="btn btn-success btn-sm">
                                 <i class="glyphicon glyphicon-ok"></i>
-                                <?php echo lang('pay_now'); ?>
+                                <?php echo trans('pay_now'); ?>
                                 </a><?php } ?>
                         </td>
                     </tr>

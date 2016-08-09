@@ -84,7 +84,7 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('add_product'); ?></h3>
+            <h3><?php echo trans('add_product'); ?></h3>
         </div>
         <div class="modal-body">
             <div class="row">
@@ -93,7 +93,7 @@
                         <div class="form-group filter-form">
                             <!-- ToDo
 					<select name="filter_family" id="filter_family" class="form-control">
-						<option value=""><?php echo lang('any_family'); ?></option>
+						<option value=""><?php echo trans('any_family'); ?></option>
 						<?php foreach ($families as $family) { ?>
 						<option value="<?php echo $family->family_id; ?>"
 							<?php if (isset($filter_family) && $family->family_id == $filter_family) {
@@ -105,14 +105,14 @@
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" name="filter_product" id="filter_product"
-                                   placeholder="<?php echo lang('product_name'); ?>"
+                                   placeholder="<?php echo trans('product_name'); ?>"
                                    value="<?php echo $filter_product ?>">
                         </div>
                         <button type="button" id="filter-button"
-                                class="btn btn-default"><?php echo lang('search_product'); ?></button>
+                                class="btn btn-default"><?php echo trans('search_product'); ?></button>
                         <!-- ToDo
                         <button type="button" id="reset-button" class="btn btn-default">
-                            <?php //echo lang('reset'); ?>
+                            <?php //echo trans('reset'); ?>
                         </button>
                         -->
                     </div>
@@ -121,11 +121,11 @@
                     <div class="btn-group">
                         <button class="btn btn-danger" type="button" data-dismiss="modal">
                             <i class="fa fa-times"></i>
-                            <?php echo lang('cancel'); ?>
+                            <?php echo trans('cancel'); ?>
                         </button>
                         <button class="select-items-confirm btn btn-success" type="button">
                             <i class="fa fa-check"></i>
-                            <?php echo lang('submit'); ?>
+                            <?php echo trans('submit'); ?>
                         </button>
                     </div>
                 </div>
@@ -136,11 +136,11 @@
                 <table id="products_table" class="table table-bordered table-striped">
                     <tr>
                         <th>&nbsp;</th>
-                        <th><?php echo lang('product_sku'); ?></th>
-                        <th><?php echo lang('family_name'); ?></th>
-                        <th><?php echo lang('product_name'); ?></th>
-                        <th><?php echo lang('product_description'); ?></th>
-                        <th class="text-right"><?php echo lang('product_price'); ?></th>
+                        <th><?php echo trans('product_sku'); ?></th>
+                        <th><?php echo trans('family_name'); ?></th>
+                        <th><?php echo trans('product_name'); ?></th>
+                        <th><?php echo trans('product_description'); ?></th>
+                        <th class="text-right"><?php echo trans('product_price'); ?></th>
                     </tr>
                     <?php foreach ($products as $product) { ?>
                         <tr class="product">
@@ -180,11 +180,11 @@
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
                     <i class="fa fa-times"></i>
-                    <?php echo lang('cancel'); ?>
+                    <?php echo trans('cancel'); ?>
                 </button>
                 <button class="select-items-confirm btn btn-success" type="button">
                     <i class="fa fa-check"></i>
-                    <?php echo lang('submit'); ?>
+                    <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

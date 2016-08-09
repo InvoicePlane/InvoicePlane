@@ -39,7 +39,7 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close">x</a>
 
-            <h3><?php echo lang('add_item_from_lookup'); ?></h3>
+            <h3><?php echo trans('add_item_from_lookup'); ?></h3>
         </div>
         <div class="modal-body">
             <div class="table-responsive">
@@ -71,11 +71,11 @@
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
                     <i class="fa fa-times"></i>
-                    <?php echo lang('cancel'); ?>
+                    <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success" id="select-items-confirm" type="button">
                     <i class="fa fa-check"></i>
-                    <?php echo lang('submit'); ?>
+                    <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

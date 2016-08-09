@@ -52,12 +52,12 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('create_recurring'); ?></h3>
+            <h3><?php echo trans('create_recurring'); ?></h3>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
-                <label><?php echo lang('every'); ?>: </label>
+                <label><?php echo trans('every'); ?>: </label>
 
                 <div class="controls">
                     <select name="recur_frequency" id="recur_frequency" class="form-control"
@@ -71,7 +71,7 @@
             </div>
 
             <div class="form-group has-feedback">
-                <label><?php echo lang('start_date'); ?>: </label>
+                <label><?php echo trans('start_date'); ?>: </label>
 
                 <div class="input-group">
                     <input name="recur_start_date" id="recur_start_date"
@@ -83,7 +83,7 @@
             </div>
 
             <div class="form-group has-feedback">
-                <label><?php echo lang('end_date'); ?> (<?php echo lang('optional'); ?>): </label>
+                <label><?php echo trans('end_date'); ?> (<?php echo lang('optional'); ?>): </label>
 
                 <div class="input-group">
                     <input name="recur_end_date" id="recur_end_date"
@@ -99,10 +99,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success" id="create_recurring_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

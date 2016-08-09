@@ -9,7 +9,7 @@
             echo $this->mdl_settings->setting('custom_title');
         } else {
             echo 'InvoicePlane';
-        } ?> - <?php echo lang('invoice'); ?> <?php echo $invoice->invoice_number; ?></title>
+        } ?> - <?php echo trans('invoice'); ?> <?php echo $invoice->invoice_number; ?></title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -25,18 +25,18 @@
 
         <div class="webpreview-header">
 
-            <h2><?php echo lang('invoice'); ?><?php echo $invoice->invoice_number; ?></h2>
+            <h2><?php echo trans('invoice'); ?><?php echo $invoice->invoice_number; ?></h2>
 
             <div class="btn-group">
                 <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice_url_key); ?>"
                    class="btn btn-primary">
                     <i
-                        class="fa fa-print"></i> <?php echo lang('download_pdf'); ?>
+                        class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                 </a>
                 <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
                 <a
                     href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice_url_key); ?>"
-                    class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo lang('pay_now'); ?>
+                    class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
                     </a><?php } ?>
             </div>
 
@@ -86,9 +86,9 @@
                         <?php if ($invoice->user_zip) {
                             echo $invoice->user_zip . '<br>';
                         } ?>
-                        <?php if ($invoice->user_phone) { ?><?php echo lang('phone_abbr'); ?>: <?php echo $invoice->user_phone; ?>
+                        <?php if ($invoice->user_phone) { ?><?php echo trans('phone_abbr'); ?>: <?php echo $invoice->user_phone; ?>
                             <br><?php } ?>
-                        <?php if ($invoice->user_fax) { ?><?php echo lang('fax_abbr'); ?>: <?php echo $invoice->user_fax; ?><?php } ?>
+                        <?php if ($invoice->user_fax) { ?><?php echo trans('fax_abbr'); ?>: <?php echo $invoice->user_fax; ?><?php } ?>
                     </p>
 
                 </div>
@@ -118,7 +118,7 @@
                             echo $invoice->client_zip . '<br>';
                         } ?>
                         <?php if ($invoice->client_phone) {
-                            echo lang('phone_abbr') . ': ' . $invoice->client_phone; ?>
+                            echo trans('phone_abbr') . ': ' . $invoice->client_phone; ?>
                             <br>
                         <?php } ?>
                     </p>
@@ -128,22 +128,22 @@
                     <table class="table table-condensed">
                         <tbody>
                         <tr>
-                            <td><?php echo lang('invoice_date'); ?></td>
+                            <td><?php echo trans('invoice_date'); ?></td>
                             <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                         </tr>
                         <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
-                            <td><?php echo lang('due_date'); ?></td>
+                            <td><?php echo trans('due_date'); ?></td>
                             <td class="text-right">
                                 <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                             </td>
                         </tr>
                         <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
-                            <td><?php echo lang('amount_due'); ?></td>
+                            <td><?php echo trans('amount_due'); ?></td>
                             <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
                         </tr>
                         <?php if ($payment_method): ?>
                             <tr>
-                                <td><?php echo lang('payment_method') . ': '; ?></td>
+                                <td><?php echo trans('payment_method') . ': '; ?></td>
                                 <td><?php echo $payment_method->payment_method_name; ?></td>
                             </tr>
                         <?php endif; ?>
@@ -160,12 +160,12 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th><?php echo lang('item'); ?></th>
-                            <th><?php echo lang('description'); ?></th>
-                            <th class="text-right"><?php echo lang('qty'); ?></th>
-                            <th class="text-right"><?php echo lang('price'); ?></th>
-                            <th class="text-right"><?php echo lang('discount'); ?></th>
-                            <th class="text-right"><?php echo lang('total'); ?></th>
+                            <th><?php echo trans('item'); ?></th>
+                            <th><?php echo trans('description'); ?></th>
+                            <th class="text-right"><?php echo trans('qty'); ?></th>
+                            <th class="text-right"><?php echo trans('price'); ?></th>
+                            <th class="text-right"><?php echo trans('discount'); ?></th>
+                            <th class="text-right"><?php echo trans('total'); ?></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -181,14 +181,14 @@
                         <?php endforeach ?>
                         <tr>
                             <td colspan="4"></td>
-                            <td class="text-right"><?php echo lang('subtotal'); ?>:</td>
-                            <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
+                            <td class="text-right"><?php echo trans('subtotal'); ?>:</td>
+                            <td class="amount"><?php echo format_currency($invoice->invoice_item_total); ?></td>
                         </tr>
 
                         <?php if ($invoice->invoice_item_tax_total > 0) { ?>
                             <tr>
                                 <td class="no-bottom-border" colspan="4"></td>
-                                <td class="text-right"><?php echo lang('item_tax'); ?></td>
+                                <td class="text-right"><?php echo trans('item_tax'); ?></td>
                                 <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
                             </tr>
                         <?php } ?>
@@ -206,7 +206,7 @@
 
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo lang('discount'); ?>:</td>
+                            <td class="text-right"><?php echo trans('discount'); ?>:</td>
                             <td class="amount">
                                 <?php
                                 if ($invoice->invoice_discount_percent > 0) {
@@ -220,18 +220,18 @@
 
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo lang('total'); ?>:</td>
+                            <td class="text-right"><?php echo trans('total'); ?>:</td>
                             <td class="amount"><?php echo format_currency($invoice->invoice_total); ?></td>
                         </tr>
 
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo lang('paid'); ?></td>
+                            <td class="text-right"><?php echo trans('paid'); ?></td>
                             <td class="amount"><?php echo format_currency($invoice->invoice_paid) ?></td>
                         </tr>
                         <tr class="<?php echo ($invoice->invoice_balance > 0) ? 'overdue' : 'text-success'; ?>">
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo lang('balance'); ?></td>
+                            <td class="text-right"><?php echo trans('balance'); ?></td>
                             <td class="amount">
                                 <b><?php echo format_currency($invoice->invoice_balance) ?></b>
                             </td>
@@ -250,7 +250,7 @@
 
                     <?php if ($invoice->invoice_terms) { ?>
                         <div class="col-xs-12 col-md-6">
-                            <h4><?php echo lang('terms'); ?></h4>
+                            <h4><?php echo trans('terms'); ?></h4>
                             <p><?php echo nl2br($invoice->invoice_terms); ?></p>
                         </div>
                     <?php } ?>
@@ -258,7 +258,7 @@
                     <?php
                     if (count($attachments) > 0) { ?>
                         <div class="col-xs-12 col-md-6">
-                            <h4><?php echo lang('attachments'); ?></h4>
+                            <h4><?php echo trans('attachments'); ?></h4>
                             <div class="table-responsive">
                                 <table class="table table-condensed">
                                     <?php foreach ($attachments as $attachment) { ?>
@@ -267,7 +267,7 @@
                                             <td>
                                                 <a href="<?php echo $attachment['fullpath']; ?>"
                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-download"></i> <?php echo lang('download') ?>
+                                                    <i class="fa fa-download"></i> <?php echo trans('download') ?>
                                                 </a>
                                             </td>
                                         </tr>

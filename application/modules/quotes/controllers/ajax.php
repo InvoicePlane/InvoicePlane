@@ -162,7 +162,7 @@ class Ajax extends Admin_Controller
         $data = array(
             'client_name' => $this->input->post('client_name'),
             'quote_id' => $this->input->post('quote_id'),
-            'clients' => $this->mdl_clients->get()->result(),
+            'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
 
         $this->layout->load_view('quotes/modal_change_client', $data);
@@ -224,7 +224,7 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'client_name' => $this->input->post('client_name'),
-            'clients' => $this->mdl_clients->get()->result(),
+            'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
 
         $this->layout->load_view('quotes/modal_create_quote', $data);

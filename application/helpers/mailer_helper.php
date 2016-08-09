@@ -88,12 +88,12 @@ function email_quote_status($quote_id, $status)
     $base_url = base_url('/quotes/view/' . $quote_id);
 
     $user_email = $quote->user_email;
-    $subject = sprintf(lang('quote_status_email_subject'),
+    $subject = sprintf(trans('quote_status_email_subject'),
         $quote->client_name,
         strtolower(lang($status)),
         $quote->quote_number
     );
-    $body = sprintf(nl2br(lang('quote_status_email_body')),
+    $body = sprintf(nl2br(trans('quote_status_email_body')),
         $quote->client_name,
         strtolower(lang($status)),
         $quote->quote_number,
