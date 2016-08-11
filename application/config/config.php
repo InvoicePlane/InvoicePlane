@@ -284,7 +284,7 @@ $config['sess_encrypt_cookie'] = true;
 $config['sess_use_database'] = false;
 $config['sess_table_name'] = 'ip_sessions';
 $config['sess_match_ip'] = true;
-$config['sess_match_useragent'] = true;
+$config['sess_match_useragent'] = false;
 $config['sess_time_to_update'] = 300;
 
 /*
