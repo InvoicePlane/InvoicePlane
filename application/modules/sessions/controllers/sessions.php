@@ -95,7 +95,7 @@ class Sessions extends Base_Controller
 
             if (empty($user)) {
                 // Redirect back to the login screen with an alert
-                $this->session->set_flashdata('alert_success', trans('wrong_passwordreset_token'));
+                $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                 redirect('sessions/passwordreset');
             }
 
@@ -173,7 +173,7 @@ class Sessions extends Base_Controller
 
                     $this->load->helper('mailer/phpmailer');
 
-                    if (phpmail_send($email_from, $email, trans('password_reset'), $email_message)) {
+                    if (!phpmail_send($email_from, $email, trans('password_reset'), $email_message)) {
                         $email_failed = true;
                         log_message('error', $this->email->print_debugger());
                     }
@@ -193,7 +193,7 @@ class Sessions extends Base_Controller
                     $this->email->message($email_message);
 
                     // Send the reset email
-                    if ($this->email->send()) {
+                    if (!$this->email->send()) {
                         $email_failed = true;
                         log_message('error', $this->email->print_debugger());
                     }
@@ -202,7 +202,7 @@ class Sessions extends Base_Controller
 
                 // Redirect back to the login screen with an alert
                 if (isset($email_failed)) {
-                    $this->session->set_flashdata('alert_success', trans('password_reset_failed'));
+                    $this->session->set_flashdata('alert_error', trans('password_reset_failed'));
                 } else {
                     $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
                 }
