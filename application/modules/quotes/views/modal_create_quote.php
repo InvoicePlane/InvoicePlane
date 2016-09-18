@@ -59,7 +59,7 @@
                 <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
-                        echo "<option value='" . htmlspecialchars($client->client_name) . "' ";
+                        echo "<option value=\"" . htmlspecialchars($client->client_name) . "\" ";
                         if ($client_name == $client->client_name) echo 'selected';
                         echo ">" . htmlspecialchars($client->client_name) . "</option>";
                     }
