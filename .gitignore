@@ -35,3 +35,4 @@
 .idea
 .sass-cache
 adminer.php
+/nbproject/
