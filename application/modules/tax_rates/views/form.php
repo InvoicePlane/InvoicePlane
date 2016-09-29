@@ -29,7 +29,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="tax_rate_percent" id="tax_rate_percent" class="form-control"
-                       value="<?php echo $this->mdl_tax_rates->form_value('tax_rate_percent'); ?>">
+                       value="<?php echo format_amount($this->mdl_tax_rates->form_value('tax_rate_percent')); ?>">
                 <span class="form-control-feedback">%</span>
             </div>
         </div>
