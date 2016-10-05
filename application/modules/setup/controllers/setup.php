@@ -245,13 +245,11 @@ class Setup extends MX_Controller
 
         $writables = array(
             './uploads',
-            './uploads/temp',
             './uploads/archive',
             './uploads/customer_files',
+            './uploads/temp',
+            './uploads/temp/mpdf',
             './' . APPPATH . 'config/', // for database.php
-            './' . APPPATH . 'helpers/mpdf/tmp',
-            './' . APPPATH . 'helpers/mpdf/ttfontdata',
-            './' . APPPATH . 'helpers/mpdf/graph_cache',
             './' . APPPATH . 'logs'
         );
 

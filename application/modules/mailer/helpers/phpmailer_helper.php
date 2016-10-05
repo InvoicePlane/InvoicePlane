@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
 
 function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $cc = null, $bcc = null, $more_attachments = null)
 {
-    require 'phpmailer/PHPMailerAutoload.php';
+    require FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 
     $CI = &get_instance();
     $CI->load->library('encrypt');

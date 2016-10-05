@@ -23,13 +23,9 @@
 /application/views/quote_templates/public/
 !/application/views/quote_templates/public/InvoicePlane*
 
-# Uploads folder
-/uploads/temp/*
-!/uploads/temp/remove.txt
-/uploads/archive/*
-/uploads/customer_files/*
-/uploads/import/*
-/uploads/*.jpg
+# Composer
+/vendor/
+composer.lock
 
 /.htaccess
 .idea
