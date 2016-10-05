@@ -190,6 +190,9 @@ if (is_dir($application_folder)) {
 // Detect the URL subfolder
 define('URL_SUBFOLDER', ($_SERVER['DOCUMENT_ROOT'] != str_replace('\\', '/', dirname(__FILE__)) ? str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', dirname(__FILE__))) : ''));
 
+// Set the uploads folder
+define('UPLOADS_FOLDER', FCPATH . 'uploads/');
+
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

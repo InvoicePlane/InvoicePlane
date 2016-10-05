@@ -27,6 +27,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->helper('country');
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+
     if (!$invoice_template) {
         $CI->load->helper('template');
         $invoice_template = select_pdf_invoice_template($invoice);
@@ -38,6 +39,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     // Determine if discounts should be displayed
     $items = $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result();
     $show_discounts = false;
+
     foreach ($items as $item) {
         if ($item->item_discount != '0.00') {
             $show_discounts = true;
@@ -49,6 +51,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     if ($include_zugferd) {
         $CI->load->helper('zugferd');
+
         $associatedFiles = array(array(
             'name' => 'ZUGFeRD-invoice.xml',
             'description' => 'ZUGFeRD Invoice',
@@ -73,7 +76,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper('mpdf');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, 1, $isGuest, $include_zugferd, $associatedFiles);
+        $stream, $invoice->invoice_password, true, $isGuest, $include_zugferd, $associatedFiles);
 }
 
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
