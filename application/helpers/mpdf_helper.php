@@ -75,7 +75,11 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         if (!empty($invoice_array) && !is_null($isGuest)) {
             rsort($invoice_array);
 
-            return $invoice_array[0];
+            if ($stream) {
+                return $mpdf->Output($filename . '.pdf', 'I');
+            } else {
+                return $invoice_array[0];
+            }
         }
 
         $archived_file = UPLOADS_FOLDER . 'archive/' . date('Y-m-d') . '_' . $filename . '.pdf';
