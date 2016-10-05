@@ -91,7 +91,8 @@ class Users extends Admin_Controller
                 'custom_fields' => $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result(),
                 'countries' => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_users->form_value('user_country') ?:
-                    $this->mdl_settings->setting('default_country')
+                    $this->mdl_settings->setting('default_country'),
+                'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
             )
         );
 
