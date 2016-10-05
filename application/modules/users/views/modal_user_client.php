@@ -1,5 +1,3 @@
-<?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
-
 <script type="text/javascript">
     $(function () {
         $('#btn_user_client').click(function () {
@@ -28,9 +26,15 @@
         <div class="modal-body">
 
             <div class="form-group">
-                <label class="control-label"><?php echo trans('client'); ?>: </label>
-                <input type="text" name="client_name" id="client_name" class="form-control"
-                       data-provide="typeahead" data-items="8" data-source='' autocomplete="off">
+                <label for="client_name"><?php echo trans('client'); ?></label>
+                <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
+                    <?php
+                    foreach ($clients as $client) {
+                        echo "<option value=\"" . htmlspecialchars($client->client_name) . "\" ";
+                        echo ">" . htmlspecialchars($client->client_name) . "</option>";
+                    }
+                    ?>
+                </select>
             </div>
 
         </div>
