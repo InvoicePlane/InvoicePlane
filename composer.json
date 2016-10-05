@@ -1,5 +1,6 @@
 {
   "require": {
-    "mpdf/mpdf": "6.1.2"
+    "mpdf/mpdf": "6.1.2",
+    "phpmailer/phpmailer": "^5.2"
   }
 }
