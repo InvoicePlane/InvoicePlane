@@ -1,11 +1,6 @@
 <?php
 
 /*
- * InvoicePlane Debug Mode
- */
-define('IP_DEBUG', true);
-
-/*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
  *---------------------------------------------------------------
@@ -25,8 +20,10 @@ define('IP_DEBUG', true);
  */
 
 if (is_dir(__DIR__ . "/application/config/development")) {
+    define('IP_DEBUG', true);
     define('ENVIRONMENT', 'development');
 } else {
+    define('IP_DEBUG', false);
     define('ENVIRONMENT', 'production');
 }
 
