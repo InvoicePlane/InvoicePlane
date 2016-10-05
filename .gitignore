@@ -23,6 +23,9 @@
 /application/views/quote_templates/public/
 !/application/views/quote_templates/public/InvoicePlane*
 
+# Composer
+/vendor/
+composer.lock
 
 /.htaccess
 .idea
