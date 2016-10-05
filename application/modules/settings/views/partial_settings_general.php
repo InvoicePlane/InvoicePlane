@@ -350,21 +350,4 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="control-label">
-            <?php echo trans('enable_debug_mode'); ?>
-        </label>
-        <select name="settings[enable_debug]" class="input-sm form-control"
-                id="disable_sidebar">
-            <option value="0"
-                    <?php if (!$this->mdl_settings->setting('enable_debug')) { ?>selected="selected"<?php } ?>>
-                <?php echo trans('no'); ?>
-            </option>
-            <option value="1"
-                    <?php if ($this->mdl_settings->setting('enable_debug')) { ?>selected="selected"<?php } ?>>
-                <?php echo trans('yes'); ?>
-            </option>
-        </select>
-    </div>
-
 </div>

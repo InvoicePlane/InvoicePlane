@@ -92,7 +92,7 @@ class Mdl_Setup extends CI_Model
         foreach ($commands as $command) {
             if (trim($command)) {
                 if (!$this->db->query(trim($command) . ';')) {
-                    $this->errors[] = mysql_error();
+                    $this->errors[] = $this->db->_error_message();
                 }
             }
         }
@@ -100,8 +100,16 @@ class Mdl_Setup extends CI_Model
 
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1));
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Quote Default', 'invoice_group_prefix' => 'QUO', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Invoice Default',
+                'invoice_group_next_id' => 1)
+        );
+
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Quote Default',
+                'invoice_group_prefix' => 'QUO',
+                'invoice_group_next_id' => 1)
+        );
     }
 
     private function install_default_settings()
