@@ -22,6 +22,8 @@ $http = empty($_SERVER['HTTPS']) ? 'http' : 'https';
 $config['base_url'] = $http.'://'.$_SERVER['HTTP_HOST'].str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 // ---it---fine
 
+$config['ThermoGest_url'] = 'http://server.thermoclima.loc/GestionaleThermoclima/';
+
 /*
 |--------------------------------------------------------------------------
 | Index File

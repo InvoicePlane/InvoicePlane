@@ -135,6 +135,9 @@
 
         <div class="collapse navbar-collapse" id="ip-navbar-collapse">
             <ul class="nav navbar-nav">
+                
+                <li><a href="<?php echo $this->config->item('ThermoGest_url');?>">Gestionale Clienti</a></li>
+                <li><a href="#"> | </a></li>
                 <li><?php echo anchor('dashboard', trans('dashboard'), 'class="hidden-sm"') ?>
                     <?php echo anchor('dashboard', '<i class="fa fa-dashboard"></i>', 'class="visible-sm-inline-block"') ?>
                 </li>

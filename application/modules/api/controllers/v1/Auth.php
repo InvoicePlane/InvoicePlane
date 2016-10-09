@@ -19,4 +19,12 @@ class Auth extends Base_Controller{
 
         $this->output->set_content_type('application/json')->set_status_header(500, 'Wrong Parameters')->set_output(json_encode(array("Error" => 409, "Message" => 'Wrong Parameters')));
     }
+
+    public function logout(){
+        $this->load->helper('url');
+
+        $this->session->sess_destroy();
+        $this->output->set_content_type('application/json')->set_status_header(200, 'OK')->set_output(json_encode(true));
+        return;
+    }
 }

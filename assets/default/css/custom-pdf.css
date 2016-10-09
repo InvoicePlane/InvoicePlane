@@ -4,3 +4,15 @@
 
    All changes made in this file will override the default styles in PDFs.
    ========================================================================== */
+
+
+
+
+#client{
+	float:right;text-align:right;width:40%
+}
+
+#company{
+
+	float:left;width:55%;margin-right:5%
+}
