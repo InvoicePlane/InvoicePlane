@@ -193,14 +193,15 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label class="control-label"><?php echo trans('attachments'); ?>: </label>
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="btn btn-success fileinput-button">
-                        <i class="glyphicon glyphicon-plus"></i>
-                         <span><?php echo trans('add_files'); ?></span>
-                    </span>
             </div>
             <!-- dropzone -->
             <div id="actions" class="col-xs-12 col-sm-6 row">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+                <span class="btn btn-success fileinput-button">
+                    <i class="fa fa-plus"></i>
+                     <span><?php echo trans('add_files'); ?></span>
+                </span>
+
                 <div class="col-lg-7"></div>
                 <div class="col-lg-5">
                     <!-- The global file processing state -->
