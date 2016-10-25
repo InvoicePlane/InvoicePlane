@@ -57,16 +57,16 @@
 
 </div>
 
-<ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">
+<ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
     <li class="active"><a data-toggle="tab" href="#clientDetails"><?php echo trans('details'); ?></a></li>
     <li><a data-toggle="tab" href="#clientQuotes"><?php echo trans('quotes'); ?></a></li>
     <li><a data-toggle="tab" href="#clientInvoices"><?php echo trans('invoices'); ?></a></li>
     <li><a data-toggle="tab" href="#clientPayments"><?php echo trans('payments'); ?></a></li>
 </ul>
 
-<div class="tabbable tabs-below">
+<div id="content" class="tabbable tabs-below">
 
-    <div class="tab-content">
+    <div class="tab-content table-content">
 
         <div id="clientDetails" class="tab-pane tab-info active">
 
