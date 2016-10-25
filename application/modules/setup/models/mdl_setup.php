@@ -192,7 +192,7 @@ class Mdl_Setup extends CI_Model
     public function upgrade_019_1_4_7()
     {
         /* Update alert to set the session configuration $config['sess_use_database'] = false to true
-         * but only display the warning when the previous version is 1.1.2 or lower and it's an update
+         * but only display the warning when the previous version is 1.4.6 or lower and it's an update
          * (see above for details)
          */
         $this->db->where_in("version_file", array("018_1.4.6.sql", "019_1.4.7.sql"));
