@@ -1,9 +1,36 @@
 <?php
 
 /*
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
+ * Basic InvoicePlane Settings
+ * ---------------------------------------------------------------
+ *
+ * Please set your preferred URL for IP_URL like this:
+ * define('IP_URL', 'https://my-invoices.com/');
+ * If you want to use a sub-domain, add it to the URL like this:
+ * define('IP_URL', 'https://my-domain.com/invoices/');
+ * for local environments withour any domains you may use this:
+ * define('IP_URL', 'http://localhost/invoices/');
+ *
+ * ---------------------------------------------------------------
+ * If you have any problems with the application you may set the
+ * debug setting to 'true' which enables additional logging which
+ * is helpful for finding the cause of the problems.
+ */
+
+define('IP_URL', '');
+
+define('IP_DEBUG', false);
+
+/*
+ * DO NOT EDIT BELOW THIS LINE!
+ * ---------------------------------------------------------------
+ */
+
+/*
+ * ---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
  *
  * You can load different configurations depending on your
  * current environment. Setting the environment also influences
@@ -26,9 +53,9 @@ if (is_dir(__DIR__ . "/application/config/development")) {
 }
 
 /*
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
  * ERROR REPORTING
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
  *
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
@@ -51,9 +78,9 @@ if (defined('ENVIRONMENT')) {
 }
 
 /*
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
  * SYSTEM FOLDER NAME
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
  *
  * This variable must contain the name of your "system" folder.
  * Include the path if the folder is not in the same  directory
@@ -63,9 +90,9 @@ if (defined('ENVIRONMENT')) {
 $system_path = 'system';
 
 /*
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
  * APPLICATION FOLDER NAME
- *---------------------------------------------------------------
+ * ---------------------------------------------------------------
  *
  * If you want this front controller to use a different "application"
  * folder then the default one you can set its name here. The folder
@@ -187,8 +214,8 @@ if (is_dir($application_folder)) {
     define('APPPATH', BASEPATH . $application_folder . '/');
 }
 
-// Detect the URL subfolder
-define('URL_SUBFOLDER', ($_SERVER['DOCUMENT_ROOT'] != str_replace('\\', '/', dirname(__FILE__)) ? str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', dirname(__FILE__))) : ''));
+// Set the uploads folder
+define('UPLOADS_FOLDER', FCPATH . 'uploads/');
 
 /*
  * --------------------------------------------------------------------

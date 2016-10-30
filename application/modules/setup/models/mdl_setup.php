@@ -92,7 +92,7 @@ class Mdl_Setup extends CI_Model
         foreach ($commands as $command) {
             if (trim($command)) {
                 if (!$this->db->query(trim($command) . ';')) {
-                    $this->errors[] = mysql_error();
+                    $this->errors[] = $this->db->_error_message();
                 }
             }
         }
@@ -100,8 +100,24 @@ class Mdl_Setup extends CI_Model
 
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1));
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Quote Default', 'invoice_group_prefix' => 'QUO', 'invoice_group_next_id' => 1));
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Invoice Default',
+                'invoice_group_next_id' => 1)
+        );
+
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Quote Default',
+                'invoice_group_prefix' => 'QUO',
+                'invoice_group_next_id' => 1)
+        );
+
+        $this->db->insert('ip_payment_methods', array(
+            'payment_method_name' => 'Cash',
+        ));
+
+        $this->db->insert('ip_payment_methods', array(
+            'payment_method_name' => 'Credit Card',
+        ));
     }
 
     private function install_default_settings()
@@ -113,21 +129,22 @@ class Mdl_Setup extends CI_Model
             'date_format' => 'm/d/Y',
             'currency_symbol' => '$',
             'currency_symbol_placement' => 'before',
+            'currency_code' => 'USD',
             'invoices_due_after' => 30,
             'quotes_expire_after' => 15,
-            'default_invoice_group' => 1,
-            'default_quote_group' => 2,
+            'default_invoice_group' => 3,
+            'default_quote_group' => 4,
             'thousands_separator' => ',',
             'decimal_point' => '.',
             'cron_key' => random_string('alnum', 16),
             'tax_rate_decimal_places' => 2,
-            'pdf_invoice_template' => 'default',
-            'pdf_invoice_template_paid' => 'default',
-            'pdf_invoice_template_overdue' => 'default',
-            'pdf_quote_template' => 'default',
-            'public_invoice_template' => 'default',
-            'public_quote_template' => 'default',
-            'disable_sidebar' => 1
+            'pdf_invoice_template' => 'InvoicePlane',
+            'pdf_invoice_template_paid' => 'InvoicePlane - paid',
+            'pdf_invoice_template_overdue' => 'InvoicePlane - overdue',
+            'pdf_quote_template' => 'InvoicePlane',
+            'public_invoice_template' => 'InvoicePlane_Web',
+            'public_quote_template' => 'InvoicePlane_Web',
+            'disable_sidebar' => 1,
         );
 
         foreach ($default_settings as $setting_key => $setting_value) {
@@ -184,7 +201,7 @@ class Mdl_Setup extends CI_Model
     public function upgrade_019_1_4_7()
     {
         /* Update alert to set the session configuration $config['sess_use_database'] = false to true
-         * but only display the warning when the previous version is 1.1.2 or lower and it's an update
+         * but only display the warning when the previous version is 1.4.6 or lower and it's an update
          * (see above for details)
          */
         $this->db->where_in("version_file", array("018_1.4.6.sql", "019_1.4.7.sql"));

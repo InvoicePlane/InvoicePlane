@@ -14,8 +14,7 @@
 | path to your installation.
 |
 */
-$config['protocol'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://');
-$config['base_url'] = $config['protocol'] . ($_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']) . URL_SUBFOLDER;
+$config['base_url'] = IP_URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -208,7 +207,7 @@ $config['directory_trigger'] = 'd'; // experimental not currently in use
 |
 */
 
-$config['log_threshold'] = 1;
+$config['log_threshold'] = IP_DEBUG ? 2 : 1;
 
 /*
 |--------------------------------------------------------------------------

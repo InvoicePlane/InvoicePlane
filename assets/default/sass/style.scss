@@ -471,6 +471,7 @@ div.table-content {
 
 .tab-content {
     @extend #content;
+    height: 100%;
 }
 
 .modal-open {

@@ -191,7 +191,7 @@
                             <tr>
                                 <td class="no-bottom-border" colspan="4"></td>
                                 <td class="text-right">
-                                    <?php echo $quote_tax_rate->quote_tax_rate_name . ' ' . $quote_tax_rate->quote_tax_rate_percent; ?>
+                                    <?php echo $quote_tax_rate->quote_tax_rate_name . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent); ?>
                                     %
                                 </td>
                                 <td class="amount"><?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?></td>

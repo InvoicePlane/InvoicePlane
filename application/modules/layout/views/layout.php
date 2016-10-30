@@ -57,7 +57,7 @@
                     format: '<?php echo date_format_datepicker(); ?>',
                     language: '<?php echo trans('cldr'); ?>',
                     weekStart: '<?php echo $this->mdl_settings->setting('first_day_of_week'); ?>',
-                    todayBtn: true
+                    todayBtn: "linked"
                 });
             });
 
@@ -360,7 +360,7 @@
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
     <script
-        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
+        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.min.js"></script>
 <?php } ?>
 
 </body>

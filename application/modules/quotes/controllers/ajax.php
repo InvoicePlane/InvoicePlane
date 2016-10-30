@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Ajax extends Admin_Controller
@@ -76,8 +76,8 @@ class Ajax extends Admin_Controller
                 'quote_status_id' => $quote_status_id,
                 'quote_password' => $this->input->post('quote_password'),
                 'notes' => $this->input->post('notes'),
-                'quote_discount_amount' => $quote_discount_amount,
-                'quote_discount_percent' => $quote_discount_percent,
+                'quote_discount_amount' => standardize_amount($quote_discount_amount),
+                'quote_discount_percent' => standardize_amount($quote_discount_percent),
             );
 
             $this->mdl_quotes->save($quote_id, $db_array);
