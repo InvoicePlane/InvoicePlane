@@ -93,9 +93,17 @@ class Invoices extends Guest_Controller
     {
         $this->load->helper('pdf');
 
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)
+            ->where_in('ip_invoices.client_id', $this->user_clients)
+            ->get()->row();
+
+        if (!$invoice) {
+            show_404();
+        }
+
         $this->mdl_invoices->mark_viewed($invoice_id);
 
-        generate_invoice_pdf($invoice_id, $stream, $invoice_template, 1);
+        generate_invoice_pdf($invoice_id, $stream, $invoice_template, true);
     }
 
 }

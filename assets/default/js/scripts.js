@@ -144,7 +144,8 @@ $(document).ready(function () {
     var documentHeight = $('html').outerHeight(),
         navbarHeight = $('.navbar').outerHeight(),
         headerbarHeight = $('#headerbar').outerHeight(),
-        contentHeight = documentHeight - navbarHeight - headerbarHeight;
+        submenuHeight = $('#submenu').outerHeight(),
+        contentHeight = documentHeight - navbarHeight - headerbarHeight - submenuHeight;
     if ($('#content').outerHeight() < contentHeight) {
         $('#content').outerHeight(contentHeight);
     }

@@ -25,7 +25,7 @@
 
         <div class="webpreview-header">
 
-            <h2><?php echo trans('invoice'); ?><?php echo $invoice->invoice_number; ?></h2>
+            <h2><?php echo trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
 
             <div class="btn-group">
                 <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice_url_key); ?>"
@@ -197,7 +197,7 @@
                             <tr>
                                 <td class="no-bottom-border" colspan="4"></td>
                                 <td class="text-right">
-                                    <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>
+                                    <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent); ?>
                                     %
                                 </td>
                                 <td class="amount"><?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?></td>

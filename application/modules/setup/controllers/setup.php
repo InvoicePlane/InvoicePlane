@@ -216,6 +216,9 @@ class Setup extends MX_Controller
             redirect('setup/prerequisites');
         }
 
+        // Additional tasks if setup is completed
+        $this->update_app_config();
+
         // Check if this is an update or the first install
         // First get all version entries from the database and format them
         $this->load_ci_database();
@@ -245,13 +248,11 @@ class Setup extends MX_Controller
 
         $writables = array(
             './uploads',
-            './uploads/temp',
             './uploads/archive',
             './uploads/customer_files',
+            './uploads/temp',
+            './uploads/temp/mpdf',
             './' . APPPATH . 'config/', // for database.php
-            './' . APPPATH . 'helpers/mpdf/tmp',
-            './' . APPPATH . 'helpers/mpdf/ttfontdata',
-            './' . APPPATH . 'helpers/mpdf/graph_cache',
             './' . APPPATH . 'logs'
         );
 
@@ -364,6 +365,15 @@ class Setup extends MX_Controller
         $db_file = str_replace('$db[\'default\'][\'database\'] = \'\'', '$db[\'default\'][\'database\'] = \'' . addcslashes($database, '\'\\') . '\'', $db_file);
 
         write_file(APPPATH . 'config/database.php', $db_file);
+    }
+
+    private function update_app_config()
+    {
+        $conf_file = read_file(APPPATH . 'config/config.php');
+
+        $conf_file = str_replace('$config[\'sess_use_database\'] = false;', '$config[\'sess_use_database\'] = true;', $conf_file);
+
+        write_file(APPPATH . 'config/config.php', $conf_file);
     }
 
     private function load_ci_database()
