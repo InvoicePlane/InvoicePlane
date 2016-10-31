@@ -1,6 +1,12 @@
 {
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/kovah/mpdf"
+    }
+  ],
   "require": {
-    "mpdf/mpdf": "6.1.2",
-    "phpmailer/phpmailer": "^5.2"
+    "phpmailer/phpmailer": "^5.2",
+    "kovah/mpdf": "dev-master"
   }
 }
