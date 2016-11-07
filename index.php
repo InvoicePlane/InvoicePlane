@@ -18,7 +18,12 @@
  * is helpful for finding the cause of the problems.
  */
 
-define('IP_URL', '');
+// ---it---inizio
+$http = empty($_SERVER['HTTPS']) ? 'http' : 'https';
+$ip_url = $http.'://'.$_SERVER['HTTP_HOST'].str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+//---it---fine
+
+define('IP_URL', $ip_url);	//---it---: $ip_url
 
 define('IP_DEBUG', false);
 
