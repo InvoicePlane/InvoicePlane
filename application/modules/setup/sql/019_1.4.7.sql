@@ -60,75 +60,75 @@ ALTER TABLE `ip_products`
 
 # IP-322 - Invoice item_name database field should be larger + additional db changes
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_name VARCHAR(500);
+  MODIFY COLUMN client_name TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_address_1 VARCHAR(500);
+  MODIFY COLUMN client_address_1 TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_address_2 VARCHAR(500);
+  MODIFY COLUMN client_address_2 TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_city VARCHAR(500);
+  MODIFY COLUMN client_city TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_state VARCHAR(500);
+  MODIFY COLUMN client_state TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_zip VARCHAR(500);
+  MODIFY COLUMN client_zip TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_country VARCHAR(500);
+  MODIFY COLUMN client_country TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_phone VARCHAR(500);
+  MODIFY COLUMN client_phone TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_fax VARCHAR(500);
+  MODIFY COLUMN client_fax TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_mobile VARCHAR(500);
+  MODIFY COLUMN client_mobile TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_email VARCHAR(500);
+  MODIFY COLUMN client_email TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_web VARCHAR(500);
+  MODIFY COLUMN client_web TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_vat_id VARCHAR(500);
+  MODIFY COLUMN client_vat_id TEXT;
 ALTER TABLE ip_clients
-  MODIFY COLUMN client_tax_code VARCHAR(500);
+  MODIFY COLUMN client_tax_code TEXT;
 ALTER TABLE ip_custom_fields
-  MODIFY COLUMN custom_field_table VARCHAR(500);
+  MODIFY COLUMN custom_field_table VARCHAR(255);
 ALTER TABLE ip_custom_fields
-  MODIFY COLUMN custom_field_label VARCHAR(500);
+  MODIFY COLUMN custom_field_label TEXT;
 ALTER TABLE ip_custom_fields
-  MODIFY COLUMN custom_field_column VARCHAR(500);
+  MODIFY COLUMN custom_field_column TEXT;
 ALTER TABLE ip_email_templates
-  MODIFY COLUMN email_template_title VARCHAR(500);
+  MODIFY COLUMN email_template_title TEXT;
 ALTER TABLE ip_email_templates
-  MODIFY COLUMN email_template_subject VARCHAR(500);
+  MODIFY COLUMN email_template_subject TEXT;
 ALTER TABLE ip_email_templates
-  MODIFY COLUMN email_template_from_name VARCHAR(500);
+  MODIFY COLUMN email_template_from_name TEXT;
 ALTER TABLE ip_email_templates
-  MODIFY COLUMN email_template_from_email VARCHAR(500);
+  MODIFY COLUMN email_template_from_email TEXT;
 ALTER TABLE ip_email_templates
-  MODIFY COLUMN email_template_cc VARCHAR(500);
+  MODIFY COLUMN email_template_cc TEXT;
 ALTER TABLE ip_email_templates
-  MODIFY COLUMN email_template_bcc VARCHAR(500);
+  MODIFY COLUMN email_template_bcc TEXT;
 ALTER TABLE ip_families
-  MODIFY COLUMN family_name VARCHAR(500);
+  MODIFY COLUMN family_name TEXT;
 ALTER TABLE ip_invoice_groups
-  MODIFY COLUMN invoice_group_name VARCHAR(500);
+  MODIFY COLUMN invoice_group_name TEXT;
 ALTER TABLE ip_invoice_items
-  MODIFY COLUMN item_name VARCHAR(500) DEFAULT NULL;
+  MODIFY COLUMN item_name TEXT DEFAULT NULL;
 ALTER TABLE ip_invoice_items
   MODIFY COLUMN item_description LONGTEXT DEFAULT NULL;
 ALTER TABLE ip_invoice_items
   MODIFY COLUMN item_price DECIMAL(20, 2) DEFAULT NULL;
 ALTER TABLE ip_payment_methods
-  MODIFY COLUMN payment_method_name VARCHAR(500);
+  MODIFY COLUMN payment_method_name TEXT;
 ALTER TABLE ip_payments
   MODIFY COLUMN payment_amount DECIMAL(20, 2);
 ALTER TABLE ip_products
-  MODIFY COLUMN product_sku VARCHAR(500);
+  MODIFY COLUMN product_sku TEXT;
 ALTER TABLE ip_products
-  MODIFY COLUMN product_name VARCHAR(500);
+  MODIFY COLUMN product_name TEXT;
 ALTER TABLE ip_projects
-  MODIFY COLUMN project_name DECIMAL(20, 2);
+  MODIFY COLUMN project_name TEXT;
 ALTER TABLE ip_quote_items
-  MODIFY COLUMN item_name VARCHAR(500) DEFAULT NULL;
+  MODIFY COLUMN item_name TEXT DEFAULT NULL;
 ALTER TABLE ip_quote_items
-  MODIFY COLUMN item_description LONGTEXT DEFAULT NULL;
+  MODIFY COLUMN item_description TEXT DEFAULT NULL;
 ALTER TABLE ip_quote_items
   MODIFY COLUMN item_quantity DECIMAL(20, 2) DEFAULT NULL;
 ALTER TABLE ip_quote_items
@@ -136,45 +136,45 @@ ALTER TABLE ip_quote_items
 ALTER TABLE ip_quote_tax_rates
   MODIFY COLUMN quote_tax_rate_amount DECIMAL(20, 2);
 ALTER TABLE ip_tasks
-  MODIFY COLUMN task_name VARCHAR(500);
+  MODIFY COLUMN task_name TEXT;
 ALTER TABLE ip_tasks
   MODIFY COLUMN task_price DECIMAL(20, 2);
 ALTER TABLE ip_tax_rates
-  MODIFY COLUMN tax_rate_name VARCHAR(500);
+  MODIFY COLUMN tax_rate_name TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_name VARCHAR(500);
+  MODIFY COLUMN user_name TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_company VARCHAR(500);
+  MODIFY COLUMN user_company TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_address_1 VARCHAR(500);
+  MODIFY COLUMN user_address_1 TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_address_2 VARCHAR(500);
+  MODIFY COLUMN user_address_2 TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_city VARCHAR(500);
+  MODIFY COLUMN user_city TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_state VARCHAR(500);
+  MODIFY COLUMN user_state TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_zip VARCHAR(500);
+  MODIFY COLUMN user_zip TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_country VARCHAR(500);
+  MODIFY COLUMN user_country TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_phone VARCHAR(500);
+  MODIFY COLUMN user_phone TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_fax VARCHAR(500);
+  MODIFY COLUMN user_fax TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_mobile VARCHAR(500);
+  MODIFY COLUMN user_mobile TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_email VARCHAR(500);
+  MODIFY COLUMN user_email TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_web VARCHAR(500);
+  MODIFY COLUMN user_web TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_vat_id VARCHAR(500);
+  MODIFY COLUMN user_vat_id TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_tax_code VARCHAR(500);
+  MODIFY COLUMN user_tax_code TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_psalt VARCHAR(500);
+  MODIFY COLUMN user_psalt TEXT;
 ALTER TABLE ip_users
-  MODIFY COLUMN user_tax_code VARCHAR(500);
+  MODIFY COLUMN user_tax_code TEXT;
 
 # IP-417 - Improve product database handling
 ALTER TABLE ip_products
@@ -182,7 +182,7 @@ ALTER TABLE ip_products
 ALTER TABLE ip_products
   MODIFY COLUMN tax_rate_id INT(11) NULL DEFAULT NULL;
 ALTER TABLE ip_products
-  ADD COLUMN provider_name VARCHAR(500) NULL DEFAULT NULL
+  ADD COLUMN provider_name TEXT NULL DEFAULT NULL
   AFTER purchase_price;
 
 # Change values for read-only setting

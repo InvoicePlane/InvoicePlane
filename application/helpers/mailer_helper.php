@@ -45,6 +45,8 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     $bcc = parse_template($db_invoice, $bcc);
     $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
 
+    $message = (empty($message) ? ' ' : $message);
+
     return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments);
 }
 
@@ -65,6 +67,8 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
     $cc = parse_template($db_quote, $cc);
     $bcc = parse_template($db_quote, $bcc);
     $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
+
+    $message = (empty($message) ? ' ' : $message);
 
     return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc, $attachments);
 }
@@ -88,12 +92,12 @@ function email_quote_status($quote_id, $status)
     $base_url = base_url('/quotes/view/' . $quote_id);
 
     $user_email = $quote->user_email;
-    $subject = sprintf(lang('quote_status_email_subject'),
+    $subject = sprintf(trans('quote_status_email_subject'),
         $quote->client_name,
         strtolower(lang($status)),
         $quote->quote_number
     );
-    $body = sprintf(nl2br(lang('quote_status_email_body')),
+    $body = sprintf(nl2br(trans('quote_status_email_body')),
         $quote->client_name,
         strtolower(lang($status)),
         $quote->quote_number,

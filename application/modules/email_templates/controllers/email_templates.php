@@ -44,7 +44,7 @@ class Email_Templates extends Admin_Controller
         if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
             $check = $this->db->get_where('ip_email_templates', array('email_template_title' => $this->input->post('email_template_title')))->result();
             if (!empty($check)) {
-                $this->session->set_flashdata('alert_error', lang('email_template_already_exists'));
+                $this->session->set_flashdata('alert_error', trans('email_template_already_exists'));
                 redirect('email_templates/form');
             }
         }

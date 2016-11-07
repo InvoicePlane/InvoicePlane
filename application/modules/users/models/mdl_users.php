@@ -26,8 +26,8 @@ class Mdl_Users extends Response_Model
     public function user_types()
     {
         return array(
-            '1' => lang('administrator'),
-            '2' => lang('guest_read_only')
+            '1' => trans('administrator'),
+            '2' => trans('guest_read_only')
         );
     }
 
@@ -51,27 +51,27 @@ class Mdl_Users extends Response_Model
         return array(
             'user_type' => array(
                 'field' => 'user_type',
-                'label' => lang('user_type'),
+                'label' => trans('user_type'),
                 'rules' => 'required'
             ),
             'user_email' => array(
                 'field' => 'user_email',
-                'label' => lang('email'),
+                'label' => trans('email'),
                 'rules' => 'required|valid_email|is_unique[ip_users.user_email]'
             ),
             'user_name' => array(
                 'field' => 'user_name',
-                'label' => lang('name'),
+                'label' => trans('name'),
                 'rules' => 'required'
             ),
             'user_password' => array(
                 'field' => 'user_password',
-                'label' => lang('password'),
+                'label' => trans('password'),
                 'rules' => 'required|min_length[8]'
             ),
             'user_passwordv' => array(
                 'field' => 'user_passwordv',
-                'label' => lang('verify_password'),
+                'label' => trans('verify_password'),
                 'rules' => 'required|matches[user_password]'
             ),
             'user_company' => array(
@@ -94,7 +94,7 @@ class Mdl_Users extends Response_Model
             ),
             'user_country' => array(
                 'field' => 'user_country',
-                'label' => lang('country'),
+                'label' => trans('country'),
             ),
             'user_phone' => array(
                 'field' => 'user_phone'
@@ -122,17 +122,17 @@ class Mdl_Users extends Response_Model
         return array(
             'user_type' => array(
                 'field' => 'user_type',
-                'label' => lang('user_type'),
+                'label' => trans('user_type'),
                 'rules' => 'required'
             ),
             'user_email' => array(
                 'field' => 'user_email',
-                'label' => lang('email'),
+                'label' => trans('email'),
                 'rules' => 'required|valid_email'
             ),
             'user_name' => array(
                 'field' => 'user_name',
-                'label' => lang('name'),
+                'label' => trans('name'),
                 'rules' => 'required'
             ),
             'user_company' => array(
@@ -155,7 +155,7 @@ class Mdl_Users extends Response_Model
             ),
             'user_country' => array(
                 'field' => 'user_country',
-                'label' => lang('country'),
+                'label' => trans('country'),
                 'rules' => 'required'
             ),
             'user_phone' => array(
@@ -184,12 +184,12 @@ class Mdl_Users extends Response_Model
         return array(
             'user_password' => array(
                 'field' => 'user_password',
-                'label' => lang('password'),
+                'label' => trans('password'),
                 'rules' => 'required'
             ),
             'user_passwordv' => array(
                 'field' => 'user_passwordv',
-                'label' => lang('verify_password'),
+                'label' => trans('verify_password'),
                 'rules' => 'required|matches[user_password]'
             )
         );

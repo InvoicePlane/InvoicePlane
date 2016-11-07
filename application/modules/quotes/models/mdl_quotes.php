@@ -26,32 +26,32 @@ class Mdl_Quotes extends Response_Model
     {
         return array(
             '1' => array(
-                'label' => lang('draft'),
+                'label' => trans('draft'),
                 'class' => 'draft',
                 'href' => 'quotes/status/draft'
             ),
             '2' => array(
-                'label' => lang('sent'),
+                'label' => trans('sent'),
                 'class' => 'sent',
                 'href' => 'quotes/status/sent'
             ),
             '3' => array(
-                'label' => lang('viewed'),
+                'label' => trans('viewed'),
                 'class' => 'viewed',
                 'href' => 'quotes/status/viewed'
             ),
             '4' => array(
-                'label' => lang('approved'),
+                'label' => trans('approved'),
                 'class' => 'approved',
                 'href' => 'quotes/status/approved'
             ),
             '5' => array(
-                'label' => lang('rejected'),
+                'label' => trans('rejected'),
                 'class' => 'rejected',
                 'href' => 'quotes/status/rejected'
             ),
             '6' => array(
-                'label' => lang('canceled'),
+                'label' => trans('canceled'),
                 'class' => 'canceled',
                 'href' => 'quotes/status/canceled'
             )
@@ -110,26 +110,26 @@ class Mdl_Quotes extends Response_Model
         return array(
             'client_name' => array(
                 'field' => 'client_name',
-                'label' => lang('client'),
+                'label' => trans('client'),
                 'rules' => 'required'
             ),
             'quote_date_created' => array(
                 'field' => 'quote_date_created',
-                'label' => lang('quote_date'),
+                'label' => trans('quote_date'),
                 'rules' => 'required'
             ),
             'invoice_group_id' => array(
                 'field' => 'invoice_group_id',
-                'label' => lang('quote_group'),
+                'label' => trans('quote_group'),
                 'rules' => 'required'
             ),
             'quote_password' => array(
                 'field' => 'quote_password',
-                'label' => lang('quote_password')
+                'label' => trans('quote_password')
             ),
             'user_id' => array(
                 'field' => 'user_id',
-                'label' => lang('user'),
+                'label' => trans('user'),
                 'rule' => 'required'
             )
         );
@@ -140,22 +140,22 @@ class Mdl_Quotes extends Response_Model
         return array(
             'quote_number' => array(
                 'field' => 'quote_number',
-                'label' => lang('quote') . ' #',
+                'label' => trans('quote') . ' #',
                 'rules' => 'is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'
             ),
             'quote_date_created' => array(
                 'field' => 'quote_date_created',
-                'label' => lang('date'),
+                'label' => trans('date'),
                 'rules' => 'required'
             ),
             'quote_date_expires' => array(
                 'field' => 'quote_date_expires',
-                'label' => lang('due_date'),
+                'label' => trans('due_date'),
                 'rules' => 'required'
             ),
             'quote_password' => array(
                 'field' => 'quote_password',
-                'label' => lang('quote_password')
+                'label' => trans('quote_password')
             )
         );
     }
@@ -261,7 +261,7 @@ class Mdl_Quotes extends Response_Model
 
         $generate_quote_number = $this->mdl_settings->setting('generate_quote_number_for_draft');
 
-        if ($db_array['quote_status_id'] === 1 && $generate_quote_number === 1) {
+        if ($db_array['quote_status_id'] === 1 && $generate_quote_number == 1) {
             $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
         } elseif ($db_array['quote_status_id'] != 1) {
             $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);

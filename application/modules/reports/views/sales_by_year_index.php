@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1><?php echo lang('sales_by_date'); ?></h1>
+    <h1><?php echo trans('sales_by_date'); ?></h1>
 </div>
 
 <div id="content">
@@ -11,7 +11,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 <i class="fa fa-print fa-margin"></i>
-                <?php echo lang('report_options'); ?>
+                <?php echo trans('report_options'); ?>
             </h3>
         </div>
 
@@ -21,7 +21,7 @@
 
                 <div class="form-group has-feedback">
                     <label for="from_date">
-                        <?php echo lang('from_date'); ?>
+                        <?php echo trans('from_date'); ?>
                     </label>
 
                     <div class="input-group">
@@ -35,7 +35,7 @@
 
                 <div class="form-group has-feedback">
                     <label for="to_date">
-                        <?php echo lang('to_date'); ?>
+                        <?php echo trans('to_date'); ?>
                     </label>
 
                     <div class="input-group">
@@ -51,7 +51,7 @@
                 <div class="clearfix">
                     <div class="col-xs-12 col-md-2" style="margin-right:10px; padding-left:0px;">
                         <label for="minQuantity">
-                            <?php echo lang('min_quantity'); ?>
+                            <?php echo trans('min_quantity'); ?>
                         </label>
 
                         <div>
@@ -61,7 +61,7 @@
 
                     <div class="col-xs-12 col-md-2" style=padding-left:0px;>
                         <label for="maxQuantity">
-                            <?php echo lang('max_quantity'); ?>
+                            <?php echo trans('max_quantity'); ?>
                         </label>
 
                         <div>
@@ -75,13 +75,13 @@
                     <div class="checkbox">
                         <label for="checkboxTax">
                             <input type="checkbox" id="checkboxTax"
-                                   name="checkboxTax"> <?php echo lang('values_with_taxes'); ?>
+                                   name="checkboxTax"> <?php echo trans('values_with_taxes'); ?>
                         </label>
                     </div>
                 </div>
 
                 <input type="submit" class="btn btn-success" name="btn_submit"
-                       value="<?php echo lang('run_report'); ?>">
+                       value="<?php echo trans('run_report'); ?>">
 
             </form>
         </div>

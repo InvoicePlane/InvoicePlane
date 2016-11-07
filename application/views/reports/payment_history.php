@@ -1,20 +1,20 @@
 <html>
 <head>
-    <title><?php echo lang('payment_history'); ?></title>
+    <title><?php echo trans('payment_history'); ?></title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/reports.css" type="text/css">
 </head>
 <body>
 
-<h3 class="report_title"><?php echo lang('payment_history'); ?></h3>
+<h3 class="report_title"><?php echo trans('payment_history'); ?></h3>
 
 <table>
     <tr>
-        <th><?php echo lang('date'); ?></th>
-        <th><?php echo lang('invoice'); ?></th>
-        <th><?php echo lang('client'); ?></th>
-        <th><?php echo lang('payment_method'); ?></th>
-        <th><?php echo lang('note'); ?></th>
-        <th class="amount"><?php echo lang('amount'); ?></th>
+        <th><?php echo trans('date'); ?></th>
+        <th><?php echo trans('invoice'); ?></th>
+        <th><?php echo trans('client'); ?></th>
+        <th><?php echo trans('payment_method'); ?></th>
+        <th><?php echo trans('note'); ?></th>
+        <th class="amount"><?php echo trans('amount'); ?></th>
     </tr>
     <?php
     $sum = 0;
@@ -36,7 +36,7 @@
     if (!empty($results)) {
         ?>
         <tr>
-            <td colspan=5><?php echo lang('total'); ?></td>
+            <td colspan=5><?php echo trans('total'); ?></td>
             <td class="amount"><?php echo format_currency($sum); ?></td>
         </tr>
     <?php } ?>

@@ -94,7 +94,7 @@ class Mdl_Setup extends CI_Model
         foreach ($commands as $command) {
             if (trim($command)) {
                 if (!$this->db->query(trim($command) . ';')) {
-                    $this->errors[] = mysql_error();
+                    $this->errors[] = $this->db->_error_message();
                 }
             }
         }
@@ -102,14 +102,24 @@ class Mdl_Setup extends CI_Model
 
     public function install_default_data()
     {
-		/* ---it---ORIGINALE
-    	$this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1));
-        $this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Quote Default', 'invoice_group_prefix' => 'QUO', 'invoice_group_next_id' => 1));
-    	*/
-    	//---it---inizio
-    	$this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Fattura predefinita', 'invoice_group_next_id' => 1));
-    	$this->db->insert('ip_invoice_groups', array('invoice_group_name' => 'Preventivo predefinito', 'invoice_group_prefix' => 'PRE', 'invoice_group_next_id' => 1));
-    	//---it---fine
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Fattura predefinita', //---it---
+                'invoice_group_next_id' => 1)
+        );
+
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Preventivo predefinito', //---it---
+                'invoice_group_prefix' => 'PRE', //---it---
+                'invoice_group_next_id' => 1)
+        );
+
+        $this->db->insert('ip_payment_methods', array(
+            'payment_method_name' => 'Contanti', //---it---
+        ));
+
+        $this->db->insert('ip_payment_methods', array(
+            'payment_method_name' => 'Carta di credito', //---it---
+        ));
     }
 
     private function install_default_settings()
@@ -121,23 +131,22 @@ class Mdl_Setup extends CI_Model
             'date_format' => 'd/m/Y', //---it---
             'currency_symbol' => '€', //---it---
             'currency_symbol_placement' => 'before',
+            'currency_code' => 'USD',
             'invoices_due_after' => 30,
             'quotes_expire_after' => 15,
-            'default_invoice_group' => 1,
-            'default_quote_group' => 2,
-            'thousands_separator' => '.', //---it---
-            'decimal_point' => ',', //---it---
+            'default_invoice_group' => 3,
+            'default_quote_group' => 4,
+            'thousands_separator' => '.',	//---it---
+            'decimal_point' => ',',	//---it---
             'cron_key' => random_string('alnum', 16),
             'tax_rate_decimal_places' => 2,
-            'pdf_invoice_template' => 'default',
-            'pdf_invoice_template_paid' => 'default',
-            'pdf_invoice_template_overdue' => 'default',
-            'pdf_quote_template' => 'default',
-            'public_invoice_template' => 'default',
-            'public_quote_template' => 'default',
+            'pdf_invoice_template' => 'InvoicePlane',
+            'pdf_invoice_template_paid' => 'InvoicePlane - paid',
+            'pdf_invoice_template_overdue' => 'InvoicePlane - overdue',
+            'pdf_quote_template' => 'InvoicePlane',
+            'public_invoice_template' => 'InvoicePlane_Web',
+            'public_quote_template' => 'InvoicePlane_Web',
             'disable_sidebar' => 1,
-        	'first_day_of_week' => 1, //---it---
-        	'default_country' => 'IT' //---it---
         );
 
         foreach ($default_settings as $setting_key => $setting_value) {
@@ -196,7 +205,7 @@ class Mdl_Setup extends CI_Model
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
             $setup_notice = array(
                 'type' => 'alert-danger',
-                'content' => lang('setup_v120_alert'),
+                'content' => trans('setup_v120_alert'),
             );
             $this->session->set_userdata('setup_notice', $setup_notice);
         }
@@ -205,7 +214,7 @@ class Mdl_Setup extends CI_Model
     public function upgrade_019_1_4_7()
     {
         /* Update alert to set the session configuration $config['sess_use_database'] = false to true
-         * but only display the warning when the previous version is 1.1.2 or lower and it's an update
+         * but only display the warning when the previous version is 1.4.6 or lower and it's an update
          * (see above for details)
          */
         $this->db->where_in("version_file", array("018_1.4.6.sql", "019_1.4.7.sql"));
@@ -215,7 +224,7 @@ class Mdl_Setup extends CI_Model
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
             $setup_notice = array(
                 'type' => 'alert-danger',
-                'content' => lang('setup_v147_alert'),
+                'content' => trans('setup_v147_alert'),
             );
             $this->session->set_userdata('setup_notice', $setup_notice);
         }

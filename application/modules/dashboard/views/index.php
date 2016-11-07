@@ -9,25 +9,25 @@
             <div id="panel-quick-actions" class="panel panel-default quick-actions">
 
                 <div class="panel-heading">
-                    <b><?php echo lang('quick_actions'); ?></b>
+                    <b><?php echo trans('quick_actions'); ?></b>
                 </div>
 
                 <div class="btn-group btn-group-justified no-margin">
                     <a href="<?php echo site_url('clients/form'); ?>" class="btn btn-default">
                         <i class="fa fa-user fa-margin"></i>
-                        <span class="hidden-xs"><?php echo lang('add_client'); ?></span>
+                        <span class="hidden-xs"><?php echo trans('add_client'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-quote btn btn-default">
                         <i class="fa fa-file fa-margin"></i>
-                        <span class="hidden-xs"><?php echo lang('create_quote'); ?></span>
+                        <span class="hidden-xs"><?php echo trans('create_quote'); ?></span>
                     </a>
                     <a href="javascript:void(0)" class="create-invoice btn btn-default">
                         <i class="fa fa-file-text fa-margin"></i>
-                        <span class="hidden-xs"><?php echo lang('create_invoice'); ?></span>
+                        <span class="hidden-xs"><?php echo trans('create_invoice'); ?></span>
                     </a>
                     <a href="<?php echo site_url('payments/form'); ?>" class="btn btn-default">
                         <i class="fa fa-credit-card fa-margin"></i>
-                        <span class="hidden-xs"><?php echo lang('enter_payment'); ?></span>
+                        <span class="hidden-xs"><?php echo trans('enter_payment'); ?></span>
                     </a>
                 </div>
 
@@ -41,7 +41,7 @@
             <div id="panel-quote-overview" class="panel panel-default overview">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-bar-chart fa-margin"></i> <?php echo lang('quote_overview'); ?></b>
+                    <b><i class="fa fa-bar-chart fa-margin"></i> <?php echo trans('quote_overview'); ?></b>
                     <span class="pull-right text-muted"><?php echo lang($quote_status_period); ?></span>
                 </div>
 
@@ -69,7 +69,7 @@
             <div id="panel-invoice-overview" class="panel panel-default overview">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-bar-chart fa-margin"></i> <?php echo lang('invoice_overview'); ?></b>
+                    <b><i class="fa fa-bar-chart fa-margin"></i> <?php echo trans('invoice_overview'); ?></b>
                     <span class="pull-right text-muted"><?php echo lang($invoice_status_period); ?></span>
                 </div>
 
@@ -94,7 +94,7 @@
 
             <?php if (empty($overdue_invoices)) { ?>
                 <div class="panel panel-default panel-heading">
-                    <span class="text-muted"><?php echo lang('no_overdue_invoices'); ?></span>
+                    <span class="text-muted"><?php echo trans('no_overdue_invoices'); ?></span>
                 </div>
             <?php } else {
                 $overdue_invoices_total = 0;
@@ -103,7 +103,7 @@
                 }
                 ?>
                 <div class="panel panel-danger panel-heading">
-                    <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> ' . lang('overdue_invoices'), 'class="text-danger"'); ?>
+                    <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> ' . trans('overdue_invoices'), 'class="text-danger"'); ?>
                     <span class="pull-right text-danger">
                         <?php echo format_currency($overdue_invoices_total); ?>
                     </span>
@@ -119,18 +119,18 @@
             <div id="panel-recent-quotes" class="panel panel-default">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-history fa-margin"></i> <?php echo lang('recent_quotes'); ?></b>
+                    <b><i class="fa fa-history fa-margin"></i> <?php echo trans('recent_quotes'); ?></b>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-condensed no-margin">
                         <thead>
                         <tr>
-                            <th><?php echo lang('status'); ?></th>
-                            <th style="min-width: 15%;"><?php echo lang('date'); ?></th>
-                            <th style="min-width: 15%;"><?php echo lang('quote'); ?></th>
-                            <th style="min-width: 35%;"><?php echo lang('client'); ?></th>
-                            <th style="text-align: right;"><?php echo lang('balance'); ?></th>
-                            <th><?php echo lang('pdf'); ?></th>
+                            <th><?php echo trans('status'); ?></th>
+                            <th style="min-width: 15%;"><?php echo trans('date'); ?></th>
+                            <th style="min-width: 15%;"><?php echo trans('quote'); ?></th>
+                            <th style="min-width: 35%;"><?php echo trans('client'); ?></th>
+                            <th style="text-align: right;"><?php echo trans('balance'); ?></th>
+                            <th><?php echo trans('pdf'); ?></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -156,7 +156,7 @@
                                 </td>
                                 <td style="text-align: center;">
                                     <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
-                                       title="<?php echo lang('download_pdf'); ?>" target="_blank">
+                                       title="<?php echo trans('download_pdf'); ?>" target="_blank">
                                         <i class="fa fa-print"></i>
                                     </a>
                                 </td>
@@ -164,7 +164,7 @@
                         <?php } ?>
                         <tr>
                             <td colspan="6" class="text-right small">
-                                <?php echo anchor('quotes/status/all', lang('view_all')); ?>
+                                <?php echo anchor('quotes/status/all', trans('view_all')); ?>
                             </td>
                         </tr>
                         </tbody>
@@ -178,18 +178,18 @@
             <div id="panel-recent-invoices" class="panel panel-default">
 
                 <div class="panel-heading">
-                    <b><i class="fa fa-history fa-margin"></i> <?php echo lang('recent_invoices'); ?></b>
+                    <b><i class="fa fa-history fa-margin"></i> <?php echo trans('recent_invoices'); ?></b>
                 </div>
 
                 <div class="table-responsive">
                     <table class="table table-striped table-condensed no-margin">
                         <thead>
                         <tr>
-                            <th><?php echo lang('status'); ?></th>
-                            <th style="min-width: 15%;"><?php echo lang('due_date'); ?></th>
-                            <th style="min-width: 15%;"><?php echo lang('invoice'); ?></th>
-                            <th style="min-width: 35%;"><?php echo lang('client'); ?></th>
-                            <th style="text-align: right;"><?php echo lang('balance'); ?></th>
+                            <th><?php echo trans('status'); ?></th>
+                            <th style="min-width: 15%;"><?php echo trans('due_date'); ?></th>
+                            <th style="min-width: 15%;"><?php echo trans('invoice'); ?></th>
+                            <th style="min-width: 35%;"><?php echo trans('client'); ?></th>
+                            <th style="text-align: right;"><?php echo trans('balance'); ?></th>
                             <th></th>
                         </tr>
                         </thead>
@@ -206,11 +206,11 @@
                                 <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
                                 if ($invoice->invoice_sign == '-1') { ?>
                                     &nbsp;<i class="fa fa-credit-invoice"
-                                             title="<?php echo lang('credit_invoice') ?>"></i>
+                                             title="<?php echo trans('credit_invoice') ?>"></i>
                                 <?php }
                                 if ($invoice->is_read_only == 1) { ?>
                                     &nbsp;<i class="fa fa-read-only"
-                                             title="<?php echo lang('read_only') ?>"></i>
+                                             title="<?php echo trans('read_only') ?>"></i>
                                 <?php }; ?>
                                 </span>
                                 </td>
@@ -230,7 +230,7 @@
                                 </td>
                                 <td style="text-align: center;">
                                     <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-                                       title="<?php echo lang('download_pdf'); ?>" target="_blank">
+                                       title="<?php echo trans('download_pdf'); ?>" target="_blank">
                                         <i class="fa fa-print"></i>
                                     </a>
                                 </td>
@@ -238,7 +238,7 @@
                         <?php } ?>
                         <tr>
                             <td colspan="6" class="text-right small">
-                                <?php echo anchor('invoices/status/all', lang('view_all')); ?>
+                                <?php echo anchor('invoices/status/all', trans('view_all')); ?>
                             </td>
                         </tr>
                         </tbody>

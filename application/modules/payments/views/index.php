@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1><?php echo lang('payments'); ?></h1>
+    <h1><?php echo trans('payments'); ?></h1>
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('payments/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
         </a>
     </div>
 

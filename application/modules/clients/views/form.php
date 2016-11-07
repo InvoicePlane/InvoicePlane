@@ -2,7 +2,7 @@
     $(function () {
         $('#client_name').focus();
         $("#client_country").select2({
-            placeholder: "<?php echo lang('country'); ?>",
+            placeholder: "<?php echo trans('country'); ?>",
             allowClear: true
         });
     });
@@ -11,7 +11,7 @@
 <form method="post">
 
     <div id="headerbar">
-        <h1><?php echo lang('client_form'); ?></h1>
+        <h1><?php echo trans('client_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -28,10 +28,10 @@
         >
 
         <fieldset>
-            <legend><?php echo lang('personal_information'); ?></legend>
+            <legend><?php echo trans('personal_information'); ?></legend>
             <div class="input-group col-xs-6">
               <span class="input-group-addon">
-                <?php echo lang('active_client'); ?>: 
+                <?php echo trans('active_client'); ?>:
                 <input id="client_active" name="client_active" type="checkbox" value="1"
                     <?php if ($this->mdl_clients->form_value('client_active') == 1
                         or !is_numeric($this->mdl_clients->form_value('client_active'))
@@ -41,7 +41,7 @@
                 >
               </span>
                 <input id="client_name" name="client_name" type="text" class="form-control"
-                       placeholder="<?php echo lang('client_name'); ?>"
+                       placeholder="<?php echo trans('client_name'); ?>"
                        value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_name')); ?>">
             </div>
         </fieldset>
@@ -50,10 +50,10 @@
 
             <div class="col-xs-12 col-sm-6">
                 <fieldset>
-                    <legend><?php echo lang('address'); ?></legend>
+                    <legend><?php echo trans('address'); ?></legend>
 
                     <div class="form-group">
-                        <label><?php echo lang('street_address'); ?>: </label>
+                        <label><?php echo trans('street_address'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_address_1" id="client_address_1" class="form-control"
@@ -62,7 +62,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('street_address_2'); ?>: </label>
+                        <label><?php echo trans('street_address_2'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_address_2" id="client_address_2" class="form-control"
@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('city'); ?>: </label>
+                        <label><?php echo trans('city'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_city" id="client_city" class="form-control"
@@ -80,7 +80,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('state'); ?>: </label>
+                        <label><?php echo trans('state'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_state" id="client_state" class="form-control"
@@ -89,7 +89,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('zip_code'); ?>: </label>
+                        <label><?php echo trans('zip_code'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_zip" id="client_zip" class="form-control"
@@ -98,7 +98,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('country'); ?>: </label>
+                        <label><?php echo trans('country'); ?>: </label>
 
                         <div class="controls">
                             <select name="client_country" id="client_country" class="form-control">
@@ -119,10 +119,10 @@
             <div class="col-xs-12 col-sm-6">
                 <fieldset>
 
-                    <legend><?php echo lang('contact_information'); ?></legend>
+                    <legend><?php echo trans('contact_information'); ?></legend>
 
                     <div class="form-group">
-                        <label><?php echo lang('phone_number'); ?>: </label>
+                        <label><?php echo trans('phone_number'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_phone" id="client_phone" class="form-control"
@@ -131,7 +131,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('fax_number'); ?>: </label>
+                        <label><?php echo trans('fax_number'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_fax" id="client_fax" class="form-control"
@@ -140,7 +140,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('mobile_number'); ?>: </label>
+                        <label><?php echo trans('mobile_number'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_mobile" id="client_mobile" class="form-control"
@@ -149,7 +149,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('email_address'); ?>: </label>
+                        <label><?php echo trans('email_address'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_email" id="client_email" class="form-control"
@@ -158,7 +158,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('web_address'); ?>: </label>
+                        <label><?php echo trans('web_address'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_web" id="client_web" class="form-control"
@@ -172,10 +172,10 @@
             <div class="col-xs-12 col-sm-6">
                 <fieldset>
 
-                    <legend><?php echo lang('tax_information'); ?></legend>
+                    <legend><?php echo trans('tax_information'); ?></legend>
 
                     <div class="form-group">
-                        <label><?php echo lang('vat_id'); ?>: </label>
+                        <label><?php echo trans('vat_id'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
@@ -184,7 +184,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><?php echo lang('tax_code'); ?>: </label>
+                        <label><?php echo trans('tax_code'); ?>: </label>
 
                         <div class="controls">
                             <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
@@ -201,7 +201,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <fieldset>
-                        <legend><?php echo lang('custom_fields'); ?></legend>
+                        <legend><?php echo trans('custom_fields'); ?></legend>
                         <?php foreach ($custom_fields as $custom_field) { ?>
                             <div class="form-group">
                                 <label><?php echo $custom_field->custom_field_label; ?>: </label>

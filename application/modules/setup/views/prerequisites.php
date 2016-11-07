@@ -6,9 +6,9 @@
         <form method="post" class="form-horizontal"
               action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <legend><?php echo lang('setup_prerequisites'); ?></legend>
+            <legend><?php echo trans('setup_prerequisites'); ?></legend>
 
-            <p><?php echo lang('setup_prerequisites_message'); ?></p>
+            <p><?php echo trans('setup_prerequisites_message'); ?></p>
 
             <?php foreach ($basics as $basic) {
                 if ($basic['success']) { ?>
@@ -30,11 +30,11 @@
 
             <?php if ($errors) { ?>
                 <a href="javascript:history.go(0)" class="btn btn-danger">
-                    <?php echo lang('try_again'); ?>
+                    <?php echo trans('try_again'); ?>
                 </a>
             <?php } else { ?>
                 <input class="btn btn-success" type="submit" name="btn_continue"
-                       value="<?php echo lang('continue'); ?>">
+                       value="<?php echo trans('continue'); ?>">
             <?php } ?>
 
         </form>

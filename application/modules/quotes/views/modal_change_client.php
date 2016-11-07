@@ -11,7 +11,7 @@
 
         $().ready(function () {
             $("[name='client_name']").select2({
-                placeholder: "<?php echo lang('client'); ?>",
+                placeholder: "<?php echo trans('client'); ?>",
                 allowClear: true
             });
             $("#client_name").focus();
@@ -51,7 +51,7 @@
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
 
-            <h3><?php echo lang('change_client'); ?></h3>
+            <h3><?php echo trans('change_client'); ?></h3>
         </div>
         <div class="modal-body">
 
@@ -74,10 +74,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo lang('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
                 <button class="btn btn-success" id="client_change_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo lang('submit'); ?>
+                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
                 </button>
             </div>
         </div>

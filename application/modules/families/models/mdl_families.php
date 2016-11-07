@@ -36,7 +36,7 @@ class Mdl_Families extends Response_Model
         return array(
             'family_name' => array(
                 'field' => 'family_name',
-                'label' => lang('family_name'),
+                'label' => trans('family_name'),
                 'rules' => 'required'
             )
         );

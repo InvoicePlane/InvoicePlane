@@ -34,6 +34,7 @@ class Base_Controller extends MX_Controller
 
         $this->load->library('session');
         $this->load->helper('url');
+        $this->load->helper('trans');
 
         // Check if database has been configured
         if (!file_exists(APPPATH . 'config/database.php')) {
@@ -54,14 +55,6 @@ class Base_Controller extends MX_Controller
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
-
-            // Debug Mode
-            if ($this->mdl_settings->setting('enable_debug')) {
-                $this->config->set_item('log_threshold', 2);
-                defined('IP_DEBUG') ?: define('IP_DEBUG', true);
-            } else {
-                defined('IP_DEBUG') ?: define('IP_DEBUG', false);
-            }
 
             $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
             
