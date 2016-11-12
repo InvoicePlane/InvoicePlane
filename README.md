@@ -27,7 +27,13 @@ If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoicepla
 [![Roadmap](https://img.shields.io/badge/Development%3A-Roadmap-429ae1.svg)](https://go.invoiceplane.com/roadmapv1) 
 
 ---
+
+### Security Vulnerabilities
+
+If you discover a security vulnerability please send an e-mail to mail@invoiceplane.com before disclosing the vulnerability to the public!
+All security vulnerabilities will be promptly addressed.
+
+---
   
 *The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
 and their usage is restricted! For more information visit invoiceplane.com/license-copyright*
-
