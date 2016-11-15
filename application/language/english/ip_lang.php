@@ -255,6 +255,7 @@ $lang = array(
     'loginalert_no_password'                       => 'Please enter a password.',
     'loginalert_user_inactive'                     => 'This user is marked as inactive. Please contact the system administrator.',
     'loginalert_user_not_found'                    => 'There is no account registered with this Email address.',
+    'loginalert_wrong_auth_code'                   => 'Password reset denied. You provided an invalid auth token.',
     'logout'                                       => 'Logout',
     'mark_invoices_sent_pdf'                       => 'Mark invoices as sent when PDF is generated',
     'mark_quotes_sent_pdf'                         => 'Mark quotes as sent when PDF is generated',

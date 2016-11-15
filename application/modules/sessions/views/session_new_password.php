@@ -53,6 +53,7 @@
         <form class="form-horizontal" method="post"
               action="<?php echo site_url('sessions/passwordreset'); ?>">
 
+            <input name="token" value="<?php echo $token; ?>" class="hidden">
             <input name="user_id" value="<?php echo $user_id; ?>" class="hidden">
 
             <div class="form-group">

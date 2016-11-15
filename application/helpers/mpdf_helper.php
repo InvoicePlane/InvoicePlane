@@ -35,9 +35,8 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     // mPDF loading
     define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
     define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
-
-    require_once(FCPATH . 'vendor/mpdf/mpdf/mpdf.php');
-
+    
+    require_once(FCPATH . 'vendor/kovah/mpdf/mpdf.php');
     $mpdf = new mPDF();
 
     // mPDF configuration
