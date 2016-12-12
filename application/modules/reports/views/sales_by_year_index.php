@@ -4,6 +4,9 @@
 
 <div id="content">
 
+    <div class="row">
+        <div class="col-xs-12 col-md-10 col-lg-8">
+
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div id="report_options" class="panel panel-default">
@@ -25,10 +28,9 @@
                     </label>
 
                     <div class="input-group">
-                        <input name="from_date" id="from_date"
-                               class="form-control datepicker">
+                        <input name="from_date" id="from_date" class="form-control datepicker">
                         <span class="input-group-addon">
-                                <i class="fa fa-calendar fa-fw"></i>
+                            <i class="fa fa-calendar fa-fw"></i>
                         </span>
                     </div>
                 </div>
@@ -39,10 +41,9 @@
                     </label>
 
                     <div class="input-group">
-                        <input name="to_date" id="to_date"
-                               class="form-control datepicker">
+                        <input name="to_date" id="to_date" class="form-control datepicker">
                         <span class="input-group-addon">
-                                <i class="fa fa-calendar fa-fw"></i>
+                            <i class="fa fa-calendar fa-fw"></i>
                         </span>
                     </div>
                 </div>
@@ -70,12 +71,11 @@
                     </div>
                 </div>
 
-
                 <div class="form-group">
                     <div class="checkbox">
                         <label for="checkboxTax">
-                            <input type="checkbox" id="checkboxTax"
-                                   name="checkboxTax"> <?php echo trans('values_with_taxes'); ?>
+                            <input type="checkbox" id="checkboxTax" name="checkboxTax">
+                            <?php echo trans('values_with_taxes'); ?>
                         </label>
                     </div>
                 </div>
