@@ -30,7 +30,9 @@ class Reports extends Admin_Controller
     {
         if ($this->input->post('btn_submit')) {
             $data = array(
-                'results' => $this->mdl_reports->sales_by_client($this->input->post('from_date'), $this->input->post('to_date'))
+                'results'   => $this->mdl_reports->sales_by_client($this->input->post('from_date'), $this->input->post('to_date')),
+				'from_date' => $this->input->post('from_date'),
+                'to_date'   => $this->input->post('to_date'),
             );
 
             $html = $this->load->view('reports/sales_by_client', $data, true);
