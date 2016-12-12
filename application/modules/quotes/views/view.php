@@ -207,14 +207,14 @@
                                       title="<?php echo trans('change_client'); ?>"></span>
                             <?php } ?>
                         </h2><br>
-					<span>
-						<?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
-                        <?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>
-                        <?php echo ($quote->client_city) ? $quote->client_city : ''; ?>
-                        <?php echo ($quote->client_state) ? $quote->client_state : ''; ?>
-                        <?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
-                        <?php echo ($quote->client_country) ? '<br>' . $quote->client_country : ''; ?>
-					</span>
+                        <span>
+                            <?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
+                            <?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>
+                            <?php echo ($quote->client_city) ? $quote->client_city : ''; ?>
+                            <?php echo ($quote->client_state) ? $quote->client_state : ''; ?>
+                            <?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
+                            <?php echo ($quote->client_country) ? '<br>' . $quote->client_country : ''; ?>
+                        </span>
                         <br><br>
                         <?php if ($quote->client_phone) { ?>
                             <span><strong><?php echo trans('phone'); ?>
@@ -260,7 +260,7 @@
                                         <input name="quote_date_created" id="quote_date_created"
                                                class="form-control input-sm datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_created); ?>">
-		                                <span class="input-group-addon">
+                                        <span class="input-group-addon">
 		                                    <i class="fa fa-calendar fa-fw"></i>
 		                                </span>
                                     </div>
@@ -275,9 +275,9 @@
                                         <input name="quote_date_expires" id="quote_date_expires"
                                                class="form-control input-sm datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
-		                              <span class="input-group-addon">
-		                                  <i class="fa fa-calendar fa-fw"></i>
-		                              </span>
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
                                     </div>
                                 </div>
 
@@ -351,7 +351,7 @@
                     </div>
                     <div class="col-lg-5">
                         <!-- The global file processing state -->
-                    <span class="fileupload-process">
+                        <span class="fileupload-process">
                         <div id="total-progress" class="progress progress-striped active" role="progressbar"
                              aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                             <div class="progress-bar progress-bar-success" style="width:0%;"
@@ -380,7 +380,11 @@
                                          data-dz-uploadprogress></div>
                                 </div>
                             </div>
-                            <div>
+                            <div class="pull-left btn-group">
+                                <button data-dz-download class="btn btn-sm btn-primary">
+                                    <i class="fa fa-download"></i>
+                                    <span><?php echo trans('download'); ?></span>
+                                </button>
                                 <button data-dz-remove class="btn btn-danger btn-sm delete">
                                     <i class="fa fa-trash-o"></i>
                                     <span><?php echo trans('delete'); ?></span>
@@ -421,6 +425,7 @@
     previewNode.id = "";
     var previewTemplate = previewNode.parentNode.innerHTML;
     previewNode.parentNode.removeChild(previewNode);
+
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>", // Set the url
         thumbnailWidth: 80,
@@ -436,14 +441,18 @@
             $.getJSON("<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>", function (data) {
                 $.each(data, function (index, val) {
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
+
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
+                    createDownloadButton(mockFile, '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
+
                     if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url(); ?>uploads/customer_files/' + val.fullname);
+                            '<?php echo site_url('upload/get_file'); ?>' + val.fullname);
                     } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo base_url(); ?>assets/default/img/favicon.png');
                     }
+
                     thisDropzone.emit("complete", mockFile);
                     thisDropzone.emit("success", mockFile);
                 });
@@ -453,6 +462,7 @@
 
     myDropzone.on("addedfile", function (file) {
         myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
+        createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $quote->quote_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
     });
 
     // Update the total progress bar
@@ -477,4 +487,16 @@
             data: {'name': file.name}
         });
     });
+
+    function createDownloadButton(file, fileUrl) {
+        var downloadButtonList = file.previewElement.querySelectorAll("[data-dz-download]");
+        for ($i = 0; $i < downloadButtonList.length; $i++) {
+            downloadButtonList[$i].addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(fileUrl);
+                return false;
+            });
+        }
+    }
 </script>

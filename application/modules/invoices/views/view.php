@@ -515,6 +515,7 @@ if ($this->config->item('disable_read_only') == true) {
     previewNode.id = "";
     var previewTemplate = previewNode.parentNode.innerHTML;
     previewNode.parentNode.removeChild(previewNode);
+
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", // Set the url
         thumbnailWidth: 80,
@@ -531,15 +532,18 @@ if ($this->config->item('disable_read_only') == true) {
             $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", function (data) {
                 $.each(data, function (index, val) {
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
+
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                    createDownloadButton(mockFile, '<?php echo base_url(); ?>uploads/customer_files/' + val.fullname);
+                    createDownloadButton(mockFile, '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
+
                     if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url(); ?>uploads/customer_files/' + val.fullname);
+                            '<?php echo base_url('upload/get_file'); ?>/' + val.fullname);
                     } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url(); ?>assets/default/img/favicon.png');
+                            '<?php echo base_url('assets/default/img/favicon.png'); ?>');
                     }
+
                     thisDropzone.emit("complete", mockFile);
                     thisDropzone.emit("success", mockFile);
                 });
@@ -549,7 +553,7 @@ if ($this->config->item('disable_read_only') == true) {
 
     myDropzone.on("addedfile", function (file) {
         myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
-        createDownloadButton(file, '<?php echo base_url() . 'uploads/customer_files/' . $invoice->invoice_url_key . '_' ?>' + file.name.replace(/\s+/g, '_'));
+        createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $invoice->invoice_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
     });
 
     // Update the total progress bar
@@ -577,8 +581,8 @@ if ($this->config->item('disable_read_only') == true) {
 
     function createDownloadButton(file, fileUrl) {
         var downloadButtonList = file.previewElement.querySelectorAll("[data-dz-download]");
-        for (_i = 0; _i < downloadButtonList.length; _i++) {
-            downloadButtonList[_i].addEventListener("click", function (e) {
+        for ($i = 0; $i < downloadButtonList.length; $i++) {
+            downloadButtonList[$i].addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 window.open(fileUrl);
