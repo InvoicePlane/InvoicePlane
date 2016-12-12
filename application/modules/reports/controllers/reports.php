@@ -49,7 +49,9 @@ class Reports extends Admin_Controller
     {
         if ($this->input->post('btn_submit')) {
             $data = array(
-                'results' => $this->mdl_reports->payment_history($this->input->post('from_date'), $this->input->post('to_date'))
+                'results' => $this->mdl_reports->payment_history($this->input->post('from_date'), $this->input->post('to_date')),
+                'from_date' => $this->input->post('from_date'),
+                'to_date'   => $this->input->post('to_date'),
             );
 
             $html = $this->load->view('reports/payment_history', $data, true);
@@ -84,7 +86,9 @@ class Reports extends Admin_Controller
 
         if ($this->input->post('btn_submit')) {
             $data = array(
-                'results' => $this->mdl_reports->sales_by_year($this->input->post('from_date'), $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax'))
+                'results' => $this->mdl_reports->sales_by_year($this->input->post('from_date'), $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax')),
+                'from_date' => $this->input->post('from_date'),
+                'to_date'   => $this->input->post('to_date'),
             );
 
             $html = $this->load->view('reports/sales_by_year', $data, true);
