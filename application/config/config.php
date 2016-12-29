@@ -14,13 +14,7 @@
 | path to your installation.
 |
 */
-// ---it--- ORIGINALE inizio
-//$config['base_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']) . URL_SUBFOLDER;
-// ---it--- ORIGINALE fine
-// ---it---inizio fix!
-$http = empty($_SERVER['HTTPS']) ? 'http' : 'https';
-$config['base_url'] = $http.'://'.$_SERVER['HTTP_HOST'].str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-// ---it---fine
+$config['base_url'] = IP_URL;
 
 $config['ThermoGest_url'] = 'http://server.thermoclima.loc/GestionaleThermoclima/';
 
@@ -215,7 +209,7 @@ $config['directory_trigger'] = 'd'; // experimental not currently in use
 |
 */
 
-$config['log_threshold'] = 1;
+$config['log_threshold'] = IP_DEBUG ? 2 : 1;
 
 /*
 |--------------------------------------------------------------------------

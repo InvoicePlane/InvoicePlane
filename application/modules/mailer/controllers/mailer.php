@@ -101,16 +101,20 @@ class Mailer extends Admin_Controller
         if (!$this->mailer_configured) return;
 
         $this->load->model('upload/mdl_uploads');
-        $from = array($this->input->post('from_email'),
-            $this->input->post('from_name'));
+        $from = array(
+            $this->input->post('from_email'),
+            $this->input->post('from_name')
+        );
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
+
         if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
             $body = htmlspecialchars_decode($this->input->post('body'));
         } else {
             $body = htmlspecialchars_decode(nl2br($this->input->post('body')));
         }
+
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
         $attachment_files = $this->mdl_uploads->get_invoice_uploads($invoice_id);
@@ -119,8 +123,7 @@ class Mailer extends Admin_Controller
             $this->mdl_invoices->mark_sent($invoice_id);
 
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
-
-            redirect('dashboard');
+            redirect('invoices/view/' . $invoice_id);
         } else {
             redirect('mailer/invoice/' . $invoice_id);
         }
@@ -135,16 +138,20 @@ class Mailer extends Admin_Controller
         if (!$this->mailer_configured) return;
 
         $this->load->model('upload/mdl_uploads');
-        $from = array($this->input->post('from_email'),
-            $this->input->post('from_name'));
+        $from = array(
+            $this->input->post('from_email'),
+            $this->input->post('from_name')
+        );
         $pdf_template = $this->input->post('pdf_template');
         $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
+
         if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
             $body = htmlspecialchars_decode($this->input->post('body'));
         } else {
             $body = htmlspecialchars_decode(nl2br($this->input->post('body')));
         }
+
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
         $attachment_files = $this->mdl_uploads->get_quote_uploads($quote_id);
@@ -154,7 +161,7 @@ class Mailer extends Admin_Controller
 
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
 
-            redirect('dashboard');
+            redirect('quotes/view/' . $quote_id);
         } else {
             redirect('mailer/quote/' . $quote_id);
         }

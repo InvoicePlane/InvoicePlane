@@ -59,8 +59,8 @@
 </script>
 
 <div class="tab-info">
-    <?php if (FALSE): // ---it--- ORIGINALE ?>
-    <h4><?php echo trans('updatecheck'); ?></h4><br/>
+	<?php if (FALSE): // ---it--- ORIGINALE ?>
+    <h4><?php echo lang('updatecheck'); ?></h4><br/>
 	<?php else:	// ---it--- titolo modificato ?>
 	<h4>Controllo aggiornamenti (edizione italiana)</h4><br/>
 	<?php endif; ?>
@@ -98,11 +98,11 @@
     <hr/>
 	
 	<?php if (FALSE): // ---it--- ORIGINALE ?>
-    <h4><?php echo trans('invoiceplane_news'); ?></h4>
+    <h4><?php echo lang('invoiceplane_news'); ?></h4>
 	<?php else: // ---it--- modifica titolo ?>
 	<h4>InvoicePlane International News</h4>
 	<?php endif; ?>
-	
+
     <div id="ipnews-results">
         <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
             <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_news'); ?>

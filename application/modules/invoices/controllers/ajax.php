@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Ajax extends Admin_Controller
@@ -93,8 +93,8 @@ class Ajax extends Admin_Controller
                 'invoice_password' => $this->input->post('invoice_password'),
                 'invoice_status_id' => $invoice_status,
                 'payment_method' => $this->input->post('payment_method'),
-                'invoice_discount_amount' => $invoice_discount_amount,
-                'invoice_discount_percent' => $invoice_discount_percent,
+                'invoice_discount_amount' => standardize_amount($invoice_discount_amount),
+                'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
