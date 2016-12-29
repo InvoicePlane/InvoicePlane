@@ -18,96 +18,96 @@ if (!defined('BASEPATH'))
 
 function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null, $zugferd_invoice = false, $associatedFiles = null)
 {
+	$CI = & get_instance();
+	
     // ---it---inizio
     // Speciale motore stampa dompdf: primo motore stampa FI, poi tolto dalla versione originale e mantenuto nella versione italiana.
     // Questo motore PDF, infatti, mantiene il risultato visualizzato nell'anteprima PDF (a differenza del nuovo motore mPDF).
-    $CI = & get_instance();
     if ($CI->mdl_settings->setting('it_print_engine') == 'dompdf')
     {
         return pdf_create_dompdf($html, $filename, $stream);
     }
     // ---it---fine
-	
-    require_once(APPPATH . 'helpers/mpdf/mpdf.php');
-    
-    $mpdf = new mPDF();
-    $mpdf->useAdobeCJK = true;
-    $mpdf->SetAutoFont();
 
+    // Get the invoice from the archive if available
+    $invoice_array = array();
+
+    // mPDF loading
+    define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
+    define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
+    
+    require_once(FCPATH . 'vendor/kovah/mpdf/mpdf.php');
+    $mpdf = new mPDF();
+
+    // mPDF configuration
+    $mpdf->useAdobeCJK = true;
+    $mpdf->autoScriptToLang = true;
+
+    if (IP_DEBUG) {
+        // Enable image error logging
+        $mpdf->showImageErrors = true;
+    }
+
+    // Include zugferd if enabled
     if ($zugferd_invoice) {
-        $CI = &get_instance();
         $CI->load->helper('zugferd');
         $mpdf->PDFA = true;
         $mpdf->PDFAauto = true;
         $mpdf->SetAdditionalRdf(zugferd_rdf());
         $mpdf->SetAssociatedFiles($associatedFiles);
-    } else {
-        // Avoid setting protection when password is blank/empty
-        if (!empty($password)) {
-            $mpdf->SetProtection(array('copy', 'print'), $password, $password);
-        }
     }
 
+    // Set a password if set for the voucher
+    if (!empty($password)) {
+        $mpdf->SetProtection(array('copy', 'print'), $password, $password);
+    }
+
+    // Check if the archive folder is available
     if (!(is_dir('./uploads/archive/') || is_link('./uploads/archive/'))) {
         mkdir('./uploads/archive/', '0777');
     }
 
-    // Enable image error logging
-    if (IP_DEBUG) {
-        $mpdf->showImageErrors = true;
-    }
-
-    if (strpos($filename, trans('invoice')) !== false) {
-        $CI = &get_instance();
+    // Set the footer if voucher is invoice and if set in settings
+    if ($isInvoice && !empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
 
-    $invoice_array = array();
     $mpdf->WriteHTML($html);
 
-    // If $stream is true (default) the PDF will be displayed directly in the browser, otherwise will be returned as a download
-    if ($stream) {
+    if ($isInvoice) {
 
-        if (!$isInvoice) {
-            return $mpdf->Output($filename . '.pdf', 'I');
-        }
-
-        foreach (glob('./uploads/archive/*' . $filename . '.pdf') as $file) {
+        foreach (glob(UPLOADS_FOLDER . 'archive/*' . $filename . '.pdf') as $file) {
             array_push($invoice_array, $file);
         }
 
-        if (!empty($invoice_array) && $isGuest) {
+        if (!empty($invoice_array) && !is_null($isGuest)) {
             rsort($invoice_array);
-            header('Content-type: application/pdf');
-            return readfile($invoice_array[0]);
-        } else
-            if ($isGuest) {
-                // @TODO flashdata is deleted between requests
-                //$CI->session->flashdata('alert_error', 'sorry no Invoice found!');
-                redirect('guest/view/invoice/' . end($CI->uri->segment_array()));
-            }
 
-        $mpdf->Output('./uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf', 'F');
-
-        return $mpdf->Output($filename . '.pdf', 'I');
-
-    } else {
-
-        if ($isInvoice) {
-
-            foreach (glob('./uploads/archive/*' . $filename . '.pdf') as $file) {
-                array_push($invoice_array, $file);
-            }
-            if (!empty($invoice_array) && !is_null($isGuest)) {
-                rsort($invoice_array);
+            if ($stream) {
+                return $mpdf->Output($filename . '.pdf', 'I');
+            } else {
                 return $invoice_array[0];
             }
-            $mpdf->Output('./uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf', 'F');
-            return './uploads/archive/' . date('Y-m-d') . '_' . $filename . '.pdf';
         }
 
-        $mpdf->Output('./uploads/temp/' . $filename . '.pdf', 'F');
+        $archived_file = UPLOADS_FOLDER . 'archive/' . date('Y-m-d') . '_' . $filename . '.pdf';
+        $mpdf->Output($archived_file, 'F');
+
+        if ($stream) {
+            return $mpdf->Output($filename . '.pdf', 'I');
+        } else {
+            return $archived_file;
+        }
+    }
+
+    // If $stream is true (default) the PDF will be displayed directly in the browser
+    // otherwise will be returned as a download
+    if ($stream) {
+        return $mpdf->Output($filename . '.pdf', 'I');
+    } else {
+
+        $mpdf->Output(UPLOADS_FOLDER . 'temp/' . $filename . '.pdf', 'F');
 
         // Housekeeping
         // Delete any files in temp/ directory that are >1 hrs old
@@ -115,14 +115,14 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         if ($handle = @opendir(preg_replace('/\/$/', '', './uploads/temp/'))) {
             while (false !== ($file = readdir($handle))) {
                 if (($file != '..') && ($file != '.') && !is_dir($file) && ((filemtime('./uploads/temp/' . $file) + $interval) < time()) && (substr($file, 0, 1) !== '.') && ($file != 'remove.txt')) { // mPDF 5.7.3
-                    unlink('./uploads/temp/' . $file);
+                    unlink(UPLOADS_FOLDER . 'temp/' . $file);
                 }
             }
             closedir($handle);
         }
 
-        // Return the pdf itself
-        return './uploads/temp/' . $filename . '.pdf';
+        return UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
+
     }
 }
 

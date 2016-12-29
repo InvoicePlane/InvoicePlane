@@ -45,6 +45,8 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     $bcc = parse_template($db_invoice, $bcc);
     $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
 
+    $message = (empty($message) ? ' ' : $message);
+
     return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments);
 }
 
@@ -65,6 +67,8 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
     $cc = parse_template($db_quote, $cc);
     $bcc = parse_template($db_quote, $bcc);
     $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
+
+    $message = (empty($message) ? ' ' : $message);
 
     return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc, $attachments);
 }

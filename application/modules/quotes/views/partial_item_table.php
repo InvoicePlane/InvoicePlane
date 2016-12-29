@@ -56,7 +56,7 @@
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>">
-                                <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                                <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -137,7 +137,7 @@
                             <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php if ($item->item_tax_rate_id == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
-                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                                    <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
                                 </option>
                             <?php } ?>
                         </select>
@@ -221,7 +221,7 @@
                         foreach ($quote_tax_rates as $quote_tax_rate) { ?>
                             <span class="text-muted">
                             <?php echo anchor('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id, '<i class="fa fa-trash-o"></i>');
-                            echo ' ' . $quote_tax_rate->quote_tax_rate_name . ' ' . $quote_tax_rate->quote_tax_rate_percent; ?>
+                            echo ' ' . $quote_tax_rate->quote_tax_rate_name . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent); ?>
                                 %</span>&nbsp;
                             <span class="amount">
                                 <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
@@ -239,7 +239,7 @@
                         <div class="input-group input-group-sm">
                             <input id="quote_discount_amount" name="quote_discount_amount"
                                    class="discount-option form-control input-sm amount"
-                                   value="<?php echo($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
+                                   value="<?php echo format_amount($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
 
                             <div
                                 class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
@@ -248,7 +248,7 @@
                     <div class="discount-field">
                         <div class="input-group input-group-sm">
                             <input id="quote_discount_percent" name="quote_discount_percent"
-                                   value="<?php echo($quote->quote_discount_percent != 0 ? $quote->quote_discount_percent : ''); ?>"
+                                   value="<?php echo format_amount($quote->quote_discount_percent != 0 ? $quote->quote_discount_percent : ''); ?>"
                                    class="discount-option form-control input-sm amount">
 
                             <div class="input-group-addon">&percnt;</div>

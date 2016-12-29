@@ -22,10 +22,15 @@ class Mdl_Invoices_Recurring extends Response_Model
     public $primary_key = 'ip_invoices_recurring.invoice_recurring_id';
     public $recur_frequencies = array(
         '7D' => 'calendar_week',
+        '14D' => 'calendar_week_2',
+        '21D' => 'calendar_week_3',
+        '28D' => 'calendar_week_4',
         '1M' => 'calendar_month',
-        '1Y' => 'year',
+        '2M' => 'calendar_month_2',
         '3M' => 'quarter',
-        '6M' => 'six_months'
+        '4M' => 'calendar_month_4',
+        '6M' => 'six_months',
+        '1Y' => 'year',
     );
 
     public function default_select()
