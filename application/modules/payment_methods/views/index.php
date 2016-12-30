@@ -23,6 +23,7 @@
             <thead>
             <tr>
                 <th><?php echo lang('payment_method'); ?></th>
+                <th><?php echo lang('receipt_numbering_group'); ?></th>
                 <th><?php echo lang('options'); ?></th>
             </tr>
             </thead>
@@ -31,6 +32,7 @@
             <?php foreach ($payment_methods as $payment_method) { ?>
                 <tr>
                     <td><?php echo $payment_method->payment_method_name; ?></td>
+                    <td><?php echo $payment_method->invoice_group_name; ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"
