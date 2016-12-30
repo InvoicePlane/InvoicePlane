@@ -93,7 +93,14 @@
         <?php foreach ($items as $item) { ?>
             <tbody class="item">
             <tr>
-                <td rowspan="2" class="td-icon"><i class="fa fa-arrows cursor-move"></i></td>
+                <td rowspan="2" class="td-icon">
+                    <i class="fa fa-arrows cursor-move"></i>
+                    <a href="#" class="btn_item_recurring" data-item-id="<?php echo $item->item_id; ?>">
+                        <?php if ($invoice->invoice_is_recurring && $item->is_recurring) echo '<i class="fa fa-repeat"></i>'; ?>
+                        <?php if ($invoice->invoice_is_recurring && !$item->is_recurring) echo '<i class="fa fa-repeat fa-repeat-disabled"></i>'; ?>
+                    </a>
+                    <input type="hidden" size="1" name="is_recurring" value="<?php echo $item->is_recurring; ?>">
+                </td>
                 <td class="td-text">
                     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>"
