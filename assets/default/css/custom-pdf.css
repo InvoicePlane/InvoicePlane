@@ -9,10 +9,10 @@
 
 
 #client{
-	float:right;text-align:right;width:40%
+	float:right;text-align:right;width:40%;
 }
 
 #company{
 
-	float:left;width:55%;margin-right:5%
+	float:left;width:55%;margin-right:5%;text-align:left;
 }

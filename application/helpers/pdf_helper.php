@@ -18,6 +18,7 @@ if (!defined('BASEPATH'))
 
 function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null, $preview = FALSE/*---it---*/)
 {
+    
     $CI = &get_instance();
 
     $CI->load->model('invoices/mdl_invoices');

@@ -71,7 +71,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language'] = 'english';
+$config['language'] = 'italian';
 
 /*
 |--------------------------------------------------------------------------
@@ -277,7 +277,7 @@ $config['sess_cookie_name'] = 'ip_session';
 $config['sess_expiration'] = 864000; // 10 Days
 $config['sess_expire_on_close'] = false;
 $config['sess_encrypt_cookie'] = true;
-$config['sess_use_database'] = false;
+$config['sess_use_database'] = true;
 $config['sess_table_name'] = 'ip_sessions';
 $config['sess_match_ip'] = false;
 $config['sess_match_useragent'] = false;
