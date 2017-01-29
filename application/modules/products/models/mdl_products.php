@@ -34,6 +34,7 @@ class Mdl_Products extends Response_Model
     public function default_join()
     {
         $this->db->join('ip_families', 'ip_families.family_id = ip_products.family_id', 'left');
+        $this->db->join('ip_units', 'ip_units.unit_id = ip_products.unit_id', 'left');
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
     }
 
@@ -82,6 +83,11 @@ class Mdl_Products extends Response_Model
                 'label' => trans('family'),
                 'rules' => 'numeric'
             ),
+            'unit_id' => array(
+                'field' => 'unit_id',
+                'label' => trans('unit'),
+                'rules' => 'numeric'
+            ),
             'tax_rate_id' => array(
                 'field' => 'tax_rate_id',
                 'label' => trans('tax_rate'),
@@ -98,6 +104,7 @@ class Mdl_Products extends Response_Model
         $db_array['product_price'] = (empty($db_array['product_price']) ? null : standardize_amount($db_array['product_price']));
         $db_array['purchase_price'] = (empty($db_array['purchase_price']) ? null : standardize_amount($db_array['purchase_price']));
         $db_array['family_id'] = (empty($db_array['family_id']) ? null : $db_array['family_id']);
+        $db_array['unit_id'] = (empty($db_array['unit_id']) ? null : $db_array['unit_id']);
         $db_array['tax_rate_id'] = (empty($db_array['tax_rate_id']) ? null : $db_array['tax_rate_id']);
 
         return $db_array;

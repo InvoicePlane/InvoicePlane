@@ -7,3 +7,6 @@ CREATE TABLE IF NOT EXISTS `ip_units` (
 )
   ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
+
+ALTER TABLE ip_products
+  ADD COLUMN unit_id INT(11);
