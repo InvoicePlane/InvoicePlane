@@ -26,6 +26,7 @@
                 <th><?php echo trans('product_name'); ?></th>
                 <th><?php echo trans('product_description'); ?></th>
                 <th><?php echo trans('product_price'); ?></th>
+                <th><?php echo trans('product_unit'); ?></th>
                 <th><?php echo trans('tax_rate'); ?></th>
                 <th><?php echo trans('options'); ?></th>
             </tr>
@@ -39,6 +40,7 @@
                     <td><?php echo $product->product_name; ?></td>
                     <td><?php echo nl2br($product->product_description); ?></td>
                     <td><?php echo format_currency($product->product_price); ?></td>
+                    <td><?php echo $product->unit_name; ?></td>
                     <td><?php echo ($product->tax_rate_id) ? $product->tax_rate_name : trans('none'); ?></td>
                     <td>
                         <a href="<?php echo site_url('products/form/' . $product->product_id); ?>"
