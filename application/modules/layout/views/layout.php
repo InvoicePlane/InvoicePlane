@@ -370,14 +370,6 @@
     type="text/javascript"> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
 <![endif]-->
 
-<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-     chromium.org/developers/how-tos/chrome-frame-getting-started -->
-<!--[if lt IE 7 ]>
-<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-<script type="text/javascript">window.attachEvent('onload', function () {
-    CFInstall.check({mode: 'overlay'})
-})</script>
-<![endif]-->
 
 </body>
 </html>
