@@ -1,5 +1,8 @@
 <?php
-
+if (file_exists("database_empty.php")) {
+	header("Location: index.php/setup");
+	die();
+}
 /*
  * ---------------------------------------------------------------
  * Basic InvoicePlane Settings
