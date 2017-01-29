@@ -59,7 +59,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     }
 
     // Set the footer if voucher is invoice and if set in settings
-    if ($isInvoice && !empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
+    if (!empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
