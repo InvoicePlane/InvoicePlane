@@ -6,7 +6,7 @@ if (!defined('BASEPATH')) {
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -14,18 +14,19 @@ if (!defined('BASEPATH')) {
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Lib_mysql
 {
+    private $link = null;
     function connect($server, $username, $password)
     {
         if (!$server or !$username) {
             return false;
         }
 
-        if (@mysql_connect($server, $username, $password)) {
+        if ($this->link = @mysqli_connect($server, $username, $password)) {
             return true;
         }
 
@@ -34,7 +35,7 @@ class Lib_mysql
 
     function select_db($database)
     {
-        if (@mysql_select_db($database)) {
+        if ($this->link != null && @mysqli_select_db($this->link,$database)) {
             return true;
         }
 
@@ -43,9 +44,11 @@ class Lib_mysql
 
     function query($sql)
     {
-        $result = mysql_query($sql);
-
-        return mysql_fetch_object($result);
+        if($this->link != null){
+          $result = mysqli_query($this->link,$sql);
+          return mysqli_fetch_object($result);
+        }
+        return null;
     }
 
 }
