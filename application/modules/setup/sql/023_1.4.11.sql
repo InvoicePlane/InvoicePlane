@@ -19,3 +19,6 @@ ALTER TABLE ip_quote_items
 
 ALTER TABLE ip_invoice_items
   ADD COLUMN item_product_unit VARCHAR(50) DEFAULT NULL;
+
+ALTER TABLE ip_invoice_items
+  ADD COLUMN item_product_unit_id INT(11);
