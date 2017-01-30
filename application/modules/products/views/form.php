@@ -80,6 +80,23 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
+                            <label class="control-label"><?php echo trans('product_unit'); ?>: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-8 col-lg-8">
+                            <select name="unit_id" id="unit_id" class="form-control">
+                                <option value="0"><?php echo trans('select_unit'); ?></option>
+                                <?php foreach ($units as $unit) { ?>
+                                    <option value="<?php echo $unit->unit_id; ?>"
+                                            <?php if ($this->mdl_products->form_value('unit_id') == $unit->unit_id) {
+                                            ?>selected="selected"<?php } ?>
+                                    ><?php echo $unit->unit_name . '/' . $unit->unit_name_plrl; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
                             <label class="control-label"><?php echo trans('tax_rate'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">

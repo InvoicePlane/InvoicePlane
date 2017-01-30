@@ -145,6 +145,10 @@
                 <td><?php echo nl2br($item->item_description); ?></td>
                 <td class="text-right">
                     <?php echo format_amount($item->item_quantity); ?>
+                    <?php if ($item->item_product_unit) : ?>
+                        <br>
+                        <small><?php echo $item->item_product_unit; ?></small>
+                    <?php endif; ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($item->item_price); ?>
