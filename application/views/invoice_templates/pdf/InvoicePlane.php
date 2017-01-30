@@ -219,14 +219,6 @@
         </tbody>
     </table>
 
-    <div>
-        <pre><?php print_r($quote); ?></pre>
-        <pre><?php print_r($invoice); ?></pre>
-        <pre><?php print_r($items); ?></pre>
-    </div>
-
-
-
 </main>
 
 <footer>
