@@ -333,6 +333,8 @@ class Ajax extends Admin_Controller
                     'item_description' => $quote_item->item_description,
                     'item_quantity' => $quote_item->item_quantity,
                     'item_price' => $quote_item->item_price,
+                    'item_product_unit_id' => $quote_item->item_product_unit_id,
+                    'item_product_unit' => $quote_item->item_product_unit,
                     'item_discount_amount' => $quote_item->item_discount_amount,
                     'item_order' => $quote_item->item_order
                 );
