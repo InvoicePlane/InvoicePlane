@@ -31,6 +31,25 @@ class Mdl_Units extends Response_Model
         $this->db->order_by('ip_units.unit_name');
     }
 
+    /**
+     *  Return either the singular unit name or the plural unit name,
+     *  depending on the quantity
+     */
+    public function get_name($unit_id, $quantity)
+    {
+        if ($unit_id) {
+            $units = $this->get()->result();
+            foreach ($units as $unit) {
+                if ($unit->unit_id == $unit_id) {
+                    if ($quantity > 1)
+                        return $unit->unit_name_plrl;
+                    else
+                        return $unit->unit_name;
+                }
+            }
+        }
+    }
+
     public function validation_rules()
     {
         return array(
