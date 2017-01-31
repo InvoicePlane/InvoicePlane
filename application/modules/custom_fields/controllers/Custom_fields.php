@@ -31,6 +31,7 @@ class Custom_Fields extends Admin_Controller
         $custom_fields = $this->mdl_custom_fields->result();
 
         $this->layout->set('custom_fields', $custom_fields);
+        $this->layout->set('custom_tables', $this->mdl_custom_fields->custom_tables());
         $this->layout->buffer('content', 'custom_fields/index');
         $this->layout->render();
     }
@@ -53,6 +54,7 @@ class Custom_Fields extends Admin_Controller
         }
 
         $this->layout->set('custom_field_tables', $this->mdl_custom_fields->custom_tables());
+        $this->layout->set('custom_field_types', $this->mdl_custom_fields->custom_types());
         $this->layout->buffer('content', 'custom_fields/form');
         $this->layout->render();
     }
