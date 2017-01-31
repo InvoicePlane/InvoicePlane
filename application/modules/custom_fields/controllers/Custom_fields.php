@@ -30,8 +30,10 @@ class Custom_Fields extends Admin_Controller
         $this->mdl_custom_fields->paginate(site_url('custom_fields/index'), $page);
         $custom_fields = $this->mdl_custom_fields->result();
 
+        $this->load->model('custom_values/mdl_custom_values');
         $this->layout->set('custom_fields', $custom_fields);
         $this->layout->set('custom_tables', $this->mdl_custom_fields->custom_tables());
+        $this->layout->set('custom_value_fields', $this->mdl_custom_values->custom_value_fields());
         $this->layout->buffer('content', 'custom_fields/index');
         $this->layout->render();
     }

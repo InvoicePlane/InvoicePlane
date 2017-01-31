@@ -43,6 +43,13 @@
                             <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
+                            <?php if(in_array($custom_field->custom_field_type, $custom_value_fields)){?>
+                            <li>
+                                <a href="<?php echo site_url('custom_values/field/' . $custom_field->custom_field_id); ?>">
+                                    <i class="fa fa-list fa-margin"></i> <?php echo trans('values'); ?>
+                                </a>
+                            </li>
+                            <?php } ?>
                             <li>
                                 <a href="<?php echo site_url('custom_fields/form/' . $custom_field->custom_field_id); ?>">
                                     <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>

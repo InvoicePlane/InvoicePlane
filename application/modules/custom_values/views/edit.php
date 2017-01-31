@@ -1,6 +1,6 @@
 <form method="post" class="form-horizontal">
   <div id="headerbar">
-      <h1 class="pull-left"><?php echo trans('custom_values_new'); ?></h1>
+      <h1 class="pull-left"><?php echo trans('custom_values_edit'); ?></h1>
       <?php $this->layout->load_view('layout/header_buttons'); ?>
   </div>
   <?php /* ?>
@@ -20,28 +20,20 @@
     <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
-        <?php $alpha = str_replace("-","_",strtolower($field->custom_field_type)); ?>
 
         <div class="form-group">
             <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('field'); ?>: </label>
             <div class="col-xs-12 col-sm-8 col-md-6">
                 <input type="text" class="form-control"
-                  value="<?php echo htmlentities($field->custom_field_label);?>" disabled="disabled"/>
+                  value="<?php echo htmlentities($value->custom_field_label);?>" disabled="disabled"/>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('type'); ?>: </label>
+            <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('label'); ?>: </label>
             <div class="col-xs-12 col-sm-8 col-md-6">
-                <input type="text" class="form-control"
-                  value="<?php echo htmlentities(trans($alpha));?>" disabled="disabled"/>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('value'); ?>: </label>
-            <div class="col-xs-12 col-sm-8 col-md-6">
-                <input type="text" class="form-control" name="custom_values_value" id="custom_values_value" value=""/>
+                <input type="text" name="custom_values_value" id="custom_values_value" class="form-control"
+                       value="<?php echo htmlentities($value->custom_values_value); ?>">
             </div>
         </div>
 
