@@ -60,6 +60,11 @@ class Mdl_Custom_Fields extends MY_Model
                 'field' => 'custom_field_label',
                 'label' => trans('label'),
                 'rules' => 'required|max_length[50]'
+            ),
+            'custom_field_type' => array(
+                'field' => 'custom_field_type',
+                'label' => trans('type'),
+                'rules' => 'required'
             )
         );
     }
@@ -80,6 +85,14 @@ class Mdl_Custom_Fields extends MY_Model
             $custom_field_label = strtolower(str_replace(' ', '_', $db_array['custom_field_label']));
         }
 
+        if(in_array($db_array['custom_field_type'], $this->custom_types()))
+        {
+          $type = $db_array['custom_field_type'];
+        }
+        else{
+          $type = $this->custom_types()[0];
+        }
+
         // Create the name for the custom field column
 
         $this->load->helper('diacritics');
@@ -87,6 +100,7 @@ class Mdl_Custom_Fields extends MY_Model
         $clean_name = preg_replace('/[^a-z0-9_\s]/', '', strtolower(diacritics_remove_diacritics($custom_field_label)));
 
         $db_array['custom_field_column'] = $custom_tables[$db_array['custom_field_table']] . '_custom_' . $clean_name;
+        $db_array['custom_field_type'] = $type;
         // Return the db array
         return $db_array;
     }
