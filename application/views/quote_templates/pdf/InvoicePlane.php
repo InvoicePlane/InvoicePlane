@@ -28,15 +28,18 @@
         if ($quote->client_address_2) {
             echo '<div>' . $quote->client_address_2 . '</div>';
         }
-        if ($quote->client_city && $quote->client_zip) {
-            echo '<div>' . $quote->client_city . ' ' . $quote->client_zip . '</div>';
-        } else {
+        if ($quote->client_city || $quote->client_state || $quote->client_zip) {
+            echo '<div>';
             if ($quote->client_city) {
-                echo '<div>' . $quote->client_city . '</div>';
+                echo $quote->client_city . ' ';
+            }
+            if ($quote->client_state) {
+                echo $quote->client_state . ' ';
             }
             if ($quote->client_zip) {
-                echo '<div>' . $quote->client_zip . '</div>';
+                echo $quote->client_zip;
             }
+            echo '</div>';
         }
         if ($quote->client_state) {
             echo '<div>' . $quote->client_state . '</div>';
@@ -66,18 +69,18 @@
         if ($quote->user_address_2) {
             echo '<div>' . $quote->user_address_2 . '</div>';
         }
-        if ($quote->user_city && $quote->user_zip) {
-            echo '<div>' . $quote->user_city . ' ' . $quote->user_zip . '</div>';
-        } else {
+        if ($quote->user_city || $quote->user_state || $quote->user_zip) {
+            echo '<div>';
             if ($quote->user_city) {
-                echo '<div>' . $quote->user_city . '</div>';
+                echo $quote->user_city . ' ';
+            }
+            if ($quote->user_state) {
+                echo $quote->user_state . ' ';
             }
             if ($quote->user_zip) {
-                echo '<div>' . $quote->user_zip . '</div>';
+                echo $quote->user_zip;
             }
-        }
-        if ($quote->user_state) {
-            echo '<div>' . $quote->user_state . '</div>';
+            echo '</div>';
         }
         if ($quote->user_country) {
             echo '<div>' . get_country_name(trans('cldr'), $quote->user_country) . '</div>';
