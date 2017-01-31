@@ -4,9 +4,14 @@
       <h1><?php echo trans('custom_values'); ?></h1>
 
       <div class="pull-right">
+          <a class="btn btn-sm btn-default" href="<?php echo site_url('custom_values'); ?>">
+            <i class="fa fa-arrow-left"></i> <?php echo trans('back'); ?>
+          </a>
+
           <a class="btn btn-sm btn-primary" href="<?php echo site_url('custom_values/new/'.$id); ?>">
               <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
           </a>
+
       </div>
   </div>
 
@@ -15,7 +20,7 @@
         <?php $this->layout->load_view('layout/alerts'); ?>
 
         <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('label'); ?>: </label>
+            <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('field'); ?>: </label>
             <div class="col-xs-12 col-sm-8 col-md-6">
                 <input type="text" name="custom_values_label" id="custom_values_label" class="form-control"
                        value="<?php echo $field->custom_field_label; ?>" disabled="disabled">

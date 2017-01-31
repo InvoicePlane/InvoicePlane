@@ -35,22 +35,11 @@ class Custom_Values extends Admin_Controller
         $this->layout->render();
     }
 
-    public function form($id = null)
+    public function field($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('custom_values');
         }
-
-        if ($this->mdl_custom_values->run_validation()) {
-            $this->mdl_custom_values->save($id);
-            redirect('custom_values');
-        }
-
-        /*if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_custom_values->prep_form($id)) {
-                show_404();
-            }
-        }*/
 
         $this->load->model('custom_fields/mdl_custom_fields');
         $field = $this->mdl_custom_fields->get_by_id($id);
@@ -62,12 +51,53 @@ class Custom_Values extends Admin_Controller
         $this->layout->set('field', $field);
         $this->layout->set('id', $id);
         $this->layout->set('custom_values_types', $custom_field_types);
-        $this->layout->buffer('content', 'custom_values/form');
+        $this->layout->buffer('content', 'custom_values/field');
         $this->layout->render();
     }
 
-    public function new($id = null){
+    public function edit($id = null){
       $this->layout->set('id', $id);
+
+      $value = $this->mdl_custom_values->get_by_id($id);
+      $fid = $value->custom_field_id;
+
+      if ($this->input->post('btn_cancel')) {
+          redirect('custom_values/field/'.$fid);
+      }
+
+      if ($this->mdl_custom_values->run_validation()) {
+          $this->mdl_custom_values->save($id);
+          redirect('custom_values/field/'.$fid);
+      }
+
+      $this->layout->set('fid', $fid);
+      $this->layout->set('value', $value);
+      $this->layout->buffer('content', 'custom_values/edit');
+      $this->layout->render();
+    }
+
+    public function new($id = null){
+
+      if(!$id)
+      {
+        redirect('custom_values');
+      }
+
+      $fid = $id;
+
+      if ($this->input->post('btn_cancel')) {
+          redirect('custom_values/field/'.$fid);
+      }
+
+      if ($this->mdl_custom_values->run_validation()) {
+          $this->mdl_custom_values->save_custom($fid);
+          redirect('custom_values/field/'.$fid);
+      }
+
+      $this->load->model('custom_fields/mdl_custom_fields');
+      $field = $this->mdl_custom_fields->get_by_id($id);
+      $this->layout->set('id', $id);
+      $this->layout->set('field', $field);
       $this->layout->buffer('content', 'custom_values/new');
       $this->layout->render();
     }
