@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Sessions extends Base_Controller
@@ -87,6 +87,7 @@ class Sessions extends Base_Controller
 
     public function passwordreset($token = null)
     {
+
         // Check if a token was provided
         if ($token) {
             $this->db->where('user_passwordreset_token', $token);
@@ -109,6 +110,22 @@ class Sessions extends Base_Controller
 
         // Check if the form for a new password was used
         if ($this->input->post('btn_new_password')) {
+
+            // CHECK TOKEN!
+            if($this->input->post('token') == '')
+            {
+              $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
+              redirect('sessions/login');
+            }
+            $this->db->where('user_passwordreset_token', $this->input->post('token'));
+            $user = $this->db->get('ip_users');
+            $user = $user->row();
+
+            if(empty($user)){
+              $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
+              redirect('sessions/login');
+            }
+
             $new_password = $this->input->post('new_password');
             $user_id = $this->input->post('user_id');
 
