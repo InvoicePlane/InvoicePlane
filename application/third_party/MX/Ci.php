@@ -15,8 +15,8 @@ require_once dirname(__FILE__).'/Config.php';
  *
  * Install this file as application/third_party/MX/Ci.php
  *
- * @copyright	Copyright (c) 2011 Wiredesignz
- * @version 	5.4
+ * @copyright	Copyright (c) 2015 Wiredesignz
+ * @version 	5.5
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,14 +48,8 @@ class CI
 		global $LANG, $CFG;
 		
 		/* re-assign language and config for modules */
-		if ( ! is_a($LANG, 'MX_Lang')) $LANG = new MX_Lang;
-		if ( ! is_a($CFG, 'MX_Config')) $CFG = new MX_Config;
-		
-		/* assign the core loader */
-		self::$APP->load = new MX_Loader;
-		
-		/* autoload module items */
-		self::$APP->load->_autoloader(array());
+		if ( ! $LANG instanceof MX_Lang) $LANG = new MX_Lang;
+		if ( ! $CFG instanceof MX_Config) $CFG = new MX_Config;
 	}
 }
 

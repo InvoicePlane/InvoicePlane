@@ -24,22 +24,32 @@
             <th><?php echo trans('table'); ?></th>
             <th><?php echo trans('label'); ?></th>
             <th><?php echo trans('column'); ?></th>
+            <th><?php echo trans('type'); ?></th>
             <th><?php echo trans('options'); ?></th>
         </tr>
         </thead>
 
         <tbody>
         <?php foreach ($custom_fields as $custom_field) { ?>
+          <?php $alpha = str_replace("-","_",strtolower($custom_field->custom_field_type));  ?>
             <tr>
-                <td><?php echo $custom_field->custom_field_table; ?></td>
+                <td><?php echo lang($custom_tables[$custom_field->custom_field_table]); ?></td>
                 <td><?php echo $custom_field->custom_field_label; ?></td>
                 <td><?php echo $custom_field->custom_field_column; ?></td>
+                <td><?php echo trans($alpha);                     ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
+                            <?php if(in_array($custom_field->custom_field_type, $custom_value_fields)){?>
+                            <li>
+                                <a href="<?php echo site_url('custom_values/field/' . $custom_field->custom_field_id); ?>">
+                                    <i class="fa fa-list fa-margin"></i> <?php echo trans('values'); ?>
+                                </a>
+                            </li>
+                            <?php } ?>
                             <li>
                                 <a href="<?php echo site_url('custom_fields/form/' . $custom_field->custom_field_id); ?>">
                                     <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>

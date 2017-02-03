@@ -27,6 +27,9 @@
 /vendor/
 composer.lock
 
+# Documentation
+/output/
+
 /.htaccess
 .idea
 .sass-cache

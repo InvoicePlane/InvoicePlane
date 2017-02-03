@@ -20,6 +20,8 @@
                 <?php }
             } ?>
 
+            <br>
+
             <?php foreach ($writables as $writable) {
                 if ($writable['success']) { ?>
                     <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $writable['message']; ?></p>
