@@ -22,7 +22,7 @@ class Mdl_Setup extends CI_Model
 
     public function install_tables()
     {
-        $file_contents = read_file(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
+        $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
 
         $this->execute_contents($file_contents);
 
@@ -60,7 +60,7 @@ class Mdl_Setup extends CI_Model
 
                 // if (!$update_applied)
                 if (!$update_applied->num_rows()) {
-                    $file_contents = read_file(APPPATH . 'modules/setup/sql/' . $sql_file);
+                    $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
 
                     $this->execute_contents($file_contents);
 

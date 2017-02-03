@@ -25,6 +25,7 @@ class Ajax extends Admin_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('item_lookups/mdl_item_lookups');
+        $this->load->model('units/mdl_units');
         $this->load->library('encrypt');
 
         $quote_id = $this->input->post('quote_id');
@@ -40,6 +41,8 @@ class Ajax extends Admin_Controller
                     $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
+                    $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
+                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
@@ -330,6 +333,8 @@ class Ajax extends Admin_Controller
                     'item_description' => $quote_item->item_description,
                     'item_quantity' => $quote_item->item_quantity,
                     'item_price' => $quote_item->item_price,
+                    'item_product_unit_id' => $quote_item->item_product_unit_id,
+                    'item_product_unit' => $quote_item->item_product_unit,
                     'item_discount_amount' => $quote_item->item_discount_amount,
                     'item_order' => $quote_item->item_order
                 );
