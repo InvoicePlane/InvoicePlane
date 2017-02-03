@@ -61,7 +61,7 @@ class Setup extends MX_Controller
 
         $this->load->helper('directory');
 
-        $languages = directory_map(APPPATH . '/language', true);
+        $languages = directory_map(APPPATH . '/language', 1);
 
         sort($languages);
 
@@ -252,8 +252,8 @@ class Setup extends MX_Controller
             './uploads/customer_files',
             './uploads/temp',
             './uploads/temp/mpdf',
-            './' . APPPATH . 'config/', // for database.php
-            './' . APPPATH . 'logs'
+            './application/config/',
+            './application/logs',
         );
 
         foreach ($writables as $writable) {
@@ -321,7 +321,7 @@ class Setup extends MX_Controller
     {
         $checks = array();
 
-        $php_required = '5.4';
+        $php_required = '5.6';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
         if ($php_installed < $php_required) {
@@ -357,7 +357,7 @@ class Setup extends MX_Controller
 
     private function write_database_config($hostname, $username, $password, $database)
     {
-        $db_file = read_file(APPPATH . 'config/database_empty.php');
+        $db_file = file_get_contents(APPPATH . 'config/database_empty.php');
 
         $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'', '$db[\'default\'][\'hostname\'] = \'' . addcslashes($hostname, '\'\\') . '\'', $db_file);
         $db_file = str_replace('$db[\'default\'][\'username\'] = \'\'', '$db[\'default\'][\'username\'] = \'' . addcslashes($username, '\'\\') . '\'', $db_file);
@@ -369,7 +369,7 @@ class Setup extends MX_Controller
 
     private function update_app_config()
     {
-        $conf_file = read_file(APPPATH . 'config/config.php');
+        $conf_file = file_get_contents(APPPATH . 'config/config.php');
 
         $conf_file = str_replace('$config[\'sess_use_database\'] = false;', '$config[\'sess_use_database\'] = true;', $conf_file);
 

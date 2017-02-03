@@ -63,7 +63,7 @@ class Upload extends Admin_Controller
                 move_uploaded_file($tempFile, $targetFile);
             } else {
                 // If file exists then echo the error and set a http error response
-                echo trans('error_duplicate_file');;
+                echo trans('error_duplicate_file');
                 http_response_code(404);
             }
 

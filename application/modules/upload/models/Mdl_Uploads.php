@@ -14,6 +14,8 @@ if (!defined('BASEPATH'))
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  *
+ * @TODO Uploads model not working correctly at the moment, needs fix
+ *
  */
 
 class Mdl_Uploads extends Response_Model
