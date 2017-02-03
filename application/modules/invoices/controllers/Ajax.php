@@ -25,6 +25,7 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('item_lookups/mdl_item_lookups');
+        $this->load->model('units/mdl_units');
 
         $invoice_id = $this->input->post('invoice_id');
 
@@ -40,6 +41,8 @@ class Ajax extends Admin_Controller
                     $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
+                    $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
+                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);

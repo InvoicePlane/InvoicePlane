@@ -28,18 +28,18 @@
         if ($invoice->client_address_2) {
             echo '<div>' . $invoice->client_address_2 . '</div>';
         }
-        if ($invoice->client_city && $invoice->client_zip) {
-            echo '<div>' . $invoice->client_city . ' ' . $invoice->client_zip . '</div>';
-        } else {
+        if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
+            echo '<div>';
             if ($invoice->client_city) {
-                echo '<div>' . $invoice->client_city . '</div>';
+                echo $invoice->client_city . ' ';
+            }
+            if ($invoice->client_state) {
+                echo $invoice->client_state . ' ';
             }
             if ($invoice->client_zip) {
-                echo '<div>' . $invoice->client_zip . '</div>';
+                echo $invoice->client_zip;
             }
-        }
-        if ($invoice->client_state) {
-            echo '<div>' . $invoice->client_state . '</div>';
+            echo '</div>';
         }
         if ($invoice->client_country) {
             echo '<div>' . get_country_name(trans('cldr'), $invoice->client_country) . '</div>';
@@ -66,18 +66,18 @@
         if ($invoice->user_address_2) {
             echo '<div>' . $invoice->user_address_2 . '</div>';
         }
-        if ($invoice->user_city && $invoice->user_zip) {
-            echo '<div>' . $invoice->user_city . ' ' . $invoice->user_zip . '</div>';
-        } else {
+        if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
+            echo '<div>';
             if ($invoice->user_city) {
-                echo '<div>' . $invoice->user_city . '</div>';
+                echo $invoice->user_city . ' ';
+            }
+            if ($invoice->user_state) {
+                echo $invoice->user_state . ' ';
             }
             if ($invoice->user_zip) {
-                echo '<div>' . $invoice->user_zip . '</div>';
+                echo $invoice->user_zip;
             }
-        }
-        if ($invoice->user_state) {
-            echo '<div>' . $invoice->user_state . '</div>';
+            echo '</div>';
         }
         if ($invoice->user_country) {
             echo '<div>' . get_country_name(trans('cldr'), $invoice->user_country) . '</div>';
@@ -145,6 +145,10 @@
                 <td><?php echo nl2br($item->item_description); ?></td>
                 <td class="text-right">
                     <?php echo format_amount($item->item_quantity); ?>
+                    <?php if ($item->item_product_unit) : ?>
+                        <br>
+                        <small><?php echo $item->item_product_unit; ?></small>
+                    <?php endif; ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($item->item_price); ?>

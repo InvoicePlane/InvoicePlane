@@ -50,7 +50,7 @@ class Settings extends Admin_Controller
 
             $upload_config = array(
                 'upload_path' => './uploads/',
-                'allowed_types' => 'gif|jpg|png|svg',
+                'allowed_types' => 'gif|jpg|jpeg|png|svg',
                 'max_size' => '9999',
                 'max_width' => '9999',
                 'max_height' => '9999'

@@ -55,7 +55,8 @@
                             class="form-control input-sm">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
-                            <option value="<?php echo $tax_rate->tax_rate_id; ?>">
+                            <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                <?php if ($this->mdl_settings->setting('default_item_tax_rate') == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
                                 <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
                             </option>
                         <?php } ?>
@@ -71,7 +72,21 @@
                     <textarea name="item_description" class="input-sm form-control"></textarea>
                 </div>
             </td>
-            <td colspan="2" class="td-amount td-vert-middle">
+            <td class="td-amount">
+                <div class="input-group">
+                    <span class="input-group-addon"><?php echo trans('product_unit'); ?></span>
+                    <select name="item_product_unit_id" name="item_product_unit_id"
+                            class="form-control input-sm">
+                        <option value="0"><?php echo trans('none'); ?></option>
+                        <?php foreach ($units as $unit) { ?>
+                            <option value="<?php echo $unit->unit_id; ?>">
+                                <?php echo $unit->unit_name . "/"  . $unit->unit_name_plrl; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </td>
+            <td class="td-amount td-vert-middle">
                 <span><?php echo trans('subtotal'); ?></span><br/>
                 <span name="subtotal" class="amount"></span>
             </td>
@@ -182,7 +197,22 @@
                     </div>
                 </td>
 
-                <td colspan="2" class="td-amount td-vert-middle">
+                <td class="td-amount">
+                    <div class="input-group">
+                        <span class="input-group-addon"><?php echo trans('product_unit'); ?></span>
+                        <select name="item_product_unit_id" name="item_product_unit_id"
+                                class="form-control input-sm">
+                            <option value="0"><?php echo trans('none'); ?></option>
+                            <?php foreach ($units as $unit) { ?>
+                                <option value="<?php echo $unit->unit_id; ?>"
+                                        <?php if ($item->item_product_unit_id == $unit->unit_id) { ?>selected="selected"<?php } ?>>
+                                    <?php echo $unit->unit_name . "/"  . $unit->unit_name_plrl; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </td>
+                <td class="td-amount td-vert-middle">
                     <span><?php echo trans('subtotal'); ?></span><br/>
                     <span name="subtotal" class="amount">
                         <?php echo format_currency($item->item_subtotal); ?>

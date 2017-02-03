@@ -77,6 +77,7 @@ class Quotes extends Admin_Controller
     {
         $this->load->model('mdl_quote_items');
         $this->load->model('tax_rates/mdl_tax_rates');
+        $this->load->model('units/mdl_units');
         $this->load->model('mdl_quote_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_quote_custom');
@@ -107,6 +108,7 @@ class Quotes extends Admin_Controller
                 'items' => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
                 'quote_id' => $quote_id,
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
+                'units' => $this->mdl_units->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
                 'custom_fields' => $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result(),
                 'custom_js_vars' => array(
