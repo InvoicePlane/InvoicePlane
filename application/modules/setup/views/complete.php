@@ -18,7 +18,7 @@
             <br/>
             <code>Redirect /setup
                 <?php
-                if ($_SERVER['HTTPS'])
+                if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'])
                     echo 'https';
                 else
                     echo 'http';
