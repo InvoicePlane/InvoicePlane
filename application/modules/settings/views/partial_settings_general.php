@@ -19,7 +19,8 @@
                     <?php echo trans('language'); ?>
                 </label>
                 <select name="settings[default_language]" class="input-sm form-control">
-                    <?php foreach ($languages as $language) { ?>
+                    <?php foreach ($languages as $language) {
+                        $language = str_replace('/', '', $language); ?>
                         <option value="<?php echo $language; ?>"
                                 <?php if ($this->mdl_settings->setting('default_language') == $language) { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
                     <?php } ?>
