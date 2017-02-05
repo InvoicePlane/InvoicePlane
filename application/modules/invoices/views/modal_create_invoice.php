@@ -8,7 +8,7 @@
         });
 
         $().ready(function () {
-            $("[name='client_name']").select2();
+            $("[name='client_name']").select2({tags: true});
         });
 
         // Creates the invoice
