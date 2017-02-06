@@ -58,7 +58,7 @@ class Custom_Values extends Admin_Controller
     public function edit($id = null){
       $this->layout->set('id', $id);
 
-      $value = $this->mdl_custom_values->get_by_id($id);
+      $value = $this->mdl_custom_values->get_by_id($id)->row();
       $fid = $value->custom_field_id;
 
       if ($this->input->post('btn_cancel')) {
