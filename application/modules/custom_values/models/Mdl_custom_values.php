@@ -32,22 +32,11 @@ class Mdl_Custom_Values extends MY_Model
             return;
         }
 
-        $this->mdl_custom_fields->custom_values_field = $fid;
         $db_array = $this->db_array();
+        $db_array['custom_values_field'] = $fid;
+        //$this->mdl_custom_fields->custom_values_field = $fid;
 
         parent::save(null, $db_array);
-    }
-
-    public function db_array()
-    {
-        // Grab the default array from the base model
-        $db_array = parent::db_array();
-
-        // Change the post date to a UNIX timestamp
-        $db_array['custom_values_field'] = $this->mdl_custom_fields->custom_values_field;
-
-        // Return the array
-        return $db_array;
     }
 
     public function validation_rules()
