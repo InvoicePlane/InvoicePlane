@@ -65,12 +65,14 @@ function format_fallback($txt)
     return format_text($txt);
 }
 
-function print_field($module, $custom_field, $cv){
+function print_field($module, $custom_field, $cv, $classTop="", $classBottom="controls"){
 ?>
 <div class="form-group">
-  <label><?php echo $custom_field->custom_field_label; ?>: </label>
+  <div class="<?php echo $classTop;?>">
+    <label><?php echo $custom_field->custom_field_label; ?>: </label>
+  </div>
   <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_column . ']'); ?>
-  <div class="controls">
+  <div class="<?php echo $classBottom; ?>">
     <?php switch($custom_field->custom_field_type){
       case "DATE":
       $dateValue = ($fieldValue == "" ? "" : date_from_mysql($fieldValue));
@@ -121,8 +123,7 @@ function print_field($module, $custom_field, $cv){
       <select
         id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
         name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>]"
-        class="form-control"
-      >
+        class="form-control">
         <option value="0" <?php echo ($fieldValue == "0"?"selected":"");?>><?php echo trans("false");?></option>
         <option value="1" <?php echo ($fieldValue == "1"?"selected":"");?>><?php echo trans("true");?></option>
       </select>
