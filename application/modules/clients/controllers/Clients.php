@@ -127,6 +127,7 @@ class Clients extends Admin_Controller
         }
 
         $this->load->helper('country');
+        $this->load->helper('custom_values');
 
         $this->layout->set('custom_fields', $custom_fields);
         $this->layout->set('custom_values', $custom_values);
