@@ -76,9 +76,9 @@ function print_field($module, $custom_field, $cv){
       $dateValue = ($fieldValue == "" ? "" : date_from_mysql($fieldValue));
       ?>
       <input type="text" class="form-control input-sm datepicker"
-             name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-             id="<?php echo $custom_field->custom_field_column; ?>"
-             value="<?php echo form_prep($dateValue); ?>">
+             name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>]"
+             id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+             value="<?php echo htmlentities(form_prep($dateValue)); ?>">
       <?php break;
       case "SINGLE-CHOICE":
       $choices = $cv[$custom_field->custom_field_column];
@@ -87,8 +87,8 @@ function print_field($module, $custom_field, $cv){
         id="<?php echo $custom_field->custom_field_column; ?>">
         <?php foreach($choices as $val): ?>
           <?php if($val->custom_values_id == $fieldValue){ $selected = " selected "; } else { $selected = ""; } ?>
-          <option value="<?php echo $val->custom_values_id ?>"<?php echo $selected;?>>
-            <?php echo $val->custom_values_value; ?>
+          <option value="<?php echo htmlentities($val->custom_values_id) ?>"<?php echo $selected;?>>
+            <?php echo htmlentities($val->custom_values_value); ?>
           </option>
         <?php endforeach; ?>
       </select>
@@ -100,8 +100,8 @@ function print_field($module, $custom_field, $cv){
       $choices = $cv[$custom_field->custom_field_column];
       $selChoices = explode(",", $fieldValue); ?>
       <select
-          id="<?php echo $custom_field->custom_field_column; ?>"
-          name="custom[<?php echo $custom_field->custom_field_column; ?>][]"
+          id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+          name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>][]"
           multiple="multiple"
           class="form-control"
         >
@@ -111,7 +111,7 @@ function print_field($module, $custom_field, $cv){
         <?php endforeach; ?>
       </select>
       <script>
-        $('#<?php echo $custom_field->custom_field_column; ?>').select2();
+        $('#<?php echo htmlentities($custom_field->custom_field_column); ?>').select2();
       </script>
       <?php
       break;
@@ -119,8 +119,8 @@ function print_field($module, $custom_field, $cv){
       case "BOOLEAN":
       ?>
       <select
-        id="<?php echo $custom_field->custom_field_column; ?>"
-        name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+        id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+        name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>]"
         class="form-control"
       >
         <option value="0" <?php echo ($fieldValue == "0"?"selected":"");?>><?php echo trans("false");?></option>
@@ -131,9 +131,9 @@ function print_field($module, $custom_field, $cv){
       default:
       ?>
       <input type="text" class="form-control"
-             name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-             id="<?php echo $custom_field->custom_field_column; ?>"
-             value="<?php echo form_prep($fieldValue); ?>">
+             name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>]"
+             id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+             value="<?php echo htmlentities(form_prep($fieldValue)); ?>">
     <?php } ?>
   </div>
 </div>
