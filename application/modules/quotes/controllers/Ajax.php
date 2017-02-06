@@ -100,16 +100,40 @@ class Ajax extends Admin_Controller
             );
         }
 
+
+        // Save all custom fields
         if ($this->input->post('custom')) {
             $db_array = array();
 
-            foreach ($this->input->post('custom') as $custom) {
-                // I hate myself for this...
-                $db_array[str_replace(']', '', str_replace('custom[', '', $custom['name']))] = $custom['value'];
+            $values = [];
+            foreach ($this->input->post('custom') as $custom){
+              if(preg_match("/^(.*)\[\]$/i", $custom['name'], $matches))
+              {
+                $values[$matches[1]][] = $custom['value'];
+              }
+              else{
+                $values[$custom['name']] = $custom['value'];
+              }
             }
 
+            foreach($values as $key=>$value){
+              preg_match("/^custom\[(.*?)\](?:\[\]|)$/", $key, $matches);
+              if($matches){
+                $db_array[$matches[1]] = $value;
+              }
+            }
             $this->load->model('custom_fields/mdl_quote_custom');
-            $this->mdl_quote_custom->save_custom($quote_id, $db_array);
+            $result = $this->mdl_quote_custom->save_custom($quote_id, $db_array);
+            if($result !== true)
+            {
+              $response = array(
+                  'success' => 0,
+                  'validation_errors' => $result
+              );
+
+              echo json_encode($response);
+              exit;
+            }
         }
 
         echo json_encode($response);
