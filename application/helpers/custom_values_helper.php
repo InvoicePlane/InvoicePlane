@@ -65,11 +65,11 @@ function format_fallback($txt)
     return format_text($txt);
 }
 
-function print_field($ref, $custom_field, $cv){
+function print_field($module, $custom_field, $cv){
 ?>
 <div class="form-group">
   <label><?php echo $custom_field->custom_field_label; ?>: </label>
-  <?php $fieldValue = $ref->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']'); ?>
+  <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_column . ']'); ?>
   <div class="controls">
     <?php switch($custom_field->custom_field_type){
       case "DATE":
@@ -82,12 +82,11 @@ function print_field($ref, $custom_field, $cv){
       <?php break;
       case "SINGLE-CHOICE":
       $choices = $cv[$custom_field->custom_field_column];
-      $formvalue = $ref->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']');
       ?>
       <select class="form-control" name="custom[<?php echo $custom_field->custom_field_column; ?>]"
         id="<?php echo $custom_field->custom_field_column; ?>">
         <?php foreach($choices as $val): ?>
-          <?php if($val->custom_values_id == $formvalue){ $selected = " selected "; } else { $selected = ""; } ?>
+          <?php if($val->custom_values_id == $fieldValue){ $selected = " selected "; } else { $selected = ""; } ?>
           <option value="<?php echo $val->custom_values_id ?>"<?php echo $selected;?>>
             <?php echo $val->custom_values_value; ?>
           </option>
@@ -99,9 +98,7 @@ function print_field($ref, $custom_field, $cv){
 
       case "MULTIPLE-CHOICE":
       $choices = $cv[$custom_field->custom_field_column];
-      $selChoices = $ref->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']');
-      $selChoices = explode(",", $selChoices);
-      ?>
+      $selChoices = explode(",", $fieldValue); ?>
       <select
           id="<?php echo $custom_field->custom_field_column; ?>"
           name="custom[<?php echo $custom_field->custom_field_column; ?>][]"
@@ -136,7 +133,7 @@ function print_field($ref, $custom_field, $cv){
       <input type="text" class="form-control"
              name="custom[<?php echo $custom_field->custom_field_column; ?>]"
              id="<?php echo $custom_field->custom_field_column; ?>"
-             value="<?php echo form_prep($ref->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
+             value="<?php echo form_prep($fieldValue); ?>">
     <?php } ?>
   </div>
 </div>

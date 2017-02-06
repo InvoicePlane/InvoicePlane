@@ -210,7 +210,7 @@
                           <?php foreach ($custom_fields as $custom_field): ?>
                             <?php $i++; ?>
                             <?php if ($i % 2 != 0): ?>
-                              <?php print_field($this, $custom_field, $cv); ?>
+                              <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
                             <?php endif; ?>
                           <?php endforeach; ?>
                         </div>
@@ -220,7 +220,7 @@
                           <?php foreach ($custom_fields as $custom_field): ?>
                             <?php $i++; ?>
                             <?php if ($i % 2 == 0): ?>
-                              <?php print_field($this, $custom_field, $cv); ?>
+                              <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
                             <?php endif; ?>
                           <?php endforeach; ?>
                         </div>

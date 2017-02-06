@@ -116,10 +116,12 @@ class Invoices extends Admin_Controller
             )
         );
 
+        $this->load->helper("custom_values");
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 
         $this->load->model('custom_fields/mdl_invoice_custom');
+        $this->load->model('custom_values/mdl_custom_values');
 
         $invoice_custom = $this->mdl_invoice_custom->where('invoice_id', $invoice_id)->get();
 
@@ -140,6 +142,16 @@ class Invoices extends Admin_Controller
             show_404();
         }
 
+        $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
+        $custom_values = [];
+        foreach($custom_fields as $custom_field){
+          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+          {
+            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+            $custom_values[$custom_field->custom_field_column] = $values;
+          }
+        }
+
         $this->layout->set(
             array(
                 'invoice' => $invoice,
@@ -149,7 +161,8 @@ class Invoices extends Admin_Controller
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units' => $this->mdl_units->get()->result(),
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result(),
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
                 'custom_js_vars' => array(
                     'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
