@@ -74,7 +74,7 @@ class Mdl_Uploads extends Response_Model
         return $names;
     }
 
-    public function delete($url_key, $filename)
+    public function delete_file($url_key, $filename)
     {
         $this->db->where('url_key', $url_key);
         $this->db->where('file_name_original', $filename);
