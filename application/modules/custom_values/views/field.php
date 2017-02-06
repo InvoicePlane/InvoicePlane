@@ -31,12 +31,12 @@
             <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('type'); ?>: </label>
             <div class="col-xs-12 col-sm-8 col-md-6">
                 <select name="custom_field_types" id="custom_field_types" class="form-control" disabled="disabled">
-                    <option value=""></option>
-                    <?php foreach ($custom_values_types as $type) {?>
-                    <?php $alpha = str_replace("-","_",strtolower($type));  ?>
-                        <option value="<?php echo $type; ?>"
-                                <?php if ($field->custom_field_type == $type) { ?>selected="selected"<?php } ?>><?php echo trans($alpha); ?></option>
-                    <?php } ?>
+                  <option value=""></option>
+                  <?php foreach ($custom_values_types as $type): ?>
+                  <?php $alpha = str_replace("-","_",strtolower($type));  ?>
+                  <option value="<?php echo $type; ?>"
+                  <?php echo ($field->custom_field_type == $type?'selected="selected"':'');?>><?php echo trans($alpha); ?></option>
+                  <?php endforeach; ?>
                 </select>
             </div>
         </div>
