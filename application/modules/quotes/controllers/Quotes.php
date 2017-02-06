@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Quotes extends Admin_Controller
@@ -75,11 +75,13 @@ class Quotes extends Admin_Controller
 
     public function view($quote_id)
     {
+        $this->load->helper("custom_values");
         $this->load->model('mdl_quote_items');
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('units/mdl_units');
         $this->load->model('mdl_quote_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_quote_custom');
         $this->load->library('encrypt');
 
@@ -102,6 +104,16 @@ class Quotes extends Admin_Controller
             show_404();
         }
 
+        $custom_fields = $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result();
+        $custom_values = [];
+        foreach($custom_fields as $custom_field){
+          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+          {
+            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+            $custom_values[$custom_field->custom_field_column] = $values;
+          }
+        }
+
         $this->layout->set(
             array(
                 'quote' => $quote,
@@ -110,7 +122,8 @@ class Quotes extends Admin_Controller
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'units' => $this->mdl_units->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result(),
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
                 'custom_js_vars' => array(
                     'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
