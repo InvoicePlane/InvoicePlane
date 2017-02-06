@@ -1,7 +1,5 @@
 <script type="text/javascript">
-
     $(function () {
-
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
@@ -119,7 +117,6 @@
         });
         <?php endif; ?>
     });
-
 </script>
 
 <?php
@@ -237,18 +234,12 @@ if ($this->config->item('disable_read_only') == true) {
 </div>
 
 <div id="content">
-
     <?php echo $this->layout->load_view('layout/alerts'); ?>
-
-    <form id="invoice_form" class="form-horizontal">
-
+    <form id="invoice_form">
         <div class="invoice">
-
             <div class="cf row">
-
                 <div class="col-xs-12 col-md-5">
                     <div class="pull-left">
-
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo $invoice->client_name; ?></a>
                             <?php if ($invoice->invoice_status_id == 1) { ?>
@@ -266,14 +257,19 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
                         </span>
                         <br><br>
-                        <?php if ($invoice->client_phone) { ?>
-                            <span><strong><?php echo trans('phone'); ?>
-                                    :</strong> <?php echo $invoice->client_phone; ?></span><br>
-                        <?php } ?>
-                        <?php if ($invoice->client_email) { ?>
-                            <span><strong><?php echo trans('email'); ?>
-                                    :</strong> <?php echo $invoice->client_email; ?></span>
-                        <?php } ?>
+                        <?php if ($invoice->client_phone): ?>
+                            <span>
+                              <strong><?php echo trans('phone'); ?>:</strong>
+                              <?php echo $invoice->client_phone; ?>
+                            </span>
+                            <br>
+                        <?php endif; ?>
+                        <?php if ($invoice->client_email): ?>
+                            <span>
+                              <strong><?php echo trans('email'); ?>:</strong>
+                              <?php echo $invoice->client_email; ?>
+                            </span>
+                        <?php endif; ?>
 
                     </div>
                 </div>
@@ -306,7 +302,7 @@ if ($this->config->item('disable_read_only') == true) {
                                         <?php else : ?>
                                             placeholder="<?php echo trans('not_set'); ?>"
                                         <?php endif; ?>
-                                        <?php if ($invoice->is_read_only == 1) {
+                                        <?php if ($invoice->is_read_only == 1){
                                             echo 'disabled="disabled"';
                                         } ?>>
                                 </div>
