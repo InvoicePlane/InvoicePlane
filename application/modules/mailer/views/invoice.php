@@ -205,12 +205,12 @@
                 <div class="col-lg-7"></div>
                 <div class="col-lg-5">
                     <!-- The global file processing state -->
-                    <span class="fileupload-process">
+                    <div class="fileupload-process">
                       <div id="total-progress" class="progress progress-striped active" role="progressbar"
                            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                           <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
                       </div>
-                    </span>
+                    </div>
                 </div>
 
                 <div class="table table-striped" class="files" id="previews">
