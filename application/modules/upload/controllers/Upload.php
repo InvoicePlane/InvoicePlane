@@ -78,9 +78,14 @@ class Upload extends Admin_Controller
         $path = $this->targetPath;
         $fileName = $_POST['name'];
 
-        $this->mdl_uploads->delete($url_key, $fileName);
+        $this->mdl_uploads->delete_file($url_key, $fileName);
 
-        unlink($path . '/' . $url_key . '_' . $fileName);
+        // AVOID TREE TRAVERSAL!
+        $finalPath = $path . '/' . $url_key . '_' . $fileName;
+        if(strpos(realpath($path),realpath($finalPath)) == 0)
+        {
+            unlink($path . '/' . $url_key . '_' . $fileName);
+        }
     }
 
     public function create_dir($path, $chmod = '0777')
@@ -102,7 +107,13 @@ class Upload extends Admin_Controller
         if ($files !== false) {
 
             foreach ($files as $file) {
-                if ('.' != $file && '..' != $file && strpos($file, $url_key) !== false) {
+                if(in_array($file, array(".",".."))){
+                  continue;
+                }
+                if(strpos($file,$url_key) !== 0){
+                  continue;
+                }
+                if (substr(realpath($path), realpath($file) == 0)) {
                     $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
                     $obj['fullname'] = $file;
                     $obj['size'] = filesize($path . '/' . $file);
@@ -126,13 +137,19 @@ class Upload extends Admin_Controller
      */
     public function get_file($filename)
     {
-        $file_path = UPLOADS_FOLDER . 'customer_files/' . $filename;
+        $base_path = UPLOADS_FOLDER . 'customer_files/';
+        $file_path = $base_path.$filename;
+
+        if(strpos(realpath($base_path), realpath($file_path))!=0)
+        {
+          show_404();
+          exit;
+        }
 
         $path_parts = pathinfo($file_path);
         $file_ext = $path_parts['extension'];
-        $file = @fopen($file_path, 'rb');
 
-        if ($file) {
+        if (file_exists($file_path)) {
             $file_size = filesize($file_path);
 
             $save_ctype = isset($this->content_types[$file_ext]);
@@ -144,7 +161,8 @@ class Upload extends Admin_Controller
             header("Content-Type: " . $ctype);
             header("Content-Length: " . $file_size);
 
-            return $file;
+            echo file_get_contents($file_path);
+            exit;
         }
 
         show_404();
