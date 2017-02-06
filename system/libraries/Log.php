@@ -38,6 +38,8 @@ class CI_Log {
 	 */
 	public function __construct()
 	{
+		// you should ask for it on the setup
+		date_default_timezone_set('Europe/Berlin');
 		$config =& get_config();
 
 		$this->_log_path = ($config['log_path'] != '') ? $config['log_path'] : APPPATH.'logs/';
