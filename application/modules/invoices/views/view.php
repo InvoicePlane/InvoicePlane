@@ -52,7 +52,7 @@
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
                     invoice_terms: $('#invoice_terms').val(),
-                    custom: $('input[name^=custom]').serializeArray(),
+                    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
@@ -483,18 +483,34 @@ if ($this->config->item('disable_read_only') == true) {
             </div>
 
             <?php if ($custom_fields): ?>
-                <h4 class="no-margin"><?php echo trans('custom_fields'); ?></h4>
+            <?php $cv = $this->controller->view_data["custom_values"]; ?>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <fieldset>
+                            <legend><?php echo trans('custom_fields'); ?></legend>
+                            <div class="col-xs-6">
+                              <?php $i = 0; ?>
+                              <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 != 0): ?>
+                                  <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                              <?php endforeach; ?>
+                            </div>
+
+                            <div class="col-xs-6">
+                              <?php $i = 0; ?>
+                              <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 == 0): ?>
+                                  <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                              <?php endforeach; ?>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
             <?php endif; ?>
-            <?php foreach ($custom_fields as $custom_field) { ?>
-                <label><?php echo $custom_field->custom_field_label; ?></label>
-                <input type="text" class="form-control"
-                       name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                       id="<?php echo $custom_field->custom_field_column; ?>"
-                       value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
-                    <?php if ($invoice->is_read_only == 1) {
-                        echo 'disabled="disabled"';
-                    } ?>>
-            <?php } ?>
 
 
             <?php if ($invoice->invoice_status_id != 1) { ?>

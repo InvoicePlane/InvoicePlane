@@ -122,7 +122,6 @@ class Clients extends Admin_Controller
           {
             $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
             $custom_values[$custom_field->custom_field_column] = $values;
-            //var_dump($values);
           }
         }
 
