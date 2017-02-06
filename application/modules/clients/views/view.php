@@ -173,7 +173,6 @@
                     </table>
                 </div>
             </div>
-
             <?php if ($custom_fields) : ?>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
@@ -182,8 +181,12 @@
                         <table class="table table-condensed table-striped">
                             <?php foreach ($custom_fields as $custom_field) : ?>
                                 <tr>
+                                    <?php
+                                      $column = $custom_field->custom_field_column;
+                                      $value = $this->mdl_client_custom->form_value($column);
+                                    ?>
                                     <th><?php echo $custom_field->custom_field_label ?></th>
-                                    <td><?php echo nl2br($client->{$custom_field->custom_field_column}); ?></td>
+                                    <td><?php echo nl2br($value); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>

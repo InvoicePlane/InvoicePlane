@@ -35,3 +35,4 @@ composer.lock
 .sass-cache
 adminer.php
 /nbproject/
+/.php_cs.cache
