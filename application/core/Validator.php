@@ -163,10 +163,10 @@ class Validator extends MY_Model
 
                 if ($result == false) {
                     $errors[] = array(
-                  "field" => $model->custom_field_column,
-                  "label" => $model->custom_field_label,
-                  "error_msg" => "invalid input"
-                );
+                    "field" => $model->custom_field_column,
+                    "label" => $model->custom_field_label,
+                    "error_msg" => "invalid input"
+                  );
                 }
             }
         }
