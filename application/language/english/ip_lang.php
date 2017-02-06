@@ -568,4 +568,10 @@ $lang = array(
     'in_progress'                                  => 'In progress',
     'complete'                                     => 'Complete',
 
+    // Errors
+    'validator_fail'                               => 'Unable to process field %s: %s',
+
+    // Types
+    'true'                                         => 'True',
+    'false'                                        => 'False'
 );

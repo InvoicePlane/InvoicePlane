@@ -21,21 +21,6 @@ class Mdl_Custom_Values extends MY_Model
     public $table = 'ip_custom_values';
     public $primary_key = 'ip_custom_values.custom_values_id';
 
-    /*public function save_custom($id, $db_array)
-    {
-        /*$client_custom_id = null;
-
-        $db_array['client_id'] = $client_id;
-
-        $client_custom = $this->where('client_id', $client_id)->get();
-
-        if ($client_custom->num_rows()) {
-            $client_custom_id = $client_custom->row()->client_custom_id;
-        }
-
-        parent::save($client_custom_id, $db_array);
-    }*/
-
     public function save_custom($fid)
     {
         $field_id = null;
@@ -87,11 +72,11 @@ class Mdl_Custom_Values extends MY_Model
         );
     }
 
-    public function custom_types(){
-      return array_merge($this->user_input_types(), $this->custom_value_fields());
+    public static function custom_types(){
+      return array_merge(Mdl_Custom_Values::user_input_types(), Mdl_Custom_Values::custom_value_fields());
     }
 
-    public function user_input_types(){
+    public static function user_input_types(){
         return array(
             'TEXT',
             'DATE',
@@ -99,7 +84,7 @@ class Mdl_Custom_Values extends MY_Model
           );
     }
 
-    public function custom_value_fields(){
+    public static function custom_value_fields(){
         return array(
             'SINGLE-CHOICE',
             'MULTIPLE-CHOICE'
@@ -111,6 +96,35 @@ class Mdl_Custom_Values extends MY_Model
       $this->where('custom_values_field', $id);
       return $this->get();
     }
+
+    public function get_by_column($column)
+    {
+      $this->where('custom_field_column', $column);
+      return $this->get();
+    }
+
+    public function get_by_column_value($column, $value)
+    {
+      $this->where($column, $value);
+      return $this->get();
+    }
+
+    public function get_by_id($id){
+      return $this->where('custom_values_id', $id)->get();
+    }
+
+    public function column_has_value($column, $id)
+    {
+      $this->where('custom_field_column', $column);
+      $this->where('custom_values_id', $id);
+      $this->get();
+      if($this->num_rows())
+      {
+        return true;
+      }
+      return false;
+    }
+
 
     public function get_grouped(){
       $this->db->select('count(custom_field_label) as count');

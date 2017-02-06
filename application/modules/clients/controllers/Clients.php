@@ -73,10 +73,16 @@ class Clients extends Admin_Controller
             $id = $this->mdl_clients->save($id);
 
             $this->load->model('custom_fields/mdl_client_custom');
-
-            $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
-
-            redirect('clients/view/' . $id);
+            $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
+            if($result !== true){
+              $this->session->set_flashdata('alert_error', $result);
+              $this->session->set_flashdata('alert_success', null);
+              redirect('clients/form/' . $id);
+              return;
+            }
+            else{
+              redirect('clients/view/' . $id);
+            }
         }
 
         if ($id and !$this->input->post('btn_submit')) {
@@ -107,9 +113,23 @@ class Clients extends Admin_Controller
         }
 
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('custom_values/mdl_custom_values');
+
+        $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
+        $custom_values = [];
+        foreach($custom_fields as $custom_field){
+          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+          {
+            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+            $custom_values[$custom_field->custom_field_column] = $values;
+            //var_dump($values);
+          }
+        }
+
         $this->load->helper('country');
 
-        $this->layout->set('custom_fields', $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result());
+        $this->layout->set('custom_fields', $custom_fields);
+        $this->layout->set('custom_values', $custom_values);
         $this->layout->set('countries', get_country_list(trans('cldr')));
         $this->layout->set('selected_country', $this->mdl_clients->form_value('client_country') ?:
             $this->mdl_settings->setting('default_country'));
@@ -125,8 +145,12 @@ class Clients extends Admin_Controller
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('custom_fields/mdl_client_custom');
 
         $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
+        $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
+
+        $this->mdl_client_custom->prep_form($client_id);
 
         if (!$client) {
             show_404();
@@ -139,9 +163,9 @@ class Clients extends Admin_Controller
                 'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
                 'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
                 'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result(),
+                'custom_fields' => $custom_fields,
                 'quote_statuses' => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'invoice_statuses' => $this->mdl_invoices->statuses()
             )
         );
 

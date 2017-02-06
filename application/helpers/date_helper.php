@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 /**
@@ -105,6 +105,14 @@ function date_to_mysql($date)
 
     $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
     return $date->format('Y-m-d');
+}
+
+function is_date($date)
+{
+    $CI = &get_instance();
+    $format = $CI->mdl_settings->setting('date_format');
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) == $date;
 }
 
 function date_format_setting()

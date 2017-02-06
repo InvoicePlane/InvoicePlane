@@ -39,13 +39,16 @@ class Mdl_Custom_Fields extends MY_Model
 
     public function custom_types()
     {
-        return array(
-          'TEXT',
-          'DATE',
-          'BOOLEAN',
-          'SINGLE-CHOICE',
-          'MULTIPLE-CHOICE'
-        );
+        $this->load->module("custom_values/mdl_custom_values");
+        return Mdl_Custom_Values::custom_types();
+    }
+
+    public function get_nicename($element){
+      if(in_array($element, $this->custom_types()))
+      {
+        return strtolower(str_replace("-","",$element));
+      }
+      return "fallback";
     }
 
     public function validation_rules()
@@ -103,6 +106,16 @@ class Mdl_Custom_Fields extends MY_Model
         $db_array['custom_field_type'] = $type;
         // Return the db array
         return $db_array;
+    }
+
+    public function get_by_table($table){
+        $this->where('custom_field_table', $table);
+        return $this->get();
+    }
+
+    public function get_by_column($column){
+        $this->where('custom_field_column', $column);
+        return $this->get();
     }
 
     public function save($id = null, $db_array = null)
