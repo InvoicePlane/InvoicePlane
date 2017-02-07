@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Users extends Admin_Controller
@@ -78,17 +78,30 @@ class Users extends Admin_Controller
             }
         }
 
+        $this->load->helper('custom_values');
         $this->load->model('users/mdl_user_clients');
         $this->load->model('clients/mdl_clients');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('custom_values/mdl_custom_values');
         $this->load->helper('country');
+
+        $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
+        $custom_values = [];
+        foreach($custom_fields as $custom_field){
+          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+          {
+            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+            $custom_values[$custom_field->custom_field_column] = $values;
+          }
+        }
 
         $this->layout->set(
             array(
                 'id' => $id,
                 'user_types' => $this->mdl_users->user_types(),
                 'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result(),
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
                 'countries' => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_users->form_value('user_country') ?:
                     $this->mdl_settings->setting('default_country'),
