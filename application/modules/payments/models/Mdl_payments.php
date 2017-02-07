@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Mdl_Payments extends Response_Model
@@ -84,7 +84,11 @@ class Mdl_Payments extends Response_Model
         $invoice_id = $this->input->post('invoice_id');
         $payment_id = $this->input->post('payment_id');
 
-        $invoice_balance = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row()->invoice_balance;
+        $invoice = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+        if($invoice == null){
+          return false;
+        }
+        $invoice_balance = $invoice->invoice_balance;
 
         if ($payment_id) {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();

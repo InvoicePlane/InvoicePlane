@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Payments extends Admin_Controller
@@ -67,6 +67,7 @@ class Payments extends Admin_Controller
             }
 
             $this->load->model('custom_fields/mdl_payment_custom');
+            $this->load->model('custom_values/mdl_custom_values');
 
             $payment_custom = $this->mdl_payment_custom->where('payment_id', $id)->get();
 
@@ -87,11 +88,23 @@ class Payments extends Admin_Controller
             }
         }
 
+        $this->load->helper('custom_values');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('payment_methods/mdl_payment_methods');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('custom_values/mdl_custom_values');
 
         $open_invoices = $this->mdl_invoices->where('ip_invoice_amounts.invoice_balance >', 0)->get()->result();
+
+        $custom_fields = $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result();
+        $custom_values = [];
+        foreach($custom_fields as $custom_field){
+          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+          {
+            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+            $custom_values[$custom_field->custom_field_column] = $values;
+          }
+        }
 
         $amounts = array();
         $invoice_payment_methods = array();
@@ -105,7 +118,8 @@ class Payments extends Admin_Controller
                 'payment_id' => $id,
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
                 'open_invoices' => $open_invoices,
-                'custom_fields' => $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result(),
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
                 'amounts' => json_encode($amounts),
                 'invoice_payment_methods' => json_encode($invoice_payment_methods)
             )

@@ -28,15 +28,12 @@ class Mdl_Invoice_Custom extends Validator
         if ($result === true) {
             $db_array = $this->_formdata;
             $invoice_custom_id = null;
-
             $db_array['invoice_id'] = $invoice_id;
-
             $invoice_custom = $this->where('invoice_id', $invoice_id)->get();
 
             if ($invoice_custom->num_rows()) {
                 $invoice_custom_id = $invoice_custom->row()->invoice_custom_id;
             }
-
             parent::save($invoice_custom_id, $db_array);
             return true;
         }
