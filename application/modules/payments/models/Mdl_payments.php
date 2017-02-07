@@ -112,7 +112,6 @@ class Mdl_Payments extends Response_Model
         $id = parent::save($id, $db_array);
 
         // Set proper status for the invoice
-        //$this->db->where('invoice_id', $db_array['invoice_id']);
 
         $invoice = $this->db->where('invoice_id',  $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
 
