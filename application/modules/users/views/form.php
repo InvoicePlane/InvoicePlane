@@ -308,7 +308,14 @@
 
                     <legend><?php echo trans('custom_fields'); ?></legend>
 
-                    <?php foreach ($custom_fields as $custom_field) { ?>
+
+                    <?php
+                    $cv = $this->controller->view_data["custom_values"];
+                    foreach ($custom_fields as $custom_field) {
+                      print_field($this->mdl_users, $custom_field, $cv, "col-xs-12 col-sm-3 text-right text-left-xs", "col-xs-12 col-sm-6");
+                    } ?>
+
+                    <?php /*foreach ($custom_fields as $custom_field) { ?>
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                                 <label class="control-label">
@@ -322,7 +329,7 @@
                                        value="<?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
                             </div>
                         </div>
-                    <?php } ?>
+                    <?php }*/ ?>
                 </fieldset>
 
             </div>
