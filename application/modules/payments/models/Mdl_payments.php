@@ -29,7 +29,7 @@ class Mdl_Payments extends Response_Model
             ip_payment_methods.*,
             ip_invoice_amounts.*,
             ip_clients.client_name,
-        	ip_clients.client_id,
+        	  ip_clients.client_id,
             ip_invoices.invoice_number,
             ip_invoices.invoice_date_created,
             ip_payments.*", false);
@@ -112,9 +112,22 @@ class Mdl_Payments extends Response_Model
         $id = parent::save($id, $db_array);
 
         // Set proper status for the invoice
-        $this->db->where('invoice_id', $db_array['invoice_id']);
-        $this->db->set('invoice_status_id', 4);
-        $this->db->update('ip_invoices');
+        //$this->db->where('invoice_id', $db_array['invoice_id']);
+
+        $invoice = $this->db->where('invoice_id',  $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
+
+        // Calculate sum for payments
+        if($invoice == null){
+          return false;
+        }
+        $paid = (float) $invoice->invoice_paid;
+        $total = (float) $invoice->invoice_total;
+
+        if($paid + $payment->payment_amount >= $total)
+        {
+          $this->db->set('invoice_status_id', 4);
+          $this->db->update('ip_invoices');
+        }
 
         // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
