@@ -122,7 +122,7 @@ class Mdl_Payments extends Response_Model
         $paid = (float) $invoice->invoice_paid;
         $total = (float) $invoice->invoice_total;
 
-        if($paid + $payment->payment_amount >= $total)
+        if($paid >= $total)
         {
           $this->db->set('invoice_status_id', 4);
           $this->db->update('ip_invoices');
