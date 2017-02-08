@@ -35,6 +35,9 @@ class Validator extends MY_Model
 
     public function validate_date($value)
     {
+        if($value == ""){
+          return null;
+        }
         if (!is_date($value)) {
             $this->form_validation->set_message('validate_date', 'Invalid date');
             return false;
@@ -48,11 +51,17 @@ class Validator extends MY_Model
       {
         return true;
       }
+      if($value == ""){
+        return null;
+      }
       return false;
     }
 
     public function validate_singlechoice($value, $key)
     {
+        if($value == ""){
+          return null;
+        }
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
         $result = $this->custom_value->column_has_value($key, $value);
         return $result;
@@ -60,6 +69,9 @@ class Validator extends MY_Model
 
     public function validate_multiplechoice($value, $key)
     {
+        if($value == ""){
+          return null;
+        }
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
         $this->custom_value->where('custom_field_column', $key);
         $dbvals = $this->custom_value->where_in('custom_values_id', $value)->get();
@@ -111,7 +123,13 @@ class Validator extends MY_Model
 
                 switch($ftype){
                   case "DATE":
-                    $this->_formdata[$key] = date_to_mysql($value);
+                    if($value == ""){
+                      $this->_formdata[$key] = null;
+                    }
+                    else{
+                      $this->_formdata[$key] = date_to_mysql($value);
+                    }
+
                   break;
 
                   case "MULTIPLE-CHOICE":
@@ -161,7 +179,7 @@ class Validator extends MY_Model
 
                 $result = $this->validate_type($model->custom_field_type, $value, $key);
 
-                if ($result == false) {
+                if ($result === false) {
                     $errors[] = array(
                     "field" => $model->custom_field_column,
                     "label" => $model->custom_field_label,

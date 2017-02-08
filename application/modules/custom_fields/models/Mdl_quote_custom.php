@@ -24,7 +24,7 @@ class Mdl_Quote_Custom extends Validator
     public function save_custom($quote_id, $db_array)
     {
         $result = $this->validate($db_array);
-        if($result){
+        if($result === true){
           $db_array = $this->_formdata;
           $quote_custom_id = null;
 
