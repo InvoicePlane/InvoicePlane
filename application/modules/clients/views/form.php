@@ -1,3 +1,7 @@
+<?php
+  $cv = $this->controller->view_data["custom_values"];
+?>
+
 <script type="text/javascript">
     $(function () {
         $('#client_name').focus();
@@ -196,27 +200,33 @@
             </div>
 
         </div>
-
-        <?php if ($custom_fields) { ?>
+        <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12">
                     <fieldset>
                         <legend><?php echo trans('custom_fields'); ?></legend>
-                        <?php foreach ($custom_fields as $custom_field) { ?>
-                            <div class="form-group">
-                                <label><?php echo $custom_field->custom_field_label; ?>: </label>
+                        <div class="col-xs-6">
+                          <?php $i = 0; ?>
+                          <?php foreach ($custom_fields as $custom_field): ?>
+                            <?php $i++; ?>
+                            <?php if ($i % 2 != 0): ?>
+                              <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                            <?php endif; ?>
+                          <?php endforeach; ?>
+                        </div>
 
-                                <div class="controls">
-                                    <input type="text" class="form-control"
-                                           name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                           id="<?php echo $custom_field->custom_field_column; ?>"
-                                           value="<?php echo form_prep($this->mdl_clients->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
-                                </div>
-                            </div>
-                        <?php } ?>
+                        <div class="col-xs-6">
+                          <?php $i = 0; ?>
+                          <?php foreach ($custom_fields as $custom_field): ?>
+                            <?php $i++; ?>
+                            <?php if ($i % 2 == 0): ?>
+                              <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                            <?php endif; ?>
+                          <?php endforeach; ?>
+                        </div>
                     </fieldset>
                 </div>
             </div>
-        <?php } ?>
+        <?php endif; ?>
     </div>
 </form>

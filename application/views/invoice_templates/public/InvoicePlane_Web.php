@@ -182,7 +182,7 @@
                         <tr>
                             <td colspan="4"></td>
                             <td class="text-right"><?php echo trans('subtotal'); ?>:</td>
-                            <td class="amount"><?php echo format_currency($invoice->invoice_item_total); ?></td>
+                            <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
                         </tr>
 
                         <?php if ($invoice->invoice_item_tax_total > 0) { ?>

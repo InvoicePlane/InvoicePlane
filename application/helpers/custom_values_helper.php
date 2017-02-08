@@ -1,0 +1,164 @@
+<?php
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+/*
+ * InvoicePlane
+ *
+ * A free and open source web based invoicing system
+ *
+ * @package		InvoicePlane
+ * @author		Kovah (www.kovah.de)
+ * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
+ *
+ */
+
+function format_date($txt)
+{
+    if($txt == null)
+    {
+      return "";
+    }
+    return date_from_mysql($txt);
+}
+
+function format_text($txt)
+{
+    if($txt == null)
+    {
+      return "";
+    }
+    return $txt;
+}
+
+function format_singlechoice($txt)
+{
+    if($txt == null)
+    {
+      return "";
+    }
+    $CI = get_instance();
+    $CI->load->model('custom_values/mdl_custom_values', 'cv');
+    $el = $CI->cv->get_by_id($txt)->row();
+    return $el->custom_values_value;
+}
+
+function format_multiplechoice($txt)
+{
+    if($txt == null)
+    {
+      return "";
+    }
+    $CI = get_instance();
+    $CI->load->model('custom_values/mdl_custom_values', 'cv');
+
+    $values = explode(",",$txt);
+    $values = $CI->cv->where_in('custom_values_id', $values)->get()->result();
+    $values_text = [];
+    foreach($values as $value){
+        $values_text[] = $value->custom_values_value;
+    }
+    return implode("\n",$values_text);
+}
+
+function format_boolean($txt){
+  if($txt == null)
+  {
+    return "";
+  }
+  if($txt == "1")
+  {
+    return trans("true");
+  }
+  else if($txt == "0"){
+    return trans("false");
+  }
+  return "";
+}
+
+function format_fallback($txt)
+{
+    return format_text($txt);
+}
+
+function print_field($module, $custom_field, $cv, $classTop="", $classBottom="controls"){
+?>
+<div class="form-group">
+  <div class="<?php echo $classTop;?>">
+    <label><?php echo $custom_field->custom_field_label; ?>: </label>
+  </div>
+  <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_column . ']'); ?>
+  <div class="<?php echo $classBottom; ?>">
+    <?php switch($custom_field->custom_field_type){
+      case "DATE":
+      $dateValue = ($fieldValue == "" ? "" : date_from_mysql($fieldValue));
+      ?>
+      <input type="text" class="form-control input-sm datepicker"
+             name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>]"
+             id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+             value="<?php echo htmlentities(form_prep($dateValue)); ?>">
+      <?php break;
+      case "SINGLE-CHOICE":
+      $choices = $cv[$custom_field->custom_field_column];
+      ?>
+      <select class="form-control" name="custom[<?php echo $custom_field->custom_field_column; ?>]"
+        id="<?php echo $custom_field->custom_field_column; ?>">
+        <option value=""></option>
+        <?php foreach($choices as $val): ?>
+          <?php if($val->custom_values_id == $fieldValue){ $selected = " selected "; } else { $selected = ""; } ?>
+          <option value="<?php echo htmlentities($val->custom_values_id) ?>"<?php echo $selected;?>>
+            <?php echo htmlentities($val->custom_values_value); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+      <?php
+
+      break;
+
+      case "MULTIPLE-CHOICE":
+      $choices = $cv[$custom_field->custom_field_column];
+      $selChoices = explode(",", $fieldValue); ?>
+      <select
+          id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+          name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>][]"
+          multiple="multiple"
+          class="form-control"
+        >
+        <option value=""></option>
+        <?php foreach($choices as $choice): ?>
+        <?php $sel = (in_array($choice->custom_values_id, $selChoices)?'selected="selected"':""); ?>
+        <option value="<?php echo htmlentities($choice->custom_values_id); ?>" <?php echo $sel; ?>><?php echo htmlentities($choice->custom_values_value); ?></option>
+        <?php endforeach; ?>
+      </select>
+      <script>
+        $('#<?php echo htmlentities($custom_field->custom_field_column); ?>').select2();
+      </script>
+      <?php
+      break;
+
+      case "BOOLEAN":
+      ?>
+      <select
+        id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+        name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>]"
+        class="form-control">
+        <option value="0" <?php echo ($fieldValue == "0"?"selected":"");?>><?php echo trans("false");?></option>
+        <option value="1" <?php echo ($fieldValue == "1"?"selected":"");?>><?php echo trans("true");?></option>
+      </select>
+      <?php
+      break;
+      default:
+      ?>
+      <input type="text" class="form-control"
+             name="custom[<?php echo htmlentities($custom_field->custom_field_column); ?>]"
+             id="<?php echo htmlentities($custom_field->custom_field_column); ?>"
+             value="<?php echo htmlentities(form_prep($fieldValue)); ?>">
+    <?php } ?>
+  </div>
+</div>
+<?php
+}
