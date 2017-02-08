@@ -1,7 +1,5 @@
 <script type="text/javascript">
-
     $(function () {
-
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
@@ -52,7 +50,7 @@
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
                     invoice_terms: $('#invoice_terms').val(),
-                    custom: $('input[name^=custom]').serializeArray(),
+                    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
@@ -119,7 +117,6 @@
         });
         <?php endif; ?>
     });
-
 </script>
 
 <?php
@@ -237,18 +234,12 @@ if ($this->config->item('disable_read_only') == true) {
 </div>
 
 <div id="content">
-
     <?php echo $this->layout->load_view('layout/alerts'); ?>
-
-    <form id="invoice_form" class="form-horizontal">
-
+    <form id="invoice_form">
         <div class="invoice">
-
             <div class="cf row">
-
                 <div class="col-xs-12 col-md-5">
                     <div class="pull-left">
-
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo $invoice->client_name; ?></a>
                             <?php if ($invoice->invoice_status_id == 1) { ?>
@@ -266,14 +257,19 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
                         </span>
                         <br><br>
-                        <?php if ($invoice->client_phone) { ?>
-                            <span><strong><?php echo trans('phone'); ?>
-                                    :</strong> <?php echo $invoice->client_phone; ?></span><br>
-                        <?php } ?>
-                        <?php if ($invoice->client_email) { ?>
-                            <span><strong><?php echo trans('email'); ?>
-                                    :</strong> <?php echo $invoice->client_email; ?></span>
-                        <?php } ?>
+                        <?php if ($invoice->client_phone): ?>
+                            <span>
+                              <strong><?php echo trans('phone'); ?>:</strong>
+                              <?php echo $invoice->client_phone; ?>
+                            </span>
+                            <br>
+                        <?php endif; ?>
+                        <?php if ($invoice->client_email): ?>
+                            <span>
+                              <strong><?php echo trans('email'); ?>:</strong>
+                              <?php echo $invoice->client_email; ?>
+                            </span>
+                        <?php endif; ?>
 
                     </div>
                 </div>
@@ -306,7 +302,7 @@ if ($this->config->item('disable_read_only') == true) {
                                         <?php else : ?>
                                             placeholder="<?php echo trans('not_set'); ?>"
                                         <?php endif; ?>
-                                        <?php if ($invoice->is_read_only == 1) {
+                                        <?php if ($invoice->is_read_only == 1){
                                             echo 'disabled="disabled"';
                                         } ?>>
                                 </div>
@@ -433,13 +429,13 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-lg-7"></div>
                             <div class="col-lg-5">
                                 <!-- The global file processing state -->
-                                <span class="fileupload-process">
+                                <div class="fileupload-process">
                                     <div id="total-progress" class="progress progress-striped active" role="progressbar"
                                          aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                                         <div class="progress-bar progress-bar-success" style="width:0%;"
                                              data-dz-uploadprogress></div>
                                     </div>
-                                </span>
+                                </div>
                             </div>
 
                             <div id="previews" class="table table-condensed table-striped files">
@@ -483,18 +479,34 @@ if ($this->config->item('disable_read_only') == true) {
             </div>
 
             <?php if ($custom_fields): ?>
-                <h4 class="no-margin"><?php echo trans('custom_fields'); ?></h4>
+            <?php $cv = $this->controller->view_data["custom_values"]; ?>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <fieldset>
+                            <legend><?php echo trans('custom_fields'); ?></legend>
+                            <div class="col-xs-6">
+                              <?php $i = 0; ?>
+                              <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 != 0): ?>
+                                  <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                              <?php endforeach; ?>
+                            </div>
+
+                            <div class="col-xs-6">
+                              <?php $i = 0; ?>
+                              <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 == 0): ?>
+                                  <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                              <?php endforeach; ?>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
             <?php endif; ?>
-            <?php foreach ($custom_fields as $custom_field) { ?>
-                <label><?php echo $custom_field->custom_field_label; ?></label>
-                <input type="text" class="form-control"
-                       name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                       id="<?php echo $custom_field->custom_field_column; ?>"
-                       value="<?php echo form_prep($this->mdl_invoices->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>"
-                    <?php if ($invoice->is_read_only == 1) {
-                        echo 'disabled="disabled"';
-                    } ?>>
-            <?php } ?>
 
 
             <?php if ($invoice->invoice_status_id != 1) { ?>

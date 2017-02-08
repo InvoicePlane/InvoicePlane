@@ -115,25 +115,16 @@
                 <label for="payment_note" class="control-label"><?php echo trans('note'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <textarea name="payment_note"
-                          class="form-control"><?php echo $this->mdl_payments->form_value('payment_note'); ?></textarea>
+                <textarea name="payment_note" class="form-control"><?php echo $this->mdl_payments->form_value('payment_note'); ?></textarea>
             </div>
 
         </div>
 
-        <?php foreach ($custom_fields as $custom_field) { ?>
-            <div class="form-group">
-                <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                    <label><?php echo $custom_field->custom_field_label; ?>: </label>
-                </div>
-                <div class="col-xs-12 col-sm-6">
-                    <input type="text" name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                           id="<?php echo $custom_field->custom_field_column; ?>"
-                           class="form-control"
-                           value="<?php echo form_prep($this->mdl_payments->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
-                </div>
-            </div>
-        <?php } ?>
+        <?php
+        $cv = $this->controller->view_data["custom_values"];
+        foreach($custom_fields as $custom_field){
+            print_field($this->mdl_payments, $custom_field, $cv, "col-xs-12 col-sm-2 text-right text-left-xs", "col-xs-12 col-sm-6");
+        } ?>
 
     </div>
 

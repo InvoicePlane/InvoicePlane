@@ -27,8 +27,12 @@
 /vendor/
 composer.lock
 
+# Documentation
+/output/
+
 /.htaccess
 .idea
 .sass-cache
 adminer.php
 /nbproject/
+/.php_cs.cache

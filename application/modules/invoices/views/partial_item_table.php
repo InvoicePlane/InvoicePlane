@@ -51,7 +51,7 @@
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
-                    <select name="item_tax_rate_id" name="item_tax_rate_id"
+                    <select name="item_tax_rate_id"
                             class="form-control input-sm">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
@@ -75,7 +75,7 @@
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('product_unit'); ?></span>
-                    <select name="item_product_unit_id" name="item_product_unit_id"
+                    <select name="item_product_unit_id"
                             class="form-control input-sm">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
@@ -161,7 +161,7 @@
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
-                        <select name="item_tax_rate_id" name="item_tax_rate_id"
+                        <select name="item_tax_rate_id"
                                 class="form-control input-sm"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
@@ -200,7 +200,7 @@
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('product_unit'); ?></span>
-                        <select name="item_product_unit_id" name="item_product_unit_id"
+                        <select name="item_product_unit_id"
                                 class="form-control input-sm">
                             <option value="0"><?php echo trans('none'); ?></option>
                             <?php foreach ($units as $unit) { ?>

@@ -6,7 +6,7 @@ class ZugferdXml
     var $doc;
     var $root;
 
-    public function ZugferdXml($params)
+    public function __construct($params)
     {
         $CI = &get_instance();
         $this->invoice = $params['invoice'];

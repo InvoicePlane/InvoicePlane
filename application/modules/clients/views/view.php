@@ -41,8 +41,8 @@
             <i class="fa fa-file"></i> <?php echo trans('create_quote'); ?>
         </a>
         <a href="#" class="btn btn-sm btn-default client-create-invoice"
-           data-client-name="<?php echo $client->client_name; ?>"><i
-                class="fa fa-file-text""></i> <?php echo trans('create_invoice'); ?></a>
+           data-client-name="<?php echo $client->client_name; ?>">
+           <i class="fa fa-file-text"></i> <?php echo trans('create_invoice'); ?></a>
         <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
            class="btn btn-sm btn-default">
             <i class="fa fa-edit"></i> <?php echo trans('edit'); ?>
@@ -173,7 +173,6 @@
                     </table>
                 </div>
             </div>
-
             <?php if ($custom_fields) : ?>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
@@ -182,8 +181,12 @@
                         <table class="table table-condensed table-striped">
                             <?php foreach ($custom_fields as $custom_field) : ?>
                                 <tr>
+                                    <?php
+                                      $column = $custom_field->custom_field_column;
+                                      $value = $this->mdl_client_custom->form_value($column);
+                                    ?>
                                     <th><?php echo $custom_field->custom_field_label ?></th>
-                                    <td><?php echo nl2br($client->{$custom_field->custom_field_column}); ?></td>
+                                    <td><?php echo nl2br($value); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
