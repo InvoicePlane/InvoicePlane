@@ -359,10 +359,10 @@ class Setup extends MX_Controller
     {
         $db_file = file_get_contents(APPPATH . 'config/database_empty.php');
 
-        $db_file = str_replace('$db[\'default\'][\'hostname\'] = \'\'', '$db[\'default\'][\'hostname\'] = \'' . addcslashes($hostname, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'username\'] = \'\'', '$db[\'default\'][\'username\'] = \'' . addcslashes($username, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'password\'] = \'\'', '$db[\'default\'][\'password\'] = \'' . addcslashes($password, '\'\\') . '\'', $db_file);
-        $db_file = str_replace('$db[\'default\'][\'database\'] = \'\'', '$db[\'default\'][\'database\'] = \'' . addcslashes($database, '\'\\') . '\'', $db_file);
+        $db_file = str_replace("'hostname' => '',", "'hostname' => '" . addcslashes($hostname, '\'\\') . "',", $db_file);
+        $db_file = str_replace("'username' => '',", "'username' => '" . addcslashes($username, '\'\\') . "',", $db_file);
+        $db_file = str_replace("'password' => '',", "'password' => '" . addcslashes($password, '\'\\') . "',", $db_file);
+        $db_file = str_replace("'database' => '',", "'database' => '" . addcslashes($database, '\'\\') . "',", $db_file);
 
         write_file(APPPATH . 'config/database.php', $db_file);
     }
