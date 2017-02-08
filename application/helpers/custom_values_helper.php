@@ -19,16 +19,28 @@ if (!defined('BASEPATH')) {
 
 function format_date($txt)
 {
+    if($txt == null)
+    {
+      return "";
+    }
     return date_from_mysql($txt);
 }
 
 function format_text($txt)
 {
+    if($txt == null)
+    {
+      return "";
+    }
     return $txt;
 }
 
 function format_singlechoice($txt)
 {
+    if($txt == null)
+    {
+      return "";
+    }
     $CI = get_instance();
     $CI->load->model('custom_values/mdl_custom_values', 'cv');
     $el = $CI->cv->get_by_id($txt)->row();
@@ -37,6 +49,10 @@ function format_singlechoice($txt)
 
 function format_multiplechoice($txt)
 {
+    if($txt == null)
+    {
+      return "";
+    }
     $CI = get_instance();
     $CI->load->model('custom_values/mdl_custom_values', 'cv');
 
@@ -50,6 +66,10 @@ function format_multiplechoice($txt)
 }
 
 function format_boolean($txt){
+  if($txt == null)
+  {
+    return "";
+  }
   if($txt == "1")
   {
     return trans("true");
@@ -87,6 +107,7 @@ function print_field($module, $custom_field, $cv, $classTop="", $classBottom="co
       ?>
       <select class="form-control" name="custom[<?php echo $custom_field->custom_field_column; ?>]"
         id="<?php echo $custom_field->custom_field_column; ?>">
+        <option value=""></option>
         <?php foreach($choices as $val): ?>
           <?php if($val->custom_values_id == $fieldValue){ $selected = " selected "; } else { $selected = ""; } ?>
           <option value="<?php echo htmlentities($val->custom_values_id) ?>"<?php echo $selected;?>>
@@ -107,6 +128,7 @@ function print_field($module, $custom_field, $cv, $classTop="", $classBottom="co
           multiple="multiple"
           class="form-control"
         >
+        <option value=""></option>
         <?php foreach($choices as $choice): ?>
         <?php $sel = (in_array($choice->custom_values_id, $selChoices)?'selected="selected"':""); ?>
         <option value="<?php echo htmlentities($choice->custom_values_id); ?>" <?php echo $sel; ?>><?php echo htmlentities($choice->custom_values_value); ?></option>

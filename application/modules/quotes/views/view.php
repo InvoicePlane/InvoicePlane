@@ -57,10 +57,21 @@
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
                     }
                     else {
-                        $('.control-group').removeClass('error');
-                        for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('error');
+                        $('#fullpage-loader').hide();
+                        $('.control-group').removeClass('has-error');
+                        $('div.alert[class*="alert-"]').remove();
+                        var resp_errors = response.validation_errors,
+                            all_resp_errors = '';
+                        if(typeof(resp_errors) == "string"){
+                            all_resp_errors = resp_errors;
                         }
+                        else{
+                          for (var key in resp_errors) {
+                              $('#' + key).parent().addClass('has-error');
+                              all_resp_errors += resp_errors[key];
+                          }
+                        }
+                        $('#quote_form').prepend('<div class="alert alert-danger">' + all_resp_errors + '</div>');
                     }
                 });
         });
