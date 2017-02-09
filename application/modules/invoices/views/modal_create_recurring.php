@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create quote modal
         $('#modal_create_recurring').modal('show');

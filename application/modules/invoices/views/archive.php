@@ -7,7 +7,7 @@
             <form action="<?php echo site_url('invoices/archive/'); ?>" method="post">
                 <div class="input-group">
                     <input name="invoice_number" id="invoice_number" type="text" class="form-control">
-                  <span class="input-group-btn">
+                    <span class="input-group-btn">
                     <button class="btn btn-default" type="submit"><?php echo trans('filter_invoices'); ?></button>
                 </span>
                 </div>

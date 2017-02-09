@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Ajax
+ */
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
@@ -129,36 +126,32 @@ class Ajax extends Admin_Controller
             $db_array = array();
 
             $values = [];
-            foreach ($this->input->post('custom') as $custom){
-              if(preg_match("/^(.*)\[\]$/i", $custom['name'], $matches))
-              {
-                $values[$matches[1]][] = $custom['value'];
-              }
-              else{
-                $values[$custom['name']] = $custom['value'];
-              }
+            foreach ($this->input->post('custom') as $custom) {
+                if (preg_match("/^(.*)\[\]$/i", $custom['name'], $matches)) {
+                    $values[$matches[1]][] = $custom['value'];
+                } else {
+                    $values[$custom['name']] = $custom['value'];
+                }
             }
 
-            foreach($values as $key=>$value){
-              preg_match("/^custom\[(.*?)\](?:\[\]|)$/", $key, $matches);
-              if($matches){
-                $db_array[$matches[1]] = $value;
-              }
+            foreach ($values as $key => $value) {
+                preg_match("/^custom\[(.*?)\](?:\[\]|)$/", $key, $matches);
+                if ($matches) {
+                    $db_array[$matches[1]] = $value;
+                }
             }
-
 
 
             $this->load->model('custom_fields/mdl_invoice_custom');
             $result = $this->mdl_invoice_custom->save_custom($invoice_id, $db_array);
-            if($result !== true)
-            {
-              $response = array(
-                  'success' => 0,
-                  'validation_errors' => $result
-              );
+            if ($result !== true) {
+                $response = array(
+                    'success' => 0,
+                    'validation_errors' => $result
+                );
 
-              echo json_encode($response);
-              exit;
+                echo json_encode($response);
+                exit;
             }
         }
 

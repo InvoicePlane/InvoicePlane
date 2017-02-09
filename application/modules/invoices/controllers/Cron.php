@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Cron
+ */
 class Cron extends Base_Controller
 {
+    /**
+     * @param string|null $cron_key
+     */
     public function recur($cron_key = null)
     {
         // Check the provided cron key
@@ -117,4 +117,5 @@ class Cron extends Base_Controller
 
         log_message('debug', '[Recurring Invoices] ' . count($invoices_recurring) . ' recurring invoices processed');
     }
+
 }

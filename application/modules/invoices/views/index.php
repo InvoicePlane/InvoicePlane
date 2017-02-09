@@ -19,17 +19,18 @@
     <div class="pull-right visible-lg">
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/all'); ?>"><?php echo trans('all'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/all'); ?>"><?php echo trans('all'); ?></a></li>
             <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
             <li <?php if ($status == 'sent') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
             <li <?php if ($status == 'viewed') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
             <li <?php if ($status == 'paid') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo trans('paid'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo trans('paid'); ?></a></li>
             <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo trans('overdue'); ?></a></li>
+                        href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo trans('overdue'); ?></a>
+            </li>
         </ul>
     </div>
 
@@ -45,17 +46,19 @@
         <div class="submenu-row">
             <ul class="nav nav-pills index-options">
                 <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/all'); ?>"><?php echo trans('all'); ?></a></li>
+                            href="<?php echo site_url('invoices/status/all'); ?>"><?php echo trans('all'); ?></a></li>
                 <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
+                            href="<?php echo site_url('invoices/status/draft'); ?>"><?php echo trans('draft'); ?></a>
+                </li>
                 <li <?php if ($status == 'sent') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
+                            href="<?php echo site_url('invoices/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
                 <li <?php if ($status == 'viewed') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
+                            href="<?php echo site_url('invoices/status/viewed'); ?>"><?php echo trans('viewed'); ?></a>
+                </li>
                 <li <?php if ($status == 'paid') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo trans('paid'); ?></a></li>
+                            href="<?php echo site_url('invoices/status/paid'); ?>"><?php echo trans('paid'); ?></a></li>
                 <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo trans('overdue'); ?></a>
+                            href="<?php echo site_url('invoices/status/overdue'); ?>"><?php echo trans('overdue'); ?></a>
                 </li>
             </ul>
         </div>
