@@ -1,26 +1,57 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Mdl_Custom_Values
+ */
 class Mdl_Custom_Values extends MY_Model
 {
     public $table = 'ip_custom_values';
     public $primary_key = 'ip_custom_values.custom_values_id';
 
+    /**
+     * @return array
+     */
+    public static function custom_types()
+    {
+        return array_merge(Mdl_Custom_Values::user_input_types(), Mdl_Custom_Values::custom_value_fields());
+    }
+
+    /**
+     * @return array
+     */
+    public static function user_input_types()
+    {
+        return array(
+            'TEXT',
+            'DATE',
+            'BOOLEAN'
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public static function custom_value_fields()
+    {
+        return array(
+            'SINGLE-CHOICE',
+            'MULTIPLE-CHOICE'
+        );
+    }
+
+    /**
+     * @param $fid
+     */
     public function save_custom($fid)
     {
         $field_id = null;
@@ -34,11 +65,13 @@ class Mdl_Custom_Values extends MY_Model
 
         $db_array = $this->db_array();
         $db_array['custom_values_field'] = $fid;
-        //$this->mdl_custom_fields->custom_values_field = $fid;
 
         parent::save(null, $db_array);
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -50,6 +83,9 @@ class Mdl_Custom_Values extends MY_Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function custom_tables()
     {
         return array(
@@ -61,64 +97,70 @@ class Mdl_Custom_Values extends MY_Model
         );
     }
 
-    public static function custom_types(){
-      return array_merge(Mdl_Custom_Values::user_input_types(), Mdl_Custom_Values::custom_value_fields());
-    }
-
-    public static function user_input_types(){
-        return array(
-            'TEXT',
-            'DATE',
-            'BOOLEAN'
-          );
-    }
-
-    public static function custom_value_fields(){
-        return array(
-            'SINGLE-CHOICE',
-            'MULTIPLE-CHOICE'
-        );
-    }
-
+    /**
+     * @param $id
+     * @return $this
+     */
     public function get_by_fid($id)
     {
-      $this->where('custom_values_field', $id);
-      return $this->get();
+        $this->where('custom_values_field', $id);
+        return $this->get();
     }
 
+    /**
+     * @param $column
+     * @return $this
+     */
     public function get_by_column($column)
     {
-      $this->where('custom_field_column', $column);
-      return $this->get();
+        $this->where('custom_field_column', $column);
+        return $this->get();
     }
 
+    /**
+     * @param $column
+     * @param $value
+     * @return $this
+     */
     public function get_by_column_value($column, $value)
     {
-      $this->where($column, $value);
-      return $this->get();
+        $this->where($column, $value);
+        return $this->get();
     }
 
-    public function get_by_id($id){
-      return $this->where('custom_values_id', $id)->get();
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function get_by_id($id)
+    {
+        return $this->where('custom_values_id', $id)->get();
     }
 
+    /**
+     * @param $column
+     * @param $id
+     * @return bool
+     */
     public function column_has_value($column, $id)
     {
-      $this->where('custom_field_column', $column);
-      $this->where('custom_values_id', $id);
-      $this->get();
-      if($this->num_rows())
-      {
-        return true;
-      }
-      return false;
+        $this->where('custom_field_column', $column);
+        $this->where('custom_values_id', $id);
+        $this->get();
+        if ($this->num_rows()) {
+            return true;
+        }
+        return false;
     }
 
-
-    public function get_grouped(){
-      $this->db->select('count(custom_field_label) as count');
-      $this->db->group_by('ip_custom_fields.custom_field_id');
-      return $this->get();
+    /**
+     * @return $this
+     */
+    public function get_grouped()
+    {
+        $this->db->select('count(custom_field_label) as count');
+        $this->db->group_by('ip_custom_fields.custom_field_id');
+        return $this->get();
     }
 
     public function default_select()
@@ -133,11 +175,11 @@ class Mdl_Custom_Values extends MY_Model
 
     public function default_order_by()
     {
-      //$this->db->group_by('ip_custom_fields.custom_field_label');
+        //$this->db->group_by('ip_custom_fields.custom_field_label');
     }
 
     public function default_group_by()
     {
-      //$this->db->group_by('ip_custom_values.custom_values_field');
+        //$this->db->group_by('ip_custom_values.custom_values_field');
     }
 }
