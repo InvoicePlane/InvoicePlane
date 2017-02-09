@@ -1,22 +1,25 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
-function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null)
+/**
+ * Generate the PDF for an invoice
+ *
+ * @param $invoice_id
+ * @param bool $stream
+ * @param null $invoice_template
+ * @param null $is_guest
+ * @return string
+ */
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null)
 {
     $CI = &get_instance();
 
@@ -76,9 +79,17 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper('mpdf');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, true, $isGuest, $include_zugferd, $associatedFiles);
+        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
 }
 
+/**
+ * Generate the PDF for a quote
+ *
+ * @param $quote_id
+ * @param bool $stream
+ * @param null $quote_template
+ * @return string
+ */
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 {
     $CI = &get_instance();

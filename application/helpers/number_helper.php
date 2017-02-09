@@ -1,21 +1,21 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Output the amount as a currency amount, e.g. 1.234,56 €
+ *
+ * @param $amount
+ * @return string
+ */
 function format_currency($amount)
 {
     global $CI;
@@ -33,6 +33,12 @@ function format_currency($amount)
     }
 }
 
+/**
+ * Output the amount as a currency amount, e.g. 1.234,56
+ *
+ * @param null $amount
+ * @return null|string
+ */
 function format_amount($amount = null)
 {
     if ($amount) {
@@ -45,6 +51,12 @@ function format_amount($amount = null)
     return null;
 }
 
+/**
+ * Standardize an amount based on the system settings
+ *
+ * @param $amount
+ * @return mixed
+ */
 function standardize_amount($amount)
 {
     $CI =& get_instance();
