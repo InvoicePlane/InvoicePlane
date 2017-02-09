@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Ajax
+ */
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
@@ -25,9 +22,7 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_invoices');
 
         $query = $this->input->post('filter_query');
-
         $keywords = explode(' ', $query);
-        $params = array();
 
         foreach ($keywords as $keyword) {
             if ($keyword) {
@@ -49,9 +44,7 @@ class Ajax extends Admin_Controller
         $this->load->model('quotes/mdl_quotes');
 
         $query = $this->input->post('filter_query');
-
         $keywords = explode(' ', $query);
-        $params = array();
 
         foreach ($keywords as $keyword) {
             if ($keyword) {
@@ -73,9 +66,7 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         $query = $this->input->post('filter_query');
-
         $keywords = explode(' ', $query);
-        $params = array();
 
         foreach ($keywords as $keyword) {
             if ($keyword) {
@@ -96,9 +87,7 @@ class Ajax extends Admin_Controller
         $this->load->model('payments/mdl_payments');
 
         $query = $this->input->post('filter_query');
-
         $keywords = explode(' ', $query);
-        $params = array();
 
         foreach ($keywords as $keyword) {
             if ($keyword) {
