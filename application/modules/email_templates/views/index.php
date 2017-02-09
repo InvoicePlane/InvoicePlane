@@ -10,7 +10,6 @@
     <div class="pull-right">
         <?php echo pager(site_url('email_templates/index'), 'mdl_email_templates'); ?>
     </div>
-
 </div>
 
 <div id="content" class="table-content">
@@ -35,7 +34,7 @@
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i
-                                class="fa fa-cog"></i> <?php echo trans('options'); ?></a>
+                                    class="fa fa-cog"></i> <?php echo trans('options'); ?></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="<?php echo site_url('email_templates/form/' . $email_template->email_template_id); ?>">
