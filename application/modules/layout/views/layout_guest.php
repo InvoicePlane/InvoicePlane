@@ -43,7 +43,6 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
 
 </head>
-
 <body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
     echo 'hidden-sidebar';
 } ?>">
@@ -124,7 +123,7 @@
 <script defer src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
     <script
-        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
+            src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>
