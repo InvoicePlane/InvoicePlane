@@ -1,6 +1,6 @@
 <?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
 
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create quote modal
         $('#modal_copy_invoice').modal('show');

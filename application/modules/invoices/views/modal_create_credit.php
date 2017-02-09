@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#modal-create-credit-invoice').modal('show');
         $('#create-credit-confirm').click(function () {
