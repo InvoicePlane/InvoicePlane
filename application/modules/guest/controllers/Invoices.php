@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Invoices
+ */
 class Invoices extends Guest_Controller
 {
+    /**
+     * Invoices constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +31,10 @@ class Invoices extends Guest_Controller
         redirect('guest/invoices/status/open');
     }
 
+    /**
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'open', $page = 0)
     {
         // Determine which group of invoices to load
@@ -58,6 +62,9 @@ class Invoices extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function view($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
@@ -89,6 +96,11 @@ class Invoices extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
