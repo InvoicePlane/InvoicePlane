@@ -1,5 +1,5 @@
 <?php
-  $cv = $this->controller->view_data["custom_values"];
+$cv = $this->controller->view_data["custom_values"];
 ?>
 
 <script type="text/javascript">
@@ -206,23 +206,23 @@
                     <fieldset>
                         <legend><?php echo trans('custom_fields'); ?></legend>
                         <div class="col-xs-6">
-                          <?php $i = 0; ?>
-                          <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php $i++; ?>
-                            <?php if ($i % 2 != 0): ?>
-                              <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                            <?php endif; ?>
-                          <?php endforeach; ?>
+                            <?php $i = 0; ?>
+                            <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 != 0): ?>
+                                    <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
                         </div>
 
                         <div class="col-xs-6">
-                          <?php $i = 0; ?>
-                          <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php $i++; ?>
-                            <?php if ($i % 2 == 0): ?>
-                              <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                            <?php endif; ?>
-                          <?php endforeach; ?>
+                            <?php $i = 0; ?>
+                            <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 == 0): ?>
+                                    <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
                         </div>
                     </fieldset>
                 </div>

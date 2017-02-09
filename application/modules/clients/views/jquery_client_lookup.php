@@ -1,5 +1,4 @@
 <script>
-
     $(function () {
         // Performs the lookup against current clients in the database
         $('#client_name').keypress(function () {
@@ -13,5 +12,4 @@
             });
         });
     });
-
 </script>

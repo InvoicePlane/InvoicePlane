@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Clients
+ */
 class Clients extends Admin_Controller
 {
+    /**
+     * Clients constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +31,10 @@ class Clients extends Admin_Controller
         redirect('clients/status/active');
     }
 
+    /**
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'active', $page = 0)
     {
         if (is_numeric(array_search($status, array('active', 'inactive')))) {
@@ -54,6 +58,9 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -74,14 +81,13 @@ class Clients extends Admin_Controller
 
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
-            if($result !== true){
-              $this->session->set_flashdata('alert_error', $result);
-              $this->session->set_flashdata('alert_success', null);
-              redirect('clients/form/' . $id);
-              return;
-            }
-            else{
-              redirect('clients/view/' . $id);
+            if ($result !== true) {
+                $this->session->set_flashdata('alert_error', $result);
+                $this->session->set_flashdata('alert_success', null);
+                redirect('clients/form/' . $id);
+                return;
+            } else {
+                redirect('clients/view/' . $id);
             }
         }
 
@@ -117,12 +123,11 @@ class Clients extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
         $custom_values = [];
-        foreach($custom_fields as $custom_field){
-          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-          {
-            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-            $custom_values[$custom_field->custom_field_column] = $values;
-          }
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[$custom_field->custom_field_column] = $values;
+            }
         }
 
         $this->load->helper('country');
@@ -138,6 +143,9 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param int $client_id
+     */
     public function view($client_id)
     {
         $this->load->model('clients/mdl_client_notes');
@@ -197,6 +205,9 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param int $client_id
+     */
     public function delete($client_id)
     {
         $this->mdl_clients->delete($client_id);
