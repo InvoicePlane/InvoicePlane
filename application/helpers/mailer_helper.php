@@ -1,21 +1,20 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Check if mail sending is configured in the settings
+ *
+ * @return bool
+ */
 function mailer_configured()
 {
     $CI = &get_instance();
@@ -26,6 +25,20 @@ function mailer_configured()
     );
 }
 
+/**
+ * Send an invoice via email
+ *
+ * @param $invoice_id
+ * @param $invoice_template
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $body
+ * @param null $cc
+ * @param null $bcc
+ * @param null $attachments
+ * @return bool
+ */
 function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = null, $bcc = null, $attachments = null)
 {
     $CI = &get_instance();
@@ -50,6 +63,20 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
     return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments);
 }
 
+/**
+ * Send a quote via email
+ *
+ * @param $quote_id
+ * @param $quote_template
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $body
+ * @param null $cc
+ * @param null $bcc
+ * @param null $attachments
+ * @return bool
+ */
 function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = null, $bcc = null, $attachments = null)
 {
     $CI = &get_instance();
@@ -74,6 +101,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
 }
 
 /**
+ * Send an email if the status of an email changed
  * @param $quote_id
  * @param $status string "accepted" or "rejected"
  * @return bool if the email was sent
