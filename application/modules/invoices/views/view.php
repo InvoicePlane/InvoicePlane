@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
@@ -135,8 +135,7 @@ if ($this->config->item('disable_read_only') == true) {
         ?>
     </h1>
 
-    <div
-        class="pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
+    <div class="pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
 
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
@@ -260,14 +259,14 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php if ($invoice->client_phone): ?>
                             <span>
                               <strong><?php echo trans('phone'); ?>:</strong>
-                              <?php echo $invoice->client_phone; ?>
+                                <?php echo $invoice->client_phone; ?>
                             </span>
                             <br>
                         <?php endif; ?>
                         <?php if ($invoice->client_email): ?>
                             <span>
                               <strong><?php echo trans('email'); ?>:</strong>
-                              <?php echo $invoice->client_email; ?>
+                                <?php echo $invoice->client_email; ?>
                             </span>
                         <?php endif; ?>
 
@@ -302,7 +301,7 @@ if ($this->config->item('disable_read_only') == true) {
                                         <?php else : ?>
                                             placeholder="<?php echo trans('not_set'); ?>"
                                         <?php endif; ?>
-                                        <?php if ($invoice->is_read_only == 1){
+                                        <?php if ($invoice->is_read_only == 1) {
                                             echo 'disabled="disabled"';
                                         } ?>>
                                 </div>
@@ -317,7 +316,7 @@ if ($this->config->item('disable_read_only') == true) {
                                             <?php if ($invoice->is_read_only == 1) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
-                                    <span class="input-group-addon">
+                                        <span class="input-group-addon">
                                         <i class="fa fa-calendar fa-fw"></i>
                                     </span>
                                     </div>
@@ -333,7 +332,7 @@ if ($this->config->item('disable_read_only') == true) {
                                             <?php if ($invoice->is_read_only == 1) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
-		                                <span class="input-group-addon">
+                                        <span class="input-group-addon">
 		                                    <i class="fa fa-calendar fa-fw"></i>
 		                                </span>
                                     </div>
@@ -374,7 +373,7 @@ if ($this->config->item('disable_read_only') == true) {
                                         <option value="0"><?php echo trans('select_payment_method'); ?></option>
                                         <?php foreach ($payment_methods as $payment_method) { ?>
                                             <option <?php if ($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?>
-                                                value="<?php echo $payment_method->payment_method_id; ?>">
+                                                    value="<?php echo $payment_method->payment_method_id; ?>">
                                                 <?php echo $payment_method->payment_method_name; ?>
                                             </option>
                                         <?php } ?>
@@ -479,29 +478,29 @@ if ($this->config->item('disable_read_only') == true) {
             </div>
 
             <?php if ($custom_fields): ?>
-            <?php $cv = $this->controller->view_data["custom_values"]; ?>
+                <?php $cv = $this->controller->view_data["custom_values"]; ?>
                 <div class="row">
                     <div class="col-xs-12">
                         <fieldset>
                             <legend><?php echo trans('custom_fields'); ?></legend>
                             <div class="col-xs-6">
-                              <?php $i = 0; ?>
-                              <?php foreach ($custom_fields as $custom_field): ?>
-                                <?php $i++; ?>
-                                <?php if ($i % 2 != 0): ?>
-                                  <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                <?php endif; ?>
-                              <?php endforeach; ?>
+                                <?php $i = 0; ?>
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php $i++; ?>
+                                    <?php if ($i % 2 != 0): ?>
+                                        <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </div>
 
                             <div class="col-xs-6">
-                              <?php $i = 0; ?>
-                              <?php foreach ($custom_fields as $custom_field): ?>
-                                <?php $i++; ?>
-                                <?php if ($i % 2 == 0): ?>
-                                  <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                <?php endif; ?>
-                              <?php endforeach; ?>
+                                <?php $i = 0; ?>
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php $i++; ?>
+                                    <?php if ($i % 2 == 0): ?>
+                                        <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </div>
                         </fieldset>
                     </div>

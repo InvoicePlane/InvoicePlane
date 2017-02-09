@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Invoice_Amounts
+ */
 class Mdl_Invoice_Amounts extends CI_Model
 {
     /**
@@ -23,20 +20,21 @@ class Mdl_Invoice_Amounts extends CI_Model
      * invoice_amount_id
      * invoice_id
      * invoice_item_subtotal    SUM(item_subtotal)
-     * invoice_item_tax_total    SUM(item_tax_total)
+     * invoice_item_tax_total   SUM(item_tax_total)
      * invoice_tax_total
      * invoice_total            invoice_item_subtotal + invoice_item_tax_total + invoice_tax_total
      * invoice_paid
-     * invoice_balance            invoice_total - invoice_paid
+     * invoice_balance          invoice_total - invoice_paid
      *
      * IP_INVOICE_ITEM_AMOUNTS
      * item_amount_id
      * item_id
      * item_tax_rate_id
      * item_subtotal            item_quantity * item_price
-     * item_tax_total            item_subtotal * tax_rate_percent
-     * item_total                item_subtotal + item_tax_total
+     * item_tax_total           item_subtotal * tax_rate_percent
+     * item_total               item_subtotal + item_tax_total
      *
+     * @param $invoice_id
      */
     public function calculate($invoice_id)
     {
@@ -125,6 +123,29 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * @param $invoice_id
+     * @param $invoice_total
+     * @return float
+     */
+    public function calculate_discount($invoice_id, $invoice_total)
+    {
+        $this->db->where('invoice_id', $invoice_id);
+        $invoice_data = $this->db->get('ip_invoices')->row();
+
+        $total = (float)number_format($invoice_total, 2, '.', '');
+        $discount_amount = (float)number_format($invoice_data->invoice_discount_amount, 2, '.', '');
+        $discount_percent = (float)number_format($invoice_data->invoice_discount_percent, 2, '.', '');
+
+        $total = $total - $discount_amount;
+        $total = $total - round(($total / 100 * $discount_percent), 2);
+
+        return $total;
+    }
+
+    /**
+     * @param $invoice_id
+     */
     public function calculate_invoice_taxes($invoice_id)
     {
         // First check to see if there are any invoice taxes applied
@@ -191,21 +212,10 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
-    public function calculate_discount($invoice_id, $invoice_total)
-    {
-        $this->db->where('invoice_id', $invoice_id);
-        $invoice_data = $this->db->get('ip_invoices')->row();
-
-        $total = (float)number_format($invoice_total, 2, '.', '');
-        $discount_amount = (float)number_format($invoice_data->invoice_discount_amount, 2, '.', '');
-        $discount_percent = (float)number_format($invoice_data->invoice_discount_percent, 2, '.', '');
-
-        $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), 2);
-
-        return $total;
-    }
-
+    /**
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_invoiced($period = null)
     {
         switch ($period) {
@@ -242,6 +252,10 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_paid($period = null)
     {
         switch ($period) {
@@ -275,6 +289,10 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_balance($period = null)
     {
         switch ($period) {
@@ -307,6 +325,10 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
     }
 
+    /**
+     * @param string $period
+     * @return array
+     */
     public function get_status_totals($period = '')
     {
         switch ($period) {

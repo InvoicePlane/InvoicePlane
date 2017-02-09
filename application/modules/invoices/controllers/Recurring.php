@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Recurring
+ */
 class Recurring extends Admin_Controller
 {
+    /**
+     * Recurring constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -25,6 +25,9 @@ class Recurring extends Admin_Controller
         $this->load->model('mdl_invoices_recurring');
     }
 
+    /**
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_invoices_recurring->paginate(site_url('invoices/recurring'), $page);
@@ -36,12 +39,18 @@ class Recurring extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $invoice_recurring_id
+     */
     public function stop($invoice_recurring_id)
     {
         $this->mdl_invoices_recurring->stop($invoice_recurring_id);
         redirect('invoices/recurring/index');
     }
 
+    /**
+     * @param $invoice_recurring_id
+     */
     public function delete($invoice_recurring_id)
     {
         $this->mdl_invoices_recurring->delete($invoice_recurring_id);

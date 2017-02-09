@@ -1,4 +1,5 @@
 <div class="table-responsive">
+
     <table id="item_table" class="items table table-condensed table-bordered">
         <thead style="display: none">
         <tr>
@@ -56,7 +57,7 @@
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                <?php if ($this->mdl_settings->setting('default_item_tax_rate') == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
+                                    <?php if ($this->mdl_settings->setting('default_item_tax_rate') == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
                                 <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
                             </option>
                         <?php } ?>
@@ -80,7 +81,7 @@
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
                             <option value="<?php echo $unit->unit_id; ?>">
-                                <?php echo $unit->unit_name . "/"  . $unit->unit_name_plrl; ?>
+                                <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -206,7 +207,7 @@
                             <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"
                                         <?php if ($item->item_product_unit_id == $unit->unit_id) { ?>selected="selected"<?php } ?>>
-                                    <?php echo $unit->unit_name . "/"  . $unit->unit_name_plrl; ?>
+                                    <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
                                 </option>
                             <?php } ?>
                         </select>
@@ -301,7 +302,7 @@
                                 } ?>>
 
                             <div
-                                class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
+                                    class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
                         </div>
                     </div>
                     <div class="discount-field">
@@ -331,4 +332,5 @@
             </tr>
         </table>
     </div>
+
 </div>
