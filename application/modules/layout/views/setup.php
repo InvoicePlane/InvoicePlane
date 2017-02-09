@@ -31,7 +31,6 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/select2.full.min.js"></script>
 
 </head>
-
 <body>
 
 <noscript>

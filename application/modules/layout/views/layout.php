@@ -44,7 +44,7 @@
     <script src="<?php echo base_url(); ?>assets/default/js/libs/select2.full.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/default/js/libs/dropzone-4.3.0.min.js"></script>
 
-    <script type="text/javascript">
+    <script>
         Dropzone.autoDiscover = false;
 
         $(function () {
@@ -94,11 +94,13 @@
                     client_name: $(this).data('client-name')
                 });
             });
+
             $('.client-create-quote').click(function () {
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {
                     client_name: $(this).data('client-name')
                 });
             });
+
             $(document).on('click', '.invoice-add-payment', function () {
                 invoice_id = $(this).data('invoice-id');
                 invoice_balance = $(this).data('invoice-balance');
@@ -111,11 +113,9 @@
             });
 
         });
-
     </script>
 
 </head>
-
 <body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
     echo 'hidden-sidebar';
 } ?>">
@@ -142,8 +142,8 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
-                            class="hidden-sm"><?php echo trans('clients'); ?></span><i
-                            class="visible-sm-inline fa fa-users"></i>
+                                class="hidden-sm"><?php echo trans('clients'); ?></span><i
+                                class="visible-sm-inline fa fa-users"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', trans('add_client')); ?></li>
@@ -154,8 +154,8 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
-                            class="hidden-sm"><?php echo trans('quotes'); ?></span><i
-                            class="visible-sm-inline fa fa-file"></i>
+                                class="hidden-sm"><?php echo trans('quotes'); ?></span><i
+                                class="visible-sm-inline fa fa-file"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-quote"><?php echo trans('create_quote'); ?></a></li>
@@ -166,8 +166,8 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
-                            class="hidden-sm"><?php echo trans('invoices'); ?></span><i
-                            class="visible-sm-inline fa fa-file-text"></i>
+                                class="hidden-sm"><?php echo trans('invoices'); ?></span><i
+                                class="visible-sm-inline fa fa-file-text"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-invoice"><?php echo trans('create_invoice'); ?></a></li>
@@ -179,8 +179,8 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
-                            class="hidden-sm"><?php echo trans('products'); ?></span><i
-                            class="visible-sm-inline fa fa-database"></i>
+                                class="hidden-sm"><?php echo trans('products'); ?></span><i
+                                class="visible-sm-inline fa fa-database"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('products/form', trans('create_product')); ?></li>
@@ -193,8 +193,8 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
-                            class="hidden-sm"><?php echo trans('payments'); ?></span><i
-                            class="visible-sm-inline fa fa-credit-card"></i>
+                                class="hidden-sm"><?php echo trans('payments'); ?></span><i
+                                class="visible-sm-inline fa fa-credit-card"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('payments/form', trans('enter_payment')); ?></li>
@@ -205,8 +205,8 @@
                 <li class="dropdown hidden">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
-                            class="hidden-sm"><?php echo trans('tasks'); ?></span><i
-                            class="visible-sm-inline fa fa-check-square-o"></i>
+                                class="hidden-sm"><?php echo trans('tasks'); ?></span><i
+                                class="visible-sm-inline fa fa-check-square-o"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('tasks/form', trans('create_task')); ?></li>
@@ -218,8 +218,8 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
-                            class="hidden-sm"><?php echo trans('reports'); ?></span><i
-                            class="visible-sm-inline fa fa-bar-chart"></i>
+                                class="hidden-sm"><?php echo trans('reports'); ?></span><i
+                                class="visible-sm-inline fa fa-bar-chart"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('reports/invoice_aging', trans('invoice_aging')); ?></li>
@@ -361,7 +361,7 @@
 <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
     <script
-        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.min.js"></script>
+            src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.min.js"></script>
 <?php } ?>
 
 </body>
