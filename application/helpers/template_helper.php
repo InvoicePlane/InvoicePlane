@@ -1,21 +1,22 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Parse a template by predefined template tags
+ *
+ * @param $object
+ * @param $body
+ * @return mixed
+ */
 function parse_template($object, $body)
 {
     if (preg_match_all('/{{{([^{|}]*)}}}/', $body, $template_vars)) {
@@ -62,6 +63,12 @@ function parse_template($object, $body)
     return $body;
 }
 
+/**
+ * Returns the appropriate PDF template for the given invoice
+ *
+ * @param $invoice
+ * @return mixed
+ */
 function select_pdf_invoice_template($invoice)
 {
     $CI =& get_instance();
@@ -78,6 +85,12 @@ function select_pdf_invoice_template($invoice)
     }
 }
 
+/**
+ * Returns the appropriate email template for the given invoice
+ *
+ * @param $invoice
+ * @return mixed
+ */
 function select_email_invoice_template($invoice)
 {
     $CI =& get_instance();
