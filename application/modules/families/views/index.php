@@ -3,7 +3,7 @@
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('families/form'); ?>"><i
-                class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
+                    class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
     </div>
 
     <div class="pull-right">
