@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Invoice_Groups
+ */
 class Mdl_Invoice_Groups extends Response_Model
 {
     public $table = 'ip_invoice_groups';
@@ -31,6 +28,9 @@ class Mdl_Invoice_Groups extends Response_Model
         $this->db->order_by('ip_invoice_groups.invoice_group_name');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -57,6 +57,11 @@ class Mdl_Invoice_Groups extends Response_Model
         );
     }
 
+    /**
+     * @param $invoice_group_id
+     * @param bool $set_next
+     * @return mixed
+     */
     public function generate_invoice_number($invoice_group_id, $set_next = true)
     {
         $invoice_group = $this->get_by_id($invoice_group_id);
@@ -74,6 +79,12 @@ class Mdl_Invoice_Groups extends Response_Model
         return $invoice_identifier;
     }
 
+    /**
+     * @param $identifier_format
+     * @param $next_id
+     * @param $left_pad
+     * @return mixed
+     */
     private function parse_identifier_format($identifier_format, $next_id, $left_pad)
     {
         if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
@@ -102,6 +113,9 @@ class Mdl_Invoice_Groups extends Response_Model
         return $identifier_format;
     }
 
+    /**
+     * @param $invoice_group_id
+     */
     public function set_next_invoice_number($invoice_group_id)
     {
         $this->db->where($this->primary_key, $invoice_group_id);
