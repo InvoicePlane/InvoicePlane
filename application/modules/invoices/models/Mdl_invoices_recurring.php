@@ -1,36 +1,33 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Invoices_Recurring
+ */
 class Mdl_Invoices_Recurring extends Response_Model
 {
     public $table = 'ip_invoices_recurring';
     public $primary_key = 'ip_invoices_recurring.invoice_recurring_id';
     public $recur_frequencies = array(
-        '7D' => 'calendar_week',
-        '14D' => 'calendar_week_2',
-        '21D' => 'calendar_week_3',
-        '28D' => 'calendar_week_4',
-        '1M' => 'calendar_month',
-        '2M' => 'calendar_month_2',
-        '3M' => 'quarter',
-        '4M' => 'calendar_month_4',
-        '6M' => 'six_months',
-        '1Y' => 'year',
+        '7D'    => 'calendar_week',
+        '14D'   => 'calendar_week_2',
+        '21D'   => 'calendar_week_3',
+        '28D'   => 'calendar_week_4',
+        '1M'    => 'calendar_month',
+        '2M'    => 'calendar_month_2',
+        '3M'    => 'quarter',
+        '4M'    => 'calendar_month_4',
+        '6M'    => 'six_months',
+        '1Y'    => 'year',
     );
 
     public function default_select()
@@ -47,6 +44,9 @@ class Mdl_Invoices_Recurring extends Response_Model
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -71,6 +71,9 @@ class Mdl_Invoices_Recurring extends Response_Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -87,6 +90,9 @@ class Mdl_Invoices_Recurring extends Response_Model
         return $db_array;
     }
 
+    /**
+     * @param $invoice_recurring_id
+     */
     public function stop($invoice_recurring_id)
     {
         $db_array = array(
@@ -108,6 +114,9 @@ class Mdl_Invoices_Recurring extends Response_Model
         return $this;
     }
 
+    /**
+     * @param $invoice_recurring_id
+     */
     public function set_next_recur_date($invoice_recurring_id)
     {
         $invoice_recurring = $this->where('invoice_recurring_id', $invoice_recurring_id)->get()->row();

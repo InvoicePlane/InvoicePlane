@@ -1,27 +1,27 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Mdl_Invoices
+ */
 class Mdl_Invoices extends Response_Model
 {
     public $table = 'ip_invoices';
     public $primary_key = 'ip_invoices.invoice_id';
     public $date_modified_field = 'invoice_date_modified';
 
+    /**
+     * @return array
+     */
     public function statuses()
     {
         return array(
@@ -105,6 +105,9 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_quote_custom', 'ip_quotes.quote_id = ip_quote_custom.quote_id', 'left');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -142,6 +145,9 @@ class Mdl_Invoices extends Response_Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules_save_invoice()
     {
         return array(
@@ -170,6 +176,11 @@ class Mdl_Invoices extends Response_Model
         );
     }
 
+    /**
+     * @param null $db_array
+     * @param bool $include_invoice_tax_rates
+     * @return int|null
+     */
     public function create($db_array = null, $include_invoice_tax_rates = true)
     {
 
@@ -197,12 +208,6 @@ class Mdl_Invoices extends Response_Model
         }
 
         return $invoice_id;
-    }
-
-    public function get_url_key()
-    {
-        $this->load->helper('string');
-        return random_string('alnum', 15);
     }
 
     /**
@@ -303,6 +308,9 @@ class Mdl_Invoices extends Response_Model
         }
     }
 
+    /**
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -339,18 +347,10 @@ class Mdl_Invoices extends Response_Model
         return $db_array;
     }
 
-    public function get_invoice_group_id($invoice_id)
-    {
-        $invoice = $this->get_by_id($invoice_id);
-        return $invoice->invoice_group_id;
-    }
-
-    public function get_invoice_number($invoice_group_id)
-    {
-        $this->load->model('invoice_groups/mdl_invoice_groups');
-        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
-    }
-
+    /**
+     * @param $invoice_date_created
+     * @return string
+     */
     public function get_date_due($invoice_date_created)
     {
         $invoice_date_due = new DateTime($invoice_date_created);
@@ -358,6 +358,38 @@ class Mdl_Invoices extends Response_Model
         return $invoice_date_due->format('Y-m-d');
     }
 
+    /**
+     * @param $invoice_group_id
+     * @return mixed
+     */
+    public function get_invoice_number($invoice_group_id)
+    {
+        $this->load->model('invoice_groups/mdl_invoice_groups');
+        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
+    }
+
+    /**
+     * @return string
+     */
+    public function get_url_key()
+    {
+        $this->load->helper('string');
+        return random_string('alnum', 15);
+    }
+
+    /**
+     * @param $invoice_id
+     * @return mixed
+     */
+    public function get_invoice_group_id($invoice_id)
+    {
+        $invoice = $this->get_by_id($invoice_id);
+        return $invoice->invoice_group_id;
+    }
+
+    /**
+     * @param int $invoice_id
+     */
     public function delete($invoice_id)
     {
         parent::delete($invoice_id);
@@ -415,6 +447,9 @@ class Mdl_Invoices extends Response_Model
         return $this;
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function mark_viewed($invoice_id)
     {
         $this->db->select('invoice_status_id');
@@ -438,6 +473,9 @@ class Mdl_Invoices extends Response_Model
         }
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function mark_sent($invoice_id)
     {
         $this->db->select('invoice_status_id');
