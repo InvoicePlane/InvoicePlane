@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Ajax
+ */
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
@@ -28,7 +25,11 @@ class Ajax extends Admin_Controller
         // Get the post input
         $query = $this->input->post('query');
 
-        $clients = $this->mdl_clients->select('client_name')->like('client_name', $query)->order_by('client_name')->get(array(), false)->result();
+        $clients = $this->mdl_clients->select('client_name')
+            ->like('client_name', $query)
+            ->order_by('client_name')
+            ->get(array(), false)
+            ->result();
 
         $response = array();
 
