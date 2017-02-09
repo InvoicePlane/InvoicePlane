@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Mdl_Email_Templates
+ */
 class Mdl_Email_Templates extends Response_Model
 {
     public $table = 'ip_email_templates';
@@ -31,6 +28,9 @@ class Mdl_Email_Templates extends Response_Model
         $this->db->order_by('email_template_title');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -73,4 +73,5 @@ class Mdl_Email_Templates extends Response_Model
             )
         );
     }
+
 }

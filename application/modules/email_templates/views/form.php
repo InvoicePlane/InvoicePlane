@@ -59,7 +59,8 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="email_template_from_email" class="control-label"><?php echo trans('from_email'); ?>: </label>
+                <label for="email_template_from_email" class="control-label"><?php echo trans('from_email'); ?>
+                    : </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="email_template_from_email" id="email_template_from_email"
@@ -250,7 +251,8 @@
                    data-tag="{{{invoice_date_due}}}"><?php echo trans('invoice'); ?><?php echo lang('due_date'); ?></a><br>
                 <a href="#" class="text-tag"
                    data-tag="{{{invoice_date_created}}}"><?php echo trans('invoice'); ?><?php echo lang('created'); ?></a><br>
-                <a href="#" class="text-tag" data-tag="{{{invoice_terms}}}"><?php echo trans('invoice_terms'); ?></a><br>
+                <a href="#" class="text-tag"
+                   data-tag="{{{invoice_terms}}}"><?php echo trans('invoice_terms'); ?></a><br>
                 <a href="#" class="text-tag"
                    data-tag="{{{invoice_total}}}"><?php echo trans('invoice'); ?><?php echo lang('total'); ?></a><br>
                 <a href="#" class="text-tag"
@@ -291,7 +293,7 @@
 
 </form>
 
-<script type="text/javascript">
+<script>
     $(function () {
         var email_template_type = "<?php echo $this->mdl_email_templates->form_value('email_template_type'); ?>";
         var $email_template_type_options = $("[name=email_template_type]");
