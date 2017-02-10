@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package     InvoicePlane
- * @author      Kovah (www.kovah.de)
- * @copyright   Copyright (c) 2012 - 2015 InvoicePlane.com
- * @license     https://invoiceplane.com/license.txt
- * @link        https://invoiceplane.com
- *
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  */
 
+/**
+ * Class Upload
+ */
 class Upload extends Admin_Controller
 {
     public $targetPath;
@@ -31,6 +28,9 @@ class Upload extends Admin_Controller
         'xml' => 'application/xml',
     );
 
+    /**
+     * Upload constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -39,6 +39,11 @@ class Upload extends Admin_Controller
 
     }
 
+    /**
+     * @param $customerId
+     * @param $url_key
+     * @return bool
+     */
     public function upload_file($customerId, $url_key)
     {
         Upload::create_dir($this->targetPath . '/');
@@ -72,7 +77,9 @@ class Upload extends Admin_Controller
         }
     }
 
-    // public function file_delete($customerId,$id,$fileName)
+    /**
+     * @param $url_key
+     */
     public function delete_file($url_key)
     {
         $path = $this->targetPath;
@@ -88,6 +95,11 @@ class Upload extends Admin_Controller
         }
     }
 
+    /**
+     * @param $path
+     * @param string $chmod
+     * @return bool
+     */
     public function create_dir($path, $chmod = '0777')
     {
         if (!(is_dir($path) || is_link($path))) {
@@ -97,6 +109,11 @@ class Upload extends Admin_Controller
         }
     }
 
+    /**
+     * @param $url_key
+     * @param null $customerId
+     * @return bool
+     */
     public function show_files($url_key, $customerId = null)
     {
         $result = array();
