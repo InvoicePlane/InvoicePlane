@@ -14,6 +14,7 @@ class Sumex
     var $_place = "practice";
     var $_currency = "CHF";
     var $_paymentperiod = "P30D";
+    var $_canton = "TI";
 
     var $_patient = array(
         'gender' => 'male',
@@ -22,8 +23,17 @@ class Sumex
         'givenName' => 'Denys'
     );
 
+    var $_casedate = "2017-02-10";
+
+    var $_treatment = array(
+        'start' => '2017-01-10',
+        'end' => '2017-02-01',
+        'reason' => 'disease' // TODO: Check if need required value
+    );
+
     public function __construct($params)
     {
+        define('IP_VERSION', '1.5.0');
         $CI = &get_instance();
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
@@ -35,14 +45,14 @@ class Sumex
 
         $xml = $this->xml();
 
-        /*curl_setopt($ch, CURLOPT_URL, "http://192.168.1.180:8080/generateInvoice");
+        curl_setopt($ch, CURLOPT_URL, "http://192.168.1.150:8080/generateInvoice");
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('req2.xml'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         $out = curl_exec($ch);
         curl_close($ch);
-        return $out;*/
-        return $xml;
+        return $out;
+        //return file_get_contents('req2.xml');
     }
 
     public function xml()
@@ -97,8 +107,8 @@ class Sumex
         $node->setAttribute('storno', $this->_storno);
 
         $invoiceInvoice = $this->doc->createElement('invoice:invoice');
-        $invoiceInvoice->setAttribute('request_timestamp', microtime());
-        $invoiceInvoice->setAttribute('request_id', '1');
+        $invoiceInvoice->setAttribute('request_timestamp', time());
+        $invoiceInvoice->setAttribute('request_id', '000001000001');
         $invoiceInvoice->setAttribute('request_date', date("Y-m-d\TH:i:s"));
 
         $invoiceBody = $this->xmlInvoiceBody();
@@ -111,35 +121,45 @@ class Sumex
 
     protected function xmlInvoiceBody()
     {
-        $node = $this->doc->createElement('invoice:payload');
+        $node = $this->doc->createElement('invoice:body');
         $node->setAttribute('role', $this->_role);
         $node->setAttribute('place', $this->_place);
 
-        $prolog = xmlInvoiceProlog();
-        $balance = xmlInvoiceBalance();
-        $esr9 = xmlInvoiceEsr9();
-        $tiersGarant = xmlInvoiceTiersGarant();
-        $mvg = xmlInvoiceMvg();
-        $services = xmlServices();
+        $prolog = $this->xmlInvoiceProlog();
+        $balance = $this->xmlInvoiceBalance();
+        $esr9 = $this->xmlInvoiceEsr9();
+        $tiersGarant = $this->xmlInvoiceTiersGarant();
+        $mvg = $this->xmlInvoiceMvg();
+        $treatment = $this->xmlInvoiceTreatment();
+        $services = $this->xmlServices();
 
         $node->appendChild($prolog);
         $node->appendChild($balance);
         $node->appendChild($esr9);
         $node->appendChild($tiersGarant);
         $node->appendChild($mvg);
+        $node->appendChild($treatment);
         $node->appendChild($services);
+
+        return $node;
     }
 
     protected function xmlInvoiceProlog(){
         $node = $this->doc->createElement('invoice:prolog');
 
         $package = $this->doc->createElement('invoice:package');
-        $package->setAtrribute('version', IP_VERSION);
-        $package->setAtrribute('name', 'InvoicePlane');
+        $package->setAttribute('version', '100');
+        $package->setAttribute('name', 'InvoicePlane');
 
         $generator = $this->doc->createElement('invoice:generator');
         $generator->setAttribute('name', 'PHP_Sumex');
-        $generator->setAttribute('version', '1.0');
+        $generator->setAttribute('version', '100');
+
+        $dependson = $this->doc->createElement('invoice:depends_on');
+        $dependson->setAttribute('name', 'Nothing');
+        $dependson->setAttribute('version', '300');
+
+        $generator->appendChild($dependson);
         // Depends on...?
 
         $node->appendChild($package);
@@ -159,11 +179,12 @@ class Sumex
         $node->setAttribute('amount_obligations', 7.89);
 
         $vat = $this->doc->createElement('invoice:vat');
-        $vat->setAttribute('vat', 0.00);
+        $vat->setAttribute('vat', "0.00");
 
         $vatRate = $this->doc->createElement('invoice:vat_rate');
-        $vatRate->setAttribute('vat_rate', 0.00);
-        $vatRate->setAttribute('amount', 9.99);
+        $vatRate->setAttribute('vat_rate', "0.00");
+        $vatRate->setAttribute('amount', "9.99");
+        $vatRate->setAttribute('vat', "0.00");
 
         $vat->appendChild($vatRate);
         $node->appendChild($vat);
@@ -181,6 +202,7 @@ class Sumex
         $node->setAttribute('type', '16or27');
 
         // TODO: Autogenerate coding_line
+        $node->setAttribute('reference_number', '15 45300 00000 00000 00100 00018');
         $node->setAttribute('coding_line', '0100000017758>154530000000000000010000018+ 010126482>');
         return $node;
     }
@@ -195,12 +217,12 @@ class Sumex
         $guarantor = $this->doc->createElement('guarantor');
 
         // <invoice:biller>
-        // TODO: Check ean_party, zsr, speciality
+        // TODO: Check ean_party, zsr, specialty
         $biller->setAttribute('ean_party', '2000000000002');
         $biller->setAttribute('zsr', 'C000002');
-        $biller->setAttribute('speciality', 'Allgemein');
+        $biller->setAttribute('specialty', 'Allgemein');
 
-        $bcompany = xmlCompany();
+        $bcompany = $this->xmlCompany();
         $biller->appendChild($bcompany);
         // </invoice:biller>
 
@@ -209,68 +231,133 @@ class Sumex
         // TODO: Check ean_party, zsr, speciality
         $provider->setAttribute('ean_party', '2000000000002');
         $provider->setAttribute('zsr', 'C000002');
-        $provider->setAttribute('speciality', 'Allgemein');
+        $provider->setAttribute('specialty', 'Allgemein');
 
-        $pcompany = xmlCompany();
+        $pcompany = $this->xmlCompany();
         $provider->appendChild($pcompany);
         // </invoice:provider>
 
         // <invoice:patient>
-        $patient->setAttribute('gender', $this->_patient->gender);
-        $patient->setAttribute('birthdate', date("Y-m-d\TH:i:s", strtotime($this->_patient->birthdate)));
+        $patient->setAttribute('gender', $this->_patient['gender']);
+        $patient->setAttribute('birthdate', date("Y-m-d\TH:i:s", strtotime($this->_patient['birthdate'])));
 
-        $person = generatePerson();
+        // TODO: Person based on Client
+        $person = $this->generatePerson("Denys", "Vitali", "Address", "6900", "Lugano", "079 000 00 00");
         $patient->appendChild($person);
         // </invoice:patient>
 
+        // <invoice:guarantor>
+        $guarantor->setAttribute('xmlns', 'http://www.forum-datenaustausch.ch/invoice');
+        $person = $this->generatePerson("Denys", "Vitali", "Address", "6900", "Lugano", "079 000 00 00");
+        $guarantor->appendChild($person);
+        // </invoice:guarantor>
 
         $node->appendChild($biller);
         $node->appendChild($provider);
         $node->appendChild($patient);
         $node->appendChild($guarantor);
+
+        return $node;
+    }
+
+    protected function xmlInvoiceMvg(){
+        $node = $this->doc->createElement('invoice:mvg');
+        $node->setAttribute('ssn', '7560000000011');
+        $node->setAttribute('insured_id', 'ladc7a5f5fb43ef76018');
+        $node->setAttribute('case_date', date("Y-m-d\TH:i:s", strtotime($this->_casedate)));
+
+        return $node;
+    }
+
+    protected function xmlInvoiceTreatment(){
+        $node = $this->doc->createElement('invoice:treatment');
+        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime($this->_treatment['start'])));
+        $node->setAttribute('date_end', date("Y-m-d\TH:i:s", strtotime($this->_treatment['end'])));
+        $node->setAttribute('canton', $this->_canton);
+        $node->setAttribute('reason', $this->_treatment['reason']);
+
+        $diag = $this->doc->createElement('invoice:diagnosis');
+        $diag->setAttribute('type', 'by_contract');
+        $diag->setAttribute('code', 'A1');
+
+        $node->appendChild($diag);
+
+        return $node;
+    }
+
+    protected function xmlServices(){
+        $node = $this->doc->createElement('services');
+        $node->setAttribute('xmlns', 'http://www.forum-datenaustausch.ch/invoice');
+
+        $node->appendChild($this->generateRecord());
+
+        return $node;
+    }
+
+    protected function generateRecord(){
+        $node = $this->doc->createElement('invoice:record_other');
+        $node->setAttribute('record_id', 1);
+        $node->setAttribute('tariff_type', 590);
+        $node->setAttribute('code', 1200);
+        $node->setAttribute('session', 1);
+        $node->setAttribute('quantity', 4);
+        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime("2017-01-01")));
+        $node->setAttribute('provider_id', '7634567890111');
+        $node->setAttribute('responsible_id', '7634567890333');
+        $node->setAttribute('unit', "10.00");
+        $node->setAttribute('unit_factor', 1);
+        $node->setAttribute('amount', "40.00");
+        $node->setAttribute('validate', 0);
+        $node->setAttribute('service_attributes', 0);
+        $node->setAttribute('obligation', 0);
+        $node->setAttribute('name', 'Anamnese / Untersuchung / Diagnostik / Befunderhebung, pro 5 Min.');
+
+        return $node;
     }
 
     protected function generatePerson($name, $surname, $street, $zip, $city, $phone){
       $person = $this->doc->createElement('invoice:person');
 
       $familyName = $this->doc->createElement('invoice:familyname');
-      $familyName->textContent = $this->_patient->familyName;
+      $familyName->nodeValue = $this->_patient['familyName'];
 
       $givenName = $this->doc->createElement('invoice:givenname');
-      $givenName->textContent = $this->_patient->givenName;
+      $givenName->nodeValue = $this->_patient['givenName'];
 
-      $postal = generatePostal("Via la Santa 2", "6962", "Viganello");
-      $telecom = generateTelecom("079 123 45 67");
+      $postal = $this->generatePostal("Via la Santa 2", "6962", "Viganello");
+      $telecom = $this->generateTelecom("079 123 45 67");
 
       $person->appendChild($familyName);
       $person->appendChild($givenName);
       $person->appendChild($postal);
       $person->appendChild($telecom);
+
+      return $person;
     }
 
     protected function generatePostal($street, $zip, $city){
       $postal = $this->doc->createElement('invoice:postal');
 
-      $postal_street = $this->createELement('invoice:street');
-      $postal_street->textContent = $street;
+      $postal_street = $this->doc->createElement('invoice:street');
+      $postal_street->nodeValue = $street;
 
-      $postal_zip = $this->createELement('invoice:zip');
-      $postal_zip->textContent = $zip;
+      $postal_zip = $this->doc->createELement('invoice:zip');
+      $postal_zip->nodeValue = $zip;
 
-      $postal_city = $this->createElement('invoice:city');
-      $postal_city->textContent = $city;
+      $postal_city = $this->doc->createElement('invoice:city');
+      $postal_city->nodeValue = $city;
 
-      $postal->appendChild($company_postal_street);
-      $postal->appendChild($company_postal_zip);
-      $postal->appendChild($company_postal_city);
+      $postal->appendChild($postal_street);
+      $postal->appendChild($postal_zip);
+      $postal->appendChild($postal_city);
 
       return $postal;
     }
 
-    protected function generateTelecom($phone){
+    protected function generateTelecom($phoneNr){
       $telecom = $this->doc->createElement('invoice:telecom');
       $phone = $this->doc->createElement('invoice:phone');
-      $phone->textContent = $phone;
+      $phone->nodeValue = $phoneNr;
       $telecom->appendChild($phone);
       return $telecom;
     }
@@ -279,14 +366,16 @@ class Sumex
       // <invoice:company>
       $bcompany = $this->doc->createElement('invoice:company');
       $bcompany_name = $this->doc->createElement('invoice:companyname');
-      $bcompany_name->textContent = "Some Company GmbH";
+      $bcompany_name->nodeValue = "Some Company GmbH";
 
-      $bcompany_postal = generatePostal("Via Cantonale", "6900", "Lugano");
-      $bcompany->appendChild($company_postal);
+      $bcompany->appendChild($bcompany_name);
+
+      $bcompany_postal = $this->generatePostal("Via Cantonale", "6900", "Lugano");
+      $bcompany->appendChild($bcompany_postal);
 
       $bcompany_telecom = $this->doc->createElement('invoice:telecom');
       $bcompany_telecom_phone = $this->doc->createElement('invoice:phone');
-      $bcompany_telecom_phone->textContent = '091 000 00 00';
+      $bcompany_telecom_phone->nodeValue = '091 000 00 00';
 
       $bcompany_telecom->appendChild($bcompany_telecom_phone);
       $bcompany->appendChild($bcompany_telecom);

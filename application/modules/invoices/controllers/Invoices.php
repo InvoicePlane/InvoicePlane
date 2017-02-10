@@ -242,7 +242,7 @@ class Invoices extends Admin_Controller
           'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
           'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result()
         ));
-        $this->output->set_content_type('text/html');
+        $this->output->set_content_type('application/pdf');
         $this->output->set_output($this->sumex->pdf());
     }
 
