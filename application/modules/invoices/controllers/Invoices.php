@@ -122,7 +122,6 @@ class Invoices extends Admin_Controller
                 'payment_methods/mdl_payment_methods',
                 'mdl_invoice_tax_rates',
                 'custom_fields/mdl_custom_fields',
-                'item_lookups/mdl_item_lookups'
             )
         );
 
@@ -177,7 +176,6 @@ class Invoices extends Admin_Controller
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
                     'decimal_point' => $this->mdl_settings->setting('decimal_point')
                 ),
-                'item_lookups' => $this->mdl_item_lookups->get()->result(),
                 'invoice_statuses' => $this->mdl_invoices->statuses()
             )
         );
