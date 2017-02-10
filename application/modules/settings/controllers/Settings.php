@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Settings
+ */
 class Settings extends Admin_Controller
 {
+    /**
+     * Settings constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -32,7 +32,10 @@ class Settings extends Admin_Controller
 
             // Only execute if the setting is different
             if ($settings['tax_rate_decimal_places'] <> $this->mdl_settings->setting('tax_rate_decimal_places')) {
-                $this->db->query("ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null");
+                $this->db->query("
+                    ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
+                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null"
+                );
             }
 
             // Save the submitted settings
@@ -143,6 +146,9 @@ class Settings extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $type
+     */
     public function remove_logo($type)
     {
         unlink('./uploads/' . $this->mdl_settings->setting($type . '_logo'));

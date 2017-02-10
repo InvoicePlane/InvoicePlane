@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         toggle_smtp_settings();
 
@@ -17,7 +17,6 @@
                 $('#div-smtp-settings').hide();
             }
         }
-
     });
 </script>
 
