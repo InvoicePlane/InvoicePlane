@@ -7,6 +7,7 @@
   ],
   "require": {
     "phpmailer/phpmailer": "^5.2",
-    "kovah/mpdf": "dev-master"
+    "kovah/mpdf": "dev-master",
+    "vlucas/phpdotenv": "^2.4"
   }
 }

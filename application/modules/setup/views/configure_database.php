@@ -11,9 +11,10 @@
             <?php if (!$database['success']) { ?>
 
                 <?php if ($database['message'] and $_POST) { ?>
-                    <p><span class="label label-danger"><?php echo trans('failure'); ?></span>
+                    <div class="alert alert-danger">
+                        <b><?php echo trans('failure'); ?></b><br>
                         <?php echo $database['message']; ?>
-                    </p>
+                    </div>
                 <?php } ?>
 
                 <p><?php echo trans('setup_database_message'); ?></p>
@@ -23,8 +24,17 @@
                         <?php echo trans('hostname'); ?>
                     </label>
                     <input type="text" name="db_hostname" id="db_hostname" class="form-control"
-                           value="<?php echo $this->input->post('db_hostname'); ?>">
+                           value="<?php echo ($this->input->post('db_hostname') ? $this->input->post('db_hostname') : 'localhost'); ?>">
                     <span class="help-block"><?php echo trans('setup_db_hostname_info'); ?></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="db_port">
+                        <?php echo trans('port'); ?>
+                    </label>
+                    <input type="text" name="db_port" id="db_port" class="form-control"
+                           value="<?php echo ($this->input->post('db_port') ? $this->input->post('db_port') : 3306); ?>">
+                    <span class="help-block"><?php echo trans('setup_db_port_info'); ?></span>
                 </div>
 
                 <div class="form-group">
