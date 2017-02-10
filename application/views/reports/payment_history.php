@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
     <title><?php echo trans('payment_history'); ?></title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/reports.css" type="text/css">
@@ -44,5 +45,6 @@
         </tr>
     <?php } ?>
 </table>
+
 </body>
 </html>

@@ -79,7 +79,7 @@
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
                             <option value="<?php echo $unit->unit_id; ?>">
-                                <?php echo $unit->unit_name . "/"  . $unit->unit_name_plrl; ?>
+                                <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -181,7 +181,7 @@
                             <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"
                                         <?php if ($item->item_product_unit_id == $unit->unit_id) { ?>selected="selected"<?php } ?>>
-                                    <?php echo $unit->unit_name . "/"  . $unit->unit_name_plrl; ?>
+                                    <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
                                 </option>
                             <?php } ?>
                         </select>
@@ -270,7 +270,7 @@
                                    value="<?php echo format_amount($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
 
                             <div
-                                class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
+                                    class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
                         </div>
                     </div>
                     <div class="discount-field">
@@ -290,4 +290,5 @@
             </tr>
         </table>
     </div>
+
 </div>

@@ -44,7 +44,7 @@
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i
-                                    class="fa fa-cog"></i> <?php echo trans('options'); ?></a>
+                                        class="fa fa-cog"></i> <?php echo trans('options'); ?></a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('import/delete/' . $import->import_id); ?>"
@@ -61,4 +61,5 @@
 
         </table>
     </div>
+
 </div>

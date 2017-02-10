@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Cornelius Kölbel <cornelius.koelbel@netknights.it>
- * @copyright	Copyright (c) 2017 Cornelius Kölbel
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Mdl_Units
+ */
 class Mdl_Units extends Response_Model
 {
     public $table = 'ip_units';
@@ -32,8 +29,12 @@ class Mdl_Units extends Response_Model
     }
 
     /**
-     *  Return either the singular unit name or the plural unit name,
-     *  depending on the quantity
+     * Return either the singular unit name or the plural unit name,
+     * depending on the quantity
+     *
+     * @param $unit_id
+     * @param $quantity
+     * @return mixed
      */
     public function get_name($unit_id, $quantity)
     {
@@ -50,6 +51,9 @@ class Mdl_Units extends Response_Model
         }
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(

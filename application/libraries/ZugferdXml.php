@@ -1,5 +1,18 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+/*
+ * InvoicePlane
+ *
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
+ */
+
+/**
+ * Class ZugferdXml
+ */
 class ZugferdXml
 {
     var $invoice;
@@ -68,6 +81,22 @@ class ZugferdXml
         return $node;
     }
 
+    protected function dateElement($date)
+    {
+        $el = $this->doc->createElement('udt:DateTimeString', $this->zugferdFormattedDate($date));
+        $el->setAttribute('format', 102);
+        return $el;
+    }
+
+    function zugferdFormattedDate($date)
+    {
+        if ($date && $date <> '0000-00-00') {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+            return $date->format('Ymd');
+        }
+        return '';
+    }
+
     protected function xmlSpecifiedSupplyChainTradeTransaction()
     {
         $node = $this->doc->createElement('rsm:SpecifiedSupplyChainTradeTransaction');
@@ -85,66 +114,6 @@ class ZugferdXml
         $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeAgreement');
         $node->appendChild($this->xmlSellerTradeParty());
         $node->appendChild($this->xmlBuyerTradeParty());
-        return $node;
-    }
-
-    protected function xmlApplicableSupplyChainTradeDelivery()
-    {
-        $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeDelivery');
-
-        // ActualDeliverySupplyChainEvent
-        $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
-        $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
-        $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
-        $eventNode->appendChild($dateNode);
-
-        $node->appendChild($eventNode);
-        return $node;
-    }
-
-    protected function xmlApplicableSupplyChainTradeSettlement()
-    {
-        $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeSettlement');
-
-        $node->appendChild($this->doc->createElement('ram:PaymentReference', $this->invoice->invoice_number));
-        $node->appendChild($this->doc->createElement('ram:InvoiceCurrencyCode', $this->currencyCode));
-
-        // taxes
-        foreach ($this->itemsSubtotalGroupedByTaxPercent() as $percent => $subtotal) {
-            $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal));
-        }
-
-        // sums
-        $node->appendChild($this->xmlSpecifiedTradeSettlementMonetarySummation());
-
-        return $node;
-    }
-
-    protected function xmlIncludedSupplyChainTradeLineItem($lineNumber, $item)
-    {
-        $node = $this->doc->createElement('ram:IncludedSupplyChainTradeLineItem');
-
-        // AssociatedDocumentLineDocument
-        $lineNode = $this->doc->createElement('ram:AssociatedDocumentLineDocument');
-        $lineNode->appendChild($this->doc->createElement('ram:LineID', $lineNumber));
-        $node->appendChild($lineNode);
-
-        // SpecifiedSupplyChainTradeAgreement
-        $node->appendChild($this->xmlSpecifiedSupplyChainTradeAgreement($item));
-
-        // SpecifiedSupplyChainTradeDelivery
-        $deliveyNode = $this->doc->createElement('ram:SpecifiedSupplyChainTradeDelivery');
-        $deliveyNode->appendChild($this->quantityElement('ram:BilledQuantity', $item->item_quantity));
-        $node->appendChild($deliveyNode);
-
-        // SpecifiedSupplyChainTradeSettlement
-        $node->appendChild($this->xmlSpecifiedSupplyChainTradeSettlement($item));
-
-        // SpecifiedTradeProduct
-        $tradeNode = $this->doc->createElement('ram:SpecifiedTradeProduct');
-        $tradeNode->appendChild($this->doc->createElement('ram:Name', $item->item_name . "\n" . $item->item_description));
-        $node->appendChild($tradeNode);
-
         return $node;
     }
 
@@ -195,6 +164,52 @@ class ZugferdXml
         return $node;
     }
 
+    protected function xmlApplicableSupplyChainTradeDelivery()
+    {
+        $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeDelivery');
+
+        // ActualDeliverySupplyChainEvent
+        $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
+        $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
+        $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+        $eventNode->appendChild($dateNode);
+
+        $node->appendChild($eventNode);
+        return $node;
+    }
+
+    protected function xmlApplicableSupplyChainTradeSettlement()
+    {
+        $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeSettlement');
+
+        $node->appendChild($this->doc->createElement('ram:PaymentReference', $this->invoice->invoice_number));
+        $node->appendChild($this->doc->createElement('ram:InvoiceCurrencyCode', $this->currencyCode));
+
+        // taxes
+        foreach ($this->itemsSubtotalGroupedByTaxPercent() as $percent => $subtotal) {
+            $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal));
+        }
+
+        // sums
+        $node->appendChild($this->xmlSpecifiedTradeSettlementMonetarySummation());
+
+        return $node;
+    }
+
+    function itemsSubtotalGroupedByTaxPercent()
+    {
+        $result = [];
+        foreach ($this->items as $item) {
+            if ($item->item_tax_rate_percent == 0) continue;
+
+            if (!isset($result[$item->item_tax_rate_percent])) {
+                $result[$item->item_tax_rate_percent] = 0;
+            }
+            $result[$item->item_tax_rate_percent] += $item->item_subtotal;
+        }
+        return $result;
+    }
+
     protected function xmlApplicableTradeTax($percent, $subtotal)
     {
         $node = $this->doc->createElement('ram:ApplicableTradeTax');
@@ -204,6 +219,22 @@ class ZugferdXml
         $node->appendChild($this->doc->createElement('ram:CategoryCode', 'S'));
         $node->appendChild($this->doc->createElement('ram:ApplicablePercent', $percent));
         return $node;
+    }
+
+    protected function currencyElement($name, $amount, $nb_decimals = 2)
+    {
+        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
+        $el->setAttribute('currencyID', $this->currencyCode);
+        return $el;
+    }
+
+    // ===========================================================================
+    // elements helpers
+    // ===========================================================================
+
+    function zugferdFormattedFloat($amount, $nb_decimals = 2)
+    {
+        return number_format((float)$amount, $nb_decimals);
     }
 
     protected function xmlSpecifiedTradeSettlementMonetarySummation()
@@ -220,6 +251,38 @@ class ZugferdXml
         return $node;
     }
 
+    protected function xmlIncludedSupplyChainTradeLineItem($lineNumber, $item)
+    {
+        $node = $this->doc->createElement('ram:IncludedSupplyChainTradeLineItem');
+
+        // AssociatedDocumentLineDocument
+        $lineNode = $this->doc->createElement('ram:AssociatedDocumentLineDocument');
+        $lineNode->appendChild($this->doc->createElement('ram:LineID', $lineNumber));
+        $node->appendChild($lineNode);
+
+        // SpecifiedSupplyChainTradeAgreement
+        $node->appendChild($this->xmlSpecifiedSupplyChainTradeAgreement($item));
+
+        // SpecifiedSupplyChainTradeDelivery
+        $deliveyNode = $this->doc->createElement('ram:SpecifiedSupplyChainTradeDelivery');
+        $deliveyNode->appendChild($this->quantityElement('ram:BilledQuantity', $item->item_quantity));
+        $node->appendChild($deliveyNode);
+
+        // SpecifiedSupplyChainTradeSettlement
+        $node->appendChild($this->xmlSpecifiedSupplyChainTradeSettlement($item));
+
+        // SpecifiedTradeProduct
+        $tradeNode = $this->doc->createElement('ram:SpecifiedTradeProduct');
+        $tradeNode->appendChild($this->doc->createElement('ram:Name', $item->item_name . "\n" . $item->item_description));
+        $node->appendChild($tradeNode);
+
+        return $node;
+    }
+
+    // ===========================================================================
+    // helpers
+    // ===========================================================================
+
     protected function xmlSpecifiedSupplyChainTradeAgreement($item)
     {
         $node = $this->doc->createElement('ram:SpecifiedSupplyChainTradeAgreement');
@@ -235,6 +298,13 @@ class ZugferdXml
         $node->appendChild($netPriceNode);
 
         return $node;
+    }
+
+    protected function quantityElement($name, $quantity)
+    {
+        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));
+        $el->setAttribute('unitCode', 'C62');
+        return $el;
     }
 
     protected function xmlSpecifiedSupplyChainTradeSettlement($item)
@@ -255,62 +325,5 @@ class ZugferdXml
         $node->appendChild($sumNode);
 
         return $node;
-    }
-
-    // ===========================================================================
-    // elements helpers
-    // ===========================================================================
-
-    protected function currencyElement($name, $amount, $nb_decimals = 2)
-    {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
-        $el->setAttribute('currencyID', $this->currencyCode);
-        return $el;
-    }
-
-    protected function quantityElement($name, $quantity)
-    {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));
-        $el->setAttribute('unitCode', 'C62');
-        return $el;
-    }
-
-    protected function dateElement($date)
-    {
-        $el = $this->doc->createElement('udt:DateTimeString', $this->zugferdFormattedDate($date));
-        $el->setAttribute('format', 102);
-        return $el;
-    }
-
-    // ===========================================================================
-    // helpers
-    // ===========================================================================
-
-    function zugferdFormattedDate($date)
-    {
-        if ($date && $date <> '0000-00-00') {
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-            return $date->format('Ymd');
-        }
-        return '';
-    }
-
-    function zugferdFormattedFloat($amount, $nb_decimals = 2)
-    {
-        return number_format((float)$amount, $nb_decimals);
-    }
-
-    function itemsSubtotalGroupedByTaxPercent()
-    {
-        $result = [];
-        foreach ($this->items as $item) {
-            if ($item->item_tax_rate_percent == 0) continue;
-
-            if (!isset($result[$item->item_tax_rate_percent])) {
-                $result[$item->item_tax_rate_percent] = 0;
-            }
-            $result[$item->item_tax_rate_percent] += $item->item_subtotal;
-        }
-        return $result;
     }
 }

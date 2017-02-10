@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Quote_Items
+ */
 class Mdl_Quote_Items extends Response_Model
 {
     public $table = 'ip_quote_items';
@@ -38,6 +35,9 @@ class Mdl_Quote_Items extends Response_Model
         $this->db->join('ip_tax_rates AS item_tax_rates', 'item_tax_rates.tax_rate_id = ip_quote_items.item_tax_rate_id', 'left');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -74,6 +74,11 @@ class Mdl_Quote_Items extends Response_Model
         );
     }
 
+    /**
+     * @param null $id
+     * @param null $db_array
+     * @return int|null
+     */
     public function save($id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
@@ -92,6 +97,9 @@ class Mdl_Quote_Items extends Response_Model
         return $id;
     }
 
+    /**
+     * @param int $item_id
+     */
     public function delete($item_id)
     {
         // Get the quote id so we can recalculate quote amounts

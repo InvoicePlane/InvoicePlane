@@ -1,24 +1,23 @@
 <?php
-
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Payment_Handler
+ */
 class Payment_Handler extends Base_Controller
 {
+    /**
+     * Payment_Handler constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -29,6 +28,9 @@ class Payment_Handler extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
     }
 
+    /**
+     * @param $invoice_url_key
+     */
     public function make_payment($invoice_url_key)
     {
         // Attempt to get the invoice
@@ -73,6 +75,9 @@ class Payment_Handler extends Base_Controller
         }
     }
 
+    /**
+     * @param $invoice_url_key
+     */
     public function payment_return($invoice_url_key)
     {
         // See if the response can be validated
@@ -107,18 +112,10 @@ class Payment_Handler extends Base_Controller
         redirect('guest/view/invoice/' . $invoice_url_key);
     }
 
-    public function payment_cancel($invoice_url_key)
-    {
-        // Validate the response
-        $this->payment_validate($invoice_url_key);
-
-        // Set the cancel flash message
-        $this->session->set_flashdata('flash_message', trans('merchant_payment_cancel'));
-
-        // Redirect to guest invoice view with flash message
-        redirect('guest/view/invoice/' . $invoice_url_key);
-    }
-
+    /**
+     * @param $invoice_url_key
+     * @return int
+     */
     private function payment_validate($invoice_url_key)
     {
         // Attempt to get the invoice
@@ -169,6 +166,21 @@ class Payment_Handler extends Base_Controller
         }
 
         return 0;
+    }
+
+    /**
+     * @param $invoice_url_key
+     */
+    public function payment_cancel($invoice_url_key)
+    {
+        // Validate the response
+        $this->payment_validate($invoice_url_key);
+
+        // Set the cancel flash message
+        $this->session->set_flashdata('flash_message', trans('merchant_payment_cancel'));
+
+        // Redirect to guest invoice view with flash message
+        redirect('guest/view/invoice/' . $invoice_url_key);
     }
 
 }

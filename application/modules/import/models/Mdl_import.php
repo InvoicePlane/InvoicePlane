@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Import
+ */
 class Mdl_Import extends Response_Model
 {
     public $table = 'ip_imports';
@@ -70,6 +67,9 @@ class Mdl_Import extends Response_Model
         'ip_payments' => 'payment_id'
     );
 
+    /**
+     * Mdl_Import constructor.
+     */
     public function __construct()
     {
         // Provides better line ending detection
@@ -101,6 +101,11 @@ class Mdl_Import extends Response_Model
         return $this->db->insert_id();
     }
 
+    /**
+     * @param $file
+     * @param $table
+     * @return array|bool
+     */
     public function import_data($file, $table)
     {
         // Open the file
@@ -116,6 +121,7 @@ class Mdl_Import extends Response_Model
 
         while (($data = fgetcsv($handle, 1000, ",")) <> false) {
             // Check to make sure the file headers match the expected headers
+            $fileheaders = null;
             if ($row == 1) {
                 foreach ($headers as $header) {
                     if (!in_array($header, $data))
@@ -150,6 +156,9 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * @return array|bool
+     */
     public function import_invoices()
     {
         // Open the file
@@ -229,6 +238,9 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * @return array|bool
+     */
     public function import_invoice_items()
     {
         // Open the file
@@ -297,6 +309,9 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * @return array|bool
+     */
     public function import_payments()
     {
         $handle = fopen('./uploads/import/payments.csv', 'r');
@@ -357,6 +372,12 @@ class Mdl_Import extends Response_Model
         return $ids;
     }
 
+    /**
+     * @param $import_id
+     * @param $table_name
+     * @param $import_lang_key
+     * @param $ids
+     */
     public function record_import_details($import_id, $table_name, $import_lang_key, $ids)
     {
         foreach ($ids as $id) {
@@ -371,6 +392,9 @@ class Mdl_Import extends Response_Model
         }
     }
 
+    /**
+     * @param int $import_id
+     */
     public function delete($import_id)
     {
         // Gather the import details

@@ -9,12 +9,12 @@
     <div class="pull-right">
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'open') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('guest/quotes/status/open'); ?>"><?php echo trans('open'); ?></a></li>
+                        href="<?php echo site_url('guest/quotes/status/open'); ?>"><?php echo trans('open'); ?></a></li>
             <li <?php if ($status == 'approved') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('guest/quotes/status/approved'); ?>"><?php echo trans('approved'); ?></a>
+                        href="<?php echo site_url('guest/quotes/status/approved'); ?>"><?php echo trans('approved'); ?></a>
             </li>
             <li <?php if ($status == 'rejected') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('guest/quotes/status/rejected'); ?>"><?php echo trans('rejected'); ?></a>
+                        href="<?php echo site_url('guest/quotes/status/rejected'); ?>"><?php echo trans('rejected'); ?></a>
             </li>
         </ul>
     </div>

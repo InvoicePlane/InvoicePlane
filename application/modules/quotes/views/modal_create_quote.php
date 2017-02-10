@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create quote modal
         $('#create-quote').modal('show');
@@ -76,7 +76,7 @@
                     <input name="quote_date_created" id="quote_date_created"
                            class="form-control datepicker"
                            value="<?php echo date(date_format_setting()); ?>">
-										<span class="input-group-addon">
+                    <span class="input-group-addon">
 												<i class="fa fa-calendar fa-fw"></i>
 										</span>
                 </div>

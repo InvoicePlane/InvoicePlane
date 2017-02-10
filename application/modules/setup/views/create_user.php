@@ -1,5 +1,5 @@
-<script type="text/javascript">
-    $().ready(function () {
+<script>
+    $(function () {
         $("[name='user_country']").select2({
             placeholder: "<?php echo trans('country'); ?>",
             allowClear: true

@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Quotes
+ */
 class Quotes extends Guest_Controller
 {
+    /**
+     * Quotes constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +31,10 @@ class Quotes extends Guest_Controller
         redirect('guest/quotes/status/open');
     }
 
+    /**
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'open', $page = 0)
     {
         redirect_to_set();
@@ -38,14 +42,20 @@ class Quotes extends Guest_Controller
         // Determine which group of quotes to load
         switch ($status) {
             case 'approved':
-                $this->mdl_quotes->is_approved()->where_in('ip_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes
+                    ->is_approved()
+                    ->where_in('ip_quotes.client_id', $this->user_clients);
                 break;
             case 'rejected':
-                $this->mdl_quotes->is_rejected()->where_in('ip_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes
+                    ->is_rejected()
+                    ->where_in('ip_quotes.client_id', $this->user_clients);
                 $this->layout->set('show_invoice_column', true);
                 break;
             default:
-                $this->mdl_quotes->is_open()->where_in('ip_quotes.client_id', $this->user_clients);
+                $this->mdl_quotes
+                    ->is_open()
+                    ->where_in('ip_quotes.client_id', $this->user_clients);
                 break;
         }
 
@@ -58,6 +68,9 @@ class Quotes extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * @param $quote_id
+     */
     public function view($quote_id)
     {
         redirect_to_set();
@@ -65,7 +78,10 @@ class Quotes extends Guest_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
+        $quote = $this->mdl_quotes->guest_visible()
+            ->where('ip_quotes.quote_id', $quote_id)
+            ->where_in('ip_quotes.client_id', $this->user_clients)
+            ->get()->row();
 
         if (!$quote) {
             show_404();
@@ -76,8 +92,12 @@ class Quotes extends Guest_Controller
         $this->layout->set(
             array(
                 'quote' => $quote,
-                'items' => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
-                'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
+                'items' => $this->mdl_quote_items
+                    ->where('quote_id', $quote_id)
+                    ->get()->result(),
+                'quote_tax_rates' => $this->mdl_quote_tax_rates
+                    ->where('quote_id', $quote_id)
+                    ->get()->result(),
                 'quote_id' => $quote_id
             )
         );
@@ -86,13 +106,21 @@ class Quotes extends Guest_Controller
         $this->layout->render('layout_guest');
     }
 
+    /**
+     * @param $quote_id
+     * @param bool $stream
+     * @param null $quote_template
+     */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
         $this->load->helper('pdf');
 
         $this->mdl_quotes->mark_viewed($quote_id);
 
-        $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
+        $quote = $this->mdl_quotes->guest_visible()
+            ->where('ip_quotes.quote_id', $quote_id)
+            ->where_in('ip_quotes.client_id', $this->user_clients)
+            ->get()->row();
 
         if (!$quote) {
             show_404();
@@ -101,6 +129,9 @@ class Quotes extends Guest_Controller
         }
     }
 
+    /**
+     * @param $quote_id
+     */
     public function approve($quote_id)
     {
         $this->load->model('quotes/mdl_quotes');
@@ -112,6 +143,9 @@ class Quotes extends Guest_Controller
         redirect_to('guest/quotes');
     }
 
+    /**
+     * @param $quote_id
+     */
     public function reject($quote_id)
     {
         $this->load->model('quotes/mdl_quotes');

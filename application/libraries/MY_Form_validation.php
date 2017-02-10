@@ -1,8 +1,18 @@
 <?php
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+/*
+ * InvoicePlane
+ *
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
+ */
 
+/**
+ * Class MY_Form_validation
+ */
 class MY_Form_validation extends CI_Form_validation
 {
     public $CI;
@@ -22,8 +32,7 @@ class MY_Form_validation extends CI_Form_validation
 
     function run($module = '', $group = '')
     {
-       (is_object($module)) AND $this->CI = &$module;
+        (is_object($module)) AND $this->CI = &$module;
         return parent::run($group);
     }
-
 }

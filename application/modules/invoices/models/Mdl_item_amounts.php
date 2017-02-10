@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Item_Amounts
+ */
 class Mdl_Item_Amounts extends CI_Model
 {
     /**
@@ -24,13 +21,13 @@ class Mdl_Item_Amounts extends CI_Model
      * item_subtotal (item_quantity * item_price)
      * item_tax_total
      * item_total ((item_quantity * item_price) + item_tax_total)
+     *
+     * @param $item_id
      */
     public function calculate($item_id)
     {
         $this->load->model('invoices/mdl_items');
         $item = $this->mdl_items->get_by_id($item_id);
-
-        $tax_rate_percent = 0;
 
         $item_subtotal = $item->item_quantity * $item->item_price;
         $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);

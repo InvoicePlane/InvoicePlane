@@ -1,4 +1,5 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * CI-Merchant Library
@@ -24,7 +25,7 @@
  * THE SOFTWARE.
  */
 
-require_once(MERCHANT_DRIVER_PATH.'/merchant_paypal_base.php');
+require_once(MERCHANT_DRIVER_PATH . '/merchant_paypal_base.php');
 
 /**
  * Merchant Paypal Express Class
@@ -32,93 +33,90 @@ require_once(MERCHANT_DRIVER_PATH.'/merchant_paypal_base.php');
  * Payment processing using Paypal Express Checkout
  * Documentation: https://cms.paypal.com/cms_content/US/en_US/files/developer/PP_ExpressCheckout_IntegrationGuide.pdf
  */
-
 class Merchant_paypal_express extends Merchant_paypal_base
 {
-	public function default_settings()
-	{
-		return array(
-				'username' => '',
-				'password' => '',
-				'signature' => '',
-				'test_mode' => FALSE,
-				'solution_type' => array('type' => 'select', 'default' => 'Sole', 'options' => array(
-						'Sole' => 'merchant_solution_type_sole',
-						'Mark' => 'merchant_solution_type_mark')),
-				'landing_page' => array('type' => 'select', 'default' => 'Billing', 'options' => array(
-						'Billing'	=> 'merchant_landing_page_billing',
-						'Login'		=> 'merchant_landing_page_login'))
-		);
-	}
+    public function default_settings()
+    {
+        return array(
+            'username' => '',
+            'password' => '',
+            'signature' => '',
+            'test_mode' => FALSE,
+            'solution_type' => array('type' => 'select', 'default' => 'Sole', 'options' => array(
+                'Sole' => 'merchant_solution_type_sole',
+                'Mark' => 'merchant_solution_type_mark')),
+            'landing_page' => array('type' => 'select', 'default' => 'Billing', 'options' => array(
+                'Billing' => 'merchant_landing_page_billing',
+                'Login' => 'merchant_landing_page_login'))
+        );
+    }
 
-	public function authorize()
-	{
-		$request = $this->_build_authorize_or_purchase();
-		$response = $this->_post_paypal_request($request);
+    public function authorize_return()
+    {
+        $response = $this->_express_checkout_return('Authorization');
+        return new Merchant_paypal_api_response($response, Merchant_response::AUTHORIZED);
+    }
 
-		$this->redirect($this->_checkout_url().'?'.http_build_query(array(
-						'cmd' => '_express-checkout',
-						'useraction' => 'commit',
-						'token' => $response['TOKEN'],
-				)));
-	}
+    protected function _express_checkout_return($action)
+    {
+        $request = $this->_new_request('DoExpressCheckoutPayment');
+        $this->_add_request_details($request, $action, 'PAYMENTREQUEST_0_');
 
-	public function authorize_return()
-	{
-		$response = $this->_express_checkout_return('Authorization');
-		return new Merchant_paypal_api_response($response, Merchant_response::AUTHORIZED);
-	}
+        $request['TOKEN'] = $this->CI->input->get_post('token');
+        $request['PAYERID'] = $this->CI->input->get_post('PayerID');
 
-	public function purchase()
-	{
-		// authorize first then process as 'Sale' in DoExpressCheckoutPayment
-		$this->authorize();
-	}
+        return $this->_post_paypal_request($request);
+    }
 
-	public function purchase_return()
-	{
-		$response = $this->_express_checkout_return('Sale');
-		return new Merchant_paypal_api_response($response, Merchant_response::COMPLETE);
-	}
+    public function purchase()
+    {
+        // authorize first then process as 'Sale' in DoExpressCheckoutPayment
+        $this->authorize();
+    }
 
-	protected function _build_authorize_or_purchase()
-	{
-		$this->require_params('return_url');
+    public function authorize()
+    {
+        $request = $this->_build_authorize_or_purchase();
+        $response = $this->_post_paypal_request($request);
 
-		$request = $this->_new_request('SetExpressCheckout');
-		$prefix = 'PAYMENTREQUEST_0_';
-		$this->_add_request_details($request, 'Authorization', $prefix);
+        $this->redirect($this->_checkout_url() . '?' . http_build_query(array(
+                'cmd' => '_express-checkout',
+                'useraction' => 'commit',
+                'token' => $response['TOKEN'],
+            )));
+    }
 
-		// pp express specific fields
-		$request['SOLUTIONTYPE'] = $this->setting('solution_type');
-		$request['LANDINGPAGE'] = $this->setting('landing_page');
-		$request['NOSHIPPING'] = 1;
-		$request['ALLOWNOTE'] = 0;
-		$request['RETURNURL'] = $this->param('return_url');
-		$request['CANCELURL'] = $this->param('cancel_url');
-		$request[$prefix.'SHIPTONAME'] = $this->param('name');
-		$request[$prefix.'SHIPTOSTREET'] = $this->param('address1');
-		$request[$prefix.'SHIPTOSTREET2'] = $this->param('address2');
-		$request[$prefix.'SHIPTOCITY'] = $this->param('city');
-		$request[$prefix.'SHIPTOSTATE'] = $this->param('region');
-		$request[$prefix.'SHIPTOCOUNTRYCODE'] = $this->param('country');
-		$request[$prefix.'SHIPTOZIP'] = $this->param('postcode');
-		$request[$prefix.'SHIPTOPHONENUM'] = $this->param('phone');
-		$request['EMAIL'] = $this->param('email');
+    protected function _build_authorize_or_purchase()
+    {
+        $this->require_params('return_url');
 
-		return $request;
-	}
+        $request = $this->_new_request('SetExpressCheckout');
+        $prefix = 'PAYMENTREQUEST_0_';
+        $this->_add_request_details($request, 'Authorization', $prefix);
 
-	protected function _express_checkout_return($action)
-	{
-		$request = $this->_new_request('DoExpressCheckoutPayment');
-		$this->_add_request_details($request, $action, 'PAYMENTREQUEST_0_');
+        // pp express specific fields
+        $request['SOLUTIONTYPE'] = $this->setting('solution_type');
+        $request['LANDINGPAGE'] = $this->setting('landing_page');
+        $request['NOSHIPPING'] = 1;
+        $request['ALLOWNOTE'] = 0;
+        $request['RETURNURL'] = $this->param('return_url');
+        $request['CANCELURL'] = $this->param('cancel_url');
+        $request[$prefix . 'SHIPTONAME'] = $this->param('name');
+        $request[$prefix . 'SHIPTOSTREET'] = $this->param('address1');
+        $request[$prefix . 'SHIPTOSTREET2'] = $this->param('address2');
+        $request[$prefix . 'SHIPTOCITY'] = $this->param('city');
+        $request[$prefix . 'SHIPTOSTATE'] = $this->param('region');
+        $request[$prefix . 'SHIPTOCOUNTRYCODE'] = $this->param('country');
+        $request[$prefix . 'SHIPTOZIP'] = $this->param('postcode');
+        $request[$prefix . 'SHIPTOPHONENUM'] = $this->param('phone');
+        $request['EMAIL'] = $this->param('email');
 
-		$request['TOKEN'] = $this->CI->input->get_post('token');
-		$request['PAYERID'] = $this->CI->input->get_post('PayerID');
+        return $request;
+    }
 
-		return $this->_post_paypal_request($request);
-	}
+    public function purchase_return()
+    {
+        $response = $this->_express_checkout_return('Sale');
+        return new Merchant_paypal_api_response($response, Merchant_response::COMPLETE);
+    }
 }
-
-/* End of file ./libraries/merchant/drivers/merchant_paypal_express.php */

@@ -1,5 +1,4 @@
-<script type="text/javascript">
-
+<script>
     var delay = (function () {
         var timer = 0;
         return function (callback, ms) {
@@ -9,7 +8,6 @@
     })();
 
     $(function () {
-
         $('#filter').keyup(function () {
             delay(function () {
                 $.post('<?php echo site_url('filter/ajax/' . $filter_method); ?>',
@@ -20,9 +18,6 @@
                         $('#filter_results').html(data);
                     });
             }, 1000);
-
         });
-
     });
-
 </script>

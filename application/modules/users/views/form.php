@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         show_fields();
 

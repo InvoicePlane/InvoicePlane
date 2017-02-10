@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Ajax
+ */
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
@@ -36,7 +33,6 @@ class Ajax extends Admin_Controller
             // Is this a new user or an existing user?
             if ($user_id) {
                 // Existing user - go ahead and save the entries
-
                 $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->where('ip_user_clients.client_id', $client_id)->get();
 
                 if (!$user_client->num_rows()) {

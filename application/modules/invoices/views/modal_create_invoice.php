@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create invoice modal
         $('#create-invoice').modal('show');
@@ -77,7 +77,7 @@
                     <input name="invoice_date_created" id="invoice_date_created"
                            class="form-control datepicker"
                            value="<?php echo date(date_format_setting()); ?>">
-                <span class="input-group-addon">
+                    <span class="input-group-addon">
                     <i class="fa fa-calendar fa-fw"></i>
                 </span>
                 </div>

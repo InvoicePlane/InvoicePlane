@@ -1,21 +1,20 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Returns the invoice image
+ *
+ * @return string
+ */
 function invoice_logo()
 {
     $CI = &get_instance();
@@ -26,6 +25,11 @@ function invoice_logo()
     return '';
 }
 
+/**
+ * Returns the invoice logo for PDF files
+ *
+ * @return string
+ */
 function invoice_logo_pdf()
 {
     $CI = &get_instance();
