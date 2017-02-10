@@ -1,6 +1,6 @@
 # Configuration stuff
 /application/config/development
-/ipconfig
+/ipconfig.php
 
 # Logs folder
 /application/logs/*

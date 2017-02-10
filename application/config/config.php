@@ -67,7 +67,7 @@ $config['base_url'] = env('IP_URL');
 | variable so that it is blank.
 |
 */
-$config['index_page'] = env_bool('REMOVE_INDEXPHP') ?: 'index.php';
+$config['index_page'] = env_bool('REMOVE_INDEXPHP') ? '' : 'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -426,7 +426,7 @@ $config['sess_driver'] = env('SESS_DRIVER', 'files');
 $config['sess_table_name'] = env('SESS_DRIVER', 'ip_sessions');
 $config['sess_cookie_name'] = env('SESS_DRIVER', 'ip_session');
 $config['sess_expiration'] = env('SESS_EXPIRATION', 864000);
-$config['sess_save_path'] = NULL;
+$config['sess_save_path'] = env('SESS_SAVE_PATH', APPPATH . 'sessions');
 $config['sess_match_ip'] = env('SESS_MATCH_IP', true);
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
