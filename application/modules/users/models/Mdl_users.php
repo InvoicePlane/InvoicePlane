@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Users
+ */
 class Mdl_Users extends Response_Model
 {
     public $table = 'ip_users';
@@ -23,6 +20,9 @@ class Mdl_Users extends Response_Model
     public $date_created_field = 'user_date_created';
     public $date_modified_field = 'user_date_modified';
 
+    /**
+     * @return array
+     */
     public function user_types()
     {
         return array(
@@ -46,6 +46,9 @@ class Mdl_Users extends Response_Model
         $this->db->order_by('ip_users.user_name');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -117,6 +120,9 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules_existing()
     {
         return array(
@@ -179,6 +185,9 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules_change_password()
     {
         return array(
@@ -195,6 +204,9 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -213,6 +225,10 @@ class Mdl_Users extends Response_Model
         return $db_array;
     }
 
+    /**
+     * @param $user_id
+     * @param $password
+     */
     public function save_change_password($user_id, $password)
     {
         $this->load->library('crypt');
@@ -231,6 +247,11 @@ class Mdl_Users extends Response_Model
         $this->session->set_flashdata('alert_success', 'Password Successfully Changed');
     }
 
+    /**
+     * @param null $id
+     * @param null $db_array
+     * @return int|null
+     */
     public function save($id = null, $db_array = null)
     {
         $id = parent::save($id, $db_array);
@@ -248,6 +269,9 @@ class Mdl_Users extends Response_Model
         return $id;
     }
 
+    /**
+     * @param int $id
+     */
     public function delete($id)
     {
         parent::delete($id);
