@@ -27,6 +27,7 @@ class Mdl_Client_Custom extends Validator
     {
         $result = $this->validate($db_array);
         if ($result === true) {
+            $cid = (isset($client_custom->client_custom_id) ? $client_custom->client_custom_id : null);
             $db_array = $this->_formdata;
             $client_custom_id = null;
             $db_array['client_id'] = $client_id;
@@ -80,7 +81,7 @@ class Mdl_Client_Custom extends Validator
     {
         $db_array = parent::db_array();
         $this->load->module('custom_fields/mdl_custom_fields');
-        $fields = $this->mdl_custom_fields->get_by_table($table)->result();
+        $fields = $this->mdl_custom_fields->result();
 
         foreach ($fields as $field) {
             if ($field->custom_field_type == "DATE") {
