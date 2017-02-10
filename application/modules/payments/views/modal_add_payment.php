@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#enter-payment').modal('show');
 
@@ -124,4 +124,5 @@
             </div>
         </div>
     </div>
+
 </div>

@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Mdl_Payments
+ */
 class Mdl_Payments extends Response_Model
 {
     public $table = 'ip_payments';
@@ -49,6 +46,9 @@ class Mdl_Payments extends Response_Model
         $this->db->join('ip_payment_custom', 'ip_payment_custom.payment_id = ip_payments.payment_id', 'left');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -78,15 +78,19 @@ class Mdl_Payments extends Response_Model
         );
     }
 
+    /**
+     * @param $amount
+     * @return bool
+     */
     public function validate_payment_amount($amount)
     {
-        $amount = (float) $amount;
+        $amount = (float)$amount;
         $invoice_id = $this->input->post('invoice_id');
         $payment_id = $this->input->post('payment_id');
 
         $invoice = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
-        if($invoice == null){
-          return false;
+        if ($invoice == null) {
+            return false;
         }
         $invoice_balance = $invoice->invoice_balance;
 
@@ -95,7 +99,7 @@ class Mdl_Payments extends Response_Model
 
             $invoice_balance = $invoice_balance + $payment->payment_amount;
         }
-        $invoice_balance = (float) $invoice_balance;
+        $invoice_balance = (float)$invoice_balance;
         if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
             return false;
@@ -104,6 +108,11 @@ class Mdl_Payments extends Response_Model
         return true;
     }
 
+    /**
+     * @param null $id
+     * @param null $db_array
+     * @return bool|int|null
+     */
     public function save($id = null, $db_array = null)
     {
         $db_array = ($db_array) ? $db_array : $this->db_array();
@@ -113,19 +122,18 @@ class Mdl_Payments extends Response_Model
 
         // Set proper status for the invoice
 
-        $invoice = $this->db->where('invoice_id',  $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
+        $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
 
         // Calculate sum for payments
-        if($invoice == null){
-          return false;
+        if ($invoice == null) {
+            return false;
         }
-        $paid = (float) $invoice->invoice_paid;
-        $total = (float) $invoice->invoice_total;
+        $paid = (float)$invoice->invoice_paid;
+        $total = (float)$invoice->invoice_total;
 
-        if($paid >= $total)
-        {
-          $this->db->set('invoice_status_id', 4);
-          $this->db->update('ip_invoices');
+        if ($paid >= $total) {
+            $this->db->set('invoice_status_id', 4);
+            $this->db->update('ip_invoices');
         }
 
         // Recalculate invoice amounts
@@ -135,6 +143,9 @@ class Mdl_Payments extends Response_Model
         return $id;
     }
 
+    /**
+     * @param null $id
+     */
     public function delete($id = null)
     {
         // Get the invoice id before deleting payment
@@ -164,6 +175,9 @@ class Mdl_Payments extends Response_Model
         delete_orphans();
     }
 
+    /**
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -174,6 +188,10 @@ class Mdl_Payments extends Response_Model
         return $db_array;
     }
 
+    /**
+     * @param null $id
+     * @return bool
+     */
     public function prep_form($id = null)
     {
         if (!parent::prep_form($id)) {
@@ -187,6 +205,10 @@ class Mdl_Payments extends Response_Model
         return true;
     }
 
+    /**
+     * @param $client_id
+     * @return $this
+     */
     public function by_client($client_id)
     {
         $this->filter_where('ip_clients.client_id', $client_id);
