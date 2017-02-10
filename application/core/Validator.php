@@ -146,6 +146,11 @@ class Validator extends MY_Model
         $db_array = $array;
         $errors = [];
 
+        if (empty($db_array)) {
+            // Return true if no fields need to be validated
+            return true;
+        }
+
         foreach ($db_array as $key => $value) {
             $model = $this->mdl_custom_fields->where('custom_field_column', $key)->get();
             if ($model->num_rows()) {
