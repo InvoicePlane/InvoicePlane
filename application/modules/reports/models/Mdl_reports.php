@@ -1,24 +1,25 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Reports
+ */
 class Mdl_Reports extends CI_Model
 {
-
+    /**
+     * @param null $from_date
+     * @param null $to_date
+     * @return mixed
+     */
     public function sales_by_client($from_date = null, $to_date = null)
     {
         $this->db->select('client_name');
@@ -43,6 +44,11 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
+    /**
+     * @param null $from_date
+     * @param null $to_date
+     * @return mixed
+     */
     public function payment_history($from_date = null, $to_date = null)
     {
         $this->load->model('payments/mdl_payments');
@@ -58,6 +64,9 @@ class Mdl_Reports extends CI_Model
         return $this->mdl_payments->get()->result();
     }
 
+    /**
+     * @return mixed
+     */
     public function invoice_aging()
     {
         $this->db->select('client_name');
@@ -74,6 +83,14 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
+    /**
+     * @param null $from_date
+     * @param null $to_date
+     * @param null $minQuantity
+     * @param null $maxQuantity
+     * @param bool $taxChecked
+     * @return mixed
+     */
     public function sales_by_year($from_date = null, $to_date = null, $minQuantity = null, $maxQuantity = null, $taxChecked = False)
     {
         if ($minQuantity == "") $minQuantity = 0;
