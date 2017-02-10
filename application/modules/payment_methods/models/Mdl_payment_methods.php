@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Payment_Methods
+ */
 class Mdl_Payment_Methods extends Response_Model
 {
     public $table = 'ip_payment_methods';
@@ -31,6 +28,9 @@ class Mdl_Payment_Methods extends Response_Model
         $this->db->order_by('ip_payment_methods.payment_method_name');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
