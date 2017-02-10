@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Quotes
+ */
 class Quotes extends Admin_Controller
 {
+    /**
+     * Quotes constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +31,10 @@ class Quotes extends Admin_Controller
         redirect('quotes/status/all');
     }
 
+    /**
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'all', $page = 0)
     {
         // Determine which group of quotes to load
@@ -73,6 +77,9 @@ class Quotes extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $quote_id
+     */
     public function view($quote_id)
     {
         $this->load->helper("custom_values");
@@ -106,12 +113,11 @@ class Quotes extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result();
         $custom_values = [];
-        foreach($custom_fields as $custom_field){
-          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-          {
-            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-            $custom_values[$custom_field->custom_field_column] = $values;
-          }
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[$custom_field->custom_field_column] = $values;
+            }
         }
 
         $this->layout->set(
@@ -144,6 +150,9 @@ class Quotes extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $quote_id
+     */
     public function delete($quote_id)
     {
         // Delete the quote
@@ -153,6 +162,10 @@ class Quotes extends Admin_Controller
         redirect('quotes/index');
     }
 
+    /**
+     * @param $quote_id
+     * @param $item_id
+     */
     public function delete_item($quote_id, $item_id)
     {
         // Delete quote item
@@ -163,6 +176,11 @@ class Quotes extends Admin_Controller
         redirect('quotes/view/' . $quote_id);
     }
 
+    /**
+     * @param $quote_id
+     * @param bool $stream
+     * @param null $quote_template
+     */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
         $this->load->helper('pdf');
@@ -174,6 +192,10 @@ class Quotes extends Admin_Controller
         generate_quote_pdf($quote_id, $stream, $quote_template);
     }
 
+    /**
+     * @param $quote_id
+     * @param $quote_tax_rate_id
+     */
     public function delete_quote_tax($quote_id, $quote_tax_rate_id)
     {
         $this->load->model('mdl_quote_tax_rates');
