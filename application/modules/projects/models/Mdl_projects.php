@@ -1,24 +1,20 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Projects
+ */
 class Mdl_Projects extends Response_Model
 {
-
     public $table = 'ip_projects';
     public $primary_key = 'ip_projects.project_id';
 
@@ -38,6 +34,9 @@ class Mdl_Projects extends Response_Model
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_projects.client_id', 'left');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -54,5 +53,3 @@ class Mdl_Projects extends Response_Model
     }
 
 }
-
-?>
