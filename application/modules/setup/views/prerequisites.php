@@ -11,9 +11,9 @@
             <p><?php echo trans('setup_prerequisites_message'); ?></p>
 
             <?php foreach ($basics as $basic) {
-                if ($basic['success']) { ?>
+                if (isset($basic['success'])) { ?>
                     <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $basic['message']; ?></p>
-                <?php } elseif ($basic['warning']) { ?>
+                <?php } elseif (isset($basic['warning'])) { ?>
                     <p><i class="fa fa-exclamation text-warning fa-margin"></i> <?php echo $basic['message']; ?></p>
                 <?php } else { ?>
                     <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $basic['message']; ?></p>
@@ -23,7 +23,7 @@
             <br>
 
             <?php foreach ($writables as $writable) {
-                if ($writable['success']) { ?>
+                if (isset($writable['success'])) { ?>
                     <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $writable['message']; ?></p>
                 <?php } else { ?>
                     <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $writable['message']; ?></p>
