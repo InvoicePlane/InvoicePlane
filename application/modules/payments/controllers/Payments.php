@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Payments
+ */
 class Payments extends Admin_Controller
 {
+    /**
+     * Payments constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -25,6 +25,9 @@ class Payments extends Admin_Controller
         $this->load->model('mdl_payments');
     }
 
+    /**
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_payments->paginate(site_url('payments/index'), $page);
@@ -43,6 +46,9 @@ class Payments extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -98,12 +104,11 @@ class Payments extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result();
         $custom_values = [];
-        foreach($custom_fields as $custom_field){
-          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-          {
-            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-            $custom_values[$custom_field->custom_field_column] = $values;
-          }
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[$custom_field->custom_field_column] = $values;
+            }
         }
 
         $amounts = array();
@@ -133,6 +138,9 @@ class Payments extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_payments->delete($id);
