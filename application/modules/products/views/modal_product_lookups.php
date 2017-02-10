@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create invoice modal
         $('#modal-choose-items').modal('show');
