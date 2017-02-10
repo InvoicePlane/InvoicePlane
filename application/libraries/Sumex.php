@@ -148,19 +148,19 @@ class Sumex
         $node = $this->doc->createElement('invoice:prolog');
 
         $package = $this->doc->createElement('invoice:package');
-        $package->setAttribute('version', '100');
+        $package->setAttribute('version', '150');
         $package->setAttribute('name', 'InvoicePlane');
 
         $generator = $this->doc->createElement('invoice:generator');
         $generator->setAttribute('name', 'PHP_Sumex');
         $generator->setAttribute('version', '100');
 
-        $dependson = $this->doc->createElement('invoice:depends_on');
+        // Depends on...?
+        /*$dependson = $this->doc->createElement('invoice:depends_on');
         $dependson->setAttribute('name', 'Nothing');
         $dependson->setAttribute('version', '300');
 
-        $generator->appendChild($dependson);
-        // Depends on...?
+        $generator->appendChild($dependson);*/
 
         $node->appendChild($package);
         $node->appendChild($generator);
@@ -220,7 +220,7 @@ class Sumex
         // TODO: Check ean_party, zsr, specialty
         $biller->setAttribute('ean_party', '2000000000002');
         $biller->setAttribute('zsr', 'C000002');
-        $biller->setAttribute('specialty', 'Allgemein');
+        //$biller->setAttribute('specialty', 'unknown');
 
         $bcompany = $this->xmlCompany();
         $biller->appendChild($bcompany);
@@ -231,7 +231,7 @@ class Sumex
         // TODO: Check ean_party, zsr, speciality
         $provider->setAttribute('ean_party', '2000000000002');
         $provider->setAttribute('zsr', 'C000002');
-        $provider->setAttribute('specialty', 'Allgemein');
+        //$provider->setAttribute('specialty', 'Allgemein');
 
         $pcompany = $this->xmlCompany();
         $provider->appendChild($pcompany);
@@ -382,62 +382,5 @@ class Sumex
       // </invoice:company>
 
       return $bcompany;
-    }
-
-    // ===========================================================================
-    // elements helpers
-    // ===========================================================================
-
-    protected function currencyElement($name, $amount, $nb_decimals = 2)
-    {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
-        $el->setAttribute('currencyID', $this->currencyCode);
-        return $el;
-    }
-
-    protected function quantityElement($name, $quantity)
-    {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));
-        $el->setAttribute('unitCode', 'C62');
-        return $el;
-    }
-
-    protected function dateElement($date)
-    {
-        $el = $this->doc->createElement('udt:DateTimeString', $this->zugferdFormattedDate($date));
-        $el->setAttribute('format', 102);
-        return $el;
-    }
-
-    // ===========================================================================
-    // helpers
-    // ===========================================================================
-
-    function zugferdFormattedDate($date)
-    {
-        if ($date && $date <> '0000-00-00') {
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-            return $date->format('Ymd');
-        }
-        return '';
-    }
-
-    function zugferdFormattedFloat($amount, $nb_decimals = 2)
-    {
-        return number_format((float)$amount, $nb_decimals);
-    }
-
-    function itemsSubtotalGroupedByTaxPercent()
-    {
-        $result = [];
-        foreach ($this->items as $item) {
-            if ($item->item_tax_rate_percent == 0) continue;
-
-            if (!isset($result[$item->item_tax_rate_percent])) {
-                $result[$item->item_tax_rate_percent] = 0;
-            }
-            $result[$item->item_tax_rate_percent] += $item->item_subtotal;
-        }
-        return $result;
     }
 }
