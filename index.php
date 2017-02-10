@@ -18,7 +18,7 @@
  * is helpful for finding the cause of the problems.
  */
 
-define('IP_URL', 'http://ip-431.dev');
+define('IP_URL', '');
 define('IP_DEBUG', true);
 
 /*
