@@ -1,4 +1,5 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
 
     <meta charset="utf-8">
@@ -31,12 +32,12 @@
                 <a href="<?php echo site_url('guest/view/generate_quote_pdf/' . $quote_url_key); ?>"
                    class="btn btn-primary">
                     <i
-                        class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+                            class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                 </a>
                 <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $quote->quote_balance > 0) { ?>
                 <a
-                    href="<?php echo site_url('guest/payment_handler/make_payment/' . $quote_url_key); ?>"
-                    class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
+                        href="<?php echo site_url('guest/payment_handler/make_payment/' . $quote_url_key); ?>"
+                        class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
                     </a><?php } ?>
             </div>
 

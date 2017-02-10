@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="<?php echo trans('cldr'); ?>">
 <head>
     <meta charset="utf-8">

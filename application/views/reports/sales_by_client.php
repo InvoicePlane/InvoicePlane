@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
     <title><?php echo trans('sales_by_client'); ?></title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/reports.css" type="text/css">
@@ -26,5 +27,6 @@
         </tr>
     <?php } ?>
 </table>
+
 </body>
 </html>
