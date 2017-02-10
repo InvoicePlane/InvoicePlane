@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     // Update check
     window.onload = function () {
         var checktime = 2000;
@@ -51,7 +51,6 @@
             $('#ipnews-failed').removeClass('hidden');
         });
     };
-
 </script>
 
 <div class="tab-info">
@@ -92,4 +91,5 @@
 
         <div id="ipnews-container"></div>
     </div>
+
 </div>

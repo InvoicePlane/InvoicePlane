@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $().ready(function () {
         $('#btn-submit').click(function () {
             $('#form-settings').submit();
