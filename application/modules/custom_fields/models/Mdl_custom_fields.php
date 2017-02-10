@@ -30,7 +30,7 @@ class Mdl_Custom_Fields extends MY_Model
     public function get_nicename($element)
     {
         if (in_array($element, $this->custom_types())) {
-            return strtolower(str_replace(''-'', '', $element));
+            return strtolower(str_replace('-', '', $element));
         }
         return 'fallback';
     }
