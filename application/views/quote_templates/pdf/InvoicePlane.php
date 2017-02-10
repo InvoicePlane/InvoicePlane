@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="<?php echo trans('cldr'); ?>">
 <head>
     <meta charset="utf-8">
@@ -166,7 +167,7 @@
 
         <tr>
             <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?>
-                class="text-right"><?php echo trans('subtotal'); ?></td>
+                    class="text-right"><?php echo trans('subtotal'); ?></td>
             <td class="text-right"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
         </tr>
 
