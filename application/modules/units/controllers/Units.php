@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Cornelius Kölbel <cornelius.koelbel@netknights.it>
- * @copyright	Copyright (c) 2017 Cornelius KÖlbel
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Units
+ */
 class Units extends Admin_Controller
 {
+    /**
+     * Units constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -25,6 +25,9 @@ class Units extends Admin_Controller
         $this->load->model('mdl_units');
     }
 
+    /**
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_units->paginate(site_url('units/index'), $page);
@@ -35,15 +38,21 @@ class Units extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('units');
         }
 
-        if ($this->input->post('is_update') == 0 && $this->input->post('unit_name') != ''
-            && $this->input->post('unit_name_plrl') != '') {
+        if ($this->input->post('is_update') == 0
+            && $this->input->post('unit_name') != ''
+            && $this->input->post('unit_name_plrl') != ''
+        ) {
             $check = $this->db->get_where('ip_units', array('unit_name' => $this->input->post('unit_name')))->result();
+
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('unit_already_exists'));
                 redirect('units/form');
@@ -59,6 +68,7 @@ class Units extends Admin_Controller
             if (!$this->mdl_units->prep_form($id)) {
                 show_404();
             }
+
             $this->mdl_units->set_form_value('is_update', true);
         }
 
@@ -66,6 +76,9 @@ class Units extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_units->delete($id);
