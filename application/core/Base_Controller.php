@@ -31,9 +31,10 @@ class Base_Controller extends MX_Controller
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->helper('trans');
+        $this->load->library('encryption');
 
         // Check if database has been configured
-        if (!file_exists(APPPATH . 'config/database.php')) {
+        if (!env_bool('SETUP_COMPLETED')) {
 
             $this->load->helper('redirect');
             redirect('/welcome');
