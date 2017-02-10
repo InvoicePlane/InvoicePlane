@@ -24,7 +24,6 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quotes');
-        $this->load->model('item_lookups/mdl_item_lookups');
         $this->load->model('units/mdl_units');
         $this->load->library('encrypt');
 
