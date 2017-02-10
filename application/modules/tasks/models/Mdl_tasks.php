@@ -1,24 +1,20 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Tasks
+ */
 class Mdl_Tasks extends Response_Model
 {
-
     public $table = 'ip_tasks';
     public $primary_key = 'ip_tasks.task_id';
 
@@ -45,6 +41,9 @@ class Mdl_Tasks extends Response_Model
         $this->db->or_like('task_description', $match);
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -80,7 +79,9 @@ class Mdl_Tasks extends Response_Model
         );
     }
 
-
+    /**
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -91,6 +92,10 @@ class Mdl_Tasks extends Response_Model
         return $db_array;
     }
 
+    /**
+     * @param null $id
+     * @return bool
+     */
     public function prep_form($id = null)
     {
         if (!parent::prep_form($id)) {
@@ -104,6 +109,9 @@ class Mdl_Tasks extends Response_Model
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function statuses()
     {
         return array(
@@ -127,5 +135,3 @@ class Mdl_Tasks extends Response_Model
     }
 
 }
-
-?>
