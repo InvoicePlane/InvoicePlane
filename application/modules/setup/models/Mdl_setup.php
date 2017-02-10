@@ -1,25 +1,25 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Setup
+ */
 class Mdl_Setup extends CI_Model
 {
     public $errors = array();
 
+    /**
+     * @return bool
+     */
     public function install_tables()
     {
         $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
@@ -39,6 +39,108 @@ class Mdl_Setup extends CI_Model
         return true;
     }
 
+    /**
+     * @param $contents
+     */
+    private function execute_contents($contents)
+    {
+        $commands = explode(';', $contents);
+
+        foreach ($commands as $command) {
+            if (trim($command)) {
+                if (!$this->db->query(trim($command) . ';')) {
+                    $this->errors[] = $this->db->_error_message();
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $sql_file
+     */
+    private function save_version($sql_file)
+    {
+        $version_db_array = array(
+            'version_date_applied' => time(),
+            'version_file' => $sql_file,
+            'version_sql_errors' => count($this->errors)
+        );
+
+        $this->db->insert('ip_versions', $version_db_array);
+    }
+
+    /**
+     *
+     */
+    public function install_default_data()
+    {
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Invoice Default',
+                'invoice_group_next_id' => 1)
+        );
+
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Quote Default',
+                'invoice_group_prefix' => 'QUO',
+                'invoice_group_next_id' => 1)
+        );
+
+        $this->db->insert('ip_payment_methods', array(
+            'payment_method_name' => 'Cash',
+        ));
+
+        $this->db->insert('ip_payment_methods', array(
+            'payment_method_name' => 'Credit Card',
+        ));
+    }
+
+    /**
+     *
+     */
+    private function install_default_settings()
+    {
+        $this->load->helper('string');
+
+        $default_settings = array(
+            'default_language' => $this->session->userdata('ip_lang'),
+            'date_format' => 'm/d/Y',
+            'currency_symbol' => '$',
+            'currency_symbol_placement' => 'before',
+            'currency_code' => 'USD',
+            'invoices_due_after' => 30,
+            'quotes_expire_after' => 15,
+            'default_invoice_group' => 3,
+            'default_quote_group' => 4,
+            'thousands_separator' => ',',
+            'decimal_point' => '.',
+            'cron_key' => random_string('alnum', 16),
+            'tax_rate_decimal_places' => 2,
+            'pdf_invoice_template' => 'InvoicePlane',
+            'pdf_invoice_template_paid' => 'InvoicePlane - paid',
+            'pdf_invoice_template_overdue' => 'InvoicePlane - overdue',
+            'pdf_quote_template' => 'InvoicePlane',
+            'public_invoice_template' => 'InvoicePlane_Web',
+            'public_quote_template' => 'InvoicePlane_Web',
+            'disable_sidebar' => 1,
+        );
+
+        foreach ($default_settings as $setting_key => $setting_value) {
+            $this->db->where('setting_key', $setting_key);
+
+            if (!$this->db->get('ip_settings')->num_rows()) {
+                $db_array = array(
+                    'setting_key' => $setting_key,
+                    'setting_value' => $setting_value
+                );
+
+                $this->db->insert('ip_settings', $db_array);
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
     public function upgrade_tables()
     {
         // Collect the available SQL files
@@ -85,94 +187,8 @@ class Mdl_Setup extends CI_Model
         return true;
     }
 
-    private function execute_contents($contents)
-    {
-        $commands = explode(';', $contents);
-
-        foreach ($commands as $command) {
-            if (trim($command)) {
-                if (!$this->db->query(trim($command) . ';')) {
-                    $this->errors[] = $this->db->_error_message();
-                }
-            }
-        }
-    }
-
-    public function install_default_data()
-    {
-        $this->db->insert('ip_invoice_groups', array(
-                'invoice_group_name' => 'Invoice Default',
-                'invoice_group_next_id' => 1)
-        );
-
-        $this->db->insert('ip_invoice_groups', array(
-                'invoice_group_name' => 'Quote Default',
-                'invoice_group_prefix' => 'QUO',
-                'invoice_group_next_id' => 1)
-        );
-
-        $this->db->insert('ip_payment_methods', array(
-            'payment_method_name' => 'Cash',
-        ));
-
-        $this->db->insert('ip_payment_methods', array(
-            'payment_method_name' => 'Credit Card',
-        ));
-    }
-
-    private function install_default_settings()
-    {
-        $this->load->helper('string');
-
-        $default_settings = array(
-            'default_language' => $this->session->userdata('ip_lang'),
-            'date_format' => 'm/d/Y',
-            'currency_symbol' => '$',
-            'currency_symbol_placement' => 'before',
-            'currency_code' => 'USD',
-            'invoices_due_after' => 30,
-            'quotes_expire_after' => 15,
-            'default_invoice_group' => 3,
-            'default_quote_group' => 4,
-            'thousands_separator' => ',',
-            'decimal_point' => '.',
-            'cron_key' => random_string('alnum', 16),
-            'tax_rate_decimal_places' => 2,
-            'pdf_invoice_template' => 'InvoicePlane',
-            'pdf_invoice_template_paid' => 'InvoicePlane - paid',
-            'pdf_invoice_template_overdue' => 'InvoicePlane - overdue',
-            'pdf_quote_template' => 'InvoicePlane',
-            'public_invoice_template' => 'InvoicePlane_Web',
-            'public_quote_template' => 'InvoicePlane_Web',
-            'disable_sidebar' => 1,
-        );
-
-        foreach ($default_settings as $setting_key => $setting_value) {
-            $this->db->where('setting_key', $setting_key);
-
-            if (!$this->db->get('ip_settings')->num_rows()) {
-                $db_array = array(
-                    'setting_key' => $setting_key,
-                    'setting_value' => $setting_value
-                );
-
-                $this->db->insert('ip_settings', $db_array);
-            }
-        }
-    }
-
-    private function save_version($sql_file)
-    {
-        $version_db_array = array(
-            'version_date_applied' => time(),
-            'version_file' => $sql_file,
-            'version_sql_errors' => count($this->errors)
-        );
-
-        $this->db->insert('ip_versions', $version_db_array);
-    }
-
-    /*
+    /**
+     * ===========================================
      * Place upgrade functions here
      * e.g. if table rows have to be converted
      * public function upgrade_010_1_0_1() { ... }
@@ -216,4 +232,5 @@ class Mdl_Setup extends CI_Model
             $this->session->set_userdata('setup_notice', $setup_notice);
         }
     }
+
 }
