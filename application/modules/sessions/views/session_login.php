@@ -61,7 +61,8 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="email" name="email" id="email" class="form-control"
-                           placeholder="<?php echo trans('email'); ?>"<?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
+                           placeholder="<?php echo trans('email'); ?>" required autofocus
+                        <?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
             <div class="form-group">
@@ -70,7 +71,8 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="password" id="password" class="form-control"
-                           placeholder="<?php echo trans('password'); ?>"<?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
+                           placeholder="<?php echo trans('password'); ?>" required
+                        <?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
                 </div>
             </div>
 
@@ -89,10 +91,6 @@
 
     </div>
 </div>
-
-<script type="text/javascript">
-    document.getElementById("email").focus();
-</script>
 
 </body>
 </html>

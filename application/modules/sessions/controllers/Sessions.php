@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Sessions
+ */
 class Sessions extends Base_Controller
 {
     public function index()
@@ -74,6 +71,11 @@ class Sessions extends Base_Controller
         redirect('sessions/login');
     }
 
+    /**
+     * @param $email_address
+     * @param $password
+     * @return bool
+     */
     public function authenticate($email_address, $password)
     {
         $this->load->model('mdl_sessions');
@@ -85,6 +87,10 @@ class Sessions extends Base_Controller
         return false;
     }
 
+    /**
+     * @param null $token
+     * @return mixed
+     */
     public function passwordreset($token = null)
     {
         // Check if a token was provided
