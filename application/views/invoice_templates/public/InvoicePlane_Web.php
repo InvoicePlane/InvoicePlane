@@ -1,6 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
@@ -15,12 +15,10 @@
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
-
 </head>
 <body>
 
 <div class="container">
-
     <div id="content">
 
         <div class="webpreview-header">
@@ -31,12 +29,12 @@
                 <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice_url_key); ?>"
                    class="btn btn-primary">
                     <i
-                        class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+                            class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                 </a>
                 <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
                 <a
-                    href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice_url_key); ?>"
-                    class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
+                        href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice_url_key); ?>"
+                        class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
                     </a><?php } ?>
             </div>
 
