@@ -24,7 +24,7 @@
                 <label for="settings[default_invoice_terms]">
                     <?php echo trans('default_terms'); ?>
                 </label>
-		        <textarea name="settings[default_invoice_terms]" class="input-sm form-control"
+                <textarea name="settings[default_invoice_terms]" class="input-sm form-control"
                           rows="3"><?php echo $this->mdl_settings->setting('default_invoice_terms'); ?></textarea>
             </div>
 
@@ -143,7 +143,7 @@
                 </label>
                 <?php if ($this->mdl_settings->setting('invoice_logo')) { ?>
                     <img
-                        src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('invoice_logo'); ?>">
+                            src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('invoice_logo'); ?>">
                     <br>
                     <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
                 <?php } ?>
@@ -268,8 +268,8 @@
                 <label for="settings[public_invoice_template]" class="control-label">
                     <?php echo trans('pdf_invoice_footer'); ?>
                 </label>
-        <textarea name="settings[pdf_invoice_footer]"
-                  class="input-sm form-control no-margin"><?php echo $this->mdl_settings->setting('pdf_invoice_footer'); ?></textarea>
+                <textarea name="settings[pdf_invoice_footer]"
+                          class="input-sm form-control no-margin"><?php echo $this->mdl_settings->setting('pdf_invoice_footer'); ?></textarea>
 
                 <p class="help-block"><?php echo trans('pdf_invoice_footer_hint'); ?></p>
             </div>

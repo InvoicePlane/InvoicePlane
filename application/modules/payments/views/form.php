@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#invoice_id').focus();
 

@@ -1,25 +1,25 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Layout
+ */
 class Layout extends MX_Controller
 {
     public $view_data = array();
 
+    /**
+     * @return $this
+     */
     public function buffer()
     {
         $args = func_get_args();
@@ -39,9 +39,13 @@ class Layout extends MX_Controller
 
             $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, true);
         }
+
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function set()
     {
         $args = func_get_args();
@@ -53,6 +57,7 @@ class Layout extends MX_Controller
         } else {
             $this->view_data[$args[0]] = $args[1];
         }
+
         return $this;
     }
 

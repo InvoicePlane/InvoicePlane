@@ -202,7 +202,7 @@
                             <tr>
                                 <td>
                                 <span
-                                    class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
+                                        class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
                                 <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
                                 if ($invoice->invoice_sign == '-1') { ?>
                                     &nbsp;<i class="fa fa-credit-invoice"

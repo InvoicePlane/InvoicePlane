@@ -3,7 +3,7 @@
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('tasks/form'); ?>"><i
-                class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
+                    class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -44,16 +44,21 @@
                     <td><?php echo format_currency($task->task_price); ?></td>
                     <td>
                         <a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"
-                           title="<?php echo trans('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
+                           title="<?php echo trans('edit'); ?>">
+                            <i class="fa fa-edit fa-margin"></i>
+                        </a>
                         <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
                            title="<?php echo trans('delete'); ?>"
-                           onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');"><i
-                                class="fa fa-trash-o fa-margin"></i></a>
+                           onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
+                            <i class="fa fa-trash-o fa-margin"></i>
+                        </a>
                     </td>
                 </tr>
             <?php } ?>
             </tbody>
 
         </table>
+
     </div>
+
 </div>

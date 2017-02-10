@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Invoices
+ */
 class Invoices extends Admin_Controller
 {
+    /**
+     * Invoices constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +31,10 @@ class Invoices extends Admin_Controller
         redirect('invoices/status/all');
     }
 
+    /**
+     * @param string $status
+     * @param int $page
+     */
     public function status($status = 'all', $page = 0)
     {
         // Determine which group of invoices to load
@@ -96,6 +100,9 @@ class Invoices extends Admin_Controller
 
     }
 
+    /**
+     * @param $invoice
+     */
     public function download($invoice)
     {
         header('Content-type: application/pdf');
@@ -103,6 +110,9 @@ class Invoices extends Admin_Controller
         readfile('./uploads/archive/' . $invoice);
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function view($invoice_id)
     {
         $this->load->model(
@@ -112,7 +122,6 @@ class Invoices extends Admin_Controller
                 'payment_methods/mdl_payment_methods',
                 'mdl_invoice_tax_rates',
                 'custom_fields/mdl_custom_fields',
-                'item_lookups/mdl_item_lookups'
             )
         );
 
@@ -144,12 +153,11 @@ class Invoices extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
         $custom_values = [];
-        foreach($custom_fields as $custom_field){
-          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-          {
-            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-            $custom_values[$custom_field->custom_field_column] = $values;
-          }
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[$custom_field->custom_field_column] = $values;
+            }
         }
 
         $this->layout->set(
@@ -168,7 +176,6 @@ class Invoices extends Admin_Controller
                     'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
                     'decimal_point' => $this->mdl_settings->setting('decimal_point')
                 ),
-                'item_lookups' => $this->mdl_item_lookups->get()->result(),
                 'invoice_statuses' => $this->mdl_invoices->statuses()
             )
         );
@@ -185,6 +192,9 @@ class Invoices extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function delete($invoice_id)
     {
         // Get the status of the invoice
@@ -203,6 +213,10 @@ class Invoices extends Admin_Controller
         redirect('invoices/index');
     }
 
+    /**
+     * @param $invoice_id
+     * @param $item_id
+     */
     public function delete_item($invoice_id, $item_id)
     {
         // Delete invoice item
@@ -213,6 +227,11 @@ class Invoices extends Admin_Controller
         redirect('invoices/view/' . $invoice_id);
     }
 
+    /**
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         $this->load->helper('pdf');
@@ -224,6 +243,9 @@ class Invoices extends Admin_Controller
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function generate_zugferd_xml($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
@@ -236,6 +258,10 @@ class Invoices extends Admin_Controller
         $this->output->set_output($this->zugferdxml->xml());
     }
 
+    /**
+     * @param $invoice_id
+     * @param $invoice_tax_rate_id
+     */
     public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id)
     {
         $this->load->model('mdl_invoice_tax_rates');

@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         var template_fields = ["body", "subject", "from_name", "from_email", "cc", "bcc", "pdf_template"];
 
@@ -206,10 +206,11 @@
                 <div class="col-lg-5">
                     <!-- The global file processing state -->
                     <div class="fileupload-process">
-                      <div id="total-progress" class="progress progress-striped active" role="progressbar"
-                           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                          <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
-                      </div>
+                        <div id="total-progress" class="progress progress-striped active" role="progressbar"
+                             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                            <div class="progress-bar progress-bar-success" style="width:0%;"
+                                 data-dz-uploadprogress></div>
+                        </div>
                     </div>
                 </div>
 

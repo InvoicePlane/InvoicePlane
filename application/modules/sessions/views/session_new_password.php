@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="password" name="new_password" id="new_password" class="form-control"
-                           placeholder="<?php echo trans('new_password'); ?>">
+                           placeholder="<?php echo trans('new_password'); ?>" required autofocus>
                 </div>
             </div>
 
@@ -74,10 +74,6 @@
     </div>
 
 </div>
-
-<script type="text/javascript">
-    document.getElementById("new_password").focus();
-</script>
 
 </body>
 </html>

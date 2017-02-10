@@ -1,21 +1,26 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $message
+ * @param null $attachment_path
+ * @param null $cc
+ * @param null $bcc
+ * @param null $more_attachments
+ * @return bool
+ */
 function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $cc = null, $bcc = null, $more_attachments = null)
 {
     require FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
@@ -89,14 +94,12 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
     }
 
     if ($bcc) {
-
         // Allow multiple BCC's delimited by comma or semicolon
         $bcc = (strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
         // Add the BCC's
         foreach ($bcc as $address) {
             $mail->addBCC($address);
         }
-
     }
 
     if ($CI->mdl_settings->setting('bcc_mails_to_admin') == 1) {
@@ -113,7 +116,6 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
     }
     // Add the other attachments if supplied
     if ($more_attachments) {
-
         foreach ($more_attachments as $paths) {
             $mail->addAttachment($paths['path'], $paths['filename']);
         }
@@ -128,4 +130,5 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
         return false;
     }
+
 }

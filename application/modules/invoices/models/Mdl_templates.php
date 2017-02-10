@@ -1,23 +1,24 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Templates
+ */
 class Mdl_Templates extends CI_Model
 {
+    /**
+     * @param string $type
+     * @return array
+     */
     public function get_invoice_templates($type = 'pdf')
     {
         $this->load->helper('directory');
@@ -33,6 +34,23 @@ class Mdl_Templates extends CI_Model
         return $templates;
     }
 
+    /**
+     * @param $files
+     * @return mixed
+     */
+    private function remove_extension($files)
+    {
+        foreach ($files as $key => $file) {
+            $files[$key] = str_replace('.php', '', $file);
+        }
+
+        return $files;
+    }
+
+    /**
+     * @param string $type
+     * @return array|mixed
+     */
     public function get_quote_templates($type = 'pdf')
     {
         $this->load->helper('directory');
@@ -46,15 +64,6 @@ class Mdl_Templates extends CI_Model
         $templates = $this->remove_extension($templates);
 
         return $templates;
-    }
-
-    private function remove_extension($files)
-    {
-        foreach ($files as $key => $file) {
-            $files[$key] = str_replace('.php', '', $file);
-        }
-
-        return $files;
     }
 
 }

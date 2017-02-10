@@ -1,21 +1,21 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Generate a temporaty XML file from the invoice data
+ * @param $invoice
+ * @param $items
+ * @return string
+ */
 function generate_invoice_zugferd_xml_temp_file($invoice, $items)
 {
     $CI = &get_instance();
@@ -28,6 +28,10 @@ function generate_invoice_zugferd_xml_temp_file($invoice, $items)
     return $path;
 }
 
+/**
+ * Returns the correct RDF string for the Zugferd XML
+ * @return string
+ */
 function zugferd_rdf()
 {
     $s = '<rdf:Description rdf:about="" xmlns:zf="urn:ferd:pdfa:CrossIndustryDocument:invoice:1p0#">' . "\n";

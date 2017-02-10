@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class View
+ */
 class View extends Base_Controller
 {
+    /**
+     * @param $invoice_url_key
+     */
     public function invoice($invoice_url_key)
     {
         $this->load->model('invoices/mdl_invoices');
@@ -72,6 +72,11 @@ class View extends Base_Controller
         }
     }
 
+    /**
+     * @param $invoice_url_key
+     * @param bool $stream
+     * @param null $invoice_template
+     */
     public function generate_invoice_pdf($invoice_url_key, $stream = true, $invoice_template = null)
     {
         $this->load->model('invoices/mdl_invoices');
@@ -91,6 +96,9 @@ class View extends Base_Controller
         }
     }
 
+    /**
+     * @param $quote_url_key
+     */
     public function quote($quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');
@@ -141,6 +149,11 @@ class View extends Base_Controller
         }
     }
 
+    /**
+     * @param $quote_url_key
+     * @param bool $stream
+     * @param null $quote_template
+     */
     public function generate_quote_pdf($quote_url_key, $stream = true, $quote_template = null)
     {
         $this->load->model('quotes/mdl_quotes');
@@ -160,6 +173,9 @@ class View extends Base_Controller
         }
     }
 
+    /**
+     * @param $quote_url_key
+     */
     public function approve_quote($quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');
@@ -171,6 +187,9 @@ class View extends Base_Controller
         redirect('guest/view/quote/' . $quote_url_key);
     }
 
+    /**
+     * @param $quote_url_key
+     */
     public function reject_quote($quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');

@@ -1,7 +1,6 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#modal_delete_invoice_confirm').click(function () {
-            // alert($(this).data('invoice-id'));
             invoice_id = $(this).data('invoice-id');
             window.location = '<?php echo site_url('invoices/delete'); ?>/' + invoice_id;
         });
@@ -10,6 +9,7 @@
 
 <div id="delete-invoice" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
      role="dialog" aria-labelledby="delete-invoice" aria-hidden="true">
+
     <div class="modal-content">
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
@@ -33,4 +33,5 @@
             </div>
         </div>
     </div>
+
 </div>

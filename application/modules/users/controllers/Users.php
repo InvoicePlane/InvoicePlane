@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Users
+ */
 class Users extends Admin_Controller
 {
+    /**
+     * Users constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -25,6 +25,9 @@ class Users extends Admin_Controller
         $this->load->model('mdl_users');
     }
 
+    /**
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_users->paginate(site_url('users/index'), $page);
@@ -36,6 +39,9 @@ class Users extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -87,12 +93,11 @@ class Users extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
         $custom_values = [];
-        foreach($custom_fields as $custom_field){
-          if(in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-          {
-            $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-            $custom_values[$custom_field->custom_field_column] = $values;
-          }
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[$custom_field->custom_field_column] = $values;
+            }
         }
 
         $this->layout->set(
@@ -115,6 +120,9 @@ class Users extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $user_id
+     */
     public function change_password($user_id)
     {
         if ($this->input->post('btn_cancel')) {
@@ -130,6 +138,9 @@ class Users extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         if ($id <> 1) {
@@ -138,6 +149,10 @@ class Users extends Admin_Controller
         redirect('users');
     }
 
+    /**
+     * @param $user_id
+     * @param $user_client_id
+     */
     public function delete_user_client($user_id, $user_client_id)
     {
         $this->load->model('mdl_user_clients');

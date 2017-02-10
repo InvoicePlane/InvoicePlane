@@ -43,7 +43,7 @@
 
                         <h3><?php echo $invoice->client_name; ?></h3>
 
-					<span>
+                        <span>
 						<?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
                         <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
                         <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>

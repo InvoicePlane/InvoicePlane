@@ -1,4 +1,14 @@
 <?php
+if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+/*
+ * InvoicePlane
+ *
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
+ */
 
 function diacritics_seems_utf8($str)
 {

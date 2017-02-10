@@ -40,14 +40,15 @@
             <div class="col-xs-12 col-sm-8 col-md-6">
                 <select name="custom_field_type" id="custom_field_type" class="form-control">
                     <option value=""></option>
-                    <?php foreach ($custom_field_types as $type) {?>
-                    <?php $alpha = str_replace("-","_",strtolower($type));  ?>
+                    <?php foreach ($custom_field_types as $type) { ?>
+                        <?php $alpha = str_replace("-", "_", strtolower($type)); ?>
                         <option value="<?php echo $type; ?>"
                                 <?php if ($this->mdl_custom_fields->form_value('custom_field_type') == $type) { ?>selected="selected"<?php } ?>><?php echo trans($alpha); ?></option>
                     <?php } ?>
                 </select>
             </div>
         </div>
+
     </div>
 
 </form>

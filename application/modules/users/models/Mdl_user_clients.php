@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_User_Clients
+ */
 class Mdl_User_Clients extends MY_Model
 {
     public $table = 'ip_user_clients';
@@ -37,6 +34,10 @@ class Mdl_User_Clients extends MY_Model
         $this->db->order_by('ip_clients.client_name');
     }
 
+    /**
+     * @param $user_id
+     * @return $this
+     */
     public function assigned_to($user_id)
     {
         $this->filter_where('ip_user_clients.user_id', $user_id);
