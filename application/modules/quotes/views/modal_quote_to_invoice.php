@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create quote modal
         $('#modal_quote_to_invoice').modal('show');
@@ -29,7 +29,6 @@
                 });
         });
     });
-
 </script>
 
 <div id="modal_quote_to_invoice" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
@@ -55,7 +54,7 @@
                 <div class="input-group">
                     <input name="invoice_date_created" id="invoice_date_created"
                            class="form-control datepicker">
-						<span class="input-group-addon">
+                    <span class="input-group-addon">
 								<i class="fa fa-calendar fa-fw"></i>
 						</span>
                 </div>

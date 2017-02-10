@@ -19,19 +19,22 @@
     <div class="pull-right visible-lg">
         <ul class="nav nav-pills index-options">
             <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('quotes/status/all'); ?>"><?php echo trans('all'); ?></a></li>
+                        href="<?php echo site_url('quotes/status/all'); ?>"><?php echo trans('all'); ?></a></li>
             <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('quotes/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
+                        href="<?php echo site_url('quotes/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
             <li <?php if ($status == 'sent') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('quotes/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
+                        href="<?php echo site_url('quotes/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
             <li <?php if ($status == 'viewed') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('quotes/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
+                        href="<?php echo site_url('quotes/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
             <li <?php if ($status == 'approved') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('quotes/status/approved'); ?>"><?php echo trans('approved'); ?></a></li>
+                        href="<?php echo site_url('quotes/status/approved'); ?>"><?php echo trans('approved'); ?></a>
+            </li>
             <li <?php if ($status == 'rejected') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('quotes/status/rejected'); ?>"><?php echo trans('rejected'); ?></a></li>
+                        href="<?php echo site_url('quotes/status/rejected'); ?>"><?php echo trans('rejected'); ?></a>
+            </li>
             <li <?php if ($status == 'canceled') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('quotes/status/canceled'); ?>"><?php echo trans('canceled'); ?></a></li>
+                        href="<?php echo site_url('quotes/status/canceled'); ?>"><?php echo trans('canceled'); ?></a>
+            </li>
         </ul>
     </div>
 
@@ -47,21 +50,22 @@
         <div class="submenu-row">
             <ul class="nav nav-pills index-options">
                 <li <?php if ($status == 'all') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('quotes/status/all'); ?>"><?php echo trans('all'); ?></a></li>
+                            href="<?php echo site_url('quotes/status/all'); ?>"><?php echo trans('all'); ?></a></li>
                 <li <?php if ($status == 'draft') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('quotes/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
+                            href="<?php echo site_url('quotes/status/draft'); ?>"><?php echo trans('draft'); ?></a></li>
                 <li <?php if ($status == 'sent') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('quotes/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
+                            href="<?php echo site_url('quotes/status/sent'); ?>"><?php echo trans('sent'); ?></a></li>
                 <li <?php if ($status == 'viewed') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('quotes/status/viewed'); ?>"><?php echo trans('viewed'); ?></a></li>
+                            href="<?php echo site_url('quotes/status/viewed'); ?>"><?php echo trans('viewed'); ?></a>
+                </li>
                 <li <?php if ($status == 'approved') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('quotes/status/approved'); ?>"><?php echo trans('approved'); ?></a>
+                            href="<?php echo site_url('quotes/status/approved'); ?>"><?php echo trans('approved'); ?></a>
                 </li>
                 <li <?php if ($status == 'rejected') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('quotes/status/rejected'); ?>"><?php echo trans('rejected'); ?></a>
+                            href="<?php echo site_url('quotes/status/rejected'); ?>"><?php echo trans('rejected'); ?></a>
                 </li>
                 <li <?php if ($status == 'canceled') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('quotes/status/canceled'); ?>"><?php echo trans('canceled'); ?></a>
+                            href="<?php echo site_url('quotes/status/canceled'); ?>"><?php echo trans('canceled'); ?></a>
                 </li>
             </ul>
         </div>
