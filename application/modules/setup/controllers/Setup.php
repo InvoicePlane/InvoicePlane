@@ -1,25 +1,25 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Setup
+ */
 class Setup extends MX_Controller
 {
     public $errors = 0;
 
+    /**
+     * Setup constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -94,6 +94,81 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
+    /**
+     * @return array
+     */
+    private function check_basics()
+    {
+        $checks = array();
+
+        $php_required = '5.6';
+        $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+
+        if ($php_installed < $php_required) {
+            $this->errors += 1;
+
+            $checks[] = array(
+                'message' => sprintf(trans('php_version_fail'), $php_installed, $php_required),
+                'success' => 0
+            );
+        } else {
+            $checks[] = array(
+                'message' => trans('php_version_success'),
+                'success' => 1
+            );
+        }
+
+        if (!ini_get('date.timezone')) {
+            $checks[] = array(
+                'message' => sprintf(trans('php_timezone_fail'), date_default_timezone_get()),
+                'warning' => 1
+            );
+        } else {
+            $checks[] = array(
+                'message' => trans('php_timezone_success'),
+                'success' => 1
+            );
+        }
+
+        return $checks;
+    }
+
+    /**
+     * @return array
+     */
+    private function check_writables()
+    {
+        $checks = array();
+
+        $writables = array(
+            './uploads',
+            './uploads/archive',
+            './uploads/customer_files',
+            './uploads/temp',
+            './uploads/temp/mpdf',
+            './application/config/',
+            './application/logs',
+        );
+
+        foreach ($writables as $writable) {
+            if (!is_writable($writable)) {
+                $checks[] = array(
+                    'message' => $writable . ' ' . trans('is_not_writable'),
+                    'success' => 0
+                );
+
+                $this->errors += 1;
+            } else {
+                $checks[] = array(
+                    'message' => $writable . ' ' . trans('is_writable'),
+                    'success' => 1
+                );
+            }
+        }
+
+        return $checks;
+    }
+
     public function configure_database()
     {
         if ($this->session->userdata('install_step') <> 'configure_database') {
@@ -124,6 +199,74 @@ class Setup extends MX_Controller
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
         $this->layout->render('setup');
+    }
+
+    private function load_ci_database()
+    {
+        $this->load->database();
+    }
+
+    /**
+     * @param $hostname
+     * @param $username
+     * @param $password
+     * @param $database
+     */
+    private function write_database_config($hostname, $username, $password, $database)
+    {
+        $db_file = file_get_contents(APPPATH . 'config/database_empty.php');
+
+        $db_file = str_replace("'hostname' => '',", "'hostname' => '" . addcslashes($hostname, '\'\\') . "',", $db_file);
+        $db_file = str_replace("'username' => '',", "'username' => '" . addcslashes($username, '\'\\') . "',", $db_file);
+        $db_file = str_replace("'password' => '',", "'password' => '" . addcslashes($password, '\'\\') . "',", $db_file);
+        $db_file = str_replace("'database' => '',", "'database' => '" . addcslashes($database, '\'\\') . "',", $db_file);
+
+        write_file(APPPATH . 'config/database.php', $db_file);
+    }
+
+    /**
+     * @return array
+     */
+    private function check_database()
+    {
+        $this->load->library('lib_mysql');
+
+        if (is_file(APPPATH . '/config/database.php')) {
+            // There is alread a (hopefully working?) database.php file.
+            require(APPPATH . '/config/database.php');
+        } else {
+            // No database.php file existent. Use the _empty template.
+            require(APPPATH . '/config/database_empty.php');
+        }
+
+        $db = $db['default'];
+
+        $can_connect = $this->lib_mysql->connect($db['hostname'], $db['username'], $db['password']);
+
+        if (!$can_connect) {
+            $this->errors += 1;
+
+            return array(
+                'message' => trans('cannot_connect_database_server'),
+                'success' => 0
+            );
+        }
+
+        $can_select_db = $this->lib_mysql->select_db($can_connect, $db['database']);
+
+        if (!$can_select_db) {
+            $this->errors += 1;
+
+            return array(
+                'message' => trans('cannot_select_specified_database'),
+                'success' => 0
+            );
+        }
+
+        return array(
+            'message' => trans('database_properly_configured'),
+            'success' => 1
+        );
     }
 
     public function install_tables()
@@ -242,131 +385,6 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    private function check_writables()
-    {
-        $checks = array();
-
-        $writables = array(
-            './uploads',
-            './uploads/archive',
-            './uploads/customer_files',
-            './uploads/temp',
-            './uploads/temp/mpdf',
-            './application/config/',
-            './application/logs',
-        );
-
-        foreach ($writables as $writable) {
-            if (!is_writable($writable)) {
-                $checks[] = array(
-                    'message' => $writable . ' ' . trans('is_not_writable'),
-                    'success' => 0
-                );
-
-                $this->errors += 1;
-            } else {
-                $checks[] = array(
-                    'message' => $writable . ' ' . trans('is_writable'),
-                    'success' => 1
-                );
-            }
-        }
-
-        return $checks;
-    }
-
-    private function check_database()
-    {
-        $this->load->library('lib_mysql');
-
-        if (is_file(APPPATH . '/config/database.php')) {
-            // There is alread a (hopefully working?) database.php file.
-            require(APPPATH . '/config/database.php');
-        } else {
-            // No database.php file existent. Use the _empty template.
-            require(APPPATH . '/config/database_empty.php');
-        }
-
-        $db = $db['default'];
-
-        $can_connect = $this->lib_mysql->connect($db['hostname'], $db['username'], $db['password']);
-
-        if (!$can_connect) {
-            $this->errors += 1;
-
-            return array(
-                'message' => trans('cannot_connect_database_server'),
-                'success' => 0
-            );
-        }
-
-        $can_select_db = $this->lib_mysql->select_db($can_connect, $db['database']);
-
-        if (!$can_select_db) {
-            $this->errors += 1;
-
-            return array(
-                'message' => trans('cannot_select_specified_database'),
-                'success' => 0
-            );
-        }
-
-        return array(
-            'message' => trans('database_properly_configured'),
-            'success' => 1
-        );
-    }
-
-    private function check_basics()
-    {
-        $checks = array();
-
-        $php_required = '5.6';
-        $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
-
-        if ($php_installed < $php_required) {
-            $this->errors += 1;
-
-            $checks[] = array(
-                'message' => sprintf(trans('php_version_fail'), $php_installed, $php_required),
-                'success' => 0
-            );
-        } else {
-            $checks[] = array(
-                'message' => trans('php_version_success'),
-                'success' => 1
-            );
-        }
-
-        if (!ini_get('date.timezone')) {
-            #$this->errors += 1;
-
-            $checks[] = array(
-                'message' => sprintf(trans('php_timezone_fail'), date_default_timezone_get()),
-                'warning' => 1
-            );
-        } else {
-            $checks[] = array(
-                'message' => trans('php_timezone_success'),
-                'success' => 1
-            );
-        }
-
-        return $checks;
-    }
-
-    private function write_database_config($hostname, $username, $password, $database)
-    {
-        $db_file = file_get_contents(APPPATH . 'config/database_empty.php');
-
-        $db_file = str_replace("'hostname' => '',", "'hostname' => '" . addcslashes($hostname, '\'\\') . "',", $db_file);
-        $db_file = str_replace("'username' => '',", "'username' => '" . addcslashes($username, '\'\\') . "',", $db_file);
-        $db_file = str_replace("'password' => '',", "'password' => '" . addcslashes($password, '\'\\') . "',", $db_file);
-        $db_file = str_replace("'database' => '',", "'database' => '" . addcslashes($database, '\'\\') . "',", $db_file);
-
-        write_file(APPPATH . 'config/database.php', $db_file);
-    }
-
     private function update_app_config()
     {
         $conf_file = file_get_contents(APPPATH . 'config/config.php');
@@ -374,12 +392,6 @@ class Setup extends MX_Controller
         $conf_file = str_replace('$config[\'sess_use_database\'] = false;', '$config[\'sess_use_database\'] = true;', $conf_file);
 
         write_file(APPPATH . 'config/config.php', $conf_file);
-    }
-
-    private function load_ci_database()
-    {
-        $this->load->database();
-        // $this->db->db_debug = 0;
     }
 
 }
