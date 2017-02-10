@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#modal_delete_quote_confirm').click(function () {
             quote_id = $(this).data('quote-id');
@@ -32,4 +32,5 @@
             </div>
         </div>
     </div>
+
 </div>

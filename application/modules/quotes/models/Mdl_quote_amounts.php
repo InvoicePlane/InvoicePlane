@@ -1,40 +1,38 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Quote_Amounts
+ */
 class Mdl_Quote_Amounts extends CI_Model
 {
     /**
      * IP_QUOTE_AMOUNTS
      * quote_amount_id
      * quote_id
-     * quote_item_subtotal    SUM(item_subtotal)
-     * quote_item_tax_total    SUM(item_tax_total)
+     * quote_item_subtotal      SUM(item_subtotal)
+     * quote_item_tax_total     SUM(item_tax_total)
      * quote_tax_total
-     * quote_total            quote_item_subtotal + quote_item_tax_total + quote_tax_total
+     * quote_total              quote_item_subtotal + quote_item_tax_total + quote_tax_total
      *
      * IP_QUOTE_ITEM_AMOUNTS
      * item_amount_id
      * item_id
      * item_tax_rate_id
-     * item_subtotal            item_quantity * item_price
+     * item_subtotal             item_quantity * item_price
      * item_tax_total            item_subtotal * tax_rate_percent
      * item_total                item_subtotal + item_tax_total
      *
+     * @param $quote_id
      */
     public function calculate($quote_id)
     {
@@ -77,6 +75,29 @@ class Mdl_Quote_Amounts extends CI_Model
         $this->calculate_quote_taxes($quote_id);
     }
 
+    /**
+     * @param $quote_id
+     * @param $quote_total
+     * @return float
+     */
+    public function calculate_discount($quote_id, $quote_total)
+    {
+        $this->db->where('quote_id', $quote_id);
+        $quote_data = $this->db->get('ip_quotes')->row();
+
+        $total = (float)number_format($quote_total, 2, '.', '');
+        $discount_amount = (float)number_format($quote_data->quote_discount_amount, 2, '.', '');
+        $discount_percent = (float)number_format($quote_data->quote_discount_percent, 2, '.', '');
+
+        $total = $total - $discount_amount;
+        $total = $total - round(($total / 100 * $discount_percent), 2);
+
+        return $total;
+    }
+
+    /**
+     * @param $quote_id
+     */
     public function calculate_quote_taxes($quote_id)
     {
         // First check to see if there are any quote taxes applied
@@ -107,7 +128,15 @@ class Mdl_Quote_Amounts extends CI_Model
             }
 
             // Update the quote amount record with the total quote tax amount
-            $this->db->query("UPDATE ip_quote_amounts SET quote_tax_total = (SELECT SUM(quote_tax_rate_amount) FROM ip_quote_tax_rates WHERE quote_id = " . $this->db->escape($quote_id) . ") WHERE quote_id = " . $this->db->escape($quote_id));
+            $this->db->query("
+                UPDATE ip_quote_amounts SET quote_tax_total =
+                (
+                    SELECT SUM(quote_tax_rate_amount)
+                    FROM ip_quote_tax_rates
+                    WHERE quote_id = " . $this->db->escape($quote_id) . "
+                )
+                WHERE quote_id = " . $this->db->escape($quote_id)
+            );
 
             // Get the updated quote amount record
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
@@ -136,21 +165,10 @@ class Mdl_Quote_Amounts extends CI_Model
         }
     }
 
-    public function calculate_discount($quote_id, $quote_total)
-    {
-        $this->db->where('quote_id', $quote_id);
-        $quote_data = $this->db->get('ip_quotes')->row();
-
-        $total = (float)number_format($quote_total, 2, '.', '');
-        $discount_amount = (float)number_format($quote_data->quote_discount_amount, 2, '.', '');
-        $discount_percent = (float)number_format($quote_data->quote_discount_percent, 2, '.', '');
-
-        $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), 2);
-
-        return $total;
-    }
-
+    /**
+     * @param null $period
+     * @return mixed
+     */
     public function get_total_quoted($period = null)
     {
         switch ($period) {
@@ -187,6 +205,10 @@ class Mdl_Quote_Amounts extends CI_Model
         }
     }
 
+    /**
+     * @param string $period
+     * @return array
+     */
     public function get_status_totals($period = '')
     {
         switch ($period) {

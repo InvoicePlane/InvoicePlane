@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Quote_Item_Amounts
+ */
 class Mdl_Quote_Item_Amounts extends CI_Model
 {
     /**
@@ -24,6 +21,8 @@ class Mdl_Quote_Item_Amounts extends CI_Model
      * item_subtotal (item_quantity * item_price)
      * item_tax_total
      * item_total ((item_quantity * item_price) + item_tax_total)
+     *
+     * @param $item_id
      */
     public function calculate($item_id)
     {
