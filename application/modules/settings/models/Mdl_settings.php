@@ -1,38 +1,26 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Settings
+ */
 class Mdl_Settings extends CI_Model
 {
     public $settings = array();
 
-    public function get($key)
-    {
-        $this->db->select('setting_value');
-        $this->db->where('setting_key', $key);
-        $query = $this->db->get('ip_settings');
-
-        if ($query->row()) {
-            return $query->row()->setting_value;
-        } else {
-            return null;
-        }
-    }
-
+    /**
+     * @param $key
+     * @param $value
+     */
     public function save($key, $value)
     {
         $db_array = array(
@@ -48,6 +36,26 @@ class Mdl_Settings extends CI_Model
         }
     }
 
+    /**
+     * @param $key
+     * @return null
+     */
+    public function get($key)
+    {
+        $this->db->select('setting_value');
+        $this->db->where('setting_key', $key);
+        $query = $this->db->get('ip_settings');
+
+        if ($query->row()) {
+            return $query->row()->setting_value;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $key
+     */
     public function delete($key)
     {
         $this->db->where('setting_key', $key);
@@ -63,11 +71,20 @@ class Mdl_Settings extends CI_Model
         }
     }
 
+    /**
+     * @param $key
+     * @param string $default
+     * @return mixed|string
+     */
     public function setting($key, $default = '')
     {
         return (isset($this->settings[$key])) ? $this->settings[$key] : $default;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     */
     public function set_setting($key, $value)
     {
         $this->settings[$key] = $value;

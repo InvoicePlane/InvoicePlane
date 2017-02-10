@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#btn_generate_cron_key').click(function () {
             $.post("<?php echo site_url('settings/ajax/get_cron_key'); ?>", function (data) {
@@ -6,8 +6,6 @@
             });
         });
     });
-
-    // Update check moved to partial_settings_updates.php!
 </script>
 
 <div class="tab-info">
@@ -299,7 +297,7 @@
 
         <p class="help-block">
             <?php echo trans('example'); ?>:
-                    <span style="font-family: Monaco, Lucida Console, monospace">
+            <span style="font-family: Monaco, Lucida Console, monospace">
                         <?php echo format_currency(123456.78); ?>
                     </span>
         </p>
