@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-9">
                     <input type="text" name="email" id="email" class="form-control"
-                           placeholder="<?php echo trans('email'); ?>">
+                           placeholder="<?php echo trans('email'); ?>" required autofocus>
                 </div>
             </div>
 
@@ -73,10 +73,6 @@
     </div>
 
 </div>
-
-<script type="text/javascript">
-    document.getElementById("email").focus();
-</script>
 
 </body>
 </html>
