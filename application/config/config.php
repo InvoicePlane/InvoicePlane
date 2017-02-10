@@ -67,7 +67,7 @@ $config['base_url'] = env('IP_URL');
 | variable so that it is blank.
 |
 */
-$config['index_page'] = env_bool('REMOVE_INDEXPHP') ?: 'index.php';
+$config['index_page'] = env_bool('REMOVE_INDEXPHP') ? '' : 'index.php';
 
 /*
 |--------------------------------------------------------------------------
