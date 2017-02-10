@@ -26,14 +26,16 @@ class Mdl_Client_Custom extends Validator
     public function save_custom($client_id, $db_array)
     {
         $result = $this->validate($db_array);
+
         if ($result === true) {
-            $db_array = $this->_formdata;
+            $db_array = isset($this->_formdata) ? $this->_formdata : null;
             $client_custom_id = null;
             $db_array['client_id'] = $client_id;
             $client_custom = $this->where('client_id', $client_id)->get()->row();
             $id = parent::save((isset($client_custom->client_custom_id) ? $client_custom->client_custom_id : null), $db_array);
             return true;
         }
+
         return $result;
     }
 
