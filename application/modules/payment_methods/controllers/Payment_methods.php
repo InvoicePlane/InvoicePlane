@@ -1,23 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Payment_Methods
+ */
 class Payment_Methods extends Admin_Controller
 {
+    /**
+     * Payment_Methods constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -25,6 +25,9 @@ class Payment_Methods extends Admin_Controller
         $this->load->model('mdl_payment_methods');
     }
 
+    /**
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_payment_methods->paginate(site_url('payment_methods/index'), $page);
@@ -35,6 +38,9 @@ class Payment_Methods extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -65,6 +71,9 @@ class Payment_Methods extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_payment_methods->delete($id);
