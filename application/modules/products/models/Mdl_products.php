@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Products
+ */
 class Mdl_Products extends Response_Model
 {
     public $table = 'ip_products';
@@ -45,6 +42,9 @@ class Mdl_Products extends Response_Model
         $this->db->or_like('product_description', $match);
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -93,10 +93,12 @@ class Mdl_Products extends Response_Model
                 'label' => trans('tax_rate'),
                 'rules' => 'numeric'
             ),
-
         );
     }
 
+    /**
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -109,4 +111,5 @@ class Mdl_Products extends Response_Model
 
         return $db_array;
     }
+
 }
