@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Tax_Rates
+ */
 class Mdl_Tax_Rates extends Response_Model
 {
     public $table = 'ip_tax_rates';
@@ -31,6 +28,9 @@ class Mdl_Tax_Rates extends Response_Model
         $this->db->order_by('ip_tax_rates.tax_rate_percent');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
