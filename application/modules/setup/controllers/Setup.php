@@ -141,6 +141,7 @@ class Setup extends MX_Controller
         $checks = array();
 
         $writables = array(
+            './ipconfig',
             './uploads',
             './uploads/archive',
             './uploads/customer_files',
@@ -192,18 +193,45 @@ class Setup extends MX_Controller
         }
 
         if ($this->input->post('db_hostname')) {
-            $this->write_database_config($this->input->post('db_hostname'), $this->input->post('db_username'), $this->input->post('db_password'), $this->input->post('db_database'));
+            // Write a new database configuration to the ipconfig file
+            $this->write_database_config(
+                $this->input->post('db_hostname'),
+                $this->input->post('db_username'),
+                $this->input->post('db_password'),
+                $this->input->post('db_database'),
+                $this->input->post('db_port')
+            );
         }
 
-        $this->layout->set('database', $this->check_database());
+        // Check if the set credentials are correct
+        $check_databse = $this->check_database();
+
+        $this->layout->set('database', $check_databse);
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
         $this->layout->render('setup');
     }
 
+    /**
+     * Load the database connection trough CodeIgniter
+     */
     private function load_ci_database()
     {
         $this->load->database();
+    }
+
+    /**
+     * Set a new encryption key in the ipconfig file
+     */
+    private function set_encryption_key()
+    {
+        $length = (env('ENCRYPTION_CIPHER') == 'AES-256' ? 32 : 16);
+
+        $key = 'base64:'.base64_encode(random_bytes($length));
+
+        $config = file_get_contents(FCPATH . 'ipconfig');
+        $config = preg_replace("/ENCRYPTION_KEY=(.*)?/", "ENCRYPTION_KEY=" . $key, $config);
+        write_file(FCPATH . 'ipconfig', $config);
     }
 
     /**
@@ -211,17 +239,19 @@ class Setup extends MX_Controller
      * @param $username
      * @param $password
      * @param $database
+     * @param int $port
      */
-    private function write_database_config($hostname, $username, $password, $database)
+    private function write_database_config($hostname, $username, $password, $database, $port = 3306)
     {
-        $db_file = file_get_contents(APPPATH . 'config/database_empty.php');
+        $config = file_get_contents(FCPATH . 'ipconfig');
 
-        $db_file = str_replace("'hostname' => '',", "'hostname' => '" . addcslashes($hostname, '\'\\') . "',", $db_file);
-        $db_file = str_replace("'username' => '',", "'username' => '" . addcslashes($username, '\'\\') . "',", $db_file);
-        $db_file = str_replace("'password' => '',", "'password' => '" . addcslashes($password, '\'\\') . "',", $db_file);
-        $db_file = str_replace("'database' => '',", "'database' => '" . addcslashes($database, '\'\\') . "',", $db_file);
+        $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME=" . $hostname, $config);
+        $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME=" . $username, $config);
+        $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD=" . $password, $config);
+        $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE=" . $database, $config);
+        $config = preg_replace("/DB_PORT=(.*)?/", "DB_PORT=" . $port, $config);
 
-        write_file(APPPATH . 'config/database.php', $db_file);
+        write_file(FCPATH . 'ipconfig', $config);
     }
 
     /**
@@ -231,14 +261,12 @@ class Setup extends MX_Controller
     {
         $this->load->library('lib_mysql');
 
-        if (is_file(APPPATH . '/config/database.php')) {
-            // There is alread a (hopefully working?) database.php file.
-            require(APPPATH . '/config/database.php');
-        } else {
-            // No database.php file existent. Use the _empty template.
-            require(APPPATH . '/config/database_empty.php');
-        }
+        // Reload the ipconfig file
+        global $dotenv;
+        $dotenv->overload();
 
+        // Load the database config
+        include(APPPATH . 'config/database.php');
         $db = $db['default'];
 
         $can_connect = $this->lib_mysql->connect($db['hostname'], $db['username'], $db['password']);
@@ -311,6 +339,8 @@ class Setup extends MX_Controller
 
         $this->load_ci_database();
 
+        $this->set_encryption_key();
+
         $this->layout->set(
             array(
                 'success' => $this->mdl_setup->upgrade_tables(),
@@ -359,8 +389,8 @@ class Setup extends MX_Controller
             redirect('setup/prerequisites');
         }
 
-        // Additional tasks if setup is completed
-        $this->update_app_config();
+        // Additional tasks after setup is completed
+        $this->post_setup_tasks();
 
         // Check if this is an update or the first install
         // First get all version entries from the database and format them
@@ -385,13 +415,12 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    private function update_app_config()
+    private function post_setup_tasks()
     {
-        $conf_file = file_get_contents(APPPATH . 'config/config.php');
-
-        $conf_file = str_replace('$config[\'sess_use_database\'] = false;', '$config[\'sess_use_database\'] = true;', $conf_file);
-
-        write_file(APPPATH . 'config/config.php', $conf_file);
+        // Set SETUP_COMPLETED to true
+        $config = file_get_contents(FCPATH . 'ipconfig');
+        $config = preg_replace("/SETUP_COMPLETED=(.*)?/", "SETUP_COMPLETED=true", $config);
+        write_file(FCPATH . 'ipconfig', $config);
     }
 
 }
