@@ -1,52 +1,40 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Ajax
+ */
 class Ajax extends Admin_Controller
 {
-    //public $ajax_controller = true;
+    public $ajax_controller = true;
+
     public function modal_product_lookups()
     {
-        //$filter_family  = $this->input->get('filter_family');
         $filter_product = $this->input->get('filter_product');
 
         $this->load->model('mdl_products');
         $this->load->model('families/mdl_families');
 
-        // Apply filters
-        /*
-        if((int)$filter_family) {
-            $products = $this->mdl_products->by_family($filter_family);
-        }
-        */
-
         if (!empty($filter_product)) {
-            $products = $this->mdl_products->by_product($filter_product);
+            $this->mdl_products->by_product($filter_product);
         }
-        $products = $this->mdl_products->get();
-        $products = $this->mdl_products->result();
 
+        $products = $this->mdl_products->get()->result();
         $families = $this->mdl_families->get()->result();
 
         $data = array(
             'products' => $products,
             'families' => $families,
             'filter_product' => $filter_product,
-            //'filter_family'  => $filter_family,
         );
 
         $this->layout->load_view('products/modal_product_lookups', $data);

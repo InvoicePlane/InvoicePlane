@@ -3,7 +3,7 @@
 
     <div class="pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('products/form'); ?>"><i
-                class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
+                    class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
     </div>
 
     <div class="pull-right">
@@ -48,7 +48,7 @@
                         <a href="<?php echo site_url('products/delete/' . $product->product_id); ?>"
                            title="<?php echo trans('delete'); ?>"
                            onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');"><i
-                                class="fa fa-trash-o fa-margin"></i></a>
+                                    class="fa fa-trash-o fa-margin"></i></a>
                     </td>
                 </tr>
             <?php } ?>
@@ -56,4 +56,5 @@
 
         </table>
     </div>
+
 </div>
