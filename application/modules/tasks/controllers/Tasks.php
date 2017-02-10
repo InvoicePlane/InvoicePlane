@@ -1,24 +1,23 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Tasks
+ */
 class Tasks extends Admin_Controller
 {
-
+    /**
+     * Tasks constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -27,6 +26,9 @@ class Tasks extends Admin_Controller
 
     }
 
+    /**
+     * @param int $page
+     */
     public function index($page = 0)
     {
         $this->mdl_tasks->paginate(site_url('tasks/index'), $page);
@@ -38,6 +40,9 @@ class Tasks extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param null $id
+     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -68,12 +73,18 @@ class Tasks extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $this->mdl_tasks->delete($id);
         redirect('tasks');
     }
 
+    /**
+     * @return $this
+     */
     public function is_overdue()
     {
         $this->filter_having('is_overdue', 1);
@@ -81,5 +92,3 @@ class Tasks extends Admin_Controller
     }
 
 }
-
-?>
