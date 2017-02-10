@@ -141,7 +141,7 @@ class Setup extends MX_Controller
         $checks = array();
 
         $writables = array(
-            './ipconfig',
+            './ipconfig.php',
             './uploads',
             './uploads/archive',
             './uploads/customer_files',
@@ -193,7 +193,7 @@ class Setup extends MX_Controller
         }
 
         if ($this->input->post('db_hostname')) {
-            // Write a new database configuration to the ipconfig file
+            // Write a new database configuration to the ipconfig.php file
             $this->write_database_config(
                 $this->input->post('db_hostname'),
                 $this->input->post('db_username'),
@@ -221,7 +221,7 @@ class Setup extends MX_Controller
     }
 
     /**
-     * Set a new encryption key in the ipconfig file
+     * Set a new encryption key in the ipconfig.php file
      */
     private function set_encryption_key()
     {
@@ -229,9 +229,9 @@ class Setup extends MX_Controller
 
         $key = 'base64:'.base64_encode(random_bytes($length));
 
-        $config = file_get_contents(FCPATH . 'ipconfig');
+        $config = file_get_contents(IPCONFIG_FILE);
         $config = preg_replace("/ENCRYPTION_KEY=(.*)?/", "ENCRYPTION_KEY=" . $key, $config);
-        write_file(FCPATH . 'ipconfig', $config);
+        write_file(IPCONFIG_FILE, $config);
     }
 
     /**
@@ -243,7 +243,7 @@ class Setup extends MX_Controller
      */
     private function write_database_config($hostname, $username, $password, $database, $port = 3306)
     {
-        $config = file_get_contents(FCPATH . 'ipconfig');
+        $config = file_get_contents(IPCONFIG_FILE);
 
         $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME=" . $hostname, $config);
         $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME=" . $username, $config);
@@ -251,7 +251,7 @@ class Setup extends MX_Controller
         $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE=" . $database, $config);
         $config = preg_replace("/DB_PORT=(.*)?/", "DB_PORT=" . $port, $config);
 
-        write_file(FCPATH . 'ipconfig', $config);
+        write_file(IPCONFIG_FILE, $config);
     }
 
     /**
@@ -261,7 +261,7 @@ class Setup extends MX_Controller
     {
         $this->load->library('lib_mysql');
 
-        // Reload the ipconfig file
+        // Reload the ipconfig.php file
         global $dotenv;
         $dotenv->overload();
 
@@ -418,9 +418,9 @@ class Setup extends MX_Controller
     private function post_setup_tasks()
     {
         // Set SETUP_COMPLETED to true
-        $config = file_get_contents(FCPATH . 'ipconfig');
+        $config = file_get_contents(IPCONFIG_FILE);
         $config = preg_replace("/SETUP_COMPLETED=(.*)?/", "SETUP_COMPLETED=true", $config);
-        write_file(FCPATH . 'ipconfig', $config);
+        write_file(IPCONFIG_FILE, $config);
     }
 
 }
