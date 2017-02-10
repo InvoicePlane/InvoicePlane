@@ -1,27 +1,27 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Mdl_Quotes
+ */
 class Mdl_Quotes extends Response_Model
 {
     public $table = 'ip_quotes';
     public $primary_key = 'ip_quotes.quote_id';
     public $date_modified_field = 'quote_date_modified';
 
+    /**
+     * @return array
+     */
     public function statuses()
     {
         return array(
@@ -105,6 +105,9 @@ class Mdl_Quotes extends Response_Model
         $this->db->join('ip_quote_custom', 'ip_quote_custom.quote_id = ip_quotes.quote_id', 'left');
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules()
     {
         return array(
@@ -135,6 +138,9 @@ class Mdl_Quotes extends Response_Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function validation_rules_save_quote()
     {
         return array(
@@ -160,6 +166,10 @@ class Mdl_Quotes extends Response_Model
         );
     }
 
+    /**
+     * @param null $db_array
+     * @return int|null
+     */
     public function create($db_array = null)
     {
         $quote_id = parent::save(null, $db_array);
@@ -184,12 +194,6 @@ class Mdl_Quotes extends Response_Model
         }
 
         return $quote_id;
-    }
-
-    public function get_url_key()
-    {
-        $this->load->helper('string');
-        return random_string('alnum', 15);
     }
 
     /**
@@ -241,6 +245,9 @@ class Mdl_Quotes extends Response_Model
         }
     }
 
+    /**
+     * @return array
+     */
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -275,18 +282,6 @@ class Mdl_Quotes extends Response_Model
         return $db_array;
     }
 
-    public function get_invoice_group_id($invoice_id)
-    {
-        $invoice = $this->get_by_id($invoice_id);
-        return $invoice->invoice_group_id;
-    }
-
-    public function get_quote_number($invoice_group_id)
-    {
-        $this->load->model('invoice_groups/mdl_invoice_groups');
-        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
-    }
-
     public function get_date_due($quote_date_created)
     {
         $quote_date_expires = new DateTime($quote_date_created);
@@ -294,6 +289,38 @@ class Mdl_Quotes extends Response_Model
         return $quote_date_expires->format('Y-m-d');
     }
 
+    /**
+     * @param $invoice_group_id
+     * @return mixed
+     */
+    public function get_quote_number($invoice_group_id)
+    {
+        $this->load->model('invoice_groups/mdl_invoice_groups');
+        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
+    }
+
+    /**
+     * @return string
+     */
+    public function get_url_key()
+    {
+        $this->load->helper('string');
+        return random_string('alnum', 15);
+    }
+
+    /**
+     * @param $invoice_id
+     * @return mixed
+     */
+    public function get_invoice_group_id($invoice_id)
+    {
+        $invoice = $this->get_by_id($invoice_id);
+        return $invoice->invoice_group_id;
+    }
+
+    /**
+     * @param int $quote_id
+     */
     public function delete($quote_id)
     {
         parent::delete($quote_id);
@@ -302,61 +329,93 @@ class Mdl_Quotes extends Response_Model
         delete_orphans();
     }
 
+    /**
+     * @return $this
+     */
     public function is_draft()
     {
         $this->filter_where('quote_status_id', 1);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function is_sent()
     {
         $this->filter_where('quote_status_id', 2);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function is_viewed()
     {
         $this->filter_where('quote_status_id', 3);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function is_approved()
     {
         $this->filter_where('quote_status_id', 4);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function is_rejected()
     {
         $this->filter_where('quote_status_id', 5);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function is_canceled()
     {
         $this->filter_where('quote_status_id', 6);
         return $this;
     }
 
-    // Used by guest module; includes only sent and viewed
+    /**
+     * Used by guest module; includes only sent and viewed
+     *
+     * @return $this
+     */
     public function is_open()
     {
         $this->filter_where_in('quote_status_id', array(2, 3));
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function guest_visible()
     {
         $this->filter_where_in('quote_status_id', array(2, 3, 4, 5));
         return $this;
     }
 
+    /**
+     * @param $client_id
+     * @return $this
+     */
     public function by_client($client_id)
     {
         $this->filter_where('ip_quotes.client_id', $client_id);
         return $this;
     }
 
+    /**
+     * @param $quote_url_key
+     */
     public function approve_quote_by_key($quote_url_key)
     {
         $this->db->where_in('quote_status_id', array(2, 3));
@@ -365,6 +424,9 @@ class Mdl_Quotes extends Response_Model
         $this->db->update('ip_quotes');
     }
 
+    /**
+     * @param $quote_url_key
+     */
     public function reject_quote_by_key($quote_url_key)
     {
         $this->db->where_in('quote_status_id', array(2, 3));
@@ -373,6 +435,9 @@ class Mdl_Quotes extends Response_Model
         $this->db->update('ip_quotes');
     }
 
+    /**
+     * @param $quote_id
+     */
     public function approve_quote_by_id($quote_id)
     {
         $this->db->where_in('quote_status_id', array(2, 3));
@@ -381,6 +446,9 @@ class Mdl_Quotes extends Response_Model
         $this->db->update('ip_quotes');
     }
 
+    /**
+     * @param $quote_id
+     */
     public function reject_quote_by_id($quote_id)
     {
         $this->db->where_in('quote_status_id', array(2, 3));
@@ -389,6 +457,9 @@ class Mdl_Quotes extends Response_Model
         $this->db->update('ip_quotes');
     }
 
+    /**
+     * @param $quote_id
+     */
     public function mark_viewed($quote_id)
     {
         $this->db->select('quote_status_id');
@@ -405,6 +476,9 @@ class Mdl_Quotes extends Response_Model
         }
     }
 
+    /**
+     * @param $quote_id
+     */
     public function mark_sent($quote_id)
     {
         $this->db->select('quote_status_id');
