@@ -1,25 +1,25 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
+/**
+ * Class Mailer
+ */
 class Mailer extends Admin_Controller
 {
     private $mailer_configured;
 
+    /**
+     * Mailer constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -34,6 +34,9 @@ class Mailer extends Admin_Controller
         }
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function invoice($invoice_id)
     {
         if (!$this->mailer_configured) return;
@@ -49,7 +52,6 @@ class Mailer extends Admin_Controller
 
         if ($email_template_id) {
             $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
-
             $this->layout->set('email_template', json_encode($email_template->row()));
         } else {
             $this->layout->set('email_template', '{}');
@@ -64,6 +66,9 @@ class Mailer extends Admin_Controller
         $this->layout->render();
     }
 
+    /**
+     * @param $quote_id
+     */
     public function quote($quote_id)
     {
         if (!$this->mailer_configured) return;
@@ -77,11 +82,11 @@ class Mailer extends Admin_Controller
 
         if ($email_template_id) {
             $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
-
             $this->layout->set('email_template', json_encode($email_template->row()));
         } else {
             $this->layout->set('email_template', '{}');
         }
+
         $this->layout->set('selected_pdf_template', $this->mdl_settings->setting('pdf_quote_template'));
         $this->layout->set('selected_email_template', $email_template_id);
         $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
@@ -92,6 +97,9 @@ class Mailer extends Admin_Controller
 
     }
 
+    /**
+     * @param $invoice_id
+     */
     public function send_invoice($invoice_id)
     {
         if ($this->input->post('btn_cancel')) {
@@ -121,7 +129,6 @@ class Mailer extends Admin_Controller
 
         if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_invoices->mark_sent($invoice_id);
-
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
             redirect('invoices/view/' . $invoice_id);
         } else {
@@ -129,6 +136,9 @@ class Mailer extends Admin_Controller
         }
     }
 
+    /**
+     * @param $quote_id
+     */
     public function send_quote($quote_id)
     {
         if ($this->input->post('btn_cancel')) {
@@ -166,4 +176,5 @@ class Mailer extends Admin_Controller
             redirect('mailer/quote/' . $quote_id);
         }
     }
+
 }
