@@ -1,6 +1,6 @@
-# Config folder
+# Configuration stuff
 /application/config/development
-/application/config/database.php
+/ipconfig
 
 # Logs folder
 /application/logs/*
@@ -30,6 +30,7 @@ composer.lock
 # Documentation
 /output/
 
+# Other files
 /.htaccess
 .idea
 .sass-cache
