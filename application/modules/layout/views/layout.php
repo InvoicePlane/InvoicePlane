@@ -244,7 +244,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="http://docs.invoiceplane.com/" target="_blank"
-                       class="tip icon" data-original-title="<?php echo trans('documentation'); ?>"
+                       class="tip icon" title="<?php echo trans('documentation'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-question-circle"></i>
                         <span class="visible-xs">&nbsp;<?php echo trans('documentation'); ?></span>
@@ -253,7 +253,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="tip icon dropdown-toggle" data-toggle="dropdown"
-                       data-original-title="<?php echo trans('settings'); ?>"
+                       title="<?php echo trans('settings'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-cogs"></i>
                         <span class="visible-xs">&nbsp;<?php echo trans('settings'); ?></span>
@@ -296,7 +296,7 @@
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
-                       data-original-title="<?php echo trans('logout'); ?>">
+                       title="<?php echo trans('logout'); ?>">
                         <i class="fa fa-power-off"></i>
                         <span class="visible-xs">&nbsp;<?php echo trans('logout'); ?></span>
                     </a>
