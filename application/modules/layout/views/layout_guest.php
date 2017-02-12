@@ -69,7 +69,7 @@
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
-                       data-original-title="<?php echo trans('logout'); ?>">
+                       title="<?php echo trans('logout'); ?>">
                         <span class="visible-xs">&nbsp;<?php echo trans('logout'); ?></span>
                         <i class="fa fa-power-off"></i>
                     </a>
