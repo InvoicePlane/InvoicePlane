@@ -93,6 +93,9 @@ class Mdl_Invoice_Groups extends Response_Model
                     case 'year':
                         $replace = date('Y');
                         break;
+                    case 'yy':
+                        $replace = date('y');
+                        break;
                     case 'month':
                         $replace = date('m');
                         break;
