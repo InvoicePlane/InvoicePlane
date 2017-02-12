@@ -276,13 +276,21 @@
                 </li>
                 <li>
                     <a href="<?php echo site_url('users/form/' .
-                        $this->session->userdata('user_id')); ?>">
-                        <?php
+                        $this->session->userdata('user_id')); ?>"
+                        class="tip icon" data-placement="bottom"
+                        title="<?php
                         print($this->session->userdata('user_name'));
                         if ($this->session->userdata('user_company')) {
                             print(" (" . $this->session->userdata('user_company') . ")");
                         }
-                        ?>
+                        ?>">
+                        <i class="fa fa-user"></i>
+                        <span class="visible-xs">&nbsp;<?php
+                        print($this->session->userdata('user_name'));
+                        if ($this->session->userdata('user_company')) {
+                            print(" (" . $this->session->userdata('user_company') . ")");
+                        }
+                        ?></span>
                     </a>
                 </li>
                 <li>
