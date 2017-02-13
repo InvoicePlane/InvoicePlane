@@ -15,7 +15,8 @@
                     invoice_id: <?php echo $invoice_id; ?>,
                     recur_start_date: $('#recur_start_date').val(),
                     recur_end_date: $('#recur_end_date').val(),
-                    recur_frequency: $('#recur_frequency').val()
+                    recur_frequency: $('#recur_frequency').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -36,14 +37,14 @@
         function get_recur_start_date() {
             $.post("<?php echo site_url('invoices/ajax/get_recur_start_date'); ?>", {
                     invoice_date: $('#invoice_date_created').val(),
-                    recur_frequency: $('#recur_frequency').val()
+                    recur_frequency: $('#recur_frequency').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     $('#recur_start_date').val(data);
                 });
         }
     });
-
 </script>
 
 <div id="modal_create_recurring" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"

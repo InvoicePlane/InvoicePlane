@@ -1,5 +1,7 @@
 <form method="post" class="form-horizontal">
 
+    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+
     <div id="headerbar">
         <h1 class="pull-left"><?php echo trans('custom_field_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
