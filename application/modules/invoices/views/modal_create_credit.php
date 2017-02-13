@@ -9,7 +9,8 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_password: $('#invoice_password').val(),
-                    user_id: $('#user_id').val()
+                    user_id: $('#user_id').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>

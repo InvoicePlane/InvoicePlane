@@ -7,8 +7,7 @@
             $.post('<?php echo site_url('clients/ajax/name_query'); ?>', {
                 query: self.val()
             }, function (data) {
-                var json_response = eval('(' + data + ')');
-                self.data('typeahead').source = json_response;
+                self.data('typeahead').source = eval('(' + data + ')');
             });
         });
     });

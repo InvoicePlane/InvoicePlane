@@ -28,17 +28,11 @@ class Mdl_User_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $db_array = $this->_formdata;
-            $user_custom_id = null;
+            $db_array = isset($this->_formdata) ? $this->_formdata : null;
+            $client_custom_id = null;
             $db_array['user_id'] = $user_id;
-            $user_custom = $this->where('user_id', $user_id)->get();
-
-            if ($user_custom->num_rows()) {
-                $user_custom_id = $user_custom->row()->user_custom_id;
-            }
-
-            parent::save($user_custom_id, $db_array);
-
+            $user_custom = $this->where('user_id', $user_id)->get()->row();
+            $id = parent::save((isset($user_custom->user_custom_id) ? $user_custom->user_custom_id : null), $db_array);
             return true;
         }
 
