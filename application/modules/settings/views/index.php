@@ -41,6 +41,8 @@
 
 <form method="post" id="form-settings" enctype="multipart/form-data">
 
+    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+
     <div class="tabbable tabs-below">
 
         <div class="tab-content col-xs-12 col-md-10 col-lg-8">

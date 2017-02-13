@@ -1,15 +1,17 @@
 <script>
     $(function () {
         $('#btn_user_client').click(function () {
-
             $.post("<?php echo site_url('users/ajax/save_user_client'); ?>", {
                 user_id: '<?php echo $id; ?>',
-                client_name: $('#client_name').val()
+                client_name: $('#client_name').val(),
+                _ip_csrf: csrf()
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', {user_id: '<?php echo $id; ?>'});
+                $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', {
+                    user_id: '<?php echo $id; ?>',
+                    _ip_csrf: csrf()
+                });
             });
-
         });
     });
 </script>

@@ -12,7 +12,8 @@
                     payment_amount: $('#payment_amount').val(),
                     payment_method_id: $('#payment_method_id').val(),
                     payment_date: $('#payment_date').val(),
-                    payment_note: $('#payment_note').val()
+                    payment_note: $('#payment_note').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
