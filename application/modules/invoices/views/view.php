@@ -211,16 +211,7 @@ if ($this->config->item('disable_read_only') == true) {
             </ul>
         </div>
 
-        <?php if ($invoice->is_read_only != 1) { ?>
-            <a href="#" class="btn_add_row btn btn-sm btn-default">
-                <i class="fa fa-plus"></i> <?php echo trans('add_new_row'); ?>
-            </a>
-            <a href="#" class="btn_add_product btn btn-sm btn-default">
-                <i class="fa fa-database"></i>
-                <?php echo trans('add_product'); ?>
-            </a>
-        <?php }
-        if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
+        <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
             <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
                 <i class="fa fa-check"></i> <?php echo trans('save'); ?>
             </a>

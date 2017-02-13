@@ -41,10 +41,7 @@
 
 <div class="container">
 
-    <div id="login"
-         class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-
-        <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
+    <div id="login" class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
 
         <?php if ($login_logo) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
@@ -52,43 +49,36 @@
             <h1><?php echo trans('login'); ?></h1>
         <?php } ?>
 
-        <form class="form-horizontal" method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+        <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
+
+        <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="form-group">
-                <div class="col-xs-12 col-sm-3">
-                    <label for="email" class="control-label"><?php echo trans('email'); ?></label>
-                </div>
-                <div class="col-xs-12 col-sm-9">
-                    <input type="email" name="email" id="email" class="form-control"
-                           placeholder="<?php echo trans('email'); ?>" required autofocus
-                        <?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-xs-12 col-sm-3">
-                    <label for="password" class="control-label"><?php echo trans('password'); ?></label>
-                </div>
-                <div class="col-xs-12 col-sm-9">
-                    <input type="password" name="password" id="password" class="form-control"
-                           placeholder="<?php echo trans('password'); ?>" required
-                        <?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
-                </div>
+                <label for="email" class="control-label"><?php echo trans('email'); ?></label>
+                <input type="email" name="email" id="email" class="form-control"
+                       placeholder="<?php echo trans('email'); ?>" required autofocus
+                    <?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
             </div>
 
-            <input type="submit" name="btn_login" class="btn btn-block btn-primary"
-                   value="<?php echo trans('login'); ?>">
+            <div class="form-group">
+                <label for="password" class="control-label"><?php echo trans('password'); ?></label>
+                <input type="password" name="password" id="password" class="form-control"
+                       placeholder="<?php echo trans('password'); ?>" required
+                    <?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
+            </div>
+
+            <input type="hidden" name="btn_login" value="true">
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-unlock fa-margin"></i> <?php echo trans('login'); ?>
+            </button>
+            <a href="<?php echo site_url('sessions/passwordreset'); ?>" class="btn btn-default">
+                <?php echo trans('forgot_your_password'); ?>
+            </a>
 
         </form>
-
-        <div class="text-right">
-            <small>
-                <a href="<?php echo site_url('sessions/passwordreset'); ?>" class="text-muted">
-                    <?php echo trans('forgot_your_password'); ?>
-                </a>
-            </small>
-        </div>
 
     </div>
 </div>
