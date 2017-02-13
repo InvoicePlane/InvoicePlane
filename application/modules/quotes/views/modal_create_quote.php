@@ -112,11 +112,11 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
-                </button>
                 <button class="btn btn-success ajax-loader" id="quote_create_confirm" type="button">
                     <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
             </div>
         </div>

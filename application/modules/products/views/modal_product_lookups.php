@@ -183,9 +183,7 @@
                     <?php echo trans('cancel'); ?>
                 </button>
             </div>
-
         </div>
-
     </form>
 
 </div>
