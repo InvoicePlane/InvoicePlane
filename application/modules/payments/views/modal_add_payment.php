@@ -12,7 +12,8 @@
                     payment_amount: $('#payment_amount').val(),
                     payment_method_id: $('#payment_method_id').val(),
                     payment_date: $('#payment_date').val(),
-                    payment_note: $('#payment_note').val()
+                    payment_note: $('#payment_note').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -113,13 +114,13 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i>
-                    <?php echo trans('cancel'); ?>
-                </button>
                 <button class="btn btn-success" id="btn_modal_payment_submit" type="button">
                     <i class="fa fa-check"></i>
                     <?php echo trans('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                    <?php echo trans('cancel'); ?>
                 </button>
             </div>
         </div>

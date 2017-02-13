@@ -11,7 +11,8 @@
                     client_name: $('#client_name').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
-                    user_id: $('#user_id').val()
+                    user_id: $('#user_id').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -93,11 +94,11 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
-                </button>
                 <button class="btn btn-success" id="copy_quote_confirm" type="button">
                     <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
             </div>
         </div>

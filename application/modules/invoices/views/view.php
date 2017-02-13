@@ -1,7 +1,9 @@
 <script>
     $(function () {
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
+            $('#modal-placeholder').load(
+                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000)
+            );
         });
 
         $('.btn_add_row').click(function () {
@@ -13,7 +15,12 @@
         <?php } ?>
 
         $('#btn_create_recurring').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>", {invoice_id: <?php echo $invoice_id; ?>});
+            $('#modal-placeholder').load(
+                "<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>",
+                {
+                    invoice_id: <?php echo $invoice_id; ?>
+                }
+            );
         });
 
         $('#invoice_change_client').click(function () {
@@ -40,6 +47,7 @@
                 items.push(row);
             });
             $.post("<?php echo site_url('invoices/ajax/save'); ?>", {
+                    _ip_csrf: csrf(),
                     invoice_id: <?php echo $invoice_id; ?>,
                     invoice_number: $('#invoice_number').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
@@ -203,16 +211,7 @@ if ($this->config->item('disable_read_only') == true) {
             </ul>
         </div>
 
-        <?php if ($invoice->is_read_only != 1) { ?>
-            <a href="#" class="btn_add_row btn btn-sm btn-default">
-                <i class="fa fa-plus"></i> <?php echo trans('add_new_row'); ?>
-            </a>
-            <a href="#" class="btn_add_product btn btn-sm btn-default">
-                <i class="fa fa-database"></i>
-                <?php echo trans('add_product'); ?>
-            </a>
-        <?php }
-        if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
+        <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
             <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
                 <i class="fa fa-check"></i> <?php echo trans('save'); ?>
             </a>
@@ -528,7 +527,10 @@ if ($this->config->item('disable_read_only') == true) {
     previewNode.parentNode.removeChild(previewNode);
 
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", // Set the url
+        url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>",
+        params: {
+            _ip_csrf: csrf()
+        },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
@@ -549,16 +551,26 @@ if ($this->config->item('disable_read_only') == true) {
 
                     if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url('upload/get_file'); ?>/' + val.fullname);
+                            '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
                     } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url('assets/default/img/favicon.png'); ?>');
+                            '<?php echo site_url('assets/default/img/favicon.png'); ?>');
                     }
 
                     thisDropzone.emit("complete", mockFile);
                     thisDropzone.emit("success", mockFile);
                 });
             });
+        }
+    });
+
+    myDropzone.on("success", function (file, response) {
+        <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
+        if (typeof response !== 'undefined') {
+            response = JSON.parse(response);
+            if (response.success !== true) {
+                alert(response.message);
+            }
         }
     });
 
@@ -583,16 +595,20 @@ if ($this->config->item('disable_read_only') == true) {
     });
 
     myDropzone.on("removedfile", function (file) {
-        $.ajax({
+        $.post({
             url: "<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>",
-            type: "POST",
-            data: {'name': file.name.replace(/\s+/g, '_')}
+            data: {
+                'name': file.name.replace(/\s+/g, '_'),
+                _ip_csrf: csrf()
+            }
+        }, function (response) {
+            <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
         });
     });
 
     function createDownloadButton(file, fileUrl) {
         var downloadButtonList = file.previewElement.querySelectorAll("[data-dz-download]");
-        for ($i = 0; $i < downloadButtonList.length; $i++) {
+        for (var $i = 0; $i < downloadButtonList.length; $i++) {
             downloadButtonList[$i].addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();

@@ -52,21 +52,21 @@
 
         <p><?php echo trans('password_reset_info'); ?></p>
 
-        <form class="form-horizontal" method="post"
-              action="<?php echo site_url($this->uri->uri_string()); ?>">
+        <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+
+            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="form-group">
-                <div class="col-xs-12 col-sm-3">
-                    <label for="email" class="control-label"><?php echo trans('email'); ?></label>
-                </div>
-                <div class="col-xs-12 col-sm-9">
-                    <input type="text" name="email" id="email" class="form-control"
-                           placeholder="<?php echo trans('email'); ?>" required autofocus>
-                </div>
+                <label for="email" class="hidden"><?php echo trans('email'); ?></label>
+                <input type="text" name="email" id="email" class="form-control"
+                       placeholder="<?php echo trans('email'); ?>" required autofocus>
             </div>
 
-            <input type="submit" name="btn_reset" class="btn btn-block btn-danger"
-                   value="<?php echo trans('reset_password'); ?>">
+            <input type="hidden" name="btn_reset" value="true">
+
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-key fa-margin"></i> <?php echo trans('reset_password'); ?>
+            </button>
 
         </form>
 

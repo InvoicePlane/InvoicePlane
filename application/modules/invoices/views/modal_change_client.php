@@ -23,8 +23,8 @@
             // will create the new client if necessary
             $.post("<?php echo site_url('invoices/ajax/change_client'); ?>", {
                     client_name: $('#client_name').val(),
-                    invoice_id: $('#invoice_id').val()
-
+                    invoice_id: $('#invoice_id').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -43,7 +43,6 @@
                 });
         });
     });
-
 </script>
 
 <div id="change-client" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
@@ -74,11 +73,11 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
-                </button>
                 <button class="btn btn-success" id="client_change_confirm" type="button">
                     <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
             </div>
         </div>
