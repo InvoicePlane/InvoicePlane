@@ -94,6 +94,7 @@ $lang = array(
     'current_month'                                => 'Current month',
     'current_version'                              => 'Current Version',
     'current_year'                                 => 'Current year',
+    'current_yy'                                   => 'Current year (2-digit format)',
     'custom_field_form'                            => 'Custom Field Form',
     'custom_fields'                                => 'Custom Fields',
     'custom_title'                                 => 'Custom Title',
