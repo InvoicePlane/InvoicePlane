@@ -1,10 +1,12 @@
 <script>
+    csrf('<?= $this->security->get_csrf_hash() ?>');
     $(function () {
         $('#invoice_tax_submit').click(function () {
             $.post("<?php echo site_url('invoices/ajax/save_invoice_tax_rate'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     tax_rate_id: $('#tax_rate_id').val(),
-                    include_item_tax: $('#include_item_tax').val()
+                    include_item_tax: $('#include_item_tax').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>

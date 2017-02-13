@@ -4,7 +4,8 @@
             $.post('<?php echo site_url('clients/ajax/save_client_note'); ?>',
                 {
                     client_id: $('#client_id').val(),
-                    client_note: $('#client_note').val()
+                    client_note: $('#client_note').val(),
+                    _ip_csrf: csrf()
                 }, function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
@@ -13,15 +14,18 @@
                         $('.control-group').removeClass('error');
                         $('#client_note').val('');
 
+                        // Reload all notes
                         $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
                             {
                                 client_id: <?php echo $client->client_id; ?>
+                            }, function (response) {
+                                <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
                             });
                     } else {
                         // The validation was not successful
                         $('.control-group').removeClass('error');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('error');
+                            $('#' + key).parent().addClass('has-error');
                         }
                     }
                 });

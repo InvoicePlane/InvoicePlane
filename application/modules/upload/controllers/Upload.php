@@ -36,7 +36,6 @@ class Upload extends Admin_Controller
         parent::__construct();
         $this->load->model('upload/mdl_uploads');
         $this->targetPath = UPLOADS_FOLDER . '/customer_files';
-
     }
 
     /**
@@ -66,14 +65,24 @@ class Upload extends Admin_Controller
                 $this->mdl_uploads->create($data);
 
                 move_uploaded_file($tempFile, $targetFile);
+
+                echo json_encode([
+                    'success' => true,
+                    '_csrf' => $this->security->get_csrf_hash(),
+                ]);
+
             } else {
                 // If file exists then echo the error and set a http error response
-                echo trans('error_duplicate_file');
+                echo json_encode([
+                    'success' => false,
+                    'message' => trans('error_duplicate_file'),
+                    '_csrf' => $this->security->get_csrf_hash(),
+                ]);
                 http_response_code(404);
             }
 
         } else {
-            return Upload::show_files($url_key, $customerId);
+            Upload::show_files($url_key, $customerId);
         }
     }
 
@@ -89,8 +98,8 @@ class Upload extends Admin_Controller
 
         // AVOID TREE TRAVERSAL!
         $finalPath = $path . '/' . $url_key . '_' . $fileName;
-        if(strpos(realpath($path),realpath($finalPath)) == 0)
-        {
+
+        if (strpos(realpath($path), realpath($finalPath)) == 0) {
             unlink($path . '/' . $url_key . '_' . $fileName);
         }
     }
@@ -112,7 +121,7 @@ class Upload extends Admin_Controller
     /**
      * @param $url_key
      * @param null $customerId
-     * @return bool
+     * @return void
      */
     public function show_files($url_key, $customerId = null)
     {
@@ -124,11 +133,11 @@ class Upload extends Admin_Controller
         if ($files !== false) {
 
             foreach ($files as $file) {
-                if(in_array($file, array(".",".."))){
-                  continue;
+                if (in_array($file, array(".", ".."))) {
+                    continue;
                 }
-                if(strpos($file,$url_key) !== 0){
-                  continue;
+                if (strpos($file, $url_key) !== 0) {
+                    continue;
                 }
                 if (substr(realpath($path), realpath($file) == 0)) {
                     $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
@@ -140,7 +149,7 @@ class Upload extends Admin_Controller
             }
 
         } else {
-            return false;
+            return;
         }
 
         echo json_encode($result);
@@ -155,12 +164,11 @@ class Upload extends Admin_Controller
     public function get_file($filename)
     {
         $base_path = UPLOADS_FOLDER . 'customer_files/';
-        $file_path = $base_path.$filename;
+        $file_path = $base_path . $filename;
 
-        if(strpos(realpath($base_path), realpath($file_path))!=0)
-        {
-          show_404();
-          exit;
+        if (strpos(realpath($base_path), realpath($file_path)) != 0) {
+            show_404();
+            exit;
         }
 
         $path_parts = pathinfo($file_path);

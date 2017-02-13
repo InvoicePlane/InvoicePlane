@@ -52,8 +52,9 @@
 
         <p><?php echo trans('password_reset_info'); ?></p>
 
-        <form class="form-horizontal" method="post"
-              action="<?php echo site_url($this->uri->uri_string()); ?>">
+        <form class="form-horizontal" method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+
+            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3">

@@ -23,7 +23,8 @@
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/change_client'); ?>", {
                     client_name: $('#client_name').val(),
-                    quote_id: $('#quote_id').val()
+                    quote_id: $('#quote_id').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
