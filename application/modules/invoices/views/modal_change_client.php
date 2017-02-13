@@ -23,8 +23,8 @@
             // will create the new client if necessary
             $.post("<?php echo site_url('invoices/ajax/change_client'); ?>", {
                     client_name: $('#client_name').val(),
-                    invoice_id: $('#invoice_id').val()
-
+                    invoice_id: $('#invoice_id').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -43,7 +43,6 @@
                 });
         });
     });
-
 </script>
 
 <div id="change-client" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"

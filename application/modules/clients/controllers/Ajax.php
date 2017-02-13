@@ -48,13 +48,15 @@ class Ajax extends Admin_Controller
             $this->mdl_client_notes->save();
 
             $response = array(
-                'success' => 1
+                'success' => 1,
+                'new_token' => $this->security->get_csrf_hash(),
             );
         } else {
             $this->load->helper('json_error');
             $response = array(
                 'success' => 0,
-                'validation_errors' => json_errors()
+                'new_token' => $this->security->get_csrf_hash(),
+                'validation_errors' => json_errors(),
             );
         }
 

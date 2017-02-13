@@ -21,6 +21,8 @@
                 <div class="panel-body">
                     <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
+                        <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+
                         <input type="submit" class="btn btn-success"
                                name="btn_submit" value="<?php echo trans('run_report'); ?>">
 
