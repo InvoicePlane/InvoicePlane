@@ -63,6 +63,7 @@
             <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
                 <a href="#" class="text-tag" data-tag="{{{id}}}"><?php echo trans('id'); ?></a><br>
                 <a href="#" class="text-tag" data-tag="{{{year}}}"><?php echo trans('current_year'); ?></a><br>
+                <a href="#" class="text-tag" data-tag="{{{yy}}}"><?php echo trans('current_yy'); ?></a><br>
                 <a href="#" class="text-tag" data-tag="{{{month}}}"><?php echo trans('current_month'); ?></a><br>
                 <a href="#" class="text-tag" data-tag="{{{day}}}"><?php echo trans('current_day'); ?></a><br>
             </div>
