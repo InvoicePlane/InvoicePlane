@@ -48,6 +48,13 @@
             }
         });
 
+        // Reset the form
+        $('#product-reset-button').click(function () {
+            $('#modal-placeholder').load(
+                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000)
+            );
+        });
+
         // Filter on search button click
         $('#filter-button').click(function () {
             products_filter();
@@ -62,6 +69,9 @@
         function products_filter() {
             var filter_family = $('#filter_family').val();
             var filter_product = $('#filter_product').val();
+
+            $('#modal-choose-items').find('.modal-body').html('<h2 class="text-center"><i class="fa fa-spin fa-spinner"></i></h2>');
+
             var lookup_url = "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/";
             lookup_url += Math.floor(Math.random() * 1000) + '/?';
 
@@ -73,11 +83,13 @@
                 lookup_url += "&filter_product=" + filter_product;
             }
 
-            // Refresh modal
-            $('#modal-choose-items').modal('hide');
-            $('#modal-placeholder').load(lookup_url, {
-                _ip_csrf: csrf()
-            });
+            // Reload modal with settings
+            window.setTimeout(function () {
+                $('#modal-choose-items').hide();
+                $('#modal-placeholder').load(lookup_url, {
+                    _ip_csrf: csrf()
+                });
+            }, 250);
         }
     });
 </script>
@@ -87,25 +99,25 @@
     <form class="modal-content">
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
             <h3><?php echo trans('add_product'); ?></h3>
         </div>
         <div class="modal-body">
+
             <div class="row">
-                <div class="col-xs-8">
+                <div class="col-xs-12">
                     <div class="form-inline">
                         <div class="form-group filter-form">
-                            <!-- ToDo
-					<select name="filter_family" id="filter_family" class="form-control">
-						<option value=""><?php echo trans('any_family'); ?></option>
-						<?php foreach ($families as $family) { ?>
-						<option value="<?php echo $family->family_id; ?>"
-							<?php if (isset($filter_family) && $family->family_id == $filter_family) {
-                                echo ' selected="selected"';
-                            } ?>><?php echo $family->family_name; ?></option>
-						<?php } ?>
-					</select>
-					-->
+                            <select name="filter_family" id="filter_family" class="form-control">
+                                <option value=""><?php echo trans('any_family'); ?></option>
+                                <?php foreach ($families as $family) { ?>
+                                    <option value="<?php echo $family->family_id; ?>"
+                                        <?php if (isset($filter_family) && $family->family_id == $filter_family) {
+                                            echo ' selected="selected"';
+                                        } ?>>
+                                        <?php echo $family->family_name; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" name="filter_product" id="filter_product"
@@ -114,22 +126,8 @@
                         </div>
                         <button type="button" id="filter-button"
                                 class="btn btn-default"><?php echo trans('search_product'); ?></button>
-                        <!-- ToDo
-                        <button type="button" id="reset-button" class="btn btn-default">
-                            <?php //echo trans('reset'); ?>
-                        </button>
-                        -->
-                    </div>
-                </div>
-                <div class="col-xs-4 text-right">
-                    <div class="btn-group">
-                        <button class="btn btn-danger" type="button" data-dismiss="modal">
-                            <i class="fa fa-times"></i>
-                            <?php echo trans('cancel'); ?>
-                        </button>
-                        <button class="select-items-confirm btn btn-success" type="button">
-                            <i class="fa fa-check"></i>
-                            <?php echo trans('submit'); ?>
+                        <button type="button" id="product-reset-button" class="btn btn-default">
+                            <?php echo trans('reset'); ?>
                         </button>
                     </div>
                 </div>
@@ -168,29 +166,24 @@
                                 <?php echo format_currency($product->product_price); ?>
                             </td>
                         </tr>
-                        <!-- Todo
-						<tr class="bold-border">
-                            <td colspan="3">
-                                <?php echo $product->product_description; ?>
-                            </td>
-                        </tr>
-						-->
                     <?php } ?>
+
                 </table>
             </div>
-        </div>
 
+        </div>
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i>
-                    <?php echo trans('cancel'); ?>
-                </button>
                 <button class="select-items-confirm btn btn-success" type="button">
                     <i class="fa fa-check"></i>
                     <?php echo trans('submit'); ?>
                 </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                    <?php echo trans('cancel'); ?>
+                </button>
             </div>
+
         </div>
 
     </form>

@@ -405,6 +405,7 @@ $lang = array(
     'remove_logo'                                  => 'Remove Logo',
     'report_options'                               => 'Report Options',
     'reports'                                      => 'Reports',
+    'reset'                                        => 'Reset',
     'reset_password'                               => 'Reset password',
     'run_report'                                   => 'Run Report',
     'search_product'                               => 'Search product',
