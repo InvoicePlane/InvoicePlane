@@ -83,13 +83,11 @@
                 lookup_url += "&filter_product=" + filter_product;
             }
 
-            // Reload modal with settings
-            window.setTimeout(function () {
-                $('#modal-choose-items').hide();
-                $('#modal-placeholder').load(lookup_url, {
-                    _ip_csrf: csrf()
-                });
-            }, 250);
+            // Refresh modal
+            $('#modal-choose-items').modal('hide');
+            $('#modal-placeholder').load(lookup_url, {
+                _ip_csrf: csrf()
+            });
         }
     });
 </script>
