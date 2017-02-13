@@ -1,13 +1,14 @@
 <script>
     $(function () {
-        $('#invoice_id').focus();
+        var $invoice_id = $('#invoice_id');
+        $invoice_id.focus();
 
         amounts = JSON.parse('<?php echo $amounts; ?>');
         invoice_payment_methods = JSON.parse('<?php echo $invoice_payment_methods; ?>');
-        $('#invoice_id').change(function () {
+        $invoice_id.change(function () {
             var invoice_identifier = "invoice" + $('#invoice_id').val();
             $('#payment_amount').val(amounts[invoice_identifier].replace("&nbsp;", " "));
-            $('#payment_method_id option[value="' + invoice_payment_methods[invoice_identifier] + '"]').prop('selected', true);
+            $('#payment_method_id').find('option[value="' + invoice_payment_methods[invoice_identifier] + '"]').prop('selected', true);
 
             if (invoice_payment_methods[invoice_identifier] != 0) {
                 $('.payment-method-wrapper').append("<input type='hidden' name='payment_method_id' id='payment-method-id-hidden' class='hidden' value='" + invoice_payment_methods[invoice_identifier] + "'>");
@@ -22,6 +23,8 @@
 </script>
 
 <form method="post" class="form-horizontal">
+
+    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <?php if ($payment_id) { ?>
         <input type="hidden" name="payment_id" value="<?php echo $payment_id; ?>">
@@ -49,8 +52,9 @@
                                     <?php if ($this->mdl_payments->form_value('invoice_id') == $invoice->invoice_id) { ?>selected="selected"<?php } ?>><?php echo $invoice->invoice_number . ' - ' . $invoice->client_name . ' - ' . format_currency($invoice->invoice_balance); ?></option>
                         <?php } ?>
                     <?php } else { ?>
-                        <option
-                            value="<?php echo $payment->invoice_id; ?>"><?php echo $payment->invoice_number . ' - ' . $payment->client_name . ' - ' . format_currency($payment->invoice_balance); ?></option>
+                        <option value="<?php echo $payment->invoice_id; ?>">
+                            <?php echo $payment->invoice_number . ' - ' . $payment->client_name . ' - ' . format_currency($payment->invoice_balance); ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
@@ -65,9 +69,9 @@
                     <input name="payment_date" id="payment_date"
                            class="form-control datepicker"
                            value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>">
-                  <span class="input-group-addon">
-                      <i class="fa fa-calendar fa-fw"></i>
-                  </span>
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar fa-fw"></i>
+                    </span>
                 </div>
             </div>
         </div>
@@ -115,14 +119,15 @@
                 <label for="payment_note" class="control-label"><?php echo trans('note'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <textarea name="payment_note" class="form-control"><?php echo $this->mdl_payments->form_value('payment_note'); ?></textarea>
+                <textarea name="payment_note"
+                          class="form-control"><?php echo $this->mdl_payments->form_value('payment_note'); ?></textarea>
             </div>
 
         </div>
 
         <?php
         $cv = $this->controller->view_data["custom_values"];
-        foreach($custom_fields as $custom_field){
+        foreach ($custom_fields as $custom_field) {
             print_field($this->mdl_payments, $custom_field, $cv, "col-xs-12 col-sm-2 text-right text-left-xs", "col-xs-12 col-sm-6");
         } ?>
 

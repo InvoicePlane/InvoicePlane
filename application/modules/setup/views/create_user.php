@@ -14,6 +14,8 @@
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
+            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+
             <input type="hidden" name="user_type" value="1">
 
             <legend><?php echo trans('setup_create_user'); ?></legend>

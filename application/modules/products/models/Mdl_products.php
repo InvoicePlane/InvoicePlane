@@ -37,9 +37,16 @@ class Mdl_Products extends Response_Model
 
     public function by_product($match)
     {
-        $this->db->like('product_sku', $match);
-        $this->db->or_like('product_name', $match);
-        $this->db->or_like('product_description', $match);
+        $this->db->group_start();
+        $this->db->like('ip_products.product_sku', $match);
+        $this->db->or_like('ip_products.product_name', $match);
+        $this->db->or_like('ip_products.product_description', $match);
+        $this->db->group_end();
+    }
+
+    public function by_family($match)
+    {
+        $this->db->where('ip_products.family_id', $match);
     }
 
     /**

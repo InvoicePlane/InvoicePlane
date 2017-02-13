@@ -26,9 +26,8 @@
                     <i class="fa fa-trash-o"></i>
                     <?php echo trans('confirm_deletion') ?>
                 </a>
-
-                <a href="#" class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('no'); ?>
+                <a href="#" class="btn btn-default" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </a>
             </div>
         </div>

@@ -12,7 +12,8 @@
         $('#quote_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
                 quote_id: <?php echo $quote_id; ?>,
-                client_name: "<?php echo $this->db->escape_str($quote->client_name); ?>"
+                client_name: "<?php echo $this->db->escape_str($quote->client_name); ?>",
+                _ip_csrf: csrf()
             });
         });
 
@@ -37,6 +38,7 @@
                 items.push(row);
             });
             $.post("<?php echo site_url('quotes/ajax/save'); ?>", {
+                    _ip_csrf: $('meta[name=_csrf]').attr("content"),
                     quote_id: <?php echo $quote_id; ?>,
                     quote_number: $('#quote_number').val(),
                     quote_date_created: $('#quote_date_created').val(),
@@ -54,22 +56,22 @@
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
-                    }
-                    else {
+                    } else {
                         $('#fullpage-loader').hide();
                         $('.control-group').removeClass('has-error');
                         $('div.alert[class*="alert-"]').remove();
                         var resp_errors = response.validation_errors,
                             all_resp_errors = '';
+
                         if (typeof(resp_errors) == "string") {
                             all_resp_errors = resp_errors;
-                        }
-                        else {
+                        } else {
                             for (var key in resp_errors) {
                                 $('#' + key).parent().addClass('has-error');
                                 all_resp_errors += resp_errors[key];
                             }
                         }
+
                         $('#quote_form').prepend('<div class="alert alert-danger">' + all_resp_errors + '</div>');
                     }
                 });
@@ -176,15 +178,6 @@
                 </li>
             </ul>
         </div>
-
-        <a href="#" class="btn_add_row btn btn-sm btn-default">
-            <i class="fa fa-plus"></i>
-            <?php echo trans('add_new_row'); ?>
-        </a>
-        <a href="#" class="btn_add_product btn btn-sm btn-default">
-            <i class="fa fa-database"></i>
-            <?php echo trans('add_product'); ?>
-        </a>
 
         <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_quote">
             <i class="fa fa-check"></i>
@@ -444,7 +437,10 @@
     previewNode.parentNode.removeChild(previewNode);
 
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: "<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>", // Set the url
+        url: "<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>",
+        params: {
+            _ip_csrf: csrf()
+        },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
@@ -467,7 +463,7 @@
                             '<?php echo site_url('upload/get_file'); ?>' + val.fullname);
                     } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url(); ?>assets/default/img/favicon.png');
+                            '<?php echo site_url('assets/default/img/favicon.png'); ?>');
                     }
 
                     thisDropzone.emit("complete", mockFile);
@@ -478,7 +474,7 @@
     });
 
     myDropzone.on("addedfile", function (file) {
-        myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
+        myDropzone.emit("thumbnail", file, '<?php echo site_url('assets/default/img/favicon.png'); ?>');
         createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $quote->quote_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
     });
 
@@ -498,16 +494,18 @@
     });
 
     myDropzone.on("removedfile", function (file) {
-        $.ajax({
+        $.post({
             url: "<?php echo site_url('upload/delete_file/' . $quote->quote_url_key) ?>",
-            type: "POST",
-            data: {'name': file.name}
+            data: {
+                name: file.name,
+                _ip_csrf: csrf()
+            }
         });
     });
 
     function createDownloadButton(file, fileUrl) {
         var downloadButtonList = file.previewElement.querySelectorAll("[data-dz-download]");
-        for ($i = 0; $i < downloadButtonList.length; $i++) {
+        for (var $i = 0; $i < downloadButtonList.length; $i++) {
             downloadButtonList[$i].addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();

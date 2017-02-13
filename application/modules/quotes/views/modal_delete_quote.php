@@ -22,12 +22,12 @@
         </div>
         <div class="modal-footer">
             <div class="btn-group">
+                <a href="#" class="btn btn-success" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo trans('no'); ?>
+                </a>
                 <a href="#" id="modal_delete_quote_confirm" class="btn btn-danger"
                    data-quote-id="<?php echo $quote->quote_id; ?>">
                     <i class="fa fa-trash-o"></i> <?php echo trans('yes'); ?>
-                </a>
-                <a href="#" class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('no'); ?>
                 </a>
             </div>
         </div>

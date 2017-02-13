@@ -8,7 +8,8 @@
             if (email_template_id == '') return;
 
             $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
-                email_template_id: email_template_id
+                email_template_id: email_template_id,
+                _ip_csrf: csrf()
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 inject_email_template(template_fields, JSON.parse(data));
@@ -279,7 +280,9 @@
         clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
         init: function () {
             thisDropzone = this;
-            $.getJSON("<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>", function (data) {
+            $.getJSON("<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>", {
+                _ip_csrf: csrf()
+            }, function (data) {
                 $.each(data, function (index, val) {
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
@@ -315,10 +318,12 @@
     });
 
     myDropzone.on("removedfile", function (file) {
-        $.ajax({
+        $.post({
             url: "<?php echo site_url('upload/delete_file/' . $quote->quote_url_key) ?>",
-            type: "POST",
-            data: {'name': file.name}
+            data: {
+                name: file.name,
+                _ip_csrf: csrf()
+            }
         });
     });
 

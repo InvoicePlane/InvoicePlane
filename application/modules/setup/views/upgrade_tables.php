@@ -3,8 +3,9 @@
 
         <h1 id="logo"><span>InvoicePlane</span></h1>
 
-        <form method="post" class="form-horizontal"
-              action="<?php echo site_url($this->uri->uri_string()); ?>">
+        <form method="post" class="form-horizontal" action="<?php echo site_url($this->uri->uri_string()); ?>">
+
+            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <legend><?php echo trans('setup_upgrade_tables'); ?></legend>
 

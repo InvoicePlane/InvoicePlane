@@ -4,7 +4,8 @@
             $.post("<?php echo site_url('quotes/ajax/save_quote_tax_rate'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
                     tax_rate_id: $('#tax_rate_id').val(),
-                    include_item_tax: $('#include_item_tax').val()
+                    include_item_tax: $('#include_item_tax').val(),
+                    _ip_csrf: csrf()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -64,11 +65,11 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
-                </button>
                 <button class="btn btn-success" id="quote_tax_submit" type="button">
                     <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
                 </button>
             </div>
         </div>
