@@ -1111,6 +1111,13 @@ legend, .install-step h2 {
         margin-top: 7px;
     }
 
+    // put icons on same line as text
+    .navbar-nav {
+        .visible-xs {
+            display: inline-block !important;
+        }
+    }
+
 }
 
 // Styles for very small devices (< xs)
@@ -1120,9 +1127,6 @@ legend, .install-step h2 {
         margin: 7px 0;
         .dropdown .dropdown-menu {
             background: #555;
-        }
-        .visible-xs {
-            display: inline-block !important;
         }
     }
 
