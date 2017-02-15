@@ -74,7 +74,7 @@ function resetLanguage()
     $CI->lang->language = array();
 
     // Reset to the default language
-    $CI->lang->load('ip', $this->mdl_settings->setting('default_language'));
-    $CI->lang->load('form_validation', $this->mdl_settings->setting('default_language'));
-    $CI->lang->load('custom', $this->mdl_settings->setting('default_language'));
+    $CI->lang->load('ip', $CI->mdl_settings->setting('default_language'));
+    $CI->lang->load('form_validation', $CI->mdl_settings->setting('default_language'));
+    $CI->lang->load('custom', $CI->mdl_settings->setting('default_language'));
 }
