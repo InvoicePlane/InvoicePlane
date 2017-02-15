@@ -55,6 +55,9 @@ function set_language($language)
     $CI->lang->is_loaded = array();
     $CI->lang->language = array();
 
+    // Load system language if no custom language is set
+    $language = $language == 'system' ? $CI->mdl_settings->setting('default_language') : $language;
+
     // Set the new language
     $CI->lang->load('ip', $language);
     $CI->lang->load('form_validation', $language);
