@@ -77,6 +77,11 @@ class Mdl_Users extends Response_Model
                 'label' => trans('verify_password'),
                 'rules' => 'required|matches[user_password]'
             ),
+            'user_language' => array(
+                'field' => 'user_language',
+                'label' => trans('language'),
+                'rules' => 'required'
+            ),
             'user_company' => array(
                 'field' => 'user_company'
             ),
@@ -145,6 +150,11 @@ class Mdl_Users extends Response_Model
             'user_name' => array(
                 'field' => 'user_name',
                 'label' => trans('name'),
+                'rules' => 'required'
+            ),
+            'user_language' => array(
+                'field' => 'user_language',
+                'label' => trans('language'),
                 'rules' => 'required'
             ),
             'user_company' => array(

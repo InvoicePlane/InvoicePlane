@@ -25,9 +25,9 @@ function trans($line, $id = '')
     // Fall back to default language if the current language has no translated string
     if (empty($lang_string)) {
         // Load the default language
-        setLanguage('english');
+        set_language('english');
         $lang_string = $CI->lang->line($line);
-        resetLanguage();
+        reset_language();
     }
 
     // Fall back to the $line value if the default language has no translation either
@@ -48,7 +48,7 @@ function trans($line, $id = '')
  * @param string $language
  * @return void
  */
-function setLanguage($language)
+function set_language($language)
 {
     // Clear the current loaded language
     $CI =& get_instance();
@@ -66,7 +66,7 @@ function setLanguage($language)
  *
  * @return void
  */
-function resetLanguage()
+function reset_language()
 {
     // Clear the current loaded language
     $CI =& get_instance();
@@ -77,4 +77,23 @@ function resetLanguage()
     $CI->lang->load('ip', $CI->mdl_settings->setting('default_language'));
     $CI->lang->load('form_validation', $CI->mdl_settings->setting('default_language'));
     $CI->lang->load('custom', $CI->mdl_settings->setting('default_language'));
+}
+
+/**
+ * Returns all available languages
+ *
+ * @return array
+ */
+function get_available_languages() {
+    $CI =& get_instance();
+    $CI->load->helper('directory');
+
+    $languages = directory_map(APPPATH . 'language', true);
+    sort($languages);
+
+    for ($i = 0; $i < count($languages); $i++) {
+        $languages[$i] = str_replace('/', '', $languages[$i]);
+    }
+
+    return $languages;
 }
