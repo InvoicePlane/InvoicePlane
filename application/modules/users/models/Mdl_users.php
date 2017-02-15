@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 /*
  * InvoicePlane
- * 
+ *
  * A free and open source web based invoicing system
  *
  * @package		InvoicePlane
@@ -13,7 +13,7 @@ if (!defined('BASEPATH'))
  * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
+ *
  */
 
 class Mdl_Users extends Response_Model
@@ -113,6 +113,12 @@ class Mdl_Users extends Response_Model
             ),
             'user_tax_code' => array(
                 'field' => 'user_tax_code'
+            ),
+            'user_subscribernumber' => array(
+                'field' => 'user_subscribernumber'
+            ),
+            'user_iban' => array(
+                'field' => 'user_iban'
             )
         );
     }
@@ -175,6 +181,12 @@ class Mdl_Users extends Response_Model
             ),
             'user_tax_code' => array(
                 'field' => 'user_tax_code'
+            ),
+            'user_subscribernumber' => array(
+                'field' => 'user_subscribernumber'
+            ),
+            'user_iban' => array(
+                'field' => 'user_iban'
             )
         );
     }

@@ -30,7 +30,7 @@ class Mdl_Client_Custom extends Validator
             $client_custom_id = null;
             $db_array['client_id'] = $client_id;
             $client_custom = $this->where('client_id', $client_id)->get()->row();
-            $id = parent::save($client_custom->client_custom_id, $db_array);
+            parent::save($client_custom->client_custom_id, $db_array);
             return true;
         }
         return $result;

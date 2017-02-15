@@ -1,56 +1,86 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 class Sumex
 {
-    var $invoice;
-    var $doc;
-    var $root;
+    public $invoice;
+    public $doc;
+    public $root;
 
-    var $_lang = "it";
-    var $_mode = "production";
-    var $_copy = "0";
-    var $_storno = "0";
-    var $_role = "physician";
-    var $_place = "practice";
-    var $_currency = "CHF";
-    var $_paymentperiod = "P30D";
-    var $_canton = "TI";
+    public $_lang = "it";
+    public $_mode = "production";
+    public $_copy = "0";
+    public $_storno = "0";
+    public $_role = "physician";
+    public $_place = "practice";
+    public $_currency = "CHF";
+    public $_paymentperiod = "P30D";
+    public $_canton = "TI";
+    public $_esrType = "9";
 
-    var $_patient = array(
+    public $_patient = array(
         'gender' => 'male',
         'birthdate' => '1996-09-29',
         'familyName' => 'Vitali',
         'givenName' => 'Denys'
     );
 
-    var $_casedate = "2017-02-10";
+    public $_casedate = "2017-02-10";
 
-    var $_treatment = array(
+    public $_treatment = array(
         'start' => '2017-01-10',
         'end' => '2017-02-01',
         'reason' => 'disease' // TODO: Check if need required value
     );
 
+    public $_company = array(
+        'name' => 'SomeCompany GmbH',
+        'street' => 'Via Cantonale 5',
+        'zip' => '6900',
+        'city' => 'Lugano',
+        'phone' => '091 902 11 00'
+    );
+
     public function __construct($params)
     {
-        define('IP_VERSION', '1.5.0');
+        //define('IP_VERSION', '1.5.0');
         $CI = &get_instance();
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
+
+        $this->_patient['givenName'] = $this->invoice->client_custom_nome;
+        $this->_patient['familyName'] = $this->invoice->client_custom_cognome;
+        $this->_patient['birthdate'] = $this->invoice->client_custom_data_di_nascita;
+        $this->_patient['gender'] = ($this->invoice->client_custom_sesso=="2"?"male":"female");
+
+        $this->_company['name'] = $this->invoice->user_company;
+        $this->_company['street'] = $this->invoice->user_address_1;
+        $this->_company['zip'] = $this->invoice->user_zip;
+        $this->_company['phone'] = $this->invoice->user_phone;
+
+        file_put_contents(UPLOADS_FOLDER."/customer_files/test.json", json_encode($params));
+        //throw new Error(UPLOADS_FOLDER);
+
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
-    public function pdf(){
+    public function pdf()
+    {
         $ch = curl_init();
 
         $xml = $this->xml();
 
-        curl_setopt($ch, CURLOPT_URL, "http://192.168.1.150:8080/generateInvoice");
+        curl_setopt($ch, CURLOPT_URL, SUMEX_URL."/generateInvoice");
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 180); //timeout in seconds
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         $out = curl_exec($ch);
         curl_close($ch);
+
+
         return $out;
         //return file_get_contents('req2.xml');
     }
@@ -108,8 +138,8 @@ class Sumex
 
         $invoiceInvoice = $this->doc->createElement('invoice:invoice');
         $invoiceInvoice->setAttribute('request_timestamp', time());
-        $invoiceInvoice->setAttribute('request_id', '000001000001');
-        $invoiceInvoice->setAttribute('request_date', date("Y-m-d\TH:i:s"));
+        $invoiceInvoice->setAttribute('request_id', $this->invoice->invoice_number);
+        $invoiceInvoice->setAttribute('request_date', date("Y-m-d\TH:i:s", strtotime($this->invoice->invoice_date_modified)));
 
         $invoiceBody = $this->xmlInvoiceBody();
 
@@ -125,9 +155,15 @@ class Sumex
         $node->setAttribute('role', $this->_role);
         $node->setAttribute('place', $this->_place);
 
+        if ($this->_esrType == "9") {
+            $esr = $this->xmlInvoiceEsr9();
+        } else {
+            // Red
+          $esr = $this->xmlInvoiceEsrRed();
+        }
+
         $prolog = $this->xmlInvoiceProlog();
         $balance = $this->xmlInvoiceBalance();
-        $esr9 = $this->xmlInvoiceEsr9();
         $tiersGarant = $this->xmlInvoiceTiersGarant();
         $mvg = $this->xmlInvoiceMvg();
         $treatment = $this->xmlInvoiceTreatment();
@@ -135,7 +171,7 @@ class Sumex
 
         $node->appendChild($prolog);
         $node->appendChild($balance);
-        $node->appendChild($esr9);
+        $node->appendChild($esr);
         $node->appendChild($tiersGarant);
         $node->appendChild($mvg);
         $node->appendChild($treatment);
@@ -144,7 +180,8 @@ class Sumex
         return $node;
     }
 
-    protected function xmlInvoiceProlog(){
+    protected function xmlInvoiceProlog()
+    {
         $node = $this->doc->createElement('invoice:prolog');
 
         $package = $this->doc->createElement('invoice:package');
@@ -168,7 +205,8 @@ class Sumex
         return $node;
     }
 
-    protected function xmlInvoiceBalance(){
+    protected function xmlInvoiceBalance()
+    {
         $node = $this->doc->createElement('invoice:balance');
         $node->setAttribute('currency', $this->_currency);
 
@@ -192,22 +230,118 @@ class Sumex
         return $node;
     }
 
-    protected function xmlInvoiceEsr9(){
+    protected function xmlInvoiceEsr9()
+    {
         $node = $this->doc->createElement('invoice:esr9');
 
-        // TODO: Integrate participant_number
-        $node->setAttribute('participant_number', '01-12648-2');
+        $subNumb = $this->invoice->user_subscribernumber;
 
-        // TODO: CHECK
-        $node->setAttribute('type', '16or27');
+        $node->setAttribute('participant_number', $subNumb); // MUST begin with 01
+        $node->setAttribute('type', '16or27'); // 16or27 = 01, 16or27plus = 04
 
-        // TODO: Autogenerate coding_line
-        $node->setAttribute('reference_number', '15 45300 00000 00000 00100 00018');
-        $node->setAttribute('coding_line', '0100000017758>154530000000000000010000018+ 010126482>');
+        // 26numbers + 1 chek
+        $referenceNumber = "";
+
+        // Custom style, we create the reference number as following:
+        // 5 digits for client id, 10 digits for invoice ID, 9 digits for Invoice Date, 1 for checksum
+
+        $referenceNumber.= "06"; // Dog Fooding
+        $referenceNumber.= sprintf("%05d", $this->invoice->client_id);
+        $referenceNumber.= sprintf("%010d", $this->invoice->invoice_id);
+        $referenceNumber.= sprintf("%09d", date("Ymd", strtotime($this->invoice->invoice_date_modified)));
+        $refCsum = $this->recMod10($referenceNumber);
+        $referenceNumber = $referenceNumber.$refCsum;
+
+        if(!preg_match("/\d{27}/", $referenceNumber))
+        {
+            throw new Error("Invalid reference number!");
+        }
+
+        $slipType = "01"; // ISR in CHF
+        $amount = $this->invoice->invoice_total;
+
+        $formattedRN = "";
+        $formattedRN .= substr($referenceNumber, 0, 2);
+        $formattedRN .= " ";
+        $formattedRN .= substr($referenceNumber, 2, 5);
+        $formattedRN .= " ";
+        $formattedRN .= substr($referenceNumber, 7, 5);
+        $formattedRN .= " ";
+        $formattedRN .= substr($referenceNumber, 12, 5);
+        $formattedRN .= " ";
+        $formattedRN .= substr($referenceNumber, 17, 5);
+        $formattedRN .= " ";
+        $formattedRN .= substr($referenceNumber, 22, 5);
+
+        $codingLine = $this->genCodeline($slipType, $amount, $formattedRN, $subNumb);
+
+        $node->setAttribute('reference_number', $formattedRN);
+        $node->setAttribute('coding_line', $codingLine);
+
         return $node;
     }
 
-    protected function xmlInvoiceTiersGarant(){
+    public function genCodeline($slipType, $amount, $rnumb, $subNumb)
+    {
+        $isEur = false;
+        if ((int) $slipType > 14) {
+            $isEur = true;
+        } else {
+            $amount = .5 * round((float) $amount/.5, 1);
+        }
+        if (!$isEur && $amount > 99999999.95) {
+            throw new Error("Invalid amount");
+        } elseif ($isEur && $amount > 99999999.99) {
+            throw new Error("Invalid amount");
+        }
+        $amountLine = sprintf("%010d", $amount * 100);
+        $checkSlAmount = $this->recMod10($slipType.$amountLine);
+        if (!preg_match("/\d{2}-\d{1,6}-\d{1}/", $subNumb)) {
+            throw new Error("Invalid subscriber number");
+        }
+        $subNumb = explode("-", $subNumb);
+        $fullSub = $subNumb[0].sprintf("%06d", $subNumb[1]).$subNumb[2];
+        $rnumb = preg_replace('/\s+/', '', $rnumb);
+        return $slipType.$amountLine.$checkSlAmount.">".$rnumb."+ ".$fullSub.">";
+    }
+
+    public function recMod10($in)
+    {
+        $line = [0,9,4,6,8,2,7,1,3,5];
+        $carry = 0;
+        $chars = str_split($in);
+        foreach ($chars as $char) {
+            $carry = $line[($carry+intval($char))% 10];
+        }
+        return (10-$carry) %10;
+    }
+
+    protected function xmlInvoiceEsrRed()
+    {
+        $node = $this->doc->createElement('invoice:esrRed');
+
+        $reason = $this->doc->createElement('invoice:payment_reason');
+        $reason->nodeValue = "Payment Reason";
+
+        // postal_account: coding_line2
+        // bank_account: coding_line1 + coding_line2
+        $node->setAttribute('payment_to', 'postal_account');
+        //$node->setAttribute('esr_attributes', '1');
+        $node->setAttribute('post_account', '99-123-9');
+
+        // IBAN not required
+        //$node->setAttribute('iban', 'CH1111111111111111111');
+        $node->setAttribute('reference_number', '1111111111');
+        $node->setAttribute('coding_line1', '111111111111111111111111111+ 071234567>');
+        $node->setAttribute('coding_line2', '111111111>');
+
+        $node->appendChild($reason);
+
+        return $node;
+    }
+
+    protected function xmlInvoiceTiersGarant()
+    {
         $node = $this->doc->createElement('invoice:tiers_garant');
         $node->setAttribute('payment_period', $this->_paymentperiod);
 
@@ -260,7 +394,8 @@ class Sumex
         return $node;
     }
 
-    protected function xmlInvoiceMvg(){
+    protected function xmlInvoiceMvg()
+    {
         $node = $this->doc->createElement('invoice:mvg');
         $node->setAttribute('ssn', '7560000000011');
         $node->setAttribute('insured_id', 'ladc7a5f5fb43ef76018');
@@ -269,7 +404,8 @@ class Sumex
         return $node;
     }
 
-    protected function xmlInvoiceTreatment(){
+    protected function xmlInvoiceTreatment()
+    {
         $node = $this->doc->createElement('invoice:treatment');
         $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime($this->_treatment['start'])));
         $node->setAttribute('date_end', date("Y-m-d\TH:i:s", strtotime($this->_treatment['end'])));
@@ -285,7 +421,8 @@ class Sumex
         return $node;
     }
 
-    protected function xmlServices(){
+    protected function xmlServices()
+    {
         $node = $this->doc->createElement('services');
         $node->setAttribute('xmlns', 'http://www.forum-datenaustausch.ch/invoice');
 
@@ -294,7 +431,8 @@ class Sumex
         return $node;
     }
 
-    protected function generateRecord(){
+    protected function generateRecord()
+    {
         $node = $this->doc->createElement('invoice:record_other');
         $node->setAttribute('record_id', 1);
         $node->setAttribute('tariff_type', 590);
@@ -315,70 +453,74 @@ class Sumex
         return $node;
     }
 
-    protected function generatePerson($name, $surname, $street, $zip, $city, $phone){
-      $person = $this->doc->createElement('invoice:person');
+    protected function generatePerson($name, $surname, $street, $zip, $city, $phone)
+    {
+        $person = $this->doc->createElement('invoice:person');
 
-      $familyName = $this->doc->createElement('invoice:familyname');
-      $familyName->nodeValue = $this->_patient['familyName'];
+        $familyName = $this->doc->createElement('invoice:familyname');
+        $familyName->nodeValue = $this->_patient['familyName'];
 
-      $givenName = $this->doc->createElement('invoice:givenname');
-      $givenName->nodeValue = $this->_patient['givenName'];
+        $givenName = $this->doc->createElement('invoice:givenname');
+        $givenName->nodeValue = $this->_patient['givenName'];
 
-      $postal = $this->generatePostal("Via la Santa 2", "6962", "Viganello");
-      $telecom = $this->generateTelecom("079 123 45 67");
+        $postal = $this->generatePostal("Via la Santa 2", "6962", "Viganello");
+        $telecom = $this->generateTelecom("079 123 45 67");
 
-      $person->appendChild($familyName);
-      $person->appendChild($givenName);
-      $person->appendChild($postal);
-      $person->appendChild($telecom);
+        $person->appendChild($familyName);
+        $person->appendChild($givenName);
+        $person->appendChild($postal);
+        $person->appendChild($telecom);
 
-      return $person;
+        return $person;
     }
 
-    protected function generatePostal($street, $zip, $city){
-      $postal = $this->doc->createElement('invoice:postal');
+    protected function generatePostal($street, $zip, $city)
+    {
+        $postal = $this->doc->createElement('invoice:postal');
 
-      $postal_street = $this->doc->createElement('invoice:street');
-      $postal_street->nodeValue = $street;
+        $postal_street = $this->doc->createElement('invoice:street');
+        $postal_street->nodeValue = $street;
 
-      $postal_zip = $this->doc->createELement('invoice:zip');
-      $postal_zip->nodeValue = $zip;
+        $postal_zip = $this->doc->createELement('invoice:zip');
+        $postal_zip->nodeValue = $zip;
 
-      $postal_city = $this->doc->createElement('invoice:city');
-      $postal_city->nodeValue = $city;
+        $postal_city = $this->doc->createElement('invoice:city');
+        $postal_city->nodeValue = $city;
 
-      $postal->appendChild($postal_street);
-      $postal->appendChild($postal_zip);
-      $postal->appendChild($postal_city);
+        $postal->appendChild($postal_street);
+        $postal->appendChild($postal_zip);
+        $postal->appendChild($postal_city);
 
-      return $postal;
+        return $postal;
     }
 
-    protected function generateTelecom($phoneNr){
-      $telecom = $this->doc->createElement('invoice:telecom');
-      $phone = $this->doc->createElement('invoice:phone');
-      $phone->nodeValue = $phoneNr;
-      $telecom->appendChild($phone);
-      return $telecom;
+    protected function generateTelecom($phoneNr)
+    {
+        $telecom = $this->doc->createElement('invoice:telecom');
+        $phone = $this->doc->createElement('invoice:phone');
+        $phone->nodeValue = $phoneNr;
+        $telecom->appendChild($phone);
+        return $telecom;
     }
 
-    protected function xmlCompany(){
-      // <invoice:company>
+    protected function xmlCompany()
+    {
+        // <invoice:company>
       $bcompany = $this->doc->createElement('invoice:company');
-      $bcompany_name = $this->doc->createElement('invoice:companyname');
-      $bcompany_name->nodeValue = "Some Company GmbH";
+        $bcompany_name = $this->doc->createElement('invoice:companyname');
+        $bcompany_name->nodeValue = $this->_company['name'];
 
-      $bcompany->appendChild($bcompany_name);
+        $bcompany->appendChild($bcompany_name);
 
-      $bcompany_postal = $this->generatePostal("Via Cantonale", "6900", "Lugano");
-      $bcompany->appendChild($bcompany_postal);
+        $bcompany_postal = $this->generatePostal($this->_company['street'], $this->_company['zip'], $this->_company['city']);
+        $bcompany->appendChild($bcompany_postal);
 
-      $bcompany_telecom = $this->doc->createElement('invoice:telecom');
-      $bcompany_telecom_phone = $this->doc->createElement('invoice:phone');
-      $bcompany_telecom_phone->nodeValue = '091 000 00 00';
+        $bcompany_telecom = $this->doc->createElement('invoice:telecom');
+        $bcompany_telecom_phone = $this->doc->createElement('invoice:phone');
+        $bcompany_telecom_phone->nodeValue = $this->_company['phone'];
 
-      $bcompany_telecom->appendChild($bcompany_telecom_phone);
-      $bcompany->appendChild($bcompany_telecom);
+        $bcompany_telecom->appendChild($bcompany_telecom_phone);
+        $bcompany->appendChild($bcompany_telecom);
       // </invoice:company>
 
       return $bcompany;
