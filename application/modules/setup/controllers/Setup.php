@@ -121,6 +121,7 @@ class Setup extends MX_Controller
         if (!ini_get('date.timezone')) {
             $checks[] = array(
                 'message' => sprintf(trans('php_timezone_fail'), date_default_timezone_get()),
+                'success' => 1,
                 'warning' => 1
             );
         } else {
