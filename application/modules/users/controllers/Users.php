@@ -54,19 +54,21 @@ class Users extends Admin_Controller
             $this->load->model('custom_fields/mdl_user_custom');
             $this->mdl_user_custom->save_custom($id, $this->input->post('custom'));
 
-            // Update the session details
-            $new_details = $this->mdl_users->get_by_id($id);
+            // Update the session details if the logged in user edited his account
+            if ($this->session->userdata('user_id') == $id) {
+                $new_details = $this->mdl_users->get_by_id($id);
 
-            $session_data = array(
-                'user_type' => $new_details->user_type,
-                'user_id' => $new_details->user_id,
-                'user_name' => $new_details->user_name,
-                'user_email' => $new_details->user_email,
-                'user_company' => $new_details->user_company,
-                'user_language' => isset($new_details->user_language) ? $new_details->user_language : 'system',
-            );
+                $session_data = array(
+                    'user_type' => $new_details->user_type,
+                    'user_id' => $new_details->user_id,
+                    'user_name' => $new_details->user_name,
+                    'user_email' => $new_details->user_email,
+                    'user_company' => $new_details->user_company,
+                    'user_language' => isset($new_details->user_language) ? $new_details->user_language : 'system',
+                );
 
-            $this->session->set_userdata($session_data);
+                $this->session->set_userdata($session_data);
+            }
 
             redirect('users');
         }
