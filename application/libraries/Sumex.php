@@ -46,6 +46,9 @@ class Sumex
     {
         //define('IP_VERSION', '1.5.0');
         $CI = &get_instance();
+
+        $CI->load->helper('invoice');
+
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
 
@@ -246,7 +249,7 @@ class Sumex
         $referenceNumber.= sprintf("%05d", $this->invoice->client_id);
         $referenceNumber.= sprintf("%010d", $this->invoice->invoice_id);
         $referenceNumber.= sprintf("%09d", date("Ymd", strtotime($this->invoice->invoice_date_modified)));
-        $refCsum = $this->recMod10($referenceNumber);
+        $refCsum = invoice_recMod10($referenceNumber);
         $referenceNumber = $referenceNumber.$refCsum;
 
         if(!preg_match("/\d{27}/", $referenceNumber))
@@ -270,47 +273,12 @@ class Sumex
         $formattedRN .= " ";
         $formattedRN .= substr($referenceNumber, 22, 5);
 
-        $codingLine = $this->genCodeline($slipType, $amount, $formattedRN, $subNumb);
+        $codingLine = invoice_genCodeline($slipType, $amount, $formattedRN, $subNumb);
 
         $node->setAttribute('reference_number', $formattedRN);
         $node->setAttribute('coding_line', $codingLine);
 
         return $node;
-    }
-
-    public function genCodeline($slipType, $amount, $rnumb, $subNumb)
-    {
-        $isEur = false;
-        if ((int) $slipType > 14) {
-            $isEur = true;
-        } else {
-            $amount = .5 * round((float) $amount/.5, 1);
-        }
-        if (!$isEur && $amount > 99999999.95) {
-            throw new Error("Invalid amount");
-        } elseif ($isEur && $amount > 99999999.99) {
-            throw new Error("Invalid amount");
-        }
-        $amountLine = sprintf("%010d", $amount * 100);
-        $checkSlAmount = $this->recMod10($slipType.$amountLine);
-        if (!preg_match("/\d{2}-\d{1,6}-\d{1}/", $subNumb)) {
-            throw new Error("Invalid subscriber number");
-        }
-        $subNumb = explode("-", $subNumb);
-        $fullSub = $subNumb[0].sprintf("%06d", $subNumb[1]).$subNumb[2];
-        $rnumb = preg_replace('/\s+/', '', $rnumb);
-        return $slipType.$amountLine.$checkSlAmount.">".$rnumb."+ ".$fullSub.">";
-    }
-
-    public function recMod10($in)
-    {
-        $line = [0,9,4,6,8,2,7,1,3,5];
-        $carry = 0;
-        $chars = str_split($in);
-        foreach ($chars as $char) {
-            $carry = $line[($carry+intval($char))% 10];
-        }
-        return (10-$carry) %10;
     }
 
     protected function xmlInvoiceEsrRed()
