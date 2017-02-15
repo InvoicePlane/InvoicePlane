@@ -53,12 +53,18 @@ class Base_Controller extends MX_Controller
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
 
-            $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
-            $this->lang->load('form_validation', $this->mdl_settings->setting('default_language'));
-            $this->lang->load('custom', $this->mdl_settings->setting('default_language'));
+            // Load the language based on user config, fall back to system if needed
+            $user_lang = $this->session->userdata('user_language');
+
+            if (empty($user_lang) || $user_lang == 'system') {
+                set_language($this->mdl_settings->setting('default_language'));
+            } else {
+                set_language($user_lang);
+            }
 
             $this->load->helper('language');
 
+            // Load the layout module to start building the app
             $this->load->module('layout');
 
         }

@@ -4,7 +4,6 @@ $cv = $this->controller->view_data["custom_values"];
 
 <script type="text/javascript">
     $(function () {
-        $('#client_name').focus();
         $("#client_country").select2({
             placeholder: "<?php echo trans('country'); ?>",
             allowClear: true
@@ -33,22 +32,50 @@ $cv = $this->controller->view_data["custom_values"];
             } ?>
         >
 
-        <fieldset>
-            <legend><?php echo trans('personal_information'); ?></legend>
-            <div class="input-group col-xs-6">
-              <span class="input-group-addon">
-                <?php echo trans('active_client'); ?>:
-                <input id="client_active" name="client_active" type="checkbox" value="1"
-                    <?php if ($this->mdl_clients->form_value('client_active') == 1
-                        or !is_numeric($this->mdl_clients->form_value('client_active'))
-                    ) {
-                        echo 'checked="checked"';
-                    } ?>
-                >
-              </span>
-                <input id="client_name" name="client_name" type="text" class="form-control"
-                       placeholder="<?php echo trans('client_name'); ?>"
-                       value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_name')); ?>">
+        <fieldset class="row">
+
+            <legend>
+                <?php echo trans('personal_information'); ?>
+            </legend>
+
+            <div class="col-xs-12 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <?php echo trans('active_client'); ?>:
+                        <input id="client_active" name="client_active" type="checkbox" value="1"
+                            <?php if ($this->mdl_clients->form_value('client_active') == 1
+                                or !is_numeric($this->mdl_clients->form_value('client_active'))
+                            ) {
+                                echo 'checked="checked"';
+                            } ?>>
+                    </span>
+                    <input id="client_name" name="client_name" type="text" class="form-control"
+                           placeholder="<?php echo trans('client_name'); ?>" required autofocus
+                           value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_name')); ?>">
+                </div>
+
+            </div>
+            <div class="col-xs-12 col-md-6">
+
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <?php echo trans('language'); ?>
+                    </div>
+                    <select name="client_language" id="client_language" class="form-control">
+                        <option value="system">
+                            <?php echo trans('use_system_language') ?>
+                        </option>
+                        <?php foreach ($languages as $language) {
+                            $client_lang = $this->mdl_clients->form_value('client_language');
+                            ?>
+                            <option value="<?php echo $language; ?>"
+                                <?php echo $client_lang == $language ? 'selected="selected"' : '' ?>>
+                                <?php echo ucfirst($language); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
             </div>
         </fieldset>
 
