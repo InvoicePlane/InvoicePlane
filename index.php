@@ -40,6 +40,7 @@ function env_bool($env_key) {
 
 // Enable debug mode if enabled
 define('IP_DEBUG', env_bool('ENABLE_DEBUG'));
+define('SUMEX_URL', env('SUMEX_URL'));
 
 /*
  *---------------------------------------------------------------
