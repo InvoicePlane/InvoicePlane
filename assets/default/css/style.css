@@ -9009,18 +9009,18 @@ textarea {
   margin-right: 0; }
 
 .navbar.navbar-ip {
-  background-color: #00b8e9;
+  background-color: #0096e9;
   box-shadow: 1px 2px 1px #CCC; }
   .navbar.navbar-ip ul.nav.navbar-nav > li a {
     color: #FFF; }
   .navbar.navbar-ip ul.nav.navbar-nav > li a:hover {
-    background-color: #00c4f8; }
+    background-color: #00a0f8; }
   .navbar.navbar-ip ul.nav.navbar-nav > li.open a {
-    background-color: #00c4f8; }
+    background-color: #00a0f8; }
   .navbar.navbar-ip ul.nav.navbar-nav > li.open ul.dropdown-menu {
-    background-color: #00c4f8;
+    background-color: #00a0f8;
     border: 0px;
-    border-top: 1px solid #00b4e4;
+    border-top: 1px solid #0093e4;
     box-shadow: 1px 3px 3px #CCC; }
 
 .navbar-inner {

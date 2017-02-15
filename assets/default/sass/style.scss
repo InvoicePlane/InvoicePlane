@@ -20,6 +20,9 @@ $color_status_viewed: #F89406;
 $color_status_paid_approved: #468847;
 $color_status_rejected_overdue: #B94A48;
 $color_status_canceled: #333333;
+
+
+$navColor: #0096e9;
 /*
 |   =========================================================
 |   Import Bootstrap and other assets
@@ -275,7 +278,6 @@ textarea {
 }
 
 .navbar.navbar-ip {
-    $navColor: #00b8e9;
     background-color: $navColor;
     box-shadow: 1px 2px 1px #CCC;
 
