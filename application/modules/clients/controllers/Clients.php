@@ -70,6 +70,7 @@ class Clients extends Admin_Controller
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', array('client_name' => $this->input->post('client_name')))->result();
+
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
@@ -81,6 +82,7 @@ class Clients extends Admin_Controller
 
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
+
             if ($result !== true) {
                 $this->session->set_flashdata('alert_error', $result);
                 $this->session->set_flashdata('alert_success', null);
@@ -133,11 +135,16 @@ class Clients extends Admin_Controller
         $this->load->helper('country');
         $this->load->helper('custom_values');
 
-        $this->layout->set('custom_fields', $custom_fields);
-        $this->layout->set('custom_values', $custom_values);
-        $this->layout->set('countries', get_country_list(trans('cldr')));
-        $this->layout->set('selected_country', $this->mdl_clients->form_value('client_country') ?:
-            $this->mdl_settings->setting('default_country'));
+        $this->layout->set(
+            array(
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
+                'countries' => get_country_list(trans('cldr')),
+                'selected_country' => $this->mdl_clients->form_value('client_country') ?:
+                    $this->mdl_settings->setting('default_country'),
+                'languages' => get_available_languages(),
+            )
+        );
 
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();

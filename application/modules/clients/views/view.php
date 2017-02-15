@@ -76,8 +76,8 @@
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
-                    <h3><?php echo $client->client_name; ?></h3>
 
+                    <h3><?php echo $client->client_name; ?></h3>
                     <p>
                         <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>
                         <?php echo ($client->client_address_2) ? $client->client_address_2 . '<br>' : ''; ?>
@@ -86,9 +86,19 @@
                         <?php echo ($client->client_zip) ? $client->client_zip : ''; ?>
                         <?php echo ($client->client_country) ? '<br>' . $client->client_country : ''; ?>
                     </p>
+
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+
                     <table class="table table-condensed table-bordered">
+                        <tr>
+                            <th>
+                                <?php echo trans('language'); ?>
+                            </th>
+                            <td class="td-amount">
+                                <?php echo ucfirst($client->client_language); ?>
+                            </td>
+                        </tr>
                         <tr>
                             <th>
                                 <?php echo trans('total_billed'); ?>
@@ -114,6 +124,7 @@
                             </td>
                         </tr>
                     </table>
+
                 </div>
             </div>
 
