@@ -25,20 +25,9 @@ function trans($line, $id = '')
     // Fall back to default language if the current language has no translated string
     if (empty($lang_string)) {
         // Load the default language
-        $CI->lang->is_loaded = array();
-        $CI->lang->language = array();
-        $CI->lang->load('ip', 'english');
-        $CI->lang->load('form_validation', 'english');
-        $CI->lang->load('custom', 'english');
-
+        setLanguage('english');
         $lang_string = $CI->lang->line($line);
-
-        // Load the user-selected language again
-        $CI->lang->is_loaded = array();
-        $CI->lang->language = array();
-        $CI->lang->load('ip', $CI->mdl_settings->setting('default_language'));
-        $CI->lang->load('form_validation', $CI->mdl_settings->setting('default_language'));
-        $CI->lang->load('custom', $CI->mdl_settings->setting('default_language'));
+        resetLanguage();
     }
 
     // Fall back to the $line value if the default language has no translation either
@@ -51,4 +40,41 @@ function trans($line, $id = '')
     }
 
     return $lang_string;
+}
+
+/**
+ * Load the translations for the given language
+ *
+ * @param string $language
+ * @return void
+ */
+function setLanguage($language)
+{
+    // Clear the current loaded language
+    $CI =& get_instance();
+    $CI->lang->is_loaded = array();
+    $CI->lang->language = array();
+
+    // Set the new language
+    $CI->lang->load('ip', $language);
+    $CI->lang->load('form_validation', $language);
+    $CI->lang->load('custom', $language);
+}
+
+/**
+ * Reset the langauge to the default one
+ *
+ * @return void
+ */
+function resetLanguage()
+{
+    // Clear the current loaded language
+    $CI =& get_instance();
+    $CI->lang->is_loaded = array();
+    $CI->lang->language = array();
+
+    // Reset to the default language
+    $CI->lang->load('ip', $this->mdl_settings->setting('default_language'));
+    $CI->lang->load('form_validation', $this->mdl_settings->setting('default_language'));
+    $CI->lang->load('custom', $this->mdl_settings->setting('default_language'));
 }
