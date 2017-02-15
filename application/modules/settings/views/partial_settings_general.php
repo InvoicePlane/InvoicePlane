@@ -18,9 +18,12 @@
                 </label>
                 <select name="settings[default_language]" class="input-sm form-control">
                     <?php foreach ($languages as $language) {
-                        $language = str_replace('/', '', $language); ?>
+                        $sys_lang = $this->mdl_settings->setting('default_language');
+                        ?>
                         <option value="<?php echo $language; ?>"
-                                <?php if ($this->mdl_settings->setting('default_language') == $language) { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
+                            <?php echo $sys_lang == $language ? 'selected="selected"' : '' ?>>
+                            <?php echo ucfirst($language); ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
