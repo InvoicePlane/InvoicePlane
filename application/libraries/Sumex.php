@@ -59,9 +59,6 @@ class Sumex
         $this->_company['zip'] = $this->invoice->user_zip;
         $this->_company['phone'] = $this->invoice->user_phone;
 
-        file_put_contents(UPLOADS_FOLDER."/customer_files/test.json", json_encode($params));
-        //throw new Error(UPLOADS_FOLDER);
-
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
