@@ -2,7 +2,7 @@
     <div class="install-panel">
 
         <h1 id="logo"><span>InvoicePlane</span></h1>
-
+        <?php var_dump($errors); ?>
         <form method="post" class="form-horizontal" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
@@ -12,11 +12,13 @@
             <p><?php echo trans('setup_prerequisites_message'); ?></p>
 
             <?php foreach ($basics as $basic) {
-                if (isset($basic['success'])) { ?>
-                    <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $basic['message']; ?></p>
-                <?php } elseif (isset($basic['warning'])) { ?>
+                if (isset($basic['warning'])) { ?>
                     <p><i class="fa fa-exclamation text-warning fa-margin"></i> <?php echo $basic['message']; ?></p>
-                <?php } else { ?>
+                <?php } elseif ($basic['success'] == 1) { ?>
+                    <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $basic['message']; ?></p>
+                <?php } else {
+                    $errors = true;
+                ?>
                     <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $basic['message']; ?></p>
                 <?php }
             } ?>
@@ -24,7 +26,7 @@
             <br>
 
             <?php foreach ($writables as $writable) {
-                if (isset($writable['success'])) { ?>
+                if ($writable['success'] === 1) { ?>
                     <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $writable['message']; ?></p>
                 <?php } else { ?>
                     <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $writable['message']; ?></p>
