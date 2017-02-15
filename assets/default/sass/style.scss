@@ -4,7 +4,6 @@
 |   Sass Stylesheet
 |   =========================================================
 */
-
 /*
 |   =========================================================
 |   Variables
@@ -15,43 +14,33 @@ $color_blue: #3A87AD;
 $color_yellow: #F89406;
 $color_green: #468847;
 $color_red: #B94A48;
-
 $color_status_draft: #999999;
 $color_status_sent: #3A87AD;
 $color_status_viewed: #F89406;
 $color_status_paid_approved: #468847;
 $color_status_rejected_overdue: #B94A48;
 $color_status_canceled: #333333;
-
 /*
 |   =========================================================
 |   Import Bootstrap and other assets
 |   =========================================================
 */
 // Bootstrap
-@import "bootstrap/bootstrap";
-
-// Font: Font-Awesome
-@import "fonts/font-awesome/font-awesome";
-
-// Import Source Sans Font
+@import "bootstrap/bootstrap"; // Font: Font-Awesome
+@import "fonts/font-awesome/font-awesome"; // Import Source Sans Font
 @import "fonts/source-sans-pro";
-
 @import "includes/select2/select2";
 @import "includes/bootstrap-datepicker";
 @import "includes/dropzone";
 @import "includes/upload";
-
 /*
 |   =========================================================
 |   Base Styles
 |   =========================================================
 */
-
 html {
     height: 100%;
     -webkit-font-smoothing: subpixel-antialiased;
-    overflow-y: scroll;
 }
 
 body {
@@ -64,12 +53,19 @@ img {
     vertical-align: middle;
 }
 
-a:hover, a:active, a:focus {
+a:active,
+a:focus,
+a:hover {
     outline: 0;
     text-decoration: none;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin: 0;
 }
 
@@ -96,16 +92,15 @@ body *:focus {
     box-shadow: none !important;
 }
 
-.form-control, .panel {
+.form-control,
+.panel {
     box-shadow: none;
 }
-
 /*
 |   =========================================================
 |   Forms
 |   =========================================================
 */
-
 form {
     margin: 0;
 }
@@ -144,10 +139,12 @@ textarea {
     float: right;
     max-width: 40%;
     margin-left: 10px;
+
     .input-sm {
         height: auto;
         padding: 3px 5px;
     }
+
     .input-group-addon {
         min-width: 20px;
     }
@@ -158,29 +155,28 @@ textarea {
     font-size: small;
     color: $color_grey;
 }
-
 /*
 |   =========================================================
 |   Tables
 |   =========================================================
 */
-
 .table {
     margin: 0 0 15px;
 
     &.no-margin {
-        margin: 0 0 0 0;
+        margin: 0;
     }
 
     tr {
         background: #fff;
     }
+
     td {
         vertical-align: middle !important;
     }
 
-    th:first-child,
-    td:first-child {
+    td:first-child,
+    th:first-child {
         padding-left: 20px;
     }
 
@@ -192,25 +188,31 @@ textarea {
         min-width: 150px;
         max-width: 300px;
         vertical-align: top !important;
+
         &.td-icon {
             max-width: 30px;
             min-width: unset;
         }
+
         &.td-amount {
             max-width: 200px;
             text-align: right;
+
             .form-control {
                 text-align: right;
                 font-size: 12px;
             }
         }
+
         &.td-textarea {
             min-width: 300px;
             max-width: 400px;
         }
+
         &.td-quantity {
             max-width: 200px;
         }
+
         &.td-vert-middle {
             vertical-align: middle !important;
         }
@@ -220,13 +222,16 @@ textarea {
         width: 100%;
         height: 100%;
     }
+
     .input-group-addon {
         font-size: 12px;
         padding: 4px 8px;
     }
 
     &.table-borderless {
-        tr, td,th {
+        td,
+        th,
+        tr {
             border: 0;
         }
     }
@@ -236,7 +241,6 @@ textarea {
     height: 100%;
     margin-bottom: 0;
 }
-
 /*
 |   =========================================================
 |   Navigation
@@ -248,7 +252,6 @@ textarea {
 }
 
 .navbar.navbar-inverse {
-
     .navbar-collapse {
         padding-left: 0;
         padding-right: 0;
@@ -258,6 +261,7 @@ textarea {
         padding: 6px 8px;
         color: #ddd;
         border-color: #333;
+
         &:hover {
             color: #eee;
             border-color: #444;
@@ -267,6 +271,34 @@ textarea {
     .navbar-form {
         margin-left: 0;
         margin-right: 0;
+    }
+}
+
+.navbar.navbar-ip {
+    $navColor: #00b8e9;
+    background-color: $navColor;
+    box-shadow: 1px 2px 1px #CCC;
+
+    ul.nav.navbar-nav>li {
+      a{
+        color: #FFF;
+      }
+      a:hover{
+        background-color: lighten($navColor, 3%);
+      }
+
+      &.open{
+        a{
+          background-color: lighten($navColor, 3%);
+        }
+
+        ul.dropdown-menu{
+          background-color: lighten($navColor, 3%);
+          border: 0px;
+          border-top: 1px solid darken($navColor, 1%);
+          box-shadow: 1px 3px 3px #CCC;
+        }
+      }
     }
 }
 
@@ -282,8 +314,8 @@ textarea {
 .navbar-search {
     margin-top: 0;
 }
-
 // Options Dropdown
+
 .options {
     margin: 0;
 
@@ -307,13 +339,11 @@ textarea {
         }
     }
 }
-
 /*
 |   =========================================================
 |   Pagination
 |   =========================================================
 */
-
 .pagination {
     height: auto;
     margin: 0;
@@ -324,13 +354,11 @@ textarea {
     padding: 3px 10px;
     line-height: 20px;
 }
-
 /*
 |   =========================================================
 |   Sidebar
 |   =========================================================
 */
-
 .sidebar {
     display: table-cell;
     vertical-align: top;
@@ -356,15 +384,12 @@ textarea {
             color: $color_blue;
         }
     }
-
 }
-
 /*
 |   =========================================================
 |   Content
 |   =========================================================
 */
-
 .alert {
     margin-left: 15px;
     margin-right: 15px;
@@ -394,11 +419,12 @@ div.table-content {
 }
 
 #panel-overdue-invoices,
-#panel-recent-quotes,
-#panel-recent-invoices {
+#panel-recent-invoices,
+#panel-recent-quotes {
     .panel-body {
         padding: 0;
     }
+
     table {
         td:first-child,
         th:first-child {
@@ -414,6 +440,7 @@ div.table-content {
 .quick-actions .btn {
     border: none;
     border-right: 1px solid #ddd;
+
     &:last-child {
         border-right: none;
     }
@@ -432,6 +459,7 @@ div.table-content {
     &:before {
         content: '-';
     }
+
     &:after {
         font-family: FontAwesome;
         content: '\f155';
@@ -463,6 +491,7 @@ div.table-content {
     &.table-content {
         padding: 0;
     }
+
     .alert {
         margin-right: 0;
         margin-left: 0;
@@ -507,6 +536,7 @@ div.table-content {
 
 .hidden-sidebar #main-area {
     display: block !important;
+
     .headerbar {
         padding: 8px 15px;
     }
@@ -564,6 +594,7 @@ div.table-content {
     height: 100%;
     background: rgba(0, 0, 0, .65);
     color: #fff;
+
     .loader-content {
         position: absolute;
         top: 20%;
@@ -572,23 +603,22 @@ div.table-content {
         opacity: 0.85;
         width: 100%;
         text-align: center;
+
         #loader-error {
             font-size: 20px;
         }
     }
 }
-
 // Dropzone / Attachments
+
 #actions {
     margin: 15px 0;
 }
-
 /*
 |   =========================================================
 |   Tabs
 |   =========================================================
 */
-
 .tabbable .table {
     margin-bottom: 20px;
 }
@@ -616,9 +646,9 @@ div.table-content {
     line-height: 19px;
 }
 
-.tabs-below .nav-tabs > li > a:hover,
 .tabs-below .nav-tabs .active > a,
-.tabs-below .nav-tabs .active > a:hover {
+.tabs-below .nav-tabs .active > a:hover,
+.tabs-below .nav-tabs > li > a:hover {
     border-radius: 0;
     background-color: #444;
     color: #fff;
@@ -630,13 +660,11 @@ div.table-content {
 .tabs-below .nav-tabs > li:first-child > a:hover {
     border-left: none !important;
 }
-
 /*
 |   =========================================================
 |   Widgets
 |   =========================================================
 */
-
 .widget {
     border: 1px solid #ddd;
     margin-top: 20px;
@@ -658,11 +686,11 @@ div.table-content {
         padding: 20px;
     }
 }
-
 // Invoices and Quotes Overview
-.overview table {
 
-    th, td {
+.overview table {
+    td,
+    th {
         border: none;
     }
 
@@ -678,15 +706,14 @@ div.table-content {
         font-weight: bold;
         padding-top: 4px;
     }
-
 }
-
 // Recent Activity
+
 .time {
     font-size: 11px;
 }
-
 // Recent News
+
 .post h4 {
     font-size: 14px;
 }
@@ -695,13 +722,11 @@ div.table-content {
     @extend .time;
     color: #bbb;
 }
-
 /*
 |   =========================================================
 |   Client Profile
 |   =========================================================
 */
-
 .profile {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -761,14 +786,13 @@ div.table-content {
     resize: both;
     width: 100%;
 }
-
 /*
 |   =========================================================
 |   Invoice and Quotes Global Styles
 |   =========================================================
 */
-
 // Invoices and Quotes Status Colors
+
 .draft {
     color: $color_status_draft;
 }
@@ -781,25 +805,24 @@ div.table-content {
     color: $color_status_viewed;
 }
 
-.paid,
-.approved {
+.approved,
+.paid {
     color: $color_status_paid_approved;
 }
 
-.rejected,
-.overdue {
+.overdue,
+.rejected {
     color: $color_status_rejected_overdue;
 }
 
 .canceled {
     color: $color_status_canceled;
 }
-
 // Invoices and Quotes Status
-.label {
 
+.label {
     font-weight: normal;
-    padding: .3em .6em;
+    padding: 0.3em 0.6em;
     color: white !important; // override status text color on labels
     display: block;
     width: 100%;
@@ -812,68 +835,74 @@ div.table-content {
     &.draft {
         background-color: lighten($color_status_draft, 10%);
     }
+
     &.sent {
         background-color: lighten($color_status_sent, 10%);
     }
+
     &.viewed {
         background-color: lighten($color_status_viewed, 10%);
     }
-    &.paid,
-    &.approved {
+
+    &.approved,
+    &.paid {
         background-color: lighten($color_status_paid_approved, 10%);
     }
-    &.rejected,
-    &.overdue {
+
+    &.overdue,
+    &.rejected {
         background-color: lighten($color_status_rejected_overdue, 10%);
     }
+
     &.canceled {
         background-color: lighten($color_status_canceled, 10%);
     }
-
 }
 
 #item_table {
-    td, th {
+    td,
+    th {
         padding: 5px;
     }
+
     .form-control {
         margin: 0;
     }
+
     tr.item {
-        input, textarea {
+        input,
+        textarea {
             border-color: #e5e5e5;
             border-radius: 0;
             box-shadow: none;
         }
     }
 }
-
 /*
 |   =========================================================
 |   Quotes
 |   =========================================================
 */
-
 .quote .cf {
     margin-bottom: 40px;
 
     .quote-properties {
         margin-bottom: 5px;
+
         label {
             margin: 0;
         }
+
         &:last-child {
             margin-bottom: 0;
         }
     }
 }
-
 /*
 |   =========================================================
 |   Invoices
 |   =========================================================
 */
-
 .invoice {
     .total td:first-child,
     .total:hover td:first-child {
@@ -884,8 +913,11 @@ div.table-content {
         border-left: none;
     }
 
-    .subtotal, .tax, .total,
-    th.align-right, td.align-right {
+    .subtotal,
+    .tax,
+    .total,
+    td.align-right,
+    th.align-right {
         text-align: right;
     }
 
@@ -895,9 +927,11 @@ div.table-content {
 
     .invoice-properties {
         margin-bottom: 5px;
+
         label {
             margin: 0;
         }
+
         &:last-child {
             margin-bottom: 0;
         }
@@ -909,18 +943,17 @@ div.table-content {
         float: left;
         width: auto;
         margin: 6px 3px 4px 0;
+
         &:last-child {
             margin-right: 0;
         }
     }
 }
-
 /*
 |   =========================================================
 |   Various Styles
 |   =========================================================
 */
-
 .amount {
     text-align: right;
 }
@@ -940,14 +973,15 @@ div.table-content {
 }
 
 .index-options {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .padded {
     padding: 15px 0;
 }
 
-legend, .install-step h2 {
+.install-step h2,
+legend {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -1027,13 +1061,11 @@ legend, .install-step h2 {
     -webkit-transform: rotate(22deg);
     transform: rotate(22deg);
 }
-
 /*
 |   =========================================================
 |   Login
 |   =========================================================
 */
-
 #login {
     @extend .panel;
     @extend .panel-default;
@@ -1042,9 +1074,11 @@ legend, .install-step h2 {
     .form-horizontal {
         margin-bottom: 20px;
     }
+
     .form-group {
         margin-bottom: 20px;
     }
+
     h1 {
         margin: 20px 0;
     }
@@ -1053,16 +1087,13 @@ legend, .install-step h2 {
 #login .alert {
     margin-bottom: 20px;
 }
-
 /*
 |   =========================================================
 |   Responsive Media Queries
 |   =========================================================
 */
-
 // Styles for large devices (< lg)
 @media (min-width: 992px) {
-
     .navbar-nav .visible-lg {
         display: inline-block !important;
     }
@@ -1073,24 +1104,18 @@ legend, .install-step h2 {
             margin-right: 10px;
         }
     }
-
 }
-
 // Styles for medium devices (sm > md)
 @media (max-width: 992px) {
-
     #submenu {
         .submenu-row {
             float: left;
             margin-right: 10px;
         }
     }
-
 }
-
 // Styles for  small devices (xs > sm)
 @media (max-width: 768px) {
-
     .sidebar li a {
         padding: 7px;
     }
@@ -1110,21 +1135,18 @@ legend, .install-step h2 {
     #submenu .navbar-collapse {
         margin-top: 7px;
     }
-
     // put icons on same line as text
     .navbar-nav {
         .visible-xs {
             display: inline-block !important;
         }
     }
-
 }
-
 // Styles for very small devices (< xs)
 @media (max-width: 480px) {
-
     .navbar-nav {
         margin: 7px 0;
+
         .dropdown .dropdown-menu {
             background: #555;
         }
@@ -1132,6 +1154,7 @@ legend, .install-step h2 {
 
     #content {
         padding: 10px;
+
         .row {
             margin-left: -10px;
             margin-right: -10px;
