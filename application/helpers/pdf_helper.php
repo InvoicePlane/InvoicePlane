@@ -31,6 +31,9 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
+    // Override language with system language
+    set_language($invoice->client_language);
+
     if (!$invoice_template) {
         $CI->load->helper('template');
         $invoice_template = select_pdf_invoice_template($invoice);
@@ -100,6 +103,9 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     $CI->load->helper('country');
 
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
+
+    // Override language with system language
+    set_language($quote->client_language);
 
     if (!$quote_template) {
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
