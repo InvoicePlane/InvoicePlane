@@ -2,38 +2,14 @@
 /application/config/development
 /ipconfig.php
 
-# Logs folder
-/application/logs/*
-!/application/logs/index.html
-
-# Helpers
-/application/helpers/mpdf/ttfontdata/*
-
-# Language
-/application/language
-!/application/language/english
-
-# Templates
-/application/views/invoice_templates/pdf/
-!/application/views/invoice_templates/pdf/InvoicePlane*
-/application/views/invoice_templates/public/
-!/application/views/invoice_templates/public/InvoicePlane*
-/application/views/quote_templates/pdf/
-!/application/views/quote_templates/pdf/InvoicePlane*
-/application/views/quote_templates/public/
-!/application/views/quote_templates/public/InvoicePlane*
-
 # Composer
-/vendor/
+/vendor
 composer.lock
-
-# Documentation
-/output/
 
 # Other files
 /.htaccess
 .idea
 .sass-cache
 adminer.php
-/nbproject/
+/nbproject
 /.php_cs.cache
