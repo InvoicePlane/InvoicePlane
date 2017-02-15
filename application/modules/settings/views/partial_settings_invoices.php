@@ -150,6 +150,23 @@
                 <input type="file" name="invoice_logo" size="40" class="input-sm form-control"/>
             </div>
 
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo trans('invoice_sumex'); ?>
+                </label>
+                <select name="settings[sumex]" class="input-sm form-control">
+                    <option value="0"
+                            <?php if (!$this->mdl_settings->setting('sumex')) { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('no'); ?>
+                    </option>
+                    <option value="1"
+                            <?php if ($this->mdl_settings->setting('sumex')) { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('yes'); ?>
+                    </option>
+                </select>
+                <p class="help-block"><?php echo trans('invoice_sumex_help'); ?></p>
+            </div>
+
         </div>
     </div>
 
