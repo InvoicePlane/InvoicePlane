@@ -529,6 +529,7 @@ $lang = array(
     'unit_already_exists'                          => 'Unit already exists!',
     'unit_name'                                    => 'Unit Name',
     'unit_name_plrl'                               => 'Unit Name (plural form)',
+    'use_system_language'                          => 'Use System language',
     'value'                                        => 'Value',
     'values'                                       => 'Values',
     'values_with_taxes'                            => 'Values with taxes',
