@@ -100,9 +100,7 @@ class Settings extends Admin_Controller
         $this->load->model('payment_methods/mdl_payment_methods');
         $this->load->model('invoices/mdl_templates');
 
-        $this->load->helper('directory');
         $this->load->helper('country');
-
         $this->load->library('merchant');
 
         // Collect the list of templates
@@ -110,10 +108,6 @@ class Settings extends Admin_Controller
         $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
         $pdf_quote_templates = $this->mdl_templates->get_quote_templates('pdf');
         $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
-
-        // Collect the list of languages
-        $languages = directory_map(APPPATH . 'language', true);
-        sort($languages);
 
         // Get the current version
         $current_version = $this->mdl_versions->limit(1)->where('version_sql_errors', 0)->get()->row()->version_file;
@@ -129,7 +123,7 @@ class Settings extends Admin_Controller
                 'pdf_invoice_templates' => $pdf_invoice_templates,
                 'public_quote_templates' => $public_quote_templates,
                 'pdf_quote_templates' => $pdf_quote_templates,
-                'languages' => $languages,
+                'languages' => get_available_languages(),
                 'countries' => get_country_list(trans('cldr')),
                 'date_formats' => date_formats(),
                 'current_date' => new DateTime(),

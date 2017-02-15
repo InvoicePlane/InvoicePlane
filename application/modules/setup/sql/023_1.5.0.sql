@@ -41,3 +41,10 @@ CREATE TABLE IF NOT EXISTS `ip_sessions` (
   `data` blob NOT NULL,
   KEY `ip_sessions_timestamp` (`timestamp`)
 );
+
+# IP-491 - Localization per client and user
+ALTER TABLE `ip_users`
+  ADD `user_language` VARCHAR(255) DEFAULT 'system' AFTER `user_date_modified`;
+
+ALTER TABLE `ip_clients`
+  ADD `client_language` VARCHAR(255) DEFAULT 'system' AFTER `client_tax_code`;
