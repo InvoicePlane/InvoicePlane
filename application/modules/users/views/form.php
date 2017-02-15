@@ -120,6 +120,29 @@
 
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                        <label class="control-label" for="user_language">
+                            <?php echo trans('language'); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <select name="user_language" id="user_language" class="form-control">
+                            <option value="system">
+                                <?php echo trans('use_system_language') ?>
+                            </option>
+                            <?php foreach ($languages as $language) {
+                                $usr_lang = $this->session->userdata('user_language');
+                                ?>
+                                <option value="<?php echo $language; ?>"
+                                    <?php echo $usr_lang == $language ? 'selected="selected"' : '' ?>>
+                                    <?php echo ucfirst($language); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                         <label class="control-label">
                             <?php echo trans('user_type'); ?>
                         </label>
@@ -310,28 +333,18 @@
 
                     <legend><?php echo trans('custom_fields'); ?></legend>
 
-
                     <?php
                     $cv = $this->controller->view_data["custom_values"];
                     foreach ($custom_fields as $custom_field) {
-                      print_field($this->mdl_users, $custom_field, $cv, "col-xs-12 col-sm-3 text-right text-left-xs", "col-xs-12 col-sm-6");
+                        print_field(
+                            $this->mdl_users,
+                            $custom_field,
+                            $cv,
+                            "col-xs-12 col-sm-3 text-right text-left-xs",
+                            "col-xs-12 col-sm-6"
+                        );
                     } ?>
 
-                    <?php /*foreach ($custom_fields as $custom_field) { ?>
-                        <div class="form-group">
-                            <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                                <label class="control-label">
-                                    <?php echo $custom_field->custom_field_label; ?>
-                                </label>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <input type="text" class="form-control"
-                                       name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                       id="<?php echo $custom_field->custom_field_column; ?>"
-                                       value="<?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
-                            </div>
-                        </div>
-                    <?php }*/ ?>
                 </fieldset>
 
             </div>
