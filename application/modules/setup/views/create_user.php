@@ -25,14 +25,16 @@
             <p><?php echo trans('setup_create_user_message'); ?></p>
 
             <div class="form-group">
-                <label><?php echo trans('email_address'); ?></label>
+                <label for="user_email">
+                    <?php echo trans('email_address'); ?>
+                </label>
                 <input type="email" name="user_email" id="user_email" class="form-control"
                        value="<?php echo $this->mdl_users->form_value('user_email'); ?>">
                 <span class="help-block"><?php echo trans('setup_user_email_info'); ?></span>
             </div>
 
             <div class="form-group">
-                <label>
+                <label for="user_name">
                     <?php echo trans('name'); ?>
                 </label>
                 <input type="text" name="user_name" id="user_name" class="form-control"
@@ -41,7 +43,7 @@
             </div>
 
             <div class="form-group">
-                <label>
+                <label for="user_password">
                     <?php echo trans('password'); ?>
                 </label>
                 <input type="password" name="user_password" id="user_password" class="form-control">
@@ -49,11 +51,27 @@
             </div>
 
             <div class="form-group">
-                <label>
+                <label for="user_passwordv">
                     <?php echo trans('verify_password'); ?>
                 </label>
                 <input type="password" name="user_passwordv" id="user_passwordv" class="form-control">
                 <span class="help-block"><?php echo trans('setup_user_password_verify_info'); ?></span>
+            </div>
+
+            <div class="form-group">
+                <label for="user_language">
+                    <?php echo trans('language'); ?>
+                </label>
+                <select name="user_language" id="user_language" class="form-control">
+                    <option value="system">
+                        <?php echo trans('use_system_language') ?>
+                    </option>
+                    <?php foreach ($languages as $language) {?>
+                        <option value="<?php echo $language; ?>">
+                            <?php echo ucfirst($language); ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
             <legend><?php echo trans('address'); ?></legend>
