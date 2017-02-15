@@ -172,7 +172,6 @@ class Mdl_Users extends Response_Model
             'user_country' => array(
                 'field' => 'user_country',
                 'label' => trans('country'),
-                'rules' => 'required'
             ),
             'user_phone' => array(
                 'field' => 'user_phone'
