@@ -162,9 +162,10 @@ class CI_Encrypt {
 	 * @param	string	the key
 	 * @return	string
 	 */
-	public function encode($string, $key = '')
-	{
-		return base64_encode($this->mcrypt_encode($string, $this->get_key($key)));
+
+	public function encode($string, $key = ''){
+		$key = Defuse\Crypto\Key::loadFromAsciiSafeString($this->get_key($key));
+		return Defuse\Crypto\Crypto::encrypt($string, $key);
 	}
 
 	// --------------------------------------------------------------------
@@ -178,6 +179,14 @@ class CI_Encrypt {
 	 * @param	string
 	 * @return	string
 	 */
+
+	 public function decode($string, $key = ''){
+		$key = Defuse\Crypto\Key::loadFromAsciiSafeString($this->get_key($key));
+		if($string == ""){ return "1234"; }
+		return Defuse\Crypto\Crypto::decrypt($string, $this->get_key($key));
+ 	}
+
+	/*
 	public function decode($string, $key = '')
 	{
 		if (preg_match('/[^a-zA-Z0-9\/\+=]/', $string) OR base64_encode(base64_decode($string)) !== $string)
@@ -186,7 +195,7 @@ class CI_Encrypt {
 		}
 
 		return $this->mcrypt_decode(base64_decode($string), $this->get_key($key));
-	}
+	}*/
 
 	// --------------------------------------------------------------------
 

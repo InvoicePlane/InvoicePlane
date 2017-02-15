@@ -8,6 +8,7 @@
   "require": {
     "phpmailer/phpmailer": "^5.2",
     "kovah/mpdf": "dev-master",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "defuse/php-encryption": "^2.0"
   }
 }
