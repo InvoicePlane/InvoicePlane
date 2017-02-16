@@ -26,7 +26,14 @@ class Guest_Controller extends User_Controller
         $user_clients = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
 
         if (!$user_clients) {
-            die(trans('guest_account_denied'));
+            ?>
+            <html style="display:table;width:100%;">
+            <body style="font-family:sans-serif;background:#B94A48;color:#fff;height:100vh;display:table-cell;vertical-align:middle;">
+            <p style="font-size:20px;text-align:center;width:100%;"><?php echo trans('guest_account_denied'); ?></p>
+            </body>
+            </html>
+            <?php
+            exit;
         }
 
         foreach ($user_clients as $user_client) {

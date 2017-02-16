@@ -89,20 +89,19 @@
             <table id="item_table" class="items table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th></th>
+                    <th style="width:20px;"></th>
                     <th><?php echo trans('item'); ?> / <?php echo lang('description'); ?></th>
                     <th></th>
                     <th></th>
                     <th></th>
                 </tr>
                 </thead>
-
                 <?php
                 $i = 1;
                 foreach ($items as $item) { ?>
                     <tbody>
                     <tr>
-                        <td rowspan="2" style="max-width: 20px;" class="text-center">
+                        <td rowspan="2" style="width:20px;" class="text-center">
                             <?php echo $i;
                             $i++; ?>
                         </td>
