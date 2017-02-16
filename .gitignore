@@ -2,7 +2,8 @@
 /application/config/development
 /ipconfig.php
 
-# Composer
+# Dependencies
+/node_modules
 /vendor
 composer.lock
 
