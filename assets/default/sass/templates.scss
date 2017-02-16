@@ -5,14 +5,14 @@
 |   =========================================================
 */
 
-$color_base:          #3A3A3A;
-$color_base_light:    lighten($color_base, 15%);
-$color_base_lighter:  lighten($color_base_light, 15%);
-$color_base_dark:     darken($color_base, 15%);
-$color_base_darker:   darken($color_base_dark, 15%);
-$color_primary:       #375bc8;
-$color_red:           #ea5340;
-$color_green:         #77b632;
+$color_base: #3A3A3A;
+$color_base_light: lighten($color_base, 15%);
+$color_base_lighter: lighten($color_base_light, 15%);
+$color_base_dark: darken($color_base, 15%);
+$color_base_darker: darken($color_base_dark, 15%);
+$color_primary: #375bc8;
+$color_red: #ea5340;
+$color_green: #77b632;
 
 /*=========================================================*/
 
@@ -47,6 +47,7 @@ header {
   text-align: right;
   margin-bottom: 30px;
 }
+
 #invoice-logo {
   max-height: 125px;
   text-align: right;
