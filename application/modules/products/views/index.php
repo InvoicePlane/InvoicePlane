@@ -23,6 +23,7 @@
             <tr>
                 <th><?php echo trans('family'); ?></th>
                 <th><?php echo trans('product_sku'); ?></th>
+                <th><?php echo trans('product_tariff'); ?></th>
                 <th><?php echo trans('product_name'); ?></th>
                 <th><?php echo trans('product_description'); ?></th>
                 <th><?php echo trans('product_price'); ?></th>
@@ -37,6 +38,7 @@
                 <tr>
                     <td><?php echo $product->family_name; ?></td>
                     <td><?php echo $product->product_sku; ?></td>
+                    <td><?php echo $product->product_tariff; ?></td>
                     <td><?php echo $product->product_name; ?></td>
                     <td><?php echo nl2br($product->product_description); ?></td>
                     <td><?php echo format_currency($product->product_price); ?></td>

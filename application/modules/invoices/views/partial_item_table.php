@@ -30,6 +30,12 @@
                 </div>
             </td>
             <td class="td-amount td-quantity">
+              <div class="input-group">
+                <span class="input-group-addon"><?php echo trans('date'); ?></span>
+                <input type="text" name="item_date" class="input-sm form-control datepicker" value="">
+              </div>
+            </td>
+            <td class="td-amount td-quantity">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('quantity'); ?></span>
                     <input type="text" name="item_quantity" class="input-sm form-control amount" value="">
@@ -186,6 +192,7 @@
                     <?php endif; ?>
                 </td>
             </tr>
+
             <tr>
                 <td class="td-textarea">
                     <div class="input-group">
@@ -237,6 +244,19 @@
                         <?php echo format_currency($item->item_total); ?>
                     </span>
                 </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td class="td-date">
+                  <div class="input-group">
+                      <span class="input-group-addon"><?php echo trans('date'); ?></span>
+                      <input type="text" name="item_price" class="input-sm form-control datepicker"
+                             value="<?php echo format_date(@$item->item_date); ?>"
+                          <?php if ($invoice->is_read_only == 1) {
+                              echo 'disabled="disabled"';
+                          } ?>>
+                  </div>
+              </td>
             </tr>
             </tbody>
         <?php } ?>

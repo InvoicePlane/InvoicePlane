@@ -60,6 +60,11 @@ class Mdl_Products extends Response_Model
                 'label' => trans('product_sku'),
                 'rules' => ''
             ),
+            'product_tariff' => array(
+                'field' => 'product_tariff',
+                'label' => trans('product_tariff'),
+                'rules' => ''
+            ),
             'product_name' => array(
                 'field' => 'product_name',
                 'label' => trans('product_name'),
