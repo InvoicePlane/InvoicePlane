@@ -34,13 +34,10 @@
     <?php } ?>
 
     <!--[if lt IE 9]>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/html5shiv-3.7.2.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/legacy.min.js"></script>
     <![endif]-->
 
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.3.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/dependencies.min.js"></script>
 
 </head>
 <body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
@@ -118,12 +115,9 @@
 
 </div>
 
-<script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script defer src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script
-            src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
+    <script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>
