@@ -360,6 +360,7 @@ $lang = array(
     'product_name'                                 => 'Product name',
     'product_price'                                => 'Price',
     'product_sku'                                  => 'SKU',
+    'product_tariff'                               => 'Tariff',
     'product_units'                                => 'Product Units',
     'product_unit'                                 => 'Product Unit',
     'products'                                     => 'Products',

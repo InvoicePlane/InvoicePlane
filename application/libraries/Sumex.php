@@ -63,6 +63,7 @@ class Sumex
         $this->_company['phone'] = $this->invoice->user_phone;
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
+        file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($params));
     }
 
     public function pdf()
@@ -391,30 +392,35 @@ class Sumex
         $node = $this->doc->createElement('services');
         $node->setAttribute('xmlns', 'http://www.forum-datenaustausch.ch/invoice');
 
-        $node->appendChild($this->generateRecord());
+        $recordId = 1;
+        foreach($this->items as $item){
+            $node->appendChild($this->generateRecord($recordId, $item));
+            $recordId++;
+        }
 
         return $node;
     }
 
-    protected function generateRecord()
+    protected function generateRecord($recordId, $item)
     {
         $node = $this->doc->createElement('invoice:record_other');
-        $node->setAttribute('record_id', 1);
+        $node->setAttribute('record_id', $recordId);
         $node->setAttribute('tariff_type', 590);
-        $node->setAttribute('code', 1200);
+        $node->setAttribute('code', (int) $item->product_sku);
         $node->setAttribute('session', 1);
-        $node->setAttribute('quantity', 4);
+        $node->setAttribute('quantity', $item->item_quantity);
         $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime("2017-01-01")));
         $node->setAttribute('provider_id', '7634567890111');
         $node->setAttribute('responsible_id', '7634567890333');
-        $node->setAttribute('unit', "10.00");
-        $node->setAttribute('unit_factor', 1);
-        $node->setAttribute('amount', "40.00");
-        $node->setAttribute('validate', 0);
-        $node->setAttribute('service_attributes', 0);
-        $node->setAttribute('obligation', 0);
-        $node->setAttribute('name', 'Anamnese / Untersuchung / Diagnostik / Befunderhebung, pro 5 Min.');
+        $node->setAttribute('unit', $item->item_price);
+        #$node->setAttribute('unit_factor', 1);
+        $node->setAttribute('amount', $item->item_total);
+        #$node->setAttribute('validate', 0);
+        #$node->setAttribute('service_attributes', 0);
+        #$node->setAttribute('obligation', 0);
+        $node->setAttribute('name', $item->item_name);
 
+        //var_dump($item);
         return $node;
     }
 
