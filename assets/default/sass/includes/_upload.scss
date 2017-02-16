@@ -1,10 +1,6 @@
-html, body {
-    height: 100%;
-}
 #actions {
     margin: 2em 0;
 }
-
 
 /* Mimic table appearance */
 div.table {
@@ -52,4 +48,3 @@ div.table .file-row:nth-child(odd) {
 #previews .file-row.dz-success .delete {
     display: block;
 }
-

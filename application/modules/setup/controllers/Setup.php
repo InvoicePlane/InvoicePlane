@@ -377,6 +377,7 @@ class Setup extends MX_Controller
         $this->layout->set(
             array(
                 'countries' => get_country_list(trans('cldr')),
+                'languages' => get_available_languages(),
             )
         );
         $this->layout->buffer('content', 'setup/create_user');
