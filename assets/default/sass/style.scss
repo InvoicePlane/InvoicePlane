@@ -1,40 +1,22 @@
-/*
+/*!
 |   =========================================================
-|   InvoicePlane
-|   Sass Stylesheet
-|   =========================================================
-*/
-/*
-|   =========================================================
-|   Variables
+|   InvoicePlane Styles
+|   https://invoiceplane.com
 |   =========================================================
 */
-$color_grey: #999999;
-$color_blue: #3A87AD;
-$color_yellow: #F89406;
-$color_green: #468847;
-$color_red: #B94A48;
-$color_status_draft: #999999;
-$color_status_sent: #3A87AD;
-$color_status_viewed: #F89406;
-$color_status_paid_approved: #468847;
-$color_status_rejected_overdue: #B94A48;
-$color_status_canceled: #333333;
-
-
-$navColor: #0096e9;
+@import "ip_variables";
+@import "variables";
 /*
 |   =========================================================
 |   Import Bootstrap and other assets
 |   =========================================================
 */
-// Bootstrap
-@import "bootstrap/bootstrap"; // Font: Font-Awesome
-@import "fonts/font-awesome/font-awesome"; // Import Source Sans Font
-@import "fonts/source-sans-pro";
-@import "includes/select2/select2";
+// Dependencies
+@import "includes/bootstrap";
+@import "../../../node_modules/font-awesome/scss/font-awesome";
+@import "../../../node_modules/select2/src/scss/core";
+@import "../../../node_modules/dropzone/src/dropzone";
 @import "includes/bootstrap-datepicker";
-@import "includes/dropzone";
 @import "includes/upload";
 /*
 |   =========================================================
@@ -44,11 +26,11 @@ $navColor: #0096e9;
 html {
     height: 100%;
     -webkit-font-smoothing: subpixel-antialiased;
+    overflow-y: scroll;
 }
 
 body {
     background-color: #fff;
-    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
     font-size: 15px;
 }
 
@@ -278,29 +260,30 @@ textarea {
 }
 
 .navbar.navbar-ip {
-    background-color: $navColor;
+    $blueColor: #0a91ff;
+    $colorDiff: 5%;
+    background-color: $blueColor;
     box-shadow: 1px 2px 1px #CCC;
 
-    ul.nav.navbar-nav>li {
-      a{
-        color: #FFF;
-      }
-      a:hover{
-        background-color: lighten($navColor, 3%);
-      }
-
-      &.open{
-        a{
-          background-color: lighten($navColor, 3%);
+    ul.nav.navbar-nav {
+        li a {
+            color: #FFF;
         }
 
-        ul.dropdown-menu{
-          background-color: lighten($navColor, 3%);
-          border: 0px;
-          border-top: 1px solid darken($navColor, 1%);
-          box-shadow: 1px 3px 3px #CCC;
+        li a:hover {
+            background-color: lighten($blueColor, $colorDiff);
         }
-      }
+
+        li.open a {
+            background-color: lighten($blueColor, $colorDiff);
+        }
+
+        li.open ul.dropdown-menu {
+              background-color: lighten($blueColor, $colorDiff);
+            border: 0;
+            border-top: 1px solid $blueColor;
+            box-shadow: 1px 3px 3px #CCC;
+        }
     }
 }
 
@@ -317,7 +300,6 @@ textarea {
     margin-top: 0;
 }
 // Options Dropdown
-
 .options {
     margin: 0;
 
@@ -612,7 +594,6 @@ div.table-content {
     }
 }
 // Dropzone / Attachments
-
 #actions {
     margin: 15px 0;
 }
@@ -689,7 +670,6 @@ div.table-content {
     }
 }
 // Invoices and Quotes Overview
-
 .overview table {
     td,
     th {
@@ -710,12 +690,10 @@ div.table-content {
     }
 }
 // Recent Activity
-
 .time {
     font-size: 11px;
 }
 // Recent News
-
 .post h4 {
     font-size: 14px;
 }
@@ -794,7 +772,6 @@ div.table-content {
 |   =========================================================
 */
 // Invoices and Quotes Status Colors
-
 .draft {
     color: $color_status_draft;
 }
@@ -821,7 +798,6 @@ div.table-content {
     color: $color_status_canceled;
 }
 // Invoices and Quotes Status
-
 .label {
     font-weight: normal;
     padding: 0.3em 0.6em;
@@ -988,7 +964,6 @@ legend {
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
-    border-color: -moz-use-text-color -moz-use-text-color #E5E5E5;
     border-image: none;
     border-style: none none solid;
     border-width: 0 0 1px;
