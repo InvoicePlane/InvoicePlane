@@ -53,7 +53,7 @@
                         <?php } ?>
                     <?php } else { ?>
                         <option value="<?php echo $payment->invoice_id; ?>">
-                            <?php echo $payment->invoice_number . ' - ' . $payment->client_name . ' - ' . format_currency($payment->invoice_balance); ?>
+                            <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance); ?>
                         </option>
                     <?php } ?>
                 </select>
