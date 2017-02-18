@@ -56,6 +56,8 @@ class Invoices extends Admin_Controller
                 break;
         }
 
+        $this->load->helper('client');
+
         $this->mdl_invoices->paginate(site_url('invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 
@@ -126,6 +128,7 @@ class Invoices extends Admin_Controller
         );
 
         $this->load->helper("custom_values");
+        $this->load->helper("client");
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 
@@ -180,14 +183,26 @@ class Invoices extends Admin_Controller
             )
         );
 
-        $this->layout->buffer(
-            array(
-                array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
-                array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
-                array('modal_add_payment', 'payments/modal_add_payment'),
-                array('content', 'invoices/view')
-            )
-        );
+        if($invoice->sumex_id != null){
+          $this->layout->buffer(
+              array(
+                  array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
+                  array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
+                  array('modal_add_payment', 'payments/modal_add_payment'),
+                  array('content', 'invoices/view_sumex')
+              )
+          );
+        }
+        else {
+          $this->layout->buffer(
+              array(
+                  array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
+                  array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
+                  array('modal_add_payment', 'payments/modal_add_payment'),
+                  array('content', 'invoices/view')
+              )
+          );
+       }
 
         $this->layout->render();
     }

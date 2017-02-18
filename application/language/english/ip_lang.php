@@ -577,6 +577,13 @@ $lang = array(
     'in_progress'                                  => 'In progress',
     'complete'                                     => 'Complete',
 
+    // Sumex
+    'birthdate'                                    => 'Birthdate',
+    'gender'                                       => 'Gender',
+    'gender_male'                                  => 'Male',
+    'gender_female'                                => 'Female',
+    'gender_other'                                 => 'Female',
+
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 

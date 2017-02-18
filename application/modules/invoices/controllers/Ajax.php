@@ -232,7 +232,7 @@ class Ajax extends Admin_Controller
     public function modal_create_invoice()
     {
         $this->load->module('layout');
-
+        $this->load->helper('client');
         $this->load->model('invoice_groups/mdl_invoice_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('clients/mdl_clients');
@@ -240,7 +240,7 @@ class Ajax extends Admin_Controller
         $data = array(
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'client_name' => $this->input->post('client_name'),
+            'client_id' => $this->input->post('client_id'),
             'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
 
@@ -273,13 +273,13 @@ class Ajax extends Admin_Controller
     {
         $this->load->module('layout');
         $this->load->model('clients/mdl_clients');
+        $this->load->helper('client');
 
         $data = array(
-            'client_name' => $this->input->post('client_name'),
+            'client_id' => $this->input->post('client_id'),
             'invoice_id' => $this->input->post('invoice_id'),
             'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
-
         $this->layout->load_view('invoices/modal_change_client', $data);
     }
 
@@ -289,12 +289,10 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         // Get the client ID
-        $client_name = $this->input->post('client_name');
-        $client = $this->mdl_clients->where('client_name', $this->db->escape_str($client_name))
-            ->get()->row();
+        $client_id = $this->input->post('client_id');
+        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if (!empty($client)) {
-            $client_id = $client->client_id;
             $invoice_id = $this->input->post('invoice_id');
 
             $db_array = array(

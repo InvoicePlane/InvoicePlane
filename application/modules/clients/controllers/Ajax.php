@@ -25,9 +25,14 @@ class Ajax extends Admin_Controller
         // Get the post input
         $query = $this->input->post('query');
 
-        $clients = $this->mdl_clients->select('client_name')
-            ->like('client_name', $query)
-            ->order_by('client_name')
+        $escapedQuery = $this->db->escape_like_string($query);
+
+        $clients = $this->mdl_clients->select('client_name,client_surname')
+            ->where(
+            "client_name LIKE $escapedQuery%
+            OR client_surname LIKE $escapedQuery%
+            OR CONCATENATE(client_name,' ', client_surname) LIKE  $escapedQuery%")
+            ->order_by('CONCATENATE(client_name,client_surname)')
             ->get(array(), false)
             ->result();
 

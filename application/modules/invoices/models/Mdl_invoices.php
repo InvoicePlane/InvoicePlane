@@ -74,6 +74,7 @@ class Mdl_Invoices extends Response_Model
       ip_users.user_subscribernumber,
       ip_users.user_iban,
 			ip_clients.*,
+      ip_invoice_sumex.*,
 			ip_invoice_amounts.invoice_amount_id,
 			IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
 			IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
@@ -101,6 +102,7 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
         $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
         $this->db->join('ip_invoice_custom', 'ip_invoice_custom.invoice_id = ip_invoices.invoice_id', 'left');
+        $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quote_custom', 'ip_quotes.quote_id = ip_quote_custom.quote_id', 'left');
     }
@@ -111,8 +113,8 @@ class Mdl_Invoices extends Response_Model
     public function validation_rules()
     {
         return array(
-            'client_name' => array(
-                'field' => 'client_name',
+            'client_id' => array(
+                'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required'
             ),
@@ -186,6 +188,9 @@ class Mdl_Invoices extends Response_Model
 
         $invoice_id = parent::save(null, $db_array);
 
+        $inv = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+        $invoice_group = $inv->invoice_group_id;
+
         // Create an invoice amount record
         $db_array = array(
             'invoice_id' => $invoice_id
@@ -205,6 +210,14 @@ class Mdl_Invoices extends Response_Model
 
                 $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
+        }
+        $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
+        if(preg_match("/sumex/i",$invgroup->invoice_group_name)){
+            // If the Invoice Group includes "Sumex", make the invoice a Sumex one
+            $db_array = array(
+              'sumex_invoice' => $invoice_id
+            );
+            $this->db->insert('ip_invoice_sumex', $db_array);
         }
 
         return $invoice_id;
@@ -317,8 +330,9 @@ class Mdl_Invoices extends Response_Model
 
         // Get the client id for the submitted invoice
         $this->load->model('clients/mdl_clients');
-        $db_array['client_id'] = $this->mdl_clients->client_lookup($db_array['client_name']);
-        unset($db_array['client_name']);
+
+        // Check if is SUMEX
+        $this->load->model('invoice_groups/mdl_invoice_groups');
 
         $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
@@ -402,6 +416,12 @@ class Mdl_Invoices extends Response_Model
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', array(2, 3));
+        return $this;
+    }
+
+    // Used to check if the invoice is Sumex
+    public function is_sumex(){
+        $this->filter_where_not('sumex_id', null);
         return $this;
     }
 

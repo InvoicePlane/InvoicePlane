@@ -43,6 +43,10 @@ class Mdl_Clients extends Response_Model
                 'label' => trans('client_name'),
                 'rules' => 'required'
             ),
+            'client_surname' => array(
+                'field' => 'client_surname',
+                'label' => trans('client_surname')
+            ),
             'client_active' => array(
                 'field' => 'client_active'
             ),
@@ -88,6 +92,13 @@ class Mdl_Clients extends Response_Model
             ),
             'client_tax_code' => array(
                 'field' => 'user_tax_code'
+            ),
+            // SUMEX
+            'client_birthdate' => array(
+              'field' => 'client_birthdate'
+            ),
+            'client_sex' => array(
+              'field' => 'client_sex'
             )
         );
     }
