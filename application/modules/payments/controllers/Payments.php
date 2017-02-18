@@ -31,6 +31,7 @@ class Payments extends Admin_Controller
     public function index($page = 0)
     {
         $this->mdl_payments->paginate(site_url('payments/index'), $page);
+        $this->load->helper('client');
         $payments = $this->mdl_payments->result();
 
         $this->layout->set(
@@ -51,6 +52,8 @@ class Payments extends Admin_Controller
      */
     public function form($id = null)
     {
+        $this->load->helper('client');
+        
         if ($this->input->post('btn_cancel')) {
             redirect('payments');
         }
