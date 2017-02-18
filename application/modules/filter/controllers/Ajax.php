@@ -71,7 +71,7 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                $this->mdl_clients->like("CONCAT_WS('^',LOWER(client_name),LOWER(client_email),client_phone,client_active)", $keyword);
+                $this->mdl_clients->like("CONCAT_WS('^',LOWER(client_name),LOWER(client_surname),LOWER(client_email),client_phone,client_active)", $keyword);
             }
         }
 

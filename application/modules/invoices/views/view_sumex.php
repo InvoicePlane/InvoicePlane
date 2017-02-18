@@ -142,7 +142,7 @@ if ($this->config->item('disable_read_only') == true) {
 <div id="headerbar">
     <h1>
         <?php
-        echo trans('invoice') . ' ';
+        echo trans('invoice')." [S] ";
         echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
         ?>
     </h1>
@@ -249,14 +249,14 @@ if ($this->config->item('disable_read_only') == true) {
     <form id="invoice_form">
         <div class="invoice">
             <div class="cf row">
-                <div class="col-xs-12 col-md-5">
-                    <div class="pull-left">
+                <div class="col-xs-12 col-md-8">
+                    <div class="col-md-6">
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo format_client($invoice) ?></a>
                             <?php if ($invoice->invoice_status_id == 1) { ?>
                                 <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
                                       data-toggle="tooltip" data-placement="bottom"
-                                      title="<?php echo trans('change_client'); ?>"></span>
+                                      title="<?php echo htmlentities(trans('change_client')); ?>"></span>
                             <?php } ?>
                         </h2><br>
                         <span>
@@ -281,11 +281,16 @@ if ($this->config->item('disable_read_only') == true) {
                                 <?php echo $invoice->client_email; ?>
                             </span>
                         <?php endif; ?>
+                        <?php echo trans('birthdate').': '.format_date($invoice->client_birthdate); ?><br>
+                        <?php echo trans('gender').': '.format_gender($invoice->client_gender); ?>
+                    </div>
 
+                    <div class="col-md-6">
+                      <h2>Test</h2>
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-md-7">
+                <div class="col-xs-12 col-md-4">
 
                     <div class="details-box">
 
@@ -302,7 +307,28 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
                             <?php } ?>
 
-                            <div class="col-xs-12 col-sm-6">
+                            <div class="col-xs-12 col-sm-12">
+
+                              <div class="invoice-properties">
+                                  <label><?php echo trans('status');
+                                      if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
+                                          echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
+                                      }
+                                      ?>
+                                  </label>
+                                  <select name="invoice_status_id" id="invoice_status_id"
+                                          class="form-control"
+                                      <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                          echo 'disabled="disabled"';
+                                      } ?>>
+                                      <?php foreach ($invoice_statuses as $key => $status) { ?>
+                                          <option value="<?php echo $key; ?>"
+                                                  <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
+                                              <?php echo $status['label']; ?>
+                                          </option>
+                                      <?php } ?>
+                                  </select>
+                              </div>
 
                                 <div class="invoice-properties">
                                     <label><?php echo trans('invoice'); ?> #</label>
@@ -349,59 +375,6 @@ if ($this->config->item('disable_read_only') == true) {
 		                                </span>
                                     </div>
                                 </div>
-
-                            </div>
-
-
-                            <div class="col-xs-12 col-sm-6">
-
-                                <div class="invoice-properties">
-                                    <label><?php echo trans('status');
-                                        if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
-                                            echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
-                                        }
-                                        ?>
-                                    </label>
-                                    <select name="invoice_status_id" id="invoice_status_id"
-                                            class="form-control"
-                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
-                                            echo 'disabled="disabled"';
-                                        } ?>>
-                                        <?php foreach ($invoice_statuses as $key => $status) { ?>
-                                            <option value="<?php echo $key; ?>"
-                                                    <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
-                                                <?php echo $status['label']; ?>
-                                            </option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-
-                                <div class="invoice-properties">
-                                    <label><?php echo trans('payment_method'); ?></label>
-                                    <select name="payment_method" id="payment_method" class="form-control"
-                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
-                                            echo 'disabled="disabled"';
-                                        } ?>>
-                                        <option value="0"><?php echo trans('select_payment_method'); ?></option>
-                                        <?php foreach ($payment_methods as $payment_method) { ?>
-                                            <option <?php if ($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?>
-                                                    value="<?php echo $payment_method->payment_method_id; ?>">
-                                                <?php echo $payment_method->payment_method_name; ?>
-                                            </option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-
-                                <div class="invoice-properties">
-                                    <label><?php echo trans('invoice_password'); ?></label>
-                                    <input type="text" id="invoice_password"
-                                           class="input-sm form-control"
-                                           value="<?php echo $invoice->invoice_password; ?>"
-                                        <?php if ($invoice->is_read_only == 1) {
-                                            echo 'disabled="disabled"';
-                                        } ?>>
-                                </div>
-
                             </div>
                         </div>
                     </div>

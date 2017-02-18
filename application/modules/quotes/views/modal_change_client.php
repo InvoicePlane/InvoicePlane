@@ -11,7 +11,7 @@
 
         $().ready(function () {
             $("[name='client_name']").select2({
-                placeholder: "<?php echo trans('client'); ?>",
+                placeholder: "<?php echo htmlentities(trans('client')); ?>",
                 allowClear: true
             });
             $("#client_name").focus();
@@ -22,7 +22,7 @@
             // Posts the data to validate and create the invoice;
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/change_client'); ?>", {
-                    client_name: $('#client_name').val(),
+                    client_id: $('#client_id').val(),
                     quote_id: $('#quote_id').val(),
                     _ip_csrf: csrf()
                 },
@@ -57,12 +57,12 @@
         <div class="modal-body">
 
             <div class="form-group">
-                <select name="client_name" id="client_name" class="input-sm form-control" autofocus>
+                <select name="client_id" id="client_id" class="input-sm form-control" autofocus>
                     <option></option>
                     <?php foreach ($clients as $client) { ?>
-                        <option value="<?php echo $client->client_name; ?>"
-                                <?php if ($client_name == $client->client_name) { ?>selected="selected"<?php } ?>
-                        > <?php echo $client->client_name; ?>     </option>
+                        <option value="<?php echo $client->client_id; ?>"
+                                <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>
+                        > <?php echo format_client($client); ?>     </option>
 
                     <?php } ?>
                 </select>

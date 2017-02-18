@@ -55,7 +55,7 @@
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"
                        title="<?php echo trans('view_client'); ?>">
-                        <?php echo $invoice->client_name; ?>
+                        <?php echo format_client($invoice); ?>
                     </a>
                 </td>
 

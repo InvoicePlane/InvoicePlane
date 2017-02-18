@@ -21,17 +21,17 @@ class Sumex
 
     public $_patient = array(
         'gender' => 'male',
-        'birthdate' => '1996-09-29',
-        'familyName' => 'Vitali',
-        'givenName' => 'Denys'
+        'birthdate' => '1970-01-01',
+        'familyName' => 'FamilyName',
+        'givenName' => 'GivenName'
     );
 
-    public $_casedate = "2017-02-10";
+    public $_casedate = "1970-01-01";
 
     public $_treatment = array(
-        'start' => '2017-01-10',
-        'end' => '2017-02-01',
-        'reason' => 'disease' // TODO: Check if need required value
+        'start' => '',
+        'end' => '',
+        'reason' => 'disease'
     );
 
     public $_company = array(
@@ -61,6 +61,25 @@ class Sumex
         $this->_company['street'] = $this->invoice->user_address_1;
         $this->_company['zip'] = $this->invoice->user_zip;
         $this->_company['phone'] = $this->invoice->user_phone;
+
+        $this->_casedate = $this->invoice->invoice_custom_case_date;
+
+
+        $treatments = array(
+          'disease',
+          'accident',
+          'maternity',
+          'prevention',
+          'birthdefect',
+          'unknown'
+        );
+
+
+        $this->_treatment = array(
+            'start' => $this->invoice->invoice_custom_treatmentstart,
+            'end' => $this->invoice->invoice_custom_treatmentend,
+            'reason' => $treatments[$this->invoice->invoice_custom_treatment - 36]
+        );
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
         file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($params));

@@ -26,6 +26,7 @@ class Mdl_Payments extends Response_Model
             ip_payment_methods.*,
             ip_invoice_amounts.*,
             ip_clients.client_name,
+            ip_clients.client_surname,
         	  ip_clients.client_id,
             ip_invoices.invoice_number,
             ip_invoices.invoice_date_created,
