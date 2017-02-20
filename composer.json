@@ -2,12 +2,12 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/kovah/mpdf"
+      "url": "https://github.com/InvoicePlane/mpdf.git"
     }
   ],
   "require": {
     "phpmailer/phpmailer": "^5.2",
-    "kovah/mpdf": "dev-master",
+    "mpdf/mpdf": "dev-development",
     "vlucas/phpdotenv": "^2.4"
   }
 }

@@ -34,8 +34,8 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
     define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
 
-    require_once(FCPATH . 'vendor/kovah/mpdf/mpdf.php');
-    $mpdf = new mPDF();
+    require_once(FCPATH . 'vendor/autoload.php');
+    $mpdf = new \Mpdf\Mpdf();
 
     // mPDF configuration
     $mpdf->useAdobeCJK = true;
@@ -51,7 +51,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         $CI->load->helper('zugferd');
         $mpdf->PDFA = true;
         $mpdf->PDFAauto = true;
-        $mpdf->SetAdditionalRdf(zugferd_rdf());
+        $mpdf->SetAdditionalXmpRdf(zugferd_rdf());
         $mpdf->SetAssociatedFiles($associated_files);
     }
 
