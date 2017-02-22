@@ -281,12 +281,48 @@ if ($this->config->item('disable_read_only') == true) {
                                 <?php echo $invoice->client_email; ?>
                             </span>
                         <?php endif; ?>
-                        <?php echo trans('birthdate').': '.format_date($invoice->client_birthdate); ?><br>
-                        <?php echo trans('gender').': '.format_gender($invoice->client_gender); ?>
+                        <br><br>
+                        <?php echo '<b>'.trans('birthdate').':</b> '.format_date($invoice->client_birthdate); ?><br>
+                        <?php echo '<b>'.trans('gender').':</b> '.format_gender($invoice->client_gender); ?>
                     </div>
-
                     <div class="col-md-6">
-                      <h2>Test</h2>
+                      <h3><?php echo trans('treatment'); ?></h3>
+                      <br>
+                      <div class="col-xs-12 col-md-8">
+                        <table class="items table">
+                          <tr>
+                            <td>
+                              <div class="input-group">
+                                <span class="input-group-addon"><?php echo trans('start'); ?></span>
+                                <input name="item_name" class="input-sm form-control datepicker" value="" type="text">
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <span class="input-group-addon"><?php echo trans('end'); ?></span>
+                              <input name="item_name" class="input-sm form-control datepicker" value="" type="text">
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <span class="input-group-addon"><?php echo trans('reason'); ?></span>
+                              <select name="item_product_unit_id" class="form-control input-sm">
+                                <option value="0"><?php echo trans('reason_disease'); ?></option>
+                                <option value="1"><?php echo trans('reason_accident'); ?></option>
+                                <option value="2"><?php echo trans('reason_maternity'); ?></option>
+                                <option value="3"><?php echo trans('reason_prevention'); ?></option>
+                                <option value="4"><?php echo trans('reason_birthdefect'); ?></option>
+                                <option value="5"><?php echo trans('reason_unknown'); ?></option>
+                              </select>
+                            </div>
+                          </td>
+                        </tr>
+                        </table>
+                      </div>
                     </div>
                 </div>
 
