@@ -52,17 +52,17 @@ class Sumex
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
 
-        $this->_patient['givenName'] = $this->invoice->client_custom_nome;
-        $this->_patient['familyName'] = $this->invoice->client_custom_cognome;
-        $this->_patient['birthdate'] = $this->invoice->client_custom_data_di_nascita;
-        $this->_patient['gender'] = ($this->invoice->client_custom_sesso=="2"?"male":"female");
+        $this->_patient['givenName'] = $this->invoice->client_name;
+        $this->_patient['familyName'] = $this->invoice->client_surname;
+        $this->_patient['birthdate'] = $this->invoice->client_birthdate;
+        $this->_patient['gender'] = ($this->invoice->client_gender=="0"?"male":"female");
 
         $this->_company['name'] = $this->invoice->user_company;
         $this->_company['street'] = $this->invoice->user_address_1;
         $this->_company['zip'] = $this->invoice->user_zip;
         $this->_company['phone'] = $this->invoice->user_phone;
 
-        $this->_casedate = $this->invoice->invoice_custom_case_date;
+        $this->_casedate = $this->invoice->sumex_casedate;
 
 
         $treatments = array(
@@ -76,13 +76,16 @@ class Sumex
 
 
         $this->_treatment = array(
-            'start' => $this->invoice->invoice_custom_treatmentstart,
-            'end' => $this->invoice->invoice_custom_treatmentend,
-            'reason' => $treatments[$this->invoice->invoice_custom_treatment - 36]
+            'start' => $this->invoice->sumex_treatmentstart,
+            'end' => $this->invoice->sumex_treatmentend,
+            'reason' => $treatments[$this->invoice->sumex_reason]
         );
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
+
         file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($params));
+        #var_dump($this);
+        #throw new Error("ok");
     }
 
     public function pdf()
@@ -132,19 +135,21 @@ class Sumex
 
     protected function xmlInvoiceProcessing()
     {
+        // TODO: CHECK!
         // Only to pass XML validation. This DOES NOT represent a valid TARMED file.
         $node = $this->doc->createElement('invoice:processing');
         $node->setAttribute('print_at_intermediate', '1');
 
         $transport = $this->doc->createElement('invoice:transport');
-        $transport->setAttribute('from', '2000000000002');
-        $transport->setAttribute('to', '2000000000000');
+        $transport->setAttribute('from', $this->invoice->user_gln);
+        $transport->setAttribute('to', '7601003000078'); # Example: SUVA
 
         $via = $this->doc->createElement('invoice:via');
-        $via->setAttribute('via', '2000000000000');
+        $via->setAttribute('via', '7601003000078'); # Example: SUVA
         $via->setAttribute('sequence_id', '1');
 
         $transport->appendChild($via);
+
         $node->appendChild($transport);
         return $node;
     }
@@ -337,8 +342,8 @@ class Sumex
 
         // <invoice:biller>
         // TODO: Check ean_party, zsr, specialty
-        $biller->setAttribute('ean_party', '2000000000002');
-        $biller->setAttribute('zsr', 'C000002');
+        $biller->setAttribute('ean_party', $this->invoice->user_gln);
+        $biller->setAttribute('zsr', 'C000002'); // Zahlstellenregister-Nummer
         //$biller->setAttribute('specialty', 'unknown');
 
         $bcompany = $this->xmlCompany();
@@ -348,8 +353,8 @@ class Sumex
         // <invoice:provider>
         // TODO: Check if **always** same as biller
         // TODO: Check ean_party, zsr, speciality
-        $provider->setAttribute('ean_party', '2000000000002');
-        $provider->setAttribute('zsr', 'C000002');
+        $provider->setAttribute('ean_party', $this->invoice->user_gln);
+        $provider->setAttribute('zsr', 'C000002'); // Zahlstellenregister-Nummer
         //$provider->setAttribute('specialty', 'Allgemein');
 
         $pcompany = $this->xmlCompany();
@@ -382,8 +387,8 @@ class Sumex
     protected function xmlInvoiceMvg()
     {
         $node = $this->doc->createElement('invoice:mvg');
-        $node->setAttribute('ssn', '7560000000011');
-        $node->setAttribute('insured_id', 'ladc7a5f5fb43ef76018');
+        $node->setAttribute('ssn',$this->invoice->client_avs);
+        #$node->setAttribute('insured_id', '1234');
         $node->setAttribute('case_date', date("Y-m-d\TH:i:s", strtotime($this->_casedate)));
 
         return $node;
@@ -428,7 +433,7 @@ class Sumex
         $node->setAttribute('code', (int) $item->product_sku);
         $node->setAttribute('session', 1);
         $node->setAttribute('quantity', $item->item_quantity);
-        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime("2017-01-01")));
+        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime($item->item_date_added)));
         $node->setAttribute('provider_id', '7634567890111');
         $node->setAttribute('responsible_id', '7634567890333');
         $node->setAttribute('unit', $item->item_price);
@@ -453,8 +458,8 @@ class Sumex
         $givenName = $this->doc->createElement('invoice:givenname');
         $givenName->nodeValue = $this->_patient['givenName'];
 
-        $postal = $this->generatePostal("Via la Santa 2", "6962", "Viganello");
-        $telecom = $this->generateTelecom("079 123 45 67");
+        $postal = $this->generatePostal($street, $zip, $city);
+        $telecom = $this->generateTelecom($phone);
 
         $person->appendChild($familyName);
         $person->appendChild($givenName);
