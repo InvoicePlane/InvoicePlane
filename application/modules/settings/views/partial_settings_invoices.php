@@ -167,6 +167,21 @@
                 <p class="help-block"><?php echo trans('invoice_sumex_help'); ?></p>
             </div>
 
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo trans('invoice_sumex_sliptype'); ?>
+                </label>
+                <select name="settings[sumex_sliptype]" class="input-sm form-control">
+                    <?php
+                    $slipTypes = array("esr9", "esrRed");
+                    foreach($slipTypes as $k=>$v): ?>
+                    <?php $selected = ($this->mdl_settings->setting('sumex_sliptype') == $k ? " selected": ""); ?>
+                    <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_sliptype-'.$v); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <p class="help-block"><?php echo trans('invoice_sumex_sliptype_help'); ?></p>
+            </div>
+
         </div>
     </div>
 

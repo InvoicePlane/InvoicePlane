@@ -597,6 +597,10 @@ $lang = array(
     'sumex_information'                            => 'Sumex Information',
     'gln'                                          => 'GLN',
     'case_date'                                    => 'Case Date',
+    'invoice_sumex_sliptype'                       => 'Sumex Slip Type',
+    'invoice_sumex_sliptype-esr9'                  => 'ESR 9 (Orange Slip)',
+    'invoice_sumex_sliptype-esrRed'                => 'Red Slip',
+    'invoice_sumex_sliptype_help'                  => 'This option will change the slip type in Sumex. Please note that if you select the Orange slip you need a subscriber number that starts with "01-"',
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 

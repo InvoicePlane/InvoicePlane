@@ -93,9 +93,12 @@ class Sumex
             'reason' => $treatments[$this->invoice->sumex_reason]
         );
 
+        $esrTypes = array("9", "red");
+        $this->_esrType = $esrTypes[$CI->mdl_settings->setting('sumex_sliptype')];
+
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
 
-        file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($this->_patient));
+        file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($this));
         #var_dump($this);
         #throw new Error("ok");
     }
@@ -323,19 +326,21 @@ class Sumex
         $node = $this->doc->createElement('invoice:esrRed');
 
         $reason = $this->doc->createElement('invoice:payment_reason');
-        $reason->nodeValue = "Payment Reason";
+        $reason->nodeValue = $this->invoice->invoice_number;
 
+        $subNumb = $this->invoice->user_subscribernumber;
         // postal_account: coding_line2
         // bank_account: coding_line1 + coding_line2
+        // Assume always postal: This should be have an option in the future
         $node->setAttribute('payment_to', 'postal_account');
-        //$node->setAttribute('esr_attributes', '1');
-        $node->setAttribute('post_account', '99-123-9');
+        $node->setAttribute('post_account', $subNumb);
+
 
         // IBAN not required
         //$node->setAttribute('iban', 'CH1111111111111111111');
-        $node->setAttribute('reference_number', '1111111111');
+        $node->setAttribute('reference_number', '1112111111');
         $node->setAttribute('coding_line1', '111111111111111111111111111+ 071234567>');
-        $node->setAttribute('coding_line2', '111111111>');
+        $node->setAttribute('coding_line2', str_replace('-','',$subNumb). '>');
 
         $node->appendChild($reason);
 
