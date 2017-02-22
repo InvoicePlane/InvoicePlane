@@ -99,6 +99,10 @@ class Mdl_Clients extends Response_Model
             ),
             'client_sex' => array(
               'field' => 'client_sex'
+            ),
+            'cleint_avs' => array(
+              'field' => 'client_avs',
+              'rules' => 'is_unique[client_avs]'
             )
         );
     }

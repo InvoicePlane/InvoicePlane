@@ -127,6 +127,10 @@ class Mdl_Users extends Response_Model
             ),
             'user_iban' => array(
                 'field' => 'user_iban'
+            ),
+            # SUMEX
+            'user_gln' => array(
+                'field' => 'user_gln'
             )
         );
     }
