@@ -81,6 +81,10 @@ class Mdl_Items extends Response_Model
                 'field' => 'item_product_id',
                 'label' => trans('original_product')
             ),
+            'item_date' => array(
+                'field' => 'item_date',
+                'label' => trans('item_date')
+            )
         );
     }
 

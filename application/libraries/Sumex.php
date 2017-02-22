@@ -433,7 +433,7 @@ class Sumex
         $node->setAttribute('code', (int) $item->product_sku);
         $node->setAttribute('session', 1);
         $node->setAttribute('quantity', $item->item_quantity);
-        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime($item->item_date_added)));
+        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime($item->item_date)));
         $node->setAttribute('provider_id', '7634567890111');
         $node->setAttribute('responsible_id', '7634567890333');
         $node->setAttribute('unit', $item->item_price);

@@ -71,7 +71,7 @@ class Ajax extends Admin_Controller
     public function load_client_notes()
     {
         $this->load->model('clients/mdl_client_notes');
-
+        $this->load->helper('client');
         $data = array(
             'client_notes' => $this->mdl_client_notes->where('client_id', $this->input->post('client_id'))->get()->result()
         );
