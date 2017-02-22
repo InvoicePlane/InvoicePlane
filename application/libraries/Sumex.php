@@ -23,7 +23,12 @@ class Sumex
         'gender' => 'male',
         'birthdate' => '1970-01-01',
         'familyName' => 'FamilyName',
-        'givenName' => 'GivenName'
+        'givenName' => 'GivenName',
+        'street' => 'ClientStreet 10',
+        'zip' => '0000',
+        'city' => 'ClientCity',
+        'phone' => '000 000 00 00',
+        'avs' => '7000000000000'
     );
 
     public $_casedate = "1970-01-01";
@@ -39,7 +44,8 @@ class Sumex
         'street' => 'Via Cantonale 5',
         'zip' => '6900',
         'city' => 'Lugano',
-        'phone' => '091 902 11 00'
+        'phone' => '091 902 11 00',
+        'gln' => '123456789123' // EAN 13
     );
 
     public function __construct($params)
@@ -56,11 +62,17 @@ class Sumex
         $this->_patient['familyName'] = $this->invoice->client_surname;
         $this->_patient['birthdate'] = $this->invoice->client_birthdate;
         $this->_patient['gender'] = ($this->invoice->client_gender=="0"?"male":"female");
+        $this->_patient['street'] = $this->invoice->client_address_1;
+        $this->_patient['zip'] = $this->invoice->client_zip;
+        $this->_patient['city'] = $this->invoice->client_city;
+        $this->_patient['phone'] = ($this->invoice->client_phone == "" ? null : $this->invoice->client_phone);
+        $this->_patient['avs'] = $this->invoice->client_avs;
 
         $this->_company['name'] = $this->invoice->user_company;
         $this->_company['street'] = $this->invoice->user_address_1;
         $this->_company['zip'] = $this->invoice->user_zip;
         $this->_company['phone'] = $this->invoice->user_phone;
+        $this->_company['gln'] = $this->invoice->user_gln;
 
         $this->_casedate = $this->invoice->sumex_casedate;
 
@@ -83,7 +95,7 @@ class Sumex
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
 
-        file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($params));
+        file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($this->_patient));
         #var_dump($this);
         #throw new Error("ok");
     }
@@ -141,7 +153,7 @@ class Sumex
         $node->setAttribute('print_at_intermediate', '1');
 
         $transport = $this->doc->createElement('invoice:transport');
-        $transport->setAttribute('from', $this->invoice->user_gln);
+        $transport->setAttribute('from', $this->_company['gln']);
         $transport->setAttribute('to', '7601003000078'); # Example: SUVA
 
         $via = $this->doc->createElement('invoice:via');
@@ -342,7 +354,7 @@ class Sumex
 
         // <invoice:biller>
         // TODO: Check ean_party, zsr, specialty
-        $biller->setAttribute('ean_party', $this->invoice->user_gln);
+        $biller->setAttribute('ean_party', $this->_company['gln']);
         $biller->setAttribute('zsr', 'C000002'); // Zahlstellenregister-Nummer
         //$biller->setAttribute('specialty', 'unknown');
 
@@ -353,7 +365,7 @@ class Sumex
         // <invoice:provider>
         // TODO: Check if **always** same as biller
         // TODO: Check ean_party, zsr, speciality
-        $provider->setAttribute('ean_party', $this->invoice->user_gln);
+        $provider->setAttribute('ean_party', $this->_company['gln']);
         $provider->setAttribute('zsr', 'C000002'); // Zahlstellenregister-Nummer
         //$provider->setAttribute('specialty', 'Allgemein');
 
@@ -365,14 +377,13 @@ class Sumex
         $patient->setAttribute('gender', $this->_patient['gender']);
         $patient->setAttribute('birthdate', date("Y-m-d\TH:i:s", strtotime($this->_patient['birthdate'])));
 
-        // TODO: Person based on Client
-        $person = $this->generatePerson("Denys", "Vitali", "Address", "6900", "Lugano", "079 000 00 00");
+        $person = $this->generatePerson($this->_patient['givenName'], $this->_patient['familyName'], $this->_patient['street'], $this->_patient['zip'], $this->_patient['city'], $this->_patient['phone']);
         $patient->appendChild($person);
         // </invoice:patient>
 
         // <invoice:guarantor>
         $guarantor->setAttribute('xmlns', 'http://www.forum-datenaustausch.ch/invoice');
-        $person = $this->generatePerson("Denys", "Vitali", "Address", "6900", "Lugano", "079 000 00 00");
+        $person = $this->generatePerson($this->_patient['givenName'], $this->_patient['familyName'], $this->_patient['street'], $this->_patient['zip'], $this->_patient['city'], $this->_patient['phone']);
         $guarantor->appendChild($person);
         // </invoice:guarantor>
 
@@ -387,7 +398,7 @@ class Sumex
     protected function xmlInvoiceMvg()
     {
         $node = $this->doc->createElement('invoice:mvg');
-        $node->setAttribute('ssn',$this->invoice->client_avs);
+        $node->setAttribute('ssn', $this->_patient['avs']);
         #$node->setAttribute('insured_id', '1234');
         $node->setAttribute('case_date', date("Y-m-d\TH:i:s", strtotime($this->_casedate)));
 
@@ -459,12 +470,19 @@ class Sumex
         $givenName->nodeValue = $this->_patient['givenName'];
 
         $postal = $this->generatePostal($street, $zip, $city);
-        $telecom = $this->generateTelecom($phone);
+
+        if($phone != null){
+          $telecom = $this->generateTelecom($phone);
+        }
+        else{
+          $telecom = null;
+        }
+
 
         $person->appendChild($familyName);
         $person->appendChild($givenName);
         $person->appendChild($postal);
-        $person->appendChild($telecom);
+        if($telecom != null) { $person->appendChild($telecom); }
 
         return $person;
     }

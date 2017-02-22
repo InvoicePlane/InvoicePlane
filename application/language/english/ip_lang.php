@@ -594,6 +594,8 @@ $lang = array(
     'reason_birthdefect'                           => 'Birth defect',
     'reason_unknown'                               => 'Unknown',
     'item_date'                                    => 'Item Date',
+    'sumex_information'                            => 'Sumex Information',
+    'gln'                                          => 'GLN',
 
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',

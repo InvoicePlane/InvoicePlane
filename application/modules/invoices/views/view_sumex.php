@@ -54,6 +54,7 @@
                     invoice_date_due: $('#invoice_date_due').val(),
                     invoice_status_id: $('#invoice_status_id').val(),
                     invoice_password: $('#invoice_password').val(),
+                    invoice_sumex_reason: $("#invoice_sumex_reason").val(),
                     items: JSON.stringify(items),
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
@@ -294,7 +295,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <td>
                               <div class="input-group">
                                 <span class="input-group-addon"><?php echo trans('start'); ?></span>
-                                <input name="item_name" class="input-sm form-control datepicker" value="" type="text">
+                                <input name="sumex_treatmentstart" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentstart); ?>" type="text">
                               </div>
                             </td>
                         </tr>
@@ -302,7 +303,7 @@ if ($this->config->item('disable_read_only') == true) {
                           <td>
                             <div class="input-group">
                               <span class="input-group-addon"><?php echo trans('end'); ?></span>
-                              <input name="item_name" class="input-sm form-control datepicker" value="" type="text">
+                              <input name="sumex_treatmentend" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>" type="text">
                             </div>
                           </td>
                         </tr>
@@ -310,13 +311,12 @@ if ($this->config->item('disable_read_only') == true) {
                           <td>
                             <div class="input-group">
                               <span class="input-group-addon"><?php echo trans('reason'); ?></span>
-                              <select name="item_product_unit_id" class="form-control input-sm">
-                                <option value="0"><?php echo trans('reason_disease'); ?></option>
-                                <option value="1"><?php echo trans('reason_accident'); ?></option>
-                                <option value="2"><?php echo trans('reason_maternity'); ?></option>
-                                <option value="3"><?php echo trans('reason_prevention'); ?></option>
-                                <option value="4"><?php echo trans('reason_birthdefect'); ?></option>
-                                <option value="5"><?php echo trans('reason_unknown'); ?></option>
+                              <select name="invoice_sumex_reason" id="invoice_sumex_reason" class="form-control input-sm">
+                                <?php $reasons = ['disease', 'accident', 'maternity', 'prevention', 'birthdefect', 'unknown']; ?>
+                                <?php foreach($reasons as $key=>$reason): ?>
+                                  <?php $selected = ($invoice->sumex_reason==$key?" selected":""); ?>
+                                  <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php echo trans('reason_'.$reason); ?></option>
+                                <?php endforeach; ?>
                               </select>
                             </div>
                           </td>
