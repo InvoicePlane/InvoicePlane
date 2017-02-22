@@ -123,8 +123,8 @@
 <noscript>
     <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
 </noscript>
-
-<nav class="navbar navbar-ip" role="navigation">
+<?php $navbarType = (IP_DEBUG?"navbar-dev":"navbar-ip"); ?>
+<nav class="navbar <?php echo $navbarType; ?>" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#ip-navbar-collapse">

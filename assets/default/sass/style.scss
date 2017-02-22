@@ -287,6 +287,34 @@ textarea {
     }
 }
 
+.navbar.navbar-dev{
+  $blueColor: #f07f00; // Orange
+  $colorDiff: 5%;
+  background-color: $blueColor;
+  box-shadow: 1px 2px 1px #CCC;
+
+  ul.nav.navbar-nav {
+      li a {
+          color: #FFF;
+      }
+
+      li a:hover {
+          background-color: lighten($blueColor, $colorDiff);
+      }
+
+      li.open a {
+          background-color: lighten($blueColor, $colorDiff);
+      }
+
+      li.open ul.dropdown-menu {
+            background-color: lighten($blueColor, $colorDiff);
+          border: 0;
+          border-top: 1px solid $blueColor;
+          box-shadow: 1px 3px 3px #CCC;
+      }
+  }
+}
+
 .navbar-inner {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
