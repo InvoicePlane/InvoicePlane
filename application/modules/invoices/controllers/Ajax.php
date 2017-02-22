@@ -22,6 +22,7 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('units/mdl_units');
+        $this->load->model('invoices/mdl_invoice_sumex');
 
         $invoice_id = $this->input->post('invoice_id');
 
@@ -104,6 +105,15 @@ class Ajax extends Admin_Controller
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
+
+            $sumex_array = array(
+                'sumex_invoice' => $invoice_id,
+                'sumex_reason' => $this->input->post('invoice_sumex_reason'),
+                'sumex_treatmentstart' => date_to_mysql($this->input->post('invoice_sumex_treatmentstart')),
+                'sumex_treatmentend' => date_to_mysql($this->input->post('invoice_sumex_treatmentend')),
+                'sumex_casedate' => date_to_mysql($this->input->post('invoice_sumex_casedate')),
+            );
+            $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
 
             // Recalculate for discounts
             $this->load->model('invoices/mdl_invoice_amounts');

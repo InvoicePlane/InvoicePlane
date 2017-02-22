@@ -596,7 +596,7 @@ $lang = array(
     'item_date'                                    => 'Item Date',
     'sumex_information'                            => 'Sumex Information',
     'gln'                                          => 'GLN',
-
+    'case_date'                                    => 'Case Date',
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 

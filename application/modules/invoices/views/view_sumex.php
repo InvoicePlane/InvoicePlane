@@ -55,6 +55,9 @@
                     invoice_status_id: $('#invoice_status_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_sumex_reason: $("#invoice_sumex_reason").val(),
+                    invoice_sumex_treatmentstart: $("#invoice_sumex_treatmentstart").val(),
+                    invoice_sumex_treatmentend: $("#invoice_sumex_treatmentend").val(),
+                    invoice_sumex_casedate: $("#invoice_sumex_casedate").val(),
                     items: JSON.stringify(items),
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
@@ -295,7 +298,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <td>
                               <div class="input-group">
                                 <span class="input-group-addon"><?php echo trans('start'); ?></span>
-                                <input name="sumex_treatmentstart" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentstart); ?>" type="text">
+                                <input id="invoice_sumex_treatmentstart" name="sumex_treatmentstart" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentstart); ?>" type="text">
                               </div>
                             </td>
                         </tr>
@@ -303,7 +306,7 @@ if ($this->config->item('disable_read_only') == true) {
                           <td>
                             <div class="input-group">
                               <span class="input-group-addon"><?php echo trans('end'); ?></span>
-                              <input name="sumex_treatmentend" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>" type="text">
+                              <input id="invoice_sumex_treatmentend" name="sumex_treatmentend" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>" type="text">
                             </div>
                           </td>
                         </tr>
@@ -318,6 +321,14 @@ if ($this->config->item('disable_read_only') == true) {
                                   <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php echo trans('reason_'.$reason); ?></option>
                                 <?php endforeach; ?>
                               </select>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <span class="input-group-addon"><?php echo trans('case_date'); ?></span>
+                              <input id="invoice_sumex_casedate" name="sumex_casedate" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>" type="text">
                             </div>
                           </td>
                         </tr>
