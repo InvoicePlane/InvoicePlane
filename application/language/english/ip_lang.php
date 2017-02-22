@@ -583,6 +583,17 @@ $lang = array(
     'gender_male'                                  => 'Male',
     'gender_female'                                => 'Female',
     'gender_other'                                 => 'Female',
+    'treatment'                                    => 'Treatment',
+    'start'                                        => 'Start',
+    'end'                                          => 'End',
+    'reason'                                       => 'Reason',
+    'reason_disease'                               => 'Disease',
+    'reason_accident'                              => 'Accident',
+    'reason_maternity'                             => 'Maternity',
+    'reason_prevention'                            => 'Prevention',
+    'reason_birthdefect'                           => 'Birth defect',
+    'reason_unknown'                               => 'Unknown',
+    'item_date'                                    => 'Item Date',
 
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
