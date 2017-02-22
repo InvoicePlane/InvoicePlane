@@ -60,7 +60,7 @@
                     <?php foreach ($clients as $client) { ?>
                         <option value="<?php echo $client->client_id; ?>"
                                 <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>
-                        ><?php echo formatClient($client); ?></option>
+                        ><?php echo format_client($client); ?></option>
 
                     <?php } ?>
                 </select>

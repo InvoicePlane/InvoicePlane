@@ -40,7 +40,6 @@ class Ajax extends Admin_Controller
                     $item->item_date = ($item->item_date ? date_to_mysql($item->item_date) : null);
                     $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
                     $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
-
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
 

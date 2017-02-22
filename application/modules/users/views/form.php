@@ -277,6 +277,24 @@
 
                 <fieldset>
 
+                    <legend><?php echo trans('sumex_information'); ?></legend>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo trans('gln'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_gln" id="user_gln" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_gln'); ?>">
+                        </div>
+                    </div>
+
+                </fieldset>
+
+                <fieldset>
+
                     <legend><?php echo trans('contact_information'); ?></legend>
 
                     <div class="form-group">
