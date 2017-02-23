@@ -61,41 +61,41 @@
                 });
             });
 
-            $('.create-invoice').click(function () {
+            $(document).on('click', '.create-invoice', function(){            
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>");
             });
 
-            $('.create-quote').click(function () {
+            $(document).on('click', '.create-quote', function(){
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>");
             });
 
-            $('#btn_quote_to_invoice').click(function () {
+            $(document).on('click', '#btn_quote_to_invoice', function(){
                 quote_id = $(this).data('quote-id');
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_quote_to_invoice'); ?>/" + quote_id);
             });
 
-            $('#btn_copy_invoice').click(function () {
+            $(document).on('click', '#btn_copy_invoice', function(){
                 invoice_id = $(this).data('invoice-id');
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
             });
 
-            $('#btn_create_credit').click(function () {
+            $(document).on('click', '#btn_create_credit', function(){
                 invoice_id = $(this).data('invoice-id');
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_credit'); ?>", {invoice_id: invoice_id});
             });
 
-            $('#btn_copy_quote').click(function () {
+            $(document).on('click', '#btn_copy_quote', function(){
                 quote_id = $(this).data('quote-id');
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {quote_id: quote_id});
             });
 
-            $('.client-create-invoice').click(function () {
+            $(document).on('click', '.client-create-invoice', function(){
                 $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>", {
                     client_name: $(this).data('client-name')
                 });
             });
 
-            $('.client-create-quote').click(function () {
+            $(document).on('click', '.client-create-quote', function(){
                 $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {
                     client_name: $(this).data('client-name')
                 });
