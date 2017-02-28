@@ -8,7 +8,7 @@ class Sumex
     public $doc;
     public $root;
 
-    public const ROLES = array(
+    const ROLES = array(
     'physician',
     'physiotherapist',
     'chiropractor',
@@ -92,7 +92,7 @@ class Sumex
         $this->items = $params['items'];
         $this->options = $params['options'];
 
-        
+
 
         $this->_patient['givenName'] = $this->invoice->client_name;
         $this->_patient['familyName'] = $this->invoice->client_surname;
