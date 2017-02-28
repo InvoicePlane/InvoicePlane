@@ -209,6 +209,13 @@ class Mdl_Users extends Response_Model
             ),
             'user_iban' => array(
                 'field' => 'user_iban'
+            ),
+            # SUMEX
+            'user_gln' => array(
+                'field' => 'user_gln'
+            ),
+            'user_rcc' => array(
+                'field' => 'user_rcc'
             )
         );
     }
@@ -291,6 +298,8 @@ class Mdl_Users extends Response_Model
                 $this->mdl_user_clients->save(null, array('user_id' => $id, 'client_id' => $user_client));
             }
 
+            var_dump($db_array);
+            throw new Error("test");
             $this->session->unset_userdata('user_clients');
         }
 
