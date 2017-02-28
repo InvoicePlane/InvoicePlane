@@ -268,7 +268,9 @@ class Sumex
         $services = $this->xmlServices();
 
         $node->appendChild($prolog);
-        $node->appendChild($remark);
+        if($this->_treatment['observations'] != ""){
+          $node->appendChild($remark);
+        }
         $node->appendChild($balance);
         $node->appendChild($esr);
         $node->appendChild($tiersGarant);
