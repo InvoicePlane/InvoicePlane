@@ -102,7 +102,8 @@ class Mdl_Clients extends Response_Model
             ),
             'cleint_avs' => array(
               'field' => 'client_avs',
-              'rules' => 'is_unique[client_avs]'
+              'label' => trans('sumex_ssn'),
+              'rules' => 'is_unique[client_avs]|regex_match[/\d{13}/]'
             )
         );
     }

@@ -188,6 +188,15 @@ $cv = $this->controller->view_data["custom_values"];
                                    value="<?php echo htmlspecialchars($bdate); ?>">
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_ssn'); ?>: </label>
+                        <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_avs" id="client_avs" class="form-control"
+                                   value="<?php echo htmlspecialchars($avs); ?>">
+                        </div>
+                    </div>
                 </fieldset>
             </div>
 
