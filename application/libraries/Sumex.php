@@ -8,11 +8,42 @@ class Sumex
     public $doc;
     public $root;
 
+    public const ROLES = array(
+    'physician',
+    'physiotherapist',
+    'chiropractor',
+    'ergotherapist',
+    'nutritionist',
+    'midwife',
+    'logotherapist',
+    'hospital',
+    'pharmacist',
+    'dentist',
+    'labtechnician',
+    'dentaltechnician',
+    'othertechnician',
+    'psychologist',
+    'wholesaler',
+    'nursingstaff',
+    'transport',
+    'druggist',
+    'naturopathicdoctor',
+    'naturopathictherapist',
+    'other');
+
+    public const PLACES = array(
+      'practice',
+      'hospital',
+      'lab',
+      'association',
+      'company'
+    );
+
     public $_lang = "it";
     public $_mode = "production";
     public $_copy = "0";
     public $_storno = "0";
-    public $_role = "physician";
+    public $_role = "physiotherapist";
     public $_place = "practice";
     public $_currency = "CHF";
     public $_paymentperiod = "P30D";
@@ -36,7 +67,8 @@ class Sumex
     public $_treatment = array(
         'start' => '',
         'end' => '',
-        'reason' => 'disease'
+        'reason' => 'disease',
+        'diagnosis' => '.'
     );
 
     public $_company = array(
@@ -45,7 +77,8 @@ class Sumex
         'zip' => '6900',
         'city' => 'Lugano',
         'phone' => '091 902 11 00',
-        'gln' => '123456789123' // EAN 13
+        'gln' => '123456789123', // EAN 13
+        'rcc' => 'C000002'
     );
 
     public function __construct($params)
@@ -57,6 +90,9 @@ class Sumex
 
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
+        $this->options = $params['options'];
+
+        
 
         $this->_patient['givenName'] = $this->invoice->client_name;
         $this->_patient['familyName'] = $this->invoice->client_surname;
@@ -71,8 +107,10 @@ class Sumex
         $this->_company['name'] = $this->invoice->user_company;
         $this->_company['street'] = $this->invoice->user_address_1;
         $this->_company['zip'] = $this->invoice->user_zip;
+        $this->_company['city'] = $this->invoice->user_city;
         $this->_company['phone'] = $this->invoice->user_phone;
         $this->_company['gln'] = $this->invoice->user_gln;
+        $this->_company['rcc'] = $this->invoice->user_rcc;
 
         $this->_casedate = $this->invoice->sumex_casedate;
 
@@ -90,13 +128,21 @@ class Sumex
         $this->_treatment = array(
             'start' => $this->invoice->sumex_treatmentstart,
             'end' => $this->invoice->sumex_treatmentend,
-            'reason' => $treatments[$this->invoice->sumex_reason]
+            'reason' => $treatments[$this->invoice->sumex_reason],
+            'diagnosis' => $this->invoice->sumex_diagnosis,
+            'observations' => $this->invoice->sumex_observations,
         );
+
+        if($this->_treatment['diagnosis'] == ""){
+          $this->_treatment['diagnosis'] = ".";
+        }
 
         $esrTypes = array("9", "red");
         $this->_esrType = $esrTypes[$CI->mdl_settings->setting('sumex_sliptype')];
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
+        $this->_role = Sumex::ROLES[$CI->mdl_settings->setting('sumex_role')];
+        $this->_place = Sumex::PLACES[$CI->mdl_settings->setting('sumex_place')];
 
         file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($this));
         #var_dump($this);
@@ -203,6 +249,7 @@ class Sumex
         }
 
         $prolog = $this->xmlInvoiceProlog();
+        $remark = $this->xmlInvoiceRemark();
         $balance = $this->xmlInvoiceBalance();
         $tiersGarant = $this->xmlInvoiceTiersGarant();
         $mvg = $this->xmlInvoiceMvg();
@@ -210,6 +257,7 @@ class Sumex
         $services = $this->xmlServices();
 
         $node->appendChild($prolog);
+        $node->appendChild($remark);
         $node->appendChild($balance);
         $node->appendChild($esr);
         $node->appendChild($tiersGarant);
@@ -220,6 +268,11 @@ class Sumex
         return $node;
     }
 
+    protected function xmlInvoiceRemark(){
+        $node = $this->doc->createElement('invoice:remark');
+        $node->nodeValue = $this->_treatment['observations'];
+        return $node;
+    }
     protected function xmlInvoiceProlog()
     {
         $node = $this->doc->createElement('invoice:prolog');
@@ -360,7 +413,7 @@ class Sumex
         // <invoice:biller>
         // TODO: Check ean_party, zsr, specialty
         $biller->setAttribute('ean_party', $this->_company['gln']);
-        $biller->setAttribute('zsr', 'C000002'); // Zahlstellenregister-Nummer
+        $biller->setAttribute('zsr', $this->_company['rcc']); // Zahlstellenregister-Nummer (RCC)
         //$biller->setAttribute('specialty', 'unknown');
 
         $bcompany = $this->xmlCompany();
@@ -371,7 +424,7 @@ class Sumex
         // TODO: Check if **always** same as biller
         // TODO: Check ean_party, zsr, speciality
         $provider->setAttribute('ean_party', $this->_company['gln']);
-        $provider->setAttribute('zsr', 'C000002'); // Zahlstellenregister-Nummer
+        $provider->setAttribute('zsr', $this->_company['rcc']); // Zahlstellenregister-Nummer (RCC)
         //$provider->setAttribute('specialty', 'Allgemein');
 
         $pcompany = $this->xmlCompany();
@@ -419,8 +472,8 @@ class Sumex
         $node->setAttribute('reason', $this->_treatment['reason']);
 
         $diag = $this->doc->createElement('invoice:diagnosis');
-        $diag->setAttribute('type', 'by_contract');
-        $diag->setAttribute('code', 'A1');
+        $diag->setAttribute('type', 'freetext');
+        $diag->setAttribute('code', $this->_treatment['diagnosis']);
 
         $node->appendChild($diag);
 
@@ -450,8 +503,8 @@ class Sumex
         $node->setAttribute('session', 1);
         $node->setAttribute('quantity', $item->item_quantity);
         $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime($item->item_date)));
-        $node->setAttribute('provider_id', '7634567890111');
-        $node->setAttribute('responsible_id', '7634567890333');
+        $node->setAttribute('provider_id', $this->_company['gln']);
+        $node->setAttribute('responsible_id', $this->_company['gln']);
         $node->setAttribute('unit', $item->item_price);
         #$node->setAttribute('unit_factor', 1);
         $node->setAttribute('amount', $item->item_total);

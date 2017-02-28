@@ -74,6 +74,7 @@ class Mdl_Invoices extends Response_Model
       ip_users.user_subscribernumber,
       ip_users.user_iban,
       ip_users.user_gln,
+      ip_users.user_rcc,
 			ip_clients.*,
       ip_invoice_sumex.*,
 			ip_invoice_amounts.invoice_amount_id,
