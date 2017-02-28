@@ -50,6 +50,14 @@ class Mdl_invoice_sumex extends Response_Model
                 'label' => trans('reason'),
                 'rules' => 'required|greater_than_equal_to[0]|less_than_equal_to[5]'
             ),
+            'sumex_diagnosis' => array(
+                'field' => 'sumex_diagnosis',
+                'label' => trans('diagnosis')
+            ),
+            'sumex_observations' => array(
+                'field' => 'sumex_observations',
+                'label' => trans('sumex_observations')
+            ),
             'sumex_treatmentstart' => array(
                 'field' => 'sumex_treatmentstart',
                 'label' => trans('start'),

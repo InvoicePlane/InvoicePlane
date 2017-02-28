@@ -58,6 +58,8 @@
                     invoice_sumex_treatmentstart: $("#invoice_sumex_treatmentstart").val(),
                     invoice_sumex_treatmentend: $("#invoice_sumex_treatmentend").val(),
                     invoice_sumex_casedate: $("#invoice_sumex_casedate").val(),
+                    invoice_sumex_diagnosis: $("#invoice_sumex_diagnosis").val(),
+                    invoice_sumex_observations: $("#invoice_sumex_observations").val(),
                     items: JSON.stringify(items),
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
@@ -332,6 +334,14 @@ if ($this->config->item('disable_read_only') == true) {
                             </div>
                           </td>
                         </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <span class="input-group-addon"><?php echo trans('invoice_sumex_diagnosis'); ?></span>
+                              <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis" class="input-sm form-control" value="<?php echo htmlentities($invoice->sumex_diagnosis); ?>" type="text" maxlength="12">
+                            </div>
+                          </td>
+                        </tr>
                         </table>
                       </div>
                     </div>
@@ -436,14 +446,15 @@ if ($this->config->item('disable_read_only') == true) {
             <div class="row">
                 <div class="col-xs-12 col-sm-4">
 
-                    <label><?php echo trans('invoice_terms'); ?></label>
-                    <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
+                    <label><?php echo trans('sumex_observations'); ?></label>
+                    <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>
-                    ><?php echo $invoice->invoice_terms; ?></textarea>
+                    ><?php echo $invoice->sumex_observations; ?></textarea>
 
                 </div>
+
                 <div class="col-xs-12 col-sm-8">
 
                     <label class="control-label"><?php echo trans('attachments'); ?></label>

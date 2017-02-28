@@ -182,6 +182,34 @@
                 <p class="help-block"><?php echo trans('invoice_sumex_sliptype_help'); ?></p>
             </div>
 
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo trans('invoice_sumex_role'); ?>
+                </label>
+                <select name="settings[sumex_role]" class="input-sm form-control">
+                    <?php
+                    $roles = Sumex::ROLES;
+                    foreach($roles as $k=>$v): ?>
+                    <?php $selected = ($this->mdl_settings->setting('sumex_role') == $k ? " selected": ""); ?>
+                    <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_role_'.$v); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">
+                    <?php echo trans('invoice_sumex_place'); ?>
+                </label>
+                <select name="settings[sumex_place]" class="input-sm form-control">
+                    <?php
+                    $places = Sumex::PLACES;
+                    foreach($places as $k=>$v): ?>
+                    <?php $selected = ($this->mdl_settings->setting('sumex_place') == $k ? " selected": ""); ?>
+                    <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_place_'.$v); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
         </div>
     </div>
 

@@ -131,6 +131,9 @@ class Mdl_Users extends Response_Model
             # SUMEX
             'user_gln' => array(
                 'field' => 'user_gln'
+            ),
+            'user_rcc' => array(
+                'field' => 'user_rcc'
             )
         );
     }

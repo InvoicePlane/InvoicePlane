@@ -109,9 +109,11 @@ class Ajax extends Admin_Controller
             $sumex_array = array(
                 'sumex_invoice' => $invoice_id,
                 'sumex_reason' => $this->input->post('invoice_sumex_reason'),
+                'sumex_diagnosis' => $this->input->post('invoice_sumex_diagnosis'),
                 'sumex_treatmentstart' => date_to_mysql($this->input->post('invoice_sumex_treatmentstart')),
                 'sumex_treatmentend' => date_to_mysql($this->input->post('invoice_sumex_treatmentend')),
                 'sumex_casedate' => date_to_mysql($this->input->post('invoice_sumex_casedate')),
+                'sumex_observations' => $this->input->post('invoice_sumex_observations')
             );
             $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
 
