@@ -197,6 +197,10 @@
                                 <th><?php echo trans('gender'); ?></th>
                                 <td><?php echo format_gender($client->client_gender) ?></td>
                             </tr>
+                            <tr>
+                                <th><?php echo trans('sumex_ssn'); ?></th>
+                                <td><?php echo format_avs($client->client_avs) ?></td>
+                            </tr>
                     </table>
                 </div>
               <?php endif; ?>
