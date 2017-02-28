@@ -92,6 +92,13 @@ function format_boolean($txt)
     return '';
 }
 
+function format_avs($txt){
+  if(!preg_match($txt, '/^\d{13}$/')){
+    return $txt;
+  }
+
+}
+
 /**
  * @param $txt
  * @return string
