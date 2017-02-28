@@ -176,10 +176,16 @@ $cv = $this->controller->view_data["custom_values"];
 
                     <div class="form-group">
                         <label><?php echo trans('birthdate'); ?>: </label>
+                        <?php
+                        $bdate = $this->mdl_clients->form_value('client_birthdate');
+                        if($bdate != ""){
+                          $bdate = date_from_mysql($bdate);
+                        }
 
+                        ?>
                         <div class="controls">
-                            <input type="text" name="client_birthdate" id="client_birthdate" class="form-control"
-                                   value="<?php echo htmlspecialchars(date_from_mysql($this->mdl_clients->form_value('client_birthdate'))); ?>">
+                            <input type="text" name="client_birthdate" id="client_birthdate" class="form-control datepicker"
+                                   value="<?php echo htmlspecialchars($bdate); ?>">
                         </div>
                     </div>
                 </fieldset>

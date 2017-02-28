@@ -184,6 +184,7 @@
                         <?php endif; ?>
                     </table>
                 </div>
+                <?php if($client->client_surname != ""): //Client is not a company ?>
                 <div class="col-xs-12 col-md-6">
                     <h4><?php echo trans('personal_information'); ?></h4>
                     <br/>
@@ -198,6 +199,7 @@
                             </tr>
                     </table>
                 </div>
+              <?php endif; ?>
             </div>
             <?php if ($custom_fields) : ?>
                 <div class="row">
