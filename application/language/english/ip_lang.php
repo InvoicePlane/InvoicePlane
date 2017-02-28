@@ -632,6 +632,8 @@ $lang = array(
     'invoice_sumex_diagnosis' => 'Diagnosis',
     'sumex_observations' => 'Observations',
     'sumex_rcc' => 'RCC',
+    'user_iban' => 'IBAN',
+    'user_subscriber_number' => 'Subscriber Number',
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
