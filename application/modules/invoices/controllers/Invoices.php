@@ -273,6 +273,30 @@ class Invoices extends Admin_Controller
         $this->output->set_output($this->zugferdxml->xml());
     }
 
+    public function generate_sumex_pdf($invoice_id){
+        $this->load->model('invoices/mdl_items');
+        $this->load->library('Sumex', array(
+          'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
+          'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result()
+        ));
+        $this->output->set_content_type('application/pdf');
+        $this->output->set_output($this->sumex->pdf());
+    }
+
+    public function generate_sumex_copy($invoice_id){
+        $this->load->model('invoices/mdl_items');
+        $this->load->library('Sumex', array(
+          'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
+          'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+          'options' => array(
+            'copy' => "1",
+            'storno' => "0"
+          )
+        ));
+        $this->output->set_content_type('application/pdf');
+        $this->output->set_output($this->sumex->pdf());
+    }
+
     /**
      * @param $invoice_id
      * @param $invoice_tax_rate_id

@@ -89,7 +89,7 @@
         });
 
         $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
+            window.open('<?php echo site_url('invoices/generate_sumex_copy/' . $invoice_id); ?>', '_blank');
         });
 
         $('#btn_sumex').click(function () {
@@ -185,11 +185,10 @@ if ($this->config->item('disable_read_only') == true) {
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-print fa-margin"></i>
-                        <?php echo trans('download_pdf'); ?>
+                        <i class="fa fa-file-text fa-margin"></i>
+                        <?php echo trans('generate_copy'); ?>
                     </a>
                 </li>
-                <?php if($this->mdl_settings->setting('sumex') == "1"): ?>
                 <li>
                     <a href="#" id="btn_sumex"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -197,7 +196,6 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php echo trans('generate_sumex'); ?>
                     </a>
                 </li>
-                <?php endif; ?>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>

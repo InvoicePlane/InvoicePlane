@@ -81,6 +81,11 @@ class Sumex
         'rcc' => 'C000002'
     );
 
+    public $_options = array(
+      'copy' => "0",
+      'storno' => "0"
+    );
+
     public function __construct($params)
     {
         //define('IP_VERSION', '1.5.0');
@@ -90,8 +95,13 @@ class Sumex
 
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
-        @$this->options = $params['options'];
+        if(!is_array(@$params['options'])){
+          $params['options'] = array();
+        }
+        $this->_options = array_merge($this->_options, $params['options']);
 
+        $this->_storno = $this->_options['storno'];
+        $this->_copy = $this->_options['copy'];
 
 
         $this->_patient['givenName'] = $this->invoice->client_name;
