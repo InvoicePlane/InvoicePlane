@@ -262,7 +262,8 @@ class Sumex
         $remark = $this->xmlInvoiceRemark();
         $balance = $this->xmlInvoiceBalance();
         $tiersGarant = $this->xmlInvoiceTiersGarant();
-        $mvg = $this->xmlInvoiceMvg();
+        //$mvg = $this->xmlInvoiceMvg();
+        $org = $this->xmlInvoiceOrg();
         $treatment = $this->xmlInvoiceTreatment();
         $services = $this->xmlServices();
 
@@ -271,7 +272,7 @@ class Sumex
         $node->appendChild($balance);
         $node->appendChild($esr);
         $node->appendChild($tiersGarant);
-        $node->appendChild($mvg);
+        $node->appendChild($org);
         $node->appendChild($treatment);
         $node->appendChild($services);
 
@@ -468,6 +469,14 @@ class Sumex
         $node = $this->doc->createElement('invoice:mvg');
         $node->setAttribute('ssn', $this->_patient['avs']);
         #$node->setAttribute('insured_id', '1234');
+        $node->setAttribute('case_date', date("Y-m-d\TH:i:s", strtotime($this->_casedate)));
+
+        return $node;
+    }
+
+    protected function xmlInvoiceOrg()
+    {
+        $node = $this->doc->createElement('invoice:org');
         $node->setAttribute('case_date', date("Y-m-d\TH:i:s", strtotime($this->_casedate)));
 
         return $node;
