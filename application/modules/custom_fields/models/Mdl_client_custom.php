@@ -49,15 +49,17 @@ class Mdl_Client_Custom extends Validator
             $this->load->helper('custom_values_helper');
             $this->load->module('custom_fields/mdl_custom_fields', 'cf');
 
-            foreach ($values as $key => $value) {
-                $type = $this->get_field_type($key);
-                if ($type != null) {
-                    $nicename = $this->cf->get_nicename(
-                        $type
-                    );
-                    $formatted = call_user_func("format_" . $nicename, $value);
-                    $this->set_form_value($key, $formatted);
-                }
+            if($values != null){
+              foreach ($values as $key => $value) {
+                  $type = $this->get_field_type($key);
+                  if ($type != null) {
+                      $nicename = $this->cf->get_nicename(
+                          $type
+                      );
+                      $formatted = call_user_func("format_" . $nicename, $value);
+                      $this->set_form_value($key, $formatted);
+                  }
+              }
             }
 
             parent::prep_form($id);
