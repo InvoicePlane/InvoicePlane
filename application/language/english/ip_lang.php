@@ -635,6 +635,7 @@ $lang = array(
     'invoice_sumex_diagnosis' => 'Diagnosis',
     'sumex_observations' => 'Observations',
     'sumex_rcc' => 'RCC',
+    'sumex_ssn' => 'AVS',
     'user_iban' => 'IBAN',
     'user_subscriber_number' => 'Subscriber Number',
     // Errors
