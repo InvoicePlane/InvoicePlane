@@ -1,13 +1,13 @@
-<!doctype html>
+<!doctype html lang="<?php echo trans('cldr'); ?>">
 
 <!--[if lt IE 7]>
-<html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<html class="no-js ie6 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 7]>
-<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<html class="no-js ie7 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 8]>
-<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<html class="no-js ie8 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<html class="no-js" lang="<?php echo trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
     <title>InvoicePlane Setup</title>
@@ -17,15 +17,15 @@
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/welcome.css">
 
     <!--[if lt IE 9]>
-    <script src="<?php echo base_url(); ?>assets/default/js/legacy.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
     <![endif]-->
 
-    <script src="<?php echo base_url(); ?>assets/default/js/dependencies.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
 
 </head>
 <body>

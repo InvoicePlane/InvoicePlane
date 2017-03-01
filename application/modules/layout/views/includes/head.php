@@ -13,20 +13,20 @@
 <meta name="robots" content="NOINDEX,NOFOLLOW">
 <meta name="_csrf" content="<?= $this->security->get_csrf_hash() ?>">
 
-<link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
+<link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 
 <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/monospace.css">
 <?php } ?>
 
 <!--[if lt IE 9]>
-<script src="<?php echo base_url(); ?>assets/default/js/legacy.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
 <![endif]-->
 
-<script src="<?php echo base_url(); ?>assets/default/js/dependencies.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
 
 <script>
     Dropzone.autoDiscover = false;
