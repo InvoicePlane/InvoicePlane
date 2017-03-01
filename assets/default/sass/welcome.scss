@@ -62,7 +62,7 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   width: 200px;
   height: 100px;
-  background: url('/assets/default/img/logo_200x100.png') center center no-repeat;
+  background: url('../../core/img/logo_200x100.png') center center no-repeat;
 
   span {
     display: none;
@@ -72,7 +72,7 @@ h1, h2, h3, h4, h5, h6 {
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
 only screen and (min-device-pixel-ratio: 2) {
   #logo {
-    background: url('/assets/default/img/logo_400x200.png') center center no-repeat;
+    background: url('../../core/img/logo_400x200.png') center center no-repeat;
     background-size: 200px 100px;
   }
 }

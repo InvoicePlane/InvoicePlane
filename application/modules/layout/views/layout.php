@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html lang="<?php echo trans('cldr'); ?>">
 
 <!--[if lt IE 7]>
 <html class="no-js ie6 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
@@ -54,9 +54,9 @@ if (get_setting('disable_sidebar') != 1) {
     </div>
 </div>
 
-<script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
+<script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>
