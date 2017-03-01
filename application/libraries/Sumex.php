@@ -143,9 +143,9 @@ class Sumex
             'observations' => $this->invoice->sumex_observations,
         );
 
-        if($this->_treatment['diagnosis'] == ""){
+        /*if($this->_treatment['diagnosis'] == ""){
           $this->_treatment['diagnosis'] = ".";
-        }
+        }*/
 
         $esrTypes = array("9", "red");
         $this->_esrType = $esrTypes[$CI->mdl_settings->setting('sumex_sliptype')];
@@ -154,6 +154,7 @@ class Sumex
         $this->_role = Sumex::ROLES[$CI->mdl_settings->setting('sumex_role')];
         $this->_place = Sumex::PLACES[$CI->mdl_settings->setting('sumex_place')];
 
+        // TODO: REMOVE BEFORE GOING TO PRODUCTION!!!
         file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($this));
         #var_dump($this);
         #throw new Error("ok");
@@ -164,6 +165,8 @@ class Sumex
         $ch = curl_init();
 
         $xml = $this->xml();
+        // TODO: REMOVE BEFORE GOING TO PRODUCTION!!!
+        file_put_contents(UPLOADS_FOLDER.'/test.xml', $xml);
 
         curl_setopt($ch, CURLOPT_URL, SUMEX_URL."/generateInvoice");
         curl_setopt($ch, CURLOPT_POST, true);
@@ -173,6 +176,7 @@ class Sumex
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         $out = curl_exec($ch);
         curl_close($ch);
+
 
 
         return $out;
@@ -209,7 +213,8 @@ class Sumex
         // TODO: CHECK!
         // Only to pass XML validation. This DOES NOT represent a valid TARMED file.
         $node = $this->doc->createElement('invoice:processing');
-        $node->setAttribute('print_at_intermediate', '1');
+        $node->setAttribute('print_at_intermediate', 'false');
+        $node->setAttribute('print_patient_copy', 'true');
 
         $transport = $this->doc->createElement('invoice:transport');
         $transport->setAttribute('from', $this->_company['gln']);
@@ -492,11 +497,13 @@ class Sumex
         $node->setAttribute('canton', $this->_canton);
         $node->setAttribute('reason', $this->_treatment['reason']);
 
-        $diag = $this->doc->createElement('invoice:diagnosis');
-        $diag->setAttribute('type', 'freetext');
-        $diag->setAttribute('code', $this->_treatment['diagnosis']);
-
-        $node->appendChild($diag);
+        if($this->_treatment['diagnosis'] != ""){
+          $diag = $this->doc->createElement('invoice:diagnosis');
+          $diag->setAttribute('type', 'freetext');
+          //$diag->setAttribute('code', );
+          $diag->nodeValue = $this->_treatment['diagnosis'];
+          $node->appendChild($diag);
+        }
 
         return $node;
     }
