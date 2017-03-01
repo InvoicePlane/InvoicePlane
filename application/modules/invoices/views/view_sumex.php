@@ -336,7 +336,7 @@ if ($this->config->item('disable_read_only') == true) {
                           <td>
                             <div class="input-group">
                               <span class="input-group-addon"><?php echo trans('invoice_sumex_diagnosis'); ?></span>
-                              <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis" class="input-sm form-control" value="<?php echo htmlentities($invoice->sumex_diagnosis); ?>" type="text" maxlength="12">
+                              <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis" class="input-sm form-control" value="<?php echo htmlentities($invoice->sumex_diagnosis); ?>" type="text" maxlength="500">
                             </div>
                           </td>
                         </tr>
