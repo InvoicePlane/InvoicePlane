@@ -14,7 +14,15 @@
         </thead>
 
         <tbody>
-        <?php foreach ($quotes as $quote) { ?>
+        <?php
+        $quote_idx = 1;
+        $quote_count = count($quotes);
+        $quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
+
+        foreach ($quotes as $quote) {
+            // Convert the dropdown menu to a dropup if quote is after the invoice split
+            $dropup = $quote_idx > $quote_list_split ? true : false;
+            ?>
             <tr>
                 <td>
                     <span
@@ -42,7 +50,7 @@
                     <?php echo format_currency($quote->quote_total); ?>
                 </td>
                 <td>
-                    <div class="options btn-group">
+                    <div class="options btn-group<?php echo $dropup ? ' dropup' : ''; ?>">
                         <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
                            href="#">
                             <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
@@ -74,7 +82,9 @@
                     </div>
                 </td>
             </tr>
-        <?php } ?>
+            <?php
+            $quote_idx++;
+        } ?>
         </tbody>
 
     </table>
