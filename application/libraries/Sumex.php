@@ -274,8 +274,8 @@ class Sumex
         $prolog = $this->xmlInvoiceProlog();
         $remark = $this->xmlInvoiceRemark();
         $balance = $this->xmlInvoiceBalance();
-        //$tiersGarant = $this->xmlInvoiceTiersGarant();
-        $tiersPayant = $this->xmlInvoiceTiersPayant();
+        $tiersGarant = $this->xmlInvoiceTiersGarant();
+        //$tiersPayant = $this->xmlInvoiceTiersPayant();
         //$mvg = $this->xmlInvoiceMvg();
         $org = $this->xmlInvoiceOrg();
         $treatment = $this->xmlInvoiceTreatment();
@@ -287,8 +287,8 @@ class Sumex
         }
         $node->appendChild($balance);
         $node->appendChild($esr);
-        //$node->appendChild($tiersGarant);
-        $node->appendChild($tiersPayant);
+        $node->appendChild($tiersGarant);
+        //$node->appendChild($tiersPayant);
         $node->appendChild($org);
         $node->appendChild($treatment);
         $node->appendChild($services);
