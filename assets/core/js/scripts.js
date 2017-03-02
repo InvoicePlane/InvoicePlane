@@ -141,17 +141,20 @@ function insert_html_tag(tag_type, destination_id) {
 $(document).ready(function () {
 
     // Correct the height of the content area
-    var documentHeight = $('html').outerHeight(),
+    var $content = $('#content'),
+        $html = $('html');
+
+    var documentHeight = $html.outerHeight(),
         navbarHeight = $('.navbar').outerHeight(),
         headerbarHeight = $('#headerbar').outerHeight(),
         submenuHeight = $('#submenu').outerHeight(),
         contentHeight = documentHeight - navbarHeight - headerbarHeight - submenuHeight;
-    if ($('#content').outerHeight() < contentHeight) {
-        $('#content').outerHeight(contentHeight);
+    if ($content.outerHeight() < contentHeight) {
+        $content.outerHeight(contentHeight);
     }
 
     // Dropdown Datepicker fix
-    $('html').click(function () {
+    $html.click(function () {
         $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
     });
 
@@ -195,7 +198,7 @@ $(document).ready(function () {
         update_email_template_preview();
     });
 
-    $('.ajax-loader').bind( "click", function() {
+    $('.ajax-loader').bind("click", function () {
         $('#fullpage-loader').fadeIn(200);
         $('#loader-error').delay(10000).fadeIn(200);
     });

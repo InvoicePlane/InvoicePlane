@@ -347,15 +347,15 @@ textarea {
 
 #form-settings .tab-content,
 div.table-content {
-  height: 100%;
-
   .tab-pane {
     padding-bottom: 50px;
   }
-}
 
-#filter_results {
-  height: 100%;
+  #filter_results,
+  .table-responsive {
+    //min-height: 100%;
+    min-height: 300px;
+  }
 }
 
 #panel-overdue-invoices,
