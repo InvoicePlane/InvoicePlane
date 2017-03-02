@@ -194,7 +194,7 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
                         <div class="controls">
                             <input type="text" name="client_avs" id="client_avs" class="form-control"
-                                   value="<?php echo htmlspecialchars($avs); ?>">
+                                   value="<?php echo htmlspecialchars(format_avs($avs)); ?>">
                         </div>
                     </div>
                 </fieldset>

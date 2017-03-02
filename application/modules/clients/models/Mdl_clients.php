@@ -100,12 +100,24 @@ class Mdl_Clients extends Response_Model
             'client_sex' => array(
               'field' => 'client_sex'
             ),
-            'cleint_avs' => array(
+            'client_avs' => array(
               'field' => 'client_avs',
               'label' => trans('sumex_ssn'),
-              'rules' => 'is_unique[ip_clients.client_avs]|regex_match[/\d{13}/]'
+              'rules' => 'callback_fix_avs|is_unique[ip_clients.client_avs]'
             )
         );
+    }
+
+    function fix_avs($input){
+      if($input != ""){
+          if(preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)){
+            return $matches[1].$matches[2].$matches[3].$matches[4];
+          }
+          else if(preg_match('/^\d{13}$/',$input)){
+            return $input;
+          }
+      }
+      return "";
     }
 
     public function db_array()
