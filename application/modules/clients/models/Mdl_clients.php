@@ -97,13 +97,13 @@ class Mdl_Clients extends Response_Model
             'client_birthdate' => array(
               'field' => 'client_birthdate'
             ),
-            'client_sex' => array(
-              'field' => 'client_sex'
+            'client_gender' => array(
+              'field' => 'client_gender'
             ),
             'client_avs' => array(
               'field' => 'client_avs',
               'label' => trans('sumex_ssn'),
-              'rules' => 'callback_fix_avs|is_unique[ip_clients.client_avs]'
+              'rules' => 'callback_fix_avs'
             )
         );
     }
