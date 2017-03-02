@@ -81,6 +81,14 @@ class Sumex
         'rcc' => 'C000002'
     );
 
+    public $_insurance = array(
+        'gln' => '7634567890000',
+        'name' => 'SUVA',
+        'street' => 'ChangeMe 12',
+        'zip' => '6900',
+        'city' => 'Lugano'
+    );
+
     public $_options = array(
       'copy' => "0",
       'storno' => "0"
@@ -266,7 +274,8 @@ class Sumex
         $prolog = $this->xmlInvoiceProlog();
         $remark = $this->xmlInvoiceRemark();
         $balance = $this->xmlInvoiceBalance();
-        $tiersGarant = $this->xmlInvoiceTiersGarant();
+        //$tiersGarant = $this->xmlInvoiceTiersGarant();
+        $tiersPayant = $this->xmlInvoiceTiersPayant();
         //$mvg = $this->xmlInvoiceMvg();
         $org = $this->xmlInvoiceOrg();
         $treatment = $this->xmlInvoiceTreatment();
@@ -278,7 +287,8 @@ class Sumex
         }
         $node->appendChild($balance);
         $node->appendChild($esr);
-        $node->appendChild($tiersGarant);
+        //$node->appendChild($tiersGarant);
+        $node->appendChild($tiersPayant);
         $node->appendChild($org);
         $node->appendChild($treatment);
         $node->appendChild($services);
@@ -471,6 +481,77 @@ class Sumex
         return $node;
     }
 
+    protected function xmlInvoiceTiersPayant()
+    {
+        $node = $this->doc->createElement('invoice:tiers_payant');
+        $node->setAttribute('payment_period', $this->_paymentperiod);
+
+        $biller = $this->doc->createElement('invoice:biller');
+        $provider = $this->doc->createElement('invoice:provider');
+        $insurance = $this->doc->createElement('invoice:insurance');
+        $patient = $this->doc->createElement('invoice:patient');
+        $insured = $this->doc->createElement('invoice:insured');
+        $guarantor = $this->doc->createElement('invoice:guarantor');
+
+        // <invoice:biller>
+        // TODO: Check ean_party, zsr, specialty
+        $biller->setAttribute('ean_party', $this->_company['gln']);
+        $biller->setAttribute('zsr', $this->_company['rcc']); // Zahlstellenregister-Nummer (RCC)
+        //$biller->setAttribute('specialty', 'unknown');
+
+        $bcompany = $this->xmlCompany();
+        $biller->appendChild($bcompany);
+        // </invoice:biller>
+
+        // <invoice:provider>
+        // TODO: Check if **always** same as biller
+        // TODO: Check ean_party, zsr, speciality
+        $provider->setAttribute('ean_party', $this->_company['gln']);
+        $provider->setAttribute('zsr', $this->_company['rcc']); // Zahlstellenregister-Nummer (RCC)
+        //$provider->setAttribute('specialty', 'Allgemein');
+
+        $pcompany = $this->xmlCompany();
+        $provider->appendChild($pcompany);
+        // </invoice:provider>
+
+        // <invoice:insurance>
+        $insurance->setAttribute('ean_party', $this->_insurance['gln']);
+        $insuranceCompany = $this->xmlInsurance();
+        $insurance->appendChild($insuranceCompany);
+        // </invoice:insurance>
+
+        // <invoice:patient>
+        $patient->setAttribute('gender', $this->_patient['gender']);
+        $patient->setAttribute('birthdate', date("Y-m-d\TH:i:s", strtotime($this->_patient['birthdate'])));
+
+        $person = $this->generatePerson($this->_patient['givenName'], $this->_patient['familyName'], $this->_patient['street'], $this->_patient['zip'], $this->_patient['city'], $this->_patient['phone']);
+        $patient->appendChild($person);
+        // </invoice:patient>
+
+        // <invoice:insured>
+        $insured->setAttribute('gender', $this->_patient['gender']);
+        $insured->setAttribute('birthdate', date("Y-m-d\TH:i:s", strtotime($this->_patient['birthdate'])));
+
+        $person = $this->generatePerson($this->_patient['givenName'], $this->_patient['familyName'], $this->_patient['street'], $this->_patient['zip'], $this->_patient['city'], $this->_patient['phone']);
+        $insured->appendChild($person);
+        // </invoice:insured>
+
+        // <invoice:guarantor>
+        $guarantor->setAttribute('xmlns', 'http://www.forum-datenaustausch.ch/invoice');
+        $person = $this->generatePerson($this->_patient['givenName'], $this->_patient['familyName'], $this->_patient['street'], $this->_patient['zip'], $this->_patient['city'], $this->_patient['phone']);
+        $guarantor->appendChild($person);
+        // </invoice:guarantor>
+
+        $node->appendChild($biller);
+        $node->appendChild($provider);
+        $node->appendChild($insurance);
+        $node->appendChild($patient);
+        //$node->appendChild($insured);
+        $node->appendChild($guarantor);
+
+        return $node;
+    }
+
     protected function xmlInvoiceMvg()
     {
         $node = $this->doc->createElement('invoice:mvg');
@@ -605,7 +686,7 @@ class Sumex
     protected function xmlCompany()
     {
         // <invoice:company>
-      $bcompany = $this->doc->createElement('invoice:company');
+        $bcompany = $this->doc->createElement('invoice:company');
         $bcompany_name = $this->doc->createElement('invoice:companyname');
         $bcompany_name->nodeValue = $this->_company['name'];
 
@@ -620,8 +701,31 @@ class Sumex
 
         $bcompany_telecom->appendChild($bcompany_telecom_phone);
         $bcompany->appendChild($bcompany_telecom);
-      // </invoice:company>
+        // </invoice:company>
 
-      return $bcompany;
+        return $bcompany;
+    }
+
+    protected function xmlInsurance()
+    {
+        // <invoice:company>
+        $bcompany = $this->doc->createElement('invoice:company');
+        $bcompany_name = $this->doc->createElement('invoice:companyname');
+        $bcompany_name->nodeValue = $this->_insurance['name'];
+
+        $bcompany->appendChild($bcompany_name);
+
+        $bcompany_postal = $this->generatePostal($this->_insurance['street'], $this->_insurance['zip'], $this->_insurance['city']);
+        $bcompany->appendChild($bcompany_postal);
+
+        /*$bcompany_telecom = $this->doc->createElement('invoice:telecom');
+        $bcompany_telecom_phone = $this->doc->createElement('invoice:phone');
+        $bcompany_telecom_phone->nodeValue = $this->_company['phone'];
+        $bcompany_telecom->appendChild($bcompany_telecom_phone);
+        $bcompany->appendChild($bcompany_telecom);*/
+
+        // </invoice:company>
+
+        return $bcompany;
     }
 }
