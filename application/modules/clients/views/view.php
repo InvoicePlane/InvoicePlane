@@ -35,7 +35,7 @@
 
 <div id="headerbar">
     <div class="pull-left">
-        <h1><?php echo $client->client_name; ?></h1>
+        <h1><?php echo format_client($client); ?></h1>
     </div>
     <div class="pull-right btn-group">
         <a href="#" class="btn btn-sm btn-default client-create-quote"
