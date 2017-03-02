@@ -95,7 +95,8 @@ class Mdl_Clients extends Response_Model
             ),
             // SUMEX
             'client_birthdate' => array(
-              'field' => 'client_birthdate'
+              'field' => 'client_birthdate',
+              'rules' => 'callback_convert_date'
             ),
             'client_gender' => array(
               'field' => 'client_gender'
@@ -118,6 +119,14 @@ class Mdl_Clients extends Response_Model
           }
       }
       return "";
+    }
+
+    function convert_date($input){
+      $this->load->helper('date_helper');
+      if($input == ""){
+        return "";
+      }
+      return date_to_mysql($input);
     }
 
     public function db_array()
