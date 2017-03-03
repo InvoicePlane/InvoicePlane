@@ -48,3 +48,7 @@ ALTER TABLE `ip_users`
 
 ALTER TABLE `ip_clients`
   ADD `client_language` VARCHAR(255) DEFAULT 'system' AFTER `client_tax_code`;
+
+# Insert default theme into database (IP-338)
+INSERT INTO `ip_settings` (setting_key, setting_value)
+  VALUES ('system_theme', 'invoiceplane_default');

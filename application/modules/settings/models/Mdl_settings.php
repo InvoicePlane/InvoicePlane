@@ -90,4 +90,33 @@ class Mdl_Settings extends CI_Model
         $this->settings[$key] = $value;
     }
 
+    /**
+     *
+     */
+    public function get_themes()
+    {
+        $this->load->helper('directory');
+
+        $found_folders = directory_map(THEME_FOLDER, 1);
+
+        $themes = [];
+
+        foreach ($found_folders as $theme) {
+            if ($theme == 'core') continue;
+
+            // Get the theme info file
+            $theme = str_replace('/', '', $theme);
+            $info_path = THEME_FOLDER . $theme . '/';
+            $info_file = $theme . '.theme';
+
+            if (file_exists($info_path . $info_file)) {
+                $theme_info = new \Dotenv\Dotenv($info_path, $info_file);
+                $theme_info->overload();
+                $themes[$theme] = env('TITLE');
+            }
+        }
+
+        return $themes;
+    }
+
 }
