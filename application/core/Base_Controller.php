@@ -52,12 +52,13 @@ class Base_Controller extends MX_Controller
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
+            $this->load->helper('settings');
 
             // Load the language based on user config, fall back to system if needed
             $user_lang = $this->session->userdata('user_language');
 
             if (empty($user_lang) || $user_lang == 'system') {
-                set_language($this->mdl_settings->setting('default_language'));
+                set_language(get_setting('default_language'));
             } else {
                 set_language($user_lang);
             }

@@ -1,22 +1,26 @@
 <div id="headerbar">
 
-    <h1><?php echo trans('quotes'); ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('quotes'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('guest/quotes/status/' . $this->uri->segment(3)), 'mdl_quotes'); ?>
     </div>
 
-    <div class="pull-right">
-        <ul class="nav nav-pills index-options">
-            <li <?php if ($status == 'open') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('guest/quotes/status/open'); ?>"><?php echo trans('open'); ?></a></li>
-            <li <?php if ($status == 'approved') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('guest/quotes/status/approved'); ?>"><?php echo trans('approved'); ?></a>
-            </li>
-            <li <?php if ($status == 'rejected') { ?>class="active"<?php } ?>><a
-                        href="<?php echo site_url('guest/quotes/status/rejected'); ?>"><?php echo trans('rejected'); ?></a>
-            </li>
-        </ul>
+    <div class="headerbar-item pull-right">
+        <div class="btn-group btn-group-sm index-options">
+            <a href="<?php echo site_url('guest/quotes/status/open'); ?>"
+               class="btn <?php echo $status == 'open' ? 'btn-primary' : 'btn-default' ?>">
+                <?php echo trans('open'); ?>
+            </a>
+            <a href="<?php echo site_url('guest/quotes/status/approved'); ?>"
+               class="btn  <?php echo $status == 'approved' ? 'btn-primary' : 'btn-default' ?>">
+                <?php echo trans('approved'); ?>
+            </a>
+            <a href="<?php echo site_url('guest/quotes/status/rejected'); ?>"
+               class="btn  <?php echo $status == 'rejected' ? 'btn-primary' : 'btn-default' ?>">
+                <?php echo trans('rejected'); ?>
+            </a>
+        </div>
     </div>
 
 </div>
@@ -24,6 +28,7 @@
 <div id="content" class="table-content">
 
     <div id="filter_results">
+
         <?php echo $this->layout->load_view('layout/alerts'); ?>
 
         <div class="table-responsive">

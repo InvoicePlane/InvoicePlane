@@ -124,20 +124,19 @@
 <?php echo $modal_add_quote_tax; ?>
 
 <div id="headerbar">
-    <h1>
+    <h1 class="headerbar-title">
         <?php
         echo trans('quote') . ' ';
         echo($quote->quote_number ? '#' . $quote->quote_number : $quote->quote_id);
         ?>
     </h1>
 
-    <div class="pull-right btn-group">
-
-        <div class="options btn-group pull-left">
-            <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+    <div class="headerbar-item pull-right">
+        <div class="btn-group btn-group-sm">
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
                 <?php echo trans('options'); ?> <i class="fa fa-chevron-down"></i>
             </a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu dropdown-menu-right">
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
@@ -179,7 +178,7 @@
             </ul>
         </div>
 
-        <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_quote">
+        <a href="#" class="btn btn-success btn-sm ajax-loader" id="btn_save_quote">
             <i class="fa fa-check"></i>
             <?php echo trans('save'); ?>
         </a>

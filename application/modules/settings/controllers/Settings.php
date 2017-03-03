@@ -109,6 +109,9 @@ class Settings extends Admin_Controller
         $pdf_quote_templates = $this->mdl_templates->get_quote_templates('pdf');
         $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
 
+        // Get all themes
+        $available_themes = $this->mdl_settings->get_themes();
+
         // Get the current version
         $current_version = $this->mdl_versions->limit(1)->where('version_sql_errors', 0)->get()->row()->version_file;
         $current_version = str_replace('.sql', '', substr($current_version, strpos($current_version, '_') + 1));
@@ -127,6 +130,7 @@ class Settings extends Admin_Controller
                 'countries' => get_country_list(trans('cldr')),
                 'date_formats' => date_formats(),
                 'current_date' => new DateTime(),
+                'available_themes' => $available_themes,
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
                 'merchant_drivers' => $this->merchant->valid_drivers(),

@@ -1,7 +1,7 @@
 <div id="headerbar">
-    <h1><?php echo trans('payments'); ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('payments'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('guest/payments/index'), 'mdl_payments'); ?>
     </div>
 

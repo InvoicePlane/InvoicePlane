@@ -1,35 +1,37 @@
 <div id="headerbar">
-    <h1><?php echo trans('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
 
-    <div class="pull-right btn-group">
+    <div class="pull-right">
+        <div class="btn-group btn-group-sm">
+            <?php if (in_array($quote->quote_status_id, array(2, 3))) { ?>
+                <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
+                   class="btn btn-success">
+                    <i class="fa fa-check"></i>
+                    <?php echo trans('approve_this_quote'); ?>
+                </a>
+                <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
+                   class="btn btn-danger">
+                    <i class="fa fa-times-circle"></i>
+                    <?php echo trans('reject_this_quote'); ?>
+                </a>
+            <?php } elseif ($quote->quote_status_id == 4) { ?>
+                <a href="#" class="btn btn-success disabled">
+                    <i class="fa fa-check"></i>
+                    <?php echo trans('quote_approved'); ?>
+                </a>
+            <?php } elseif ($quote->quote_status_id == 5) { ?>
+                <a href="#" class="btn btn-danger disabled">
+                    <i class="fa fa-times-circle"></i>
+                    <?php echo trans('quote_rejected'); ?>
+                </a>
+            <?php } ?>
 
-        <?php if (in_array($quote->quote_status_id, array(2, 3))) { ?>
-            <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
-               class="btn btn-success btn-sm">
-                <i class="fa fa-check"></i>
-                <?php echo trans('approve_this_quote'); ?>
+            <a href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote_id); ?>"
+               class="btn btn-default" id="btn_generate_pdf">
+                <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
             </a>
-            <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
-               class="btn btn-danger btn-sm">
-                <i class="fa fa-times-circle"></i>
-                <?php echo trans('reject_this_quote'); ?>
-            </a>
-        <?php } elseif ($quote->quote_status_id == 4) { ?>
-            <a href="#" class="btn btn-success btn-sm disabled">
-                <i class="fa fa-check"></i>
-                <?php echo trans('quote_approved'); ?>
-            </a>
-        <?php } elseif ($quote->quote_status_id == 5) { ?>
-            <a href="#" class="btn btn-danger btn-sm disabled">
-                <i class="fa fa-times-circle"></i>
-                <?php echo trans('quote_rejected'); ?>
-            </a>
-        <?php } ?>
+        </div>
 
-        <a href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote_id); ?>"
-           class="btn btn-default btn-sm" id="btn_generate_pdf">
-            <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
-        </a>
     </div>
 
 </div>

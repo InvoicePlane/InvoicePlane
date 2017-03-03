@@ -1,24 +1,22 @@
 <div id="headerbar">
 
-    <h1><?php echo trans('invoices'); ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('invoices'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('guest/invoices/status/' . $this->uri->segment(4)), 'mdl_invoices'); ?>
     </div>
 
-    <div class="pull-right">
-        <ul class="nav nav-pills index-options">
-            <li <?php if ($status == 'open') { ?>class="active"<?php } ?>>
-                <a href="<?php echo site_url('guest/invoices/status/open'); ?>">
-                    <?php echo trans('open'); ?>
-                </a>
-            </li>
-            <li <?php if ($status == 'paid') { ?>class="active"<?php } ?>>
-                <a href="<?php echo site_url('guest/invoices/status/paid'); ?>">
-                    <?php echo trans('paid'); ?>
-                </a>
-            </li>
-        </ul>
+    <div class="headerbar-item pull-right">
+        <div class="btn-group btn-group-sm index-options">
+            <a href="<?php echo site_url('guest/invoices/status/open'); ?>"
+               class="btn <?php echo $status == 'open' ? 'btn-primary' : 'btn-default' ?>">
+                <?php echo trans('open'); ?>
+            </a>
+            <a href="<?php echo site_url('guest/invoices/status/paid'); ?>"
+               class="btn  <?php echo $status == 'paid' ? 'btn-primary' : 'btn-default' ?>">
+                <?php echo trans('paid'); ?>
+            </a>
+        </div>
     </div>
 
 </div>

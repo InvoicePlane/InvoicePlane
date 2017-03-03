@@ -16,7 +16,7 @@
             });
         });
 
-        var selected_email_template = <?php echo $email_template ?>;
+        var selected_email_template = '<?php echo $email_template ?>';
         inject_email_template(template_fields, selected_email_template);
     });
 </script>
@@ -24,17 +24,19 @@
 <form method="post" class="form-horizontal" action="<?php echo site_url('mailer/send_quote/' . $quote->quote_id) ?>">
 
     <div id="headerbar">
-        <h1><?php echo trans('email_quote'); ?></h1>
+        <h1 class="headerbar-title"><?php echo trans('email_quote'); ?></h1>
 
-        <div class="pull-right btn-group">
-            <button class="btn btn-sm btn-primary ajax-loader" name="btn_send" value="1">
-                <i class="fa fa-send"></i>
-                <?php echo trans('send'); ?>
-            </button>
-            <button class="btn btn-sm btn-danger" name="btn_cancel" value="1">
-                <i class="fa fa-times"></i>
-                <?php echo trans('cancel'); ?>
-            </button>
+        <div class="headerbar-item pull-right">
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-primary ajax-loader" name="btn_send" value="1">
+                    <i class="fa fa-send"></i>
+                    <?php echo trans('send'); ?>
+                </button>
+                <button class="btn btn-danger" name="btn_cancel" value="1">
+                    <i class="fa fa-times"></i>
+                    <?php echo trans('cancel'); ?>
+                </button>
+            </div>
         </div>
     </div>
 

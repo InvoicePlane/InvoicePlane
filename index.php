@@ -312,6 +312,8 @@ define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
 
 define('UPLOADS_FOLDER', FCPATH . 'uploads/');
 
+define('THEME_FOLDER', FCPATH . 'assets/');
+
 define('IPCONFIG_FILE', FCPATH . 'ipconfig.php');
 
 /*

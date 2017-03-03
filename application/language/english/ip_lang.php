@@ -497,6 +497,7 @@ $lang = array(
     'taxes'                                        => 'Taxes',
     'terms'                                        => 'Terms',
     'text'                                         => 'Text',
+    'theme'                                        => 'Theme',
     'this_month'                                   => 'This Month',
     'this_quarter'                                 => 'This Quarter',
     'this_year'                                    => 'This Year',

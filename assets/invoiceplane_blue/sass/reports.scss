@@ -1,0 +1,25 @@
+body {
+  font-family: sans-serif;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  text-align: left;
+  border-bottom: #000 thin dotted;
+}
+
+td {
+  border-bottom: #000 thin dotted;
+}
+
+.amount {
+  text-align: right;
+}
+
+.report_title {
+  text-align: center;
+  font-weight: bold;
+}
