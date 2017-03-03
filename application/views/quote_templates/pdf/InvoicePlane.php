@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title><?php echo trans('quote'); ?></title>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom-pdf.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/templates.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom-pdf.css">
 </head>
 <body>
 <header class="clearfix">

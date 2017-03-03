@@ -8,9 +8,9 @@ module.exports = function (grunt) {
 
     grunt.config('clean', {
         basic: [
-            'assets/**/*.css', 'assets/**/*.css.map', '!assets/**/custom.css', '!assets/**/custom-pdf.css', // CSS
-            'assets/default/js/*.js', '!assets/default/js/scripts.js', '!assets/default/js/jquery-ui.js', // JS
-            'assets/default/fonts/*', '!assets/default/fonts/.gitignore' // Fonts
+            'assets/**/*.css', 'assets/**/*.css.map', '!assets/core/css/custom.css', '!assets/core/css/custom-pdf.css', // CSS
+            'assets/core/js/*.js', '!assets/core/js/scripts.js', '!assets/core/js/jquery-ui.js', // JS
+            'assets/core/fonts/*', '!assets/core/fonts/.gitignore' // Fonts
         ],
         build: ['assets/default/js/dependencies.js', 'assets/default/js/legacy.js']
     });
@@ -51,8 +51,8 @@ module.exports = function (grunt) {
             },
             src: [
                 'assets/**/css/*.css',
-                '!assets/**/css/custom.css',
-                '!assets/**/css/custom-pdf.css'
+                '!assets/core/css/custom.css',
+                '!assets/core/css/custom-pdf.css'
             ]
         },
         build: {
@@ -66,8 +66,8 @@ module.exports = function (grunt) {
             },
             src: [
                 'assets/**/css/*.css',
-                '!assets/**/css/custom.css',
-                '!assets/**/css/custom-pdf.css'
+                '!assets/core/css/custom.css',
+                '!assets/core/css/custom-pdf.css'
             ]
         }
     });
@@ -77,27 +77,27 @@ module.exports = function (grunt) {
             src: [
                 'node_modules/html5shiv/dist/html5shiv.js'
             ],
-            dest: 'assets/default/js/legacy.js'
+            dest: 'assets/core/js/legacy.js'
         },
         dependencies: {
             src: [
                 'node_modules/jquery/dist/jquery.js',
-                'assets/default/js/jquery-ui.js',
+                'assets/core/js/jquery-ui.js',
                 'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
                 'node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js',
                 'node_modules/select2/dist/js/select2.js',
                 'node_modules/dropzone/dist/dropzone.js'
             ],
-            dest: 'assets/default/js/dependencies.js'
+            dest: 'assets/core/js/dependencies.js'
         }
     });
 
     grunt.config('uglify', {
         build: {
             files: {
-                'assets/default/js/legacy.min.js': ['assets/default/js/legacy.js'],
-                'assets/default/js/dependencies.min.js': ['assets/default/js/dependencies.js'],
-                'assets/default/js/scripts.min.js': ['assets/default/js/scripts.js']
+                'assets/core/js/legacy.min.js': ['assets/core/js/legacy.js'],
+                'assets/core/js/dependencies.min.js': ['assets/core/js/dependencies.js'],
+                'assets/core/js/scripts.min.js': ['assets/core/js/scripts.js']
             }
         }
     });
@@ -107,22 +107,22 @@ module.exports = function (grunt) {
             expand: true,
             flatten: true,
             src: ['node_modules/bootstrap-datepicker/js/locales/**'],
-            dest: 'assets/default/js/locales/',
+            dest: 'assets/core/js/locales/',
             filter: 'isFile'
         },
         fontawesome: {
             expand: true,
             flatten: true,
             src: ['node_modules/font-awesome/fonts/*'],
-            dest: 'assets/default/fonts'
+            dest: 'assets/core/fonts'
         },
         devjs: {
             files: [{
-                cwd: 'assets/default/js/',
+                cwd: 'assets/core/js/',
                 src: [
                     '*.js', '!jquery-ui.js'
                 ],
-                dest: 'assets/default/js/',
+                dest: 'assets/core/js/',
                 expand: true,
                 rename: function(dest, src) {
                     return (dest + src).replace('.js', '.min.js');
@@ -137,8 +137,8 @@ module.exports = function (grunt) {
             tasks: ['sass:dev', 'postcss:dev']
         },
         js: {
-            files: "assets/default/js/scripts.js",
-            tasks: ['sass:dev']
+            files: "assets/core/js/scripts.js",
+            tasks: ['uglify']
         }
     });
 

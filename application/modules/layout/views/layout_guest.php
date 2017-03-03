@@ -1,13 +1,13 @@
-<!doctype html>
+<!doctype html lang="<?php echo trans('cldr'); ?>">
 
 <!--[if lt IE 7]>
-<html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<html class="no-js ie6 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 7]>
-<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<html class="no-js ie7 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 8]>
-<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<html class="no-js ie8 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<html class="no-js" lang="<?php echo trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
     <title>
@@ -24,25 +24,22 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 
     <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/monospace.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/monospace.css">
     <?php } ?>
 
     <!--[if lt IE 9]>
-    <script src="<?php echo base_url(); ?>assets/default/js/legacy.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
     <![endif]-->
 
-    <script src="<?php echo base_url(); ?>assets/default/js/dependencies.min.js"></script>
-
+    <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
 </head>
-<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
-    echo 'hidden-sidebar';
-} ?>">
+<body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 
 <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
@@ -115,9 +112,9 @@
 
 </div>
 
-<script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
+<script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>

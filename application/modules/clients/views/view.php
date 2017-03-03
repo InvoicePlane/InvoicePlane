@@ -34,27 +34,27 @@
 </script>
 
 <div id="headerbar">
-    <div class="pull-left">
-        <h1><?php echo $client->client_name; ?></h1>
-    </div>
-    <div class="pull-right btn-group">
-        <a href="#" class="btn btn-sm btn-default client-create-quote"
-           data-client-name="<?php echo $client->client_name; ?>">
-            <i class="fa fa-file"></i> <?php echo trans('create_quote'); ?>
-        </a>
-        <a href="#" class="btn btn-sm btn-default client-create-invoice"
-           data-client-name="<?php echo $client->client_name; ?>">
-            <i class="fa fa-file-text"></i> <?php echo trans('create_invoice'); ?></a>
-        <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
-           class="btn btn-sm btn-default">
-            <i class="fa fa-edit"></i> <?php echo trans('edit'); ?>
-        </a>
+    <h1 class="headerbar-title"><?php echo $client->client_name; ?></h1>
 
-        <a class="btn btn-sm btn-danger"
-           href="<?php echo site_url('clients/delete/' . $client->client_id); ?>"
-           onclick="return confirm('<?php echo trans('delete_client_warning'); ?>');">
-            <i class="fa fa-trash-o"></i> <?php echo trans('delete'); ?>
-        </a>
+    <div class="headerbar-item pull-right">
+        <div class="btn-group btn-group-sm">
+            <a href="#" class="btn btn-default client-create-quote"
+               data-client-name="<?php echo $client->client_name; ?>">
+                <i class="fa fa-file"></i> <?php echo trans('create_quote'); ?>
+            </a>
+            <a href="#" class="btn btn-default client-create-invoice"
+               data-client-name="<?php echo $client->client_name; ?>">
+                <i class="fa fa-file-text"></i> <?php echo trans('create_invoice'); ?></a>
+            <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
+               class="btn btn-default">
+                <i class="fa fa-edit"></i> <?php echo trans('edit'); ?>
+            </a>
+            <a class="btn btn-danger"
+               href="<?php echo site_url('clients/delete/' . $client->client_id); ?>"
+               onclick="return confirm('<?php echo trans('delete_client_warning'); ?>');">
+                <i class="fa fa-trash-o"></i> <?php echo trans('delete'); ?>
+            </a>
+        </div>
     </div>
 
 </div>

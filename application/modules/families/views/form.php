@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1><?php echo trans('add_family'); ?></h1>
+        <h1 class="headerbar-title"><?php echo trans('add_family'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 

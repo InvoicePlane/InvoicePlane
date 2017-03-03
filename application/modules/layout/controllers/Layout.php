@@ -76,7 +76,9 @@ class Layout extends MX_Controller
     {
         $view = explode('/', $view);
 
-        $this->load->view($view[0] . '/' . $view[1], $data);
+        $view = $view[0] . '/' . $view[1] . (isset($view[2]) ? '/' . $view[2] : '');
+
+        $this->load->view($view, $data);
     }
 
 }

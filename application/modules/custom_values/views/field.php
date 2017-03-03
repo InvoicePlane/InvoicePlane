@@ -3,17 +3,17 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1><?php echo trans('custom_values'); ?></h1>
+        <h1 class="headerbar-title"><?php echo trans('custom_values'); ?></h1>
 
-        <div class="pull-right">
-            <a class="btn btn-sm btn-default" href="<?php echo site_url('custom_values'); ?>">
-                <i class="fa fa-arrow-left"></i> <?php echo trans('back'); ?>
-            </a>
-
-            <a class="btn btn-sm btn-primary" href="<?php echo site_url('custom_values/create/' . $id); ?>">
-                <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
-            </a>
-
+        <div class="headerbar-item pull-right">
+            <div class="btn-group btn-group-sm">
+                <a class="btn btn-default" href="<?php echo site_url('custom_values'); ?>">
+                    <i class="fa fa-arrow-left"></i> <?php echo trans('back'); ?>
+                </a>
+                <a class="btn btn-primary" href="<?php echo site_url('custom_values/create/' . $id); ?>">
+                    <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+                </a>
+            </div>
         </div>
     </div>
 
