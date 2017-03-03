@@ -105,7 +105,15 @@ class Mdl_Clients extends Response_Model
               'field' => 'client_avs',
               'label' => trans('sumex_ssn'),
               'rules' => 'callback_fix_avs'
-            )
+            ),
+            'client_insurednumber' => array(
+              'field' => 'client_insurednumber',
+              'label' => trans('sumex_insurednumber')
+            ),
+            'client_veka' => array(
+              'field' => 'client_veka',
+              'label' => trans('sumex_veka')
+            ),
         );
     }
 

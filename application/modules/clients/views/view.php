@@ -201,6 +201,16 @@
                                 <th><?php echo trans('sumex_ssn'); ?></th>
                                 <td><?php echo format_avs($client->client_avs) ?></td>
                             </tr>
+
+                            <tr>
+                                <th><?php echo trans('sumex_insurednumber'); ?></th>
+                                <td><?php echo htmlentities($client->client_insurednumber) ?></td>
+                            </tr>
+
+                            <tr>
+                                <th><?php echo trans('sumex_veka'); ?></th>
+                                <td><?php echo htmlentities($client->client_veka) ?></td>
+                            </tr>
                     </table>
                 </div>
               <?php endif; ?>
