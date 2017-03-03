@@ -25,17 +25,19 @@
       action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
 
     <div id="headerbar">
-        <h1><?php echo trans('email_invoice'); ?></h1>
+        <h1 class="headerbar-title"><?php echo trans('email_invoice'); ?></h1>
 
-        <div class="pull-right btn-group">
-            <button class="btn btn-sm btn-primary ajax-loader" name="btn_send" value="1">
-                <i class="fa fa-send"></i>
-                <?php echo trans('send'); ?>
-            </button>
-            <button class="btn btn-sm btn-danger" name="btn_cancel" value="1">
-                <i class="fa fa-times"></i>
-                <?php echo trans('cancel'); ?>
-            </button>
+        <div class="headerbar-item pull-right">
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-primary ajax-loader" name="btn_send" value="1">
+                    <i class="fa fa-send"></i>
+                    <?php echo trans('send'); ?>
+                </button>
+                <button class="btn btn-danger" name="btn_cancel" value="1">
+                    <i class="fa fa-times"></i>
+                    <?php echo trans('cancel'); ?>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -269,7 +271,7 @@
             thisDropzone = this;
             $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", {
                 _ip_csrf: csrf()
-            },function (data) {
+            }, function (data) {
                 $.each(data, function (index, val) {
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
