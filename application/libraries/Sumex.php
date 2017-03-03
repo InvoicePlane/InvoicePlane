@@ -63,6 +63,7 @@ class Sumex
     );
 
     public $_casedate = "1970-01-01";
+    public $_casenumber = "0";
 
     public $_treatment = array(
         'start' => '',
@@ -131,6 +132,7 @@ class Sumex
         $this->_company['rcc'] = $this->invoice->user_rcc;
 
         $this->_casedate = $this->invoice->sumex_casedate;
+        $this->_casenumber = $this->invoice->sumex_casenumber;
 
 
         $treatments = array(
@@ -566,7 +568,10 @@ class Sumex
     {
         $node = $this->doc->createElement('invoice:org');
         $node->setAttribute('case_date', date("Y-m-d\TH:i:s", strtotime($this->_casedate)));
-
+        if($this->_casenumber != ""){
+          $node->setAttribute('case_id', $this->_casenumber);
+        }
+        
         return $node;
     }
 

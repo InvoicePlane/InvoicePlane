@@ -58,6 +58,7 @@
                     invoice_sumex_treatmentstart: $("#invoice_sumex_treatmentstart").val(),
                     invoice_sumex_treatmentend: $("#invoice_sumex_treatmentend").val(),
                     invoice_sumex_casedate: $("#invoice_sumex_casedate").val(),
+                    invoice_sumex_casenumber: $("#invoice_sumex_casenumber").val(),
                     invoice_sumex_diagnosis: $("#invoice_sumex_diagnosis").val(),
                     invoice_sumex_observations: $("#invoice_sumex_observations").val(),
                     items: JSON.stringify(items),
@@ -328,6 +329,14 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="input-group">
                               <span class="input-group-addon"><?php echo trans('case_date'); ?></span>
                               <input id="invoice_sumex_casedate" name="sumex_casedate" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>" type="text">
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <span class="input-group-addon"><?php echo trans('case_number'); ?></span>
+                              <input id="invoice_sumex_casenumber" name="sumex_casenumber" class="input-sm form-control" value="<?php echo htmlentities($invoice->sumex_casenumber); ?>" type="text">
                             </div>
                           </td>
                         </tr>
