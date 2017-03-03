@@ -14,10 +14,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * Get a setting value
  *
  * @param string $setting_key
+ * @param mixed $default
  * @return string
  */
-function get_setting($setting_key)
+function get_setting($setting_key, $default = '')
 {
     $CI = &get_instance();
-    return $CI->mdl_settings->setting($setting_key);
+    return $CI->mdl_settings->setting($setting_key, $default);
 }
