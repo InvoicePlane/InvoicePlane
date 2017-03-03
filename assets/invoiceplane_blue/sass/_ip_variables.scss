@@ -1,0 +1,28 @@
+/*
+|   =========================================================
+|   InvoicePlane Variables
+|   =========================================================
+*/
+
+// Paths
+$fa-font-path:"../../core/fonts" !default;
+
+// Colors
+$color_grey: #999999;
+$color_blue: #3A87AD;
+$color_yellow: #F89406;
+$color_green: #468847;
+$color_red: #B94A48;
+
+$color_status_draft: #999999;
+$color_status_sent: #3A87AD;
+$color_status_viewed: #F89406;
+$color_status_paid_approved: #468847;
+$color_status_rejected_overdue: #B94A48;
+$color_status_canceled: #333333;
+
+// Fonts
+$font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+$font-family-serif: Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+
