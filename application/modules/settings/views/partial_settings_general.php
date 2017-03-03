@@ -31,6 +31,24 @@
 
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
+                <label for="settings[system_theme]" class="control-label">
+                    <?php echo trans('theme'); ?>
+                </label>
+                <select name="settings[system_theme]" class="input-sm form-control">
+                    <?php foreach ($available_themes as $theme_key => $theme_name) { ?>
+                        <option value="<?php echo $theme_key; ?>"
+                                <?php if (get_setting('system_theme') == $theme_key) { ?>selected="selected"<?php } ?>>
+                            <?php echo $theme_name; ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
                 <label for="settings[first_day_of_week]" class="control-label">
                     <?php echo trans('first_day_of_week'); ?>
                 </label>
@@ -38,6 +56,20 @@
                     <?php foreach ($first_days_of_weeks as $first_day_of_week_id => $first_day_of_week_name) { ?>
                         <option value="<?php echo $first_day_of_week_id; ?>"
                                 <?php if ($this->mdl_settings->setting('first_day_of_week') == $first_day_of_week_id) { ?>selected="selected"<?php } ?>><?php echo $first_day_of_week_name; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label for="settings[date_format]" class="control-label">
+                    <?php echo trans('date_format'); ?>
+                </label>
+                <select name="settings[date_format]" class="input-sm form-control">
+                    <?php foreach ($date_formats as $date_format) { ?>
+                        <option value="<?php echo $date_format['setting']; ?>"
+                                <?php if ($this->mdl_settings->setting('date_format') == $date_format['setting']) { ?>selected="selected"<?php } ?>><?php echo $current_date->format($date_format['setting']); ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -54,21 +86,9 @@
                     <option></option>
                     <?php foreach ($countries as $cldr => $country) { ?>
                         <option value="<?php echo $cldr; ?>"
-                                <?php if ($this->mdl_settings->setting('default_country') == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label for="settings[date_format]" class="control-label">
-                    <?php echo trans('date_format'); ?>
-                </label>
-                <select name="settings[date_format]" class="input-sm form-control">
-                    <?php foreach ($date_formats as $date_format) { ?>
-                        <option value="<?php echo $date_format['setting']; ?>"
-                                <?php if ($this->mdl_settings->setting('date_format') == $date_format['setting']) { ?>selected="selected"<?php } ?>><?php echo $current_date->format($date_format['setting']); ?></option>
+                                <?php if ($this->mdl_settings->setting('default_country') == $cldr) { ?>selected="selected"<?php } ?>>
+                            <?php echo $country ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>

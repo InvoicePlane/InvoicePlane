@@ -222,6 +222,11 @@ textarea {
     margin-left: 0;
     margin-right: 0;
   }
+
+  .navbar-nav .fa {
+    font-size: $font-size-base + 1;
+    line-height: $line-height-computed;
+  }
 }
 
 .navbar-inner {
