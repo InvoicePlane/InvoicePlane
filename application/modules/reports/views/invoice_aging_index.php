@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1><?php echo trans('invoice_aging'); ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('invoice_aging'); ?></h1>
 </div>
 
 <div id="content">

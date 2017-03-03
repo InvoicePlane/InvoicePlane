@@ -66,8 +66,7 @@
                     var response = JSON.parse(data);
                     if (response.success == '1') {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
-                    }
-                    else {
+                    } else {
                         $('#fullpage-loader').hide();
                         $('.control-group').removeClass('has-error');
                         $('div.alert[class*="alert-"]').remove();
@@ -140,16 +139,16 @@ if ($this->config->item('disable_read_only') == true) {
 ?>
 
 <div id="headerbar">
-    <h1>
+    <h1 class="headerbar-title">
         <?php
         echo trans('invoice') . ' ';
         echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
         ?>
     </h1>
 
-    <div class="pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
+    <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
 
-        <div class="options btn-group pull-left">
+        <div class="options btn-group btn-group-sm">
             <a class="btn btn-sm btn-default dropdown-toggle"
                data-toggle="dropdown" href="#">
                 <i class="fa fa-caret-down no-margin"></i> <?php echo trans('options'); ?>
@@ -231,7 +230,7 @@ if ($this->config->item('disable_read_only') == true) {
         <?php } ?>
     </div>
 
-    <div class="invoice-labels pull-right">
+    <div class="headerbar-item invoice-labels pull-right">
         <?php if ($invoice->invoice_is_recurring) { ?>
             <span class="label label-info"><?php echo trans('recurring'); ?></span>
         <?php } ?>
@@ -288,7 +287,6 @@ if ($this->config->item('disable_read_only') == true) {
                 <div class="col-xs-12 col-md-7">
 
                     <div class="details-box">
-
                         <div class=" row">
 
                             <?php if ($invoice->invoice_sign == -1) { ?>
@@ -352,7 +350,6 @@ if ($this->config->item('disable_read_only') == true) {
 
                             </div>
 
-
                             <div class="col-xs-12 col-sm-6">
 
                                 <div class="invoice-properties">
@@ -403,6 +400,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                             </div>
+
                         </div>
                     </div>
                 </div>

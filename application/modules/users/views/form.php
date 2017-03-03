@@ -36,7 +36,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1><?php echo trans('user_form'); ?></h1>
+        <h1 class="headerbar-title"><?php echo trans('user_form'); ?></h1>
         <?php echo $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 

@@ -43,7 +43,7 @@ if (get_setting('disable_sidebar') != 1) {
 
 <div id="fullpage-loader" style="display: none">
     <div class="loader-content">
-        <i class="fa fa-cog fa-spin"></i>
+        <i id="loader-icon" class="fa fa-cog fa-spin"></i>
         <div id="loader-error" style="display: none">
             <?php echo trans('loading_error'); ?><br/>
             <a href="https://wiki.invoiceplane.com/<?php echo trans('cldr'); ?>/1.0/general/faq"

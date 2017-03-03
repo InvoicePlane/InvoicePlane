@@ -9,9 +9,9 @@
 </script>
 
 <div id="headerbar">
-    <h1><?php echo trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php if ($invoice->invoice_status_id == 4) { ?>
             <span class="btn btn-success btn-sm disabled">
                 <i class="fa fa-check"></i>

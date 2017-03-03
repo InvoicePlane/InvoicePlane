@@ -11,7 +11,7 @@
 </script>
 
 <div id="headerbar">
-    <h1><?php echo trans('settings'); ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('settings'); ?></h1>
     <?php $this->layout->load_view('layout/header_buttons'); ?>
 </div>
 
