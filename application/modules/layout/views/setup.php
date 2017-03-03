@@ -19,7 +19,7 @@
 
     <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/welcome.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/invoiceplane/css/welcome.css">
 
     <!--[if lt IE 9]>
     <script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
