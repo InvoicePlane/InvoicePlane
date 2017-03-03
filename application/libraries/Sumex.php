@@ -39,6 +39,40 @@ class Sumex
       'company'
     );
 
+    public const CANTONS = array(
+      "AG",
+      "AI",
+      "AR",
+      "BE",
+      "BL",
+      "BS",
+      "FR",
+      "GE",
+      "GL",
+      "GR",
+      "JU",
+      "LU",
+      "NE",
+      "NW",
+      "OW",
+      "SG",
+      "SH",
+      "SO",
+      "SZ",
+      "TI",
+      "TG",
+      "UR",
+      "VD",
+      "VS",
+      "ZG",
+      "ZH",
+      "LI",
+      "A",
+      "D",
+      "F",
+      "I"
+    );
+
     public $_lang = "it";
     public $_mode = "production";
     public $_copy = "0";
@@ -64,6 +98,7 @@ class Sumex
 
     public $_casedate = "1970-01-01";
     public $_casenumber = "0";
+    public $_insuredid = '1234567';
 
     public $_treatment = array(
         'start' => '',
@@ -97,7 +132,6 @@ class Sumex
 
     public function __construct($params)
     {
-        //define('IP_VERSION', '1.5.0');
         $CI = &get_instance();
 
         $CI->load->helper('invoice');
@@ -133,6 +167,7 @@ class Sumex
 
         $this->_casedate = $this->invoice->sumex_casedate;
         $this->_casenumber = $this->invoice->sumex_casenumber;
+        $this->_insuredid = $this->invoice->client_insurednumber;
 
 
         $treatments = array(
@@ -153,21 +188,13 @@ class Sumex
             'observations' => $this->invoice->sumex_observations,
         );
 
-        /*if($this->_treatment['diagnosis'] == ""){
-          $this->_treatment['diagnosis'] = ".";
-        }*/
-
         $esrTypes = array("9", "red");
         $this->_esrType = $esrTypes[$CI->mdl_settings->setting('sumex_sliptype')];
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
         $this->_role = Sumex::ROLES[$CI->mdl_settings->setting('sumex_role')];
         $this->_place = Sumex::PLACES[$CI->mdl_settings->setting('sumex_place')];
-
-        // TODO: REMOVE BEFORE GOING TO PRODUCTION!!!
-        file_put_contents(UPLOADS_FOLDER.'/test.json', json_encode($this));
-        #var_dump($this);
-        #throw new Error("ok");
+        $this->_canton = Sumex::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
     }
 
     public function pdf()
@@ -175,8 +202,6 @@ class Sumex
         $ch = curl_init();
 
         $xml = $this->xml();
-        // TODO: REMOVE BEFORE GOING TO PRODUCTION!!!
-        file_put_contents(UPLOADS_FOLDER.'/test.xml', $xml);
 
         curl_setopt($ch, CURLOPT_URL, SUMEX_URL."/generateInvoice");
         curl_setopt($ch, CURLOPT_POST, true);
@@ -190,7 +215,6 @@ class Sumex
 
 
         return $out;
-        //return file_get_contents('req2.xml');
     }
 
     public function xml()
@@ -314,13 +338,6 @@ class Sumex
         $generator = $this->doc->createElement('invoice:generator');
         $generator->setAttribute('name', 'PHP_Sumex');
         $generator->setAttribute('version', '100');
-
-        // Depends on...?
-        /*$dependson = $this->doc->createElement('invoice:depends_on');
-        $dependson->setAttribute('name', 'Nothing');
-        $dependson->setAttribute('version', '300');
-
-        $generator->appendChild($dependson);*/
 
         $node->appendChild($package);
         $node->appendChild($generator);
@@ -571,7 +588,11 @@ class Sumex
         if($this->_casenumber != ""){
           $node->setAttribute('case_id', $this->_casenumber);
         }
-        
+
+        if($this->_insuredid != ""){
+          $node->setAttribute('insured_id', $this->_insuredid);
+        }
+
         return $node;
     }
 

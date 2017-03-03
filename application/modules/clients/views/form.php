@@ -197,6 +197,24 @@ $cv = $this->controller->view_data["custom_values"];
                                    value="<?php echo htmlspecialchars(format_avs($avs)); ?>">
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_insurednumber'); ?>: </label>
+                        <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_insurednumber" id="client_insurednumber" class="form-control"
+                                   value="<?php echo htmlentities($insuredNumber); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_veka'); ?>: </label>
+                        <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_veka" id="client_veka" class="form-control"
+                                   value="<?php echo htmlentities($veka); ?>">
+                        </div>
+                    </div>
                 </fieldset>
             </div>
 

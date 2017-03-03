@@ -580,6 +580,7 @@ $lang = array(
     'complete'                                     => 'Complete',
 
     // Sumex
+    'sumex_settings'                               => 'Sumex Settings',
     'birthdate'                                    => 'Birthdate',
     'gender'                                       => 'Gender',
     'gender_male'                                  => 'Male',
@@ -634,9 +635,12 @@ $lang = array(
     'invoice_sumex_place_association' => 'Association',
     'invoice_sumex_place_company' => 'Company',
     'invoice_sumex_diagnosis' => 'Diagnosis',
+    'invoice_sumex_canton' => 'Canton',
     'sumex_observations' => 'Observations',
     'sumex_rcc' => 'RCC',
     'sumex_ssn' => 'AVS',
+    'sumex_insurednumber' => 'Insured Number',
+    'sumex_veka' => 'VEKA',
     'user_iban' => 'IBAN',
     'user_subscriber_number' => 'Subscriber Number',
     // Errors
