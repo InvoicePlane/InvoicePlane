@@ -148,7 +148,6 @@ if ($this->config->item('disable_read_only') == true) {
 <div id="headerbar">
     <h1>
         <?php
-        echo trans('invoice')." [S] ";
         echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
         ?>
     </h1>
