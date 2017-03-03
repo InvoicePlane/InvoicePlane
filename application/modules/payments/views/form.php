@@ -31,7 +31,7 @@
     <?php } ?>
 
     <div id="headerbar">
-        <h1><?php echo trans('payment_form'); ?></h1>
+        <h1 class="headerbar-title"><?php echo trans('payment_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 

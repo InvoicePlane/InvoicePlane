@@ -1,13 +1,13 @@
 <div id="headerbar">
-    <h1><?php echo trans('email_templates'); ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('email_templates'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('email_templates/form'); ?>">
             <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
         </a>
     </div>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('email_templates/index'), 'mdl_email_templates'); ?>
     </div>
 </div>

@@ -1,12 +1,13 @@
 <div id="headerbar">
-    <h1><?php echo trans('invoice_groups'); ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('invoice_groups'); ?></h1>
 
-    <div class="pull-right">
-        <a class="btn btn-sm btn-primary" href="<?php echo site_url('invoice_groups/form'); ?>"><i
-                    class="fa fa-plus"></i> <?php echo trans('new'); ?></a>
+    <div class="headerbar-item pull-right">
+        <a class="btn btn-sm btn-primary" href="<?php echo site_url('invoice_groups/form'); ?>">
+            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+        </a>
     </div>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('invoice_groups/index'), 'mdl_invoice_groups'); ?>
     </div>
 
