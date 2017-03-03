@@ -72,6 +72,10 @@ class Mdl_invoice_sumex extends Response_Model
                 'field' => 'sumex_casedate',
                 'label' => trans('case_date'),
                 'rules' => 'required'
+            ),
+            'sumex_casenumber' => array(
+                'field' => 'sumex_casenumber',
+                'label' => trans('case_number')
             )
         );
     }
