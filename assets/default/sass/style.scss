@@ -14,11 +14,11 @@
 |   =========================================================
 */
 
-@import "includes/bootstrap";
+@import "../../core/scss/bootstrap";
 @import "../../../node_modules/font-awesome/scss/font-awesome";
 @import "../../../node_modules/select2/src/scss/core";
 @import "../../../node_modules/dropzone/src/dropzone";
-@import "includes/bootstrap-datepicker";
+@import "../../core/scss/bootstrap-datepicker";
 
 /*
 |   =========================================================
@@ -26,4 +26,4 @@
 |   =========================================================
 */
 
-@import "includes/core";
+@import "../../core/scss/core";
