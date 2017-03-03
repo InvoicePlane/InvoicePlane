@@ -200,6 +200,9 @@ $(document).ready(function () {
 
     $('.ajax-loader').bind("click", function () {
         $('#fullpage-loader').fadeIn(200);
-        $('#loader-error').delay(10000).fadeIn(200);
+        window.setTimeout(function () {
+            $('#loader-error').fadeIn(200);
+            $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
+        }, 10000);
     });
 });
