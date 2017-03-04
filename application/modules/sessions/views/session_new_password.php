@@ -24,10 +24,10 @@
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-    <link href="<?php echo base_url(); ?>assets/default/css/style.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/default/css/custom.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/core/css/custom.css" rel="stylesheet">
 
 </head>
 
