@@ -37,12 +37,12 @@ CREATE TABLE `ip_invoice_sumex` (
   `sumex_id` int(11) NOT NULL,
   `sumex_invoice` int(11) NOT NULL,
   `sumex_reason` int(11) NOT NULL,
-  `sumex_diagnosis` varchar(500) COLLATE utf8 NOT NULL,
-  `sumex_observations` varchar(500) COLLATE utf8 NOT NULL,
+  `sumex_diagnosis` varchar(500) NOT NULL,
+  `sumex_observations` varchar(500) NOT NULL,
   `sumex_treatmentstart` date NOT NULL,
   `sumex_treatmentend` date NOT NULL,
   `sumex_casedate` date NOT NULL,
-  `sumex_casenumber` varchar(35) COLLATE utf8 DEFAULT NULL
+  `sumex_casenumber` varchar(35) DEFAULT NULL
 ) ENGINE = MyISAM DEFAULT CHARSET = utf8;
 
 
