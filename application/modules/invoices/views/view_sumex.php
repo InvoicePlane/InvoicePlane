@@ -147,13 +147,13 @@ if ($this->config->item('disable_read_only') == true) {
 ?>
 
 <div id="headerbar">
-    <h1>
+    <h1 class="headerbar-title">
         <?php
         echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
         ?>
     </h1>
 
-    <div class="pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
+    <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
 
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
@@ -235,7 +235,7 @@ if ($this->config->item('disable_read_only') == true) {
         <?php } ?>
     </div>
 
-    <div class="invoice-labels pull-right">
+    <div class="headerbar-item invoice-labels pull-right">
         <?php if ($invoice->invoice_is_recurring) { ?>
             <span class="label label-info"><?php echo trans('recurring'); ?></span>
         <?php } ?>
