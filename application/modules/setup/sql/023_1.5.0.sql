@@ -116,4 +116,4 @@ ALTER TABLE `ip_clients`
 
 # Insert default theme into database (IP-338)
 INSERT INTO `ip_settings` (setting_key, setting_value)
-  VALUES ('system_theme', 'invoiceplane_default');
+  VALUES ('system_theme', 'invoiceplane');
