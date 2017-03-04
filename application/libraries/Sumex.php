@@ -8,7 +8,7 @@ class Sumex
     public $doc;
     public $root;
 
-    public const ROLES = array(
+    const ROLES = array(
     'physician',
     'physiotherapist',
     'chiropractor',
@@ -31,7 +31,7 @@ class Sumex
     'naturopathictherapist',
     'other');
 
-    public const PLACES = array(
+    const PLACES = array(
       'practice',
       'hospital',
       'lab',
@@ -39,7 +39,7 @@ class Sumex
       'company'
     );
 
-    public const CANTONS = array(
+    const CANTONS = array(
       "AG",
       "AI",
       "AR",
