@@ -76,11 +76,9 @@ ALTER TABLE `ip_invoice_items`
   ADD COLUMN item_date date;
 
 INSERT INTO `ip_settings` (setting_key, setting_value) VALUES
-  (
     ('sumex', '0'),
     ('sumex_sliptype', '1'),
-    ('sumex_canton', '0')
-  );
+    ('sumex_canton', '0');
 
 ALTER TABLE `ip_users`
   ADD COLUMN user_subscribernumber VARCHAR(40) DEFAULT NULL;
