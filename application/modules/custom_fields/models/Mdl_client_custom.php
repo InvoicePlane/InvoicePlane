@@ -28,10 +28,12 @@ class Mdl_Client_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
+            $cid = (isset($client_custom->client_custom_id) ? $client_custom->client_custom_id : null);
             $db_array = isset($this->_formdata) ? $this->_formdata : null;
+            $client_custom_id = null;
             $db_array['client_id'] = $client_id;
-            $client_custom = $this->where('client_id', $client_id)->get()->row();
-            $id = parent::save($client_custom->client_custom_id, $db_array);
+            $client_custom = $this->where('client_id', $cid)->get()->row();
+            $id = parent::save($cid, $db_array);
             return true;
         }
 

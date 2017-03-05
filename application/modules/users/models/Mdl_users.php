@@ -3,7 +3,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
-m *
+ *
  * @author		InvoicePlane Developers & Contributors
  * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
