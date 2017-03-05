@@ -337,7 +337,7 @@ class Invoices extends Admin_Controller
 
         $this->output->set_content_type('application/pdf');
         $this->output->set_output($pdf->Output());
-        
+
         unlink($temp);
         unlink($tempCopy);
     }
