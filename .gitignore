@@ -1,5 +1,6 @@
 # Configuration stuff
 /application/config/development
+/application/sessions
 /ipconfig.php
 
 # Dependencies
