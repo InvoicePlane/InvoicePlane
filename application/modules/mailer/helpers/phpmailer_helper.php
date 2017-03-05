@@ -26,7 +26,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
     require FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 
     $CI = &get_instance();
-    $CI->load->library('encrypt');
+    $CI->load->library('crypt');
 
     // Create the basic mailer object
     $mail = new PHPMailer();
@@ -45,9 +45,8 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
             if ($CI->mdl_settings->setting('smtp_authentication')) {
                 $mail->SMTPAuth = true;
 
-                $this->load->library('crypt');
-                $encoded = $this->mdl_settings->get('smtp_password');
-                $decoded = $this->crypt->decode($encoded);
+                $encoded = $CI->mdl_settings->get('smtp_password');
+                $decoded = $CI->crypt->decode($encoded);
 
                 $mail->Username = $CI->mdl_settings->setting('smtp_username');
                 $mail->Password = $decoded;
