@@ -31,4 +31,32 @@ class Crypt
 
         return ($hash == $new_hash);
     }
+
+    public function encode($data){
+      $CI = &get_instance();
+      $CI->load->library('cryptor');
+
+      $key = getenv('ENCRYPTION_KEY');
+      if(preg_match("/^base64:(.*)$/", $key, $matches)){
+        $key = base64_decode($matches[1]);
+      }
+
+      $encrypted = Cryptor::Encrypt($data, $key);
+      return $encrypted;
+
+    }
+
+    public function decode($data){
+      $CI = &get_instance();
+      $CI->load->library('cryptor');
+
+      $key = getenv('ENCRYPTION_KEY');
+      if(preg_match("/^base64:(.*)$/", $key, $matches)){
+        $key = base64_decode($matches[1]);
+      }
+
+      $decrypted = Cryptor::Decrypt($data, $key);
+      return $decrypted;
+
+    }
 }

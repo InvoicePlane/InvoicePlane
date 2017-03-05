@@ -43,8 +43,8 @@ class Settings extends Admin_Controller
                 // Don't save empty passwords
                 if ($key == 'smtp_password' or $key == 'merchant_password') {
                     if ($value <> '') {
-                        $this->load->library('encrypt');
-                        $this->mdl_settings->save($key, $this->encrypt->encode($value));
+                        $this->load->library('crypt');
+                        $this->mdl_settings->save($key, $this->crypt->encode($value));
                     }
                 } else {
                     $this->mdl_settings->save($key, $value);
