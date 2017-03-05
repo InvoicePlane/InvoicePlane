@@ -8,6 +8,7 @@
   "require": {
     "phpmailer/phpmailer": "^5.2",
     "mpdf/mpdf": "dev-development",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "setasign/fpdi-fpdf": "^1.6.1"
   }
 }
