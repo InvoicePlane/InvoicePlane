@@ -423,7 +423,7 @@ class Mdl_Invoices extends Response_Model
 
     // Used to check if the invoice is Sumex
     public function is_sumex(){
-        $this->filter_where_not('sumex_id', null);
+        $this->where('sumex_id is NOT NULL', null, FALSE);
         return $this;
     }
 
