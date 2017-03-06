@@ -240,7 +240,10 @@
                 </div>
 
                 <?php if ($invoice->invoice_balance == 0) {
-                    echo '<img src="' . base_url('assets/default/img/paid.png') . '" class="paid-stamp">';
+                    echo '<img src="' . base_url('assets/core/img/paid.png') . '" class="paid-stamp">';
+                } ?>
+                <?php if ($is_overdue) {
+                    echo '<img src="' . base_url('assets/core/img/overdue.png') . '" class="overdue-stamp">';
                 } ?>
 
                 <hr>

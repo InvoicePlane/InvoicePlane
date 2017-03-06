@@ -23,6 +23,7 @@
 
 <form method="post" class="form-horizontal"
       action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
+      <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php echo trans('email_invoice'); ?></h1>

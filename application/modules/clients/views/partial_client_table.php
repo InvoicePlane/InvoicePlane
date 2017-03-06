@@ -13,7 +13,7 @@
         <tbody>
         <?php foreach ($records as $client) : ?>
             <tr>
-                <td><?php echo anchor('clients/view/' . $client->client_id, $client->client_name); ?></td>
+                <td><?php echo anchor('clients/view/' . $client->client_id, format_client($client)); ?></td>
                 <td><?php echo $client->client_email; ?></td>
                 <td><?php echo(($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : ''))); ?></td>
                 <td style="text-align: right;"><?php echo format_currency($client->client_invoice_balance); ?></td>

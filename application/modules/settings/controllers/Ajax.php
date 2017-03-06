@@ -22,7 +22,13 @@ class Ajax extends Admin_Controller
      */
     public function get_cron_key()
     {
+        $this->load->helper('string');
         echo random_string('alnum', 16);
+    }
+
+    public function test_mail(){
+        $this->load->helper('mailer');
+        email_invoice(1, 'InvoicePlane', 'denys@denv.it', 'denys@denv.it', 'Test', 'Some text');
     }
 
 }

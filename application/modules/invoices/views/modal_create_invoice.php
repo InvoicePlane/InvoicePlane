@@ -16,7 +16,7 @@
             // Posts the data to validate and create the invoice;
             // will create the new client if necessar
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
-                    client_name: $('#client_name').val(),
+                    client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
@@ -60,12 +60,12 @@
 
             <div class="form-group">
                 <label for="client_name"><?php echo trans('client'); ?></label>
-                <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
-                        echo "<option value=\"" . htmlspecialchars($client->client_name) . "\" ";
-                        if ($client_name == $client->client_name) echo 'selected';
-                        echo ">" . htmlspecialchars($client->client_name) . "</option>";
+                        echo "<option value=\"" . $client->client_id . "\" ";
+                        if ($client_id == $client->client_id) echo 'selected';
+                        echo ">" . htmlentities(format_client($client)) . "</option>";
                     }
                     ?>
                 </select>

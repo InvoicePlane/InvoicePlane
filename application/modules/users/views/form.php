@@ -273,6 +273,59 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo trans('user_iban'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_iban" id="user_iban" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_iban'); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo trans('user_subscriber_number'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_subscribernumber" id="user_subscribernumber" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_subscribernumber'); ?>">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+
+                    <legend><?php echo trans('sumex_information'); ?></legend>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo trans('gln'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_gln" id="user_gln" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_gln'); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
+                            <label class="control-label">
+                                <?php echo trans('sumex_rcc'); ?>
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="text" name="user_rcc" id="user_rcc" class="form-control"
+                                   value="<?php echo $this->mdl_users->form_value('user_rcc'); ?>">
+                        </div>
+                    </div>
+
                 </fieldset>
 
                 <fieldset>

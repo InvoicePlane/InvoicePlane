@@ -23,7 +23,7 @@
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $payment->client_id); ?>"
                        title="<?php echo trans('view_client'); ?>">
-                        <?php echo $payment->client_name; ?>
+                        <?php echo format_client($payment); ?>
                     </a>
                 </td>
                 <td><?php echo format_currency($payment->payment_amount); ?></td>

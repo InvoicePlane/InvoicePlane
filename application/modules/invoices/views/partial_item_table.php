@@ -41,7 +41,7 @@
                     <input type="text" name="item_price" class="input-sm form-control amount" value="">
                 </div>
             </td>
-            <td class="td-amount ">
+            <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('item_discount'); ?></span>
                     <input type="text" name="item_discount_amount" class="input-sm form-control amount"
@@ -67,12 +67,25 @@
             <td class="td-icon text-right td-vert-middle"></td>
         </tr>
         <tr>
+          <?php if ($invoice->sumex_id == ""): ?>
             <td class="td-textarea">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('description'); ?></span>
                     <textarea name="item_description" class="input-sm form-control"></textarea>
                 </div>
             </td>
+          <?php else: ?>
+            <td class="td-date">
+                <div class="input-group">
+                    <span class="input-group-addon"><?php echo trans('date'); ?></span>
+                    <input type="text" name="item_date" class="input-sm form-control datepicker"
+                           value="<?php echo format_date(@$item->item_date); ?>"
+                        <?php if ($invoice->is_read_only == 1) {
+                            echo 'disabled="disabled"';
+                        } ?>>
+                </div>
+            </td>
+          <?php endif; ?>
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('product_unit'); ?></span>
@@ -147,7 +160,7 @@
                             } ?>>
                     </div>
                 </td>
-                <td class="td-amount ">
+                <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('item_discount'); ?></span>
                         <input type="text" name="item_discount_amount" class="input-sm form-control amount"
@@ -186,17 +199,31 @@
                     <?php endif; ?>
                 </td>
             </tr>
+
             <tr>
-                <td class="td-textarea">
-                    <div class="input-group">
-                        <span class="input-group-addon"><?php echo trans('description'); ?></span>
-                        <textarea name="item_description"
-                                  class="input-sm form-control"
-                            <?php if ($invoice->is_read_only == 1) {
-                                echo 'disabled="disabled"';
-                            } ?>><?php echo $item->item_description; ?></textarea>
-                    </div>
-                </td>
+                <?php if ($invoice->sumex_id == ""): ?>
+                  <td class="td-textarea">
+                      <div class="input-group">
+                          <span class="input-group-addon"><?php echo trans('description'); ?></span>
+                          <textarea name="item_description"
+                                    class="input-sm form-control"
+                              <?php if ($invoice->is_read_only == 1) {
+                                  echo 'disabled="disabled"';
+                              } ?>><?php echo $item->item_description; ?></textarea>
+                      </div>
+                  </td>
+                <?php else: ?>
+                  <td class="td-date">
+                      <div class="input-group">
+                          <span class="input-group-addon"><?php echo trans('date'); ?></span>
+                          <input type="text" name="item_date" class="input-sm form-control datepicker"
+                                 value="<?php echo format_date($item->item_date); ?>"
+                              <?php if ($invoice->is_read_only == 1) {
+                                  echo 'disabled="disabled"';
+                              } ?>>
+                      </div>
+                  </td>
+                <?php endif; ?>
 
                 <td class="td-amount">
                     <div class="input-group">

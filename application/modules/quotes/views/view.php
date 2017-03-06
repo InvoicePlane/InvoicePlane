@@ -12,7 +12,7 @@
         $('#quote_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
                 quote_id: <?php echo $quote_id; ?>,
-                client_name: "<?php echo $this->db->escape_str($quote->client_name); ?>",
+                client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
                 _ip_csrf: csrf()
             });
         });
@@ -195,7 +195,7 @@
                     <div class="pull-left">
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>">
-                                <?php echo $quote->client_name; ?>
+                                <?php echo format_client($quote); ?>
                             </a>
                             <?php if ($quote->quote_status_id == 1): ?>
                                 <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
