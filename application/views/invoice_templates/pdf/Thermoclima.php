@@ -34,7 +34,11 @@
         <div><b><span class="logo-red">THERMOCLIMA S.N.C.</span> di <span class="logo-blue">PESSOTTO GIUSEPPE & C.</span></b></div>
         <div><span class="logo-red">RISCALDAMENTO</span> – <span class="logo-blue">CONDIZIONAMENTO</span></div>
         <div><span class="small-text">Sede Legale: </span><span class="logo-red">Via Repubblica 25/3</span><span class="logo-blue"> 31020 SAN POLO DI PIAVE (TV)</span></div>
-        <div><span class="small-text">Sede Operativa: </span><span class="logo-red">VIA LIBERAZIONE</span><span class="logo-blue"> 100 - 31028 VAZZOLA (TV)</span></div>
+        <div><span class="small-text">Sede Operativa: </span><span class="logo-red">VIA LIBERAZIO</span><span class="logo-blue">NE 100 - 31028 VAZZOLA (TV)</span></div>
+        <div><span class="logo-red">Reg. Impr. di TV / C</span><span class="logo-blue">.F.e P.I. 02489580262</span></div>
+        <div><span class="logo-red">email: info@the</span><span class="logo-blue">rmoclimacaldaie.it</span></div>
+        <div><span class="logo-red">www.thermo</span><span class="logo-blue">climacaldaie.it</span></div>
+
     </div>
 
     <div class="invoice-details clearfix">

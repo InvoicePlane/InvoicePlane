@@ -281,7 +281,7 @@ $config['sess_use_database'] = true;
 $config['sess_table_name'] = 'ip_sessions';
 $config['sess_match_ip'] = false;
 $config['sess_match_useragent'] = false;
-$config['sess_time_to_update'] = 300;
+$config['sess_time_to_update'] = 864000;
 
 /*
 |--------------------------------------------------------------------------
@@ -325,7 +325,7 @@ $config['global_xss_filtering'] = true;
 $config['csrf_protection'] = false;
 $config['csrf_token_name'] = 'csrf_test_name';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
-$config['csrf_expire'] = 7200;
+$config['csrf_expire'] = 864000;
 
 /*
 |--------------------------------------------------------------------------
