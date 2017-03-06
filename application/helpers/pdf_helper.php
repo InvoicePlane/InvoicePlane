@@ -28,6 +28,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->model('invoices/mdl_invoice_tax_rates');
     $CI->load->model('payment_methods/mdl_payment_methods');
     $CI->load->helper('country');
+    $CI->load->helper('client');
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
@@ -101,6 +102,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     $CI->load->model('quotes/mdl_quote_items');
     $CI->load->model('quotes/mdl_quote_tax_rates');
     $CI->load->helper('country');
+    $CI->load->helper('client');
 
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
 

@@ -15,7 +15,7 @@
 
     <div id="client">
         <div>
-            <b><?php echo $invoice->client_name; ?></b>
+            <b><?php echo format_client($invoice); ?></b>
         </div>
         <?php if ($invoice->client_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $invoice->client_vat_id . '</div>';
