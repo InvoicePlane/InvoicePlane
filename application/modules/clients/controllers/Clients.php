@@ -70,7 +70,7 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
-            $check = $this->db->get_where('ip_clients', array('client_name' => $this->input->post('client_name')))->result();
+            $check = $this->db->get_where('ip_clients', array('client_name' => $this->input->post('client_name'), 'client_surname' => $this->input->post('client_surname')))->result();
 
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
