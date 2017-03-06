@@ -2,7 +2,6 @@
     <div class="install-panel">
 
         <h1 id="logo"><span>InvoicePlane</span></h1>
-        <?php var_dump($errors); ?>
         <form method="post" class="form-horizontal" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
