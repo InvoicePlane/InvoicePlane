@@ -44,7 +44,7 @@
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"
                        title="<?php echo trans('view_client'); ?>">
-                        <?php echo $quote->client_name; ?>
+                        <?php echo format_client($quote); ?>
                     </a>
                 </td>
                 <td style="text-align: right; padding-right: 25px;">

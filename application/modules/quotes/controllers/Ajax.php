@@ -178,9 +178,10 @@ class Ajax extends Admin_Controller
     {
         $this->load->module('layout');
         $this->load->model('clients/mdl_clients');
+        $this->load->helper('client');
 
         $data = array(
-            'client_name' => $this->input->post('client_name'),
+            'client_id' => $this->input->post('client_id'),
             'quote_id' => $this->input->post('quote_id'),
             'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
@@ -194,12 +195,11 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         // Get the client ID
-        $client_name = $this->input->post('client_name');
-        $client = $this->mdl_clients->where('client_name', $this->db->escape_str($client_name))
+        $client_id = $this->input->post('client_id');
+        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)
             ->get()->row();
 
         if (!empty($client)) {
-            $client_id = $client->client_id;
             $quote_id = $this->input->post('quote_id');
 
             $db_array = array(

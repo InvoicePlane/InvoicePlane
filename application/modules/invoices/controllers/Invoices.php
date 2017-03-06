@@ -56,6 +56,8 @@ class Invoices extends Admin_Controller
                 break;
         }
 
+        $this->load->helper('client');
+
         $this->mdl_invoices->paginate(site_url('invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 
@@ -126,6 +128,7 @@ class Invoices extends Admin_Controller
         );
 
         $this->load->helper("custom_values");
+        $this->load->helper("client");
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 
@@ -180,14 +183,26 @@ class Invoices extends Admin_Controller
             )
         );
 
-        $this->layout->buffer(
-            array(
-                array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
-                array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
-                array('modal_add_payment', 'payments/modal_add_payment'),
-                array('content', 'invoices/view')
-            )
-        );
+        if($invoice->sumex_id != null){
+          $this->layout->buffer(
+              array(
+                  array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
+                  array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
+                  array('modal_add_payment', 'payments/modal_add_payment'),
+                  array('content', 'invoices/view_sumex')
+              )
+          );
+        }
+        else {
+          $this->layout->buffer(
+              array(
+                  array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
+                  array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
+                  array('modal_add_payment', 'payments/modal_add_payment'),
+                  array('content', 'invoices/view')
+              )
+          );
+       }
 
         $this->layout->render();
     }
@@ -256,6 +271,92 @@ class Invoices extends Admin_Controller
 
         $this->output->set_content_type('text/xml');
         $this->output->set_output($this->zugferdxml->xml());
+    }
+
+    public function generate_sumex_pdf($invoice_id){
+        $this->load->model('invoices/mdl_items');
+        $this->load->library('Sumex', array(
+          'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
+          'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result()
+        ));
+
+        // Append a copy at the end and change the title:
+        // WARNING: The title depends on what invoice type is (TP, TG)
+        // and is language-dependant. Fix accordingly if you really need this hack
+        require FCPATH . '/vendor/autoload.php';
+        $temp = tempnam("/tmp", "invsumex_");
+        $tempCopy = tempnam("/tmp", "invsumex_");
+        $pdf = new FPDI();
+        $sumexPDF = $this->sumex->pdf();
+        file_put_contents($temp, $sumexPDF);
+
+        // Hackish
+        $sumexPDF = str_replace(
+          "Giustificativo per la richiesta di rimborso",
+          "Copia: Giustificativo per la richiesta di rimborso",
+          $sumexPDF
+        );
+
+        file_put_contents($tempCopy, $sumexPDF);
+
+        $pageCount = $pdf->setSourceFile($temp);
+
+        for( $pageNo=1; $pageNo<=$pageCount; $pageNo++ )
+        {
+            $templateId = $pdf->importPage($pageNo);
+            $size = $pdf->getTemplateSize($templateId);
+
+            if( $size['w']>$size['h'] ){
+                $pageFormat = 'L';  //  landscape
+            }
+            else{
+                $pageFormat = 'P';  //  portrait
+            }
+
+            $pdf->addPage($pageFormat,array($size['w'],$size['h']));
+            $pdf->useTemplate($templateId);
+        }
+
+        $pageCount = $pdf->setSourceFile($tempCopy);
+
+        for( $pageNo=2; $pageNo<=$pageCount; $pageNo++ )
+        {
+            $templateId = $pdf->importPage($pageNo);
+            $size = $pdf->getTemplateSize($templateId);
+
+            if( $size['w']>$size['h'] ){
+                $pageFormat = 'L';  //  landscape
+            }
+            else{
+                $pageFormat = 'P';  //  portrait
+            }
+
+            $pdf->addPage($pageFormat,array($size['w'],$size['h']));
+            $pdf->useTemplate($templateId);
+        }
+
+        $this->output->set_content_type('application/pdf');
+        $this->output->set_output($pdf->Output());
+
+        unlink($temp);
+        unlink($tempCopy);
+    }
+
+    public function generate_sumex_copy($invoice_id){
+
+
+        $this->load->model('invoices/mdl_items');
+        $this->load->library('Sumex', array(
+          'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
+          'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+          'options' => array(
+            'copy' => "1",
+            'storno' => "0"
+          )
+        ));
+
+        $this->output->set_content_type('application/pdf');
+        $this->output->set_output($this->sumex->pdf());
     }
 
     /**

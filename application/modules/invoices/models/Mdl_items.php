@@ -21,7 +21,7 @@ class Mdl_Items extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('ip_invoice_item_amounts.*, ip_invoice_items.*,
+        $this->db->select('ip_invoice_item_amounts.*, ip_products.*, ip_invoice_items.*,
             item_tax_rates.tax_rate_percent AS item_tax_rate_percent,
             item_tax_rates.tax_rate_name AS item_tax_rate_name');
     }
@@ -35,6 +35,7 @@ class Mdl_Items extends Response_Model
     {
         $this->db->join('ip_invoice_item_amounts', 'ip_invoice_item_amounts.item_id = ip_invoice_items.item_id', 'left');
         $this->db->join('ip_tax_rates AS item_tax_rates', 'item_tax_rates.tax_rate_id = ip_invoice_items.item_tax_rate_id', 'left');
+        $this->db->join('ip_products', 'ip_products.product_id = ip_invoice_items.item_product_id', 'left');
     }
 
     /**
@@ -47,6 +48,11 @@ class Mdl_Items extends Response_Model
                 'field' => 'invoice_id',
                 'label' => trans('invoice'),
                 'rules' => 'required'
+            ),
+            'item_sku' => array(
+                'field' => 'item_sku',
+                'label' => trans('item_sku'),
+                'rules' => 'required|unique'
             ),
             'item_name' => array(
                 'field' => 'item_name',
@@ -75,6 +81,10 @@ class Mdl_Items extends Response_Model
                 'field' => 'item_product_id',
                 'label' => trans('original_product')
             ),
+            'item_date' => array(
+                'field' => 'item_date',
+                'label' => trans('item_date')
+            )
         );
     }
 

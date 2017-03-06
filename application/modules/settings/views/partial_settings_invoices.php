@@ -156,6 +156,91 @@
     <hr/>
 
     <div class="row">
+      <div class="col-xs-12 col-md-6">
+
+          <h4><?php echo trans('sumex_settings'); ?></h4>
+          <br/>
+          <div class="form-group">
+              <label class="control-label">
+                  <?php echo trans('invoice_sumex'); ?>
+              </label>
+              <select name="settings[sumex]" class="input-sm form-control">
+                  <option value="0"
+                          <?php if (!$this->mdl_settings->setting('sumex')) { ?>selected="selected"<?php } ?>>
+                      <?php echo trans('no'); ?>
+                  </option>
+                  <option value="1"
+                          <?php if ($this->mdl_settings->setting('sumex')) { ?>selected="selected"<?php } ?>>
+                      <?php echo trans('yes'); ?>
+                  </option>
+              </select>
+              <p class="help-block"><?php echo trans('invoice_sumex_help'); ?></p>
+          </div>
+
+          <div class="form-group">
+              <label class="control-label">
+                  <?php echo trans('invoice_sumex_sliptype'); ?>
+              </label>
+              <select name="settings[sumex_sliptype]" class="input-sm form-control">
+                  <?php
+                  $slipTypes = array("esr9", "esrRed");
+                  foreach($slipTypes as $k=>$v): ?>
+                  <?php $selected = ($this->mdl_settings->setting('sumex_sliptype') == $k ? " selected": ""); ?>
+                  <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_sliptype-'.$v); ?></option>
+                  <?php endforeach; ?>
+              </select>
+              <p class="help-block"><?php echo trans('invoice_sumex_sliptype_help'); ?></p>
+          </div>
+
+        </div>
+        <div class="col-xs-12 col-md-6">
+          <h4>&nbsp;</h4>
+          <br/>
+          <div class="form-group">
+              <label class="control-label">
+                  <?php echo trans('invoice_sumex_role'); ?>
+              </label>
+              <select name="settings[sumex_role]" class="input-sm form-control">
+                  <?php
+                  $roles = Sumex::ROLES;
+                  foreach($roles as $k=>$v): ?>
+                  <?php $selected = ($this->mdl_settings->setting('sumex_role') == $k ? " selected": ""); ?>
+                  <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_role_'.$v); ?></option>
+                  <?php endforeach; ?>
+              </select>
+          </div>
+
+          <div class="form-group">
+              <label class="control-label">
+                  <?php echo trans('invoice_sumex_place'); ?>
+              </label>
+              <select name="settings[sumex_place]" class="input-sm form-control">
+                  <?php
+                  $places = Sumex::PLACES;
+                  foreach($places as $k=>$v): ?>
+                  <?php $selected = ($this->mdl_settings->setting('sumex_place') == $k ? " selected": ""); ?>
+                  <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_place_'.$v); ?></option>
+                  <?php endforeach; ?>
+              </select>
+          </div>
+
+          <div class="form-group">
+              <label class="control-label">
+                  <?php echo trans('invoice_sumex_canton'); ?>
+              </label>
+              <select name="settings[sumex_canton]" class="input-sm form-control">
+                  <?php
+                  $cantons = Sumex::CANTONS;
+                  foreach($cantons as $k=>$v): ?>
+                  <?php $selected = ($this->mdl_settings->setting('sumex_canton') == $k ? " selected": ""); ?>
+                  <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo $v; ?></option>
+                  <?php endforeach; ?>
+              </select>
+          </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-xs-12 col-md-6">
 
             <h4><?php echo trans('invoice_template'); ?></h4>

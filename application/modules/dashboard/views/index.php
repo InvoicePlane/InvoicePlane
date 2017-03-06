@@ -130,7 +130,7 @@
                             <th style="min-width: 15%;"><?php echo trans('quote'); ?></th>
                             <th style="min-width: 35%;"><?php echo trans('client'); ?></th>
                             <th style="text-align: right;"><?php echo trans('balance'); ?></th>
-                            <th><?php echo trans('pdf'); ?></th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -149,7 +149,7 @@
                                     <?php echo anchor('quotes/view/' . $quote->quote_id, ($quote->quote_number ? $quote->quote_number : $quote->quote_id)); ?>
                                 </td>
                                 <td>
-                                    <?php echo anchor('clients/view/' . $quote->client_id, $quote->client_name); ?>
+                                    <?php echo anchor('clients/view/' . $quote->client_id, format_client($quote)); ?>
                                 </td>
                                 <td class="amount">
                                     <?php echo format_currency($quote->quote_total); ?>
@@ -157,7 +157,7 @@
                                 <td style="text-align: center;">
                                     <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
                                        title="<?php echo trans('download_pdf'); ?>" target="_blank">
-                                        <i class="fa fa-print"></i>
+                                        <i class="fa fa-file-pdf-o"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -223,16 +223,23 @@
                                     <?php echo anchor('invoices/view/' . $invoice->invoice_id, ($invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id)); ?>
                                 </td>
                                 <td>
-                                    <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
+                                    <?php echo anchor('clients/view/' . $invoice->client_id, format_client($invoice)); ?>
                                 </td>
                                 <td class="amount">
                                     <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
                                 </td>
                                 <td style="text-align: center;">
+                                    <?php if($invoice->sumex_id != null): ?>
+                                    <a href="<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice->invoice_id); ?>"
+                                       title="<?php echo trans('download_pdf'); ?>" target="_blank">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                    </a>
+                                  <?php else: ?>
                                     <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                        title="<?php echo trans('download_pdf'); ?>" target="_blank">
-                                        <i class="fa fa-print"></i>
+                                        <i class="fa fa-file-pdf-o"></i>
                                     </a>
+                                  <?php endif; ?>
                                 </td>
                             </tr>
                         <?php } ?>

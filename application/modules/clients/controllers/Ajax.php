@@ -25,9 +25,14 @@ class Ajax extends Admin_Controller
         // Get the post input
         $query = $this->input->post('query');
 
-        $clients = $this->mdl_clients->select('client_name')
-            ->like('client_name', $query)
-            ->order_by('client_name')
+        $escapedQuery = $this->db->escape_like_string($query);
+
+        $clients = $this->mdl_clients->select('client_name,client_surname')
+            ->where(
+            "client_name LIKE $escapedQuery%
+            OR client_surname LIKE $escapedQuery%
+            OR CONCATENATE(client_name,' ', client_surname) LIKE  $escapedQuery%")
+            ->order_by('CONCATENATE(client_name,client_surname)')
             ->get(array(), false)
             ->result();
 
@@ -66,7 +71,6 @@ class Ajax extends Admin_Controller
     public function load_client_notes()
     {
         $this->load->model('clients/mdl_client_notes');
-
         $data = array(
             'client_notes' => $this->mdl_client_notes->where('client_id', $this->input->post('client_id'))->get()->result()
         );

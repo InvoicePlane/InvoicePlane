@@ -92,6 +92,14 @@ function format_boolean($txt)
     return '';
 }
 
+function format_avs($txt){
+  if(!preg_match('/(\d{3})(\d{4})(\d{4})(\d{2})/', $txt, $matches)){
+    return $txt;
+  }
+  return $matches[1].".".$matches[2].".".$matches[3].".".$matches[4];
+
+}
+
 /**
  * @param $txt
  * @return string

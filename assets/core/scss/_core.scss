@@ -17,7 +17,6 @@
 html {
   min-height: 100vh;
   -webkit-font-smoothing: subpixel-antialiased;
-  overflow-y: scroll;
 }
 
 body {
@@ -453,9 +452,9 @@ div.table-content {
   }
 
   td {
-    font-size: 16px;
-    font-weight: bold;
-    padding-top: 4px;
+    font-size: 1.1em;
+    padding-left: 10px !important;
+    font-weight: 500;
   }
 
 }
@@ -994,7 +993,7 @@ legend, .install-step h2 {
   position: relative;
 }
 
-.paid-stamp {
+.paid-stamp, .overdue-stamp {
   position: absolute;
   bottom: 0;
   left: -20px;

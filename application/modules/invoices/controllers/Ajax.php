@@ -22,6 +22,7 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('units/mdl_units');
+        $this->load->model('invoices/mdl_invoice_sumex');
 
         $invoice_id = $this->input->post('invoice_id');
 
@@ -37,9 +38,11 @@ class Ajax extends Admin_Controller
                     $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
+                    if(property_exists($item, 'item_date')){
+                      $item->item_date = ($item->item_date ? date_to_mysql($item->item_date) : null);
+                    }
                     $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
                     $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
-
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
 
@@ -104,6 +107,20 @@ class Ajax extends Admin_Controller
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
+            $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
+            if($sumexInvoice >= 1){
+              $sumex_array = array(
+                  'sumex_invoice' => $invoice_id,
+                  'sumex_reason' => $this->input->post('invoice_sumex_reason'),
+                  'sumex_diagnosis' => $this->input->post('invoice_sumex_diagnosis'),
+                  'sumex_treatmentstart' => date_to_mysql($this->input->post('invoice_sumex_treatmentstart')),
+                  'sumex_treatmentend' => date_to_mysql($this->input->post('invoice_sumex_treatmentend')),
+                  'sumex_casedate' => date_to_mysql($this->input->post('invoice_sumex_casedate')),
+                  'sumex_casenumber' => $this->input->post('invoice_sumex_casenumber'),
+                  'sumex_observations' => $this->input->post('invoice_sumex_observations')
+              );
+              $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
+            }
 
             // Recalculate for discounts
             $this->load->model('invoices/mdl_invoice_amounts');
@@ -232,7 +249,7 @@ class Ajax extends Admin_Controller
     public function modal_create_invoice()
     {
         $this->load->module('layout');
-
+        $this->load->helper('client');
         $this->load->model('invoice_groups/mdl_invoice_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('clients/mdl_clients');
@@ -240,7 +257,7 @@ class Ajax extends Admin_Controller
         $data = array(
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'client_name' => $this->input->post('client_name'),
+            'client_id' => $this->input->post('client_id'),
             'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
 
@@ -273,13 +290,13 @@ class Ajax extends Admin_Controller
     {
         $this->load->module('layout');
         $this->load->model('clients/mdl_clients');
+        $this->load->helper('client');
 
         $data = array(
-            'client_name' => $this->input->post('client_name'),
+            'client_id' => $this->input->post('client_id'),
             'invoice_id' => $this->input->post('invoice_id'),
             'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
-
         $this->layout->load_view('invoices/modal_change_client', $data);
     }
 
@@ -289,12 +306,10 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         // Get the client ID
-        $client_name = $this->input->post('client_name');
-        $client = $this->mdl_clients->where('client_name', $this->db->escape_str($client_name))
-            ->get()->row();
+        $client_id = $this->input->post('client_id');
+        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if (!empty($client)) {
-            $client_id = $client->client_id;
             $invoice_id = $this->input->post('invoice_id');
 
             $db_array = array(

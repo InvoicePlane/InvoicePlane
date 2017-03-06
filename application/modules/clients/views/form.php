@@ -52,6 +52,9 @@ $cv = $this->controller->view_data["custom_values"];
                     <input id="client_name" name="client_name" type="text" class="form-control"
                            placeholder="<?php echo trans('client_name'); ?>" required autofocus
                            value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_name')); ?>">
+                           <input id="client_surname" name="client_surname" type="text" class="form-control"
+                                  placeholder="<?php echo trans('client_surname_optional'); ?>"
+                                  value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_surname')); ?>">
                 </div>
 
             </div>
@@ -144,6 +147,72 @@ $cv = $this->controller->view_data["custom_values"];
                                     ><?php echo $country ?></option>
                                 <?php } ?>
                             </select>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+
+                    <legend><?php echo trans('personal_information'); ?></legend>
+
+                    <div class="form-group">
+                        <label><?php echo trans('gender'); ?>: </label>
+
+                        <div class="controls">
+                            <select name="client_gender">
+                              <?php
+                              $genders = array(
+                                trans('gender_male'),
+                                trans('gender_female'),
+                                trans('gender_other'),
+                               );
+                              foreach($genders as $key=>$val){
+                                echo '<option value="'.$key.'"'.($key == $this->mdl_clients->form_value('client_gender')?' selected':'').'>'.$val.'</option>';
+                              }
+                              ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('birthdate'); ?>: </label>
+                        <?php
+                        $bdate = $this->mdl_clients->form_value('client_birthdate');
+                        if($bdate != ""){
+                          $bdate = date_from_mysql($bdate);
+                        }
+
+                        ?>
+                        <div class="controls">
+                            <input type="text" name="client_birthdate" id="client_birthdate" class="form-control datepicker"
+                                   value="<?php echo htmlspecialchars($bdate); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_ssn'); ?>: </label>
+                        <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_avs" id="client_avs" class="form-control"
+                                   value="<?php echo htmlspecialchars(format_avs($avs)); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_insurednumber'); ?>: </label>
+                        <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_insurednumber" id="client_insurednumber" class="form-control"
+                                   value="<?php echo htmlentities($insuredNumber); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_veka'); ?>: </label>
+                        <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_veka" id="client_veka" class="form-control"
+                                   value="<?php echo htmlentities($veka); ?>">
                         </div>
                     </div>
                 </fieldset>

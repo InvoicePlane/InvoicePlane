@@ -52,6 +52,16 @@
 
                     <div class="form-group">
                         <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
+                            <label class="control-label"><?php echo trans('product_tariff'); ?>: </label>
+                        </div>
+                        <div class="col-xs-12 col-sm-8 col-lg-8">
+                            <input type="text" name="product_tariff" id="product_tariff" class="form-control"
+                                   value="<?php echo $this->mdl_products->form_value('product_tariff'); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
                             <label class="control-label"><?php echo trans('product_name'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
