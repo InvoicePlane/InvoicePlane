@@ -227,6 +227,7 @@ $lang = array(
     'invoice_groups'                               => 'Invoice Groups',
     'invoice_items'                                => 'Invoice Items',
     'invoice_logo'                                 => 'Invoice Logo',
+    'invoice_not_found'                            => 'Invoice Not Found',
     'invoice_overview'                             => 'Invoice Overview',
     'invoice_overview_period'                      => 'Invoice Overview Period',
     'invoice_password'                             => 'PDF password (optional)',

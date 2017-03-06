@@ -71,7 +71,7 @@ class View extends Base_Controller
             $this->load->view('invoice_templates/public/' . $this->mdl_settings->setting('public_invoice_template') . '.php', $data);
         }
         else{
-          echo '<h2>Invoice not found</h2>';
+          echo '<h2>'.trans('invoice_not_found').'</h2>';
         }
     }
 
