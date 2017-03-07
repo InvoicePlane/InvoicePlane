@@ -34,7 +34,7 @@
 </script>
 
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo $client->client_name; ?></h1>
+    <h1 class="headerbar-title"><?php echo format_client($client); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
