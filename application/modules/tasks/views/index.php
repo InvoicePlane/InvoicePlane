@@ -22,8 +22,8 @@
 
             <thead>
             <tr>
-                <th><?php echo trans('task_name'); ?></th>
                 <th><?php echo trans('status'); ?></th>
+                <th><?php echo trans('task_name'); ?></th>
                 <th><?php echo trans('task_finish_date'); ?></th>
                 <th><?php echo trans('project'); ?></th>
                 <th><?php echo trans('task_price'); ?></th>
@@ -34,18 +34,20 @@
             <tbody>
             <?php foreach ($tasks as $task) { ?>
                 <tr>
-                    <td><?php echo $task->task_name; ?></td>
                     <td>
                         <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
                             <?php echo $task_statuses["$task->task_status"]['label']; ?>
                         </span>
                     </td>
+                    <td><?php echo $task->task_name; ?></td>
                     <td>
                         <span class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
                             <?php echo date_from_mysql($task->task_finish_date); ?>
                         </span>
                     </td>
-                    <td><?php echo $task->project_name; ?></td>
+                    <td>
+                        <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, $task->project_name) : ''; ?>
+                    </td>
                     <td><?php echo format_currency($task->task_price); ?></td>
                     <td>
                         <a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"
