@@ -358,6 +358,7 @@ div.table-content {
   #filter_results,
   .table-responsive {
     min-height: 300px;
+    overflow-x: inherit;
   }
 }
 

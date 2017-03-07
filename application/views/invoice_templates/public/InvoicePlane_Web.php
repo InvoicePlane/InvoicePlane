@@ -94,7 +94,7 @@
                 <div class="col-lg-2"></div>
                 <div class="col-xs-12 col-md-6 col-lg-5 text-right">
 
-                    <h4><?php echo $invoice->client_name; ?></h4>
+                    <h4><?php echo format_client($invoice); ?></h4>
                     <p><?php if ($invoice->client_vat_id) {
                             echo lang("vat_id_short") . ": " . $invoice->client_vat_id . '<br>';
                         } ?>
