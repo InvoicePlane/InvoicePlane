@@ -4,7 +4,7 @@
         $('#create-credit-confirm').click(function () {
             $.post("<?php echo site_url('invoices/ajax/create_credit'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
-                    client_name: $('#client_name').val(),
+                    client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
@@ -46,8 +46,8 @@
             <input type="hidden" name="parent_id" id="parent_id"
                    value="<?php echo $invoice->invoice_id; ?>">
 
-            <input type="hidden" name="client_name" id="client_name" class="hidden"
-                   value="<?php echo $invoice->client_name; ?>">
+            <input type="hidden" name="client_id" id="client_id" class="hidden"
+                   value="<?php echo $invoice->client_id; ?>">
 
             <input type="hidden" name="invoice_date_created" id="invoice_date_created"
                    value="<?php $credit_date = date_from_mysql(date('Y-m-d', time()), true);

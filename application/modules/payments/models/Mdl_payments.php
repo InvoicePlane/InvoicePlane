@@ -85,22 +85,26 @@ class Mdl_Payments extends Response_Model
      */
     public function validate_payment_amount($amount)
     {
-        $amount = (float)$amount;
+        $amount = (float)standardize_amount($amount);
         $invoice_id = $this->input->post('invoice_id');
         $payment_id = $this->input->post('payment_id');
 
         $invoice = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+
         if ($invoice == null) {
             return false;
         }
-        $invoice_balance = $invoice->invoice_balance;
+
+        $invoice_balance = (float)$invoice->invoice_balance;
 
         if ($payment_id) {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
 
-            $invoice_balance = $invoice_balance + $payment->payment_amount;
+            $invoice_balance = $invoice_balance + (float)$payment->payment_amount;
         }
+
         $invoice_balance = (float)$invoice_balance;
+
         if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
             return false;
