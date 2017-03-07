@@ -21,6 +21,8 @@ class Dashboard extends Admin_Controller
         $this->load->model('quotes/mdl_quote_amounts');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
+        $this->load->model('projects/mdl_projects');
+        $this->load->model('tasks/mdl_tasks');
         $this->load->helper('client');
 
         $quote_overview_period = $this->mdl_settings->setting('quote_overview_period');
@@ -36,7 +38,10 @@ class Dashboard extends Admin_Controller
                 'quotes' => $this->mdl_quotes->limit(10)->get()->result(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'quote_statuses' => $this->mdl_quotes->statuses(),
-                'overdue_invoices' => $this->mdl_invoices->is_overdue()->get()->result()
+                'overdue_invoices' => $this->mdl_invoices->is_overdue()->get()->result(),
+                'projects' => $this->mdl_projects->get_latest()->get()->result(),
+                'tasks' => $this->mdl_tasks->get_latest()->get()->result(),
+                'task_statuses' => $this->mdl_tasks->statuses(),
             )
         );
 

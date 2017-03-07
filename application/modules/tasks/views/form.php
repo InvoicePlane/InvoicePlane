@@ -6,6 +6,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
     <script type="text/javascript">
         $(document).ready(function () {
             $('#task-form').find(':input').prop('disabled', 'disabled');
+            $('#btn-submit').hide();
             $('#btn-cancel').prop('disabled', false);
         });
     </script>
@@ -17,7 +18,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php echo trans('tasks_form'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons', ['hide_submit_button' => false]); ?>
+        <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
     <div id="content">
