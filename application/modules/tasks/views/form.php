@@ -96,12 +96,11 @@ if ($this->mdl_tasks->form_value('task_id') &&
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <div class="input-group">
-                                <input name="task_finish_date" id="task_finish_date"
-                                       class="form-control datepicker"
+                                <input name="task_finish_date" id="task_finish_date" class="form-control datepicker"
                                        value="<?php echo date_from_mysql($this->mdl_tasks->form_value('task_finish_date')); ?>">
                                 <span class="input-group-addon">
-                                <i class="fa fa-calendar fa-fw"></i>
-                            </span>
+                                    <i class="fa fa-calendar fa-fw"></i>
+                                </span>
                             </div>
                         </div>
                     </div>

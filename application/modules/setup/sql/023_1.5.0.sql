@@ -126,7 +126,9 @@ ALTER TABLE `ip_invoice_items`
 
 # Add default hourly rate for tasks
 INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
-VALUES ('default_hourly_rate', '0.00');
+  VALUES ('default_hourly_rate', '0.00');
+INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
+  VALUES ('projects_enabled', '1');
 
 # Add tax rate to tasks
 ALTER TABLE `ip_tasks`
