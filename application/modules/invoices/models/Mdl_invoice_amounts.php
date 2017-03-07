@@ -94,32 +94,27 @@ class Mdl_Invoice_Amounts extends CI_Model
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0 ? true : false);
 
-        // Set to paid if applicable (status should not be draft)
-        if ($invoice->invoice_status_id) {
-            // Set to paid if balance is zero and the invoice total is
-            if ($invoice->invoice_balance == 0) {
-                // Check if the invoice total is not zero or negative
-                if ($invoice->invoice_total != 0 || $invoice_is_credit) {
-                    $this->db->where('invoice_id', $invoice_id);
-                    $payment = $this->db->get('ip_payments')->row();
-                    $payment_method_id = ($payment->payment_method_id ? $payment->payment_method_id : 0);
+        // Set to paid if balance is zero and the invoice total is
+        if ($invoice->invoice_balance == 0) {
+            // Check if the invoice total is not zero or negative
+            if ($invoice->invoice_total != 0 || $invoice_is_credit) {
+                $this->db->where('invoice_id', $invoice_id);
+                $payment = $this->db->get('ip_payments')->row();
+                $payment_method_id = ($payment->payment_method_id ? $payment->payment_method_id : 0);
 
+                $this->db->where('invoice_id', $invoice_id);
+                $this->db->set('invoice_status_id', 4);
+                $this->db->set('payment_method', $payment_method_id);
+                $this->db->update('ip_invoices');
+
+                // Set to read-only if applicable
+                if (
+                    $this->config->item('disable_read_only') == false
+                    && $invoice->invoice_status_id == $this->mdl_settings->setting('read_only_toggle')
+                ) {
                     $this->db->where('invoice_id', $invoice_id);
-                    $this->db->set('invoice_status_id', 4);
-                    $this->db->set('payment_method', $payment_method_id);
+                    $this->db->set('is_read_only', 1);
                     $this->db->update('ip_invoices');
-
-                    // Set to read-only if applicable
-                    $disable_read_only = $this->config->item('disable_read_only');
-                    $read_only_toggle = $this->mdl_settings->setting('read_only_toggle');
-                    if (
-                        $disable_read_only == false
-                        && $invoice->invoice_status_id == $read_only_toggle
-                    ) {
-                        $this->db->where('invoice_id', $invoice_id);
-                        $this->db->set('is_read_only', 1);
-                        $this->db->update('ip_invoices');
-                    }
                 }
             }
         }
