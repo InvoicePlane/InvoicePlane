@@ -71,12 +71,12 @@ class Mdl_Invoices extends Response_Model
 			ip_users.user_web,
 			ip_users.user_vat_id,
 			ip_users.user_tax_code,
-      ip_users.user_subscribernumber,
-      ip_users.user_iban,
-      ip_users.user_gln,
-      ip_users.user_rcc,
+            ip_users.user_subscribernumber,
+            ip_users.user_iban,
+            ip_users.user_gln,
+            ip_users.user_rcc,
 			ip_clients.*,
-      ip_invoice_sumex.*,
+            ip_invoice_sumex.*,
 			ip_invoice_amounts.invoice_amount_id,
 			IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
 			IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
@@ -214,10 +214,10 @@ class Mdl_Invoices extends Response_Model
             }
         }
         $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
-        if(preg_match("/sumex/i",$invgroup->invoice_group_name)){
+        if (preg_match("/sumex/i", $invgroup->invoice_group_name)) {
             // If the Invoice Group includes "Sumex", make the invoice a Sumex one
             $db_array = array(
-              'sumex_invoice' => $invoice_id
+                'sumex_invoice' => $invoice_id
             );
             $this->db->insert('ip_invoice_sumex', $db_array);
         }
@@ -404,6 +404,16 @@ class Mdl_Invoices extends Response_Model
     }
 
     /**
+     * @param int $parent_invoice_id
+     * @return mixed
+     */
+    public function get_parent_invoice_number($parent_invoice_id)
+    {
+        $parent_invoice = $this->get_by_id($parent_invoice_id);
+        return $parent_invoice->invoice_number;
+    }
+
+    /**
      * @param int $invoice_id
      */
     public function delete($invoice_id)
@@ -422,7 +432,8 @@ class Mdl_Invoices extends Response_Model
     }
 
     // Used to check if the invoice is Sumex
-    public function is_sumex(){
+    public function is_sumex()
+    {
         $this->where('sumex_id is NOT NULL', null, FALSE);
         return $this;
     }

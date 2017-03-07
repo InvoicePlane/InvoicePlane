@@ -303,12 +303,14 @@ if ($this->config->item('disable_read_only') == true) {
 
                             <?php if ($invoice->invoice_sign == -1) { ?>
                                 <div class="col-xs-12">
-                                <span class="label label-warning">
-                                    <i class="fa fa-credit-invoice"></i>&nbsp;
-                                    <?php echo trans('credit_invoice_for_invoice') . ' ';
-                                    echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id,
-                                        $invoice->creditinvoice_parent_id) ?>
-                                </span>
+                                    <div class="alert alert-warning small">
+                                        <i class="fa fa-credit-invoice"></i>&nbsp;
+                                        <?php
+                                        echo trans('credit_invoice_for_invoice') . ' ';
+                                        $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
+                                        echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
+                                        ?>
+                                    </div>
                                 </div>
                             <?php } ?>
 
