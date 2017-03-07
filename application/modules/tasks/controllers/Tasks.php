@@ -82,13 +82,4 @@ class Tasks extends Admin_Controller
         $this->mdl_tasks->delete($id);
         redirect('tasks');
     }
-
-    /**
-     * @return $this
-     */
-    public function is_overdue()
-    {
-        $this->filter_having('is_overdue', 1);
-        return $this;
-    }
 }

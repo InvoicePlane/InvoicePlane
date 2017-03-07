@@ -71,10 +71,41 @@ class Projects extends Admin_Controller
     }
 
     /**
+     * @param null $project_id
+     */
+    public function view($project_id)
+    {
+        if ($this->input->post('btn_cancel')) {
+            redirect('projects');
+        }
+
+        $this->load->model('projects/mdl_projects');
+        $project = $this->mdl_projects->get_by_id($project_id);
+
+        if (!$project) {
+            show_404();
+        }
+
+        $this->load->model('tasks/mdl_tasks');
+        $this->load->helper('client');
+
+        $this->layout->set(array(
+            'project' => $project,
+            'tasks' => $this->mdl_projects->get_tasks($project->project_id),
+            'task_statuses' => $this->mdl_tasks->statuses(),
+        ));
+        $this->layout->buffer('content', 'projects/view');
+        $this->layout->render();
+    }
+
+    /**
      * @param $id
      */
     public function delete($id)
     {
+        $this->load->model('tasks/mdl_tasks');
+        $this->mdl_tasks->update_on_project_delete($id);
+
         $this->mdl_projects->delete($id);
         redirect('projects');
     }
