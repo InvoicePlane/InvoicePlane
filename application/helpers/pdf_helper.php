@@ -90,8 +90,9 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false){
   $CI = &get_instance();
 
   $CI->load->model('invoices/mdl_items');
+  $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
   $CI->load->library('Sumex', array(
-    'invoice' => $CI->mdl_invoices->get_by_id($invoice_id),
+    'invoice' => $invoice,
     'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result()
   ));
 
@@ -103,6 +104,10 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false){
   $tempCopy = tempnam("/tmp", "invsumex_");
   $pdf = new FPDI();
   $sumexPDF = $CI->sumex->pdf();
+
+  $sha1sum = sha1($sumexPDF);
+  $shortsum = substr($sha1sum, 0, 8);
+  $filename = trans('invoice').'_'.$invoice->invoice_number.'_'.$shortsum;
 
   if(!$client){
     file_put_contents($temp, $sumexPDF);
@@ -159,7 +164,6 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false){
       return $pdf->Output();
     }
 
-    $filename = sha1($sumexPDF);
     $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
     $pdf->Output($filePath, 'F');
     return $filePath;
@@ -169,7 +173,6 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false){
       return $sumexPDF;
     }
 
-    $filename = sha1($sumexPDF);
     $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
     file_put_contents($filePath, $sumexPDF);
     return $filePath;
