@@ -234,6 +234,7 @@ class Ajax extends Admin_Controller
 
     public function modal_create_quote()
     {
+        $this->load->helper('client');
         $this->load->module('layout');
 
         $this->load->model('invoice_groups/mdl_invoice_groups');
@@ -243,7 +244,7 @@ class Ajax extends Admin_Controller
         $data = array(
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'client_name' => $this->input->post('client_name'),
+            'client_id' => $this->input->post('client_id'),
             'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
         );
 

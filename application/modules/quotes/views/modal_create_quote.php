@@ -4,12 +4,12 @@
         $('#create-quote').modal('show');
 
         $('#create-quote').on('shown', function () {
-            $("#client_name").focus();
+            $("#client_id").focus();
         });
 
         $().ready(function () {
-            $("[name='client_name']").select2();
-            $("#client_name").focus();
+            $("[name='client_id']").select2();
+            $("#client_id").focus();
         });
 
         // Creates the quote
@@ -18,7 +18,7 @@
             // Posts the data to validate and create the quote;
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/create'); ?>", {
-                    client_name: $('#client_name').val(),
+                    client_id: $('#client_id').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     quote_password: $('#quote_password').val(),
                     user_id: '<?php echo $this->session->userdata('user_id'); ?>',
@@ -57,12 +57,12 @@
 
             <div class="form-group">
                 <label for="client_name"><?php echo trans('client'); ?></label>
-                <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
-                        echo "<option value=\"" . htmlspecialchars($client->client_name) . "\" ";
-                        if ($client_name == $client->client_name) echo 'selected';
-                        echo ">" . htmlspecialchars($client->client_name) . "</option>";
+                        echo "<option value=\"" . htmlspecialchars($client->client_id) . "\" ";
+                        if ($client_id == $client->client_id) echo 'selected';
+                        echo ">" . htmlspecialchars(format_client($client)) . "</option>";
                     }
                     ?>
                 </select>

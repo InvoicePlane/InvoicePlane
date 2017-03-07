@@ -27,8 +27,13 @@
             <h2><?php echo trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
 
             <div class="btn-group">
+                <?php if ($invoice->sumex_id == NULL): ?>
                 <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice_url_key); ?>"
                    class="btn btn-primary">
+                <?php else: ?>
+                  <a href="<?php echo site_url('guest/view/generate_sumex_pdf/' . $invoice_url_key); ?>"
+                     class="btn btn-primary">
+                <?php endif; ?>
                     <i
                             class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                 </a>

@@ -86,6 +86,77 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
 }
 
+function generate_invoice_sumex($invoice_id){
+  $CI = &get_instance();
+
+  $CI->load->model('invoices/mdl_items');
+  $CI->load->library('Sumex', array(
+    'invoice' => $CI->mdl_invoices->get_by_id($invoice_id),
+    'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result()
+  ));
+
+  // Append a copy at the end and change the title:
+  // WARNING: The title depends on what invoice type is (TP, TG)
+  // and is language-dependant. Fix accordingly if you really need this hack
+  require FCPATH . '/vendor/autoload.php';
+  $temp = tempnam("/tmp", "invsumex_");
+  $tempCopy = tempnam("/tmp", "invsumex_");
+  $pdf = new FPDI();
+  $sumexPDF = $CI->sumex->pdf();
+  file_put_contents($temp, $sumexPDF);
+
+  // Hackish
+  $sumexPDF = str_replace(
+    "Giustificativo per la richiesta di rimborso",
+    "Copia: Giustificativo per la richiesta di rimborso",
+    $sumexPDF
+  );
+
+  file_put_contents($tempCopy, $sumexPDF);
+
+  $pageCount = $pdf->setSourceFile($temp);
+
+  for( $pageNo=1; $pageNo<=$pageCount; $pageNo++ )
+  {
+      $templateId = $pdf->importPage($pageNo);
+      $size = $pdf->getTemplateSize($templateId);
+
+      if( $size['w']>$size['h'] ){
+          $pageFormat = 'L';  //  landscape
+      }
+      else{
+          $pageFormat = 'P';  //  portrait
+      }
+
+      $pdf->addPage($pageFormat,array($size['w'],$size['h']));
+      $pdf->useTemplate($templateId);
+  }
+
+  $pageCount = $pdf->setSourceFile($tempCopy);
+
+  for( $pageNo=2; $pageNo<=$pageCount; $pageNo++ )
+  {
+      $templateId = $pdf->importPage($pageNo);
+      $size = $pdf->getTemplateSize($templateId);
+
+      if( $size['w']>$size['h'] ){
+          $pageFormat = 'L';  //  landscape
+      }
+      else{
+          $pageFormat = 'P';  //  portrait
+      }
+
+      $pdf->addPage($pageFormat,array($size['w'],$size['h']));
+      $pdf->useTemplate($templateId);
+  }
+
+  $CI->output->set_content_type('application/pdf');
+  $CI->output->set_output($pdf->Output());
+
+  unlink($temp);
+  unlink($tempCopy);
+}
+
 /**
  * Generate the PDF for a quote
  *

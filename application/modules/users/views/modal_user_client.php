@@ -3,7 +3,7 @@
         $('#btn_user_client').click(function () {
             $.post("<?php echo site_url('users/ajax/save_user_client'); ?>", {
                 user_id: '<?php echo $id; ?>',
-                client_name: $('#client_name').val(),
+                client_id: $('#client_id').val(),
                 _ip_csrf: csrf()
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -28,11 +28,11 @@
 
             <div class="form-group">
                 <label for="client_name"><?php echo trans('client'); ?></label>
-                <select name="client_name" id="client_name" class="form-control" autofocus="autofocus">
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
-                        echo "<option value=\"" . htmlspecialchars($client->client_name) . "\" ";
-                        echo ">" . htmlspecialchars($client->client_name) . "</option>";
+                        echo "<option value=\"" . htmlspecialchars($client->client_id) . "\" ";
+                        echo ">" . htmlspecialchars(format_client($client)) . "</option>";
                     }
                     ?>
                 </select>
