@@ -35,6 +35,12 @@ class Mdl_Tasks extends Response_Model
         $this->db->join('ip_projects', 'ip_projects.project_id = ip_tasks.project_id', 'left');
     }
 
+    public function get_latest()
+    {
+        $this->db->order_by('ip_tasks.task_id', 'DESC');
+        return $this;
+    }
+
     /**
      * @return array
      */
@@ -144,6 +150,30 @@ class Mdl_Tasks extends Response_Model
     }
 
     /**
+     * @param integer $task_id
+     * @return array
+     */
+    public function get_invoice_for_task($task_id)
+    {
+        if (!$task_id) {
+            return null;
+        }
+
+        $invoice_item = $this->db->select('ip_invoice_items.invoice_id')
+            ->from('ip_invoice_items')
+            ->where('ip_invoice_items.item_task_id', $task_id)
+            ->get()->result();
+
+        if (empty($invoice_item) || !isset($invoice_item->invoice_id)) {
+            return null;
+        }
+
+        $this->load->model('invoices/mdl_invoices');
+
+        return $this->mdl_invoices->get_by_id($invoice_item->invoice_id);
+    }
+
+    /**
      * @param integer $invoice_id
      * @return array
      */
@@ -200,6 +230,25 @@ class Mdl_Tasks extends Response_Model
 
         foreach ($query->result() as $task) {
             $this->update_status(3, $task->task_id);
+        }
+    }
+
+    /**
+     * @param integer $project_id
+     */
+    public function update_on_project_delete($project_id)
+    {
+        if (!$project_id) {
+            return;
+        }
+
+        $query = $this->db->select($this->table . '.*')
+            ->from($this->table)
+            ->where($this->table . '.project_id', $project_id)
+            ->get();
+
+        foreach ($query->result() as $task) {
+            parent::save($task->task_id, array('task_project_id' => null));
         }
     }
 }
