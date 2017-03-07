@@ -32,7 +32,10 @@ class Mdl_Client_Custom extends Validator
             $client_custom_id = null;
             $db_array['client_id'] = $client_id;
             $client_custom = $this->where('client_id', $client_id)->get()->row();
-            $id = parent::save($client_custom->client_custom_id, $db_array);
+
+            if (isset($client_custom->client_custom_id)) {
+                $id = parent::save($client_custom->client_custom_id, $db_array);
+            }
             return true;
         }
 
@@ -50,17 +53,17 @@ class Mdl_Client_Custom extends Validator
             $this->load->helper('custom_values_helper');
             $this->load->module('custom_fields/mdl_custom_fields', 'cf');
 
-            if($values != null){
-              foreach ($values as $key => $value) {
-                  $type = $this->get_field_type($key);
-                  if ($type != null) {
-                      $nicename = $this->cf->get_nicename(
-                          $type
-                      );
-                      $formatted = call_user_func("format_" . $nicename, $value);
-                      $this->set_form_value($key, $formatted);
-                  }
-              }
+            if ($values != null) {
+                foreach ($values as $key => $value) {
+                    $type = $this->get_field_type($key);
+                    if ($type != null) {
+                        $nicename = $this->cf->get_nicename(
+                            $type
+                        );
+                        $formatted = call_user_func("format_" . $nicename, $value);
+                        $this->set_form_value($key, $formatted);
+                    }
+                }
             }
 
             parent::prep_form($id);
