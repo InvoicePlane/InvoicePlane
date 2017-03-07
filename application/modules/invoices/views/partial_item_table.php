@@ -285,7 +285,7 @@
                     <?php echo trans('add_product'); ?>
                 </a>
                 <a href="#" class="btn_add_task btn btn-sm btn-default">
-                    <i class="fa fa-database"></i> <?php echo lang('add_task'); ?>
+                    <i class="fa fa-database"></i> <?php echo trans('add_task'); ?>
                 </a>
             <?php } ?>
         </div>
