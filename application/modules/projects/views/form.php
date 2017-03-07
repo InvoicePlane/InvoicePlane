@@ -1,3 +1,9 @@
+<script>
+    $().ready(function () {
+        $("[name='client_id']").select2();
+    });
+</script>
+
 <form method="post" class="form-horizontal">
 
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
@@ -7,7 +13,7 @@
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -27,13 +33,13 @@
                 <label class="control-label"><?php echo trans('client'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="client_id" id="client_id" class="form-control">
-                    <option value=""><?php echo trans('no_client'); ?></option>
-                    <?php foreach ($clients as $client) { ?>
-                        <option value="<?php echo $client->client_id; ?>"
-                            <?php if ($this->mdl_projects->form_value('client_id') == $client->client_id) { ?> selected="selected" <?php } ?>
-                        ><?php echo $client->client_name; ?></option>
-                    <?php } ?>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
+                    <?php
+                    foreach ($clients as $client) {
+                        echo "<option value=\"" . $client->client_id . "\" ";
+                        echo ">" . htmlentities($client->client_name) . "</option>";
+                    }
+                    ?>
                 </select>
             </div>
         </div>

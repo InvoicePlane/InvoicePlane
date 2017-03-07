@@ -562,6 +562,8 @@ $lang = array(
     'zip_code'                                     => 'Zip Code',
 
     //Time Management
+    'default_hourly_rate'                          => 'Default hourly rate',
+    'add_task'                                     => 'Add task',
     'tasks'                                        => 'Tasks',
     'project'                                      => 'Project',
     'projects'                                     => 'Projects',
@@ -580,6 +582,9 @@ $lang = array(
     'not_started'                                  => 'Not started',
     'in_progress'                                  => 'In progress',
     'complete'                                     => 'Complete',
+    'alert_task_delete'                            => 'Caution! You want to delete a task that was used to generate an invoice.',
+    'info_task_readonly'                           => 'This task cannot be altered anymore because it is already invoiced.',
+    'enable_projects'                              => 'Enable the Projects module',
 
     // Sumex
     'sumex_settings'                               => 'Sumex Settings',
