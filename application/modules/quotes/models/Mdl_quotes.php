@@ -111,8 +111,8 @@ class Mdl_Quotes extends Response_Model
     public function validation_rules()
     {
         return array(
-            'client_name' => array(
-                'field' => 'client_name',
+            'client_id' => array(
+                'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required'
             ),
@@ -254,8 +254,8 @@ class Mdl_Quotes extends Response_Model
 
         // Get the client id for the submitted quote
         $this->load->model('clients/mdl_clients');
-        $db_array['client_id'] = $this->mdl_clients->client_lookup($db_array['client_name']);
-        unset($db_array['client_name']);
+        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+        $db_array['client_id'] = $cid;
 
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);
         $db_array['quote_date_expires'] = $this->get_date_due($db_array['quote_date_created']);

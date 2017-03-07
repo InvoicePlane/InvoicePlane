@@ -46,7 +46,7 @@
 
             <div class="col-xs-12 col-md-9">
 
-                <h2><?php echo $quote->client_name; ?></h2><br>
+                <h2><?php echo format_client($quote); ?></h2><br>
                 <span>
                     <?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
                     <?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>

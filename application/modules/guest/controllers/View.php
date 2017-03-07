@@ -101,6 +101,35 @@ class View extends Base_Controller
     }
 
     /**
+     * @param $invoice_url_key
+     * @param bool $stream
+     * @param null $invoice_template
+     */
+    public function generate_sumex_pdf($invoice_url_key, $stream = true, $invoice_template = null)
+    {
+        $this->load->model('invoices/mdl_invoices');
+
+        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
+
+        if ($invoice->num_rows() == 1) {
+            $invoice = $invoice->row();
+
+            if($invoice->sumex_id == NULL){
+              show_404();
+              return;
+            }
+
+            if (!$invoice_template) {
+                $invoice_template = $this->mdl_settings->setting('pdf_invoice_template');
+            }
+
+            $this->load->helper('pdf');
+
+            generate_invoice_sumex($invoice->invoice_id);
+        }
+    }
+
+    /**
      * @param $quote_url_key
      */
     public function quote($quote_url_key)
