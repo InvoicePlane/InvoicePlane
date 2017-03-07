@@ -91,39 +91,31 @@
                             <?php echo lang('task_price'); ?></th>
                     </tr>
 
-                    <?php foreach ($tasks as $task) {
-    ?>
+                    <?php foreach ($tasks as $task) { ?>
                         <tr class="task-row">
                             <td class="text-left">
                                 <input type="checkbox" 
                                     class="modal-task-id" name="task_ids[]"
                                     id="task-id-<?php echo $task->task_id?>"
-                                    value="<?php echo $task->task_id;
-    ?>">
+                                    value="<?php echo $task->task_id; ?>">
                             </td>
                             <td nowrap class="text-left">
-                                <b><?php echo $task->project_name;
-    ?></b>
+                                <b><?php echo $task->project_name; ?></b>
                             </td>
                             <td>
-                                <b><?php echo $task->task_name;
-    ?></b>
+                                <b><?php echo $task->task_name; ?></b>
                             </td>
                             <td>
-                                <b><?php echo date_from_mysql($task->task_finish_date);
-    ?></b>
+                                <b><?php echo date_from_mysql($task->task_finish_date); ?></b>
                             </td>
                             <td>
-                                <?php echo nl2br($task->task_description);
-    ?>
+                                <?php echo nl2br($task->task_description); ?>
                             </td>
                             <td class="text-right">
-                                <?php echo format_currency($task->task_price);
-    ?>
+                                <?php echo format_currency($task->task_price); ?>
                             </td>
                         </tr>
-                    <?php 
-} ?>
+                    <?php } ?>
 
                 </table>
             </div>
@@ -131,13 +123,13 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i>
-                    <?php echo lang('cancel'); ?>
-                </button>
                 <button id="task-modal-submit" class="select-items-confirm btn btn-success" type="button">
                     <i class="fa fa-check"></i>
                     <?php echo lang('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                    <?php echo lang('cancel'); ?>
                 </button>
             </div>
         </div>

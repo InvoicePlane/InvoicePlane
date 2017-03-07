@@ -1,14 +1,14 @@
 <?php
-if ($this->mdl_tasks->form_value('task_id') && 
-    ($this->mdl_tasks->form_value('task_status') == 4) ):
-?>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#task-form').find(':input').prop('disabled', true);
-        $('#btn-submit').hide();
-        $('#btn-cancel').prop('disabled', false);
-    });
-</script>
+if ($this->mdl_tasks->form_value('task_id') &&
+    ($this->mdl_tasks->form_value('task_status') == 4)
+):
+    ?>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#task-form').find(':input').prop('disabled', 'disabled');
+            $('#btn-cancel').prop('disabled', false);
+        });
+    </script>
 <?php endif ?>
 
 <form method="post" class="form-horizontal" id="task-form">
@@ -17,12 +17,16 @@ if ($this->mdl_tasks->form_value('task_id') &&
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php echo trans('tasks_form'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons'); ?>
+        <?php $this->layout->load_view('layout/header_buttons', ['hide_submit_button' => false]); ?>
     </div>
 
     <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
+
+        <?php if ($this->mdl_tasks->form_value('task_id') && ($this->mdl_tasks->form_value('task_status') == 4)) : ?>
+            <div class="alert alert-warning small"><?php echo trans('info_task_readonly') ?></div>
+        <?php endif ?>
 
         <div class="row">
             <div class="col-xs-12 col-sm-7">
@@ -51,8 +55,8 @@ if ($this->mdl_tasks->form_value('task_id') &&
                             <label class="control-label"><?php echo trans('task_description'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
-                            <input type="text" name="task_description" id="task_description" class="form-control"
-                                   value="<?php echo $this->mdl_tasks->form_value('task_description'); ?>">
+                            <textarea name="task_description" id="task_description" class="form-control"
+                                      rows="3"><?php echo $this->mdl_tasks->form_value('task_description'); ?></textarea>
                         </div>
                     </div>
 
@@ -62,21 +66,21 @@ if ($this->mdl_tasks->form_value('task_id') &&
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <input type="text" name="task_price" id="task_price" class="form-control"
-                                   value="<?php echo $this->mdl_tasks->form_value('task_price'); ?>">
+                                   value="<?php echo format_amount($this->mdl_tasks->form_value('task_price')); ?>">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
+                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
                             <label class="control-label"><?php echo trans('tax_rate'); ?>: </label>
                         </div>
-                        <div class="col-xs-12 col-sm-8 col-lg-8">
+                        <div class="col-xs-12 col-sm-9">
                             <select name="tax_rate_id" id="tax_rate_id" class="form-control">
                                 <option value="0"><?php echo trans('none'); ?></option>
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php if ($this->mdl_tasks->form_value('tax_rate_id') == $tax_rate->tax_rate_id) { ?> selected="selected" <?php } ?>
-                                        >
+                                    >
                                         <?php echo $tax_rate->tax_rate_name
                                             . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
                                     </option>
@@ -87,14 +91,15 @@ if ($this->mdl_tasks->form_value('task_id') &&
 
                     <div class="form-group has-feedback">
                         <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label for="task_finish_date"><?php echo trans('task_finish_date'); ?>: </label>
+                            <label for="task_finish_date" class="control-label"><?php echo trans('task_finish_date'); ?>
+                                : </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <div class="input-group">
                                 <input name="task_finish_date" id="task_finish_date"
                                        class="form-control datepicker"
                                        value="<?php echo date_from_mysql($this->mdl_tasks->form_value('task_finish_date')); ?>">
-                            <span class="input-group-addon">
+                                <span class="input-group-addon">
                                 <i class="fa fa-calendar fa-fw"></i>
                             </span>
                             </div>
@@ -107,9 +112,13 @@ if ($this->mdl_tasks->form_value('task_id') &&
                         </div>
                         <div class="col-xs-12 col-sm-9">
                             <select name="task_status" id="task_status" class="form-control">
-                                <?php foreach ($task_statuses as $key => $status) { ?>
+                                <?php foreach ($task_statuses as $key => $status) {
+                                    if ($this->mdl_tasks->form_value('task_status') != 4 && $key == 4) continue;
+                                    ?>
                                     <option value="<?php echo $key; ?>"
-                                            <?php if ($key == $this->mdl_tasks->form_value('task_status')) { ?>selected="selected"<?php } ?>><?php echo $status['label']; ?></option>
+                                            <?php if ($key == $this->mdl_tasks->form_value('task_status')) { ?>selected="selected"<?php } ?>>
+                                        <?php echo $status['label']; ?>
+                                    </option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -136,6 +145,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
                             </select>
                         </div>
                     </div>
+
                 </fieldset>
             </div>
         </div>

@@ -1,23 +1,20 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
 class Ajax extends Admin_Controller
 {
+    /**
+     * @param null|integer $invoice_id
+     */
     public function modal_task_lookups($invoice_id = null)
     {
         $data['tasks'] = array();
@@ -26,6 +23,7 @@ class Ajax extends Admin_Controller
         if (!empty($invoice_id)) {
             $data['tasks'] = $this->mdl_tasks->get_tasks_to_invoice($invoice_id);
         }
+
         $this->layout->load_view('tasks/modal_task_lookups', $data);
     }
 

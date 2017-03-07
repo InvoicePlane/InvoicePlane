@@ -583,7 +583,8 @@ $lang = array(
     'not_started'                                  => 'Not started',
     'in_progress'                                  => 'In progress',
     'complete'                                     => 'Complete',
-    'alert_task_delete' => 'Caution! You want to delete a task that was used to generate an invoice.',
+    'alert_task_delete'                            => 'Caution! You want to delete a task that was used to generate an invoice.',
+    'info_task_readonly'                           => 'This task cannot be altered anymore because it is already invoiced.',
 
     // Sumex
     'sumex_settings'                               => 'Sumex Settings',
