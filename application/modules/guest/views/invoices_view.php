@@ -41,7 +41,7 @@
                 <div class="col-xs-12 col-md-9">
                     <div class="pull-left">
 
-                        <h3><?php echo $invoice->client_name; ?></h3>
+                        <h3><?php echo format_client($invoice); ?></h3>
 
                         <span>
 						<?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>

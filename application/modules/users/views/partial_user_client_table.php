@@ -11,7 +11,7 @@
         <tbody>
         <?php foreach ($user_clients as $user_client) { ?>
             <tr>
-                <td><?php echo $user_client->client_name; ?></td>
+                <td><?php echo format_client($user_client); ?></td>
                 <td>
                     <?php if ($id) { ?>
                         <a class=""

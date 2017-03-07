@@ -22,7 +22,8 @@ class Mdl_Reports extends CI_Model
      */
     public function sales_by_client($from_date = null, $to_date = null)
     {
-        $this->db->select('client_name');
+        $this->load->helper('client');
+        $this->db->select('client_name, client_surname, CONCAT(client_name," ", client_surname) AS client_namesurname');
 
         if ($from_date and $to_date) {
             $from_date = date_to_mysql($from_date);
@@ -39,7 +40,7 @@ class Mdl_Reports extends CI_Model
             $this->db->where('client_id IN (SELECT client_id FROM ip_invoices)');
         }
 
-        $this->db->order_by('client_name');
+        $this->db->order_by('client_namesurname');
 
         return $this->db->get('ip_clients')->result();
     }
@@ -51,6 +52,7 @@ class Mdl_Reports extends CI_Model
      */
     public function payment_history($from_date = null, $to_date = null)
     {
+        $this->load->helper('client');
         $this->load->model('payments/mdl_payments');
 
         if ($from_date and $to_date) {
@@ -69,7 +71,7 @@ class Mdl_Reports extends CI_Model
      */
     public function invoice_aging()
     {
-        $this->db->select('client_name');
+        $this->db->select('client_name, client_surname');
         $this->db->select('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 1 DAY) AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 15 DAY))) AS range_1', false);
         $this->db->select('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 16 DAY) AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 30 DAY))) AS range_2', false);
         $this->db->select('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 31 DAY))) AS range_3', false);
@@ -93,6 +95,7 @@ class Mdl_Reports extends CI_Model
      */
     public function sales_by_year($from_date = null, $to_date = null, $minQuantity = null, $maxQuantity = null, $taxChecked = False)
     {
+        $this->load->helper('client');
         if ($minQuantity == "") $minQuantity = 0;
 
         if ($from_date == "") $from_date = date("Y-m-d");
@@ -104,13 +107,17 @@ class Mdl_Reports extends CI_Model
         $from_date_year = intval(substr($from_date, 0, 4));
         $to_date_year = intval(substr($to_date, 0, 4));
 
+        $this->db->select('client_name as Name');
+        $this->db->select('client_name');
+        $this->db->select('client_surname');
+        $this->db->select('CONCAT(client_name," ", client_surname) AS client_namesurname');
+
         if ($taxChecked == false) {
 
             if ($maxQuantity) {
 
                 $this->db->select('client_id');
                 $this->db->select('client_vat_id AS VAT_ID');
-                $this->db->select('client_name as Name');
                 $this->db->select('(SELECT SUM(amounts.invoice_item_subtotal) FROM ip_invoice_amounts amounts WHERE amounts.invoice_id IN (SELECT inv.invoice_id FROM ip_invoices inv WHERE inv.client_id=ip_clients.client_id AND ' . $this->db->escape($from_date) . '<= inv.invoice_date_created AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created)) AS total_payment', false);
 
                 for ($index = $from_date_year; $index <= $to_date_year; $index++) {
@@ -178,7 +185,7 @@ class Mdl_Reports extends CI_Model
 
         }
 
-        $this->db->order_by('client_name');
+        $this->db->order_by('client_namesurname');
         return $this->db->get('ip_clients')->result();
     }
 
