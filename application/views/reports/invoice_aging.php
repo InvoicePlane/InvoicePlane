@@ -18,7 +18,7 @@
     </tr>
     <?php foreach ($results as $result) { ?>
         <tr>
-            <td><?php echo $result->client_name; ?></td>
+            <td><?php echo format_client($result); ?></td>
             <td class="amount"><?php echo format_currency($result->range_1); ?></td>
             <td class="amount"><?php echo format_currency($result->range_2); ?></td>
             <td class="amount"><?php echo format_currency($result->range_3); ?></td>

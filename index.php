@@ -96,6 +96,12 @@ switch (ENVIRONMENT)
 }
 
 /*
+  Automatic cleanup
+*/
+
+array_map('unlink', glob("uploads/temp/*.pdf"));
+
+/*
  *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
  *---------------------------------------------------------------

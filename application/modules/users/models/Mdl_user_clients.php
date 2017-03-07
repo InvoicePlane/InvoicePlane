@@ -20,7 +20,7 @@ class Mdl_User_Clients extends MY_Model
 
     public function default_select()
     {
-        $this->db->select('ip_user_clients.*, ip_users.user_name, ip_clients.client_name');
+        $this->db->select('ip_user_clients.*, ip_users.user_name, ip_clients.client_name, ip_clients.client_surname');
     }
 
     public function default_join()

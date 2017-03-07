@@ -20,12 +20,12 @@ class Ajax extends Admin_Controller
     public function save_user_client()
     {
         $user_id = $this->input->post('user_id');
-        $client_name = $this->input->post('client_name');
+        $client_id = $this->input->post('client_id');
 
         $this->load->model('clients/mdl_clients');
         $this->load->model('users/mdl_user_clients');
 
-        $client = $this->mdl_clients->where('client_name', $client_name)->get();
+        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get();
 
         if ($client->num_rows() == 1) {
             $client_id = $client->row()->client_id;
@@ -51,6 +51,7 @@ class Ajax extends Admin_Controller
 
     public function load_user_client_table()
     {
+        $this->load->helper('client');
         if ($session_user_clients = $this->session->userdata('user_clients')) {
             $this->load->model('clients/mdl_clients');
 

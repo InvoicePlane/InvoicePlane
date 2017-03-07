@@ -60,7 +60,7 @@
                 <select name="client_id" id="client_id" class="input-sm form-control" autofocus>
                     <option></option>
                     <?php foreach ($clients as $client) { ?>
-                        <option value="<?php echo $client->client_id; ?>"
+                        <option value="<?php echo format_client($client); ?>"
                                 <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>
                         > <?php echo format_client($client); ?>     </option>
 
