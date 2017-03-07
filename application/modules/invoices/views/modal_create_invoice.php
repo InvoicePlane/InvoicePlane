@@ -4,11 +4,11 @@
         $('#create-invoice').modal('show');
 
         $('#create-invoice').on('shown', function () {
-            $("#client_name").focus();
+            $("#client_id").focus();
         });
 
         $().ready(function () {
-            $("[name='client_name']").select2();
+            $("[name='client_id']").select2();
         });
 
         // Creates the invoice
@@ -59,7 +59,7 @@
                    value="<?php echo $this->mdl_settings->setting('invoice_default_payment_method'); ?>">
 
             <div class="form-group">
-                <label for="client_name"><?php echo trans('client'); ?></label>
+                <label for="client_id"><?php echo trans('client'); ?></label>
                 <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
