@@ -76,7 +76,7 @@
                     </ul>
                 </li>
 
-                <li class="dropdown<?php echo get_setting('default_hourly_rate', false) ?: ''; ?>">
+                <li class="dropdown <?php echo get_setting('projects_enabled') == 1 ?: 'hidden'; ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;<span
                             class="hidden-sm"><?php echo trans('tasks'); ?></span><i

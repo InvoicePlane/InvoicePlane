@@ -563,7 +563,6 @@ $lang = array(
 
     //Time Management
     'default_hourly_rate'                          => 'Default hourly rate',
-    'project_help'                                 => 'A number greater than 0.00 enables the projects/tasks feature.',
     'add_task'                                     => 'Add task',
     'tasks'                                        => 'Tasks',
     'project'                                      => 'Project',
@@ -585,6 +584,7 @@ $lang = array(
     'complete'                                     => 'Complete',
     'alert_task_delete'                            => 'Caution! You want to delete a task that was used to generate an invoice.',
     'info_task_readonly'                           => 'This task cannot be altered anymore because it is already invoiced.',
+    'enable_projects'                              => 'Enable the Projects module',
 
     // Sumex
     'sumex_settings'                               => 'Sumex Settings',
