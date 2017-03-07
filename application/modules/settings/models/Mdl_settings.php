@@ -25,7 +25,7 @@ class Mdl_Settings extends CI_Model
     {
         $db_array = array(
             'setting_key' => $key,
-            'setting_value' => $value
+            'setting_value' => $value,
         );
 
         if ($this->get($key) !== null) {
