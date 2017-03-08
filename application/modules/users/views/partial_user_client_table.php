@@ -14,8 +14,7 @@
                 <td><?php echo format_client($user_client); ?></td>
                 <td>
                     <?php if ($id) { ?>
-                        <a class=""
-                           href="<?php echo site_url('users/delete_user_client/' . $id . '/' . $user_client->user_client_id); ?>">
+                        <a href="<?php echo site_url('users/delete_user_client/' . $id . '/' . $user_client->user_client_id); ?>">
                             <i class="fa fa-trash-o"></i>
                         </a>
                     <?php } ?>
