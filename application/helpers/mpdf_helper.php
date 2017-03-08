@@ -31,8 +31,10 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     $invoice_array = array();
 
     // mPDF loading
-    define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
-    define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
+    if (!defined('_MPDF_TEMP_PATH')) {
+        define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
+        define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
+    }
 
     require_once(FCPATH . 'vendor/autoload.php');
     $mpdf = new \Mpdf\Mpdf();
