@@ -184,11 +184,11 @@
                         <?php endif; ?>
                     </table>
                 </div>
-                <?php if($client->client_surname != ""): //Client is not a company ?>
-                <div class="col-xs-12 col-md-6">
-                    <h4><?php echo trans('personal_information'); ?></h4>
-                    <br/>
-                    <table class="table table-condensed table-striped">
+                <?php if ($client->client_surname != ""): //Client is not a company ?>
+                    <div class="col-xs-12 col-md-6">
+                        <h4><?php echo trans('personal_information'); ?></h4>
+                        <br/>
+                        <table class="table table-condensed table-striped">
                             <tr>
                                 <th><?php echo trans('birthdate'); ?></th>
                                 <td><?php echo format_date($client->client_birthdate); ?></td>
@@ -211,9 +211,9 @@
                                 <th><?php echo trans('sumex_veka'); ?></th>
                                 <td><?php echo htmlentities($client->client_veka) ?></td>
                             </tr>
-                    </table>
-                </div>
-              <?php endif; ?>
+                        </table>
+                    </div>
+                <?php endif; ?>
             </div>
             <?php if ($custom_fields) : ?>
                 <div class="row">

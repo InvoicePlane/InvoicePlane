@@ -87,7 +87,9 @@
                         <option></option>
                         <?php foreach ($invoice_groups as $invoice_group) { ?>
                             <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                    <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
+                                <?php echo get_setting('default_quote_group') != $invoice_group->invoice_group_id ?: 'selected="selected"' ?>>
+                                <?php echo $invoice_group->invoice_group_name; ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>

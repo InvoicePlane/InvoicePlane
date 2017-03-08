@@ -32,7 +32,8 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('type'); ?>: </label>
             <div class="col-xs-12 col-sm-8 col-md-6">
-                <select name="custom_field_types" id="custom_field_types" class="form-control simple-select" disabled="disabled">
+                <select name="custom_field_types" id="custom_field_types" class="form-control simple-select"
+                        disabled="disabled">
                     <option value=""></option>
                     <?php foreach ($custom_values_types as $type): ?>
                         <?php $alpha = str_replace("-", "_", strtolower($type)); ?>

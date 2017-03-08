@@ -23,7 +23,7 @@ class Sessions extends Base_Controller
     public function login()
     {
         $view_data = array(
-            'login_logo' => $this->mdl_settings->setting('login_logo')
+            'login_logo' => get_setting('login_logo')
         );
 
         if ($this->input->post('btn_login')) {
@@ -64,13 +64,6 @@ class Sessions extends Base_Controller
         $this->load->view('session_login', $view_data);
     }
 
-    public function logout()
-    {
-        $this->session->sess_destroy();
-
-        redirect('sessions/login');
-    }
-
     /**
      * @param $email_address
      * @param $password
@@ -85,6 +78,13 @@ class Sessions extends Base_Controller
         }
 
         return false;
+    }
+
+    public function logout()
+    {
+        $this->session->sess_destroy();
+
+        redirect('sessions/login');
     }
 
     /**

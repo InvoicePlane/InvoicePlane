@@ -66,7 +66,7 @@
                     <option value="system">
                         <?php echo trans('use_system_language') ?>
                     </option>
-                    <?php foreach ($languages as $language) {?>
+                    <?php foreach ($languages as $language) { ?>
                         <option value="<?php echo $language; ?>">
                             <?php echo ucfirst($language); ?>
                         </option>

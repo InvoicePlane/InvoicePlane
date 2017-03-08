@@ -42,31 +42,6 @@ class Mdl_Tasks extends Response_Model
     }
 
     /**
-     * @return array
-     */
-    public function statuses()
-    {
-        return array(
-            '1' => array(
-                'label' => trans('not_started'),
-                'class' => 'draft'
-            ),
-            '2' => array(
-                'label' => trans('in_progress'),
-                'class' => 'viewed'
-            ),
-            '3' => array(
-                'label' => trans('complete'),
-                'class' => 'sent'
-            ),
-            '4' => array(
-                'label' => trans('invoiced'),
-                'class' => 'paid'
-            )
-        );
-    }
-
-    /**
      * @param string $match
      */
     public function by_task($match)
@@ -143,7 +118,7 @@ class Mdl_Tasks extends Response_Model
 
         if (!$id) {
             parent::set_form_value('task_finish_date', date('Y-m-d'));
-            parent::set_form_value('task_price', $this->mdl_settings->setting('default_hourly_rate'));
+            parent::set_form_value('task_price', get_setting('default_hourly_rate'));
         }
 
         return true;
@@ -185,33 +160,21 @@ class Mdl_Tasks extends Response_Model
         }
 
         $query = $this->db->select($this->table . '.*, ip_projects.project_name')
-                 ->from($this->table)
-                 ->join('ip_projects', 'ip_projects.project_id = ' . $this->table . '.project_id')
-                 ->join('ip_invoices', 'ip_invoices.client_id = ip_projects.client_id')
-                 ->where('ip_invoices.invoice_id', $invoice_id)
-                 ->where($this->table . '.task_status', 3)
-                 ->order_by($this->table . '.task_finish_date', 'asc')
-                 ->order_by('ip_projects.project_name', 'asc')
-                 ->order_by($this->table . '.task_name', 'asc')
-                 ->get();
+            ->from($this->table)
+            ->join('ip_projects', 'ip_projects.project_id = ' . $this->table . '.project_id')
+            ->join('ip_invoices', 'ip_invoices.client_id = ip_projects.client_id')
+            ->where('ip_invoices.invoice_id', $invoice_id)
+            ->where($this->table . '.task_status', 3)
+            ->order_by($this->table . '.task_finish_date', 'asc')
+            ->order_by('ip_projects.project_name', 'asc')
+            ->order_by($this->table . '.task_name', 'asc')
+            ->get();
 
         foreach ($query->result() as $row) {
             $result[] = $row;
         }
 
         return $result;
-    }
-
-    /**
-     * @param integer $new_status
-     * @param integer $task_id
-     */
-    public function update_status($new_status, $task_id)
-    {
-        $statuses_ok = $this->statuses();
-        if (isset($statuses_ok[$new_status])) {
-            parent::save($task_id, array('task_status' => $new_status));
-        }
     }
 
     /**
@@ -231,6 +194,43 @@ class Mdl_Tasks extends Response_Model
         foreach ($query->result() as $task) {
             $this->update_status(3, $task->task_id);
         }
+    }
+
+    /**
+     * @param integer $new_status
+     * @param integer $task_id
+     */
+    public function update_status($new_status, $task_id)
+    {
+        $statuses_ok = $this->statuses();
+        if (isset($statuses_ok[$new_status])) {
+            parent::save($task_id, array('task_status' => $new_status));
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function statuses()
+    {
+        return array(
+            '1' => array(
+                'label' => trans('not_started'),
+                'class' => 'draft'
+            ),
+            '2' => array(
+                'label' => trans('in_progress'),
+                'class' => 'viewed'
+            ),
+            '3' => array(
+                'label' => trans('complete'),
+                'class' => 'sent'
+            ),
+            '4' => array(
+                'label' => trans('invoiced'),
+                'class' => 'paid'
+            )
+        );
     }
 
     /**
