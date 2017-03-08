@@ -47,7 +47,7 @@
                     <span class="input-group-addon"><?php echo trans('item_discount'); ?></span>
                     <input type="text" name="item_discount_amount" class="input-sm form-control amount"
                            value="" data-toggle="tooltip" data-placement="bottom"
-                           title="<?php echo $this->mdl_settings->setting('currency_symbol') . ' ' . trans('per_item'); ?>">
+                           title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                 </div>
             </td>
             <td class="td-amount">
@@ -57,7 +57,7 @@
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                    <?php if ($this->mdl_settings->setting('default_item_tax_rate') == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
+                                    <?php if (get_setting('default_item_tax_rate') == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
                                 <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
                             </option>
                         <?php } ?>
@@ -167,7 +167,7 @@
                         <input type="text" name="item_discount_amount" class="input-sm form-control amount"
                                value="<?php echo format_amount($item->item_discount_amount); ?>"
                                data-toggle="tooltip" data-placement="bottom"
-                               title="<?php echo $this->mdl_settings->setting('currency_symbol') . ' ' . trans('per_item'); ?>"
+                               title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
@@ -331,7 +331,7 @@
                                 } ?>>
 
                             <div
-                                    class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
+                                    class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                         </div>
                     </div>
                     <div class="discount-field">

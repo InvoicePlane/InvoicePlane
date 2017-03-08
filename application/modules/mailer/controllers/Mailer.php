@@ -78,7 +78,7 @@ class Mailer extends Admin_Controller
         $this->load->model('upload/mdl_uploads');
         $this->load->model('email_templates/mdl_email_templates');
 
-        $email_template_id = $this->mdl_settings->setting('email_quote_template');
+        $email_template_id = get_setting('email_quote_template');
 
         if ($email_template_id) {
             $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
@@ -87,7 +87,7 @@ class Mailer extends Admin_Controller
             $this->layout->set('email_template', '{}');
         }
 
-        $this->layout->set('selected_pdf_template', $this->mdl_settings->setting('pdf_quote_template'));
+        $this->layout->set('selected_pdf_template', get_setting('pdf_quote_template'));
         $this->layout->set('selected_email_template', $email_template_id);
         $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
         $this->layout->set('quote', $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row());

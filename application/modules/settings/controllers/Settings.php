@@ -31,7 +31,7 @@ class Settings extends Admin_Controller
             $settings = $this->input->post('settings');
 
             // Only execute if the setting is different
-            if ($settings['tax_rate_decimal_places'] <> $this->mdl_settings->setting('tax_rate_decimal_places')) {
+            if ($settings['tax_rate_decimal_places'] != get_setting('tax_rate_decimal_places')) {
                 $this->db->query("
                     ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
                     DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null"
@@ -153,7 +153,7 @@ class Settings extends Admin_Controller
      */
     public function remove_logo($type)
     {
-        unlink('./uploads/' . $this->mdl_settings->setting($type . '_logo'));
+        unlink('./uploads/' . get_setting($type . '_logo'));
 
         $this->mdl_settings->save($type . '_logo', '');
 

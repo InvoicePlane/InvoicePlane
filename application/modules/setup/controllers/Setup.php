@@ -31,6 +31,7 @@ class Setup extends MX_Controller
         $this->load->helper('url');
         $this->load->helper('language');
         $this->load->helper('trans');
+        $this->load->helper('settings');
 
         $this->load->model('mdl_setup');
 
@@ -222,20 +223,6 @@ class Setup extends MX_Controller
     }
 
     /**
-     * Set a new encryption key in the ipconfig.php file
-     */
-    private function set_encryption_key()
-    {
-        $length = (env('ENCRYPTION_CIPHER') == 'AES-256' ? 32 : 16);
-
-        $key = 'base64:'.base64_encode(random_bytes($length));
-
-        $config = file_get_contents(IPCONFIG_FILE);
-        $config = preg_replace("/ENCRYPTION_KEY=(.*)?/", "ENCRYPTION_KEY=" . $key, $config);
-        write_file(IPCONFIG_FILE, $config);
-    }
-
-    /**
      * @param $hostname
      * @param $username
      * @param $password
@@ -351,6 +338,20 @@ class Setup extends MX_Controller
 
         $this->layout->buffer('content', 'setup/upgrade_tables');
         $this->layout->render('setup');
+    }
+
+    /**
+     * Set a new encryption key in the ipconfig.php file
+     */
+    private function set_encryption_key()
+    {
+        $length = (env('ENCRYPTION_CIPHER') == 'AES-256' ? 32 : 16);
+
+        $key = 'base64:' . base64_encode(random_bytes($length));
+
+        $config = file_get_contents(IPCONFIG_FILE);
+        $config = preg_replace("/ENCRYPTION_KEY=(.*)?/", "ENCRYPTION_KEY=" . $key, $config);
+        write_file(IPCONFIG_FILE, $config);
     }
 
     public function create_user()

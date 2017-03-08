@@ -175,34 +175,33 @@ class Invoices extends Admin_Controller
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'custom_js_vars' => array(
-                    'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
-                    'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
-                    'decimal_point' => $this->mdl_settings->setting('decimal_point')
+                    'currency_symbol' => get_setting('currency_symbol'),
+                    'currency_symbol_placement' => get_setting('currency_symbol_placement'),
+                    'decimal_point' => get_setting('decimal_point')
                 ),
                 'invoice_statuses' => $this->mdl_invoices->statuses()
             )
         );
 
-        if($invoice->sumex_id != null){
-          $this->layout->buffer(
-              array(
-                  array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
-                  array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
-                  array('modal_add_payment', 'payments/modal_add_payment'),
-                  array('content', 'invoices/view_sumex')
-              )
-          );
+        if ($invoice->sumex_id != null) {
+            $this->layout->buffer(
+                array(
+                    array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
+                    array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
+                    array('modal_add_payment', 'payments/modal_add_payment'),
+                    array('content', 'invoices/view_sumex')
+                )
+            );
+        } else {
+            $this->layout->buffer(
+                array(
+                    array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
+                    array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
+                    array('modal_add_payment', 'payments/modal_add_payment'),
+                    array('content', 'invoices/view')
+                )
+            );
         }
-        else {
-          $this->layout->buffer(
-              array(
-                  array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
-                  array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
-                  array('modal_add_payment', 'payments/modal_add_payment'),
-                  array('content', 'invoices/view')
-              )
-          );
-       }
 
         $this->layout->render();
     }
@@ -261,7 +260,7 @@ class Invoices extends Admin_Controller
     {
         $this->load->helper('pdf');
 
-        if ($this->mdl_settings->setting('mark_invoices_sent_pdf') == 1) {
+        if (get_setting('mark_invoices_sent_pdf') == 1) {
             $this->mdl_invoices->mark_sent($invoice_id);
         }
 
@@ -283,23 +282,25 @@ class Invoices extends Admin_Controller
         $this->output->set_output($this->zugferdxml->xml());
     }
 
-    public function generate_sumex_pdf($invoice_id){
+    public function generate_sumex_pdf($invoice_id)
+    {
         $this->load->helper('pdf');
 
         generate_invoice_sumex($invoice_id);
     }
 
-    public function generate_sumex_copy($invoice_id){
+    public function generate_sumex_copy($invoice_id)
+    {
 
 
         $this->load->model('invoices/mdl_items');
         $this->load->library('Sumex', array(
-          'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
-          'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-          'options' => array(
-            'copy' => "1",
-            'storno' => "0"
-          )
+            'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
+            'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+            'options' => array(
+                'copy' => "1",
+                'storno' => "0"
+            )
         ));
 
         $this->output->set_content_type('application/pdf');

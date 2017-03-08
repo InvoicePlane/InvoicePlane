@@ -11,7 +11,7 @@
                     <?php echo trans('quotes_expire_after'); ?>
                 </label>
                 <input type="text" name="settings[quotes_expire_after]" class=" form-control"
-                       value="<?php echo $this->mdl_settings->setting('quotes_expire_after'); ?>">
+                       value="<?php echo get_setting('quotes_expire_after'); ?>">
             </div>
 
             <div class="form-group">
@@ -22,7 +22,7 @@
                     <option value=""></option>
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                            <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) {
+                            <?php if (get_setting('default_quote_group') == $invoice_group->invoice_group_id) {
                                 echo 'selected="selected"';
                             } ?>>
                             <?php echo $invoice_group->invoice_group_name; ?>
@@ -37,13 +37,13 @@
                 </label>
                 <select name="settings[mark_quotes_sent_pdf]" class=" form-control simple-select">
                     <option value="0"
-                        <?php if (!$this->mdl_settings->setting('mark_quotes_sent_pdf')) {
+                        <?php if (!get_setting('mark_quotes_sent_pdf')) {
                             echo 'selected="selected"';
                         } ?>>
                         <?php echo trans('no'); ?>
                     </option>
                     <option value="1"
-                        <?php if ($this->mdl_settings->setting('mark_quotes_sent_pdf')) {
+                        <?php if (get_setting('mark_quotes_sent_pdf')) {
                             echo 'selected="selected"';
                         } ?>>
                         <?php echo trans('yes'); ?>
@@ -56,7 +56,7 @@
                     <?php echo trans('quote_pre_password'); ?>
                 </label>
                 <input type="text" name="settings[quote_pre_password]" class=" form-control"
-                       value="<?php echo $this->mdl_settings->setting('quote_pre_password'); ?>">
+                       value="<?php echo get_setting('quote_pre_password'); ?>">
             </div>
 
             <div class="form-group">
@@ -64,7 +64,7 @@
                     <?php echo trans('default_notes'); ?>
                 </label>
                 <textarea name="settings[default_quote_notes]" rows="3" class=" form-control"
-                ><?php echo $this->mdl_settings->setting('default_quote_notes'); ?></textarea>
+                ><?php echo get_setting('default_quote_notes'); ?></textarea>
             </div>
 
             <div class="form-group">
@@ -73,13 +73,13 @@
                 </label>
                 <select name="settings[generate_quote_number_for_draft]" class=" form-control simple-select">
                     <option value="0"
-                        <?php if (!$this->mdl_settings->setting('generate_quote_number_for_draft')) {
+                        <?php if (!get_setting('generate_quote_number_for_draft')) {
                             echo 'selected="selected"';
                         } ?>>
                         <?php echo trans('no'); ?>
                     </option>
                     <option value="1"
-                        <?php if ($this->mdl_settings->setting('generate_quote_number_for_draft')) {
+                        <?php if (get_setting('generate_quote_number_for_draft')) {
                             echo 'selected="selected"';
                         } ?>>
                         <?php echo trans('yes'); ?>
@@ -101,7 +101,7 @@
                     <option value=""></option>
                     <?php foreach ($pdf_quote_templates as $quote_template) { ?>
                         <option value="<?php echo $quote_template; ?>"
-                            <?php if ($this->mdl_settings->setting('pdf_quote_template') == $quote_template) {
+                            <?php if (get_setting('pdf_quote_template') == $quote_template) {
                                 echo 'selected="selected"';
                             } ?>><?php echo $quote_template; ?></option>
                     <?php } ?>
@@ -116,7 +116,7 @@
                     <option value=""></option>
                     <?php foreach ($public_quote_templates as $quote_template) { ?>
                         <option value="<?php echo $quote_template; ?>"
-                            <?php if ($this->mdl_settings->setting('public_quote_template') == $quote_template) {
+                            <?php if (get_setting('public_quote_template') == $quote_template) {
                                 echo 'selected="selected"';
                             } ?>><?php echo $quote_template; ?></option>
                     <?php } ?>
@@ -131,7 +131,7 @@
                     <option value=""></option>
                     <?php foreach ($email_templates_quote as $email_template) { ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
-                            <?php if ($this->mdl_settings->setting('email_quote_template') == $email_template->email_template_id) {
+                            <?php if (get_setting('email_quote_template') == $email_template->email_template_id) {
                                 echo 'selected="selected"';
                             } ?>><?php echo $email_template->email_template_title; ?></option>
                     <?php } ?>

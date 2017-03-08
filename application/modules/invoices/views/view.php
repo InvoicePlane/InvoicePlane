@@ -237,7 +237,7 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php echo trans('download_pdf'); ?>
                     </a>
                 </li>
-                <?php if ($this->mdl_settings->setting('sumex') == "1"): ?>
+                <?php if (get_setting('sumex')) : ?>
                     <li>
                         <a href="#" id="btn_sumex" data-invoice-id="<?php echo $invoice_id; ?>">
                             <i class="fa fa-user-md fa-margin"></i>
@@ -430,7 +430,8 @@ if ($this->config->item('disable_read_only') == true) {
 
                                 <div class="invoice-properties">
                                     <label><?php echo trans('payment_method'); ?></label>
-                                    <select name="payment_method" id="payment_method" class="form-control input-sm simple-select"
+                                    <select name="payment_method" id="payment_method"
+                                            class="form-control input-sm simple-select"
                                         <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
                                             echo 'disabled="disabled"';
                                         } ?>>

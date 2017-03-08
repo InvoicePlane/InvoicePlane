@@ -292,7 +292,8 @@
                             </label>
                         </div>
                         <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_subscribernumber" id="user_subscribernumber" class="form-control"
+                            <input type="text" name="user_subscribernumber" id="user_subscribernumber"
+                                   class="form-control"
                                    value="<?php echo $this->mdl_users->form_value('user_subscribernumber'); ?>">
                         </div>
                     </div>
