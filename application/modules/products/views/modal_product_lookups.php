@@ -85,7 +85,7 @@
 
             // Reload modal with settings
             window.setTimeout(function () {
-                $('#modal-choose-items').hide();
+                $('#modal-choose-items').modal('hide');
                 $('#modal-placeholder').load(lookup_url, {
                     _ip_csrf: csrf()
                 });

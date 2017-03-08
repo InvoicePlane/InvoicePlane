@@ -1,16 +1,24 @@
 <script>
     $(function () {
+        var user_client_modal = $('#add-user-client');
+        user_client_modal.modal('show');
+
+        // Select2 for all select inputs
+        $(".simple-select").select2();
+
         $('#btn_user_client').click(function () {
             $.post("<?php echo site_url('users/ajax/save_user_client'); ?>", {
-                user_id: '<?php echo $id; ?>',
+                user_id: '<?php echo $user_id; ?>',
                 client_id: $('#client_id').val(),
                 _ip_csrf: csrf()
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', {
-                    user_id: '<?php echo $id; ?>',
+                    user_id: '<?php echo $user_id; ?>',
                     _ip_csrf: csrf()
                 });
+                user_client_modal.modal('hide');
+                $('#modal-placeholder').text('');
             });
         });
     });
@@ -21,13 +29,12 @@
     <form class="modal-content">
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
             <h3><?php echo trans('add_client'); ?></h3>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
-                <label for="client_name"><?php echo trans('client'); ?></label>
+                <label for="client_id"><?php echo trans('client'); ?></label>
                 <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {

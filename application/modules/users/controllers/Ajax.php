@@ -25,15 +25,16 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
         $this->load->model('users/mdl_user_clients');
 
-        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get();
+        $client = $this->mdl_clients->get_by_id($client_id);
 
-        if ($client->num_rows() == 1) {
-            $client_id = $client->row()->client_id;
+        if ($client) {
+            $client_id = $client->client_id;
 
             // Is this a new user or an existing user?
             if ($user_id) {
                 // Existing user - go ahead and save the entries
-                $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->where('ip_user_clients.client_id', $client_id)->get();
+                $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)
+                    ->where('ip_user_clients.client_id', $client_id)->get();
 
                 if (!$user_client->num_rows()) {
                     $this->mdl_user_clients->save(null, array('user_id' => $user_id, 'client_id' => $client_id));
@@ -52,6 +53,7 @@ class Ajax extends Admin_Controller
     public function load_user_client_table()
     {
         $this->load->helper('client');
+
         if ($session_user_clients = $this->session->userdata('user_clients')) {
             $this->load->model('clients/mdl_clients');
 
@@ -69,6 +71,34 @@ class Ajax extends Admin_Controller
         }
 
         $this->layout->load_view('users/partial_user_client_table', $data);
+    }
+
+    public function modal_add_user_client($user_id = null)
+    {
+        $this->load->model('clients/mdl_clients');
+        $this->load->helper('client');
+
+        if ($session_user_clients = $this->session->userdata('user_clients')) {
+            $clients = $this->mdl_clients->where_not_in('ip_clients.client_id', $session_user_clients)->get()->result();
+            $assigned_clients = array();
+        } else {
+            $this->load->model('users/mdl_user_clients');
+            $assigned_clients_query = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->get()->result();
+            $assigned_clients = array();
+
+            foreach ($assigned_clients_query as $assigned_client) {
+                $assigned_clients[] = (int)$assigned_client->client_id;
+            }
+
+            $clients = $this->mdl_clients->where_not_in('ip_clients.client_id', $assigned_clients)->get()->result();
+        }
+
+        $data = array(
+            'user_id' => $user_id,
+            'clients' => $clients,
+        );
+
+        $this->layout->load_view('users/modal_user_client', $data);
     }
 
 }
