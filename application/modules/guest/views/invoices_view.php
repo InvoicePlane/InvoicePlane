@@ -28,9 +28,9 @@
 
 </div>
 
-<?php echo $this->layout->load_view('layout/alerts'); ?>
-
 <div id="content">
+
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <form id="invoice_form" class="form-horizontal">
 
