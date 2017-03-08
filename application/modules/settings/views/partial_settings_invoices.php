@@ -7,7 +7,7 @@
                 <label for="settings[default_invoice_group]" class="control-label">
                     <?php echo trans('default_invoice_group'); ?>
                 </label>
-                <select name="settings[default_invoice_group]" class="input-sm form-control">
+                <select name="settings[default_invoice_group]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
@@ -24,7 +24,7 @@
                 <label for="settings[default_invoice_terms]">
                     <?php echo trans('default_terms'); ?>
                 </label>
-                <textarea name="settings[default_invoice_terms]" class="input-sm form-control"
+                <textarea name="settings[default_invoice_terms]" class=" form-control"
                           rows="3"><?php echo $this->mdl_settings->setting('default_invoice_terms'); ?></textarea>
             </div>
 
@@ -35,7 +35,7 @@
                 <label for="settings[invoice_default_payment_method]" class="control-label">
                     <?php echo trans('default_payment_method'); ?>
                 </label>
-                <select name="settings[invoice_default_payment_method]" class="input-sm form-control">
+                <select name="settings[invoice_default_payment_method]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php
                     $setting = $this->mdl_settings->setting('invoice_default_payment_method');
@@ -55,7 +55,7 @@
                 <label for="settings[invoices_due_after]" class="control-label">
                     <?php echo trans('invoices_due_after'); ?>
                 </label>
-                <input type="text" name="settings[invoices_due_after]" class="input-sm form-control"
+                <input type="text" name="settings[invoices_due_after]" class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('invoices_due_after'); ?>">
             </div>
 
@@ -63,7 +63,7 @@
                 <label for="settings[generate_invoice_number_for_draft]" class="control-label">
                     <?php echo trans('generate_invoice_number_for_draft'); ?>
                 </label>
-                <select name="settings[generate_invoice_number_for_draft]" class="input-sm form-control">
+                <select name="settings[generate_invoice_number_for_draft]" class=" form-control simple-select">
                     <option value="0"
                         <?php if (!$this->mdl_settings->setting('generate_invoice_number_for_draft')) {
                             echo 'selected="selected"';
@@ -94,7 +94,7 @@
                 <label for="settings[mark_invoices_sent_pdf]" class="control-label">
                     <?php echo trans('mark_invoices_sent_pdf'); ?>
                 </label>
-                <select name="settings[mark_invoices_sent_pdf]" class="input-sm form-control">
+                <select name="settings[mark_invoices_sent_pdf]" class=" form-control simple-select">
                     <option value="0"
                             <?php if (!$this->mdl_settings->setting('mark_invoices_sent_pdf')) { ?>selected="selected"<?php } ?>>
                         <?php echo trans('no'); ?>
@@ -110,7 +110,7 @@
                 <label for="settings[invoice_pre_password]" class="control-label">
                     <?php echo trans('invoice_pre_password'); ?>
                 </label>
-                <input type="text" name="settings[invoice_pre_password]" class="input-sm form-control"
+                <input type="text" name="settings[invoice_pre_password]" class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('invoice_pre_password'); ?>">
             </div>
 
@@ -118,7 +118,7 @@
                 <label for="settings[include_zugferd]" class="control-label">
                     <?php echo trans('invoice_pdf_include_zugferd'); ?>
                 </label>
-                <select name="settings[include_zugferd]" class="input-sm form-control">
+                <select name="settings[include_zugferd]" class=" form-control simple-select">
                     <option value="0"
                             <?php if (!$this->mdl_settings->setting('include_zugferd')) { ?>selected="selected"<?php } ?>>
                         <?php echo trans('no'); ?>
@@ -147,7 +147,7 @@
                     <br>
                     <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
                 <?php } ?>
-                <input type="file" name="invoice_logo" size="40" class="input-sm form-control"/>
+                <input type="file" name="invoice_logo" size="40" class=" form-control"/>
             </div>
 
         </div>
@@ -165,7 +165,7 @@
                 <label for="settings[pdf_invoice_template]" class="control-label">
                     <?php echo trans('default_pdf_template'); ?>
                 </label>
-                <select name="settings[pdf_invoice_template]" class="input-sm form-control">
+                <select name="settings[pdf_invoice_template]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
                         <option value="<?php echo $invoice_template; ?>"
@@ -178,7 +178,7 @@
                 <label for="settings[pdf_invoice_template_paid]" class="control-label">
                     <?php echo trans('pdf_template_paid'); ?>
                 </label>
-                <select name="settings[pdf_invoice_template_paid]" class="input-sm form-control">
+                <select name="settings[pdf_invoice_template_paid]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
                         <option value="<?php echo $invoice_template; ?>"
@@ -194,7 +194,7 @@
                 <label for="settings[pdf_invoice_template_overdue]" class="control-label">
                     <?php echo trans('pdf_template_overdue'); ?>
                 </label>
-                <select name="settings[pdf_invoice_template_overdue]" class="input-sm form-control">
+                <select name="settings[pdf_invoice_template_overdue]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
                         <option value="<?php echo $invoice_template; ?>"
@@ -210,7 +210,7 @@
                 <label for="settings[public_invoice_template]" class="control-label">
                     <?php echo trans('default_public_template'); ?>
                 </label>
-                <select name="settings[public_invoice_template]" class="input-sm form-control">
+                <select name="settings[public_invoice_template]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($public_invoice_templates as $invoice_template) { ?>
                         <option value="<?php echo $invoice_template; ?>"
@@ -229,7 +229,7 @@
                 <label for="settings[email_invoice_template]" class="control-label">
                     <?php echo trans('default_email_template'); ?>
                 </label>
-                <select name="settings[email_invoice_template]" class="input-sm form-control">
+                <select name="settings[email_invoice_template]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($email_templates_invoice as $email_template) { ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
@@ -242,7 +242,7 @@
                 <label for="settings[email_invoice_template_paid]" class="control-label">
                     <?php echo trans('email_template_paid'); ?>
                 </label>
-                <select name="settings[email_invoice_template_paid]" class="input-sm form-control">
+                <select name="settings[email_invoice_template_paid]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($email_templates_invoice as $email_template) { ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
@@ -255,7 +255,7 @@
                 <label for="settings[email_invoice_template_overdue]" class="control-label">
                     <?php echo trans('email_template_overdue'); ?>
                 </label>
-                <select name="settings[email_invoice_template_overdue]" class="input-sm form-control">
+                <select name="settings[email_invoice_template_overdue]" class=" form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($email_templates_invoice as $email_template) { ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
@@ -269,7 +269,7 @@
                     <?php echo trans('pdf_invoice_footer'); ?>
                 </label>
                 <textarea name="settings[pdf_invoice_footer]"
-                          class="input-sm form-control no-margin"><?php echo $this->mdl_settings->setting('pdf_invoice_footer'); ?></textarea>
+                          class=" form-control no-margin"><?php echo $this->mdl_settings->setting('pdf_invoice_footer'); ?></textarea>
 
                 <p class="help-block"><?php echo trans('pdf_invoice_footer_hint'); ?></p>
             </div>
@@ -289,7 +289,7 @@
                 <label for="settings[automatic_email_on_recur]" class="control-label">
                     <?php echo trans('automatic_email_on_recur'); ?>
                 </label>
-                <select name="settings[automatic_email_on_recur]" class="input-sm form-control">
+                <select name="settings[automatic_email_on_recur]" class=" form-control simple-select">
                     <option value="0"
                         <?php if (!$this->mdl_settings->setting('automatic_email_on_recur')) {
                             echo 'selected="selected"';
@@ -313,7 +313,7 @@
                 <label for="settings[read_only_toggle]" class="control-label">
                     <?php echo trans('set_to_read_only'); ?>
                 </label>
-                <select name="settings[read_only_toggle]" class="input-sm form-control">
+                <select name="settings[read_only_toggle]" class=" form-control simple-select">
                     <option value="2"
                         <?php echo($this->mdl_settings->setting('read_only_toggle') == 2 ? 'selected="selected"' : ''); ?>>
                         <?php echo trans('sent'); ?>
@@ -343,7 +343,7 @@
                 <label class="control-label">
                     <?php echo trans('invoice_sumex'); ?>
                 </label>
-                <select name="settings[sumex]" class="input-sm form-control">
+                <select name="settings[sumex]" class=" form-control simple-select">
                     <option value="0"
                             <?php if (!$this->mdl_settings->setting('sumex')) { ?>selected="selected"<?php } ?>>
                         <?php echo trans('no'); ?>
@@ -360,12 +360,12 @@
                 <label class="control-label">
                     <?php echo trans('invoice_sumex_sliptype'); ?>
                 </label>
-                <select name="settings[sumex_sliptype]" class="input-sm form-control">
+                <select name="settings[sumex_sliptype]" class=" form-control simple-select">
                     <?php
                     $slipTypes = array("esr9", "esrRed");
-                    foreach($slipTypes as $k=>$v): ?>
-                        <?php $selected = ($this->mdl_settings->setting('sumex_sliptype') == $k ? " selected": ""); ?>
-                        <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_sliptype-'.$v); ?></option>
+                    foreach ($slipTypes as $k => $v): ?>
+                        <?php $selected = ($this->mdl_settings->setting('sumex_sliptype') == $k ? " selected" : ""); ?>
+                        <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_sliptype-' . $v); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <p class="help-block"><?php echo trans('invoice_sumex_sliptype_help'); ?></p>
@@ -379,12 +379,12 @@
                 <label class="control-label">
                     <?php echo trans('invoice_sumex_role'); ?>
                 </label>
-                <select name="settings[sumex_role]" class="input-sm form-control">
+                <select name="settings[sumex_role]" class=" form-control simple-select">
                     <?php
                     $roles = Sumex::ROLES;
-                    foreach($roles as $k=>$v): ?>
-                        <?php $selected = ($this->mdl_settings->setting('sumex_role') == $k ? " selected": ""); ?>
-                        <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_role_'.$v); ?></option>
+                    foreach ($roles as $k => $v): ?>
+                        <?php $selected = ($this->mdl_settings->setting('sumex_role') == $k ? " selected" : ""); ?>
+                        <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_role_' . $v); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -393,12 +393,12 @@
                 <label class="control-label">
                     <?php echo trans('invoice_sumex_place'); ?>
                 </label>
-                <select name="settings[sumex_place]" class="input-sm form-control">
+                <select name="settings[sumex_place]" class=" form-control simple-select">
                     <?php
                     $places = Sumex::PLACES;
-                    foreach($places as $k=>$v): ?>
-                        <?php $selected = ($this->mdl_settings->setting('sumex_place') == $k ? " selected": ""); ?>
-                        <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_place_'.$v); ?></option>
+                    foreach ($places as $k => $v): ?>
+                        <?php $selected = ($this->mdl_settings->setting('sumex_place') == $k ? " selected" : ""); ?>
+                        <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo trans('invoice_sumex_place_' . $v); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -407,11 +407,11 @@
                 <label class="control-label">
                     <?php echo trans('invoice_sumex_canton'); ?>
                 </label>
-                <select name="settings[sumex_canton]" class="input-sm form-control">
+                <select name="settings[sumex_canton]" class=" form-control simple-select">
                     <?php
                     $cantons = Sumex::CANTONS;
-                    foreach($cantons as $k=>$v): ?>
-                        <?php $selected = ($this->mdl_settings->setting('sumex_canton') == $k ? " selected": ""); ?>
+                    foreach ($cantons as $k => $v): ?>
+                        <?php $selected = ($this->mdl_settings->setting('sumex_canton') == $k ? " selected" : ""); ?>
                         <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo $v; ?></option>
                     <?php endforeach; ?>
                 </select>

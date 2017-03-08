@@ -61,7 +61,7 @@
                 <label for="email_template" class="control-label"><?php echo trans('email_template'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="email_template" id="email_template" class="form-control">
+                <select name="email_template" id="email_template" class="form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($email_templates as $email_template): ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
@@ -126,7 +126,7 @@
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="pdf_template" id="pdf_template" class="form-control">
+                <select name="pdf_template" id="pdf_template" class="form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($pdf_templates as $pdf_template): ?>
                         <option value="<?php echo $pdf_template; ?>"

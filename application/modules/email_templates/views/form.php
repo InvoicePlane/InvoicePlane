@@ -109,8 +109,8 @@
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="email_template_pdf_template" id="email_template_pdf_template" class="form-control">
-                    <option value="" class="empty-option"></option>
+                <select name="email_template_pdf_template" id="email_template_pdf_template" class="form-control simple-select">
+                    <option value="" class="empty-option"><?php echo trans('none'); ?></option>
                     <?php foreach ($invoice_templates as $template): ?>
                         <option class="hidden-invoice" value="<?php echo $template; ?>"
                                 <?php if ($selected_pdf_template == $template) { ?>selected="selected"<?php } ?>><?php echo $template; ?></option>

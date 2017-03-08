@@ -62,7 +62,7 @@
                 <label for="user_language">
                     <?php echo trans('language'); ?>
                 </label>
-                <select name="user_language" id="user_language" class="form-control">
+                <select name="user_language" id="user_language" class="form-control simple-select">
                     <option value="system">
                         <?php echo trans('use_system_language') ?>
                     </option>
@@ -125,7 +125,7 @@
                 <label>
                     <?php echo trans('country'); ?>
                 </label>
-                <select name="user_country" class="form-control">
+                <select name="user_country" class="form-control simple-select">
                     <option></option>
                     <?php foreach ($countries as $cldr => $country) { ?>
                         <option value="<?php echo $cldr; ?>"

@@ -1,9 +1,3 @@
-<script>
-    $().ready(function () {
-        $("[name='client_id']").select2();
-    });
-</script>
-
 <form method="post" class="form-horizontal">
 
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
@@ -33,7 +27,7 @@
                 <label class="control-label"><?php echo trans('client'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
+                <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
                         echo "<option value=\"" . $client->client_id . "\" ";

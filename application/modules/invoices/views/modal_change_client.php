@@ -55,7 +55,7 @@
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <select name="client_name" id="client_id" class="input-sm form-control" autofocus="autofocus">
+                <select name="client_name" id="client_id" class="form-control" autofocus="autofocus">
                     <option></option>
                     <?php foreach ($clients as $client) { ?>
                         <option value="<?php echo $client->client_id; ?>"

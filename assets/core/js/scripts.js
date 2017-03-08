@@ -161,6 +161,9 @@ $(document).ready(function () {
     // Tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
+    // Select2 for all select inputs
+    $(".simple-select").select2();
+
     // Handle click event for Email Template Tags insertion
     // Example Usage
     // <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>

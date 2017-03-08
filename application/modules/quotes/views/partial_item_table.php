@@ -51,8 +51,7 @@
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
-                    <select name="item_tax_rate_id"
-                            class="form-control input-sm">
+                    <select name="item_tax_rate_id" class="form-control input-sm simple-select">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>">

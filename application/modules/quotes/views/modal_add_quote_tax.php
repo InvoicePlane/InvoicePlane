@@ -34,7 +34,7 @@
                 </label>
 
                 <div class="controls">
-                    <select name="tax_rate_id" id="tax_rate_id" class="form-control">
+                    <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option
@@ -50,7 +50,7 @@
                 </label>
 
                 <div class="controls">
-                    <select name="include_item_tax" id="include_item_tax" class="form-control">
+                    <select name="include_item_tax" id="include_item_tax" class="form-control simple-select">
                         <option value="0">
                             <?php echo trans('apply_before_item_tax'); ?>
                         </option>

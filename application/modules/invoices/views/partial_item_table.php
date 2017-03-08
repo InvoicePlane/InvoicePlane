@@ -53,8 +53,7 @@
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
-                    <select name="item_tax_rate_id"
-                            class="form-control input-sm">
+                    <select name="item_tax_rate_id" class="form-control input-sm">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -68,30 +67,29 @@
             <td class="td-icon text-right td-vert-middle"></td>
         </tr>
         <tr>
-          <?php if ($invoice->sumex_id == ""): ?>
-            <td class="td-textarea">
-                <div class="input-group">
-                    <span class="input-group-addon"><?php echo trans('description'); ?></span>
-                    <textarea name="item_description" class="input-sm form-control"></textarea>
-                </div>
-            </td>
-          <?php else: ?>
-            <td class="td-date">
-                <div class="input-group">
-                    <span class="input-group-addon"><?php echo trans('date'); ?></span>
-                    <input type="text" name="item_date" class="input-sm form-control datepicker"
-                           value="<?php echo format_date(@$item->item_date); ?>"
-                        <?php if ($invoice->is_read_only == 1) {
-                            echo 'disabled="disabled"';
-                        } ?>>
-                </div>
-            </td>
-          <?php endif; ?>
+            <?php if ($invoice->sumex_id == ""): ?>
+                <td class="td-textarea">
+                    <div class="input-group">
+                        <span class="input-group-addon"><?php echo trans('description'); ?></span>
+                        <textarea name="item_description" class="input-sm form-control"></textarea>
+                    </div>
+                </td>
+            <?php else: ?>
+                <td class="td-date">
+                    <div class="input-group">
+                        <span class="input-group-addon"><?php echo trans('date'); ?></span>
+                        <input type="text" name="item_date" class="input-sm form-control datepicker"
+                               value="<?php echo format_date(@$item->item_date); ?>"
+                            <?php if ($invoice->is_read_only == 1) {
+                                echo 'disabled="disabled"';
+                            } ?>>
+                    </div>
+                </td>
+            <?php endif; ?>
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('product_unit'); ?></span>
-                    <select name="item_product_unit_id"
-                            class="form-control input-sm">
+                    <select name="item_product_unit_id" class="form-control input-sm">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
                             <option value="<?php echo $unit->unit_id; ?>">
@@ -130,7 +128,8 @@
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>>
-                    <input type="hidden" name="item_task_id" class="item-task-id" value="<?php if ($item->item_task_id) echo $item->item_task_id; ?>">
+                    <input type="hidden" name="item_task_id" class="item-task-id"
+                           value="<?php if ($item->item_task_id) echo $item->item_task_id; ?>">
                     <input type="hidden" name="item_product_id" value="<?php echo $item->item_product_id; ?>">
 
                     <div class="input-group">
@@ -177,8 +176,7 @@
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
-                        <select name="item_tax_rate_id"
-                                class="form-control input-sm"
+                        <select name="item_tax_rate_id" class="form-control input-sm"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
@@ -204,34 +202,33 @@
 
             <tr>
                 <?php if ($invoice->sumex_id == ""): ?>
-                  <td class="td-textarea">
-                      <div class="input-group">
-                          <span class="input-group-addon"><?php echo trans('description'); ?></span>
-                          <textarea name="item_description"
-                                    class="input-sm form-control"
-                              <?php if ($invoice->is_read_only == 1) {
-                                  echo 'disabled="disabled"';
-                              } ?>><?php echo $item->item_description; ?></textarea>
-                      </div>
-                  </td>
+                    <td class="td-textarea">
+                        <div class="input-group">
+                            <span class="input-group-addon"><?php echo trans('description'); ?></span>
+                            <textarea name="item_description"
+                                      class="input-sm form-control"
+                                <?php if ($invoice->is_read_only == 1) {
+                                    echo 'disabled="disabled"';
+                                } ?>><?php echo $item->item_description; ?></textarea>
+                        </div>
+                    </td>
                 <?php else: ?>
-                  <td class="td-date">
-                      <div class="input-group">
-                          <span class="input-group-addon"><?php echo trans('date'); ?></span>
-                          <input type="text" name="item_date" class="input-sm form-control datepicker"
-                                 value="<?php echo format_date($item->item_date); ?>"
-                              <?php if ($invoice->is_read_only == 1) {
-                                  echo 'disabled="disabled"';
-                              } ?>>
-                      </div>
-                  </td>
+                    <td class="td-date">
+                        <div class="input-group">
+                            <span class="input-group-addon"><?php echo trans('date'); ?></span>
+                            <input type="text" name="item_date" class="input-sm form-control datepicker"
+                                   value="<?php echo format_date($item->item_date); ?>"
+                                <?php if ($invoice->is_read_only == 1) {
+                                    echo 'disabled="disabled"';
+                                } ?>>
+                        </div>
+                    </td>
                 <?php endif; ?>
 
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('product_unit'); ?></span>
-                        <select name="item_product_unit_id"
-                                class="form-control input-sm">
+                        <select name="item_product_unit_id" class="form-control input-sm">
                             <option value="0"><?php echo trans('none'); ?></option>
                             <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"

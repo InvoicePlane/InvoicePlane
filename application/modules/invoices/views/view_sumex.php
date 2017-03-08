@@ -286,70 +286,87 @@ if ($this->config->item('disable_read_only') == true) {
                             </span>
                         <?php endif; ?>
                         <br><br>
-                        <?php echo '<b>'.trans('birthdate').':</b> '.format_date($invoice->client_birthdate); ?><br>
-                        <?php echo '<b>'.trans('gender').':</b> '.format_gender($invoice->client_gender); ?>
+                        <?php echo '<b>' . trans('birthdate') . ':</b> ' . format_date($invoice->client_birthdate); ?>
+                        <br>
+                        <?php echo '<b>' . trans('gender') . ':</b> ' . format_gender($invoice->client_gender); ?>
                     </div>
                     <div class="col-md-6">
-                      <h3><?php echo trans('treatment'); ?></h3>
-                      <br>
-                      <div class="col-xs-12 col-md-8">
-                        <table class="items table">
-                          <tr>
-                            <td>
-                              <div class="input-group">
-                                <span class="input-group-addon"><?php echo trans('start'); ?></span>
-                                <input id="invoice_sumex_treatmentstart" name="sumex_treatmentstart" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentstart); ?>" type="text">
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="input-group">
-                              <span class="input-group-addon"><?php echo trans('end'); ?></span>
-                              <input id="invoice_sumex_treatmentend" name="sumex_treatmentend" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>" type="text">
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="input-group">
-                              <span class="input-group-addon"><?php echo trans('reason'); ?></span>
-                              <select name="invoice_sumex_reason" id="invoice_sumex_reason" class="form-control input-sm">
-                                <?php $reasons = ['disease', 'accident', 'maternity', 'prevention', 'birthdefect', 'unknown']; ?>
-                                <?php foreach($reasons as $key=>$reason): ?>
-                                  <?php $selected = ($invoice->sumex_reason==$key?" selected":""); ?>
-                                  <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php echo trans('reason_'.$reason); ?></option>
-                                <?php endforeach; ?>
-                              </select>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="input-group">
-                              <span class="input-group-addon"><?php echo trans('case_date'); ?></span>
-                              <input id="invoice_sumex_casedate" name="sumex_casedate" class="input-sm form-control datepicker" value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>" type="text">
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="input-group">
-                              <span class="input-group-addon"><?php echo trans('case_number'); ?></span>
-                              <input id="invoice_sumex_casenumber" name="sumex_casenumber" class="input-sm form-control" value="<?php echo htmlentities($invoice->sumex_casenumber); ?>" type="text">
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="input-group">
-                              <span class="input-group-addon"><?php echo trans('invoice_sumex_diagnosis'); ?></span>
-                              <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis" class="input-sm form-control" value="<?php echo htmlentities($invoice->sumex_diagnosis); ?>" type="text" maxlength="500">
-                            </div>
-                          </td>
-                        </tr>
-                        </table>
-                      </div>
+                        <h3><?php echo trans('treatment'); ?></h3>
+                        <br>
+                        <div class="col-xs-12 col-md-8">
+                            <table class="items table">
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><?php echo trans('start'); ?></span>
+                                            <input id="invoice_sumex_treatmentstart" name="sumex_treatmentstart"
+                                                   class="input-sm form-control datepicker"
+                                                   value="<?php echo date_from_mysql($invoice->sumex_treatmentstart); ?>"
+                                                   type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><?php echo trans('end'); ?></span>
+                                            <input id="invoice_sumex_treatmentend" name="sumex_treatmentend"
+                                                   class="input-sm form-control datepicker"
+                                                   value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>"
+                                                   type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><?php echo trans('reason'); ?></span>
+                                            <select name="invoice_sumex_reason" id="invoice_sumex_reason"
+                                                    class="form-control input-sm simple-select">
+                                                <?php $reasons = ['disease', 'accident', 'maternity', 'prevention', 'birthdefect', 'unknown']; ?>
+                                                <?php foreach ($reasons as $key => $reason): ?>
+                                                    <?php $selected = ($invoice->sumex_reason == $key ? " selected" : ""); ?>
+                                                    <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php echo trans('reason_' . $reason); ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><?php echo trans('case_date'); ?></span>
+                                            <input id="invoice_sumex_casedate" name="sumex_casedate"
+                                                   class="input-sm form-control datepicker"
+                                                   value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>"
+                                                   type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><?php echo trans('case_number'); ?></span>
+                                            <input id="invoice_sumex_casenumber" name="sumex_casenumber"
+                                                   class="input-sm form-control"
+                                                   value="<?php echo htmlentities($invoice->sumex_casenumber); ?>"
+                                                   type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><?php echo trans('invoice_sumex_diagnosis'); ?></span>
+                                            <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis"
+                                                   class="input-sm form-control"
+                                                   value="<?php echo htmlentities($invoice->sumex_diagnosis); ?>"
+                                                   type="text" maxlength="500">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -372,26 +389,25 @@ if ($this->config->item('disable_read_only') == true) {
 
                             <div class="col-xs-12 col-sm-12">
 
-                              <div class="invoice-properties">
-                                  <label><?php echo trans('status');
-                                      if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
-                                          echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
-                                      }
-                                      ?>
-                                  </label>
-                                  <select name="invoice_status_id" id="invoice_status_id"
-                                          class="form-control"
-                                      <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
-                                          echo 'disabled="disabled"';
-                                      } ?>>
-                                      <?php foreach ($invoice_statuses as $key => $status) { ?>
-                                          <option value="<?php echo $key; ?>"
-                                                  <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
-                                              <?php echo $status['label']; ?>
-                                          </option>
-                                      <?php } ?>
-                                  </select>
-                              </div>
+                                <div class="invoice-properties">
+                                    <label><?php echo trans('status');
+                                        if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
+                                            echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
+                                        }
+                                        ?>
+                                    </label>
+                                    <select name="invoice_status_id" id="invoice_status_id" class="form-control simple-select"
+                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                            echo 'disabled="disabled"';
+                                        } ?>>
+                                        <?php foreach ($invoice_statuses as $key => $status) { ?>
+                                            <option value="<?php echo $key; ?>"
+                                                    <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
+                                                <?php echo $status['label']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
 
                                 <div class="invoice-properties">
                                     <label><?php echo trans('invoice'); ?> #</label>
@@ -453,7 +469,8 @@ if ($this->config->item('disable_read_only') == true) {
                 <div class="col-xs-12 col-sm-4">
 
                     <label><?php echo trans('sumex_observations'); ?></label>
-                    <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
+                    <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control"
+                              rows="3"
                         <?php if ($invoice->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>

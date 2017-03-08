@@ -107,7 +107,7 @@
                 <div class="col-xs-12">
                     <div class="form-inline">
                         <div class="form-group filter-form">
-                            <select name="filter_family" id="filter_family" class="form-control">
+                            <select name="filter_family" id="filter_family" class="form-control simple-select">
                                 <option value=""><?php echo trans('any_family'); ?></option>
                                 <?php foreach ($families as $family) { ?>
                                     <option value="<?php echo $family->family_id; ?>"
