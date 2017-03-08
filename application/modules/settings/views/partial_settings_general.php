@@ -69,7 +69,9 @@
                 <select name="settings[date_format]" class=" form-control simple-select">
                     <?php foreach ($date_formats as $date_format) { ?>
                         <option value="<?php echo $date_format['setting']; ?>"
-                                <?php if (get_setting('date_format') == $date_format['setting']) { ?>selected="selected"<?php } ?>><?php echo $current_date->format($date_format['setting']); ?></option>
+                                <?php if (get_setting('date_format') == $date_format['setting']) { ?>selected="selected"<?php } ?>>
+                            <?php echo $current_date->format($date_format['setting']); ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
@@ -83,7 +85,7 @@
                     <?php echo trans('default_country'); ?>
                 </label>
                 <select name="settings[default_country]" class=" form-control simple-select">
-                    <option></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($countries as $cldr => $country) { ?>
                         <option value="<?php echo $cldr; ?>"
                                 <?php if (get_setting('default_country') == $cldr) { ?>selected="selected"<?php } ?>>
@@ -117,11 +119,17 @@
                 </label>
                 <select name="settings[currency_symbol_placement]" class=" form-control simple-select">
                     <option value="before"
-                            <?php if (get_setting('currency_symbol_placement') == 'before') { ?>selected="selected"<?php } ?>><?php echo trans('before_amount'); ?></option>
+                            <?php if (get_setting('currency_symbol_placement') == 'before') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('before_amount'); ?>
+                    </option>
                     <option value="after"
-                            <?php if (get_setting('currency_symbol_placement') == 'after') { ?>selected="selected"<?php } ?>><?php echo trans('after_amount'); ?></option>
+                            <?php if (get_setting('currency_symbol_placement') == 'after') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('after_amount'); ?>
+                    </option>
                     <option value="afterspace"
-                            <?php if (get_setting('currency_symbol_placement') == 'afterspace') { ?>selected="selected"<?php } ?>><?php echo trans('after_amount_space'); ?></option>
+                            <?php if (get_setting('currency_symbol_placement') == 'afterspace') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('after_amount_space'); ?>
+                    </option>
                 </select>
             </div>
         </div>
@@ -221,17 +229,29 @@
                 </label>
                 <select name="settings[quote_overview_period]" class=" form-control simple-select">
                     <option value="this-month"
-                            <?php if (get_setting('quote_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo trans('this_month'); ?></option>
+                            <?php if (get_setting('quote_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('this_month'); ?>
+                    </option>
                     <option value="last-month"
-                            <?php if (get_setting('quote_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo trans('last_month'); ?></option>
+                            <?php if (get_setting('quote_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('last_month'); ?>
+                    </option>
                     <option value="this-quarter"
-                            <?php if (get_setting('quote_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('this_quarter'); ?></option>
+                            <?php if (get_setting('quote_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('this_quarter'); ?>
+                    </option>
                     <option value="last-quarter"
-                            <?php if (get_setting('quote_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('last_quarter'); ?></option>
+                            <?php if (get_setting('quote_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('last_quarter'); ?>
+                    </option>
                     <option value="this-year"
-                            <?php if (get_setting('quote_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo trans('this_year'); ?></option>
+                            <?php if (get_setting('quote_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('this_year'); ?>
+                    </option>
                     <option value="last-year"
-                            <?php if (get_setting('quote_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo trans('last_year'); ?></option>
+                            <?php if (get_setting('quote_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('last_year'); ?>
+                    </option>
                 </select>
             </div>
         </div>
@@ -243,17 +263,29 @@
                 </label>
                 <select name="settings[invoice_overview_period]" class=" form-control simple-select">
                     <option value="this-month"
-                            <?php if (get_setting('invoice_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo trans('this_month'); ?></option>
+                            <?php if (get_setting('invoice_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('this_month'); ?>
+                    </option>
                     <option value="last-month"
-                            <?php if (get_setting('invoice_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>><?php echo trans('last_month'); ?></option>
+                            <?php if (get_setting('invoice_overview_period') == 'last-month') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('last_month'); ?>
+                    </option>
                     <option value="this-quarter"
-                            <?php if (get_setting('invoice_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('this_quarter'); ?></option>
+                            <?php if (get_setting('invoice_overview_period') == 'this-quarter') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('this_quarter'); ?>
+                    </option>
                     <option value="last-quarter"
-                            <?php if (get_setting('invoice_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>><?php echo trans('last_quarter'); ?></option>
+                            <?php if (get_setting('invoice_overview_period') == 'last-quarter') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('last_quarter'); ?>
+                    </option>
                     <option value="this-year"
-                            <?php if (get_setting('invoice_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>><?php echo trans('this_year'); ?></option>
+                            <?php if (get_setting('invoice_overview_period') == 'this-year') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('this_year'); ?>
+                    </option>
                     <option value="last-year"
-                            <?php if (get_setting('invoice_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>><?php echo trans('last_year'); ?></option>
+                            <?php if (get_setting('invoice_overview_period') == 'last-year') { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('last_year'); ?>
+                    </option>
                 </select>
             </div>
         </div>
@@ -268,9 +300,13 @@
                 <select name="settings[disable_quickactions]" class=" form-control simple-select"
                         id="disable_quickactions">
                     <option value="0"
-                            <?php if (!get_setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo trans('no'); ?></option>
+                            <?php if (!get_setting('disable_quickactions')) { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('no'); ?>
+                    </option>
                     <option value="1"
-                            <?php if (get_setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
+                            <?php if (get_setting('disable_quickactions')) { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('yes'); ?>
+                    </option>
                 </select>
             </div>
         </div>
@@ -289,9 +325,13 @@
                 <select name="settings[disable_sidebar]" class=" form-control simple-select"
                         id="disable_sidebar">
                     <option value="0"
-                            <?php if (!get_setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo trans('no'); ?></option>
+                            <?php if (!get_setting('disable_sidebar')) { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('no'); ?>
+                    </option>
                     <option value="1"
-                            <?php if (get_setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
+                            <?php if (get_setting('disable_sidebar')) { ?>selected="selected"<?php } ?>>
+                        <?php echo trans('yes'); ?>
+                    </option>
                 </select>
             </div>
         </div>
@@ -315,7 +355,9 @@
                 id="monospace_amounts">
             <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
-                    <?php if (get_setting('monospace_amounts') == 1) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
+                    <?php if (get_setting('monospace_amounts') == 1) { ?>selected="selected"<?php } ?>>
+                <?php echo trans('yes'); ?>
+            </option>
         </select>
 
         <p class="help-block">
@@ -348,7 +390,9 @@
         <select name="settings[bcc_mails_to_admin]" class=" form-control simple-select">
             <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
-                    <?php if (get_setting('bcc_mails_to_admin') == 1) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
+                    <?php if (get_setting('bcc_mails_to_admin') == 1) { ?>selected="selected"<?php } ?>>
+                <?php echo trans('yes'); ?>
+            </option>
         </select>
 
         <p class="help-block"><?php echo trans('bcc_mails_to_admin_hint'); ?></p>

@@ -26,7 +26,7 @@
         </label>
         <select name="settings[email_send_method]" id="email_send_method"
                 class=" form-control simple-select">
-            <option value=""></option>
+            <option value=""><?php echo trans('none'); ?></option>
             <option value="phpmail"
                     <?php if (get_setting('email_send_method') == 'phpmail') { ?>selected="selected"<?php } ?>>
                 <?php echo trans('email_send_method_phpmail'); ?>

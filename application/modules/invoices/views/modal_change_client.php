@@ -14,7 +14,7 @@
                 placeholder: "<?php echo htmlentities(trans('client')); ?>",
                 allowClear: true
             });
-            $("#client_name").focus();
+            $("#client_id").focus();
         });
 
         // Creates the invoice
@@ -50,18 +50,16 @@
     <form class="modal-content">
         <div class="modal-header">
             <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
             <h3><?php echo trans('change_client'); ?></h3>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <select name="client_name" id="client_id" class="form-control" autofocus="autofocus">
-                    <option></option>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
                     <?php foreach ($clients as $client) { ?>
                         <option value="<?php echo $client->client_id; ?>"
-                                <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>
-                        ><?php echo format_client($client); ?></option>
-
+                                <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>>
+                            <?php echo format_client($client); ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
