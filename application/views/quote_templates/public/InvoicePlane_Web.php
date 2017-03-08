@@ -14,7 +14,8 @@
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 
 </head>
@@ -29,16 +30,26 @@
             <h2><?php echo trans('quote') . ' ' . $quote->quote_number; ?></h2>
 
             <div class="btn-group">
+                <?php if (in_array($quote->quote_status_id, array(2, 3))) : ?>
+                    <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
+                       class="btn btn-success">
+                        <i class="fa fa-check"></i><?php echo trans('approve_this_quote'); ?>
+                    </a>
+                    <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
+                       class="btn btn-danger">
+                        <i class="fa fa-times-circle"></i><?php echo trans('reject_this_quote'); ?>
+                    </a>
+                <?php endif; ?>
                 <a href="<?php echo site_url('guest/view/generate_quote_pdf/' . $quote_url_key); ?>"
                    class="btn btn-primary">
-                    <i
-                            class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+                    <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                 </a>
                 <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $quote->quote_balance > 0) { ?>
-                <a
-                        href="<?php echo site_url('guest/payment_handler/make_payment/' . $quote_url_key); ?>"
-                        class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
-                    </a><?php } ?>
+                    <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $quote_url_key); ?>"
+                       class="btn btn-success">
+                        <i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
+                    </a>
+                <?php } ?>
             </div>
 
         </div>
@@ -56,8 +67,7 @@
         <div class="quote">
 
             <?php
-            $logo = invoice_logo();
-            if ($logo) {
+            if ($logo = invoice_logo()) {
                 echo $logo . '<br><br>';
             }
             ?>
