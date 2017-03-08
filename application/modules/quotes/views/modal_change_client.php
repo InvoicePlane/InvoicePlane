@@ -57,13 +57,12 @@
         <div class="modal-body">
 
             <div class="form-group">
-                <select name="client_id" id="client_id" class="input-sm form-control" autofocus>
-                    <option></option>
+                <select name="client_id" id="client_id" class="form-control" autofocus>
                     <?php foreach ($clients as $client) { ?>
                         <option value="<?php echo format_client($client); ?>"
-                                <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>
-                        > <?php echo format_client($client); ?>     </option>
-
+                                <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>>
+                            <?php echo format_client($client); ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>

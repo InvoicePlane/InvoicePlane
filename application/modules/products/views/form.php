@@ -28,7 +28,7 @@
                             <label class="control-label"><?php echo trans('family'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
-                            <select name="family_id" id="family_id" class="form-control">
+                            <select name="family_id" id="family_id" class="form-control simple-select">
                                 <option value="0"><?php echo trans('select_family'); ?></option>
                                 <?php foreach ($families as $family) { ?>
                                     <option value="<?php echo $family->family_id; ?>"
@@ -95,7 +95,7 @@
                             <label class="control-label"><?php echo trans('product_unit'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
-                            <select name="unit_id" id="unit_id" class="form-control">
+                            <select name="unit_id" id="unit_id" class="form-control simple-select">
                                 <option value="0"><?php echo trans('select_unit'); ?></option>
                                 <?php foreach ($units as $unit) { ?>
                                     <option value="<?php echo $unit->unit_id; ?>"
@@ -112,7 +112,7 @@
                             <label class="control-label"><?php echo trans('tax_rate'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
-                            <select name="tax_rate_id" id="tax_rate_id" class="form-control">
+                            <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
                                 <option value="0"><?php echo trans('none'); ?></option>
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"

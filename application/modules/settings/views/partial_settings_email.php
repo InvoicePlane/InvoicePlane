@@ -7,13 +7,11 @@
         });
 
         function toggle_smtp_settings() {
-
             email_send_method = $('#email_send_method').val();
 
             if (email_send_method == 'smtp') {
                 $('#div-smtp-settings').show();
-            }
-            else {
+            } else {
                 $('#div-smtp-settings').hide();
             }
         }
@@ -27,7 +25,7 @@
             <?php echo trans('email_send_method'); ?>
         </label>
         <select name="settings[email_send_method]" id="email_send_method"
-                class="input-sm form-control">
+                class=" form-control simple-select">
             <option value=""></option>
             <option value="phpmail"
                     <?php if ($this->mdl_settings->setting('email_send_method') == 'phpmail') { ?>selected="selected"<?php } ?>>
@@ -50,7 +48,7 @@
         <label for="settings[smtp_server_address]" class="control-label">
             <?php echo trans('smtp_server_address'); ?>
         </label>
-        <input type="text" name="settings[smtp_server_address]" class="input-sm form-control"
+        <input type="text" name="settings[smtp_server_address]" class=" form-control"
                value="<?php echo $this->mdl_settings->setting('smtp_server_address'); ?>">
     </div>
 
@@ -58,7 +56,7 @@
         <label for="settings[smtp_authentication]">
             <?php echo trans('smtp_requires_authentication'); ?>
         </label>
-        <select name="settings[smtp_authentication]" class="input-sm form-control">
+        <select name="settings[smtp_authentication]" class=" form-control simple-select">
             <option value="0"
                     <?php if (!$this->mdl_settings->setting('smtp_authentication')) { ?>selected="selected"<?php } ?>>
                 <?php echo trans('no'); ?>
@@ -74,7 +72,7 @@
         <label for="settings[smtp_username]" class="control-label">
             <?php echo trans('smtp_username'); ?>
         </label>
-        <input type="text" name="settings[smtp_username]" class="input-sm form-control"
+        <input type="text" name="settings[smtp_username]" class=" form-control"
                value="<?php echo $this->mdl_settings->setting('smtp_username'); ?>">
     </div>
 
@@ -82,7 +80,7 @@
         <label for="smtp_password" class="control-label">
             <?php echo trans('smtp_password'); ?>
         </label>
-        <input type="password" id="smtp_password" class="input-sm form-control" name="settings[smtp_password]"
+        <input type="password" id="smtp_password" class=" form-control" name="settings[smtp_password]"
                value="">
     </div>
 
@@ -91,7 +89,7 @@
             <label for="settings[smtp_port]" class="control-label">
                 <?php echo trans('smtp_port'); ?>
             </label>
-            <input type="text" name="settings[smtp_port]" class="input-sm form-control"
+            <input type="text" name="settings[smtp_port]" class=" form-control"
                    value="<?php echo $this->mdl_settings->setting('smtp_port'); ?>">
         </div>
     </div>
@@ -100,7 +98,7 @@
         <label for="settings[smtp_security]" class="control-label">
             <?php echo trans('smtp_security'); ?>
         </label>
-        <select name="settings[smtp_security]" class="input-sm form-control">
+        <select name="settings[smtp_security]" class=" form-control simple-select">
             <option value=""
                     <?php if (!$this->mdl_settings->setting('smtp_security')) { ?>selected="selected"<?php } ?>><?php echo trans('none'); ?></option>
             <option value="ssl"
@@ -115,7 +113,7 @@
     <label for="settings[email_pdf_attachment]">
         <?php echo trans('email_pdf_attachment'); ?>
     </label>
-    <select name="settings[email_pdf_attachment]" class="input-sm form-control">
+    <select name="settings[email_pdf_attachment]" class=" form-control simple-select">
         <option value="0"
                 <?php if (!$this->mdl_settings->setting('email_pdf_attachment')) { ?>selected="selected"<?php } ?>>
             <?php echo trans('no'); ?>

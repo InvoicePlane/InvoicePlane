@@ -4,6 +4,9 @@
     $(function () {
         $('#modal_copy_quote').modal('show');
 
+        // Select2 for all select inputs
+        $(".simple-select").select2();
+
         // Creates the quote
         $('#copy_quote_confirm').click(function () {
             $.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", {
@@ -80,8 +83,8 @@
                 </label>
 
                 <div class="controls">
-                    <select name="invoice_group_id" id="invoice_group_id" class="form-control">
-                        <option value=""></option>
+                    <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
+                        <option></option>
                         <?php foreach ($invoice_groups as $invoice_group) { ?>
                             <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                     <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>

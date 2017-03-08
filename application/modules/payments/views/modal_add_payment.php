@@ -6,6 +6,9 @@
             $('#payment_amount').focus();
         });
 
+        // Select2 for all select inputs
+        $(".simple-select").select2();
+
         $('#btn_modal_payment_submit').click(function () {
             $.post("<?php echo site_url('payments/ajax/add'); ?>", {
                     invoice_id: $('#invoice_id').val(),
@@ -85,7 +88,7 @@
                                    value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
                         <?php } ?>
 
-                        <select name="payment_method_id" id="payment_method_id" class="form-control"
+                        <select name="payment_method_id" id="payment_method_id" class="form-control simple-select"
                             <?php echo(!empty($invoice_payment_method) ? 'disabled="disabled"' : ''); ?>>
                             <option value=""></option>
                             <?php foreach ($payment_methods as $payment_method) { ?>

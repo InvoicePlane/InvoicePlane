@@ -44,7 +44,7 @@
                 <label for="invoice_id" class="control-label"><?php echo trans('invoice'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="invoice_id" id="invoice_id" class="form-control">
+                <select name="invoice_id" id="invoice_id" class="form-control simple-select">
                     <?php if (!$payment_id) { ?>
                         <option value=""></option>
                         <?php foreach ($open_invoices as $invoice) { ?>
@@ -101,7 +101,7 @@
                            value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
                 <?php } ?>
 
-                <select id="payment_method_id" name="payment_method_id" class="form-control"
+                <select id="payment_method_id" name="payment_method_id" class="form-control simple-select"
                     <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
 
                     <?php foreach ($payment_methods as $payment_method) { ?>
