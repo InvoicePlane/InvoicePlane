@@ -50,13 +50,11 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
 
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
-    if($db_invoice->sumex_id == NULL){
-      $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
+    if ($db_invoice->sumex_id == null) {
+        $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
+    } else {
+        $invoice = generate_invoice_sumex($invoice_id, false, true);
     }
-    else{
-      $invoice = generate_invoice_sumex($invoice_id, false, true);
-    }
-
 
     $message = parse_template($db_invoice, $body);
     $subject = parse_template($db_invoice, $subject);

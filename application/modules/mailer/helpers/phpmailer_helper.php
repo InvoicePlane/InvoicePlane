@@ -23,7 +23,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $cc = null, $bcc = null, $more_attachments = null)
 {
-    require FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
+    require_once(FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php');
 
     $CI = &get_instance();
     $CI->load->library('crypt');

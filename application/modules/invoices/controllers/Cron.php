@@ -63,13 +63,13 @@ class Cron extends Base_Controller
             $this->mdl_invoices_recurring->set_next_recur_date($invoice_recurring->invoice_recurring_id);
 
             // Email the new invoice if applicable
-            if ($this->mdl_settings->setting('automatic_email_on_recur') && mailer_configured()) {
+            if (get_setting('automatic_email_on_recur') && mailer_configured()) {
                 $new_invoice = $this->mdl_invoices->get_by_id($target_id);
 
                 // Set the email body, use default email template if available
                 $this->load->model('email_templates/mdl_email_templates');
 
-                $email_template_id = $this->mdl_settings->setting('email_invoice_template');
+                $email_template_id = get_setting('email_invoice_template');
                 if (!$email_template_id) {
                     return;
                 }
@@ -106,7 +106,9 @@ class Cron extends Base_Controller
                 $cc = $tpl->email_template_cc;
                 $bcc = $tpl->email_template_bcc;
 
-                if (email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
+                $email_invoice = email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files);
+
+                if ($email_invoice) {
                     $this->mdl_invoices->mark_sent($target_id);
                     $this->mdl_invoice_amounts->calculate($target_id);
                 } else {
