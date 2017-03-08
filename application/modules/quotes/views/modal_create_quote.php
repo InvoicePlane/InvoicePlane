@@ -7,10 +7,8 @@
             $("#client_id").focus();
         });
 
-        $().ready(function () {
-            $("[name='client_id']").select2();
-            $("#client_id").focus();
-        });
+        // Select2 for all select inputs
+        $(".simple-select").select2();
 
         // Creates the quote
         $('#quote_create_confirm').click(function () {
@@ -57,7 +55,7 @@
 
             <div class="form-group">
                 <label for="client_name"><?php echo trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
+                <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
                         echo "<option value=\"" . htmlspecialchars($client->client_id) . "\" ";
@@ -95,11 +93,9 @@
 
             <div class="form-group">
                 <label for="invoice_group_id"><?php echo trans('invoice_group'); ?>: </label>
-
                 <div class="controls">
-                    <select name="invoice_group_id" id="invoice_group_id"
-                            class="form-control">
-                        <option value=""></option>
+                    <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
+                        <option></option>
                         <?php foreach ($invoice_groups as $invoice_group) { ?>
                             <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                     <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>

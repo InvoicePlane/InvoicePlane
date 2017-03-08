@@ -7,9 +7,8 @@
             $("#client_id").focus();
         });
 
-        $().ready(function () {
-            $("[name='client_id']").select2();
-        });
+        // Select2 for all select inputs
+        $(".simple-select").select2();
 
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
@@ -60,7 +59,7 @@
 
             <div class="form-group">
                 <label for="client_id"><?php echo trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
+                <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
                         echo "<option value=\"" . $client->client_id . "\" ";
@@ -98,7 +97,7 @@
                 <label><?php echo trans('invoice_group'); ?></label>
 
                 <div class="controls">
-                    <select name="invoice_group_id" id="invoice_group_id" class="form-control">
+                    <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
                         <option value=""></option>
                         <?php foreach ($invoice_groups as $invoice_group) { ?>
                             <option value="<?php echo $invoice_group->invoice_group_id; ?>"

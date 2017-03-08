@@ -125,7 +125,7 @@
                         </label>
                     </div>
                     <div class="col-xs-12 col-sm-6">
-                        <select name="user_language" id="user_language" class="form-control">
+                        <select name="user_language" id="user_language" class="form-control simple-select">
                             <option value="system">
                                 <?php echo trans('use_system_language') ?>
                             </option>
@@ -148,8 +148,7 @@
                         </label>
                     </div>
                     <div class="col-xs-12 col-sm-6">
-                        <select name="user_type" id="user_type" class="form-control">
-                            <option value=""></option>
+                        <select name="user_type" id="user_type" class="form-control simple-select">
                             <?php foreach ($user_types as $key => $type) { ?>
                                 <option value="<?php echo $key; ?>"
                                         <?php if ($this->mdl_users->form_value('user_type') == $key) { ?>selected="selected"<?php } ?>><?php echo $type; ?></option>

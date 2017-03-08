@@ -76,7 +76,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
                             <label class="control-label"><?php echo trans('tax_rate'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
-                            <select name="tax_rate_id" id="tax_rate_id" class="form-control">
+                            <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
                                 <option value="0"><?php echo trans('none'); ?></option>
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -111,7 +111,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
                             <label class="control-label"><?php echo trans('status'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-9">
-                            <select name="task_status" id="task_status" class="form-control">
+                            <select name="task_status" id="task_status" class="form-control simple-select">
                                 <?php foreach ($task_statuses as $key => $status) {
                                     if ($this->mdl_tasks->form_value('task_status') != 4 && $key == 4) continue;
                                     ?>
@@ -136,7 +136,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
                             <label class="control-label"><?php echo trans('project'); ?>: </label>
                         </div>
                         <div class="col-xs-12 col-sm-8 col-lg-8">
-                            <select name="project_id" id="project_id" class="form-control">
+                            <select name="project_id" id="project_id" class="form-control simple-select">
                                 <option value=""><?php echo trans('select_project'); ?></option>
                                 <?php foreach ($projects as $project) { ?>
                                     <option value="<?php echo $project->project_id; ?>"

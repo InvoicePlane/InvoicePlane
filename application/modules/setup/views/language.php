@@ -11,7 +11,7 @@
 
             <p><?php echo trans('setup_choose_language_message'); ?></p>
 
-            <select name="ip_lang" class="form-control">
+            <select name="ip_lang" class="form-control simple-select">
                 <?php foreach ($languages as $language) { ?>
                     <option value="<?php echo $language; ?>"
                             <?php if ($language == 'english') { ?>selected="selected"<?php } ?>>

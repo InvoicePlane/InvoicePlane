@@ -3,6 +3,9 @@
         // Display the create quote modal
         $('#modal_quote_to_invoice').modal('show');
 
+        // Select2 for all select inputs
+        $(".simple-select").select2();
+
         // Creates the invoice
         $('#quote_to_invoice_confirm').click(function () {
             $.post("<?php echo site_url('quotes/ajax/quote_to_invoice'); ?>", {
@@ -75,7 +78,7 @@
                 <label for="invoice_group_id">
                     <?php echo trans('invoice_group'); ?>
                 </label>
-                <select name="invoice_group_id" id="invoice_group_id" class="form-control">
+                <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
                     <option value=""></option>
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"

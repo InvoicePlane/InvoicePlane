@@ -9,6 +9,9 @@
             get_recur_start_date();
         });
 
+        // Select2 for all select inputs
+        $(".simple-select").select2();
+
         // Creates the invoice
         $('#create_recurring_confirm').click(function () {
             $.post("<?php echo site_url('invoices/ajax/create_recurring'); ?>", {
@@ -61,7 +64,7 @@
                 <label><?php echo trans('every'); ?>: </label>
 
                 <div class="controls">
-                    <select name="recur_frequency" id="recur_frequency" class="form-control"
+                    <select name="recur_frequency" id="recur_frequency" class="form-control simple-select"
                             style="width: 150px;">
                         <?php foreach ($recur_frequencies as $key => $lang) { ?>
                             <option value="<?php echo $key; ?>"
