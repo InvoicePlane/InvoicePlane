@@ -1,4 +1,46 @@
 <script>
+    function getIcon(fullname){
+      var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
+      if(fileFormat){
+        fileFormat = fileFormat[1];
+      }
+      else{
+        fileFormat = "";
+      }
+
+      var fileIcon = "default";
+
+      switch(fileFormat){
+        case "pdf":
+          fileIcon = "file-pdf";
+        break;
+
+        case "mp3":
+        case "wav":
+        case "ogg":
+          fileIcon = "file-audio";
+        break;
+
+        case "doc":
+        case "docx":
+        case "odt":
+          fileIcon = "file-document";
+        break;
+
+        case "xls":
+        case "xlsx":
+        case "ods":
+          fileIcon = "file-spreadsheet";
+        break;
+
+        case "ppt":
+        case "pptx":
+        case "odp":
+          fileIcon = "file-presentation";
+        break;
+      }
+      return fileIcon;
+    }
     $(function () {
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load(
@@ -620,8 +662,10 @@ if ($this->config->item('disable_read_only') == true) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
                     } else {
+                        fileIcon = getIcon(val.fullname);
+
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo site_url('assets/default/img/favicon.png'); ?>');
+                            '<?php echo site_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.png');
                     }
 
                     thisDropzone.emit("complete", mockFile);
@@ -642,7 +686,9 @@ if ($this->config->item('disable_read_only') == true) {
     });
 
     myDropzone.on("addedfile", function (file) {
-        myDropzone.emit("thumbnail", file, '<?php echo base_url(); ?>assets/default/img/favicon.png');
+        var fileIcon = getIcon(file.name);
+        myDropzone.emit("thumbnail", file,
+          '<?php echo site_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.png');
         createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $invoice->invoice_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
     });
 
