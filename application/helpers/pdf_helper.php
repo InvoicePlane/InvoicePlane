@@ -161,7 +161,9 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false){
     unlink($tempCopy);
 
     if($stream){
-      return $pdf->Output();
+      header("Content-Type", "application/pdf");
+      $pdf->Output($filename.'.pdf', 'I');
+      return;
     }
 
     $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
