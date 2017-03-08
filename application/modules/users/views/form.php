@@ -24,12 +24,13 @@
             placeholder: "<?php echo trans('country'); ?>",
             allowClear: true
         });
+
+        $('#add-user-client-modal').click(function () {
+            <?php $user_id = isset($id) ? '/' . $id : ''; ?>
+            $('#modal-placeholder').load("<?php echo site_url('users/ajax/modal_add_user_client' . $user_id); ?>/" + Math.floor(Math.random() * 1000));
+        });
     });
 </script>
-
-<?php if (isset($modal_user_client)) {
-    echo $modal_user_client;
-} ?>
 
 <form method="post" class="form-horizontal">
 
@@ -409,10 +410,10 @@
                         <h5 style="float: left;"><?php echo trans('client_access'); ?></h5>
 
                         <div class="pull-right">
-                            <a href="#add-user-client" class="btn btn-default" data-toggle="modal">
+                            <button id="add-user-client-modal" class="btn btn-default" type="button">
                                 <i class="fa fa-plus"></i>
                                 <?php echo trans('add_client'); ?>
-                            </a>
+                            </button>
                         </div>
                     </div>
 
