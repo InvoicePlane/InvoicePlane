@@ -7,7 +7,7 @@
                 <label for="settings[projects_enabled]" class="control-label">
                     <?php echo trans('enable_projects'); ?>
                 </label>
-                <select name="settings[projects_enabled]" class="input-sm form-control"
+                <select name="settings[projects_enabled]" class="form-control simple-select"
                         id="settings[projects_enabled]">
                     <option value="1"
                             <?php if (get_setting('projects_enabled')) { ?>selected="selected"<?php } ?>>
@@ -29,7 +29,7 @@
                 </label>
                 <div class="input-group">
                     <input type="text" name="settings[default_hourly_rate]" id="settings[default_hourly_rate]"
-                           class="input-sm form-control amount"
+                           class="form-control amount"
                            value="<?php echo format_amount(get_setting('default_hourly_rate')); ?>">
                     <span class="input-group-addon">
                 <?php echo get_setting('currency_symbol'); ?>

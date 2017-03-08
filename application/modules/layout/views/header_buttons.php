@@ -5,8 +5,10 @@
                 <i class="fa fa-check"></i> <?php echo trans('save'); ?>
             </button>
         <?php endif; ?>
-        <button id="btn-cancel" name="btn_cancel" class="btn btn-danger" value="1">
-            <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
-        </button>
+        <?php if (!isset($hide_cancel_button)) : ?>
+            <button id="btn-cancel" name="btn_cancel" class="btn btn-danger" value="1">
+                <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
+            </button>
+        <?php endif; ?>
     </div>
 </div>

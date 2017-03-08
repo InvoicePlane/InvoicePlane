@@ -28,7 +28,7 @@
 
             <div class="form-group">
                 <label for="client_name"><?php echo trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
+                <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
                         echo "<option value=\"" . htmlspecialchars($client->client_id) . "\" ";

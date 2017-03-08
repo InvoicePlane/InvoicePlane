@@ -58,7 +58,7 @@
     <h4><?php echo trans('updatecheck'); ?></h4><br/>
 
     <div class="form-group">
-        <input type="text" class="input-sm form-control"
+        <input type="text" class=" form-control"
                value="<?php echo $current_version; ?>" readonly="readonly">
     </div>
     <div id="updatecheck-results">

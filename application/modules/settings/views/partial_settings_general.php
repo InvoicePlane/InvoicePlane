@@ -16,7 +16,7 @@
                 <label for="settings[default_language]" class="control-label">
                     <?php echo trans('language'); ?>
                 </label>
-                <select name="settings[default_language]" class="input-sm form-control">
+                <select name="settings[default_language]" class=" form-control simple-select">
                     <?php foreach ($languages as $language) {
                         $sys_lang = $this->mdl_settings->setting('default_language');
                         ?>
@@ -34,7 +34,7 @@
                 <label for="settings[system_theme]" class="control-label">
                     <?php echo trans('theme'); ?>
                 </label>
-                <select name="settings[system_theme]" class="input-sm form-control">
+                <select name="settings[system_theme]" class=" form-control simple-select">
                     <?php foreach ($available_themes as $theme_key => $theme_name) { ?>
                         <option value="<?php echo $theme_key; ?>"
                                 <?php if (get_setting('system_theme') == $theme_key) { ?>selected="selected"<?php } ?>>
@@ -52,7 +52,7 @@
                 <label for="settings[first_day_of_week]" class="control-label">
                     <?php echo trans('first_day_of_week'); ?>
                 </label>
-                <select name="settings[first_day_of_week]" class="input-sm form-control">
+                <select name="settings[first_day_of_week]" class=" form-control simple-select">
                     <?php foreach ($first_days_of_weeks as $first_day_of_week_id => $first_day_of_week_name) { ?>
                         <option value="<?php echo $first_day_of_week_id; ?>"
                                 <?php if ($this->mdl_settings->setting('first_day_of_week') == $first_day_of_week_id) { ?>selected="selected"<?php } ?>><?php echo $first_day_of_week_name; ?></option>
@@ -66,7 +66,7 @@
                 <label for="settings[date_format]" class="control-label">
                     <?php echo trans('date_format'); ?>
                 </label>
-                <select name="settings[date_format]" class="input-sm form-control">
+                <select name="settings[date_format]" class=" form-control simple-select">
                     <?php foreach ($date_formats as $date_format) { ?>
                         <option value="<?php echo $date_format['setting']; ?>"
                                 <?php if ($this->mdl_settings->setting('date_format') == $date_format['setting']) { ?>selected="selected"<?php } ?>><?php echo $current_date->format($date_format['setting']); ?></option>
@@ -82,7 +82,7 @@
                 <label for="settings[default_country]" class="control-label">
                     <?php echo trans('default_country'); ?>
                 </label>
-                <select name="settings[default_country]" class="input-sm form-control">
+                <select name="settings[default_country]" class=" form-control simple-select">
                     <option></option>
                     <?php foreach ($countries as $cldr => $country) { ?>
                         <option value="<?php echo $cldr; ?>"
@@ -105,7 +105,7 @@
                 <label class="control-label">
                     <?php echo trans('currency_symbol'); ?>
                 </label>
-                <input type="text" name="settings[currency_symbol]" class="input-sm form-control"
+                <input type="text" name="settings[currency_symbol]" class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('currency_symbol'); ?>">
             </div>
         </div>
@@ -115,7 +115,7 @@
                 <label for="settings[currency_symbol_placement]" class="control-label">
                     <?php echo trans('currency_symbol_placement'); ?>
                 </label>
-                <select name="settings[currency_symbol_placement]" class="input-sm form-control">
+                <select name="settings[currency_symbol_placement]" class=" form-control simple-select">
                     <option value="before"
                             <?php if ($this->mdl_settings->setting('currency_symbol_placement') == 'before') { ?>selected="selected"<?php } ?>><?php echo trans('before_amount'); ?></option>
                     <option value="after"
@@ -133,7 +133,7 @@
                 <label for="settings[thousands_separator]" class="control-label">
                     <?php echo trans('thousands_separator'); ?>
                 </label>
-                <input type="text" name="settings[thousands_separator]" class="input-sm form-control"
+                <input type="text" name="settings[thousands_separator]" class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('thousands_separator'); ?>">
             </div>
         </div>
@@ -143,7 +143,7 @@
                 <label for="settings[decimal_point]" class="control-label">
                     <?php echo trans('decimal_point'); ?>
                 </label>
-                <input type="text" name="settings[decimal_point]" class="input-sm form-control"
+                <input type="text" name="settings[decimal_point]" class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('decimal_point'); ?>">
             </div>
         </div>
@@ -155,7 +155,7 @@
                 <label class="control-label">
                     <?php echo trans('tax_rate_decimal_places'); ?>
                 </label>
-                <select name="settings[tax_rate_decimal_places]" class="input-sm form-control"
+                <select name="settings[tax_rate_decimal_places]" class=" form-control simple-select"
                         id="tax_rate_decimal_places">
                     <option value="2"
                             <?php if ($this->mdl_settings->setting('tax_rate_decimal_places') == '2') { ?>selected="selected"<?php } ?>>
@@ -174,7 +174,7 @@
                 <label class="control-label">
                     <?php echo trans('default_list_limit'); ?>
                 </label>
-                <select name="settings[default_list_limit]" class="input-sm form-control"
+                <select name="settings[default_list_limit]" class=" form-control simple-select"
                         id="default_list_limit">
                     <option value="15"
                             <?php if ($this->mdl_settings->setting('default_list_limit') == '15') { ?>selected="selected"<?php } ?>>
@@ -203,7 +203,7 @@
                 <label class="control-label">
                     <?php echo trans('currency_code'); ?>
                 </label>
-                <input type="text" name="settings[currency_code]" class="input-sm form-control"
+                <input type="text" name="settings[currency_code]" class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('currency_code'); ?>">
             </div>
         </div>
@@ -219,7 +219,7 @@
                 <label for="settings[quote_overview_period]" class="control-label">
                     <?php echo trans('quote_overview_period'); ?>
                 </label>
-                <select name="settings[quote_overview_period]" class="input-sm form-control">
+                <select name="settings[quote_overview_period]" class=" form-control simple-select">
                     <option value="this-month"
                             <?php if ($this->mdl_settings->setting('quote_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo trans('this_month'); ?></option>
                     <option value="last-month"
@@ -241,7 +241,7 @@
                 <label for="settings[invoice_overview_period]" class="control-label">
                     <?php echo trans('invoice_overview_period'); ?>
                 </label>
-                <select name="settings[invoice_overview_period]" class="input-sm form-control">
+                <select name="settings[invoice_overview_period]" class=" form-control simple-select">
                     <option value="this-month"
                             <?php if ($this->mdl_settings->setting('invoice_overview_period') == 'this-month') { ?>selected="selected"<?php } ?>><?php echo trans('this_month'); ?></option>
                     <option value="last-month"
@@ -265,7 +265,7 @@
                 <label class="control-label">
                     <?php echo trans('disable_quickactions'); ?>
                 </label>
-                <select name="settings[disable_quickactions]" class="input-sm form-control"
+                <select name="settings[disable_quickactions]" class=" form-control simple-select"
                         id="disable_quickactions">
                     <option value="0"
                             <?php if (!$this->mdl_settings->setting('disable_quickactions')) { ?>selected="selected"<?php } ?>><?php echo trans('no'); ?></option>
@@ -286,7 +286,7 @@
                 <label class="control-label">
                     <?php echo trans('disable_sidebar'); ?>
                 </label>
-                <select name="settings[disable_sidebar]" class="input-sm form-control"
+                <select name="settings[disable_sidebar]" class=" form-control simple-select"
                         id="disable_sidebar">
                     <option value="0"
                             <?php if (!$this->mdl_settings->setting('disable_sidebar')) { ?>selected="selected"<?php } ?>><?php echo trans('no'); ?></option>
@@ -301,7 +301,7 @@
                 <label class="control-label">
                     <?php echo trans('custom_title'); ?>
                 </label>
-                <input type="text" name="settings[custom_title]" class="input-sm form-control"
+                <input type="text" name="settings[custom_title]" class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('custom_title'); ?>">
             </div>
         </div>
@@ -311,7 +311,7 @@
         <label class="control-label">
             <?php echo trans('monospaced_font_for_amounts'); ?>
         </label>
-        <select name="settings[monospace_amounts]" class="input-sm form-control"
+        <select name="settings[monospace_amounts]" class=" form-control simple-select"
                 id="monospace_amounts">
             <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
@@ -321,8 +321,8 @@
         <p class="help-block">
             <?php echo trans('example'); ?>:
             <span style="font-family: Monaco, Lucida Console, monospace">
-                        <?php echo format_currency(123456.78); ?>
-                    </span>
+                <?php echo format_currency(123456.78); ?>
+            </span>
         </p>
     </div>
 
@@ -334,7 +334,7 @@
             <img src="<?php echo base_url(); ?>uploads/<?php echo $this->mdl_settings->setting('login_logo'); ?>"><br>
             <?php echo anchor('settings/remove_logo/login', 'Remove Logo'); ?><br>
         <?php } ?>
-        <input type="file" name="login_logo" size="40" class="input-sm form-control"/>
+        <input type="file" name="login_logo" size="40" class=" form-control"/>
     </div>
 
     <hr/>
@@ -345,7 +345,7 @@
         <label for="settings[bcc_mails_to_admin]" class="control-label">
             <?php echo trans('bcc_mails_to_admin'); ?>
         </label>
-        <select name="settings[bcc_mails_to_admin]" class="input-sm form-control">
+        <select name="settings[bcc_mails_to_admin]" class=" form-control simple-select">
             <option value="0"><?php echo trans('no'); ?></option>
             <option value="1"
                     <?php if ($this->mdl_settings->setting('bcc_mails_to_admin') == 1) { ?>selected="selected"<?php } ?>><?php echo trans('yes'); ?></option>
@@ -362,7 +362,7 @@
         <div class="row">
             <div class="col-xs-8 col-sm-9">
                 <input type="text" name="settings[cron_key]" id="cron_key"
-                       class="input-sm form-control"
+                       class=" form-control"
                        value="<?php echo $this->mdl_settings->setting('cron_key'); ?>">
             </div>
             <div class="col-xs-4 col-sm-3">

@@ -200,36 +200,35 @@
                             <?php if ($quote->quote_status_id == 1): ?>
                                 <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
                                       data-toggle="tooltip" data-placement="bottom"
-                                      title="<?php echo trans('change_client'); ?>">
-              </span>
+                                      title="<?php echo trans('change_client'); ?>"></span>
                             <?php endif; ?>
                         </h2>
                         <br>
                         <span>
-              <?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
-              <?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>
-              <?php echo ($quote->client_city) ? $quote->client_city : ''; ?>
-              <?php echo ($quote->client_state) ? $quote->client_state : ''; ?>
-              <?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
-              <?php echo ($quote->client_country) ? '<br>' . $quote->client_country : ''; ?>
-            </span>
+                            <?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
+                            <?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>
+                            <?php echo ($quote->client_city) ? $quote->client_city : ''; ?>
+                            <?php echo ($quote->client_state) ? $quote->client_state : ''; ?>
+                            <?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
+                            <?php echo ($quote->client_country) ? '<br>' . $quote->client_country : ''; ?>
+                        </span>
                         <br><br>
                         <?php if ($quote->client_phone): ?>
                             <span>
-                <strong>
-                  <?php echo trans('phone'); ?>:
-                </strong>
+                                <strong>
+                                  <?php echo trans('phone'); ?>:
+                                </strong>
                                 <?php echo $quote->client_phone; ?>
-              </span>
+                            </span>
                             <br>
                         <?php endif; ?>
                         <?php if ($quote->client_email): ?>
                             <span>
-                <strong>
-                  <?php echo trans('email'); ?>:
-                </strong>
+                                <strong>
+                                  <?php echo trans('email'); ?>:
+                                </strong>
                                 <?php echo $quote->client_email; ?>
-              </span>
+                            </span>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -281,7 +280,8 @@
                                     <label for="quote_status_id">
                                         <?php echo trans('status'); ?>
                                     </label>
-                                    <select name="quote_status_id" id="quote_status_id" class="form-control input-sm">
+                                    <select name="quote_status_id" id="quote_status_id"
+                                            class="form-control input-sm simple-select">
                                         <?php foreach ($quote_statuses as $key => $status) { ?>
                                             <option value="<?php echo $key; ?>"
                                                     <?php if ($key == $quote->quote_status_id) { ?>selected="selected"

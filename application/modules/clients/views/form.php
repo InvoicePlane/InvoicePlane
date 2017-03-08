@@ -64,7 +64,7 @@ $cv = $this->controller->view_data["custom_values"];
                     <div class="input-group-addon">
                         <?php echo trans('language'); ?>
                     </div>
-                    <select name="client_language" id="client_language" class="form-control">
+                    <select name="client_language" id="client_language" class="form-control simple-select">
                         <option value="system">
                             <?php echo trans('use_system_language') ?>
                         </option>
@@ -156,10 +156,10 @@ $cv = $this->controller->view_data["custom_values"];
                     <legend><?php echo trans('personal_information'); ?></legend>
 
                     <div class="form-group">
-                        <label><?php echo trans('gender'); ?>: </label>
+                        <label for="client_gender"><?php echo trans('gender'); ?>: </label>
 
                         <div class="controls">
-                            <select name="client_gender">
+                            <select name="client_gender" id="client_gender" class="form-control simple-select">
                               <?php
                               $genders = array(
                                 trans('gender_male'),

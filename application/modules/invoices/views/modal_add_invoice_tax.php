@@ -1,6 +1,9 @@
 <script>
     csrf('<?= $this->security->get_csrf_hash() ?>');
     $(function () {
+        // Select2 for all select inputs
+        $(".simple-select").select2();
+
         $('#invoice_tax_submit').click(function () {
             $.post("<?php echo site_url('invoices/ajax/save_invoice_tax_rate'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
@@ -32,11 +35,12 @@
                 <label for="tax_rate_id"><?php echo trans('invoice_tax_rate'); ?>: </label>
 
                 <div class="controls">
-                    <select name="tax_rate_id" id="tax_rate_id" class="form-control">
+                    <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
-                            <option
-                                    value="<?php echo $tax_rate->tax_rate_id; ?>"><?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?></option>
+                            <option value="<?php echo $tax_rate->tax_rate_id; ?>">
+                                <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -46,7 +50,7 @@
                 <label for="include_item_tax"><?php echo trans('tax_rate_placement'); ?></label>
 
                 <div class="controls">
-                    <select name="include_item_tax" id="include_item_tax" class="form-control">
+                    <select name="include_item_tax" id="include_item_tax" class="form-control simple-select">
                         <option value="0"><?php echo trans('apply_before_item_tax'); ?></option>
                         <option value="1"><?php echo trans('apply_after_item_tax'); ?></option>
                     </select>
