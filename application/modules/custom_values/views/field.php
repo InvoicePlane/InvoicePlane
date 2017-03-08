@@ -34,7 +34,6 @@
             <div class="col-xs-12 col-sm-8 col-md-6">
                 <select name="custom_field_types" id="custom_field_types" class="form-control simple-select"
                         disabled="disabled">
-                    <option value=""></option>
                     <?php foreach ($custom_values_types as $type): ?>
                         <?php $alpha = str_replace("-", "_", strtolower($type)); ?>
                         <option value="<?php echo $type; ?>"

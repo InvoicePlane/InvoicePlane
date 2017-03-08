@@ -90,7 +90,7 @@
 
                         <select name="payment_method_id" id="payment_method_id" class="form-control simple-select"
                             <?php echo(!empty($invoice_payment_method) ? 'disabled="disabled"' : ''); ?>>
-                            <option value=""></option>
+                            <option value=""><?php echo trans('none'); ?></option>
                             <?php foreach ($payment_methods as $payment_method) { ?>
                                 <option value="<?php echo $payment_method->payment_method_id; ?>"
                                     <?php if (isset($invoice_payment_method)

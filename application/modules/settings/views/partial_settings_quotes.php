@@ -19,7 +19,7 @@
                     <?php echo trans('default_quote_group'); ?>
                 </label>
                 <select name="settings[default_quote_group]" class=" form-control simple-select">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                             <?php if (get_setting('default_quote_group') == $invoice_group->invoice_group_id) {
@@ -98,12 +98,14 @@
                     <?php echo trans('default_pdf_template'); ?>
                 </label>
                 <select name="settings[pdf_quote_template]" class=" form-control simple-select">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($pdf_quote_templates as $quote_template) { ?>
                         <option value="<?php echo $quote_template; ?>"
                             <?php if (get_setting('pdf_quote_template') == $quote_template) {
                                 echo 'selected="selected"';
-                            } ?>><?php echo $quote_template; ?></option>
+                            } ?>>
+                            <?php echo $quote_template; ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
@@ -113,12 +115,14 @@
                     <?php echo trans('default_public_template'); ?>
                 </label>
                 <select name="settings[public_quote_template]" class=" form-control simple-select">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($public_quote_templates as $quote_template) { ?>
                         <option value="<?php echo $quote_template; ?>"
                             <?php if (get_setting('public_quote_template') == $quote_template) {
                                 echo 'selected="selected"';
-                            } ?>><?php echo $quote_template; ?></option>
+                            } ?>>
+                            <?php echo $quote_template; ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
@@ -128,12 +132,14 @@
                     <?php echo trans('default_email_template'); ?>
                 </label>
                 <select name="settings[email_quote_template]" class=" form-control simple-select">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($email_templates_quote as $email_template) { ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
                             <?php if (get_setting('email_quote_template') == $email_template->email_template_id) {
                                 echo 'selected="selected"';
-                            } ?>><?php echo $email_template->email_template_title; ?></option>
+                            } ?>>
+                            <?php echo $email_template->email_template_title; ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>

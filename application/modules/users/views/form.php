@@ -152,7 +152,9 @@
                         <select name="user_type" id="user_type" class="form-control simple-select">
                             <?php foreach ($user_types as $key => $type) { ?>
                                 <option value="<?php echo $key; ?>"
-                                        <?php if ($this->mdl_users->form_value('user_type') == $key) { ?>selected="selected"<?php } ?>><?php echo $type; ?></option>
+                                        <?php if ($this->mdl_users->form_value('user_type') == $key) { ?>selected="selected"<?php } ?>>
+                                    <?php echo $type; ?>
+                                </option>
                             <?php } ?>
                         </select>
                     </div>
@@ -232,13 +234,14 @@
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <select name="user_country" id="user_country" class="form-control">
-                                <option></option>
+                                <option value=""><?php echo trans('none'); ?></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
                                     <option value="<?php echo $cldr; ?>"
                                         <?php if ($selected_country == $cldr) {
                                             echo 'selected="selected"';
-                                        } ?>
-                                    ><?php echo $country ?></option>
+                                        } ?>>
+                                        <?php echo $country ?>
+                                    </option>
                                 <?php } ?>
                             </select>
                         </div>

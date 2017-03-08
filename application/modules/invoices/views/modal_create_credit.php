@@ -61,7 +61,6 @@
             </div>
 
             <select name="invoice_group_id" id="invoice_group_id" class="hidden">
-                <option value=""></option>
                 <?php foreach ($invoice_groups as $invoice_group) { ?>
                     <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                         <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) {
