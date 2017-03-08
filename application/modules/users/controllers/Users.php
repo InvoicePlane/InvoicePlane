@@ -111,6 +111,7 @@ class Users extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
         $custom_values = [];
+
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
@@ -134,7 +135,6 @@ class Users extends Admin_Controller
         );
 
         $this->layout->buffer('user_client_table', 'users/partial_user_client_table');
-        $this->layout->buffer('modal_user_client', 'users/modal_user_client');
         $this->layout->buffer('content', 'users/form');
         $this->layout->render();
     }

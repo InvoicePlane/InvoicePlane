@@ -298,8 +298,6 @@ class Mdl_Users extends Response_Model
                 $this->mdl_user_clients->save(null, array('user_id' => $id, 'client_id' => $user_client));
             }
 
-            var_dump($db_array);
-            throw new Error("test");
             $this->session->unset_userdata('user_clients');
         }
 
