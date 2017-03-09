@@ -665,7 +665,7 @@ if ($this->config->item('disable_read_only') == true) {
                         fileIcon = getIcon(val.fullname);
 
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo site_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.png');
+                            '<?php echo base_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.png');
                     }
 
                     thisDropzone.emit("complete", mockFile);
@@ -688,7 +688,7 @@ if ($this->config->item('disable_read_only') == true) {
     myDropzone.on("addedfile", function (file) {
         var fileIcon = getIcon(file.name);
         myDropzone.emit("thumbnail", file,
-          '<?php echo site_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.png');
+          '<?php echo base_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.png');
         createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $invoice->invoice_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
     });
 
