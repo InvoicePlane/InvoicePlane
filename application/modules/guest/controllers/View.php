@@ -40,21 +40,7 @@ class View extends Base_Controller
             if ($invoice->payment_method == 0) $payment_method = null;
 
             // Attachments
-            $path = '/uploads/customer_files';
-            $files = scandir(getcwd() . $path);
-            $attachments = array();
-
-            if ($files !== false) {
-                foreach ($files as $file) {
-                    if ('.' != $file && '..' != $file && strpos($file, $invoice_url_key) !== false) {
-                        $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
-                        $obj['fullname'] = $file;
-                        $obj['size'] = filesize($path . '/' . $file);
-                        $obj['fullpath'] = base_url($path . '/' . $file);
-                        $attachments[] = $obj;
-                    }
-                }
-            }
+            $attachments = $this->get_attachments($invoice_url_key);
 
             $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
@@ -150,7 +136,8 @@ class View extends Base_Controller
             }
 
             // Attachments
-            $path = '/uploads/customer_files';
+            $attachments = $this->get_attachments($quote_url_key);
+            /*$path = '/uploads/customer_files';
             $files = scandir(getcwd() . $path);
             $attachments = array();
 
@@ -164,7 +151,7 @@ class View extends Base_Controller
                         $attachments[] = $obj;
                     }
                 }
-            }
+            }*/
 
             $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
 
@@ -180,6 +167,26 @@ class View extends Base_Controller
 
             $this->load->view('quote_templates/public/' . $this->mdl_settings->setting('public_quote_template') . '.php', $data);
         }
+    }
+
+    private function get_attachments($key){
+      $path = UPLOADS_FOLDER.'/customer_files';
+      $files = scandir($path);
+      $attachments = array();
+
+      if ($files !== false) {
+          foreach ($files as $file) {
+              if ('.' != $file && '..' != $file && strpos($file, $key) !== false) {
+                  $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                  $obj['fullname'] = $file;
+                  $obj['size'] = filesize($path . '/' . $file);
+                  $obj['fullpath'] = base_url($path . '/' . $file);
+                  $attachments[] = $obj;
+              }
+          }
+      }
+
+      return $attachments;
     }
 
     /**
