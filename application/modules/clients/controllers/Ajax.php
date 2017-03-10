@@ -29,7 +29,7 @@ class Ajax extends Admin_Controller
 
         $clients = $this->mdl_clients->select('client_name,client_surname')
             ->where(
-            "client_name LIKE $escapedQuery%
+                "client_name LIKE $escapedQuery%
             OR client_surname LIKE $escapedQuery%
             OR CONCATENATE(client_name,' ', client_surname) LIKE  $escapedQuery%")
             ->order_by('CONCATENATE(client_name,client_surname)')

@@ -21,7 +21,7 @@ class Cron extends Base_Controller
     public function recur($cron_key = null)
     {
         // Check the provided cron key
-        if ($cron_key != $this->mdl_settings->setting('cron_key')) {
+        if ($cron_key != get_setting('cron_key')) {
             if (IP_DEBUG) log_message('error', 'Wrong cron key provided!');
             exit('Wrong cron key!');
         }

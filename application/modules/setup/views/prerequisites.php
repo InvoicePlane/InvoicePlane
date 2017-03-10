@@ -17,7 +17,7 @@
                     <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $basic['message']; ?></p>
                 <?php } else {
                     $errors = true;
-                ?>
+                    ?>
                     <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $basic['message']; ?></p>
                 <?php }
             } ?>

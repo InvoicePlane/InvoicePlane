@@ -84,21 +84,19 @@
             <div class="form-group">
                 <label for="quote_password"><?php echo trans('quote_password'); ?></label>
                 <input type="text" name="quote_password" id="quote_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('quote_pre_password') == '') {
-                           echo '';
-                       } else {
-                           echo $this->mdl_settings->setting('quote_pre_password');
-                       } ?>" style="margin: 0 auto;" autocomplete="off">
+                       value="<?php echo get_setting('quote_pre_password') == '' ?: get_setting('quote_pre_password') ?>"
+                       style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">
                 <label for="invoice_group_id"><?php echo trans('invoice_group'); ?>: </label>
                 <div class="controls">
                     <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
-                        <option></option>
                         <?php foreach ($invoice_groups as $invoice_group) { ?>
                             <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                    <?php if ($this->mdl_settings->setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>><?php echo $invoice_group->invoice_group_name; ?></option>
+                                    <?php if (get_setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
+                                <?php echo $invoice_group->invoice_group_name; ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>

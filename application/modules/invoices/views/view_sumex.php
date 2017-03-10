@@ -438,7 +438,8 @@ if ($this->config->item('disable_read_only') == true) {
                                         }
                                         ?>
                                     </label>
-                                    <select name="invoice_status_id" id="invoice_status_id" class="form-control simple-select"
+                                    <select name="invoice_status_id" id="invoice_status_id"
+                                            class="form-control simple-select"
                                         <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
                                             echo 'disabled="disabled"';
                                         } ?>>

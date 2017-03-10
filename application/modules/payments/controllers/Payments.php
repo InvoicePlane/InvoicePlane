@@ -53,7 +53,7 @@ class Payments extends Admin_Controller
     public function form($id = null)
     {
         $this->load->helper('client');
-        
+
         if ($this->input->post('btn_cancel')) {
             redirect('payments');
         }

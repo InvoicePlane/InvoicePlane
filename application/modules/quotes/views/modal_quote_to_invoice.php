@@ -67,11 +67,8 @@
             <div class="form-group">
                 <label for="invoice_password"><?php echo trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php if ($this->mdl_settings->setting('invoice_pre_password') == '') {
-                           echo '';
-                       } else {
-                           echo $this->mdl_settings->setting('invoice_pre_password');
-                       } ?>" style="margin: 0 auto;" autocomplete="off">
+                       value="<?php echo get_setting('invoice_pre_password') == '' ?: get_setting('invoice_pre_password') ?>"
+                       style="margin: 0 auto;" autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -79,10 +76,9 @@
                     <?php echo trans('invoice_group'); ?>
                 </label>
                 <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
-                    <option value=""></option>
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                <?php if ($this->mdl_settings->setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
+                                <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
                             <?php echo $invoice_group->invoice_group_name; ?></option>
                     <?php } ?>
                 </select>

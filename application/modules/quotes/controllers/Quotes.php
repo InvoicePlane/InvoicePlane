@@ -133,9 +133,9 @@ class Quotes extends Admin_Controller
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'custom_js_vars' => array(
-                    'currency_symbol' => $this->mdl_settings->setting('currency_symbol'),
-                    'currency_symbol_placement' => $this->mdl_settings->setting('currency_symbol_placement'),
-                    'decimal_point' => $this->mdl_settings->setting('decimal_point')
+                    'currency_symbol' => get_setting('currency_symbol'),
+                    'currency_symbol_placement' => get_setting('currency_symbol_placement'),
+                    'decimal_point' => get_setting('decimal_point')
                 ),
                 'quote_statuses' => $this->mdl_quotes->statuses()
             )
@@ -187,7 +187,7 @@ class Quotes extends Admin_Controller
     {
         $this->load->helper('pdf');
 
-        if ($this->mdl_settings->setting('mark_quotes_sent_pdf') == 1) {
+        if (get_setting('mark_quotes_sent_pdf') == 1) {
             $this->mdl_quotes->mark_sent($quote_id);
         }
 

@@ -140,7 +140,9 @@ if ($this->mdl_tasks->form_value('task_id') &&
                                 <option value=""><?php echo trans('select_project'); ?></option>
                                 <?php foreach ($projects as $project) { ?>
                                     <option value="<?php echo $project->project_id; ?>"
-                                            <?php if ($this->mdl_tasks->form_value('project_id') == $project->project_id) { ?>selected="selected"<?php } ?>><?php echo $project->project_name; ?></option>
+                                            <?php if ($this->mdl_tasks->form_value('project_id') == $project->project_id) { ?>selected="selected"<?php } ?>>
+                                        <?php echo $project->project_name; ?>
+                                    </option>
                                 <?php } ?>
                             </select>
                         </div>
