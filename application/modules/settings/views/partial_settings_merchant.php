@@ -6,8 +6,7 @@
         </label>
         <select name="settings[merchant_enabled]" class=" form-control simple-select">
             <option value="0"><?php echo trans('no'); ?></option>
-            <option value="1"
-                    <?php if (get_setting('merchant_enabled') == 1) { ?>selected="selected"<?php } ?>>
+            <option value="1" <?php check_select(get_setting('merchant_enabled'), 1); ?>>
                 <?php echo trans('yes'); ?>
             </option>
         </select>
@@ -21,7 +20,7 @@
             <option value=""><?php echo trans('none'); ?></option>
             <?php foreach ($merchant_drivers as $merchant_driver) { ?>
                 <option value="<?php echo $merchant_driver; ?>"
-                        <?php if (get_setting('merchant_driver') == $merchant_driver) { ?>selected="selected"<?php } ?>>
+                    <?php check_select(get_setting('merchant_driver'), $merchant_driver); ?>>
                     <?php echo ucwords(str_replace('_', ' ', $merchant_driver)); ?>
                 </option>
             <?php } ?>
@@ -34,8 +33,7 @@
         </label>
         <select name="settings[merchant_test_mode]" class=" form-control simple-select">
             <option value="0"><?php echo trans('no'); ?></option>
-            <option value="1"
-                    <?php if (get_setting('merchant_test_mode') == 1) { ?>selected="selected"<?php } ?>>
+            <option value="1" <?php check_select(get_setting('merchant_test_mode'), 1); ?>>
                 <?php echo trans('yes'); ?>
             </option>
         </select>
@@ -73,7 +71,7 @@
             <option value=""><?php echo trans('none'); ?></option>
             <?php foreach ($merchant_currency_codes as $val => $key) { ?>
                 <option value="<?php echo $val; ?>"
-                        <?php if (get_setting('merchant_currency_code') == $val) { ?>selected="selected"<?php } ?>>
+                    <?php check_select(get_setting('merchant_currency_code'), $val); ?>>
                     <?php echo $val; ?>
                 </option>
             <?php } ?>
@@ -88,7 +86,7 @@
             <option value=""><?php echo trans('none'); ?></option>
             <?php foreach ($payment_methods as $payment_method) { ?>
                 <option value="<?php echo $payment_method->payment_method_id; ?>"
-                        <?php if (get_setting('online_payment_method') == $payment_method->payment_method_id) { ?>selected="selected"<?php } ?>>
+                    <?php check_select(get_setting('online_payment_method'), $payment_method->payment_method_id); ?>>
                     <?php echo $payment_method->payment_method_name; ?>
                 </option>
             <?php } ?>

@@ -7,10 +7,9 @@
         var current_version = "<?php echo $current_version; ?>";
         current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
 
-        // Get the latest version from updates.invoiceplane.com
+        // Get the latest version from the InvoicePlane IDS
         $.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {
             <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-
             var updatecheck = data.current_version.replace(/\./g, '');
 
             // Compare each versions and replace the placeholder with a download button
@@ -33,7 +32,6 @@
         // Get the latest news
         $.getJSON("https://ids.invoiceplane.com/get_news", function (data) {
             <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-
             setTimeout(function () {
                 $('#ipnews-loading').addClass('hidden');
                 data.forEach(function (news) {
