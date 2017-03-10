@@ -94,10 +94,10 @@
                     <?php foreach ($tasks as $task) { ?>
                         <tr class="task-row">
                             <td class="text-left">
-                                <input type="checkbox" 
-                                    class="modal-task-id" name="task_ids[]"
-                                    id="task-id-<?php echo $task->task_id?>"
-                                    value="<?php echo $task->task_id; ?>">
+                                <input type="checkbox"
+                                       class="modal-task-id" name="task_ids[]"
+                                       id="task-id-<?php echo $task->task_id ?>"
+                                       value="<?php echo $task->task_id; ?>">
                             </td>
                             <td nowrap class="text-left">
                                 <b><?php echo $task->project_name; ?></b>

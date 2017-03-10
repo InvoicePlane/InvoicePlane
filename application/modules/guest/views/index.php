@@ -63,7 +63,7 @@
                                         <?php echo trans('pdf'); ?>
                                     </a>
 
-                                    <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
+                                    <?php if (get_setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
                                         <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
                                            class="btn btn-sm btn-success">
                                             <i class="glyphicon glyphicon-ok"></i>
@@ -225,7 +225,7 @@
                                     <?php echo trans('pdf'); ?>
                                 </a>
 
-                                <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
+                                <?php if (get_setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
                                     <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
                                        class="btn btn-success btn-sm">
                                         <i class="glyphicon glyphicon-ok"></i>

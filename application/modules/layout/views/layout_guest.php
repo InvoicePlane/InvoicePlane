@@ -12,8 +12,8 @@
 <head>
     <title>
         <?php
-        if ($this->mdl_settings->setting('custom_title') != '') {
-            echo $this->mdl_settings->setting('custom_title');
+        if (get_setting('custom_title') != '') {
+            echo get_setting('custom_title');
         } else {
             echo 'InvoicePlane';
         } ?>
@@ -26,11 +26,13 @@
 
     <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 
-    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/monospace.css">
+    <?php if (get_setting('monospace_amounts') == 1) { ?>
+        <link rel="stylesheet"
+              href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/monospace.css">
     <?php } ?>
 
     <!--[if lt IE 9]>
@@ -73,7 +75,7 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
+<div class="sidebar hidden-xs <?php if (get_setting('disable_sidebar') == 1) {
     echo 'hidden';
 } ?>">
     <ul>

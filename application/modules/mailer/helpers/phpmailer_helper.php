@@ -33,28 +33,28 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
 
-    switch ($CI->mdl_settings->setting('email_send_method')) {
+    switch (get_setting('email_send_method')) {
         case 'smtp':
             $mail->IsSMTP();
 
             // Set the basic properties
-            $mail->Host = $CI->mdl_settings->setting('smtp_server_address');
-            $mail->Port = $CI->mdl_settings->setting('smtp_port');
+            $mail->Host = get_setting('smtp_server_address');
+            $mail->Port = get_setting('smtp_port');
 
             // Is SMTP authentication required?
-            if ($CI->mdl_settings->setting('smtp_authentication')) {
+            if (get_setting('smtp_authentication')) {
                 $mail->SMTPAuth = true;
 
                 $encoded = $CI->mdl_settings->get('smtp_password');
                 $decoded = $CI->crypt->decode($encoded);
 
-                $mail->Username = $CI->mdl_settings->setting('smtp_username');
+                $mail->Username = get_setting('smtp_username');
                 $mail->Password = $decoded;
             }
 
             // Is a security method required?
-            if ($CI->mdl_settings->setting('smtp_security')) {
-                $mail->SMTPSecure = $CI->mdl_settings->setting('smtp_security');
+            if (get_setting('smtp_security')) {
+                $mail->SMTPSecure = get_setting('smtp_security');
             }
 
             break;
@@ -106,7 +106,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
         }
     }
 
-    if ($CI->mdl_settings->setting('bcc_mails_to_admin') == 1) {
+    if (get_setting('bcc_mails_to_admin') == 1) {
         // Get email address of admin account and push it to the array
         $CI->load->model('users/mdl_users');
         $CI->db->where('user_id', 1);
@@ -115,7 +115,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
     }
 
     // Add the attachment if supplied
-    if ($attachment_path && $CI->mdl_settings->setting('email_pdf_attachment')) {
+    if ($attachment_path && get_setting('email_pdf_attachment')) {
         $mail->addAttachment($attachment_path);
     }
     // Add the other attachments if supplied

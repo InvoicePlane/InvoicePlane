@@ -55,10 +55,9 @@ class View extends Base_Controller
                 'attachments' => $attachments,
             );
 
-            $this->load->view('invoice_templates/public/' . $this->mdl_settings->setting('public_invoice_template') . '.php', $data);
-        }
-        else{
-          echo '<h2>'.trans('invoice_not_found').'</h2>';
+            $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+        } else {
+            echo '<h2>' . trans('invoice_not_found') . '</h2>';
         }
     }
 
@@ -77,7 +76,7 @@ class View extends Base_Controller
             $invoice = $invoice->row();
 
             if (!$invoice_template) {
-                $invoice_template = $this->mdl_settings->setting('pdf_invoice_template');
+                $invoice_template = get_setting('pdf_invoice_template');
             }
 
             $this->load->helper('pdf');
@@ -100,13 +99,13 @@ class View extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
-            if($invoice->sumex_id == NULL){
-              show_404();
-              return;
+            if ($invoice->sumex_id == NULL) {
+                show_404();
+                return;
             }
 
             if (!$invoice_template) {
-                $invoice_template = $this->mdl_settings->setting('pdf_invoice_template');
+                $invoice_template = get_setting('pdf_invoice_template');
             }
 
             $this->load->helper('pdf');
@@ -165,7 +164,7 @@ class View extends Base_Controller
                 'attachments' => $attachments,
             );
 
-            $this->load->view('quote_templates/public/' . $this->mdl_settings->setting('public_quote_template') . '.php', $data);
+            $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
         }
     }
 
@@ -204,7 +203,7 @@ class View extends Base_Controller
             $quote = $quote->row();
 
             if (!$quote_template) {
-                $quote_template = $this->mdl_settings->setting('pdf_quote_template');
+                $quote_template = get_setting('pdf_quote_template');
             }
 
             $this->load->helper('pdf');

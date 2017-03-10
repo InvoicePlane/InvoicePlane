@@ -25,8 +25,8 @@ class Dashboard extends Admin_Controller
         $this->load->model('tasks/mdl_tasks');
         $this->load->helper('client');
 
-        $quote_overview_period = $this->mdl_settings->setting('quote_overview_period');
-        $invoice_overview_period = $this->mdl_settings->setting('invoice_overview_period');
+        $quote_overview_period = get_setting('quote_overview_period');
+        $invoice_overview_period = get_setting('invoice_overview_period');
 
         $this->layout->set(
             array(
