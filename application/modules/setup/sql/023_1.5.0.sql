@@ -147,7 +147,7 @@ CREATE TABLE `ip_client_custom`
   `client_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
   `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
   `client_custom_fieldvalue` VARCHAR(65535) NULL ,
-  UNIQUE (client_custom_id, client_custom_fieldid)
+  UNIQUE (client_id, client_custom_fieldid)
 );
 
 ALTER TABLE `ip_custom_fields` DROP COLUMN `custom_field_column`;
@@ -161,5 +161,15 @@ CREATE TABLE `ip_invoice_custom`
   `invoice_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
   `invoice_id` INT NOT NULL, `invoice_custom_fieldid` INT NOT NULL,
   `invoice_custom_fieldvalue` VARCHAR(65535) NULL ,
-  UNIQUE (invoice_custom_id, invoice_custom_fieldid)
+  UNIQUE (invoice_id, invoice_custom_fieldid)
+);
+
+# Quotes
+DROP TABLE `ip_quote_custom`;
+CREATE TABLE `ip_quote_custom`
+(
+  `quote_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+  `quote_id` INT NOT NULL, `quote_custom_fieldid` INT NOT NULL,
+  `quote_custom_fieldvalue` VARCHAR(65535) NULL ,
+  UNIQUE (quote_id, quote_custom_fieldid)
 );

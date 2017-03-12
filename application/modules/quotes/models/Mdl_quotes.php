@@ -61,7 +61,7 @@ class Mdl_Quotes extends Response_Model
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS ip_quote_custom.*,
+            SQL_CALC_FOUND_ROWS
             ip_client_custom.*,
             ip_user_custom.*,
             ip_users.user_name,
@@ -102,7 +102,6 @@ class Mdl_Quotes extends Response_Model
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_quotes.invoice_id', 'left');
         $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
         $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
-        $this->db->join('ip_quote_custom', 'ip_quote_custom.quote_id = ip_quotes.quote_id', 'left');
     }
 
     /**
