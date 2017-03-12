@@ -52,10 +52,7 @@ class Mdl_Invoices extends Response_Model
     {
         $this->db->select("
             SQL_CALC_FOUND_ROWS
-            ip_client_custom.*,
-            ip_user_custom.*,
             ip_quotes.*,
-            ip_quote_custom.*,
             ip_users.user_name,
 			ip_users.user_company,
 			ip_users.user_address_1,
@@ -101,11 +98,8 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
         $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
-        $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
-        $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
-        $this->db->join('ip_quote_custom', 'ip_quotes.quote_id = ip_quote_custom.quote_id', 'left');
     }
 
     /**
