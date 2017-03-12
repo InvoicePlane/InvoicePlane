@@ -20,7 +20,7 @@ class Mdl_Custom_Fields extends MY_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*', false);
     }
 
     /**
@@ -76,7 +76,7 @@ class Mdl_Custom_Fields extends MY_Model
     public function get_by_table($table)
     {
         $this->where('custom_field_table', $table);
-        return $this->get();
+        return $this->get()->result();
     }
 
     /**
@@ -86,7 +86,7 @@ class Mdl_Custom_Fields extends MY_Model
     public function get_by_id($column)
     {
         $this->where('custom_field_id', $column);
-        return $this->get();
+        return $this->get()->row();
     }
 
     /**
@@ -106,17 +106,6 @@ class Mdl_Custom_Fields extends MY_Model
 
         // Save the record to ip_custom_fields
         $id = parent::save($id, $db_array);
-
-        if (isset($original_record)) {
-            if ($original_record->custom_field_column <> $db_array['custom_field_column']) {
-                // The column name differs from the original - rename it
-                $this->rename_column($db_array['custom_field_table'], $original_record->custom_field_column, $db_array['custom_field_column']);
-            }
-        } else {
-            // This is a new column - add it
-            $this->add_column($db_array['custom_field_table'], $db_array['custom_field_column']);
-        }
-
         return $id;
     }
 
@@ -214,12 +203,6 @@ class Mdl_Custom_Fields extends MY_Model
     public function delete($id)
     {
         $custom_field = $this->get_by_id($id);
-
-        if ($this->db->field_exists($custom_field->custom_field_column, $custom_field->custom_field_table)) {
-            $this->load->dbforge();
-            $this->dbforge->drop_column($custom_field->custom_field_table, $custom_field->custom_field_column);
-        }
-
         parent::delete($id);
     }
 
