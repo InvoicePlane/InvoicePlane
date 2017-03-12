@@ -132,8 +132,11 @@ class Invoices extends Admin_Controller
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 
-        $this->load->model('custom_fields/mdl_invoice_custom');
         $this->load->model('custom_values/mdl_custom_values');
+        $this->load->model('custom_fields/mdl_invoice_custom');
+
+        $fields = $this->mdl_invoice_custom->get()->by_id($invoice_id)->result();
+        $this->db->reset_query();
 
         /*$invoice_custom = $this->mdl_invoice_custom->where('invoice_id', $invoice_id)->get();
 
@@ -163,7 +166,6 @@ class Invoices extends Admin_Controller
             }
         }
 
-        $fields = $this->mdl_invoice_custom->get_by_invid($invoice_id);
 
         foreach($custom_fields as $cfield){
             foreach($fields as $fvalue){

@@ -23,6 +23,11 @@ class Mdl_Custom_Fields extends MY_Model
         $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*', false);
     }
 
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
+
     /**
      * @param $element
      * @return string
@@ -65,6 +70,11 @@ class Mdl_Custom_Fields extends MY_Model
                 'field' => 'custom_field_type',
                 'label' => trans('type'),
                 'rules' => 'required'
+            ),
+            'custom_field_order' => array(
+                'field' => 'custom_field_order',
+                'label' => trans('order'),
+                'rules' => 'is_natural'
             )
         );
     }

@@ -19,15 +19,24 @@ class Mdl_Invoice_Custom extends Validator
     public $primary_key = 'ip_invoice_custom.invoice_custom_id';
 
     /**
-     * @param $invoice_id
-     * @param $db_array
-     * @return bool|string
-     */
+    * @param $invoice_id
+    * @param $db_array
+    * @return bool|string
+    */
 
-     public function default_select()
-     {
-         $this->db->select('SQL_CALC_FOUND_ROWS *', false);
-     }
+    public function default_select()
+    {
+       $this->db->select('SQL_CALC_FOUND_ROWS ip_invoice_custom.*, ip_custom_fields.*', false);
+    }
+
+    public function default_join(){
+       $this->db->join('ip_custom_fields', 'ip_invoice_custom.invoice_custom_fieldid = ip_custom_fields.custom_field_id');
+    }
+
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
 
     public function save_custom($invoice_id, $db_array)
     {
@@ -57,9 +66,9 @@ class Mdl_Invoice_Custom extends Validator
         return $result;
     }
 
-    public function get_by_invid($invoice_id){
-        $result = $this->where('ip_invoice_custom.invoice_id', $invoice_id)->get()->result();
-        return $result;
+    public function by_id($invoice_id){
+        $this->db->where('ip_invoice_custom.invoice_id', $invoice_id);
+        return $this;
     }
 
 }

@@ -22,12 +22,7 @@ class Mdl_Clients extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_client_custom.*, ip_clients.*', false);
-    }
-
-    public function default_join()
-    {
-        $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_clients.*', false);
     }
 
     public function default_order_by()

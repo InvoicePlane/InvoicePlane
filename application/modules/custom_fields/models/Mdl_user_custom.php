@@ -18,6 +18,11 @@ class Mdl_User_Custom extends Validator
     public $table = 'ip_user_custom';
     public $primary_key = 'ip_user_custom.user_custom_id';
 
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
+
     /**
      * @param $user_id
      * @param $db_array
