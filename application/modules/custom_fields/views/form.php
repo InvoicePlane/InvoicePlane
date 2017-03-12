@@ -31,7 +31,7 @@
 
             <div class="col-xs-12 col-sm-8 col-md-6">
                 <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
-                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label'); ?>">
+                       value="<?php echo htmlentities($this->mdl_custom_fields->form_value('custom_field_label')); ?>">
             </div>
         </div>
 

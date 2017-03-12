@@ -193,3 +193,8 @@ CREATE TABLE `ip_user_custom`
   `user_custom_fieldvalue` VARCHAR(65535) NULL ,
   UNIQUE (user_id, user_custom_fieldid)
 );
+
+# Custom Fields
+ALTER TABLE ip_custom_fields MODIFY custom_field_table VARCHAR(50);
+ALTER TABLE ip_custom_fields MODIFY custom_field_label VARCHAR(50);
+ALTER TABLE ip_custom_fields ADD CONSTRAINT UNIQUE(custom_field_table, custom_field_label);

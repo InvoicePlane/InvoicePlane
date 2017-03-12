@@ -125,7 +125,6 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             <label><?php echo $custom_field->custom_field_label; ?>: </label>
         </div>
         <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']'); ?>
-        <?php var_dump($fieldValue); ?>
         <div class="<?php echo $class_bottom; ?>">
             <?php
             switch ($custom_field->custom_field_type) {
