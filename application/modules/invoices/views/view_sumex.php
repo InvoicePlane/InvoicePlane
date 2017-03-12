@@ -292,7 +292,7 @@ if ($this->config->item('disable_read_only') == true) {
 
 <div id="content">
     <?php echo $this->layout->load_view('layout/alerts'); ?>
-    <form id="invoice_form">
+    <div id="invoice_form">
         <div class="invoice">
             <div class="cf row">
                 <div class="col-xs-12 col-md-8">
@@ -625,7 +625,7 @@ if ($this->config->item('disable_read_only') == true) {
 
         </div>
 
-    </form>
+    </div>
 
 </div>
 <script>
