@@ -139,10 +139,6 @@
             window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
         });
 
-        $('#btn_sumex').click(function () {
-            window.open('<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice_id); ?>', '_blank');
-        });
-
         <?php if ($invoice->is_read_only != 1): ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
@@ -237,14 +233,6 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php echo trans('download_pdf'); ?>
                     </a>
                 </li>
-                <?php if ($this->mdl_settings->setting('sumex') == "1"): ?>
-                    <li>
-                        <a href="#" id="btn_sumex" data-invoice-id="<?php echo $invoice_id; ?>">
-                            <i class="fa fa-user-md fa-margin"></i>
-                            <?php echo trans('generate_sumex'); ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>

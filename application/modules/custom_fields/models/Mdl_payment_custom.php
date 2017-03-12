@@ -18,6 +18,11 @@ class Mdl_Payment_Custom extends Validator
     public $table = 'ip_payment_custom';
     public $primary_key = 'ip_payment_custom.payment_custom_id';
 
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
+
     /**
      * @param $payment_id
      * @param $db_array

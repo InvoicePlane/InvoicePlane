@@ -35,6 +35,11 @@ class Mdl_Client_Custom extends Validator
        );
     }
 
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
+
     public function default_join()
     {
         $this->db->join('ip_custom_fields', 'ip_client_custom.client_custom_fieldid = ip_custom_fields.custom_field_id', 'inner');

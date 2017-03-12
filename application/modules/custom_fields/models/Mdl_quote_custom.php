@@ -18,6 +18,21 @@ class Mdl_Quote_Custom extends Validator
     public $table = 'ip_quote_custom';
     public $primary_key = 'ip_quote_custom.quote_custom_id';
 
+    public function default_select()
+    {
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_quote_custom.*, ip_custom_fields.*', false);
+    }
+
+    public function default_join(){
+        $this->db->join('ip_custom_fields', 'ip_quote_custom.quote_custom_fieldid = ip_custom_fields.custom_field_id');
+    }
+
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
+
+
     /**
      * @param $quote_id
      * @param $db_array
@@ -53,9 +68,9 @@ class Mdl_Quote_Custom extends Validator
         return $result;
     }
 
-    public function get_by_quoid($quote_id){
-        $result = $this->where('ip_quote_custom.quote_id', $quote_id)->get()->result();
-        return $result;
+    public function by_id($quote_id){
+        $this->db->where('ip_quote_custom.quote_id', $quote_id);
+        return $this;
     }
 
 }

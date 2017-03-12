@@ -312,6 +312,7 @@ $lang = array(
     'open_quotes'                                  => 'Open Quotes',
     'optional'                                     => 'Optional',
     'options'                                      => 'Options',
+    'order'                                        => 'Order',
     'other_settings'                               => 'Other Settings',
     'overdue'                                      => 'Overdue',
     'overdue_invoices'                             => 'Overdue Invoices',
