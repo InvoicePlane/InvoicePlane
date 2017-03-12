@@ -111,20 +111,9 @@ class Mdl_Custom_Values extends MY_Model
      * @param $column
      * @return $this
      */
-    public function get_by_column($column)
+    public function get_by_column($id)
     {
-        $this->where('custom_field_column', $column);
-        return $this->get();
-    }
-
-    /**
-     * @param $column
-     * @param $value
-     * @return $this
-     */
-    public function get_by_column_value($column, $value)
-    {
-        $this->where($column, $value);
+        $this->where('custom_field_id', $id);
         return $this->get();
     }
 
@@ -142,9 +131,9 @@ class Mdl_Custom_Values extends MY_Model
      * @param $id
      * @return bool
      */
-    public function column_has_value($column, $id)
+    public function column_has_value($fid, $id)
     {
-        $this->where('custom_field_column', $column);
+        $this->where('custom_field_id', $fid);
         $this->where('custom_values_id', $id);
         $this->get();
         if ($this->num_rows()) {

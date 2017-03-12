@@ -51,7 +51,7 @@ class Mdl_Invoices extends Response_Model
     public function default_select()
     {
         $this->db->select("
-            SQL_CALC_FOUND_ROWS ip_invoice_custom.*,
+            SQL_CALC_FOUND_ROWS
             ip_client_custom.*,
             ip_user_custom.*,
             ip_quotes.*,
@@ -103,7 +103,6 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id', 'left');
         $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
-        $this->db->join('ip_invoice_custom', 'ip_invoice_custom.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quote_custom', 'ip_quotes.quote_id = ip_quote_custom.quote_id', 'left');
@@ -412,6 +411,18 @@ class Mdl_Invoices extends Response_Model
         $parent_invoice = $this->get_by_id($parent_invoice_id);
         return $parent_invoice->invoice_number;
     }
+
+    /**
+     * @param int $invoice_id
+     * @return mixed
+     */
+    public function get_custom_values($id)
+    {
+        $this->load->module('custom_fields/Mdl_invoice_custom');
+        return $this->invoice_custom->get_by_invid($id);
+    }
+
+
 
     /**
      * @param int $invoice_id

@@ -135,11 +135,31 @@ ALTER TABLE `ip_tasks`
   ADD COLUMN `tax_rate_id` int(11) NOT NULL
   AFTER `task_status`;
 
-# Switch to row based custom fields (instead of columns!)
+# DANGER ZONE (Data IS going to be lost!)
+# =======================================
+
+# Switch to row based custom fields (instead of columns)
+# It would be nice to find a way to copy the old data into the new table
+
+DROP TABLE `ip_client_custom`;
 CREATE TABLE `ip_client_custom`
 (
   `client_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
   `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
-  `client_custom_fieldvalue` VARCHAR(65535) NOT NULL ,
+  `client_custom_fieldvalue` VARCHAR(65535) NULL ,
   UNIQUE (client_custom_id, client_custom_fieldid)
+);
+
+ALTER TABLE `ip_custom_fields` DROP COLUMN `custom_field_column`;
+ALTER TABLE `ip_custom_fields` ADD COLUMN `custom_field_location` INT;
+ALTER TABLE `ip_custom_fields` ADD COLUMN `custom_field_order` INT;
+
+# Same for invoice
+DROP TABLE `ip_invoice_custom`;
+CREATE TABLE `ip_invoice_custom`
+(
+  `invoice_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+  `invoice_id` INT NOT NULL, `invoice_custom_fieldid` INT NOT NULL,
+  `invoice_custom_fieldvalue` VARCHAR(65535) NULL ,
+  UNIQUE (invoice_custom_id, invoice_custom_fieldid)
 );
