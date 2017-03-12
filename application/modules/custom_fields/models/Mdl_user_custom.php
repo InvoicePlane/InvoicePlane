@@ -2,12 +2,12 @@
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
- * InvoicePlane
+ * userPlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author		userPlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 userPlane.com
+ * @license		https://userplane.com/license.txt
+ * @link		https://userplane.com
  */
 
 /**
@@ -28,14 +28,31 @@ class Mdl_User_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $db_array = isset($this->_formdata) ? $this->_formdata : null;
-            $client_custom_id = null;
-            $db_array['user_id'] = $user_id;
-            $user_custom = $this->where('user_id', $user_id)->get()->row();
-            $id = parent::save((isset($user_custom->user_custom_id) ? $user_custom->user_custom_id : null), $db_array);
+            $fData = $this->_formdata;
+            $user_custom_id = null;
+            foreach($fData as $key=>$value){
+              $db_array = array(
+                'user_id' => $user_id,
+                'user_custom_fieldid' => $key,
+                'user_custom_fieldvalue' => $value
+              );
+
+              $user_custom = $this->where('user_id', $user_id)->where('user_custom_fieldid', $key)->get();
+
+              if ($user_custom->num_rows()) {
+                  $user_custom_id = $user_custom->row()->user_custom_id;
+              }
+
+              parent::save($user_custom_id, $db_array);
+            }
             return true;
         }
 
+        return $result;
+    }
+
+    public function get_by_useid($user_id){
+        $result = $this->where('ip_user_custom.user_id', $user_id)->get()->result();
         return $result;
     }
 

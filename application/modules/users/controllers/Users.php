@@ -111,11 +111,25 @@ class Users extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
         $custom_values = [];
-
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[$custom_field->custom_field_column] = $values;
+                $custom_values[$custom_field->custom_field_id] = $values;
+            }
+        }
+
+        $fields = $this->mdl_user_custom->get_by_useid($id);
+
+        foreach($custom_fields as $cfield){
+            foreach($fields as $fvalue){
+              if($fvalue->user_custom_fieldid == $cfield->custom_field_id){
+                // TODO: Hackish, may need a better optimization
+                $this->mdl_users->set_form_value(
+                  'custom[' . $cfield->custom_field_id . ']',
+                  $fvalue->user_custom_fieldvalue
+                );
+                break;
+              }
             }
         }
 

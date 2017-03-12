@@ -173,3 +173,23 @@ CREATE TABLE `ip_quote_custom`
   `quote_custom_fieldvalue` VARCHAR(65535) NULL ,
   UNIQUE (quote_id, quote_custom_fieldid)
 );
+
+# Payments
+DROP TABLE `ip_payment_custom`;
+CREATE TABLE `ip_payment_custom`
+(
+  `payment_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+  `payment_id` INT NOT NULL, `payment_custom_fieldid` INT NOT NULL,
+  `payment_custom_fieldvalue` VARCHAR(65535) NULL ,
+  UNIQUE (payment_id, payment_custom_fieldid)
+);
+
+# Users
+DROP TABLE `ip_user_custom`;
+CREATE TABLE `ip_user_custom`
+(
+  `user_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+  `user_id` INT NOT NULL, `user_custom_fieldid` INT NOT NULL,
+  `user_custom_fieldvalue` VARCHAR(65535) NULL ,
+  UNIQUE (user_id, user_custom_fieldid)
+);
