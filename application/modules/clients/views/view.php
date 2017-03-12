@@ -224,10 +224,10 @@
                             <?php foreach ($custom_fields as $custom_field) : ?>
                                 <tr>
                                     <?php
-                                    $column = $custom_field->custom_field_column;
-                                    $value = $this->mdl_client_custom->form_value($column);
+                                    $column = $custom_field->cf_label;
+                                    $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
                                     ?>
-                                    <th><?php echo $custom_field->custom_field_label ?></th>
+                                    <th><?php echo $custom_field->cf_label ?></th>
                                     <td><?php echo nl2br($value); ?></td>
                                 </tr>
                             <?php endforeach; ?>
