@@ -28,22 +28,33 @@ class Mdl_Quote_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $db_array = $this->_formdata;
+            $fData = $this->_formdata;
             $quote_custom_id = null;
 
-            $db_array['quote_id'] = $quote_id;
+            foreach($fData as $key=>$value){
+              $db_array = array(
+                'quote_id' => $quote_id,
+                'quote_custom_fieldid' => $key,
+                'quote_custom_fieldvalue' => $value
+              );
 
-            $quote_custom = $this->where('quote_id', $quote_id)->get();
+              $quote_custom = $this->where('quote_id', $quote_id)->where('quote_custom_fieldid', $key)->get();
 
-            if ($quote_custom->num_rows()) {
-                $quote_custom_id = $quote_custom->row()->quote_custom_id;
+              if ($quote_custom->num_rows()) {
+                  $quote_custom_id = $quote_custom->row()->quote_custom_id;
+              }
+
+              parent::save($quote_custom_id, $db_array);
             }
-
-            parent::save($quote_custom_id, $db_array);
 
             return true;
         }
 
+        return $result;
+    }
+
+    public function get_by_quoid($quote_id){
+        $result = $this->where('ip_quote_custom.quote_id', $quote_id)->get()->result();
         return $result;
     }
 

@@ -129,7 +129,22 @@ class Clients extends Admin_Controller
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[$custom_field->custom_field_column] = $values;
+                $custom_values[$custom_field->custom_field_id] = $values;
+            }
+        }
+
+        $fields = $this->mdl_client_custom->get_by_clid($id);
+
+        foreach($custom_fields as $cfield){
+            foreach($fields as $fvalue){
+              if($fvalue->cf_fid == $cfield->custom_field_id){
+                // TODO: Hackish, may need a better optimization
+                $this->mdl_clients->set_form_value(
+                  'custom[' . $cfield->custom_field_id . ']',
+                  $fvalue->cf_value
+                );
+                break;
+              }
             }
         }
 

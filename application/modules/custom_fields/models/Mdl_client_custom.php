@@ -30,7 +30,8 @@ class Mdl_Client_Custom extends Validator
         "ip_client_custom.client_custom_fieldvalue as cf_value,
          ip_custom_fields.custom_field_type as cf_type,
          ip_custom_fields.custom_field_label as cf_label,
-         ip_custom_fields.custom_field_id as cf_fid"
+         ip_custom_fields.custom_field_id as cf_fid,
+         ip_client_custom.client_custom_id as cc_id"
        );
     }
 
@@ -43,13 +44,23 @@ class Mdl_Client_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $db_array = isset($this->_formdata) ? $this->_formdata : null;
+            $fData = isset($this->_formdata) ? $this->_formdata : null;
             $client_custom_id = null;
             $db_array['client_id'] = $client_id;
-            $client_custom = $this->where('client_id', $client_id)->get()->row();
+            foreach($fData as $key=>$value){
+              $db_array = array(
+                'client_id' => $client_id,
+                'client_custom_fieldid' => $key,
+                'client_custom_fieldvalue' => $value
+              );
 
-            if (isset($client_custom->client_custom_id)) {
-                $id = parent::save($client_custom->client_custom_id, $db_array);
+              $client_custom = $this->where('client_id', $client_id)->where('client_custom_fieldid', $key)->get();
+
+              if ($client_custom->num_rows()) {
+                  $client_custom_id = $client_custom->row()->cc_id;
+              }
+
+              parent::save($client_custom_id, $db_array);
             }
             return true;
         }
@@ -93,6 +104,11 @@ class Mdl_Client_Custom extends Validator
     {
         $this->where('client_id', $client_id);
         return $this->get();
+    }
+
+    public function get_by_clid($client_id){
+        $result = $this->where('ip_client_custom.client_id', $client_id)->get()->result();
+        return $result;
     }
 
     /**
