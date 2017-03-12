@@ -18,6 +18,15 @@ class Mdl_User_Custom extends Validator
     public $table = 'ip_user_custom';
     public $primary_key = 'ip_user_custom.user_custom_id';
 
+    public function default_select()
+    {
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_custom_fields.*', false);
+    }
+
+    public function default_join(){
+        $this->db->join('ip_custom_fields', 'ip_user_custom.user_custom_fieldid = ip_custom_fields.custom_field_id');
+    }
+
     public function default_order_by()
     {
         $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
