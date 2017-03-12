@@ -134,3 +134,12 @@ INSERT INTO `ip_settings` (`setting_key`, `setting_value`)
 ALTER TABLE `ip_tasks`
   ADD COLUMN `tax_rate_id` int(11) NOT NULL
   AFTER `task_status`;
+
+# Switch to row based custom fields (instead of columns!)
+CREATE TABLE `ip_client_custom`
+(
+  `client_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+  `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
+  `client_custom_fieldvalue` VARCHAR(65535) NOT NULL ,
+  UNIQUE (client_custom_id, client_custom_fieldid)
+);

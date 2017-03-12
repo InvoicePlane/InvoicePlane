@@ -27,9 +27,9 @@ class Mdl_Custom_Fields extends MY_Model
      * @param $element
      * @return string
      */
-    public function get_nicename($element)
+    public static function get_nicename($element)
     {
-        if (in_array($element, $this->custom_types())) {
+        if (in_array($element, Mdl_Custom_Fields::custom_types())) {
             return strtolower(str_replace('-', '', $element));
         }
         return 'fallback';
@@ -38,9 +38,10 @@ class Mdl_Custom_Fields extends MY_Model
     /**
      * @return array
      */
-    public function custom_types()
+    public static function custom_types()
     {
-        $this->load->module("custom_values/mdl_custom_values");
+        $CI = &get_instance();
+        $CI->load->module("custom_values/mdl_custom_values");
         return Mdl_Custom_Values::custom_types();
     }
 
@@ -183,7 +184,7 @@ class Mdl_Custom_Fields extends MY_Model
             $old_column_name => array(
                 'name' => $new_column_name,
                 'type' => 'VARCHAR',
-                'constraint' => 2000
+                'constraint' => 50
             )
         );
 
@@ -201,7 +202,7 @@ class Mdl_Custom_Fields extends MY_Model
         $column = array(
             $column_name => array(
                 'type' => 'VARCHAR',
-                'constraint' => 2000
+                'constraint' => 256
             )
         );
 

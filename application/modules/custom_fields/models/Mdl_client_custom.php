@@ -23,6 +23,21 @@ class Mdl_Client_Custom extends Validator
      * @param $db_array
      * @return bool|string
      */
+
+    public function default_select()
+    {
+       $this->db->select(
+        "ip_client_custom.client_custom_fieldvalue as cf_value,
+         ip_custom_fields.custom_field_type as cf_type,
+         ip_custom_fields.custom_field_label as cf_label,
+         ip_custom_fields.custom_field_id as cf_fid"
+       );
+    }
+
+    public function default_join()
+    {
+        $this->db->join('ip_custom_fields', 'ip_client_custom.client_custom_fieldid = ip_custom_fields.custom_field_id', 'inner');
+    }
     public function save_custom($client_id, $db_array)
     {
         $result = $this->validate($db_array);
@@ -49,19 +64,19 @@ class Mdl_Client_Custom extends Validator
     public function prep_form($id = null)
     {
         if ($id) {
-            $values = $this->get_by_client($id)->row();
+            $values = $this->get_by_client($id)->result();
             $this->load->helper('custom_values_helper');
-            $this->load->module('custom_fields/mdl_custom_fields', 'cf');
+            $this->load->module('custom_fields/mdl_custom_fields');
 
             if ($values != null) {
-                foreach ($values as $key => $value) {
-                    $type = $this->get_field_type($key);
+                foreach ($values as $value) {
+                    $type = $value->cf_type;
                     if ($type != null) {
-                        $nicename = $this->cf->get_nicename(
+                        $nicename = Mdl_Custom_Fields::get_nicename(
                             $type
                         );
-                        $formatted = call_user_func("format_" . $nicename, $value);
-                        $this->set_form_value($key, $formatted);
+                        $formatted = call_user_func("format_" . $nicename, $value->cf_value);
+                        $this->set_form_value('cf_'.$value->cf_fid, $formatted);
                     }
                 }
             }
