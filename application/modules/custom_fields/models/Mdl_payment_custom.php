@@ -28,22 +28,32 @@ class Mdl_Payment_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $db_array = $this->_formdata;
+            $fData = $this->_formdata;
             $payment_custom_id = null;
+            foreach($fData as $key=>$value){
+              $db_array = array(
+                'payment_id' => $payment_id,
+                'payment_custom_fieldid' => $key,
+                'payment_custom_fieldvalue' => $value
+              );
 
-            $db_array['payment_id'] = $payment_id;
+              $payment_custom = $this->where('payment_id', $payment_id)->where('payment_custom_fieldid', $key)->get();
 
-            $payment_custom = $this->where('payment_id', $payment_id)->get();
+              if ($payment_custom->num_rows()) {
+                  $payment_custom_id = $payment_custom->row()->payment_custom_id;
+              }
 
-            if ($payment_custom->num_rows()) {
-                $payment_custom_id = $payment_custom->row()->payment_custom_id;
+              parent::save($payment_custom_id, $db_array);
             }
-
-            parent::save($payment_custom_id, $db_array);
 
             return true;
         }
 
+        return $result;
+    }
+
+    public function get_by_payid($payment_id){
+        $result = $this->where('ip_payment_custom.payment_id', $payment_id)->get()->result();
         return $result;
     }
 
