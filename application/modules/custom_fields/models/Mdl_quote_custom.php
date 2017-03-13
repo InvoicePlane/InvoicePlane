@@ -18,6 +18,11 @@ class Mdl_Quote_Custom extends Validator
     public $table = 'ip_quote_custom';
     public $primary_key = 'ip_quote_custom.quote_custom_id';
 
+    public static $positions = array(
+      'custom_fields',
+      'properties'
+    );
+
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_quote_custom.*, ip_custom_fields.*', false);

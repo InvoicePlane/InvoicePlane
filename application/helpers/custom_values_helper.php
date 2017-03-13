@@ -117,12 +117,12 @@ function format_fallback($txt)
  * @param string $class_top
  * @param string $class_bottom
  */
-function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls')
+function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $label_class='')
 {
     ?>
     <div class="form-group">
         <div class="<?php echo $class_top; ?>">
-            <label><?php echo $custom_field->custom_field_label; ?>: </label>
+            <label<?php echo ($label_class!=''?" class='".$label_class."'":'');?>><?php echo $custom_field->custom_field_label; ?>: </label>
         </div>
         <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']'); ?>
         <div class="<?php echo $class_bottom; ?>">

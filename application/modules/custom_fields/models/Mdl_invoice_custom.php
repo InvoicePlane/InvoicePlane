@@ -18,6 +18,11 @@ class Mdl_Invoice_Custom extends Validator
     public $table = 'ip_invoice_custom';
     public $primary_key = 'ip_invoice_custom.invoice_custom_id';
 
+    public static $positions = array(
+      'custom_fields',
+      'properties'
+    );
+
     /**
     * @param $invoice_id
     * @param $db_array

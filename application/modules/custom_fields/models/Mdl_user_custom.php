@@ -18,6 +18,14 @@ class Mdl_User_Custom extends Validator
     public $table = 'ip_user_custom';
     public $primary_key = 'ip_user_custom.user_custom_id';
 
+    public static $positions = array(
+      'custom_fields',
+      'account_information',
+      'address',
+      'tax_information',
+      'contact_information'
+    );
+
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_custom_fields.*', false);

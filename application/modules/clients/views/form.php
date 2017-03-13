@@ -149,6 +149,13 @@ $cv = $this->controller->view_data["custom_values"];
                             </select>
                         </div>
                     </div>
+
+                    <!-- Custom Fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 1){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
+
                 </fieldset>
 
                 <fieldset>
@@ -189,6 +196,8 @@ $cv = $this->controller->view_data["custom_values"];
                         </div>
                     </div>
 
+                    <?php if($this->mdl_settings->setting('sumex') == '1'): ?>
+
                     <div class="form-group">
                         <label><?php echo trans('sumex_ssn'); ?>: </label>
                         <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
@@ -215,6 +224,14 @@ $cv = $this->controller->view_data["custom_values"];
                                    value="<?php echo htmlentities($veka); ?>">
                         </div>
                     </div>
+
+                    <?php endif; ?>
+
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 3){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
                 </fieldset>
             </div>
 
@@ -268,6 +285,11 @@ $cv = $this->controller->view_data["custom_values"];
                         </div>
                     </div>
 
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 2){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
                 </fieldset>
             </div>
 
@@ -294,6 +316,11 @@ $cv = $this->controller->view_data["custom_values"];
                         </div>
                     </div>
 
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 4){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
                 </fieldset>
             </div>
 
@@ -306,6 +333,7 @@ $cv = $this->controller->view_data["custom_values"];
                         <div class="col-xs-6">
                             <?php $i = 0; ?>
                             <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php if($custom_field->custom_field_location != 0){ continue; } ?>
                                 <?php $i++; ?>
                                 <?php if ($i % 2 != 0): ?>
                                     <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
@@ -316,6 +344,7 @@ $cv = $this->controller->view_data["custom_values"];
                         <div class="col-xs-6">
                             <?php $i = 0; ?>
                             <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php if($custom_field->custom_field_location != 0){ continue; } ?>
                                 <?php $i++; ?>
                                 <?php if ($i % 2 == 0): ?>
                                     <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
