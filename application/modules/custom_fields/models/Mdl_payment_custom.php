@@ -18,6 +18,10 @@ class Mdl_Payment_Custom extends Validator
     public $table = 'ip_payment_custom';
     public $primary_key = 'ip_payment_custom.payment_custom_id';
 
+    public static $positions = array(
+      'custom_fields'
+    );
+
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_payment_custom.*, ip_custom_fields.*', false);

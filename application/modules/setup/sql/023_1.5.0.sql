@@ -151,7 +151,7 @@ CREATE TABLE `ip_client_custom`
 );
 
 ALTER TABLE `ip_custom_fields` DROP COLUMN `custom_field_column`;
-ALTER TABLE `ip_custom_fields` ADD COLUMN `custom_field_location` INT;
+ALTER TABLE `ip_custom_fields` ADD COLUMN `custom_field_location` INT DEFAULT 0; #Default set to Custom Fields
 ALTER TABLE `ip_custom_fields` ADD COLUMN `custom_field_order` INT DEFAULT 999;
 
 # Same for invoice

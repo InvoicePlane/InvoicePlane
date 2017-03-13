@@ -18,6 +18,14 @@ class Mdl_Client_Custom extends Validator
     public $table = 'ip_client_custom';
     public $primary_key = 'ip_client_custom.client_custom_id';
 
+    public static $positions = array(
+      'custom_fields',
+      'address',
+      'contact_information',
+      'personal_information',
+      'tax_information'
+    );
+
     /**
      * @param $client_id
      * @param $db_array
@@ -31,6 +39,7 @@ class Mdl_Client_Custom extends Validator
          ip_custom_fields.custom_field_type as cf_type,
          ip_custom_fields.custom_field_label as cf_label,
          ip_custom_fields.custom_field_id as cf_fid,
+         ip_custom_fields.custom_field_location as cf_location,
          ip_client_custom.client_custom_id as cc_id"
        );
     }

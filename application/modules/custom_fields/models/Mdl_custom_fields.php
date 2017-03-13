@@ -75,6 +75,11 @@ class Mdl_Custom_Fields extends MY_Model
                 'field' => 'custom_field_order',
                 'label' => trans('order'),
                 'rules' => 'is_natural'
+            ),
+            'custom_field_location' => array(
+                'field' => 'custom_field_location',
+                'label' => trans('position'),
+                'rules' => 'is_natural'
             )
         );
     }

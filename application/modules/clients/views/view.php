@@ -164,6 +164,20 @@
                                 <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
                             </tr>
                         <?php endif; ?>
+
+                        <?php foreach ($custom_fields as $custom_field) : ?>
+                            <?php if($custom_field->cf_location != 2){
+                              continue;
+                            } ?>
+                            <tr>
+                                <?php
+                                $column = $custom_field->cf_label;
+                                $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
+                                ?>
+                                <th><?php echo $custom_field->cf_label ?></th>
+                                <td><?php echo nl2br($value); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
                     </table>
                 </div>
                 <div class="col-xs-12 col-md-6">
@@ -182,6 +196,20 @@
                                 <td><?php echo $client->client_tax_code; ?></td>
                             </tr>
                         <?php endif; ?>
+
+                        <?php foreach ($custom_fields as $custom_field) : ?>
+                            <?php if($custom_field->cf_location != 4){
+                              continue;
+                            } ?>
+                            <tr>
+                                <?php
+                                $column = $custom_field->cf_label;
+                                $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
+                                ?>
+                                <th><?php echo $custom_field->cf_label ?></th>
+                                <td><?php echo nl2br($value); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
                     </table>
                 </div>
                 <?php if($client->client_surname != ""): //Client is not a company ?>
@@ -197,6 +225,7 @@
                                 <th><?php echo trans('gender'); ?></th>
                                 <td><?php echo format_gender($client->client_gender) ?></td>
                             </tr>
+                            <?php if($this->mdl_settings->setting('sumex') == '1'): ?>
                             <tr>
                                 <th><?php echo trans('sumex_ssn'); ?></th>
                                 <td><?php echo format_avs($client->client_avs) ?></td>
@@ -211,6 +240,21 @@
                                 <th><?php echo trans('sumex_veka'); ?></th>
                                 <td><?php echo htmlentities($client->client_veka) ?></td>
                             </tr>
+                            <?php endif; ?>
+
+                            <?php foreach ($custom_fields as $custom_field) : ?>
+                                <?php if($custom_field->cf_location != 3){
+                                  continue;
+                                } ?>
+                                <tr>
+                                    <?php
+                                    $column = $custom_field->cf_label;
+                                    $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
+                                    ?>
+                                    <th><?php echo $custom_field->cf_label ?></th>
+                                    <td><?php echo nl2br($value); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
                     </table>
                 </div>
               <?php endif; ?>
@@ -222,6 +266,9 @@
                         <br>
                         <table class="table table-condensed table-striped">
                             <?php foreach ($custom_fields as $custom_field) : ?>
+                                <?php if($custom_field->cf_location != 0){
+                                  continue;
+                                } ?>
                                 <tr>
                                     <?php
                                     $column = $custom_field->cf_label;
