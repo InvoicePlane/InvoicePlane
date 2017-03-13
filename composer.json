@@ -2,7 +2,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/mpdf/mpdf"
+      "url": "https://github.com/InvoicePlane/mpdf.git"
     }
   ],
   "require": {
