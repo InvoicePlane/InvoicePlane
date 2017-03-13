@@ -2,13 +2,14 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/mpdf/mpdf"
+      "url": "https://github.com/InvoicePlane/mpdf.git"
     }
   ],
   "require": {
     "phpmailer/phpmailer": "^5.2",
     "mpdf/mpdf": "dev-development",
     "vlucas/phpdotenv": "^2.4",
-    "setasign/fpdi-fpdf": "^1.6.1"
+    "setasign/fpdi-fpdf": "^1.6.1",
+    "codeigniter/framework": "^3.1"
   }
 }

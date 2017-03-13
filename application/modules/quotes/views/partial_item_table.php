@@ -45,7 +45,7 @@
                     <span class="input-group-addon"><?php echo trans('item_discount'); ?></span>
                     <input type="text" name="item_discount_amount" class="input-sm form-control amount"
                            value="" data-toggle="tooltip" data-placement="bottom"
-                           title="<?php echo $this->mdl_settings->setting('currency_symbol') . ' ' . trans('per_item'); ?>">
+                           title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                 </div>
             </td>
             <td class="td-amount">
@@ -138,7 +138,7 @@
                         <input type="text" name="item_discount_amount" class="input-sm form-control amount"
                                value="<?php echo format_amount($item->item_discount_amount); ?>"
                                data-toggle="tooltip" data-placement="bottom"
-                               title="<?php echo $this->mdl_settings->setting('currency_symbol') . ' ' . trans('per_item'); ?>">
+                               title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                     </div>
                 </td>
                 <td class="td-amount">
@@ -269,7 +269,7 @@
                                    value="<?php echo format_amount($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
 
                             <div
-                                    class="input-group-addon"><?php echo $this->mdl_settings->setting('currency_symbol'); ?></div>
+                                    class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                         </div>
                     </div>
                     <div class="discount-field">

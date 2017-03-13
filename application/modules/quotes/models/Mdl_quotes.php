@@ -177,11 +177,11 @@ class Mdl_Quotes extends Response_Model
         $this->db->insert('ip_quote_amounts', $db_array);
 
         // Create the default invoice tax record if applicable
-        if ($this->mdl_settings->setting('default_invoice_tax_rate')) {
+        if (get_setting('default_invoice_tax_rate')) {
             $db_array = array(
                 'quote_id' => $quote_id,
-                'tax_rate_id' => $this->mdl_settings->setting('default_invoice_tax_rate'),
-                'include_item_tax' => $this->mdl_settings->setting('default_include_item_tax'),
+                'tax_rate_id' => get_setting('default_invoice_tax_rate'),
+                'include_item_tax' => get_setting('default_include_item_tax'),
                 'quote_tax_rate_amount' => 0
             );
 
@@ -255,13 +255,13 @@ class Mdl_Quotes extends Response_Model
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);
         $db_array['quote_date_expires'] = $this->get_date_due($db_array['quote_date_created']);
 
-        $db_array['notes'] = $this->mdl_settings->setting('default_quote_notes');
+        $db_array['notes'] = get_setting('default_quote_notes');
 
         if (!isset($db_array['quote_status_id'])) {
             $db_array['quote_status_id'] = 1;
         }
 
-        $generate_quote_number = $this->mdl_settings->setting('generate_quote_number_for_draft');
+        $generate_quote_number = get_setting('generate_quote_number_for_draft');
 
         if ($db_array['quote_status_id'] === 1 && $generate_quote_number == 1) {
             $db_array['quote_number'] = $this->get_quote_number($db_array['invoice_group_id']);
@@ -280,7 +280,7 @@ class Mdl_Quotes extends Response_Model
     public function get_date_due($quote_date_created)
     {
         $quote_date_expires = new DateTime($quote_date_created);
-        $quote_date_expires->add(new DateInterval('P' . $this->mdl_settings->setting('quotes_expire_after') . 'D'));
+        $quote_date_expires->add(new DateInterval('P' . get_setting('quotes_expire_after') . 'D'));
         return $quote_date_expires->format('Y-m-d');
     }
 

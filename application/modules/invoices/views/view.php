@@ -428,7 +428,8 @@ if ($this->config->item('disable_read_only') == true) {
 
                                 <div class="invoice-properties">
                                     <label><?php echo trans('payment_method'); ?></label>
-                                    <select name="payment_method" id="payment_method" class="form-control input-sm simple-select"
+                                    <select name="payment_method" id="payment_method"
+                                            class="form-control input-sm simple-select"
                                         <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
                                             echo 'disabled="disabled"';
                                         } ?>>

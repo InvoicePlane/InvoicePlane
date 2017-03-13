@@ -52,9 +52,9 @@ $cv = $this->controller->view_data["custom_values"];
                     <input id="client_name" name="client_name" type="text" class="form-control"
                            placeholder="<?php echo trans('client_name'); ?>" required autofocus
                            value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_name')); ?>">
-                           <input id="client_surname" name="client_surname" type="text" class="form-control"
-                                  placeholder="<?php echo trans('client_surname_optional'); ?>"
-                                  value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_surname')); ?>">
+                    <input id="client_surname" name="client_surname" type="text" class="form-control"
+                           placeholder="<?php echo trans('client_surname_optional'); ?>"
+                           value="<?php echo htmlspecialchars($this->mdl_clients->form_value('client_surname')); ?>">
                 </div>
 
             </div>
@@ -138,7 +138,7 @@ $cv = $this->controller->view_data["custom_values"];
 
                         <div class="controls">
                             <select name="client_country" id="client_country" class="form-control">
-                                <option></option>
+                                <option value=""><?php echo trans('none'); ?></option>
                                 <?php foreach ($countries as $cldr => $country) { ?>
                                     <option value="<?php echo $cldr; ?>"
                                         <?php if ($selected_country == $cldr) {
@@ -167,16 +167,16 @@ $cv = $this->controller->view_data["custom_values"];
 
                         <div class="controls">
                             <select name="client_gender" id="client_gender" class="form-control simple-select">
-                              <?php
-                              $genders = array(
-                                trans('gender_male'),
-                                trans('gender_female'),
-                                trans('gender_other'),
-                               );
-                              foreach($genders as $key=>$val){
-                                echo '<option value="'.$key.'"'.($key == $this->mdl_clients->form_value('client_gender')?' selected':'').'>'.$val.'</option>';
-                              }
-                              ?>
+                                <?php
+                                $genders = array(
+                                    trans('gender_male'),
+                                    trans('gender_female'),
+                                    trans('gender_other'),
+                                );
+                                foreach ($genders as $key => $val) {
+                                    echo '<option value="' . $key . '"' . ($key == $this->mdl_clients->form_value('client_gender') ? ' selected' : '') . '>' . $val . '</option>';
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -185,13 +185,14 @@ $cv = $this->controller->view_data["custom_values"];
                         <label><?php echo trans('birthdate'); ?>: </label>
                         <?php
                         $bdate = $this->mdl_clients->form_value('client_birthdate');
-                        if($bdate != ""){
-                          $bdate = date_from_mysql($bdate);
+                        if ($bdate != "") {
+                            $bdate = date_from_mysql($bdate);
                         }
 
                         ?>
                         <div class="controls">
-                            <input type="text" name="client_birthdate" id="client_birthdate" class="form-control datepicker"
+                            <input type="text" name="client_birthdate" id="client_birthdate"
+                                   class="form-control datepicker"
                                    value="<?php echo htmlspecialchars($bdate); ?>">
                         </div>
                     </div>
@@ -211,7 +212,8 @@ $cv = $this->controller->view_data["custom_values"];
                         <label><?php echo trans('sumex_insurednumber'); ?>: </label>
                         <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
                         <div class="controls">
-                            <input type="text" name="client_insurednumber" id="client_insurednumber" class="form-control"
+                            <input type="text" name="client_insurednumber" id="client_insurednumber"
+                                   class="form-control"
                                    value="<?php echo htmlentities($insuredNumber); ?>">
                         </div>
                     </div>

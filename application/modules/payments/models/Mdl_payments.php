@@ -151,6 +151,19 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
+     * @return array
+     */
+    public function db_array()
+    {
+        $db_array = parent::db_array();
+
+        $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
+        $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
+
+        return $db_array;
+    }
+
+    /**
      * @param null $id
      */
     public function delete($id = null)
@@ -180,19 +193,6 @@ class Mdl_Payments extends Response_Model
 
         $this->load->helper('orphan');
         delete_orphans();
-    }
-
-    /**
-     * @return array
-     */
-    public function db_array()
-    {
-        $db_array = parent::db_array();
-
-        $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
-        $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
-
-        return $db_array;
     }
 
     /**

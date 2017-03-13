@@ -12,8 +12,8 @@
 <head>
     <title>
         <?php
-        if ($this->mdl_settings->setting('custom_title') != '') {
-            echo $this->mdl_settings->setting('custom_title');
+        if (get_setting('custom_title') != '') {
+            echo get_setting('custom_title');
         } else {
             echo 'InvoicePlane';
         } ?>
@@ -26,7 +26,8 @@
 
     <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-    <link href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css"
+          rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/core/css/custom.css" rel="stylesheet">
 
 </head>

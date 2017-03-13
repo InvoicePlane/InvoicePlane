@@ -23,7 +23,7 @@
 
 <form method="post" class="form-horizontal"
       action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
-      <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php echo trans('email_invoice'); ?></h1>
@@ -64,10 +64,12 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="email_template" id="email_template" class="form-control simple-select">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($email_templates as $email_template): ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
-                                <?php if ($selected_email_template == $email_template->email_template_id) { ?>selected="selected"<?php } ?>><?php echo $email_template->email_template_title; ?></option>
+                                <?php if ($selected_email_template == $email_template->email_template_id) { ?>selected="selected"<?php } ?>>
+                            <?php echo $email_template->email_template_title; ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -129,7 +131,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="pdf_template" id="pdf_template" class="form-control simple-select">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($pdf_templates as $pdf_template): ?>
                         <option value="<?php echo $pdf_template; ?>"
                                 <?php if ($selected_pdf_template == $pdf_template):
