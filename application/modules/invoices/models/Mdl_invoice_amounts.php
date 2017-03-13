@@ -110,7 +110,7 @@ class Mdl_Invoice_Amounts extends CI_Model
                 // Set to read-only if applicable
                 if (
                     $this->config->item('disable_read_only') == false
-                    && $invoice->invoice_status_id == $this->mdl_settings->setting('read_only_toggle')
+                    && $invoice->invoice_status_id == get_setting('read_only_toggle')
                 ) {
                     $this->db->where('invoice_id', $invoice_id);
                     $this->db->set('is_read_only', 1);

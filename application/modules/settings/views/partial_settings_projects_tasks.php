@@ -9,12 +9,10 @@
                 </label>
                 <select name="settings[projects_enabled]" class="form-control simple-select"
                         id="settings[projects_enabled]">
-                    <option value="1"
-                            <?php if (get_setting('projects_enabled')) { ?>selected="selected"<?php } ?>>
+                    <option value="1" <?php check_select(get_setting('projects_enabled'), 1); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
-                    <option value="0"
-                            <?php if (!get_setting('projects_enabled')) { ?>selected="selected"<?php } ?>>
+                    <option value="0" <?php check_select(get_setting('projects_enabled'), 0); ?>>
                         <?php echo trans('no'); ?>
                     </option>
                 </select>
@@ -31,9 +29,7 @@
                     <input type="text" name="settings[default_hourly_rate]" id="settings[default_hourly_rate]"
                            class="form-control amount"
                            value="<?php echo format_amount(get_setting('default_hourly_rate')); ?>">
-                    <span class="input-group-addon">
-                <?php echo get_setting('currency_symbol'); ?>
-            </span>
+                    <span class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></span>
                 </div>
             </div>
 

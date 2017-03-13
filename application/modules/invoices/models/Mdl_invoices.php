@@ -195,11 +195,11 @@ class Mdl_Invoices extends Response_Model
 
         if ($include_invoice_tax_rates) {
             // Create the default invoice tax record if applicable
-            if ($this->mdl_settings->setting('default_invoice_tax_rate')) {
+            if (get_setting('default_invoice_tax_rate')) {
                 $db_array = array(
                     'invoice_id' => $invoice_id,
-                    'tax_rate_id' => $this->mdl_settings->setting('default_invoice_tax_rate'),
-                    'include_item_tax' => $this->mdl_settings->setting('default_include_item_tax', 0),
+                    'tax_rate_id' => get_setting('default_invoice_tax_rate'),
+                    'include_item_tax' => get_setting('default_include_item_tax', 0),
                     'invoice_tax_rate_amount' => 0
                 );
 
@@ -331,13 +331,13 @@ class Mdl_Invoices extends Response_Model
 
         $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
-        $db_array['invoice_terms'] = $this->mdl_settings->setting('default_invoice_terms');
+        $db_array['invoice_terms'] = get_setting('default_invoice_terms');
 
         if (!isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;
         }
 
-        $generate_invoice_number = $this->mdl_settings->setting('generate_invoice_number_for_draft');
+        $generate_invoice_number = get_setting('generate_invoice_number_for_draft');
 
         if ($db_array['invoice_status_id'] === 1 && $generate_invoice_number == 1) {
             $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
@@ -363,7 +363,7 @@ class Mdl_Invoices extends Response_Model
     public function get_date_due($invoice_date_created)
     {
         $invoice_date_due = new DateTime($invoice_date_created);
-        $invoice_date_due->add(new DateInterval('P' . $this->mdl_settings->setting('invoices_due_after') . 'D'));
+        $invoice_date_due->add(new DateInterval('P' . get_setting('invoices_due_after') . 'D'));
         return $invoice_date_due->format('Y-m-d');
     }
 
@@ -503,7 +503,7 @@ class Mdl_Invoices extends Response_Model
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is view
-            if ($this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 3) {
+            if ($this->config->item('disable_read_only') == false && get_setting('read_only_toggle') == 3) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
@@ -529,7 +529,7 @@ class Mdl_Invoices extends Response_Model
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is sent
-            if ($this->config->item('disable_read_only') == false && $this->mdl_settings->setting('read_only_toggle') == 2) {
+            if ($this->config->item('disable_read_only') == false && get_setting('read_only_toggle') == 2) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');

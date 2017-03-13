@@ -87,24 +87,6 @@ class Upload extends Admin_Controller
     }
 
     /**
-     * @param $url_key
-     */
-    public function delete_file($url_key)
-    {
-        $path = $this->targetPath;
-        $fileName = $_POST['name'];
-
-        $this->mdl_uploads->delete_file($url_key, $fileName);
-
-        // AVOID TREE TRAVERSAL!
-        $finalPath = $path . '/' . $url_key . '_' . $fileName;
-
-        if (strpos(realpath($path), realpath($finalPath)) == 0) {
-            unlink($path . '/' . $url_key . '_' . $fileName);
-        }
-    }
-
-    /**
      * @param $path
      * @param string $chmod
      * @return bool
@@ -153,6 +135,24 @@ class Upload extends Admin_Controller
         }
 
         echo json_encode($result);
+    }
+
+    /**
+     * @param $url_key
+     */
+    public function delete_file($url_key)
+    {
+        $path = $this->targetPath;
+        $fileName = $_POST['name'];
+
+        $this->mdl_uploads->delete_file($url_key, $fileName);
+
+        // AVOID TREE TRAVERSAL!
+        $finalPath = $path . '/' . $url_key . '_' . $fileName;
+
+        if (strpos(realpath($path), realpath($finalPath)) == 0) {
+            unlink($path . '/' . $url_key . '_' . $fileName);
+        }
     }
 
     /**

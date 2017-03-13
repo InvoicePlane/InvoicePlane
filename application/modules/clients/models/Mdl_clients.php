@@ -90,46 +90,47 @@ class Mdl_Clients extends Response_Model
             ),
             // SUMEX
             'client_birthdate' => array(
-              'field' => 'client_birthdate',
-              'rules' => 'callback_convert_date'
+                'field' => 'client_birthdate',
+                'rules' => 'callback_convert_date'
             ),
             'client_gender' => array(
-              'field' => 'client_gender'
+                'field' => 'client_gender'
             ),
             'client_avs' => array(
-              'field' => 'client_avs',
-              'label' => trans('sumex_ssn'),
-              'rules' => 'callback_fix_avs'
+                'field' => 'client_avs',
+                'label' => trans('sumex_ssn'),
+                'rules' => 'callback_fix_avs'
             ),
             'client_insurednumber' => array(
-              'field' => 'client_insurednumber',
-              'label' => trans('sumex_insurednumber')
+                'field' => 'client_insurednumber',
+                'label' => trans('sumex_insurednumber')
             ),
             'client_veka' => array(
-              'field' => 'client_veka',
-              'label' => trans('sumex_veka')
+                'field' => 'client_veka',
+                'label' => trans('sumex_veka')
             ),
         );
     }
 
-    function fix_avs($input){
-      if($input != ""){
-          if(preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)){
-            return $matches[1].$matches[2].$matches[3].$matches[4];
-          }
-          else if(preg_match('/^\d{13}$/',$input)){
-            return $input;
-          }
-      }
-      return "";
+    function fix_avs($input)
+    {
+        if ($input != "") {
+            if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
+                return $matches[1] . $matches[2] . $matches[3] . $matches[4];
+            } else if (preg_match('/^\d{13}$/', $input)) {
+                return $input;
+            }
+        }
+        return "";
     }
 
-    function convert_date($input){
-      $this->load->helper('date_helper');
-      if($input == ""){
-        return "";
-      }
-      return date_to_mysql($input);
+    function convert_date($input)
+    {
+        $this->load->helper('date_helper');
+        if ($input == "") {
+            return "";
+        }
+        return date_to_mysql($input);
     }
 
     public function db_array()
