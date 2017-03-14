@@ -93,7 +93,7 @@ class Quotes extends Admin_Controller
         $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_quote_custom');
 
-        $fields = $this->mdl_quote_custom->get()->by_id($quote_id)->result();
+        $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
         $this->db->reset_query();
 
         $quote_custom = $this->mdl_quote_custom->where('quote_id', $quote_id)->get();

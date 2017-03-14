@@ -32,7 +32,6 @@
         });
     });
 </script>
-
 <div id="headerbar">
     <h1 class="headerbar-title"><?php echo format_client($client); ?></h1>
 

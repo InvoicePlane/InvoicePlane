@@ -134,7 +134,7 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             <input type="text" class="form-control input-sm datepicker"
                    name="custom[<?php echo htmlentities($custom_field->custom_field_id); ?>]"
                    id="<?php echo htmlentities($custom_field->custom_field_id); ?>"
-                   value="<?php echo htmlentities(html_escape($dateValue, true)); ?>">
+                   value="<?php echo htmlentities($dateValue); ?>">
             <?php
             break;
             case 'SINGLE-CHOICE':
@@ -192,7 +192,7 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             <input type="text" class="form-control"
                    name="custom[<?php echo htmlentities($custom_field->custom_field_id); ?>]"
                    id="<?php echo htmlentities($custom_field->custom_field_id); ?>"
-                   value="<?php echo htmlentities(html_escape($fieldValue, true)); ?>">
+                   value="<?php echo htmlentities($fieldValue); ?>">
             <?php } ?>
         </div>
     </div>
