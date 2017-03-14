@@ -347,7 +347,11 @@ class Setup extends MX_Controller
     {
         $length = (env('ENCRYPTION_CIPHER') == 'AES-256' ? 32 : 16);
 
-        $key = 'base64:' . base64_encode(random_bytes($length));
+        if (function_exists('random_bytes')) {
+            $key = 'base64:' . base64_encode(random_bytes($length));
+        } else {
+            $key = 'base64:' . base64_encode(openssl_random_pseudo_bytes($length));
+        }
 
         $config = file_get_contents(IPCONFIG_FILE);
         $config = preg_replace("/ENCRYPTION_KEY=(.*)?/", "ENCRYPTION_KEY=" . $key, $config);
