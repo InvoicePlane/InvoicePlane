@@ -437,7 +437,7 @@
                     <?php endforeach; ?>
 
                 </fieldset>
-
+                <?php if($custom_fields) : ?>
                 <fieldset>
 
                     <legend><?php echo trans('custom_fields'); ?></legend>
@@ -459,6 +459,7 @@
                     } ?>
 
                 </fieldset>
+              <?php endif; ?>
 
             </div>
 
