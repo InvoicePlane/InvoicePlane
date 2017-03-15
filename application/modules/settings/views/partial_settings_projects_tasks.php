@@ -9,11 +9,11 @@
                 </label>
                 <select name="settings[projects_enabled]" class="form-control simple-select"
                         id="settings[projects_enabled]">
-                    <option value="1" <?php check_select(get_setting('projects_enabled'), 1); ?>>
-                        <?php echo trans('yes'); ?>
-                    </option>
-                    <option value="0" <?php check_select(get_setting('projects_enabled'), 0); ?>>
+                    <option value="0">
                         <?php echo trans('no'); ?>
+                    </option>
+                    <option value="1" <?php check_select(get_setting('projects_enabled'), '1'); ?>>
+                        <?php echo trans('yes'); ?>
                     </option>
                 </select>
             </div>

@@ -280,7 +280,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('disable_quickactions')); ?>>
+                    <option value="1" <?php check_select(get_setting('disable_quickactions'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
@@ -303,7 +303,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('disable_sidebar')); ?>>
+                    <option value="1" <?php check_select(get_setting('disable_sidebar'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
@@ -328,8 +328,7 @@
         <select name="settings[monospace_amounts]" class=" form-control simple-select"
                 id="monospace_amounts">
             <option value="0"><?php echo trans('no'); ?></option>
-            <option value="1"
-                    <?php check_select(get_setting('monospace_amounts')); ?>>
+            <option value="1" <?php check_select(get_setting('monospace_amounts'), '1'); ?>>
                 <?php echo trans('yes'); ?>
             </option>
         </select>
@@ -363,8 +362,7 @@
         </label>
         <select name="settings[bcc_mails_to_admin]" class=" form-control simple-select">
             <option value="0"><?php echo trans('no'); ?></option>
-            <option value="1"
-                    <?php check_select(get_setting('bcc_mails_to_admin')); ?>>
+            <option value="1" <?php check_select(get_setting('bcc_mails_to_admin'), '1'); ?>>
                 <?php echo trans('yes'); ?>
             </option>
         </select>
