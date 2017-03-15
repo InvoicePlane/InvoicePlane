@@ -61,7 +61,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('generate_invoice_number_for_draft')); ?>>
+                    <option value="1" <?php check_select(get_setting('generate_invoice_number_for_draft'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
@@ -86,7 +86,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('mark_invoices_sent_pdf')); ?>>
+                    <option value="1" <?php check_select(get_setting('mark_invoices_sent_pdf'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
@@ -108,7 +108,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('include_zugferd')); ?>>
+                    <option value="1" <?php check_select(get_setting('include_zugferd'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
@@ -283,8 +283,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1"
-                        <?php check_select(get_setting('automatic_email_on_recur')); ?>>
+                    <option value="1" <?php check_select(get_setting('automatic_email_on_recur'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
@@ -299,16 +298,13 @@
                     <?php echo trans('set_to_read_only'); ?>
                 </label>
                 <select name="settings[read_only_toggle]" class=" form-control simple-select">
-                    <option value="2"
-                        <?php check_select(get_setting('read_only_toggle'), 2); ?>>
+                    <option value="2" <?php check_select(get_setting('read_only_toggle'), '2'); ?>>
                         <?php echo trans('sent'); ?>
                     </option>
-                    <option value="3"
-                        <?php check_select(get_setting('read_only_toggle'), 3); ?>>
+                    <option value="3" <?php check_select(get_setting('read_only_toggle'), '3'); ?>>
                         <?php echo trans('viewed'); ?>
                     </option>
-                    <option value="4"
-                        <?php check_select(get_setting('read_only_toggle'), 4); ?>>
+                    <option value="4" <?php check_select(get_setting('read_only_toggle'), '4'); ?>>
                         <?php echo trans('paid'); ?>
                     </option>
                 </select>
@@ -332,7 +328,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('sumex')); ?>>
+                    <option value="1" <?php check_select(get_setting('sumex'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
