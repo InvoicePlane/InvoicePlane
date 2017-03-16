@@ -81,13 +81,13 @@
 
         $(document).on('click', '.client-create-invoice', function () {
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>", {
-                client_name: $(this).data('client-name')
+                client_id: $(this).data('client-id')
             });
         });
 
         $(document).on('click', '.client-create-quote', function () {
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {
-                client_name: $(this).data('client-name')
+                client_id: $(this).data('client-id')
             });
         });
 
