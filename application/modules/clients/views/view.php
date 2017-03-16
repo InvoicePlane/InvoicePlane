@@ -38,11 +38,11 @@
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
             <a href="#" class="btn btn-default client-create-quote"
-               data-client-name="<?php echo $client->client_name; ?>">
+               data-client-id="<?php echo $client->client_id; ?>">
                 <i class="fa fa-file"></i> <?php echo trans('create_quote'); ?>
             </a>
             <a href="#" class="btn btn-default client-create-invoice"
-               data-client-name="<?php echo $client->client_name; ?>">
+               data-client-id="<?php echo $client->client_id; ?>">
                 <i class="fa fa-file-text"></i> <?php echo trans('create_invoice'); ?></a>
             <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
                class="btn btn-default">
