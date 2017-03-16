@@ -123,6 +123,7 @@ class Clients extends Admin_Controller
 
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
+        $this->load->model('custom_fields/mdl_client_custom');
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
         $custom_values = [];
