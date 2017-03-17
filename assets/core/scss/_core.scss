@@ -17,7 +17,6 @@
 html {
   min-height: 100vh;
   -webkit-font-smoothing: subpixel-antialiased;
-  overflow-y: scroll;
 }
 
 body {
@@ -305,14 +304,17 @@ textarea {
 */
 
 #main-area {
-  display: table-cell;
-  width: 100%;
+  display: flex;
+  max-width: 100%;
+  flex-direction: row;
   padding: 0;
   border-left: 1px solid #ddd;
 }
 
 #content {
   padding: 15px;
+  align-content: flex-start;
+  max-width: 100%;
 
   &.table-content {
     padding: 0;
@@ -326,6 +328,10 @@ textarea {
 
 .tab-content {
   @extend #content;
+}
+
+#main-content{
+  width: 100%;
 }
 
 #headerbar {
@@ -830,9 +836,6 @@ div.table-content {
   cursor: move;
 }
 
-.modal-open {
-  padding-right: 0 !important;
-}
 
 .modal {
   margin-top: 30px;
@@ -1028,6 +1031,37 @@ legend, .install-step h2 {
 
 #login .alert {
   margin-bottom: 15px;
+}
+
+/*
+|   =========================================================
+|   Error Pages
+|   =========================================================
+*/
+
+body.error{
+
+  #ip-logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    height: 200px;
+  }
+
+  div.error-container{
+    display: block;
+    width: 80%;
+    height: auto;
+    margin-top: 5em;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+
+    h1{
+      margin-bottom: 1em;
+    }
+  }
 }
 
 /*
