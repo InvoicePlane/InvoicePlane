@@ -6,7 +6,7 @@
         </label>
         <select name="settings[merchant_enabled]" class=" form-control simple-select">
             <option value="0"><?php echo trans('no'); ?></option>
-            <option value="1" <?php check_select(get_setting('merchant_enabled'), 1); ?>>
+            <option value="1" <?php check_select(get_setting('merchant_enabled'), '1'); ?>>
                 <?php echo trans('yes'); ?>
             </option>
         </select>
@@ -33,7 +33,7 @@
         </label>
         <select name="settings[merchant_test_mode]" class=" form-control simple-select">
             <option value="0"><?php echo trans('no'); ?></option>
-            <option value="1" <?php check_select(get_setting('merchant_test_mode'), 1); ?>>
+            <option value="1" <?php check_select(get_setting('merchant_test_mode'), '1'); ?>>
                 <?php echo trans('yes'); ?>
             </option>
         </select>

@@ -532,6 +532,7 @@ $lang = array(
     'user_type'                                    => 'User Type',
     'username'                                     => 'Username',
     'users'                                        => 'Users',
+    'unit'                                        => 'Unit',
     'units'                                        => 'Units',
     'unit_already_exists'                          => 'Unit already exists!',
     'unit_name'                                    => 'Unit Name',
