@@ -418,6 +418,7 @@ $cv = $this->controller->view_data["custom_values"];
 
             </div>
         </div>
+        <?php endif; ?>
 
         <?php if ($custom_fields): ?>
             <fieldset>
