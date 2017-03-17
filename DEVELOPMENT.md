@@ -60,7 +60,6 @@ On the setup screen specify localhost, root, *blank password*, invoiceplane as t
 
 __Ask questions!__ Please ask questions related to this process if you are unclear.
 
-
 ---
   
 *Please notice: The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com

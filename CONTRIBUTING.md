@@ -53,7 +53,6 @@ We received some licenses for commercial development tools you can use if you wa
 
 Please ask questions related to this process if you are unclear.
 
-
 ---
   
 *Please notice: The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com

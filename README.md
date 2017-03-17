@@ -4,14 +4,15 @@
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
 
-===
+---
 
 ### Quick Installation
 
 1. Download the latest version [from the InvoicePlane website](https://invoiceplane.com/downloads).
 2. Extract the package and copy all files to your webserver / webspace.
-3. Set your URL in the `ipconfig.php` file.
-4. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
+3. Make a copy of the `ipconfig.php.example` file and rename it to `ipconfig.php`.
+4. Open the `ipconfig.php` file and add your URL in it.
+5. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
 
 
 _Notice: We strongly disadvise to download the InvoicePlane package from Github, except you are a Developer who wants to help us. If you are a developer, read the [development guide](DEVELOPMENT.md)._
@@ -24,7 +25,7 @@ _Notice: We strongly disadvise to download the InvoicePlane package from Github,
 
 If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoiceplane-domain.com/invoices/`) you have to change the .htaccess file. The instructions can be found within the file.
 
-===
+---
 
 ### Support / Development / Chat
 
@@ -35,14 +36,14 @@ If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoicepla
 [![Slack Chat](https://img.shields.io/badge/Development%3A-Slack%20Chat-429ae1.svg)](https://invoiceplane-slack.herokuapp.com/)  
 [![Contribution Guide](https://img.shields.io/badge/Development%3A-Contribution%20Guide-429ae1.svg)](CONTRIBUTING.md)  
 
-===
+---
 
 ### Security Vulnerabilities
 
 If you discover a security vulnerability please send an e-mail to mail@invoiceplane.com before disclosing the vulnerability to the public!
 All security vulnerabilities will be promptly addressed.
 
-===
+---
 
 > _The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
 and their usage is restricted! For more information visit invoiceplane.com/license-copyright_
