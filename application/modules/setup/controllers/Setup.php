@@ -57,15 +57,12 @@ class Setup extends MX_Controller
             redirect('setup/prerequisites');
         }
 
+        // Reset the session cache
         $this->session->unset_userdata('install_step');
         $this->session->unset_userdata('is_upgrade');
 
-        $this->load->helper('directory');
-
-        $languages = directory_map(APPPATH . '/language', 1);
-
-        sort($languages);
-
+        // Get all languages
+        $languages = get_available_languages();
         $this->layout->set('languages', $languages);
 
         $this->layout->buffer('content', 'setup/language');

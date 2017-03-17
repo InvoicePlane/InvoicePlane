@@ -91,7 +91,8 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
-     *
+     * Returns all available themes
+     * @return array
      */
     public function get_themes()
     {
