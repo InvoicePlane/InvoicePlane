@@ -34,7 +34,7 @@ CREATE TABLE `ip_custom_values` (
   DEFAULT CHARSET = utf8;
 
 ALTER TABLE `ip_custom_fields`
-  ADD `custom_field_type` VARCHAR(255) NOT NULL
+  ADD `custom_field_type` VARCHAR(255) DEFAULT 'TEXT' NOT NULL
   AFTER `custom_field_label`;
 
 # Sumex changes
@@ -144,66 +144,12 @@ ALTER TABLE `ip_tasks`
   ADD COLUMN `tax_rate_id` INT(11) NOT NULL
   AFTER `task_status`;
 
-# DANGER ZONE (Data IS going to be lost!)
-# =======================================
-
 # Switch to row based custom fields (instead of columns)
-# It would be nice to find a way to copy the old data into the new table
-
-DROP TABLE `ip_client_custom`;
-CREATE TABLE `ip_client_custom`
-(
-  `client_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
-  `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
-  `client_custom_fieldvalue` VARCHAR(65535) NULL ,
-  UNIQUE (client_id, client_custom_fieldid)
-);
-
-ALTER TABLE `ip_custom_fields` DROP COLUMN `custom_field_column`;
-ALTER TABLE `ip_custom_fields` ADD COLUMN `custom_field_location` INT DEFAULT 0; #Default set to Custom Fields
-ALTER TABLE `ip_custom_fields` ADD COLUMN `custom_field_order` INT DEFAULT 999;
-
-# Same for invoice
-DROP TABLE `ip_invoice_custom`;
-CREATE TABLE `ip_invoice_custom`
-(
-  `invoice_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
-  `invoice_id` INT NOT NULL, `invoice_custom_fieldid` INT NOT NULL,
-  `invoice_custom_fieldvalue` VARCHAR(65535) NULL ,
-  UNIQUE (invoice_id, invoice_custom_fieldid)
-);
-
-# Quotes
-DROP TABLE `ip_quote_custom`;
-CREATE TABLE `ip_quote_custom`
-(
-  `quote_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
-  `quote_id` INT NOT NULL, `quote_custom_fieldid` INT NOT NULL,
-  `quote_custom_fieldvalue` VARCHAR(65535) NULL ,
-  UNIQUE (quote_id, quote_custom_fieldid)
-);
-
-# Payments
-DROP TABLE `ip_payment_custom`;
-CREATE TABLE `ip_payment_custom`
-(
-  `payment_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
-  `payment_id` INT NOT NULL, `payment_custom_fieldid` INT NOT NULL,
-  `payment_custom_fieldvalue` VARCHAR(65535) NULL ,
-  UNIQUE (payment_id, payment_custom_fieldid)
-);
-
-# Users
-DROP TABLE `ip_user_custom`;
-CREATE TABLE `ip_user_custom`
-(
-  `user_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
-  `user_id` INT NOT NULL, `user_custom_fieldid` INT NOT NULL,
-  `user_custom_fieldvalue` VARCHAR(65535) NULL ,
-  UNIQUE (user_id, user_custom_fieldid)
-);
+# (See Mdl_setup for the migration script)
 
 # Custom Fields
 ALTER TABLE ip_custom_fields MODIFY custom_field_table VARCHAR(50);
 ALTER TABLE ip_custom_fields MODIFY custom_field_label VARCHAR(50);
+ALTER TABLE ip_custom_fields ADD custom_field_location INT(11) DEFAULT 0;
+ALTER TABLE ip_custom_fields ADD custom_field_order INT(11) DEFAULT 999;
 ALTER TABLE ip_custom_fields ADD CONSTRAINT UNIQUE(custom_field_table, custom_field_label);
