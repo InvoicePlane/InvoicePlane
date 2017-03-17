@@ -126,15 +126,18 @@ class Mdl_Clients extends Response_Model
                 return $input;
             }
         }
+
         return "";
     }
 
     function convert_date($input)
     {
         $this->load->helper('date_helper');
+
         if ($input == "") {
             return "";
         }
+
         return date_to_mysql($input);
     }
 
