@@ -400,7 +400,6 @@ $cv = $this->controller->view_data["custom_values"];
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </div>
-                    </div>
 
                         <div class="col-xs-6">
                             <?php $i = 0; ?>
@@ -412,41 +411,9 @@ $cv = $this->controller->view_data["custom_values"];
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </div>
+                      </fieldset>
                     </div>
-
-                </fieldset>
-
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <?php if ($custom_fields): ?>
-            <fieldset>
-                <legend><?php echo trans('custom_fields'); ?></legend>
-
-                <div class="row">
-                    <div class="col-xs-6">
-                        <?php $i = 0; ?>
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php $i++; ?>
-                            <?php if ($i % 2 != 0): ?>
-                                <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <div class="col-xs-6">
-                        <?php $i = 0; ?>
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php $i++; ?>
-                            <?php if ($i % 2 == 0): ?>
-                                <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-            </fieldset>
+              </div>
         <?php endif; ?>
     </div>
 </form>
