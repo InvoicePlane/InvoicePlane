@@ -76,15 +76,15 @@
                            class="form-control datepicker"
                            value="<?php echo date(date_format_setting()); ?>">
                     <span class="input-group-addon">
-												<i class="fa fa-calendar fa-fw"></i>
-										</span>
+                        <i class="fa fa-calendar fa-fw"></i>
+                    </span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="quote_password"><?php echo trans('quote_password'); ?></label>
                 <input type="text" name="quote_password" id="quote_password" class="form-control"
-                       value="<?php echo get_setting('quote_pre_password') == '' ?: get_setting('quote_pre_password') ?>"
+                       value="<?php echo get_setting('quote_pre_password') ? '' : get_setting('quote_pre_password') ?>"
                        style="margin: 0 auto;" autocomplete="off">
             </div>
 
