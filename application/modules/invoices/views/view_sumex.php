@@ -218,15 +218,17 @@ if ($this->config->item('disable_read_only') == true) {
                         <i class="fa fa-minus fa-margin"></i> <?php echo trans('create_credit_invoice'); ?>
                     </a>
                 </li>
-                <li>
-                    <a href="#" class="invoice-add-payment"
-                       data-invoice-id="<?php echo $invoice_id; ?>"
-                       data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                       data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
-                        <i class="fa fa-credit-card fa-margin"></i>
-                        <?php echo trans('enter_payment'); ?>
-                    </a>
-                </li>
+                <?php if ($invoice->invoice_balance != 0) : ?>
+                    <li>
+                        <a href="#" class="invoice-add-payment"
+                           data-invoice-id="<?php echo $invoice_id; ?>"
+                           data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
+                            <i class="fa fa-credit-card fa-margin"></i>
+                            <?php echo trans('enter_payment'); ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">

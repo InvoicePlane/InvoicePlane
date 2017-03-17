@@ -3,8 +3,11 @@
 If you want to help developing InvoicePlane you need to prepare InvoicePlane for working with it as huge parts of the application are missing in the source code and need to be downloaded and compiled.  
 If you have any questions, feel free to join the `#development` channel in our [Slack Chat](https://invoiceplane-slack.herokuapp.com/).
 
-Please remember to read the [Contribution Guide](CONTRIBUTING.md) before starting to work on the app.
+Please read the [Contribution Guide](CONTRIBUTING.md) before starting to work on the app.
 
+[![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://development.invoiceplane.com/) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/InvoicePlane/InvoicePlane/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/InvoicePlane/InvoicePlane/?branch=master) 
+
+---
 
 ## Contents
 
@@ -56,7 +59,6 @@ On the setup screen specify localhost, root, *blank password*, invoiceplane as t
 *Note:* When the VM is booted you can change the `php.ini` file to setup xdebug or other preferences.
 
 __Ask questions!__ Please ask questions related to this process if you are unclear.
-
 
 ---
   

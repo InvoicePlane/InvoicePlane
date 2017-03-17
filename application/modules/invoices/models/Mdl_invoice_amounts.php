@@ -94,7 +94,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0 ? true : false);
 
-        // Set to paid if balance is zero and the invoice total is
+        // Set to paid if balance is zero
         if ($invoice->invoice_balance == 0) {
             // Check if the invoice total is not zero or negative
             if ($invoice->invoice_total != 0 || $invoice_is_credit) {

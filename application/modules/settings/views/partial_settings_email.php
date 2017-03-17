@@ -57,7 +57,7 @@
             <option value="0">
                 <?php echo trans('no'); ?>
             </option>
-            <option value="1" <?php check_select(get_setting('smtp_authentication'), null, '!e'); ?>>
+            <option value="1" <?php check_select(get_setting('smtp_authentication'), '1'); ?>>
                 <?php echo trans('yes'); ?>
             </option>
         </select>
@@ -113,7 +113,7 @@
         <option value="0">
             <?php echo trans('no'); ?>
         </option>
-        <option value="1" <?php check_select(get_setting('email_pdf_attachment')); ?>>
+        <option value="1" <?php check_select(get_setting('email_pdf_attachment'), '1'); ?>>
             <?php echo trans('yes'); ?>
         </option>
     </select>

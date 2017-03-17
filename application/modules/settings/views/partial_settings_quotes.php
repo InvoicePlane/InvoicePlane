@@ -37,7 +37,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('mark_quotes_sent_pdf')); ?>>
+                    <option value="1" <?php check_select(get_setting('mark_quotes_sent_pdf'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
@@ -67,7 +67,7 @@
                     <option value="0">
                         <?php echo trans('no'); ?>
                     </option>
-                    <option value="1" <?php check_select(get_setting('generate_quote_number_for_draft')); ?>>
+                    <option value="1" <?php check_select(get_setting('generate_quote_number_for_draft'), '1'); ?>>
                         <?php echo trans('yes'); ?>
                     </option>
                 </select>
