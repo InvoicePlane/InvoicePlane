@@ -155,19 +155,34 @@ class Mdl_Tasks extends Response_Model
     public function get_tasks_to_invoice($invoice_id)
     {
         $result = array();
+
         if (!$invoice_id) {
             return $result;
         }
 
+        // Get tasks without any project
+        $query = $this->db->select($this->table . '.*')
+            ->from($this->table)
+            ->where($this->table . '.project_id', 0)
+            ->where($this->table . '.task_status', 3)
+            ->order_by($this->table . '.task_finish_date', 'ASC')
+            ->order_by($this->table . '.task_name', 'ASC')
+            ->get();
+
+        foreach ($query->result() as $row) {
+            $result[] = $row;
+        }
+
+        // Get tasks for this invoice
         $query = $this->db->select($this->table . '.*, ip_projects.project_name')
             ->from($this->table)
             ->join('ip_projects', 'ip_projects.project_id = ' . $this->table . '.project_id')
             ->join('ip_invoices', 'ip_invoices.client_id = ip_projects.client_id')
             ->where('ip_invoices.invoice_id', $invoice_id)
             ->where($this->table . '.task_status', 3)
-            ->order_by($this->table . '.task_finish_date', 'asc')
-            ->order_by('ip_projects.project_name', 'asc')
-            ->order_by($this->table . '.task_name', 'asc')
+            ->order_by($this->table . '.task_finish_date', 'ASC')
+            ->order_by('ip_projects.project_name', 'ASC')
+            ->order_by($this->table . '.task_name', 'ASC')
             ->get();
 
         foreach ($query->result() as $row) {
