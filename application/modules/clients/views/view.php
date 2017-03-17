@@ -32,6 +32,19 @@
         });
     });
 </script>
+
+<?php
+  $locations = array();
+  foreach ($custom_fields as $custom_field){
+    if(array_key_exists($custom_field->cf_location,$locations)){
+      $locations[$custom_field->cf_location] += 1;
+    }
+    else{
+      $locations[$custom_field->cf_location] = 1;
+    }
+  }
+?>
+
 <div id="headerbar">
     <h1 class="headerbar-title"><?php echo format_client($client); ?></h1>
 
