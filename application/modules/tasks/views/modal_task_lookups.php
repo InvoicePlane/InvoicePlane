@@ -100,7 +100,7 @@
                                        value="<?php echo $task->task_id; ?>">
                             </td>
                             <td nowrap class="text-left">
-                                <b><?php echo $task->project_name; ?></b>
+                                <b><?php echo isset($task->project_name) ? $task->project_name : ''; ?></b>
                             </td>
                             <td>
                                 <b><?php echo $task->task_name; ?></b>
