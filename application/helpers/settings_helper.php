@@ -37,11 +37,12 @@ function get_setting($setting_key, $default = '')
  * @param string|integer $value1
  * @param string|integer|null $value2
  * @param string $operator
+ * @param bool $checked
  * @return void
  */
-function check_select($value1, $value2 = null, $operator = '==')
+function check_select($value1, $value2 = null, $operator = '==', $checked = false)
 {
-    $select = 'selected="selected"';
+    $select = $checked ? 'checked="checked"' : 'selected="selected"';
 
     // Instant-validate if $value1 is a bool value
     if (is_bool($value1) && $value2 === null) {

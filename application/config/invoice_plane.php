@@ -20,5 +20,12 @@ $config = array(
         'prev_tag_open' => '<li>',
         'prev_tag_close' => '</li>',
         'num_links' => '10'
-    )
+    ),
+
+    // Settings keys that are allowed to get an empty value
+    'settings_empty_allowed' => array(
+        'thousands_separator',
+        'decimal_point',
+    ),
+
 );
