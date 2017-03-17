@@ -1,45 +1,45 @@
 <script>
-    function getIcon(fullname){
-      var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
-      if(fileFormat){
-        fileFormat = fileFormat[1];
-      }
-      else{
-        fileFormat = "";
-      }
+    function getIcon(fullname) {
+        var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
+        if (fileFormat) {
+            fileFormat = fileFormat[1];
+        }
+        else {
+            fileFormat = "";
+        }
 
-      var fileIcon = "default";
+        var fileIcon = "default";
 
-      switch(fileFormat){
-        case "pdf":
-          fileIcon = "file-pdf";
-        break;
+        switch (fileFormat) {
+            case "pdf":
+                fileIcon = "file-pdf";
+                break;
 
-        case "mp3":
-        case "wav":
-        case "ogg":
-          fileIcon = "file-audio";
-        break;
+            case "mp3":
+            case "wav":
+            case "ogg":
+                fileIcon = "file-audio";
+                break;
 
-        case "doc":
-        case "docx":
-        case "odt":
-          fileIcon = "file-document";
-        break;
+            case "doc":
+            case "docx":
+            case "odt":
+                fileIcon = "file-document";
+                break;
 
-        case "xls":
-        case "xlsx":
-        case "ods":
-          fileIcon = "file-spreadsheet";
-        break;
+            case "xls":
+            case "xlsx":
+            case "ods":
+                fileIcon = "file-spreadsheet";
+                break;
 
-        case "ppt":
-        case "pptx":
-        case "odp":
-          fileIcon = "file-presentation";
-        break;
-      }
-      return fileIcon;
+            case "ppt":
+            case "pptx":
+            case "odp":
+                fileIcon = "file-presentation";
+                break;
+        }
+        return fileIcon;
     }
     $(function () {
         $('.item-task-id').each(function () {
@@ -221,15 +221,17 @@ if ($this->config->item('disable_read_only') == true) {
                         <i class="fa fa-minus fa-margin"></i> <?php echo trans('create_credit_invoice'); ?>
                     </a>
                 </li>
-                <li>
-                    <a href="#" class="invoice-add-payment"
-                       data-invoice-id="<?php echo $invoice_id; ?>"
-                       data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                       data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
-                        <i class="fa fa-credit-card fa-margin"></i>
-                        <?php echo trans('enter_payment'); ?>
-                    </a>
-                </li>
+                <?php if ($invoice->invoice_balance != 0) : ?>
+                    <li>
+                        <a href="#" class="invoice-add-payment"
+                           data-invoice-id="<?php echo $invoice_id; ?>"
+                           data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
+                            <i class="fa fa-credit-card fa-margin"></i>
+                            <?php echo trans('enter_payment'); ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -622,7 +624,7 @@ if ($this->config->item('disable_read_only') == true) {
                         fileIcon = getIcon(val.fullname);
 
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.svg');
+                            '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
                     }
 
                     thisDropzone.emit("complete", mockFile);
@@ -645,7 +647,7 @@ if ($this->config->item('disable_read_only') == true) {
     myDropzone.on("addedfile", function (file) {
         var fileIcon = getIcon(file.name);
         myDropzone.emit("thumbnail", file,
-          '<?php echo base_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.svg');
+            '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
         createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $invoice->invoice_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
     });
 
