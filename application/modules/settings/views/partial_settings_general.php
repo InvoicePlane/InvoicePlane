@@ -349,7 +349,7 @@
             <img src="<?php echo base_url(); ?>uploads/<?php echo get_setting('login_logo'); ?>"><br>
             <?php echo anchor('settings/remove_logo/login', 'Remove Logo'); ?><br>
         <?php } ?>
-        <input type="file" name="login_logo" size="40" class=" form-control"/>
+        <input type="file" name="login_logo" class="form-control"/>
     </div>
 
     <hr/>

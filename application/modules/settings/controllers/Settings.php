@@ -23,6 +23,8 @@ class Settings extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_settings');
+        $this->load->library('encrypt');
+        $this->load->library('form_validation');
     }
 
     public function index()
@@ -39,8 +41,7 @@ class Settings extends Admin_Controller
             }
 
             // Save the submitted settings
-            $this->load->library('encrypt');
-            $this->load->library('form_validation');
+            $empty_values_allowed = $this->config->item('settings_empty_allowed');
 
             foreach ($settings as $key => $value) {
                 // Encrypt passwords but don't save empty passwords
@@ -52,7 +53,9 @@ class Settings extends Admin_Controller
                     if ($key == 'default_hourly_rate') {
                         $this->mdl_settings->save($key, standardize_amount($value));
                     } else {
-                        $this->mdl_settings->save($key, $value);
+                        if (in_array($key, $empty_values_allowed) || !empty($value)) {
+                            $this->mdl_settings->save($key, $value);
+                        }
                     }
                 }
             }
@@ -113,8 +116,8 @@ class Settings extends Admin_Controller
         $omnipay = new \Omnipay\Omnipay();
         $this->config->load('payment_gateways');
 
-        $allowed_drivers = $this->config->item('payment_gateways');
-        $gateway_drivers = array_intersect($omnipay->getFactory()->getSupportedGateways(), $allowed_drivers);
+        $gateway_drivers = $omnipay->getFactory()->getSupportedGateways();
+        sort($gateway_drivers);
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
@@ -149,7 +152,7 @@ class Settings extends Admin_Controller
                 'gateway_drivers' => $gateway_drivers,
                 'gateway_currency_codes' => \Omnipay\Common\Currency::all(),
                 'current_version' => $current_version,
-                'first_days_of_weeks' => array("0" => lang("sunday"), "1" => lang("monday"))
+                'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))
             )
         );
 
