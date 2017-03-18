@@ -143,7 +143,8 @@ class Mdl_Invoices extends Response_Model
             'invoice_number' => array(
                 'field' => 'invoice_number',
                 'label' => trans('invoice') . ' #',
-                'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
+                //'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
+                'rules' => 'required'
             ),
             'invoice_date_created' => array(
                 'field' => 'invoice_date_created',
