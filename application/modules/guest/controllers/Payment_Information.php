@@ -31,8 +31,9 @@ class Payment_Information extends Guest_Controller
         $disable_form = false;
 
         // Check if the invoice exists and is billable
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->where_in('ip_invoices.client_id',
-            $this->user_clients)->get()->row();
+        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)
+            ->where_in('ip_invoices.client_id', $this->user_clients)
+            ->get()->row();
 
         if (!$invoice) {
             show_404();
@@ -48,9 +49,7 @@ class Payment_Information extends Guest_Controller
         // Get all payment gateways
         $this->load->model('mdl_settings');
         $omnipay = new \Omnipay\Omnipay();
-        $this->config->load('payment_gateways');
-        $allowed_drivers = $this->config->item('payment_gateways');
-        $gateway_drivers = array_intersect($omnipay->getFactory()->getSupportedGateways(), $allowed_drivers);
+        $gateway_drivers = $omnipay->getFactory()->getSupportedGateways();
 
         $available_drivers = array();
         foreach ($gateway_drivers as $driver) {
@@ -60,7 +59,7 @@ class Payment_Information extends Guest_Controller
             $invoice_payment_method = $invoice->payment_method;
             $driver_payment_method = $this->mdl_settings->setting('gateway_payment_method_' . $d);
 
-            if ($setting == 1) {
+            if ($setting == 'on') {
                 if ($invoice_payment_method == 0 || $driver_payment_method == $invoice_payment_method) {
                     array_push($available_drivers, $driver);
                 }

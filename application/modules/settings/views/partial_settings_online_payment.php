@@ -3,7 +3,7 @@
         var online_payment_select = $('#online-payment-select');
         online_payment_select.select2().on('change', function () {
             var driver = online_payment_select.val();
-            $('.gateway-settings').addClass('hidden');
+            $('.gateway-settings:not(.active-gateway)').addClass('hidden');
             $('#gateway-settings-' + driver).removeClass('hidden');
         });
     });
@@ -33,7 +33,7 @@
         $d = strtolower($driver);
         ?>
         <div id="gateway-settings-<?php echo $d; ?>"
-             class="gateway-settings panel panel-default <?php if (get_setting('gateway_' . $d) != 'on') echo 'hidden'; ?>">
+             class="gateway-settings panel panel-default <?php echo get_setting('gateway_' . $d) == 'on' ? 'active-gateway' : 'hidden'; ?>">
 
             <div class="panel-heading">
                 <?php echo ucwords(str_replace('_', ' ', $driver)); ?>

@@ -63,6 +63,7 @@ $lang = array(
     'online_payment_start_year'                => 'Start Year',
     'online_payment_csc'                       => 'CSC',
     'online_payment_issuer'                    => 'Issuer',
+    'online_payment_card_invalid'              => 'The proviced credit card is invalid.',
 
     // status/error messages
     'online_payment_insecure_connection'       => 'Card details must be submitted over a secure connection.',

@@ -1,7 +1,11 @@
-<div id="headerbar">
-    <h1><?php echo lang('online_payment_for'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+<script>
+    $('select').select2();
+</script>
 
-    <div class="pull-right">
+<div id="headerbar">
+    <h1 class="headerbar-title"><?php echo lang('online_payment_for'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+
+    <div class="headerbar-item pull-right">
         <a href="<?php echo site_url('guest/invoices/generate_pdf/'); ?>"
            class="btn btn-sm btn-default">
             <i class="fa fa-print"></i> <?php echo lang('download_pdf'); ?>
@@ -16,12 +20,15 @@
 
     <?php if ($disable_form === false) { ?>
 
-        <h2><?php echo lang('total') . ': ' . format_currency($invoice->invoice_total); ?></h2>
-        <h2><?php echo lang('balance') . ': ' . format_currency($invoice->invoice_balance); ?></h2>
-        <br/>
+        <h4><?php echo lang('total') . ': ' . format_currency($invoice->invoice_total); ?></h4>
+        <br>
+        <h4><?php echo lang('balance') . ': ' . format_currency($invoice->invoice_balance); ?></h4>
+        <hr>
 
         <form action="<?php echo site_url('guest/payment_handler/make_payment/'); ?>"
               method="post" id="payment-information-form">
+
+            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-md-6">
@@ -29,13 +36,12 @@
                     <div class="form-group">
                         <input type="hidden" name="invoice_url_key" value="<?php echo $invoice->invoice_url_key; ?>">
 
-                        <label for="gateway"><?php echo lang('online_payment_method'); ?></label>
-                        <select name="gateway" id="gateway-select" class="form-control">
+                        <label for="gateway-select"><?php echo lang('online_payment_method'); ?></label>
+                        <select name="gateway" id="gateway-select" class="form-control simple-select">
                             <?php
                             // Display all available gateways
                             foreach ($gateways as $gateway) { ?>
-                                <option
-                                    value="<?php echo $gateway; ?>">
+                                <option value="<?php echo $gateway; ?>">
                                     <?php echo ucwords(str_replace('_', ' ', $gateway)); ?>
                                 </option>
                             <?php } ?>
@@ -45,7 +51,7 @@
                     <div class="panel panel-default">
 
                         <div class="panel-heading">
-                            <h3 class="panel-title"><?php echo lang('creditcard_details'); ?></h3>
+                            <?php echo lang('creditcard_details'); ?>
                         </div>
 
                         <div class="panel-body">
@@ -97,7 +103,7 @@
             </div>
 
             <div class="form-group">
-                <button class="btn btn-success btn-lg ajax-loader" type="submit">
+                <button class="btn btn-success ajax-loader" type="submit">
                     <i class="fa fa-credit-card fa-margin">&nbsp;</i><?php echo lang('pay_now'); ?>
                 </button>
             </div>

@@ -22,20 +22,23 @@ class Payment_Handler extends Base_Controller
     {
         parent::__construct();
 
-        $this->load->library('merchant');
         $this->load->library('encrypt');
 
         $this->load->model('invoices/mdl_invoices');
     }
 
+    /**
+     * Process the payment for the given invoice
+     *
+     * @TODO Currently not working for websites with redirect like PayPal, needs implementation of the redirect method! Stripe is working without problems. - Kovah <mail@kovah.de>
+     * @TODO Is there a way to determine if the credit card is needed? - Kovah <mail@kovah.de>
+     */
     public function make_payment()
     {
         // Attempt to get the invoice
         $invoice = $this->mdl_invoices->where('invoice_url_key', $this->input->post('invoice_url_key'))->get();
 
         if ($invoice->num_rows() == 1) {
-
-            // @todo Currently not working for websites with redirect like PayPal, needs implementation of the redirect method! Stripe is working without problems. - Kovah <mail@kovah.de>
 
             // Get the invoice data and load the encrypt library
             $invoice = $invoice->row();
@@ -60,18 +63,24 @@ class Payment_Handler extends Base_Controller
             $cc_cvv = $this->input->post('creditcard_cvv');
 
             if ($cc_number) {
-                $credit_card = array(
-                    'number' => $cc_number,
-                    'expiryMonth' => $cc_expire_month,
-                    'expiryYear' => $cc_expire_year,
-                    'cvv' => $cc_cvv
-                );
+                try {
+                    $credit_card = new \Omnipay\Common\CreditCard(array(
+                        'number' => $cc_number,
+                        'expiryMonth' => $cc_expire_month,
+                        'expiryYear' => $cc_expire_year,
+                        'cvv' => $cc_cvv
+                    ));
+                    $credit_card->validate();
+                } catch (\Exception $e) {
+                    // Redirect the user and display failure message
+                    $this->session->set_flashdata('alert_error', trans('online_payment_card_invalid') . '<br/>' . $e->getMessage());
+                    redirect('guest/payment_information/form/' . $invoice->invoice_url_key);
+                }
             } else {
                 $credit_card = array();
             }
 
             // Set up the api data
-            // @todo Redirect URLs are missing - Kovah <mail@kovah.de>
             $request = array(
                 'amount' => $invoice->invoice_balance,
                 'currency' => $driver_currency,
@@ -110,19 +119,19 @@ class Payment_Handler extends Base_Controller
                 $this->db->insert('ip_merchant_responses', $db_array);
 
                 // Redirect user and display the success message
-                $this->session->set_flashdata('alert_success', lang('online_payment_payment_successful'));
-                redirect('guest/invoices/status/open/');
+                $this->session->set_flashdata('alert_success', trans('online_payment_payment_successful'));
+                $this->session->keep_flashdata('alert_success');
+
+                redirect(site_url('guest/invoices/status/paid'));
 
             } elseif ($response->isRedirect()) {
 
                 // Redirect to offsite payment gateway
-                //@todo redirect is not handled at the moment - Kovah <mail@kovah.de>
+                //@TODO redirect is not handled at the moment - Kovah <mail@kovah.de>
                 $response->redirect();
 
             } else {
-
                 // Payment failed
-
                 // Save the response in the database
                 $db_array = array(
                     'invoice_id' => $invoice->invoice_id,
@@ -134,7 +143,9 @@ class Payment_Handler extends Base_Controller
                 $this->db->insert('ip_merchant_responses', $db_array);
 
                 // Redirect the user and display failure message
-                $this->session->set_flashdata('alert_error', lang('online_payment_payment_failed') . '<br/>' . $response->getMessage());
+                $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed') . '<br/>' . $response->getMessage());
+                $this->session->keep_flashdata('alert_error');
+
                 redirect('guest/payment_information/form/' . $invoice->invoice_url_key);
             }
         }
@@ -152,7 +163,7 @@ class Payment_Handler extends Base_Controller
         // See if the response can be validated
         if ($this->payment_validate($invoice_url_key)) {
             // Set the success flash message
-            $this->session->set_flashdata('alert_success', lang('online_payment_payment_successful'));
+            $this->session->set_flashdata('alert_success', trans('online_payment_payment_successful'));
 
             // Attempt to get the invoice
             $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get();
@@ -174,7 +185,7 @@ class Payment_Handler extends Base_Controller
             }
         } else {
             // Set the failure flash message
-            $this->session->set_flashdata('alert_error', lang('online_payment_payment_failed'));
+            $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
         }
 
         // Redirect to guest invoice view with flash message
@@ -187,7 +198,7 @@ class Payment_Handler extends Base_Controller
         $this->payment_validate($invoice_url_key);
 
         // Set the cancel flash message
-        $this->session->set_flashdata('alert_info', lang('online_payment_payment_cancelled'));
+        $this->session->set_flashdata('alert_info', trans('online_payment_payment_cancelled'));
 
         // Redirect to guest invoice view with flash message
         redirect('guest/view/invoice/' . $invoice_url_key);
@@ -202,7 +213,7 @@ class Payment_Handler extends Base_Controller
             $invoice = $invoice->row();
 
             // Load the merchant driver
-            $this->merchant->load(get_setting('merchant_driver'));
+            //$this->merchant->load(get_setting('merchant_driver'));
 
             // Pass the required settings
             $settings = array(
@@ -213,7 +224,7 @@ class Payment_Handler extends Base_Controller
             );
 
             // Init the driver
-            $this->merchant->initialize($settings);
+            //$this->merchant->initialize($settings);
 
             // Create the parameters
             $params = array(
@@ -223,23 +234,23 @@ class Payment_Handler extends Base_Controller
             );
 
             // Get the response
-            $response = $this->merchant->purchase_return($params);
+            //$response = $this->merchant->purchase_return($params);
 
             // Determine if it was successful or not
-            $merchant_response = ($response->success()) ? 1 : 0;
+            //$merchant_response = ($response->success()) ? 1 : 0;
 
             // Create the record for ip_merchant_responses
             $db_array = array(
                 'invoice_id' => $invoice->invoice_id,
                 'merchant_response_date' => date('Y-m-d'),
                 'merchant_response_driver' => get_setting('merchant_driver'),
-                'merchant_response' => $merchant_response,
-                'merchant_response_reference' => ($response->reference()) ? $response->reference() : ''
+                //'merchant_response' => $merchant_response,
+                //'merchant_response_reference' => ($response->reference()) ? $response->reference() : ''
             );
 
             $this->db->insert('ip_merchant_responses', $db_array);
 
-            return $merchant_response;
+            //return $merchant_response;
         }
 
         return 0;
