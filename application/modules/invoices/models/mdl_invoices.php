@@ -86,7 +86,8 @@ class Mdl_Invoices extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoices.invoice_id DESC');
+        $this->db->order_by('ip_invoices.invoice_date_created DESC');
+        $this->db->order_by('cast(ip_invoices.invoice_number as unsigned) DESC');
     }
 
     public function default_join()
@@ -341,8 +342,12 @@ class Mdl_Invoices extends Response_Model
 
     public function get_invoice_number($invoice_group_id)
     {
-        $this->load->model('invoice_groups/mdl_invoice_groups');
-        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
+        $year = date('Y');
+        //SELECT (COUNT(*) +1) as invoice_next_number FROM `ip_invoices` WHERE  = 3 AND invoice_date_created BETWEEN '2017-01-01' AND '2017-12-31'
+        $next_number = $this->db->query("SELECT (COUNT(*) +1) as invoice_next_number FROM `ip_invoices` WHERE invoice_group_id = $invoice_group_id AND invoice_date_created BETWEEN '$year-01-01' AND '$year-12-31'", false)->row()->invoice_next_number;
+        return $next_number;
+        /*$this->load->model('invoice_groups/mdl_invoice_groups');
+        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);*/
     }
 
     public function get_date_due($invoice_date_created)
@@ -354,10 +359,19 @@ class Mdl_Invoices extends Response_Model
 
     public function delete($invoice_id)
     {
+        $year = date('Y');
+        $groupID = $this->get_invoice_group_id($invoice_id);
+
         parent::delete($invoice_id);
 
         $this->load->helper('orphan');
         delete_orphans();
+        
+        //SELECT (COUNT(*) +1) as invoice_next_number FROM `ip_invoices` WHERE  = 3 AND invoice_date_created BETWEEN '2017-01-01' AND '2017-12-31'
+        $next_number = $this->db->query("SELECT (COUNT(*) +1) as invoice_next_number FROM `ip_invoices` WHERE invoice_group_id = $groupID AND invoice_date_created BETWEEN '$year-01-01' AND '$year-12-31'", false)->row()->invoice_next_number;
+
+        $this->load->model('invoice_groups/mdl_invoice_groups');
+        $this->mdl_invoice_groups->refresh_invoice_number($groupID, $next_number);
     }
 
     // Used from the guest module, excludes draft and paid

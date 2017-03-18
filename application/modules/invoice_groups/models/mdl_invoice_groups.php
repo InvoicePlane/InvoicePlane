@@ -109,4 +109,10 @@ class Mdl_Invoice_Groups extends Response_Model
         $this->db->update($this->table);
     }
 
+    public function refresh_invoice_number($invoice_group_id, $next_number){
+        $this->db->where($this->primary_key, $invoice_group_id);
+        $this->db->set('invoice_group_next_id', $next_number);
+        $this->db->update($this->table);
+    }
+
 }
