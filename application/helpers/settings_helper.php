@@ -24,6 +24,18 @@ function get_setting($setting_key, $default = '')
 }
 
 /**
+ * Get the settings for a payment gateway
+ *
+ * @param string $gateway
+ * @return array
+ */
+function get_gateway_settings($gateway)
+{
+    $CI = &get_instance();
+    return $CI->mdl_settings->gateway_settings($gateway);
+}
+
+/**
  * Compares the two given values and outputs selected="selected"
  * if the values match or the operation is true for the single value
  *

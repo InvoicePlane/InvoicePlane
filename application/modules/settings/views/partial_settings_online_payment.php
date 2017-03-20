@@ -17,7 +17,7 @@
         </label>
         <select id="online-payment-select" class=" form-control">
             <option value=""><?php echo trans('none'); ?></option>
-            <?php foreach ($gateway_drivers as $driver) {
+            <?php foreach ($gateway_drivers as $driver => $fields) {
                 $d = strtolower($driver);
                 ?>
                 <option value="<?php echo $d; ?>">
@@ -29,7 +29,7 @@
 
     <?php
     $this->load->library('encrypt');
-    foreach ($gateway_drivers as $driver) :
+    foreach ($gateway_drivers as $driver => $fields) :
         $d = strtolower($driver);
         ?>
         <div id="gateway-settings-<?php echo $d; ?>"
@@ -50,34 +50,52 @@
 
             <div class="panel-body small">
 
-                <div class="form-group">
-                    <label for="settings[gateway_username_<?php echo $d; ?>]" class="control-label">
-                        <?php echo trans('username') . ' / ' . trans('online_payment_api_key'); ?>
-                    </label>
-                    <input type="text" name="settings[gateway_username_<?php echo $d; ?>]"
-                           class="input-sm form-control"
-                           value="<?php echo $this->mdl_settings->setting('gateway_username_' . $d); ?>">
-                </div>
+                <?php foreach ($fields as $key => $setting) { ?>
+                    <?php if ($setting['type'] == 'checkbox') : ?>
+
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
+                                    <?php check_select(get_setting('gateway_' . $d . '_' . $key), 'on', '==', true) ?>>
+                                <?php echo $setting['label']; ?>
+                            </label>
+                        </div>
+
+                    <?php else : ?>
+
+                        <div class="form-group">
+                            <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" class="control-label">
+                                <?php echo $setting['label']; ?>
+                            </label>
+                            <input type="<?php echo $setting['type']; ?>" class="input-sm form-control"
+                                   name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
+                                <?php if ($setting['type'] == 'password') : ?>
+                                    value="<?php echo $this->encrypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
+                                <?php else : ?>
+                                    value="<?php echo get_setting('gateway_' . $d . '_' . $key); ?>"
+                                <?php endif; ?>
+                            >
+                            <?php if ($setting['type'] == 'password') : ?>
+                                <input type="hidden" value="1"
+                                       name="settings[gateway_<?php echo $d . '_' . $key ?>_field_is_password]">
+                            <?php endif; ?>
+                        </div>
+
+                    <?php endif; ?>
+                <?php } ?>
+
+                <hr>
 
                 <div class="form-group">
-                    <label for="settings[gateway_password_<?php echo $d; ?>]" class="control-label">
-                        <?php echo trans('password') . ' / ' . trans('online_payment_secret_key'); ?>
-                    </label>
-                    <input type="password" name="settings[gateway_password_<?php echo $d; ?>]"
-                           class="input-sm form-control"
-                           value="<?php echo $this->encrypt->decode($this->mdl_settings->setting('gateway_password_' . $d)); ?>">
-                </div>
-
-                <div class="form-group">
-                    <label for="settings[gateway_currency_<?php echo $d; ?>]" class="control-label">
+                    <label for="settings[gateway_<?php echo $d; ?>_currency]" class="control-label">
                         <?php echo trans('currency'); ?>
                     </label>
-                    <select name="settings[gateway_currency_<?php echo $d; ?>]"
+                    <select name="settings[gateway_<?php echo $d; ?>_currency]"
                             class="input-sm form-control simple-select">
                         <option value=""><?php echo trans('none'); ?></option>
                         <?php foreach ($gateway_currency_codes as $val => $key) { ?>
                             <option value="<?php echo $val; ?>"
-                                <?php check_select($this->mdl_settings->setting('gateway_currency_' . $d), $val); ?>>
+                                <?php check_select(get_setting('gateway_' . $d . '_currency'), $val); ?>>
                                 <?php echo $val; ?>
                             </option>
                         <?php } ?>
@@ -85,21 +103,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="settings[gateway_payment_method_<?php echo $d; ?>]"
+                    <label for="settings[gateway_<?php echo $d; ?>_payment_method]"
                            class="control-label">
                         <?php echo trans('online_payment_method'); ?>
                     </label>
-                    <select name="settings[gateway_payment_method_<?php echo $d; ?>]"
+                    <select name="settings[gateway_<?php echo $d; ?>_payment_method]"
                             class="input-sm form-control simple-select">
                         <option value=""><?php echo trans('none'); ?></option>
                         <?php foreach ($payment_methods as $payment_method) { ?>
                             <option value="<?php echo $payment_method->payment_method_id; ?>"
-                                <?php check_select($this->mdl_settings->setting('gateway_payment_method_' . $d), $payment_method->payment_method_id) ?>>
+                                <?php check_select(get_setting('gateway_' . $d . '_payment_method'), $payment_method->payment_method_id) ?>>
                                 <?php echo $payment_method->payment_method_name; ?>
                             </option>
                         <?php } ?>
                     </select>
                 </div>
+
             </div>
 
         </div>
