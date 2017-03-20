@@ -29,6 +29,11 @@ class Settings extends Admin_Controller
 
     public function index()
     {
+        // Get the payment gateway configurations
+        $this->config->load('payment_gateways');
+        $gateways = $this->config->item('payment_gateways');
+
+        // Save input if request is POSt
         if ($this->input->post('settings')) {
             $settings = $this->input->post('settings');
 
@@ -44,18 +49,22 @@ class Settings extends Admin_Controller
             $empty_values_allowed = $this->config->item('settings_empty_allowed');
 
             foreach ($settings as $key => $value) {
-                // Encrypt passwords but don't save empty passwords
-                if ($key == 'smtp_password' or strpos($key, 'gateway_password') === 0) {
-                    if ($value != '') {
-                        $this->mdl_settings->save($key, $this->encrypt->encode($value));
-                    }
+
+                if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
+                    // Skip field meta fields
+                    continue;
+                }
+
+                if (isset($settings[$key . '_field_is_password']) && $value != '') {
+                    // Encrypt passwords but don't save empty passwords
+                    $this->mdl_settings->save($key, trim($this->encrypt->encode($value)));
+                } elseif (isset($settings[$key . '_field_is_amount'])) {
+                    // Format amount inputs
+                    $value = is_numeric($value) ? $value : 0;
+                    $this->mdl_settings->save($key, standardize_amount($value));
                 } else {
-                    if ($key == 'default_hourly_rate') {
-                        $this->mdl_settings->save($key, standardize_amount($value));
-                    } else {
-                        if (in_array($key, $empty_values_allowed) || !empty($value)) {
-                            $this->mdl_settings->save($key, $value);
-                        }
+                    if (in_array($key, $empty_values_allowed) || !empty($value)) {
+                        $this->mdl_settings->save($key, $value);
                     }
                 }
             }
@@ -111,13 +120,29 @@ class Settings extends Admin_Controller
 
         $this->load->helper('country');
 
-        // Collect array of drivers allowed - just the defaults... minus dummy and other non-essentials
+        // Load Omnipay
         require_once(FCPATH . 'vendor/autoload.php');
-        $omnipay = new \Omnipay\Omnipay();
-        $this->config->load('payment_gateways');
 
-        $gateway_drivers = $omnipay->getFactory()->getSupportedGateways();
-        sort($gateway_drivers);
+//        echo '<pre>';
+//        foreach ($gateways as $d => $setting) {
+//            $g = \Omnipay\Omnipay::create($d);
+//            echo "'$d' => array(\n";
+//            foreach ($g->getDefaultParameters() as $s => $val) {
+//                if (is_string($s)) {
+//                    echo "    '$s' => array(\n";
+//                    if ($s == 'testMode' || $s == 'developerMode' ) {
+//                        echo "        'type' => 'checkbox',\n";
+//                    } else {
+//                        echo "        'type' => 'text',\n";
+//                    }
+//                    echo "        'label' => '" . ucwords(implode(' ', preg_split('/(?=[A-Z])/', $s))) . "',\n";
+//                    echo "    ),\n";
+//                }
+//            }
+//            echo "),\n";
+//        }
+//        echo '</pre>';
+//        exit;
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
@@ -149,7 +174,7 @@ class Settings extends Admin_Controller
                 'available_themes' => $available_themes,
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'gateway_drivers' => $gateway_drivers,
+                'gateway_drivers' => $gateways,
                 'gateway_currency_codes' => \Omnipay\Common\Currency::all(),
                 'current_version' => $current_version,
                 'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))

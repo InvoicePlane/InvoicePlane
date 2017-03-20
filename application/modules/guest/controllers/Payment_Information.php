@@ -48,18 +48,19 @@ class Payment_Information extends Guest_Controller
 
         // Get all payment gateways
         $this->load->model('mdl_settings');
-        $omnipay = new \Omnipay\Omnipay();
-        $gateway_drivers = $omnipay->getFactory()->getSupportedGateways();
+        $this->config->load('payment_gateways');
+        $gateways = $this->config->item('payment_gateways');
 
         $available_drivers = array();
-        foreach ($gateway_drivers as $driver) {
+        foreach ($gateways as $driver => $fields) {
 
             $d = strtolower($driver);
-            $setting = $this->mdl_settings->setting('gateway_' . $d);
-            $invoice_payment_method = $invoice->payment_method;
-            $driver_payment_method = $this->mdl_settings->setting('gateway_payment_method_' . $d);
+            $setting = get_setting('gateway_' . $d);
 
             if ($setting == 'on') {
+                $invoice_payment_method = $invoice->payment_method;
+                $driver_payment_method = get_setting('gateway_' . $d . '_payment_method');
+
                 if ($invoice_payment_method == 0 || $driver_payment_method == $invoice_payment_method) {
                     array_push($available_drivers, $driver);
                 }

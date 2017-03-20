@@ -29,9 +29,6 @@ class Payment_Handler extends Base_Controller
 
     /**
      * Process the payment for the given invoice
-     *
-     * @TODO Currently not working for websites with redirect like PayPal, needs implementation of the redirect method! Stripe is working without problems. - Kovah <mail@kovah.de>
-     * @TODO Is there a way to determine if the credit card is needed? - Kovah <mail@kovah.de>
      */
     public function make_payment()
     {
@@ -40,21 +37,13 @@ class Payment_Handler extends Base_Controller
 
         if ($invoice->num_rows() == 1) {
 
-            // Get the invoice data and load the encrypt library
+            // Get the invoice data
             $invoice = $invoice->row();
 
-            // Get and set the merchant driver
+            // Initialize the gateway
             $driver = $this->input->post('gateway');
-
-            require_once(FCPATH . 'vendor/autoload.php');
-            $gateway = \Omnipay\Omnipay::create($driver);
-
-            // Get the driver settings
             $d = strtolower($driver);
-            $driver_api_secret = $this->encrypt->decode($this->mdl_settings->setting('gateway_password_' . $d));
-            $driver_currency = $this->mdl_settings->setting('gateway_currency_' . $d);
-
-            $gateway->setApiKey($driver_api_secret);
+            $gateway = $this->initialize_gateway($driver);
 
             // Get the credit card data
             $cc_number = $this->input->post('creditcard_number');
@@ -81,6 +70,8 @@ class Payment_Handler extends Base_Controller
             }
 
             // Set up the api data
+            $driver_currency = $this->mdl_settings->setting('gateway_' . $d . '_currency');
+
             $request = array(
                 'amount' => $invoice->invoice_balance,
                 'currency' => $driver_currency,
@@ -89,7 +80,11 @@ class Payment_Handler extends Base_Controller
                     'invoice_number' => $invoice->invoice_number,
                     'invoice_guest_url' => $invoice->invoice_url_key
                 ),
+                'returnUrl' => site_url('guest/payment_handler/payment_return/' . $invoice->invoice_url_key . '/' . $driver),
+                'cancelUrl' => site_url('guest/payment_handler/payment_cancel/' . $invoice->invoice_url_key . '/' . $driver),
             );
+
+            $this->session->set_userdata($invoice->invoice_url_key . '_online_payment', $request);
 
             // Send the request
             $response = $gateway->purchase($request)->send();
@@ -127,7 +122,6 @@ class Payment_Handler extends Base_Controller
             } elseif ($response->isRedirect()) {
 
                 // Redirect to offsite payment gateway
-                //@TODO redirect is not handled at the moment - Kovah <mail@kovah.de>
                 $response->redirect();
 
             } else {
@@ -151,38 +145,28 @@ class Payment_Handler extends Base_Controller
         }
     }
 
-    /*
-     * 
-     * =======================================================================================
-     * The code below may not be needed anymore except for the payments with offiste redirect.
-     * =======================================================================================
-     *
-     */
-    public function payment_return($invoice_url_key)
+    public function payment_return($invoice_url_key, $driver)
     {
+        $d = strtolower($driver);
+
         // See if the response can be validated
-        if ($this->payment_validate($invoice_url_key)) {
+        if ($this->payment_validate($invoice_url_key, $driver)) {
             // Set the success flash message
             $this->session->set_flashdata('alert_success', trans('online_payment_payment_successful'));
 
-            // Attempt to get the invoice
-            $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get();
+            // Save the payment for the invoice
+            $this->load->model('payments/mdl_payments');
 
-            if ($invoice->num_rows() == 1) {
-                $invoice = $invoice->row();
+            $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get()->row();
 
-                // Create the payment record
-                $this->load->model('payments/mdl_payments');
+            $db_array = array(
+                'invoice_id' => $invoice->invoice_id,
+                'payment_date' => date('Y-m-d'),
+                'payment_amount' => $invoice->invoice_balance,
+                'payment_method_id' => (get_setting('gateway_' . $d . '_payment_method')) ? get_setting('gateway_' . $d . '_payment_method') : 0
+            );
 
-                $db_array = array(
-                    'invoice_id' => $invoice->invoice_id,
-                    'payment_date' => date('Y-m-d'),
-                    'payment_amount' => $invoice->invoice_balance,
-                    'payment_method_id' => (get_setting('online_payment_method')) ? get_setting('online_payment_method') : 0
-                );
-
-                $this->mdl_payments->save(null, $db_array);
-            }
+            $this->mdl_payments->save(null, $db_array);
         } else {
             // Set the failure flash message
             $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
@@ -192,10 +176,10 @@ class Payment_Handler extends Base_Controller
         redirect('guest/view/invoice/' . $invoice_url_key);
     }
 
-    public function payment_cancel($invoice_url_key)
+    public function payment_cancel($invoice_url_key, $driver)
     {
         // Validate the response
-        $this->payment_validate($invoice_url_key);
+        $this->payment_validate($invoice_url_key, $driver, true);
 
         // Set the cancel flash message
         $this->session->set_flashdata('alert_info', trans('online_payment_payment_cancelled'));
@@ -204,7 +188,7 @@ class Payment_Handler extends Base_Controller
         redirect('guest/view/invoice/' . $invoice_url_key);
     }
 
-    private function payment_validate($invoice_url_key)
+    private function payment_validate($invoice_url_key, $driver, $canceled = false)
     {
         // Attempt to get the invoice
         $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get();
@@ -212,48 +196,78 @@ class Payment_Handler extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
-            // Load the merchant driver
-            //$this->merchant->load(get_setting('merchant_driver'));
+            if (!$canceled) {
+                $gateway = $this->initialize_gateway($driver);
 
-            // Pass the required settings
-            $settings = array(
-                'username' => get_setting('merchant_username'),
-                'password' => $this->encrypt->decode(get_setting('merchant_password')),
-                'signature' => get_setting('merchant_signature'),
-                'test_mode' => (get_setting('merchant_test_mode')) ? true : false
-            );
+                // Load previous settings
+                $params = $this->session->userdata($invoice->invoice_url_key . '_online_payment');
 
-            // Init the driver
-            //$this->merchant->initialize($settings);
+                if (isset($_GET['PayerID'])) {
+                    $params['transactionReference'] = $_GET['PayerID'];
+                }
 
-            // Create the parameters
-            $params = array(
-                'description' => trans('invoice') . ' ' . $invoice->invoice_number,
-                'amount' => $invoice->invoice_balance,
-                'currency' => get_setting('merchant_currency_code')
-            );
+                $response = $gateway->completePurchase($params)->send();
 
-            // Get the response
-            //$response = $this->merchant->purchase_return($params);
-
-            // Determine if it was successful or not
-            //$merchant_response = ($response->success()) ? 1 : 0;
+                $message = $response->getMessage() ? $response->getMessage() : 'No details provided';
+            } else {
+                $response = '';
+                $message = 'Customer cancelled the purchase process';
+            }
 
             // Create the record for ip_merchant_responses
             $db_array = array(
                 'invoice_id' => $invoice->invoice_id,
                 'merchant_response_date' => date('Y-m-d'),
-                'merchant_response_driver' => get_setting('merchant_driver'),
-                //'merchant_response' => $merchant_response,
-                //'merchant_response_reference' => ($response->reference()) ? $response->reference() : ''
+                'merchant_response_driver' => $driver,
+                'merchant_response' => $message,
+                'merchant_response_reference' => $canceled ? '' : $response->getTransactionReference(),
             );
 
             $this->db->insert('ip_merchant_responses', $db_array);
 
-            //return $merchant_response;
+            return true;
         }
 
-        return 0;
+        return false;
+    }
+
+    private function initialize_gateway($driver)
+    {
+        $d = strtolower($driver);
+        $settings = get_gateway_settings($driver);
+
+        // Get the payment gateway fields
+        $this->config->load('payment_gateways');
+        $gateway_settings = $this->config->item('payment_gateways');
+        $gateway_settings = $gateway_settings[$driver];
+
+        $gateway_init = array();
+        foreach ($settings as $setting) {
+            // Sanitize the field key
+            $key = str_replace('gateway_' . $d . '_', '', $setting->setting_key);
+            $key = str_replace('gateway_' . $d, '', $key);
+
+            // skip empty key
+            if (!$key) continue;
+
+            // Decode password fields and checkboxes
+            if (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'password') {
+                $value = $this->encrypt->decode($setting->setting_value);
+            } elseif (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'checkbox') {
+                $value = $setting->setting_value == 'on' ? true : false;
+            } else {
+                $value = $setting->setting_value;
+            }
+
+            $gateway_init[$key] = $value;
+        }
+
+        // Load Omnipay and initialize the gateway
+        require_once(FCPATH . 'vendor/autoload.php');
+        $gateway = \Omnipay\Omnipay::create($driver);
+        $gateway->initialize($gateway_init);
+
+        return $gateway;
     }
 
 }
