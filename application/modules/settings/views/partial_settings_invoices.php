@@ -126,7 +126,7 @@
                     <?php echo trans('invoice_logo'); ?>
                 </label>
                 <?php if (get_setting('invoice_logo')) { ?>
-                    <img src="<?php echo base_url(); ?>uploads/<?php echo get_setting('invoice_logo'); ?>">
+                    <img class="personal_logo" src="<?php echo base_url(); ?>uploads/<?php echo get_setting('invoice_logo'); ?>">
                     <br>
                     <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
                 <?php } ?>
