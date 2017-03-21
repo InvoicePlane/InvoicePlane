@@ -19,29 +19,23 @@ class Mdl_Client_Custom extends Validator
     public $primary_key = 'ip_client_custom.client_custom_id';
 
     public static $positions = array(
-      'custom_fields',
-      'address',
-      'contact_information',
-      'personal_information',
-      'tax_information'
+        'custom_fields',
+        'address',
+        'contact_information',
+        'personal_information',
+        'tax_information'
     );
-
-    /**
-     * @param $client_id
-     * @param $db_array
-     * @return bool|string
-     */
 
     public function default_select()
     {
-       $this->db->select(
-        "ip_client_custom.client_custom_fieldvalue as cf_value,
+        $this->db->select(
+            "ip_client_custom.client_custom_fieldvalue as cf_value,
          ip_custom_fields.custom_field_type as cf_type,
          ip_custom_fields.custom_field_label as cf_label,
          ip_custom_fields.custom_field_id as cf_fid,
          ip_custom_fields.custom_field_location as cf_location,
          ip_client_custom.client_custom_id as cc_id"
-       );
+        );
     }
 
     public function default_order_by()
@@ -53,29 +47,41 @@ class Mdl_Client_Custom extends Validator
     {
         $this->db->join('ip_custom_fields', 'ip_client_custom.client_custom_fieldid = ip_custom_fields.custom_field_id', 'inner');
     }
+
+    /**
+     * @param integer $client_id
+     * @param array $db_array
+     * @return bool|string
+     */
     public function save_custom($client_id, $db_array)
     {
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $fData = isset($this->_formdata) ? $this->_formdata : null;
+            $form_data = isset($this->_formdata) ? $this->_formdata : null;
             $client_custom_id = null;
             $db_array['client_id'] = $client_id;
-            foreach($fData as $key=>$value){
-              $db_array = array(
-                'client_id' => $client_id,
-                'client_custom_fieldid' => $key,
-                'client_custom_fieldvalue' => $value
-              );
 
-              $client_custom = $this->where('client_id', $client_id)->where('client_custom_fieldid', $key)->get();
-
-              if ($client_custom->num_rows()) {
-                  $client_custom_id = $client_custom->row()->cc_id;
-              }
-
-              parent::save($client_custom_id, $db_array);
+            if (is_null($form_data)) {
+                return false;
             }
+
+            foreach ($form_data as $key => $value) {
+                $db_array = array(
+                    'client_id' => $client_id,
+                    'client_custom_fieldid' => $key,
+                    'client_custom_fieldvalue' => $value
+                );
+
+                $client_custom = $this->where('client_id', $client_id)->where('client_custom_fieldid', $key)->get();
+
+                if ($client_custom->num_rows()) {
+                    $client_custom_id = $client_custom->row()->cc_id;
+                }
+
+                parent::save($client_custom_id, $db_array);
+            }
+
             return true;
         }
 
@@ -101,7 +107,7 @@ class Mdl_Client_Custom extends Validator
                             $type
                         );
                         $formatted = call_user_func("format_" . $nicename, $value->cf_value);
-                        $this->set_form_value('cf_'.$value->cf_fid, $formatted);
+                        $this->set_form_value('cf_' . $value->cf_fid, $formatted);
                     }
                 }
             }
@@ -111,7 +117,7 @@ class Mdl_Client_Custom extends Validator
     }
 
     /**
-     * @param $client_id
+     * @param integer $client_id
      * @return $this
      */
     public function get_by_client($client_id)
@@ -120,7 +126,12 @@ class Mdl_Client_Custom extends Validator
         return $this->get();
     }
 
-    public function get_by_clid($client_id){
+    /**
+     * @param integer $client_id
+     * @return mixed
+     */
+    public function get_by_clid($client_id)
+    {
         $result = $this->where('ip_client_custom.client_id', $client_id)->get()->result();
         return $result;
     }
