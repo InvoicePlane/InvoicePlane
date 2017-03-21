@@ -62,6 +62,7 @@ function set_language($language)
     $CI->lang->load('ip', $language);
     $CI->lang->load('form_validation', $language);
     $CI->lang->load('custom', $language);
+    $CI->lang->load('gateway', $language);
 }
 
 /**
@@ -77,9 +78,11 @@ function reset_language()
     $CI->lang->language = array();
 
     // Reset to the default language
-    $CI->lang->load('ip', $CI->mdl_settings->setting('default_language'));
-    $CI->lang->load('form_validation', $CI->mdl_settings->setting('default_language'));
-    $CI->lang->load('custom', $CI->mdl_settings->setting('default_language'));
+    $default_lang = $CI->mdl_settings->setting('default_language');
+    $CI->lang->load('ip', $default_lang);
+    $CI->lang->load('form_validation', $default_lang);
+    $CI->lang->load('custom', $default_lang);
+    $CI->lang->load('gateway', $default_lang);
 }
 
 /**

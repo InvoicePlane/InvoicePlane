@@ -23,6 +23,8 @@
 
 <div id="content" class="table-content">
 
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <div id="filter_results">
         <div class="table-responsive">
             <table class="table table-striped">
@@ -65,22 +67,23 @@
                         <td>
                             <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>"
                                class="btn btn-default btn-sm">
-                                <i class="glyphicon glyphicon-eye-open"></i>
+                                <i class="fa fa-eye"></i>
                                 <?php echo trans('view'); ?>
                             </a>
 
                             <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                class="btn btn-default btn-sm">
-                                <i class="icon ion-printer"></i>
+                                <i class="fa fa-print"></i>
                                 <?php echo trans('pdf'); ?>
                             </a>
 
-                            <?php if (get_setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
-                            <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
-                               class="btn btn-success btn-sm">
-                                <i class="glyphicon glyphicon-ok"></i>
-                                <?php echo trans('pay_now'); ?>
-                                </a><?php } ?>
+                            <?php if ($invoice->invoice_status_id != 4) { ?>
+                                <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
+                                   class="btn btn-success btn-sm">
+                                    <i class="fa fa-credit-card"></i>
+                                    <?php echo trans('pay_now'); ?>
+                                </a>
+                            <?php } ?>
                         </td>
                     </tr>
                 <?php } ?>
