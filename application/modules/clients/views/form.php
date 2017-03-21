@@ -148,8 +148,92 @@ $cv = $this->controller->view_data["custom_values"];
                             </select>
                         </div>
                     </div>
+
+                    <!-- Custom Fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 1){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
+
                 </fieldset>
 
+                <fieldset>
+
+                    <legend><?php echo trans('personal_information'); ?></legend>
+
+                    <div class="form-group">
+                        <label for="client_gender"><?php echo trans('gender'); ?>: </label>
+
+                        <div class="controls">
+                            <select name="client_gender" id="client_gender" class="form-control simple-select">
+                                <?php
+                                $genders = array(
+                                    trans('gender_male'),
+                                    trans('gender_female'),
+                                    trans('gender_other'),
+                                );
+                                foreach ($genders as $key => $val) {
+                                    echo '<option value="' . $key . '"' . ($key == $this->mdl_clients->form_value('client_gender') ? ' selected' : '') . '>' . $val . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('birthdate'); ?>: </label>
+                        <?php
+                        $bdate = $this->mdl_clients->form_value('client_birthdate');
+                        if ($bdate != "") {
+                            $bdate = date_from_mysql($bdate);
+                        }
+
+                        ?>
+                        <div class="controls">
+                            <input type="text" name="client_birthdate" id="client_birthdate"
+                                   class="form-control datepicker"
+                                   value="<?php echo htmlspecialchars($bdate); ?>">
+                        </div>
+                    </div>
+
+                    <?php if($this->mdl_settings->setting('sumex') == '1'): ?>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_ssn'); ?>: </label>
+                        <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_avs" id="client_avs" class="form-control"
+                                   value="<?php echo htmlspecialchars(format_avs($avs)); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_insurednumber'); ?>: </label>
+                        <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_insurednumber" id="client_insurednumber"
+                                   class="form-control"
+                                   value="<?php echo htmlentities($insuredNumber); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><?php echo trans('sumex_veka'); ?>: </label>
+                        <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
+                        <div class="controls">
+                            <input type="text" name="client_veka" id="client_veka" class="form-control"
+                                   value="<?php echo htmlentities($veka); ?>">
+                        </div>
+                    </div>
+
+                    <?php endif; ?>
+
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 3){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
+                </fieldset>
             </div>
             <div class="col-xs-12 col-sm-6">
 
@@ -201,6 +285,11 @@ $cv = $this->controller->view_data["custom_values"];
                         </div>
                     </div>
 
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 2){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
                 </fieldset>
 
             </div>
@@ -237,7 +326,7 @@ $cv = $this->controller->view_data["custom_values"];
                         <label><?php echo trans('birthdate'); ?>: </label>
                         <?php
                         $bdate = $this->mdl_clients->form_value('client_birthdate');
-                        if ($bdate != "0000-00-00") {
+                        if ($bdate != "0000-00-00" && $bdate) {
                             $bdate = date_from_mysql($bdate);
                         }
                         ?>
@@ -287,68 +376,44 @@ $cv = $this->controller->view_data["custom_values"];
                         </div>
                     </div>
 
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 4){ continue; } ?>
+                        <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                    <?php endforeach; ?>
                 </fieldset>
 
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-xs-12 col-sm-6">
-
-                <fieldset>
-                    <legend><?php echo trans('invoice_sumex'); ?></legend>
-
-                    <div class="form-group">
-                        <label><?php echo trans('sumex_insurednumber'); ?>: </label>
-                        <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
-                        <div class="controls">
-                            <input type="text" name="client_insurednumber" id="client_insurednumber"
-                                   class="form-control"
-                                   value="<?php echo htmlentities($insuredNumber); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label><?php echo trans('sumex_veka'); ?>: </label>
-                        <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
-                        <div class="controls">
-                            <input type="text" name="client_veka" id="client_veka" class="form-control"
-                                   value="<?php echo htmlentities($veka); ?>">
-                        </div>
-                    </div>
-
-                </fieldset>
-
-            </div>
-        </div>
-
         <?php if ($custom_fields): ?>
-            <fieldset>
-                <legend><?php echo trans('custom_fields'); ?></legend>
+            <div class="row">
+                <div class="col-xs-12">
+                    <fieldset>
+                        <legend><?php echo trans('custom_fields'); ?></legend>
+                        <div class="col-xs-6">
+                            <?php $i = 0; ?>
+                            <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php if($custom_field->custom_field_location != 0){ continue; } ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 != 0): ?>
+                                    <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
 
-                <div class="row">
-                    <div class="col-xs-6">
-                        <?php $i = 0; ?>
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php $i++; ?>
-                            <?php if ($i % 2 != 0): ?>
-                                <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                        <div class="col-xs-6">
+                            <?php $i = 0; ?>
+                            <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php if($custom_field->custom_field_location != 0){ continue; } ?>
+                                <?php $i++; ?>
+                                <?php if ($i % 2 == 0): ?>
+                                    <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                      </fieldset>
                     </div>
-
-                    <div class="col-xs-6">
-                        <?php $i = 0; ?>
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php $i++; ?>
-                            <?php if ($i % 2 == 0): ?>
-                                <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-            </fieldset>
+              </div>
         <?php endif; ?>
     </div>
 </form>

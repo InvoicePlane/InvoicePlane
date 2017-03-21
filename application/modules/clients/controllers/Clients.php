@@ -123,13 +123,29 @@ class Clients extends Admin_Controller
 
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
+        $this->load->model('custom_fields/mdl_client_custom');
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[$custom_field->custom_field_column] = $values;
+                $custom_values[$custom_field->custom_field_id] = $values;
+            }
+        }
+
+        $fields = $this->mdl_client_custom->get_by_clid($id);
+
+        foreach($custom_fields as $cfield){
+            foreach($fields as $fvalue){
+              if($fvalue->cf_fid == $cfield->custom_field_id){
+                // TODO: Hackish, may need a better optimization
+                $this->mdl_clients->set_form_value(
+                  'custom[' . $cfield->custom_field_id . ']',
+                  $fvalue->cf_value
+                );
+                break;
+              }
             }
         }
 
@@ -166,7 +182,7 @@ class Clients extends Admin_Controller
         $this->load->helper('client');
 
         $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
-        $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
+        $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
 
         $this->mdl_client_custom->prep_form($client_id);
 

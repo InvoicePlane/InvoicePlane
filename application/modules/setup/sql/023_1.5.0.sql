@@ -34,7 +34,7 @@ CREATE TABLE `ip_custom_values` (
   DEFAULT CHARSET = utf8;
 
 ALTER TABLE `ip_custom_fields`
-  ADD `custom_field_type` VARCHAR(255) NOT NULL
+  ADD `custom_field_type` VARCHAR(255) DEFAULT 'TEXT' NOT NULL
   AFTER `custom_field_label`;
 
 # Sumex changes
@@ -143,3 +143,13 @@ VALUES ('projects_enabled', '1');
 ALTER TABLE `ip_tasks`
   ADD COLUMN `tax_rate_id` INT(11) NOT NULL
   AFTER `task_status`;
+
+# Switch to row based custom fields (instead of columns)
+# (See Mdl_setup for the migration script)
+
+# Custom Fields
+ALTER TABLE ip_custom_fields MODIFY custom_field_table VARCHAR(50);
+ALTER TABLE ip_custom_fields MODIFY custom_field_label VARCHAR(50);
+ALTER TABLE ip_custom_fields ADD custom_field_location INT(11) DEFAULT 0;
+ALTER TABLE ip_custom_fields ADD custom_field_order INT(11) DEFAULT 999;
+ALTER TABLE ip_custom_fields ADD CONSTRAINT UNIQUE(custom_field_table, custom_field_label);
