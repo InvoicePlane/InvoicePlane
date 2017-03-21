@@ -33,17 +33,29 @@
     });
 </script>
 
+<?php
+  $locations = array();
+  foreach ($custom_fields as $custom_field){
+    if(array_key_exists($custom_field->cf_location,$locations)){
+      $locations[$custom_field->cf_location] += 1;
+    }
+    else{
+      $locations[$custom_field->cf_location] = 1;
+    }
+  }
+?>
+
 <div id="headerbar">
     <h1 class="headerbar-title"><?php echo format_client($client); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
             <a href="#" class="btn btn-default client-create-quote"
-               data-client-name="<?php echo $client->client_name; ?>">
+               data-client-id="<?php echo $client->client_id; ?>">
                 <i class="fa fa-file"></i> <?php echo trans('create_quote'); ?>
             </a>
             <a href="#" class="btn btn-default client-create-invoice"
-               data-client-name="<?php echo $client->client_name; ?>">
+               data-client-id="<?php echo $client->client_id; ?>">
                 <i class="fa fa-file-text"></i> <?php echo trans('create_invoice'); ?></a>
             <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
                class="btn btn-default">
@@ -164,6 +176,20 @@
                                 <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
                             </tr>
                         <?php endif; ?>
+
+                        <?php foreach ($custom_fields as $custom_field) : ?>
+                            <?php if($custom_field->cf_location != 2){
+                              continue;
+                            } ?>
+                            <tr>
+                                <?php
+                                $column = $custom_field->cf_label;
+                                $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
+                                ?>
+                                <th><?php echo $custom_field->cf_label ?></th>
+                                <td><?php echo nl2br($value); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
                     </table>
                 </div>
                 <div class="col-xs-12 col-md-6">
@@ -182,6 +208,20 @@
                                 <td><?php echo $client->client_tax_code; ?></td>
                             </tr>
                         <?php endif; ?>
+
+                        <?php foreach ($custom_fields as $custom_field) : ?>
+                            <?php if($custom_field->cf_location != 4){
+                              continue;
+                            } ?>
+                            <tr>
+                                <?php
+                                $column = $custom_field->cf_label;
+                                $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
+                                ?>
+                                <th><?php echo $custom_field->cf_label ?></th>
+                                <td><?php echo nl2br($value); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
                     </table>
                 </div>
                 <?php if ($client->client_surname != ""): //Client is not a company ?>
@@ -197,6 +237,7 @@
                                 <th><?php echo trans('gender'); ?></th>
                                 <td><?php echo format_gender($client->client_gender) ?></td>
                             </tr>
+                            <?php if($this->mdl_settings->setting('sumex') == '1'): ?>
                             <tr>
                                 <th><?php echo trans('sumex_ssn'); ?></th>
                                 <td><?php echo format_avs($client->client_avs) ?></td>
@@ -211,9 +252,24 @@
                                 <th><?php echo trans('sumex_veka'); ?></th>
                                 <td><?php echo htmlentities($client->client_veka) ?></td>
                             </tr>
-                        </table>
-                    </div>
-                <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php foreach ($custom_fields as $custom_field) : ?>
+                                <?php if($custom_field->cf_location != 3){
+                                  continue;
+                                } ?>
+                                <tr>
+                                    <?php
+                                    $column = $custom_field->cf_label;
+                                    $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
+                                    ?>
+                                    <th><?php echo $custom_field->cf_label ?></th>
+                                    <td><?php echo nl2br($value); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                    </table>
+                </div>
+              <?php endif; ?>
             </div>
             <?php if ($custom_fields) : ?>
                 <div class="row">
@@ -222,12 +278,15 @@
                         <br>
                         <table class="table table-condensed table-striped">
                             <?php foreach ($custom_fields as $custom_field) : ?>
+                                <?php if($custom_field->cf_location != 0){
+                                  continue;
+                                } ?>
                                 <tr>
                                     <?php
-                                    $column = $custom_field->custom_field_column;
-                                    $value = $this->mdl_client_custom->form_value($column);
+                                    $column = $custom_field->cf_label;
+                                    $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
                                     ?>
-                                    <th><?php echo $custom_field->custom_field_label ?></th>
+                                    <th><?php echo $custom_field->cf_label ?></th>
                                     <td><?php echo nl2br($value); ?></td>
                                 </tr>
                             <?php endforeach; ?>

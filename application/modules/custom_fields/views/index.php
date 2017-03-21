@@ -23,8 +23,8 @@
         <tr>
             <th><?php echo trans('table'); ?></th>
             <th><?php echo trans('label'); ?></th>
-            <th><?php echo trans('column'); ?></th>
             <th><?php echo trans('type'); ?></th>
+            <th><?php echo trans('order'); ?></th>
             <th><?php echo trans('options'); ?></th>
         </tr>
         </thead>
@@ -35,8 +35,8 @@
             <tr>
                 <td><?php echo lang($custom_tables[$custom_field->custom_field_table]); ?></td>
                 <td><?php echo $custom_field->custom_field_label; ?></td>
-                <td><?php echo $custom_field->custom_field_column; ?></td>
                 <td><?php echo trans($alpha); ?></td>
+                <td><?php echo $custom_field->custom_field_order; ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">

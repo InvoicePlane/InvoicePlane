@@ -33,12 +33,7 @@ class Mdl_Users extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_users.*', false);
-    }
-
-    public function default_join()
-    {
-        $this->db->join('ip_user_custom', 'ip_user_custom.user_id = ip_users.user_id', 'left');
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_users.*', false);
     }
 
     public function default_order_by()

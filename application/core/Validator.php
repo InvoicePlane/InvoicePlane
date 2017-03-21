@@ -77,14 +77,14 @@ class Validator extends MY_Model
      * @param $key
      * @return bool|null
      */
-    public function validate_multiplechoice($value, $key)
+    public function validate_multiplechoice($value, $id)
     {
         if ($value == "") {
             return null;
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
-        $this->custom_value->where('custom_field_column', $key);
+        $this->custom_value->where('custom_field_id', $id);
         $dbvals = $this->custom_value->where_in('custom_values_id', $value)->get();
 
         if ($dbvals->num_rows() == sizeof($value)) {
@@ -152,25 +152,24 @@ class Validator extends MY_Model
         }
 
         foreach ($db_array as $key => $value) {
-            $model = $this->mdl_custom_fields->where('custom_field_column', $key)->get();
+            $model = $this->mdl_custom_fields->where('custom_field_id', $key)->get();
             if ($model->num_rows()) {
                 $model = $model->row();
                 if (@$model->custom_field_required == "1") {
                     if ($value == "") {
                         $errors[] = array(
-                            "field" => $model->custom_field_column,
+                            "field" => $model->custom_field_id,
                             "label" => $model->custom_field_label,
                             "error_msg" => "missing field required"
                         );
                         continue;
                     }
                 }
-
                 $result = $this->validate_type($model->custom_field_type, $value, $key);
 
                 if ($result === false) {
                     $errors[] = array(
-                        "field" => $model->custom_field_column,
+                        "field" => $model->custom_field_id,
                         "label" => $model->custom_field_label,
                         "error_msg" => "invalid input"
                     );
@@ -200,14 +199,13 @@ class Validator extends MY_Model
         );
 
         $validation_rule = 'validate_' . $nicename;
-
         return $this->{$validation_rule}($value, $key);
     }
 
     public function fixinput()
     {
         foreach ($this->_formdata as $key => $value) {
-            $model = $this->mdl_custom_fields->where('custom_field_column', $key)->get();
+            $model = $this->mdl_custom_fields->where('custom_field_id', $key)->get();
 
             if ($model->num_rows()) {
                 $model = $model->row();

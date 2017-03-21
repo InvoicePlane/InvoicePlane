@@ -18,6 +18,26 @@ class Mdl_Quote_Custom extends Validator
     public $table = 'ip_quote_custom';
     public $primary_key = 'ip_quote_custom.quote_custom_id';
 
+    public static $positions = array(
+      'custom_fields',
+      'properties'
+    );
+
+    public function default_select()
+    {
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_quote_custom.*, ip_custom_fields.*', false);
+    }
+
+    public function default_join(){
+        $this->db->join('ip_custom_fields', 'ip_quote_custom.quote_custom_fieldid = ip_custom_fields.custom_field_id');
+    }
+
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
+
+
     /**
      * @param $quote_id
      * @param $db_array
@@ -28,23 +48,34 @@ class Mdl_Quote_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $db_array = $this->_formdata;
+            $fData = $this->_formdata;
             $quote_custom_id = null;
 
-            $db_array['quote_id'] = $quote_id;
+            foreach($fData as $key=>$value){
+              $db_array = array(
+                'quote_id' => $quote_id,
+                'quote_custom_fieldid' => $key,
+                'quote_custom_fieldvalue' => $value
+              );
 
-            $quote_custom = $this->where('quote_id', $quote_id)->get();
+              $quote_custom = $this->where('quote_id', $quote_id)->where('quote_custom_fieldid', $key)->get();
 
-            if ($quote_custom->num_rows()) {
-                $quote_custom_id = $quote_custom->row()->quote_custom_id;
+              if ($quote_custom->num_rows()) {
+                  $quote_custom_id = $quote_custom->row()->quote_custom_id;
+              }
+
+              parent::save($quote_custom_id, $db_array);
             }
-
-            parent::save($quote_custom_id, $db_array);
 
             return true;
         }
 
         return $result;
+    }
+
+    public function by_id($quote_id){
+        $this->db->where('ip_quote_custom.quote_id', $quote_id);
+        return $this;
     }
 
 }

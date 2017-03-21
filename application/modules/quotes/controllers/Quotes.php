@@ -92,7 +92,9 @@ class Quotes extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_quote_custom');
-        $this->load->library('encrypt');
+
+        $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
+        $this->db->reset_query();
 
         $quote_custom = $this->mdl_quote_custom->where('quote_id', $quote_id)->get();
 
@@ -118,7 +120,20 @@ class Quotes extends Admin_Controller
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[$custom_field->custom_field_column] = $values;
+                $custom_values[$custom_field->custom_field_id] = $values;
+            }
+        }
+
+        foreach($custom_fields as $cfield){
+            foreach($fields as $fvalue){
+              if($fvalue->quote_custom_fieldid == $cfield->custom_field_id){
+                // TODO: Hackish, may need a better optimization
+                $this->mdl_quotes->set_form_value(
+                  'custom[' . $cfield->custom_field_id . ']',
+                  $fvalue->quote_custom_fieldvalue
+                );
+                break;
+              }
             }
         }
 

@@ -1,3 +1,7 @@
+<?php
+  $cv = $this->controller->view_data["custom_values"];
+?>
+
 <script>
     function getIcon(fullname) {
         var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
@@ -139,10 +143,6 @@
             window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
         });
 
-        $('#btn_sumex').click(function () {
-            window.open('<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice_id); ?>', '_blank');
-        });
-
         <?php if ($invoice->is_read_only != 1): ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
@@ -239,14 +239,6 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php echo trans('download_pdf'); ?>
                     </a>
                 </li>
-                <?php if (get_setting('sumex')) : ?>
-                    <li>
-                        <a href="#" id="btn_sumex" data-invoice-id="<?php echo $invoice_id; ?>">
-                            <i class="fa fa-user-md fa-margin"></i>
-                            <?php echo trans('generate_sumex'); ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
@@ -405,6 +397,12 @@ if ($this->config->item('disable_read_only') == true) {
                                     </div>
                                 </div>
 
+                                <!-- Custom fields -->
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if($custom_field->custom_field_location != 1){ continue; } ?>
+                                    <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                <?php endforeach; ?>
+
                             </div>
 
                             <div class="col-xs-12 col-sm-6">
@@ -545,7 +543,6 @@ if ($this->config->item('disable_read_only') == true) {
             </div>
 
             <?php if ($custom_fields): ?>
-                <?php $cv = $this->controller->view_data["custom_values"]; ?>
                 <div class="row">
                     <div class="col-xs-12">
                         <fieldset>
@@ -553,6 +550,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-6">
                                 <?php $i = 0; ?>
                                 <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if($custom_field->custom_field_location != 0) { continue; } ?>
                                     <?php $i++; ?>
                                     <?php if ($i % 2 != 0): ?>
                                         <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
@@ -563,6 +561,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-6">
                                 <?php $i = 0; ?>
                                 <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if($custom_field->custom_field_location != 0) { continue; } ?>
                                     <?php $i++; ?>
                                     <?php if ($i % 2 == 0): ?>
                                         <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>

@@ -132,10 +132,12 @@ class Invoices extends Admin_Controller
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 
-        $this->load->model('custom_fields/mdl_invoice_custom');
         $this->load->model('custom_values/mdl_custom_values');
+        $this->load->model('custom_fields/mdl_invoice_custom');
 
-        $invoice_custom = $this->mdl_invoice_custom->where('invoice_id', $invoice_id)->get();
+        $this->db->reset_query();
+
+        /*$invoice_custom = $this->mdl_invoice_custom->where('invoice_id', $invoice_id)->get();
 
         if ($invoice_custom->num_rows()) {
             $invoice_custom = $invoice_custom->row();
@@ -145,8 +147,9 @@ class Invoices extends Admin_Controller
             foreach ($invoice_custom as $key => $val) {
                 $this->mdl_invoices->set_form_value('custom[' . $key . ']', $val);
             }
-        }
+        }*/
 
+        $fields = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
 
@@ -159,9 +162,24 @@ class Invoices extends Admin_Controller
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[$custom_field->custom_field_column] = $values;
+                $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
+
+
+        foreach($custom_fields as $cfield){
+            foreach($fields as $fvalue){
+              if($fvalue->invoice_custom_fieldid == $cfield->custom_field_id){
+                // TODO: Hackish, may need a better optimization
+                $this->mdl_invoices->set_form_value(
+                  'custom[' . $cfield->custom_field_id . ']',
+                  $fvalue->invoice_custom_fieldvalue
+                );
+                break;
+              }
+            }
+        }
+
 
         $this->layout->set(
             array(

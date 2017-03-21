@@ -1,3 +1,6 @@
+<?php
+  $cv = $this->controller->view_data["custom_values"];
+?>
 <script>
     $(function () {
         show_fields();
@@ -246,6 +249,21 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 2){ continue; } ?>
+                        <?php
+                          print_field(
+                            $this->mdl_users,
+                            $custom_field,
+                            $cv,
+                            "col-xs-12 col-sm-3 text-right text-left-xs",
+                            "col-xs-12 col-sm-6",
+                            'control-label'
+                          );
+                        ?>
+                    <?php endforeach; ?>
                 </fieldset>
 
                 <fieldset>
@@ -300,7 +318,24 @@
                                    value="<?php echo $this->mdl_users->form_value('user_subscribernumber'); ?>">
                         </div>
                     </div>
+
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 3){ continue; } ?>
+                        <?php
+                          print_field(
+                            $this->mdl_users,
+                            $custom_field,
+                            $cv,
+                            "col-xs-12 col-sm-3 text-right text-left-xs",
+                            "col-xs-12 col-sm-6",
+                            'control-label'
+                          );
+                        ?>
+                    <?php endforeach; ?>
                 </fieldset>
+
+                <?php if($this->mdl_settings->setting('sumex') == '1'): ?>
 
                 <fieldset>
 
@@ -331,6 +366,8 @@
                     </div>
 
                 </fieldset>
+
+              <?php endif; ?>
 
                 <fieldset>
 
@@ -384,8 +421,23 @@
                         </div>
                     </div>
 
-                </fieldset>
+                    <!-- Custom fields -->
+                    <?php foreach ($custom_fields as $custom_field): ?>
+                        <?php if($custom_field->custom_field_location != 4){ continue; } ?>
+                        <?php
+                          print_field(
+                            $this->mdl_users,
+                            $custom_field,
+                            $cv,
+                            "col-xs-12 col-sm-3 text-right text-left-xs",
+                            "col-xs-12 col-sm-6",
+                            'control-label'
+                          );
+                        ?>
+                    <?php endforeach; ?>
 
+                </fieldset>
+                <?php if($custom_fields) : ?>
                 <fieldset>
 
                     <legend><?php echo trans('custom_fields'); ?></legend>
@@ -393,16 +445,21 @@
                     <?php
                     $cv = $this->controller->view_data["custom_values"];
                     foreach ($custom_fields as $custom_field) {
+                        if($custom_field->custom_field_location != 0){
+                          continue;
+                        }
                         print_field(
-                            $this->mdl_users,
-                            $custom_field,
-                            $cv,
-                            "col-xs-12 col-sm-3 text-right text-left-xs",
-                            "col-xs-12 col-sm-6"
+                          $this->mdl_users,
+                          $custom_field,
+                          $cv,
+                          "col-xs-12 col-sm-3 text-right text-left-xs",
+                          "col-xs-12 col-sm-6",
+                          'control-label'
                         );
                     } ?>
 
                 </fieldset>
+              <?php endif; ?>
 
             </div>
 

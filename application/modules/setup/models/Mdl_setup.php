@@ -233,4 +233,97 @@ class Mdl_Setup extends CI_Model
         }
     }
 
+    public function upgrade_023_1_5_0(){
+      $res = $this->db->query('SELECT * FROM ip_custom_fields');
+      $dropColumns = array();
+      $tables = array(
+        'client',
+        'invoice',
+        'quote',
+        'payment',
+        'user'
+      );
+
+      if($res->num_rows()){
+        foreach($res->result() as $row){
+          $dropColumns[] = array(
+            $row->custom_field_id,
+            $row->custom_field_column,
+            $row->custom_field_table
+          );
+        }
+      }
+
+      // Create tables
+
+      $this->db->query('CREATE TABLE `ip_client_custom_new`
+      (
+        `client_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+        `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
+        `client_custom_fieldvalue` VARCHAR(65535) NULL ,
+        UNIQUE (client_id, client_custom_fieldid)
+      );');
+
+      $this->db->query('CREATE TABLE `ip_invoice_custom_new`
+      (
+        `invoice_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+        `invoice_id` INT NOT NULL, `invoice_custom_fieldid` INT NOT NULL,
+        `invoice_custom_fieldvalue` VARCHAR(65535) NULL ,
+        UNIQUE (invoice_id, invoice_custom_fieldid)
+      );');
+
+      $this->db->query('CREATE TABLE `ip_quote_custom_new`
+      (
+        `quote_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+        `quote_id` INT NOT NULL, `quote_custom_fieldid` INT NOT NULL,
+        `quote_custom_fieldvalue` VARCHAR(65535) NULL ,
+        UNIQUE (quote_id, quote_custom_fieldid)
+      );');
+
+      $this->db->query('CREATE TABLE `ip_payment_custom_new`
+      (
+        `payment_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+        `payment_id` INT NOT NULL, `payment_custom_fieldid` INT NOT NULL,
+        `payment_custom_fieldvalue` VARCHAR(65535) NULL ,
+        UNIQUE (payment_id, payment_custom_fieldid)
+      );');
+
+      $this->db->query('CREATE TABLE `ip_user_custom_new`
+      (
+        `user_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+        `user_id` INT NOT NULL, `user_custom_fieldid` INT NOT NULL,
+        `user_custom_fieldvalue` VARCHAR(65535) NULL ,
+        UNIQUE (user_id, user_custom_fieldid)
+      );');
+
+      // Migrate Data
+
+      foreach($dropColumns as $value){
+        $res = $this->db->query('SELECT * FROM '.$value[2]);
+        preg_match('/^ip_(.*?)_custom$/i',$value[2], $matches);
+        $tableType = $matches[1];
+        if($res->num_rows()){
+          foreach($res->result() as $row){
+            $query = "INSERT INTO $value[2]_new
+            (".$tableType."_id, ".$tableType."_custom_fieldid, ".$tableType."_custom_fieldvalue)
+            VALUES (".$this->db->escape($row->{$tableType.'_id'}).",
+            (SELECT custom_field_id FROM ip_custom_fields WHERE ip_custom_fields.custom_field_column = ".$this->db->escape($value[1])."),
+            ".$this->db->escape($row->{$value[1]}).")
+            ";
+
+            $this->db->query($query);
+          }
+        }
+      }
+
+      // Drop old cloumns, and rename new ones
+      foreach($tables as $table){
+        $this->db->query('DROP TABLE IF EXISTS `ip_'.$table.'_custom`');
+        $query = 'RENAME TABLE `ip_'.$table.'_custom_new` TO `ip_'.$table.'_custom`';
+        $this->db->query($query);
+
+      }
+      $this->db->query('ALTER TABLE ip_custom_fields DROP COLUMN custom_field_column');
+    }
+
 }

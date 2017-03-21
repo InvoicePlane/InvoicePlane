@@ -1,3 +1,6 @@
+<?php
+  $cv = $this->controller->view_data["custom_values"];
+?>
 <script>
 
     $(function () {
@@ -256,8 +259,8 @@
                                                class="form-control input-sm datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_created); ?>"/>
                                         <span class="input-group-addon">
-                      <i class="fa fa-calendar fa-fw"></i>
-                    </span>
+                                          <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="quote-properties has-feedback">
@@ -269,11 +272,17 @@
                                                class="form-control input-sm datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
                                         <span class="input-group-addon">
-                      <i class="fa fa-calendar fa-fw">
-                      </i>
-                    </span>
+                                          <i class="fa fa-calendar fa-fw">
+                                          </i>
+                                        </span>
                                     </div>
                                 </div>
+
+                                <!-- Custom fields -->
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if($custom_field->custom_field_location != 1){ continue; } ?>
+                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
+                                <?php endforeach; ?>
                             </div>
                             <div class="col-xs-12 col-sm-6">
                                 <div class="quote-properties">
@@ -315,8 +324,8 @@
                         <?php echo trans('notes'); ?>
                     </label>
                     <textarea name="notes" id="notes" rows="3" class="input-sm form-control">
-          <?php echo $quote->notes; ?>
-        </textarea>
+                    <?php echo $quote->notes; ?>
+                    </textarea>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-8">
@@ -400,6 +409,7 @@
                         <div class="col-xs-6">
                             <?php $i = 0; ?>
                             <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php if($custom_field->custom_field_location != 0) { continue; } ?>
                                 <?php $i++; ?>
                                 <?php if ($i % 2 != 0): ?>
                                     <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
@@ -409,6 +419,7 @@
                         <div class="col-xs-6">
                             <?php $i = 0; ?>
                             <?php foreach ($custom_fields as $custom_field): ?>
+                                <?php if($custom_field->custom_field_location != 0) { continue; } ?>
                                 <?php $i++; ?>
                                 <?php if ($i % 2 == 0): ?>
                                     <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
