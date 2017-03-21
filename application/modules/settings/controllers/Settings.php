@@ -50,6 +50,8 @@ class Settings extends Admin_Controller
 
             foreach ($settings as $key => $value) {
 
+//                if($key=='disable_sidebar') {var_dump($value,empty($value));exit;}
+
                 if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
                     // Skip field meta fields
                     continue;
@@ -63,7 +65,7 @@ class Settings extends Admin_Controller
                     $value = is_numeric($value) ? $value : 0;
                     $this->mdl_settings->save($key, standardize_amount($value));
                 } else {
-                    if (in_array($key, $empty_values_allowed) || !empty($value)) {
+                    if (in_array($key, $empty_values_allowed) || !empty($value) || $value == '0') {
                         $this->mdl_settings->save($key, $value);
                     }
                 }
