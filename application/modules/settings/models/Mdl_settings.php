@@ -82,6 +82,15 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
+     * @param string $key
+     * @return mixed|string
+     */
+    public function gateway_settings($key)
+    {
+        return $this->db->like('setting_key', 'gateway_' . strtolower($key), 'after')->get('ip_settings')->result();
+    }
+
+    /**
      * @param $key
      * @param $value
      */

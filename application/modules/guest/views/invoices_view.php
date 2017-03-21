@@ -24,6 +24,13 @@
            data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
             <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
         </a>
+        <?php if ($invoice->invoice_status_id != 4) { ?>
+            <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
+               class="btn btn-success btn-sm">
+                <i class="fa fa-credit-card"></i>
+                <?php echo trans('pay_now'); ?>
+            </a>
+        <?php } ?>
     </div>
 
 </div>

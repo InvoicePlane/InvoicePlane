@@ -10,6 +10,7 @@
     "mpdf/mpdf": "dev-development",
     "vlucas/phpdotenv": "^2.4",
     "setasign/fpdi-fpdf": "^1.6.1",
-    "codeigniter/framework": "^3.1"
+    "codeigniter/framework": "^3.1",
+    "omnipay/omnipay": "~2.0"
   }
 }
