@@ -52,7 +52,7 @@
             <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('order'); ?>: </label>
 
             <div class="col-xs-12 col-sm-8 col-md-6">
-                <input type="text" name="custom_field_order" id="custom_field_order" class="form-control"
+                <input type="number" name="custom_field_order" id="custom_field_order" class="form-control"
                        value="<?php echo htmlentities($this->mdl_custom_fields->form_value('custom_field_order')); ?>">
             </div>
         </div>
