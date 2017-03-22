@@ -282,16 +282,18 @@ textarea {
     list-style: none;
   }
 
-  li a {
-    padding: 14px;
-    display: block;
-    border-bottom: 1px solid #ddd;
-    font-size: $font-size-large;
-    color: #666;
-    text-align: center;
+  li {
+    a {
+      padding: 14px;
+      display: block;
+      border-bottom: 1px solid #ddd;
+      font-size: $font-size-large;
+      color: $gray;
+      text-align: center;
 
-    &:hover {
-      color: $color_blue;
+      &:hover {
+        color: $brand-primary;
+      }
     }
   }
 
@@ -310,7 +312,7 @@ textarea {
   padding: 0;
 }
 
-#main-content{
+#main-content {
   width: 100%;
   border-left: 1px solid #ddd;
 }
@@ -841,7 +843,6 @@ div.table-content {
   cursor: move;
 }
 
-
 .modal {
   margin-top: 30px;
   overflow-y: auto;
@@ -1048,9 +1049,9 @@ legend, .install-step h2 {
 |   =========================================================
 */
 
-body.error{
+body.error {
 
-  #ip-logo{
+  #ip-logo {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -1058,7 +1059,7 @@ body.error{
     height: 200px;
   }
 
-  div.error-container{
+  div.error-container {
     display: block;
     width: 80%;
     height: auto;
@@ -1067,7 +1068,7 @@ body.error{
     margin-right: auto;
     text-align: center;
 
-    h1{
+    h1 {
       margin-bottom: 1em;
     }
   }
