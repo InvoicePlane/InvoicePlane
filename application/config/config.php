@@ -508,6 +508,7 @@ $config['csrf_exclude_uris'] = array(
     'filter/ajax/filter_clients',
     'filter/ajax/filter_payments',
     'products/ajax/process_product_selections',
+    'tasks/ajax/process_task_selections',
     'users/ajax/save_user_client',
 );
 
