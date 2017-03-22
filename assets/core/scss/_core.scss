@@ -16,7 +16,6 @@
 
 html {
   min-height: 100vh;
-  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 body {
@@ -25,41 +24,11 @@ body {
 
 img {
   vertical-align: middle;
-}
-
-a:hover, a:active, a:focus {
-  outline: 0;
-  text-decoration: none;
+  max-width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
-}
-
-::-webkit-scrollbar {
-  width: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #eaeaea;
-  border-left: 1px solid #ccc;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #aaa;
-}
-
-body *:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.form-control, .panel {
-  box-shadow: none;
 }
 
 /*
@@ -131,7 +100,7 @@ textarea {
   }
 
   td {
-    vertical-align: middle !important;
+    vertical-align: middle;
   }
 
   tr.bold-border td {
@@ -141,7 +110,7 @@ textarea {
   &.items td {
     min-width: 150px;
     max-width: 300px;
-    vertical-align: top !important;
+    vertical-align: top;
 
     &.td-icon {
       max-width: 30px;
@@ -154,7 +123,6 @@ textarea {
 
       .form-control {
         text-align: right;
-        font-size: 12px;
       }
     }
 
@@ -181,16 +149,28 @@ textarea {
     font-size: 12px;
     padding: 4px 8px;
   }
-
-  &.table-borderless {
-    tr, td, th {
-      border: 0;
-    }
-  }
 }
 
 .table-responsive {
   margin-bottom: 0;
+}
+
+#item_table {
+  td, th {
+    padding: 3px;
+  }
+
+  .form-control {
+    margin: 0;
+  }
+
+  tr.item {
+    input, textarea {
+      border-color: #e5e5e5;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
 }
 
 /*
@@ -199,8 +179,7 @@ textarea {
 |   =========================================================
 */
 
-.navbar.navbar-inverse {
-
+.navbar {
   .navbar-collapse {
     padding-left: 0;
     padding-right: 0;
@@ -208,12 +187,12 @@ textarea {
 
   .navbar-toggle {
     padding: 6px 8px;
-    color: #ddd;
-    border-color: #333;
+    color: $navbar-inverse-link-color;
+    border-color: $navbar-inverse-border;
 
     &:hover {
-      color: #eee;
-      border-color: #444;
+      color: $navbar-inverse-link-hover-color;
+      border-color: $navbar-inverse-link-hover-bg;
     }
   }
 
@@ -313,11 +292,16 @@ textarea {
 }
 
 #main-content {
-  width: calc(100% - 66px);
+  width: 100%;
   border-left: 1px solid #ddd;
+
+  @media screen and (min-width: $screen-md) {
+    width: calc(100% - 66px);
+  }
 }
 
-#content {
+#content,
+.tab-content {
   padding: 15px;
   align-content: flex-start;
   max-width: 100%;
@@ -330,10 +314,6 @@ textarea {
     margin-right: 0;
     margin-left: 0;
   }
-}
-
-.tab-content {
-  @extend #content;
 }
 
 #headerbar {
@@ -392,71 +372,11 @@ div.table-content {
   margin-bottom: 15px;
 }
 
-.tabs-below .nav-tabs {
-  margin: 0;
-  border: 0;
-  list-style: none;
-  background-color: #444;
-  color: #ccc;
-  height: 40px;
-  width: 100%;
-}
-
-.tabs-below .nav-tabs > li {
-  margin-top: 0;
-}
-
-.tabs-below .nav-tabs > li > a {
-  border: transparent;
-  color: #ccc;
-  margin-right: 0;
-  padding: 10px 15px 11px;
-  display: block;
-  line-height: 19px;
-}
-
-.tabs-below .nav-tabs > li > a:hover,
-.tabs-below .nav-tabs .active > a,
-.tabs-below .nav-tabs .active > a:hover {
-  border-radius: 0;
-  background-color: #444;
-  color: #fff;
-  text-decoration: none;
-  border: none;
-}
-
-.tabs-below .nav-tabs > li:first-child > a,
-.tabs-below .nav-tabs > li:first-child > a:hover {
-  border-left: none !important;
-}
-
 /*
 |   =========================================================
-|   Widgets
+|   Invoices and Quotes
 |   =========================================================
 */
-
-.widget {
-  border: 1px solid #ddd;
-  margin-top: 15px;
-
-  .widget-title {
-    padding: 8px 15px;
-    overflow: hidden;
-
-    h5 {
-      float: left;
-    }
-
-    h5 i {
-      margin-right: 10px;
-    }
-  }
-
-  .content-padding {
-    padding: 15px;
-  }
-}
 
 // Invoices and Quotes Overview
 .overview table {
@@ -480,73 +400,11 @@ div.table-content {
 
 }
 
-// Recent Activity
-.time {
-  font-size: 11px;
-}
-
-// Recent News
-.post h4 {
-  font-size: 14px;
-}
-
-.post-date {
-  @extend .time;
-  color: #bbb;
-}
-
 /*
 |   =========================================================
 |   Client Profile
 |   =========================================================
 */
-
-.profile {
-  border-radius: $border-radius-base;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  margin-bottom: 15px;
-  overflow: hidden;
-  padding-bottom: 30px;
-
-  .primaryInfo {
-    padding: 15px 46px 0;
-  }
-
-  dl {
-    clear: both;
-    margin-top: 40px;
-  }
-
-  dl dt {
-    margin: 30px 0 15px;
-    border-top: 1px solid #ddd;
-    line-height: 0;
-  }
-
-  dl dt span {
-    border-radius: 5px;
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 2px 25px;
-    margin-left: 15px;
-  }
-
-  dl dd {
-    clear: both;
-    line-height: 20px;
-    padding-top: 6px;
-    margin: 0;
-  }
-
-  dl dd span {
-    font-weight: bold;
-    float: left;
-    text-align: right;
-    width: 70px;
-    margin-right: 10px;
-  }
-}
 
 .notes textarea {
   resize: both;
@@ -574,7 +432,7 @@ div.table-content {
   }
 
   div.table .file-row:nth-child(odd) {
-    background: #f9f9f9;
+    background: $table-bg-hover;
   }
 
   /* The total progress gets shown by event listeners */
@@ -659,40 +517,27 @@ div.table-content {
   &.draft {
     background-color: lighten($color_status_draft, 10%);
   }
+
   &.sent {
     background-color: lighten($color_status_sent, 10%);
   }
+
   &.viewed {
     background-color: lighten($color_status_viewed, 10%);
   }
+
   &.paid,
   &.approved {
     background-color: lighten($color_status_paid_approved, 10%);
   }
+
   &.rejected,
   &.overdue {
     background-color: lighten($color_status_rejected_overdue, 10%);
   }
+
   &.canceled {
     background-color: lighten($color_status_canceled, 10%);
-  }
-}
-
-#item_table {
-  td, th {
-    padding: 3px;
-  }
-
-  .form-control {
-    margin: 0;
-  }
-
-  tr.item {
-    input, textarea {
-      border-color: #e5e5e5;
-      border-radius: 0;
-      box-shadow: none;
-    }
   }
 }
 
@@ -770,24 +615,9 @@ div.table-content {
 
 /*
 |   =========================================================
-|   Various Styles
+|   Dashboard
 |   =========================================================
 */
-
-.alert {
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
-.alert.alert-default {
-  background: #f5f5f5;
-  border: 1px solid #e5e5e5;
-}
-
-.tab-content .alert {
-  margin-left: 0;
-  margin-right: 0;
-}
 
 #panel-overdue-invoices,
 #panel-recent-quotes,
@@ -815,6 +645,22 @@ div.table-content {
   &:last-child {
     border-right: none;
   }
+}
+
+/*
+|   =========================================================
+|   Various Styles
+|   =========================================================
+*/
+
+.alert {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.alert.alert-default {
+  background: lighten($gray-lighter, 5%);
+  border: 1px solid $gray-lighter;
 }
 
 .fa {
@@ -847,6 +693,22 @@ div.table-content {
 
 .cursor-move {
   cursor: move;
+}
+
+.amount {
+  text-align: right;
+}
+
+.no-border-radius {
+  border-radius: 0;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.no-padding {
+  padding: 0 !important;
 }
 
 .modal {
@@ -909,32 +771,11 @@ div.table-content {
   }
 }
 
-// Dropzone / Attachments
-#actions {
-  margin: 15px 0;
-}
-
 .model-pager {
   .btn .fa {
     font-size: $font-size-small;
     line-height: $font-size-small * $line-height-small;
   }
-}
-
-.amount {
-  text-align: right;
-}
-
-.no-border-radius {
-  border-radius: 0;
-}
-
-.no-margin {
-  margin: 0 !important;
-}
-
-.no-padding {
-  padding: 0 !important;
 }
 
 .index-options {
@@ -949,7 +790,7 @@ legend, .install-step h2 {
   border-image: none;
   border-style: none none solid;
   border-width: 0 0 1px;
-  color: #333333;
+  color: $gray;
   display: block;
   font-size: $font-size-large;
   line-height: 40px;
@@ -966,7 +807,7 @@ legend, .install-step h2 {
 }
 
 .font-overdue {
-  color: $color_red;
+  color: $brand-danger;
   font-weight: bold;
 }
 
@@ -1041,12 +882,12 @@ legend, .install-step h2 {
   }
 
   h1 {
-    margin: 15px 0;
+    margin: 0 0 15px;
   }
-}
 
-#login .alert {
-  margin-bottom: 15px;
+  .alert {
+    margin-bottom: 15px;
+  }
 }
 
 /*
@@ -1086,8 +927,8 @@ body.error {
 |   =========================================================
 */
 
-// Styles for large devices (< lg)
-@media (min-width: 992px) {
+// Styles for large devices (> lg)
+@media (min-width: $screen-lg) {
 
   .navbar-nav .visible-lg {
     display: inline-block !important;
@@ -1103,7 +944,7 @@ body.error {
 }
 
 // Styles for medium devices (sm > md)
-@media (max-width: 992px) {
+@media (max-width: $screen-md-max) {
 
   #submenu {
     .submenu-row {
@@ -1115,7 +956,7 @@ body.error {
 }
 
 // Styles for  small devices (xs > sm)
-@media (max-width: 768px) {
+@media (max-width: $screen-sm-max) {
 
   .sidebar li a {
     padding: 7px;
@@ -1147,12 +988,13 @@ body.error {
 }
 
 // Styles for very small devices (< xs)
-@media (max-width: 480px) {
+@media (max-width: $screen-xs-max) {
 
   .navbar-nav {
     margin: 7px 0;
+
     .dropdown .dropdown-menu {
-      background: #555;
+      background: $navbar-inverse-border;
     }
   }
 
