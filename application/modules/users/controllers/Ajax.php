@@ -26,12 +26,11 @@ class Ajax extends Admin_Controller
         $this->load->model('users/mdl_user_clients');
 
         $client = $this->mdl_clients->get_by_id($client_id);
-
         if ($client) {
             $client_id = $client->client_id;
 
             // Is this a new user or an existing user?
-            if ($user_id) {
+            if (!empty($user_id)) {
                 // Existing user - go ahead and save the entries
                 $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)
                     ->where('ip_user_clients.client_id', $client_id)->get();
@@ -41,7 +40,7 @@ class Ajax extends Admin_Controller
                 }
             } else {
                 // New user - assign the entries to a session variable until user record is saved
-                $user_clients = ($this->session->userdata('user_clients')) ? $this->session->userdata('user_clients') : array();
+                $user_clients = $this->session->userdata('user_clients') ? $this->session->userdata('user_clients') : array();
 
                 $user_clients[$client_id] = $client_id;
 
@@ -54,7 +53,9 @@ class Ajax extends Admin_Controller
     {
         $this->load->helper('client');
 
-        if ($session_user_clients = $this->session->userdata('user_clients')) {
+        $session_user_clients = $this->session->userdata('user_clients');
+
+        if ($session_user_clients) {
             $this->load->model('clients/mdl_clients');
 
             $data = array(
