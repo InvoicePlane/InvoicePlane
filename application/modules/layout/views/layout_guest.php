@@ -75,40 +75,43 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs <?php if (get_setting('disable_sidebar') == 1) {
-    echo 'hidden';
-} ?>">
-    <ul>
-        <li>
-            <a href="<?php echo site_url('guest'); ?>" title="<?php echo trans('dashboard'); ?>" class="tip"
-               data-placement="right">
-                <i class="fa fa-dashboard"></i>
-            </a>
-        </li>
-        <li>
-            <a href="<?php echo site_url('guest/quotes/index'); ?>" title="<?php echo trans('quotes'); ?>" class="tip"
-               data-placement="right">
-                <i class="fa fa-file"></i>
-            </a>
-        </li>
-        <li>
-            <a href="<?php echo site_url('guest/invoices/index'); ?>" title="<?php echo trans('invoices'); ?>"
-               class="tip" data-placement="right">
-                <i class="fa fa-file-text"></i>
-            </a>
-        </li>
-        <li>
-            <a href="<?php echo site_url('guest/payments/index'); ?>" title="<?php echo trans('payments'); ?>"
-               class="tip" data-placement="right">
-                <i class="fa fa-money"></i>
-            </a>
-        </li>
-    </ul>
-</div>
-
 <div id="main-area">
 
-    <?php echo $content; ?>
+    <div class="sidebar hidden-xs <?php if (get_setting('disable_sidebar') == 1) {
+        echo 'hidden';
+    } ?>">
+        <ul>
+            <li>
+                <a href="<?php echo site_url('guest'); ?>" title="<?php echo trans('dashboard'); ?>" class="tip"
+                   data-placement="right">
+                    <i class="fa fa-dashboard"></i>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('guest/quotes/index'); ?>" title="<?php echo trans('quotes'); ?>"
+                   class="tip"
+                   data-placement="right">
+                    <i class="fa fa-file"></i>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('guest/invoices/index'); ?>" title="<?php echo trans('invoices'); ?>"
+                   class="tip" data-placement="right">
+                    <i class="fa fa-file-text"></i>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('guest/payments/index'); ?>" title="<?php echo trans('payments'); ?>"
+                   class="tip" data-placement="right">
+                    <i class="fa fa-money"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="main-content">
+        <?php echo $content; ?>
+    </div>
 
 </div>
 
