@@ -465,24 +465,22 @@
 
             <div id="guest_fields">
 
-                <div id="open_invoices" class="widget">
+                <fieldset>
 
-                    <div class="widget-title">
-                        <h5 style="float: left;"><?php echo trans('client_access'); ?></h5>
+                    <legend>
+                        <?php echo trans('client_access'); ?>&nbsp;
 
-                        <div class="pull-right">
-                            <button id="add-user-client-modal" class="btn btn-default" type="button">
-                                <i class="fa fa-plus"></i>
-                                <?php echo trans('add_client'); ?>
-                            </button>
-                        </div>
-                    </div>
+                        <button id="add-user-client-modal" class="btn btn-default btn-xs" type="button">
+                            <i class="fa fa-plus"></i>
+                            <?php echo trans('add_client'); ?>
+                        </button>
+                    </legend>
 
                     <div id="div_user_client_table">
                         <?php echo $user_client_table; ?>
                     </div>
 
-                </div>
+                </fieldset>
 
             </div>
 
