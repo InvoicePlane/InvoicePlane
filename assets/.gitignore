@@ -1,8 +1,12 @@
 *
 !.gitignore
+
+# Core
 !core
-!core/*
+!core/**/*
+
+# Base themes
 !invoiceplane
-!invoiceplane/*
+!invoiceplane/**/*
 !invoiceplane_blue
-!invoiceplane_blue/*
+!invoiceplane_blue/**/*
