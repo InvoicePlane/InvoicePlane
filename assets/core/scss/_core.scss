@@ -313,7 +313,7 @@ textarea {
 }
 
 #main-content {
-  width: 100%;
+  width: calc(100% - 66px);
   border-left: 1px solid #ddd;
 }
 
@@ -354,8 +354,14 @@ textarea {
   }
 }
 
-.hidden-sidebar #main-area {
-  display: block !important;
+.hidden-sidebar {
+  #main-area {
+    display: block !important;
+  }
+
+  #main-content {
+    width: 100%;
+  }
 }
 
 #form-settings .tab-content,
