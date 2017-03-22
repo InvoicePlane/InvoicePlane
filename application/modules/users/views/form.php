@@ -29,8 +29,8 @@
         });
 
         $('#add-user-client-modal').click(function () {
-            <?php $user_id = isset($id) ? '/' . $id : ''; ?>
-            $('#modal-placeholder').load("<?php echo site_url('users/ajax/modal_add_user_client' . $user_id); ?>/" + Math.floor(Math.random() * 1000));
+            <?php $user_id = isset($id) ? $id : ''; ?>
+            $('#modal-placeholder').load("<?php echo site_url('users/ajax/modal_add_user_client/' . $user_id); ?>");
         });
     });
 </script>

@@ -11,7 +11,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="NOINDEX,NOFOLLOW">
-<meta name="_csrf" content="<?= $this->security->get_csrf_hash() ?>">
+<meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
 
 <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
