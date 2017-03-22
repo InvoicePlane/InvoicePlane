@@ -283,7 +283,7 @@ textarea {
   }
 
   li a {
-    padding: 15px;
+    padding: 14px;
     display: block;
     border-bottom: 1px solid #ddd;
     font-size: $font-size-large;
@@ -308,6 +308,10 @@ textarea {
   max-width: 100%;
   flex-direction: row;
   padding: 0;
+}
+
+#main-content{
+  width: 100%;
   border-left: 1px solid #ddd;
 }
 
@@ -328,10 +332,6 @@ textarea {
 
 .tab-content {
   @extend #content;
-}
-
-#main-content{
-  width: 100%;
 }
 
 #headerbar {
