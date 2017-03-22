@@ -50,9 +50,14 @@ class Mdl_User_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $fData = $this->_formdata;
+            $form_data = isset($this->_formdata) ? $this->_formdata : null;
             $user_custom_id = null;
-            foreach($fData as $key=>$value){
+
+            if (is_null($form_data)) {
+                return true;
+            }
+
+            foreach($form_data as $key=>$value){
               $db_array = array(
                 'user_id' => $user_id,
                 'user_custom_fieldid' => $key,
