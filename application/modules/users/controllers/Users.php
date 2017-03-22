@@ -44,7 +44,6 @@ class Users extends Admin_Controller
      */
     public function form($id = null)
     {
-
         $this->load->helper('client');
 
         if ($this->input->post('btn_cancel')) {
@@ -73,10 +72,12 @@ class Users extends Admin_Controller
                 $this->session->set_userdata($session_data);
             }
 
+            $this->session->unset_userdata('user_clients');
+
             redirect('users');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
+        if ($id && !$this->input->post('btn_submit')) {
             if (!$this->mdl_users->prep_form($id)) {
                 show_404();
             }
@@ -121,16 +122,16 @@ class Users extends Admin_Controller
 
         $fields = $this->mdl_user_custom->get_by_useid($id);
 
-        foreach($custom_fields as $cfield){
-            foreach($fields as $fvalue){
-              if($fvalue->user_custom_fieldid == $cfield->custom_field_id){
-                // TODO: Hackish, may need a better optimization
-                $this->mdl_users->set_form_value(
-                  'custom[' . $cfield->custom_field_id . ']',
-                  $fvalue->user_custom_fieldvalue
-                );
-                break;
-              }
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
+                if ($fvalue->user_custom_fieldid == $cfield->custom_field_id) {
+                    // TODO: Hackish, may need a better optimization
+                    $this->mdl_users->set_form_value(
+                        'custom[' . $cfield->custom_field_id . ']',
+                        $fvalue->user_custom_fieldvalue
+                    );
+                    break;
+                }
             }
         }
 
