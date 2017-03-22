@@ -24,12 +24,12 @@
             <tr>
                 <th><?php echo trans('family'); ?></th>
                 <th><?php echo trans('product_sku'); ?></th>
-                <th><?php echo trans('product_tariff'); ?></th>
                 <th><?php echo trans('product_name'); ?></th>
                 <th><?php echo trans('product_description'); ?></th>
                 <th><?php echo trans('product_price'); ?></th>
                 <th><?php echo trans('product_unit'); ?></th>
                 <th><?php echo trans('tax_rate'); ?></th>
+                <th><?php echo trans('product_tariff'); ?></th>
                 <th><?php echo trans('options'); ?></th>
             </tr>
             </thead>
@@ -39,12 +39,12 @@
                 <tr>
                     <td><?php echo $product->family_name; ?></td>
                     <td><?php echo $product->product_sku; ?></td>
-                    <td><?php echo $product->product_tariff; ?></td>
                     <td><?php echo $product->product_name; ?></td>
                     <td><?php echo nl2br($product->product_description); ?></td>
                     <td><?php echo format_currency($product->product_price); ?></td>
                     <td><?php echo $product->unit_name; ?></td>
                     <td><?php echo ($product->tax_rate_id) ? $product->tax_rate_name : trans('none'); ?></td>
+                    <td><?php echo $product->product_tariff; ?></td>
                     <td>
                         <a href="<?php echo site_url('products/form/' . $product->product_id); ?>"
                            title="<?php echo trans('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
