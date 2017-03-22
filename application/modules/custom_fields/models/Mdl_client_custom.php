@@ -63,7 +63,7 @@ class Mdl_Client_Custom extends Validator
             $db_array['client_id'] = $client_id;
 
             if (is_null($form_data)) {
-                return false;
+                return true;
             }
 
             foreach ($form_data as $key => $value) {

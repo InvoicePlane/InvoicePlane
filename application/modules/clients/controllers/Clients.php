@@ -70,7 +70,10 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
-            $check = $this->db->get_where('ip_clients', array('client_name' => $this->input->post('client_name'), 'client_surname' => $this->input->post('client_surname')))->result();
+            $check = $this->db->get_where('ip_clients', array(
+                'client_name' => $this->input->post('client_name'),
+                'client_surname' => $this->input->post('client_surname')
+            ))->result();
 
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
@@ -136,16 +139,16 @@ class Clients extends Admin_Controller
 
         $fields = $this->mdl_client_custom->get_by_clid($id);
 
-        foreach($custom_fields as $cfield){
-            foreach($fields as $fvalue){
-              if($fvalue->cf_fid == $cfield->custom_field_id){
-                // TODO: Hackish, may need a better optimization
-                $this->mdl_clients->set_form_value(
-                  'custom[' . $cfield->custom_field_id . ']',
-                  $fvalue->cf_value
-                );
-                break;
-              }
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
+                if ($fvalue->cf_fid == $cfield->custom_field_id) {
+                    // TODO: Hackish, may need a better optimization
+                    $this->mdl_clients->set_form_value(
+                        'custom[' . $cfield->custom_field_id . ']',
+                        $fvalue->cf_value
+                    );
+                    break;
+                }
             }
         }
 

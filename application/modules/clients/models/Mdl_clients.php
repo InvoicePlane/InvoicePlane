@@ -129,8 +129,8 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('date_helper');
 
-        if ($input == "") {
-            return "";
+        if ($input == '') {
+            return '';
         }
 
         return date_to_mysql($input);
