@@ -3,6 +3,8 @@
         // Display the create invoice modal
         $('#modal-choose-items').modal('show');
 
+        $(".simple-select").select2();
+
         // Creates the invoice
         $('.select-items-confirm').click(function () {
             var product_ids = [];
