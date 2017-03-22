@@ -49,9 +49,6 @@ class Settings extends Admin_Controller
             $empty_values_allowed = $this->config->item('settings_empty_allowed');
 
             foreach ($settings as $key => $value) {
-
-//                if($key=='disable_sidebar') {var_dump($value,empty($value));exit;}
-
                 if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
                     // Skip field meta fields
                     continue;
