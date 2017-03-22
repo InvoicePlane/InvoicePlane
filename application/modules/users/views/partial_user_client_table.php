@@ -25,3 +25,7 @@
 
     </table>
 </div>
+
+<script>
+    $('meta[name=_csrf]').attr('content', '<?php echo $this->security->get_csrf_hash() ?>')
+</script>

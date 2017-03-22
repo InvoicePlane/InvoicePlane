@@ -158,6 +158,13 @@ $(document).ready(function () {
         $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
     });
 
+    // Update CSRF to ensure it's the latest token
+    $('form').on('submit', function (e) {
+        e.preventDefault();
+        $('[name="_ip_csrf"]').val(csrf());
+        e.currentTarget.submit();
+    });
+
     // Tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
