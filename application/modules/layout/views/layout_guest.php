@@ -23,6 +23,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
 
     <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
@@ -40,6 +41,13 @@
     <![endif]-->
 
     <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
+
+    <script>
+        function csrf() {
+            return $('meta[name=_csrf]').attr('content');
+        }
+    </script>
+
 </head>
 <body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 
