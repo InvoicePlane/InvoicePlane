@@ -12,15 +12,11 @@ ALTER TABLE ip_products
   ADD COLUMN unit_id INT(11);
 
 ALTER TABLE ip_quote_items
-  ADD COLUMN item_product_unit VARCHAR(50) DEFAULT NULL;
-
-ALTER TABLE ip_quote_items
+  ADD COLUMN item_product_unit VARCHAR(50) DEFAULT NULL,
   ADD COLUMN item_product_unit_id INT(11);
 
 ALTER TABLE ip_invoice_items
-  ADD COLUMN item_product_unit VARCHAR(50) DEFAULT NULL;
-
-ALTER TABLE ip_invoice_items
+  ADD COLUMN item_product_unit VARCHAR(50) DEFAULT NULL,
   ADD COLUMN item_product_unit_id INT(11);
 
 # Custom Field Enhancements
@@ -52,51 +48,33 @@ CREATE TABLE `ip_invoice_sumex` (
   ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
-
 ALTER TABLE `ip_invoice_sumex`
-  ADD PRIMARY KEY (`sumex_id`);
-
-
-ALTER TABLE `ip_invoice_sumex`
+  ADD PRIMARY KEY (`sumex_id`),
   MODIFY `sumex_id` INT(11) NOT NULL AUTO_INCREMENT;
 
-
 ALTER TABLE `ip_clients`
-  ADD COLUMN client_surname VARCHAR(255) DEFAULT NULL;
-
-ALTER TABLE `ip_clients`
+  ADD COLUMN client_surname VARCHAR(255) DEFAULT NULL,
   ADD COLUMN client_avs VARCHAR(16) DEFAULT NULL;
 
 ALTER TABLE `ip_clients`
-  ADD COLUMN client_insurednumber VARCHAR(30) DEFAULT NULL;
-
-ALTER TABLE `ip_clients`
-  ADD COLUMN client_veka VARCHAR(30) DEFAULT NULL;
-
-ALTER TABLE `ip_clients`
-  ADD COLUMN client_birthdate DATE DEFAULT NULL;
-
-ALTER TABLE `ip_clients`
+  ADD COLUMN client_insurednumber VARCHAR(30) DEFAULT NULL,
+  ADD COLUMN client_veka VARCHAR(30) DEFAULT NULL,
+  ADD COLUMN client_birthdate DATE DEFAULT NULL,
   ADD COLUMN client_gender INT(1) DEFAULT 0;
 
 ALTER TABLE `ip_invoice_items`
   ADD COLUMN item_date DATE;
 
-INSERT INTO `ip_settings` (setting_key, setting_value) VALUES
+INSERT INTO `ip_settings` (setting_key, setting_value)
+VALUES
   ('sumex', '0'),
   ('sumex_sliptype', '1'),
   ('sumex_canton', '0');
 
 ALTER TABLE `ip_users`
-  ADD COLUMN user_subscribernumber VARCHAR(40) DEFAULT NULL;
-
-ALTER TABLE `ip_users`
-  ADD COLUMN user_iban VARCHAR(34) DEFAULT NULL;
-
-ALTER TABLE `ip_users`
-  ADD COLUMN user_gln BIGINT(13) DEFAULT NULL;
-
-ALTER TABLE `ip_users`
+  ADD COLUMN user_subscribernumber VARCHAR(40) DEFAULT NULL,
+  ADD COLUMN user_iban VARCHAR(34) DEFAULT NULL,
+  ADD COLUMN user_gln BIGINT(13) DEFAULT NULL,
   ADD COLUMN user_rcc VARCHAR(7) DEFAULT NULL;
 
 ALTER TABLE `ip_products`
@@ -148,8 +126,9 @@ ALTER TABLE `ip_tasks`
 # (See Mdl_setup for the migration script)
 
 # Custom Fields
-ALTER TABLE ip_custom_fields MODIFY custom_field_table VARCHAR(50);
-ALTER TABLE ip_custom_fields MODIFY custom_field_label VARCHAR(50);
-ALTER TABLE ip_custom_fields ADD custom_field_location INT(11) DEFAULT 0;
-ALTER TABLE ip_custom_fields ADD custom_field_order INT(11) DEFAULT 999;
-ALTER TABLE ip_custom_fields ADD CONSTRAINT UNIQUE(custom_field_table, custom_field_label);
+ALTER TABLE ip_custom_fields
+  MODIFY custom_field_table VARCHAR(50),
+  MODIFY custom_field_label VARCHAR(50),
+  ADD custom_field_location INT(11) DEFAULT 0,
+  ADD custom_field_order INT(11) DEFAULT 999,
+  ADD CONSTRAINT UNIQUE (custom_field_table, custom_field_label);
