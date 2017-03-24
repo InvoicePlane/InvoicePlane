@@ -563,6 +563,7 @@ $lang = array(
     'web'                                          => 'Web',
     'web_address'                                  => 'Web Address',
     'welcome'                                      => 'Welcome',
+    'wrong_passwordreset_token'                    => 'No user found for the provided reset token. If you think this is an error, contact your administrator.',
     'year'                                         => 'Year',
     'year_prefix'                                  => 'Year Prefix',
     'years'                                        => 'Years',
