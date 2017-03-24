@@ -324,7 +324,10 @@ class Setup extends MX_Controller
 
         $this->load_ci_database();
 
-        $this->set_encryption_key();
+        // Set a new encryption key if none exists
+        if (empty(env('ENCRYPTION_KEY'))) {
+            $this->set_encryption_key();
+        }
 
         $this->layout->set(
             array(
