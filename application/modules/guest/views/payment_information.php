@@ -3,12 +3,12 @@
 </script>
 
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo lang('online_payment_for'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+    <h1 class="headerbar-title"><?php echo trans('online_payment_for'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
     <div class="headerbar-item pull-right">
         <a href="<?php echo site_url('guest/invoices/generate_pdf/'); ?>"
            class="btn btn-sm btn-default">
-            <i class="fa fa-print"></i> <?php echo lang('download_pdf'); ?>
+            <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
         </a>
     </div>
 
@@ -20,9 +20,9 @@
 
     <?php if ($disable_form === false) { ?>
 
-        <h4><?php echo lang('total') . ': ' . format_currency($invoice->invoice_total); ?></h4>
+        <h4><?php echo trans('total') . ': ' . format_currency($invoice->invoice_total); ?></h4>
         <br>
-        <h4><?php echo lang('balance') . ': ' . format_currency($invoice->invoice_balance); ?></h4>
+        <h4><?php echo trans('balance') . ': ' . format_currency($invoice->invoice_balance); ?></h4>
         <hr>
 
         <form action="<?php echo site_url('guest/payment_handler/make_payment/'); ?>"
@@ -36,7 +36,7 @@
                     <div class="form-group">
                         <input type="hidden" name="invoice_url_key" value="<?php echo $invoice->invoice_url_key; ?>">
 
-                        <label for="gateway-select"><?php echo lang('online_payment_method'); ?></label>
+                        <label for="gateway-select"><?php echo trans('online_payment_method'); ?></label>
                         <select name="gateway" id="gateway-select" class="form-control simple-select">
                             <?php
                             // Display all available gateways
@@ -51,17 +51,17 @@
                     <div class="panel panel-default">
 
                         <div class="panel-heading">
-                            <?php echo lang('creditcard_details'); ?>
+                            <?php echo trans('creditcard_details'); ?>
                         </div>
 
                         <div class="panel-body">
                             <div class="alert alert-info">
-                                <?php echo lang('online_payment_creditcard_hint'); ?>
+                                <?php echo trans('creditcard_hint'); ?>
                             </div>
 
                             <div class="form-group">
                                 <label class="control-label">
-                                    <?php echo lang('creditcard_number'); ?>
+                                    <?php echo trans('creditcard_number'); ?>
                                 </label>
                                 <input type="text" name="creditcard_number" class="input-sm form-control">
                             </div>
@@ -70,7 +70,7 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <label class="control-label">
-                                            <?php echo lang('creditcard_expiry_month'); ?>
+                                            <?php echo trans('creditcard_expiry_month'); ?>
                                         </label>
                                         <input type="number" name="creditcard_expiry_month"
                                                class="input-sm form-control"
@@ -80,7 +80,7 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <label class="control-label">
-                                            <?php echo lang('creditcard_expiry_year'); ?>
+                                            <?php echo trans('online_payment_creditcard_expiry_year'); ?>
                                         </label>
                                         <input type="number" name="creditcard_expiry_year" class="input-sm form-control"
                                                min="<?php echo date('Y'); ?>" max="<?php echo date('Y') + 20; ?>">
@@ -89,7 +89,7 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <label class="control-label">
-                                            <?php echo lang('creditcard_cvv'); ?>
+                                            <?php echo trans('creditcard_cvv'); ?>
                                         </label>
                                         <input type="number" name="creditcard_cvv" class="input-sm form-control">
                                     </div>
@@ -104,7 +104,7 @@
 
             <div class="form-group">
                 <button class="btn btn-success ajax-loader" type="submit">
-                    <i class="fa fa-credit-card fa-margin">&nbsp;</i><?php echo lang('pay_now'); ?>
+                    <i class="fa fa-credit-card fa-margin">&nbsp;</i><?php echo trans('pay_now'); ?>
                 </button>
             </div>
 
