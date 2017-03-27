@@ -13,11 +13,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Output a language string, supports language fallback if a string wasn't found
  *
- * @param $line
+ * @param string $line
  * @param string $id
+ * @param null|string $default
  * @return string
  */
-function trans($line, $id = '')
+function trans($line, $id = '', $default = null)
 {
     $CI =& get_instance();
     $lang_string = $CI->lang->line($line);
@@ -32,7 +33,7 @@ function trans($line, $id = '')
 
     // Fall back to the $line value if the default language has no translation either
     if (empty($lang_string)) {
-        $lang_string = $line;
+        $lang_string = $default != null ? $default : $line;
     }
 
     if ($id != '') {
