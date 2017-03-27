@@ -57,7 +57,7 @@
                             <label>
                                 <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     <?php check_select(get_setting('gateway_' . $d . '_' . $key), 'on', '==', true) ?>>
-                                <?php echo $setting['label']; ?>
+                                <?php echo trans('online_payment_' . $key, '', $setting['label']); ?>
                             </label>
                         </div>
 
@@ -65,7 +65,7 @@
 
                         <div class="form-group">
                             <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" class="control-label">
-                                <?php echo $setting['label']; ?>
+                                <?php echo trans('online_payment_' . $key, '', $setting['label']); ?>
                             </label>
                             <input type="<?php echo $setting['type']; ?>" class="input-sm form-control"
                                    name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
