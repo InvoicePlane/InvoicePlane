@@ -44,18 +44,7 @@ $this->layout->load_view('layout/includes/navbar');
 
 <div id="modal-placeholder"></div>
 
-<div id="fullpage-loader" style="display: none">
-    <div class="loader-content">
-        <i id="loader-icon" class="fa fa-cog fa-spin"></i>
-        <div id="loader-error" style="display: none">
-            <?php echo trans('loading_error'); ?><br/>
-            <a href="https://wiki.invoiceplane.com/<?php echo trans('cldr'); ?>/1.0/general/faq"
-               class="btn btn-primary btn-sm" target="_blank">
-                <i class="fa fa-support"></i> <?php echo trans('loading_error_help'); ?>
-            </a>
-        </div>
-    </div>
-</div>
+<?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
