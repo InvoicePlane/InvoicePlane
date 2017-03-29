@@ -115,6 +115,7 @@ class Ajax extends Admin_Controller
 
             $this->mdl_invoices->save($invoice_id, $db_array);
             $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
+
             if ($sumexInvoice >= 1) {
                 $sumex_array = array(
                     'sumex_invoice' => $invoice_id,
@@ -327,7 +328,7 @@ class Ajax extends Admin_Controller
 
             $response = array(
                 'success' => 1,
-                'invoice_id' => $invoice_id
+                'invoice_id' => $invoice_id,
             );
         } else {
             $this->load->helper('json_error');

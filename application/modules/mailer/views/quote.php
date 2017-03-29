@@ -5,7 +5,7 @@
         $('#email_template').change(function () {
             var email_template_id = $(this).val();
 
-            if (email_template_id == '') return;
+            if (email_template_id === '') return;
 
             $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
                 email_template_id: email_template_id,
