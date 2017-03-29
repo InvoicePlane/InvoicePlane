@@ -8,6 +8,7 @@ $lang = array(
     'add_files'                                    => 'Add Files...',
     'add_invoice_tax'                              => 'Add Invoice Tax',
     'add_new_row'                                  => 'Add new row',
+    'add_note'                                     => 'Add Note',
     'add_notes'                                    => 'Add Notes',
     'add_product'                                  => 'Add product',
     'add_quote_tax'                                => 'Add Quote Tax',
