@@ -499,18 +499,7 @@ $config['csrf_token_name'] = '_ip_csrf';
 $config['csrf_cookie_name'] = 'ip_csrf_cookie';
 $config['csrf_expire'] = 3600;
 $config['csrf_regenerate'] = true;
-$config['csrf_exclude_uris'] = array(
-    '.*modal.*',
-    'clients/ajax/name_query',
-    'clients/ajax/load_client_notes',
-    'filter/ajax/filter_invoices',
-    'filter/ajax/filter_quotes',
-    'filter/ajax/filter_clients',
-    'filter/ajax/filter_payments',
-    'products/ajax/process_product_selections',
-    'tasks/ajax/process_task_selections',
-    'users/ajax/save_user_client',
-);
+$config['csrf_exclude_uris'] = array();
 
 /*
 |--------------------------------------------------------------------------

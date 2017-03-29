@@ -14,8 +14,7 @@
             });
 
             $.post("<?php echo site_url('products/ajax/process_product_selections'); ?>", {
-                product_ids: product_ids,
-                _ip_csrf: csrf()
+                product_ids: product_ids
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 var items = JSON.parse(data);
@@ -88,9 +87,7 @@
             // Reload modal with settings
             window.setTimeout(function () {
                 $('#modal-choose-items').modal('hide');
-                $('#modal-placeholder').load(lookup_url, {
-                    _ip_csrf: csrf()
-                });
+                $('#modal-placeholder').load(lookup_url);
             }, 250);
         }
     });

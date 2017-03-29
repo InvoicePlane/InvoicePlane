@@ -1,20 +1,33 @@
-<?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
-
 <script>
     $(function () {
         // Display the create invoice modal
         $('#change-client').modal('show');
 
-        $('#change-client').on('shown', function () {
-            $("#client_name").focus();
-        });
-
-        $().ready(function () {
-            $("[name='client_name']").select2({
-                placeholder: "<?php echo htmlentities(trans('client')); ?>",
-                allowClear: true
-            });
-            $("#client_id").focus();
+        $("#client_id").select2({
+            placeholder: "<?php echo htmlentities(trans('client')); ?>",
+            ajax: {
+                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term,
+                        page: params.page,
+                        _ip_csrf: Cookies.get('ip_csrf_cookie')
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 2
         });
 
         // Creates the invoice
@@ -23,8 +36,7 @@
             // will create the new client if necessary
             $.post("<?php echo site_url('invoices/ajax/change_client'); ?>", {
                     client_id: $('#client_id').val(),
-                    invoice_id: $('#invoice_id').val(),
-                    _ip_csrf: csrf()
+                    invoice_id: $('#invoice_id').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -54,14 +66,7 @@
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
-                    <?php foreach ($clients as $client) { ?>
-                        <option value="<?php echo $client->client_id; ?>"
-                                <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>>
-                            <?php echo format_client($client); ?>
-                        </option>
-                    <?php } ?>
-                </select>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
             </div>
 
             <input class="hidden" id="invoice_id" value="<?php echo $invoice_id; ?>">
