@@ -1,5 +1,3 @@
-<?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
-
 <script>
     $(function () {
         // Display the create quote modal
@@ -8,17 +6,43 @@
         // Select2 for all select inputs
         $(".simple-select").select2();
 
+        $("#client_id").select2({
+            placeholder: "<?php echo htmlentities(trans('client')); ?>",
+            ajax: {
+                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term,
+                        page: params.page,
+                        _ip_csrf: Cookies.get('ip_csrf_cookie')
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 2
+        });
+
         // Creates the invoice
         $('#copy_invoice_confirm').click(function () {
             $.post("<?php echo site_url('invoices/ajax/copy_invoice'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
-                    client_name: $('#client_name').val(),
+                    client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    user_id: $('#user_id').val(),
-                    _ip_csrf: csrf()
+                    user_id: $('#user_id').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -53,22 +77,15 @@
                    value="<?php echo $invoice->user_id; ?>">
 
             <div class="form-group">
-                <label><?php echo trans('client'); ?>: </label>
-
-                <div class="controls">
-                    <input type="text" name="client_name" id="client_name" style="margin: 0 auto;"
-                           class="form-control"
-                           data-provide="typeahead" data-items="8" data-source='' autocomplete="off"
-                           value="<?php echo $invoice->client_name; ?>">
-                </div>
+                <label for="client_id"><?php echo trans('client'); ?></label>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
             </div>
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php echo trans('invoice_date'); ?>: </label>
 
                 <div class="input-group">
-                    <input name="invoice_date_created" id="invoice_date_created"
-                           class="form-control datepicker"
+                    <input name="invoice_date_created" id="invoice_date_created" class="form-control datepicker"
                            value="<?php echo date_from_mysql(date('Y-m-d', time()), true) ?>">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
@@ -85,17 +102,14 @@
 
             <div class="form-group">
                 <label for="invoice_group_id"><?php echo trans('invoice_group'); ?>: </label>
-
-                <div>
-                    <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
-                        <?php foreach ($invoice_groups as $invoice_group) { ?>
-                            <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                    <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
-                                <?php echo $invoice_group->invoice_group_name; ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
+                    <?php foreach ($invoice_groups as $invoice_group) { ?>
+                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                                <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
+                            <?php echo $invoice_group->invoice_group_name; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
         </div>

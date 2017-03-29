@@ -34,8 +34,7 @@
             });
 
             $.post("<?php echo site_url('tasks/ajax/process_task_selections'); ?>", {
-                task_ids: task_ids,
-                _ip_csrf: csrf()
+                task_ids: task_ids
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 var items = JSON.parse(data);

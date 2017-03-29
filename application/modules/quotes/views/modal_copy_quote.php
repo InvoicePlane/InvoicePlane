@@ -14,8 +14,7 @@
                     client_name: $('#client_name').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
-                    user_id: $('#user_id').val(),
-                    _ip_csrf: csrf()
+                    user_id: $('#user_id').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>

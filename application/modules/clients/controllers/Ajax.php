@@ -19,29 +19,39 @@ class Ajax extends Admin_Controller
 
     public function name_query()
     {
-        // Load the model
+        // Load the model & helper
         $this->load->model('clients/mdl_clients');
-
-        // Get the post input
-        $query = $this->input->post('query');
-
-        $escapedQuery = $this->db->escape_like_string($query);
-
-        $clients = $this->mdl_clients->select('client_name,client_surname')
-            ->where(
-                "client_name LIKE $escapedQuery%
-            OR client_surname LIKE $escapedQuery%
-            OR CONCATENATE(client_name,' ', client_surname) LIKE  $escapedQuery%")
-            ->order_by('CONCATENATE(client_name,client_surname)')
-            ->get(array(), false)
-            ->result();
+        $this->load->helper('client');
 
         $response = array();
 
-        foreach ($clients as $client) {
-            $response[] = $client->client_name;
+        // Get the post input
+        $query = $this->input->get('query');
+
+        if (empty($query)) {
+            echo json_encode($response);
+            exit;
         }
 
+        // Search for clients
+        $escapedQuery = $this->db->escape_str($query);
+        $clients = $this->mdl_clients
+            ->where('client_active', 1)
+            ->like('client_name', $escapedQuery)
+            ->or_like('client_surname', $escapedQuery)
+            ->or_like('client_name', $escapedQuery)
+            ->order_by('client_name')
+            ->get()
+            ->result();
+
+        foreach ($clients as $client) {
+            $response[] = array(
+                'id' => $client->client_id,
+                'text' => format_client($client),
+            );
+        }
+
+        // Return the results
         echo json_encode($response);
     }
 

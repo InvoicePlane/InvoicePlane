@@ -42,12 +42,6 @@
 
     <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
 
-    <script>
-        function csrf() {
-            return $('meta[name=_csrf]').attr('content');
-        }
-    </script>
-
 </head>
 <body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 

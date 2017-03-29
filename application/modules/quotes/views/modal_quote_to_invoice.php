@@ -10,12 +10,12 @@
         $('#quote_to_invoice_confirm').click(function () {
             $.post("<?php echo site_url('quotes/ajax/quote_to_invoice'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
-                    client_name: $('#client_name').val(),
+                    client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
+                    invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
-                    user_id: $('#user_id').val(),
-                    _ip_csrf: csrf()
+                    user_id: $('#user_id').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -45,8 +45,8 @@
         </div>
         <div class="modal-body">
 
-            <input type="hidden" name="client_name" id="client_name"
-                   value="<?php echo $quote->client_name; ?>">
+            <input type="hidden" name="client_id" id="client_id"
+                   value="<?php echo $quote->client_id; ?>">
             <input type="hidden" name="user_id" id="user_id"
                    value="<?php echo $quote->user_id; ?>">
 
