@@ -3,12 +3,32 @@
         // Display the create quote modal
         $('#create-quote').modal('show');
 
-        $('#create-quote').on('shown', function () {
-            $("#client_id").focus();
+        $("#client_id").select2({
+            placeholder: "<?php echo htmlentities(trans('client')); ?>",
+            ajax: {
+                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term,
+                        page: params.page,
+                        _ip_csrf: Cookies.get('ip_csrf_cookie')
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 2
         });
-
-        // Select2 for all select inputs
-        $(".simple-select").select2();
 
         // Creates the quote
         $('#quote_create_confirm').click(function () {
@@ -54,16 +74,8 @@
         <div class="modal-body">
 
             <div class="form-group">
-                <label for="client_name"><?php echo trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
-                    <?php
-                    foreach ($clients as $client) {
-                        echo "<option value=\"" . htmlspecialchars($client->client_id) . "\" ";
-                        if ($client_id == $client->client_id) echo 'selected';
-                        echo ">" . htmlspecialchars(format_client($client)) . "</option>";
-                    }
-                    ?>
-                </select>
+                <label for="client_id"><?php echo trans('client'); ?></label>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
             </div>
 
             <div class="form-group has-feedback">

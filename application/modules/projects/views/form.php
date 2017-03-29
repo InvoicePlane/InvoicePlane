@@ -1,3 +1,34 @@
+<script>
+    $(function () {
+        $("#client_id").select2({
+            placeholder: "<?php echo htmlentities(trans('client')); ?>",
+            ajax: {
+                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term,
+                        page: params.page,
+                        _ip_csrf: Cookies.get('ip_csrf_cookie')
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 2
+        });
+    });
+</script>
+
 <form method="post" class="form-horizontal">
 
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
@@ -27,14 +58,7 @@
                 <label class="control-label"><?php echo trans('client'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
-                    <?php
-                    foreach ($clients as $client) {
-                        echo "<option value=\"" . $client->client_id . "\" ";
-                        echo ">" . htmlentities($client->client_name) . "</option>";
-                    }
-                    ?>
-                </select>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
             </div>
         </div>
 

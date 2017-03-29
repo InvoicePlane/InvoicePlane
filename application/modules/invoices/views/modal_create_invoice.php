@@ -3,12 +3,33 @@
         // Display the create invoice modal
         $('#create-invoice').modal('show');
 
-        $('#create-invoice').on('shown', function () {
-            $("#client_id").focus();
-        });
-
         // Select2 for all select inputs
-        $(".simple-select").select2();
+        $("#client_id").select2({
+            placeholder: "<?php echo htmlentities(trans('client')); ?>",
+            ajax: {
+                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term,
+                        page: params.page,
+                        _ip_csrf: Cookies.get('ip_csrf_cookie')
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 2
+        });
 
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
@@ -59,19 +80,11 @@
 
             <div class="form-group">
                 <label for="client_id"><?php echo trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
-                    <?php
-                    foreach ($clients as $client) {
-                        echo "<option value=\"" . $client->client_id . "\" ";
-                        if ($client_id == $client->client_id) echo 'selected';
-                        echo ">" . htmlentities(format_client($client)) . "</option>";
-                    }
-                    ?>
-                </select>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
             </div>
 
             <div class="form-group has-feedback">
-                <label><?php echo trans('invoice_date'); ?></label>
+                <label for="invoice_date_created"><?php echo trans('invoice_date'); ?></label>
 
                 <div class="input-group">
                     <input name="invoice_date_created" id="invoice_date_created"
