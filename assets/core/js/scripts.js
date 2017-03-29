@@ -208,11 +208,18 @@ $(document).ready(function () {
         update_email_template_preview();
     });
 
-    $('.ajax-loader').bind("click", function () {
+    // Fullpage loader
+    $(document).on('click', '.ajax-loader', function () {
         $('#fullpage-loader').fadeIn(200);
         window.setTimeout(function () {
             $('#loader-error').fadeIn(200);
             $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
         }, 10000);
+    });
+
+    $(document).on('click', '.fullpage-loader-close', function () {
+        $('#fullpage-loader').fadeOut(200);
+        $('#loader-error').hide();
+        $('#loader-icon').addClass('fa-spin').removeClass('text-danger');
     });
 });

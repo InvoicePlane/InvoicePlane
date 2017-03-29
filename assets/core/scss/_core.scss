@@ -768,7 +768,13 @@ div.table-content {
 
     #loader-error {
       font-size: $font-size-large;
+      margin-bottom: 1rem;
     }
+  }
+
+  .fullpage-loader-close {
+    font-size: $font-size-large;
+    margin: 2rem 2rem 0 0;
   }
 }
 
