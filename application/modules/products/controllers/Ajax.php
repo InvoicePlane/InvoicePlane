@@ -21,6 +21,7 @@ class Ajax extends Admin_Controller
     {
         $filter_product = $this->input->get('filter_product');
         $filter_family = $this->input->get('filter_family');
+        $reset_table = $this->input->get('reset_table');
 
         $this->load->model('mdl_products');
         $this->load->model('families/mdl_families');
@@ -43,7 +44,11 @@ class Ajax extends Admin_Controller
             'filter_family' => $filter_family,
         );
 
-        $this->layout->load_view('products/modal_product_lookups', $data);
+        if ($filter_product || $filter_family || $reset_table) {
+            $this->layout->load_view('products/partial_product_table_modal', $data);
+        } else {
+            $this->layout->load_view('products/modal_product_lookups', $data);
+        }
     }
 
     public function process_product_selections()

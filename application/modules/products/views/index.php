@@ -41,17 +41,30 @@
                     <td><?php echo $product->product_sku; ?></td>
                     <td><?php echo $product->product_name; ?></td>
                     <td><?php echo nl2br($product->product_description); ?></td>
-                    <td><?php echo format_currency($product->product_price); ?></td>
+                    <td class="amount"><?php echo format_currency($product->product_price); ?></td>
                     <td><?php echo $product->unit_name; ?></td>
                     <td><?php echo ($product->tax_rate_id) ? $product->tax_rate_name : trans('none'); ?></td>
                     <td><?php echo $product->product_tariff; ?></td>
                     <td>
-                        <a href="<?php echo site_url('products/form/' . $product->product_id); ?>"
-                           title="<?php echo trans('edit'); ?>"><i class="fa fa-edit fa-margin"></i></a>
-                        <a href="<?php echo site_url('products/delete/' . $product->product_id); ?>"
-                           title="<?php echo trans('delete'); ?>"
-                           onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');"><i
-                                    class="fa fa-trash-o fa-margin"></i></a>
+                        <div class="options btn-group">
+                            <a class="btn btn-default btn-sm dropdown-toggle"
+                               data-toggle="dropdown" href="#">
+                                <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="<?php echo site_url('products/form/' . $product->product_id); ?>">
+                                        <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo site_url('products/delete/' . $product->product_id); ?>"
+                                       onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
+                                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             <?php } ?>
