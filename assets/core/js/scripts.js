@@ -176,19 +176,9 @@ $(document).ready(function () {
     // Select2 for all select inputs
     $(".simple-select").select2();
 
-    // Handle click event for Email Template Tags insertion
-    // Example Usage
-    // <a href="#" class="text-tag" data-tag="{{{client_name}}}">Client Name</a>
-    var lastTaggableClicked;
-    $('.text-tag').bind('click', function () {
-        var templateTag = this.getAttribute("data-tag");
-        insert_at_caret(lastTaggableClicked.id, templateTag);
-        return false;
-    });
-
     // Keep track of the last "taggable" input/textarea
     $('.taggable').on('focus', function () {
-        lastTaggableClicked = this;
+        window.lastTaggableClicked = this;
     });
 
     // HTML tags to email templates textarea
