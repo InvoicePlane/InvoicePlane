@@ -1,5 +1,3 @@
-<?php $this->layout->load_view('clients/jquery_client_lookup'); ?>
-
 <script>
     $(function () {
         // Display the create invoice modal
