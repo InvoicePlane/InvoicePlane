@@ -42,8 +42,7 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    user_id: $('#user_id').val(),
-                    _ip_csrf: csrf()
+                    user_id: $('#user_id').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>

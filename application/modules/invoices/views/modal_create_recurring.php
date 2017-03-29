@@ -18,8 +18,7 @@
                     invoice_id: <?php echo $invoice_id; ?>,
                     recur_start_date: $('#recur_start_date').val(),
                     recur_end_date: $('#recur_end_date').val(),
-                    recur_frequency: $('#recur_frequency').val(),
-                    _ip_csrf: csrf()
+                    recur_frequency: $('#recur_frequency').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>

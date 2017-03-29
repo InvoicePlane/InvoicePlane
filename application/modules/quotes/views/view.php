@@ -15,8 +15,7 @@
         $('#quote_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
                 quote_id: <?php echo $quote_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
-                _ip_csrf: csrf()
+                client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>"
             });
         });
 
@@ -41,7 +40,6 @@
                 items.push(row);
             });
             $.post("<?php echo site_url('quotes/ajax/save'); ?>", {
-                    _ip_csrf: $('meta[name=_csrf]').attr("content"),
                     quote_id: <?php echo $quote_id; ?>,
                     quote_number: $('#quote_number').val(),
                     quote_date_created: $('#quote_date_created').val(),
@@ -449,7 +447,7 @@
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>",
         params: {
-            _ip_csrf: csrf()
+            _ip_csrf: Cookies.get('ip_csrf_cookie')
         },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
@@ -508,7 +506,7 @@
             url: "<?php echo site_url('upload/delete_file/' . $quote->quote_url_key) ?>",
             data: {
                 name: file.name,
-                _ip_csrf: csrf()
+                _ip_csrf: Cookies.get('ip_csrf_cookie')
             }
         });
     });

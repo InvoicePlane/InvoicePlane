@@ -4,8 +4,7 @@
             $.post("<?php echo site_url('quotes/ajax/save_quote_tax_rate'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
                     tax_rate_id: $('#tax_rate_id').val(),
-                    include_item_tax: $('#include_item_tax').val(),
-                    _ip_csrf: csrf()
+                    include_item_tax: $('#include_item_tax').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>

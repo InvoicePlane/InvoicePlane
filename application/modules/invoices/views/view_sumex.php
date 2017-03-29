@@ -92,7 +92,6 @@
                 items.push(row);
             });
             $.post("<?php echo site_url('invoices/ajax/save'); ?>", {
-                    _ip_csrf: csrf(),
                     invoice_id: <?php echo $invoice_id; ?>,
                     invoice_number: $('#invoice_number').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
@@ -652,7 +651,7 @@ if ($this->config->item('disable_read_only') == true) {
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>",
         params: {
-            _ip_csrf: csrf()
+            _ip_csrf: Cookies.get('ip_csrf_cookie')
         },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
@@ -726,7 +725,7 @@ if ($this->config->item('disable_read_only') == true) {
             url: "<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>",
             data: {
                 'name': file.name.replace(/\s+/g, '_'),
-                _ip_csrf: csrf()
+                _ip_csrf: Cookies.get('ip_csrf_cookie')
             }
         }, function (response) {
             <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
