@@ -9,7 +9,7 @@
                 }, function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
-                    if (response.success == '1') {
+                    if (response.success === 1) {
                         // The validation was successful
                         $('.control-group').removeClass('error');
                         $('#client_note').val('');
