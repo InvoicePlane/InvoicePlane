@@ -1,4 +1,4 @@
-<form method="post" class="form-horizontal">
+<form method="post">
 
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
@@ -9,21 +9,21 @@
 
     <div id="content">
 
-        <?php $this->layout->load_view('layout/alerts'); ?>
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-md-offset-3">
+                <?php $this->layout->load_view('layout/alerts'); ?>
 
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('field'); ?>: </label>
-            <div class="col-xs-12 col-sm-8 col-md-6">
-                <input type="text" class="form-control"
-                       value="<?php echo htmlentities($value->custom_field_label); ?>" disabled="disabled"/>
-            </div>
-        </div>
+                <div class="form-group">
+                    <label><?php echo trans('field'); ?></label>
+                    <input type="text" class="form-control"
+                           value="<?php echo htmlentities($value->custom_field_label); ?>" disabled="disabled"/>
+                </div>
 
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-1 control-label"><?php echo trans('label'); ?>: </label>
-            <div class="col-xs-12 col-sm-8 col-md-6">
-                <input type="text" name="custom_values_value" id="custom_values_value" class="form-control"
-                       value="<?php echo htmlentities($value->custom_values_value); ?>">
+                <div class="form-group">
+                    <label for="custom_values_value"><?php echo trans('label'); ?></label>
+                    <input type="text" name="custom_values_value" id="custom_values_value" class="form-control"
+                           value="<?php echo htmlentities($value->custom_values_value); ?>">
+                </div>
             </div>
         </div>
 
