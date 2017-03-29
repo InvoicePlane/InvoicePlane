@@ -40,8 +40,7 @@
                     quote_date_created: $('#quote_date_created').val(),
                     quote_password: $('#quote_password').val(),
                     user_id: '<?php echo $this->session->userdata('user_id'); ?>',
-                    invoice_group_id: $('#invoice_group_id').val(),
-                    _ip_csrf: csrf()
+                    invoice_group_id: $('#invoice_group_id').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>

@@ -140,6 +140,18 @@ function insert_html_tag(tag_type, destination_id) {
 
 $(document).ready(function () {
 
+    // Automatical CSRF protection for all POST requests
+    $.ajaxPrefilter(function (options) {
+
+        if (options.type === 'post' || options.type === 'POST' || options.type === 'Post') {
+            if (options.data === '') {
+                options.data += '?_ip_csrf=' +  Cookies.get('ip_csrf_cookie');
+            } else {
+                options.data += '&_ip_csrf=' +  Cookies.get('ip_csrf_cookie');
+            }
+        }
+    });
+
     // Correct the height of the content area
     var $content = $('#content'),
         $html = $('html');
@@ -156,13 +168,6 @@ $(document).ready(function () {
     // Dropdown Datepicker fix
     $html.click(function () {
         $('.dropdown-menu:visible').not('.datepicker').removeAttr('style');
-    });
-
-    // Update CSRF to ensure it's the latest token
-    $('form').on('submit', function (e) {
-        e.preventDefault();
-        $('[name="_ip_csrf"]').val(csrf());
-        e.currentTarget.submit();
     });
 
     // Tooltips

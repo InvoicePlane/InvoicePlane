@@ -82,6 +82,7 @@ module.exports = function (grunt) {
         dependencies: {
             src: [
                 'node_modules/jquery/dist/jquery.js',
+                'node_modules/js-cookie/src/js.cookie.js',
                 'assets/core/js/jquery-ui.js',
                 'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
                 'node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js',
@@ -144,7 +145,7 @@ module.exports = function (grunt) {
 
     // TASKS
 
-    grunt.registerTask('default', 'dev');
+    grunt.registerTask('default', 'build');
 
     grunt.registerTask('dev', [
         'clean:basic',
