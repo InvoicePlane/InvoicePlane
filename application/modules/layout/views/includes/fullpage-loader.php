@@ -1,4 +1,4 @@
-<div id="fullpage-loader" style="display: non">
+<div id="fullpage-loader" style="display: none">
     <div class="loader-content">
         <i id="loader-icon" class="fa fa-cog fa-spin"></i>
         <div id="loader-error" style="display: none">
