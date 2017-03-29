@@ -43,7 +43,6 @@
     <div class="quote">
 
         <div class="row">
-
             <div class="col-xs-12 col-md-9">
 
                 <h2><?php echo format_client($quote); ?></h2><br>
@@ -66,29 +65,29 @@
             </div>
 
             <div class="col-xs-12 col-md-3">
-                <div class="panel panel-default panel-body text-right">
-                    <table class="table table-condensed">
-                        <tr>
-                            <td><?php echo trans('quote'); ?> #</td>
-                            <td><?php echo $quote->quote_number; ?></td>
-                        </tr>
-                        <tr>
-                            <td><?php echo trans('date'); ?></td>
-                            <td><?php echo date_from_mysql($quote->quote_date_created); ?></td>
-                        </tr>
-                        <tr>
-                            <td><?php echo trans('due_date'); ?></td>
-                            <td><?php echo date_from_mysql($quote->quote_date_expires); ?></td>
-                        </tr>
-                    </table>
-                </div>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <td><?php echo trans('quote'); ?> #</td>
+                        <td><?php echo $quote->quote_number; ?></td>
+                    </tr>
+                    <tr>
+                        <td><?php echo trans('date'); ?></td>
+                        <td><?php echo date_from_mysql($quote->quote_date_created); ?></td>
+                    </tr>
+                    <tr>
+                        <td><?php echo trans('due_date'); ?></td>
+                        <td><?php echo date_from_mysql($quote->quote_date_expires); ?></td>
+                    </tr>
+                </table>
+
             </div>
 
         </div>
 
         <br/>
         <div class="table-responsive">
-            <table id="item_table" class="items table table-striped table-bordered">
+            <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th style="width:20px;"></th>
@@ -143,7 +142,7 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-striped table-bordered">
+            <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th class="text-right"><?php echo trans('subtotal'); ?></th>

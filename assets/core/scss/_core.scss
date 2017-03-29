@@ -101,7 +101,7 @@ textarea {
   }
 
   td {
-    vertical-align: middle;
+    vertical-align: middle !important;
   }
 
   tr.bold-border td {
@@ -111,7 +111,7 @@ textarea {
   &.items td {
     min-width: 150px;
     max-width: 300px;
-    vertical-align: top;
+    vertical-align: top !important;
 
     &.td-icon {
       max-width: 30px;
