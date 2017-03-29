@@ -20,7 +20,7 @@
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
-                    if (response.success == '1') {
+                    if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
                     }
                     else {
@@ -59,15 +59,15 @@
                     <input name="invoice_date_created" id="invoice_date_created"
                            class="form-control datepicker">
                     <span class="input-group-addon">
-								<i class="fa fa-calendar fa-fw"></i>
-						</span>
+                        <i class="fa fa-calendar fa-fw"></i>
+                    </span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="invoice_password"><?php echo trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php echo get_setting('invoice_pre_password') == '' ?: get_setting('invoice_pre_password') ?>"
+                       value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password') ?>"
                        style="margin: 0 auto;" autocomplete="off">
             </div>
 

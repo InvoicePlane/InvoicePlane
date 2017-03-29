@@ -1,5 +1,5 @@
 <script>
-    $('select').select2();
+    $('.simple-select').select2();
 </script>
 
 <div id="headerbar">
