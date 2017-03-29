@@ -5,16 +5,31 @@
         // Display the create invoice modal
         $('#change-client').modal('show');
 
-        $('#change-client').on('shown', function () {
-            $("#client_name").focus();
-        });
-
-        $().ready(function () {
-            $("[name='client_name']").select2({
-                placeholder: "<?php echo htmlentities(trans('client')); ?>",
-                allowClear: true
-            });
-            $("#client_name").focus();
+        $("#client_id").select2({
+            placeholder: "<?php echo htmlentities(trans('client')); ?>",
+            ajax: {
+                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term,
+                        page: params.page,
+                        _ip_csrf: Cookies.get('ip_csrf_cookie')
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 2
         });
 
         // Creates the invoice
@@ -57,14 +72,7 @@
         <div class="modal-body">
 
             <div class="form-group">
-                <select name="client_id" id="client_id" class="form-control" autofocus>
-                    <?php foreach ($clients as $client) { ?>
-                        <option value="<?php echo format_client($client); ?>"
-                                <?php if ($client_id == $client->client_id) { ?>selected="selected"<?php } ?>>
-                            <?php echo format_client($client); ?>
-                        </option>
-                    <?php } ?>
-                </select>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
             </div>
 
             <input class="hidden" id="quote_id" value="<?php echo $quote_id; ?>">

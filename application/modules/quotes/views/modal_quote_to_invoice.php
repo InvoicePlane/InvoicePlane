@@ -45,8 +45,8 @@
         </div>
         <div class="modal-body">
 
-            <input type="hidden" name="client_name" id="client_name"
-                   value="<?php echo $quote->client_name; ?>">
+            <input type="hidden" name="client_id" id="client_id"
+                   value="<?php echo $quote->client_id; ?>">
             <input type="hidden" name="user_id" id="user_id"
                    value="<?php echo $quote->user_id; ?>">
 
