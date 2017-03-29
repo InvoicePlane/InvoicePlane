@@ -147,6 +147,17 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', 'build');
 
+    grunt.registerTask('dev-build', [
+        'clean:basic',
+        'sass:dev',
+        'postcss:dev',
+        'concat:legacy',
+        'concat:dependencies',
+        'copy:datepickerlocale',
+        'copy:fontawesome',
+        'copy:devjs'
+    ]);
+
     grunt.registerTask('dev', [
         'clean:basic',
         'sass:dev',
