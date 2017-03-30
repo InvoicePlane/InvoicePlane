@@ -16,7 +16,7 @@
         </div>
         <div class="modal-body">
 
-            <p class="alert alert-danger"><?php echo trans('delete_invoice_warning'); ?></p>
+            <div class="alert alert-danger"><?php echo trans('delete_invoice_warning'); ?></div>
 
         </div>
         <div class="modal-footer">

@@ -375,8 +375,8 @@ if ($this->config->item('disable_read_only') == true) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
                                         <span class="input-group-addon">
-                                        <i class="fa fa-calendar fa-fw"></i>
-                                    </span>
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
                                     </div>
                                 </div>
 
@@ -497,9 +497,9 @@ if ($this->config->item('disable_read_only') == true) {
                         <div class="panel-body clearfix">
                             <!-- The fileinput-button span is used to style the file input field as button -->
                             <span class="btn btn-default fileinput-button">
-                            <i class="fa fa-plus"></i>
-                            <span><?php echo trans('add_files'); ?></span>
-                        </span>
+                                <i class="fa fa-plus"></i>
+                                <span><?php echo trans('add_files'); ?></span>
+                            </span>
 
                             <!-- dropzone -->
                             <div class="row">
