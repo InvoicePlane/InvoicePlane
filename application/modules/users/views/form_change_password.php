@@ -9,34 +9,38 @@
 
     <div id="content">
 
-        <?php $this->layout->load_view('layout/alerts'); ?>
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-md-offset-3">
 
-        <fieldset>
-            <legend><?php echo trans('change_password'); ?></legend>
+                <?php $this->layout->load_view('layout/alerts'); ?>
 
-            <div class="form-group">
-                <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                    <label class="control-label"><?php echo trans('password'); ?>: </label>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo trans('change_password'); ?>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="user_password">
+                                <?php echo trans('password'); ?>
+                            </label>
+                            <input type="password" name="user_password" id="user_password"
+                                   class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="user_passwordv">
+                                <?php echo trans('verify_password'); ?>
+                            </label>
+                            <input type="password" name="user_passwordv" id="user_passwordv"
+                                   class="form-control">
+                        </div>
+                    </div>
+
                 </div>
-                <div class="col-xs-12 col-sm-6">
-                    <input type="password" name="user_password" id="user_password"
-                           class="form-control">
-                </div>
+
             </div>
-
-            <div class="form-group">
-                <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                    <label class="control-label">
-                        <?php echo trans('verify_password'); ?>
-                    </label>
-                </div>
-                <div class="col-xs-12 col-sm-6">
-                    <input type="password" name="user_passwordv" id="user_passwordv"
-                           class="form-control">
-                </div>
-            </div>
-
-        </fieldset>
+        </div>
 
     </div>
 
