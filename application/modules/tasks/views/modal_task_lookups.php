@@ -73,51 +73,12 @@
      role="dialog" aria-labelledby="modal-choose-items" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo lang('add_task'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('add_task'); ?></h4>
         </div>
+
         <div class="modal-body">
-            <div class="table-responsive">
-                <table id="tasks_table" class="table table-bordered table-striped">
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th><?php echo lang('project_name'); ?></th>
-                        <th><?php echo lang('task_name'); ?></th>
-                        <th><?php echo lang('task_finish_date'); ?></th>
-                        <th><?php echo lang('task_description'); ?></th>
-                        <th class="text-right">
-                            <?php echo lang('task_price'); ?></th>
-                    </tr>
-
-                    <?php foreach ($tasks as $task) { ?>
-                        <tr class="task-row">
-                            <td class="text-left">
-                                <input type="checkbox"
-                                       class="modal-task-id" name="task_ids[]"
-                                       id="task-id-<?php echo $task->task_id ?>"
-                                       value="<?php echo $task->task_id; ?>">
-                            </td>
-                            <td nowrap class="text-left">
-                                <b><?php echo isset($task->project_name) ? $task->project_name : ''; ?></b>
-                            </td>
-                            <td>
-                                <b><?php echo $task->task_name; ?></b>
-                            </td>
-                            <td>
-                                <b><?php echo date_from_mysql($task->task_finish_date); ?></b>
-                            </td>
-                            <td>
-                                <?php echo nl2br($task->task_description); ?>
-                            </td>
-                            <td class="text-right">
-                                <?php echo format_currency($task->task_price); ?>
-                            </td>
-                        </tr>
-                    <?php } ?>
-
-                </table>
-            </div>
+            <?php $this->layout->load_view('tasks/partial_task_table_modal'); ?>
         </div>
 
         <div class="modal-footer">

@@ -33,30 +33,24 @@
 
 </script>
 
-<div id="modal_copy_quote" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="modal_copy_quote" aria-hidden="true">
+<div id="modal_copy_quote" class="modal modal-lg" role="dialog" aria-labelledby="modal_copy_quote" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('copy_quote'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('copy_quote'); ?></h4>
         </div>
         <div class="modal-body">
 
-            <input type="hidden" name="user_id" id="user_id"
-                   value="<?php echo $quote->user_id; ?>">
+            <input type="hidden" name="user_id" id="user_id" value="<?php echo $quote->user_id; ?>">
 
             <div class="form-group">
                 <label for="client_name">
                     <?php echo trans('client'); ?>
                 </label>
-
-                <div class="controls">
-                    <input type="text" name="client_name" id="client_name"
-                           class="form-control" autocomplete="off"
-                           data-provide="typeahead" data-items="8" data-source=''
-                           value="<?php echo $quote->client_name; ?>">
-                </div>
+                <input type="text" name="client_name" id="client_name"
+                       class="form-control" autocomplete="off"
+                       data-provide="typeahead" data-items="8" data-source=''
+                       value="<?php echo $quote->client_name; ?>">
             </div>
 
             <div class="form-group has-feedback">
@@ -69,8 +63,8 @@
                            class="form-control datepicker"
                            value="<?php echo date_from_mysql($quote->quote_date_created, true); ?>">
                     <span class="input-group-addon">
-												<i class="fa fa-calendar fa-fw"></i>
-										</span>
+                        <i class="fa fa-calendar fa-fw"></i>
+                    </span>
                 </div>
             </div>
 
@@ -78,17 +72,14 @@
                 <label for="invoice_group_id">
                     <?php echo trans('invoice_group'); ?>
                 </label>
-
-                <div class="controls">
-                    <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
-                        <?php foreach ($invoice_groups as $invoice_group) { ?>
-                            <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                <?php echo get_setting('default_quote_group') != $invoice_group->invoice_group_id ?: 'selected="selected"' ?>>
-                                <?php echo $invoice_group->invoice_group_name; ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
+                    <?php foreach ($invoice_groups as $invoice_group) { ?>
+                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                            <?php echo get_setting('default_quote_group') != $invoice_group->invoice_group_id ? '' : 'selected="selected"' ?>>
+                            <?php echo $invoice_group->invoice_group_name; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
         </div>

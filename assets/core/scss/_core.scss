@@ -101,7 +101,7 @@ textarea {
   }
 
   td {
-    vertical-align: middle;
+    vertical-align: middle !important;
   }
 
   tr.bold-border td {
@@ -111,7 +111,7 @@ textarea {
   &.items td {
     min-width: 150px;
     max-width: 300px;
-    vertical-align: top;
+    vertical-align: top !important;
 
     &.td-icon {
       max-width: 30px;
@@ -317,6 +317,15 @@ textarea {
   }
 }
 
+// Content classes
+.table-content {
+  padding: 0;
+}
+
+.tab-rich-content {
+  padding: 15px;
+}
+
 #headerbar {
   height: 47px;
   padding: 8px 15px;
@@ -414,7 +423,7 @@ div.table-content {
 }
 
 #actions {
-  margin: 15px 0;
+  margin: 15px 0 0;
 
   /* Mimic table appearance */
   div.table {
@@ -713,7 +722,7 @@ div.table-content {
 }
 
 .modal {
-  margin-top: 30px;
+  margin: 30px auto;
   overflow-y: auto;
 }
 
@@ -734,8 +743,13 @@ div.table-content {
   display: none;
 }
 
-#settings-tabs > li.active:first-child > a {
-  border-left: 0 !important;
+#settings-tabs {
+  text-align: center;
+
+  > li {
+    float: none;
+    display: inline-block;
+  }
 }
 
 #ipnews-results {
@@ -829,6 +843,8 @@ legend, .install-step h2 {
     border-bottom: none;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+    min-height: 30px;
+    vertical-align: middle;
   }
 }
 

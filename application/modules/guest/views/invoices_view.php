@@ -12,25 +12,24 @@
     <h1 class="headerbar-title"><?php echo trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
     <div class="headerbar-item pull-right">
-        <?php if ($invoice->invoice_status_id == 4) { ?>
-            <span class="btn btn-success btn-sm disabled">
-                <i class="fa fa-check"></i>
-                <?php echo trans('paid') ?>
-            </span>
-        <?php } ?>
-        <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-           class="btn btn-default btn-sm" id="btn_generate_pdf"
-           data-invoice-id="<?php echo $invoice_id; ?>"
-           data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
-            <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
-        </a>
-        <?php if ($invoice->invoice_status_id != 4) { ?>
+        <div class="btn-group btn-group-sm">
+            <?php if ($invoice->invoice_status_id == 4) { ?>
+                <button class="btn btn-success disabled">
+                    <i class="fa fa-check"></i> <?php echo trans('paid') ?>
+                </button>
+            <?php } ?>
+            <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
+               class="btn btn-default" id="btn_generate_pdf"
+               data-invoice-id="<?php echo $invoice_id; ?>"
+               data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
+                <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+            </a>
             <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
-               class="btn btn-success btn-sm">
+               class="btn btn-primary">
                 <i class="fa fa-credit-card"></i>
                 <?php echo trans('pay_now'); ?>
             </a>
-        <?php } ?>
+        </div>
     </div>
 
 </div>
@@ -45,19 +44,19 @@
 
             <div class="row">
 
-                <div class="col-xs-12 col-md-9">
+                <div class="col-xs-12 col-md-9 clearfix">
                     <div class="pull-left">
 
                         <h3><?php echo format_client($invoice); ?></h3>
 
-                        <span>
-						<?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-                        <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
-                        <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
-                        <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-                        <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-                        <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
-					</span>
+                        <div>
+                            <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
+                            <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
+                            <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
+                            <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
+                            <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
+                            <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+                        </div>
                         <br><br>
 
                         <?php if ($invoice->client_phone) { ?>
@@ -78,28 +77,28 @@
                 </div>
 
                 <div class="col-xs-12 col-md-3">
-                    <div class="panel panel-default panel-body">
-                        <table class="table table-condensed">
-                            <tr>
-                                <td><?php echo trans('invoice'); ?> #</td>
-                                <td><?php echo $invoice->invoice_number; ?></td>
-                            </tr>
-                            <tr>
-                                <td><?php echo trans('date'); ?></td>
-                                <td><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
-                            </tr>
-                            <tr>
-                                <td><?php echo trans('due_date'); ?></td>
-                                <td><?php echo date_from_mysql($invoice->invoice_date_due); ?></td>
-                            </tr>
-                        </table>
-                    </div>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <td><?php echo trans('invoice'); ?> #</td>
+                            <td><?php echo $invoice->invoice_number; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo trans('date'); ?></td>
+                            <td><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo trans('due_date'); ?></td>
+                            <td><?php echo date_from_mysql($invoice->invoice_date_due); ?></td>
+                        </tr>
+                    </table>
+
                 </div>
             </div>
 
             <br/>
             <div class="table-responsive">
-                <table id="item_table" class="items table table-striped table-bordered">
+                <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th></th>
@@ -163,7 +162,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th class="text-right"><?php echo trans('subtotal'); ?></th>

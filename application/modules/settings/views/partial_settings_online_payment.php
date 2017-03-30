@@ -9,22 +9,41 @@
     });
 </script>
 
-<div class="tab-info">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
 
-    <div class="form-group">
-        <label for="online-payment-select" class="control-label">
-            <?php echo trans('online_payment'); ?>
-        </label>
-        <select id="online-payment-select" class=" form-control">
-            <option value=""><?php echo trans('none'); ?></option>
-            <?php foreach ($gateway_drivers as $driver => $fields) {
-                $d = strtolower($driver);
-                ?>
-                <option value="<?php echo $d; ?>">
-                    <?php echo ucwords(str_replace('_', ' ', $driver)); ?>
-                </option>
-            <?php } ?>
-        </select>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('online_payments'); ?>
+        </div>
+        <div class="panel-body">
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                               name="settings[enable_online_payments]" <?php check_select(get_setting(''), 1, '==', true) ?>>
+                        <?php echo trans('enable_online_payments'); ?>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="online-payment-select" class="control-label">
+                    <?php echo trans('online_payment'); ?>
+                </label>
+                <select id="online-payment-select" class=" form-control">
+                    <option value=""><?php echo trans('none'); ?></option>
+                    <?php foreach ($gateway_drivers as $driver => $fields) {
+                        $d = strtolower($driver);
+                        ?>
+                        <option value="<?php echo $d; ?>">
+                            <?php echo ucwords(str_replace('_', ' ', $driver)); ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+
+        </div>
     </div>
 
     <?php

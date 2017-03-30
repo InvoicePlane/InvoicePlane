@@ -1,10 +1,10 @@
-<div class="tab-info">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
 
-    <div class="row">
-        <div class="col-xs-12 col-md-6">
-
-            <h4><?php echo trans('general_settings'); ?></h4>
-            <br/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('general_settings'); ?>
+        </div>
+        <div class="panel-body">
 
             <div class="form-group">
                 <label for="settings[quotes_expire_after]" class="control-label">
@@ -74,10 +74,13 @@
             </div>
 
         </div>
-        <div class="col-xs-12 col-md-6">
+    </div>
 
-            <h4><?php echo trans('quote_template'); ?></h4>
-            <br/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('quote_templates'); ?>
+        </div>
+        <div class="panel-body">
 
             <div class="form-group">
                 <label for="settings[pdf_quote_template]" class="control-label">

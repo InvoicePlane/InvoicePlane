@@ -6,4 +6,9 @@
             <?php echo nl2br($client_note->client_note); ?>
         </p>
     </div>
-<?php endforeach; ?>
+<?php endforeach;
+
+if (count($client_notes) > 0) {
+    echo '<hr>';
+}
+?>
