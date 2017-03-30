@@ -27,7 +27,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php echo format_client($project); ?>
+                        <strong><?php echo format_client($project); ?></strong>
                     </div>
                     <div class="panel-body">
                         <p>
@@ -50,46 +50,55 @@
         </div>
         <div class="col-xs-12 col-md-8">
 
-            <div class="table-responsive">
-                <table class="table table-striped">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <?php echo trans('tasks'); ?>
+                </div>
+                <div class="panel-body no-padding">
 
-                    <thead>
-                    <tr>
-                        <th><?php echo trans('task_name'); ?></th>
-                        <th><?php echo trans('status'); ?></th>
-                        <th><?php echo trans('task_finish_date'); ?></th>
-                        <th><?php echo trans('project'); ?></th>
-                    </tr>
-                    </thead>
+                    <div class="table-responsive">
+                        <table class="table table-striped no-margin">
 
-                    <tbody>
-                    <?php foreach ($tasks as $task) { ?>
-                        <tr>
-                            <td>
-                                <?php echo anchor('tasks/form/' . $task->task_id, $task->task_name) ?>
-                            </td>
-                            <td>
+                            <thead>
+                            <tr>
+                                <th><?php echo trans('task_name'); ?></th>
+                                <th><?php echo trans('status'); ?></th>
+                                <th><?php echo trans('task_finish_date'); ?></th>
+                                <th><?php echo trans('project'); ?></th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <?php foreach ($tasks as $task) { ?>
+                                <tr>
+                                    <td>
+                                        <?php echo anchor('tasks/form/' . $task->task_id, $task->task_name) ?>
+                                    </td>
+                                    <td>
                                 <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
                                     <?php echo $task_statuses["$task->task_status"]['label']; ?>
                                 </span>
-                            </td>
-                            <td>
+                                    </td>
+                                    <td>
                                 <span class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
                                     <?php echo date_from_mysql($task->task_finish_date); ?>
                                 </span>
-                            </td>
-                            <td><?php echo $task->project_name; ?></td>
-                        </tr>
-                    <?php } ?>
-                    </tbody>
+                                    </td>
+                                    <td><?php echo $task->project_name; ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
 
-                </table>
+                        </table>
 
-                <?php if (empty($tasks)) : ?>
-                    <br>
-                    <div class="alert alert-info"><?php echo trans('alert_no_tasks_found') ?></div>
-                <?php endif; ?>
+                        <?php if (empty($tasks)) : ?>
+                            <br>
+                            <div class="alert alert-info"><?php echo trans('alert_no_tasks_found') ?></div>
+                        <?php endif; ?>
 
+                    </div>
+
+                </div>
             </div>
 
         </div>

@@ -29,7 +29,7 @@
     });
 </script>
 
-<form method="post" class="form-horizontal">
+<form method="post">
 
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
