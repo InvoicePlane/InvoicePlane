@@ -48,11 +48,13 @@
 
     <div class="tabbable tabs-below">
 
-        <div class="tab-content col-xs-12 col-md-10 col-lg-8">
+        <div class="tab-content">
+
+            <div class="col-xs-12 col-md-8 col-md-offset-2">
+                <?php $this->layout->load_view('layout/alerts'); ?>
+            </div>
 
             <div id="settings-general" class="tab-pane active">
-                <?php $this->layout->load_view('layout/alerts'); ?>
-
                 <?php $this->layout->load_view('settings/partial_settings_general'); ?>
             </div>
 
