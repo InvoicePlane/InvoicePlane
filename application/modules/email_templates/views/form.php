@@ -397,18 +397,6 @@
 
 <script>
     $(function () {
-        $('.tag-select').select2().on('change', function (event) {
-            var select = $(event.currentTarget);
-            // Add the tag to the field
-            if (typeof window.lastTaggableClicked !== 'undefined') {
-                insert_at_caret(window.lastTaggableClicked.id, select.val());
-            }
-
-            // Reset the select and exit
-            select.val([]);
-            return false;
-        });
-
         var email_template_type = "<?php echo $this->mdl_email_templates->form_value('email_template_type'); ?>";
         var $email_template_type_options = $("[name=email_template_type]");
 

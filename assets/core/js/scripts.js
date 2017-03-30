@@ -181,6 +181,19 @@ $(document).ready(function () {
         window.lastTaggableClicked = this;
     });
 
+    // Template Tag handling
+    $('.tag-select').select2().on('change', function (event) {
+        var select = $(event.currentTarget);
+        // Add the tag to the field
+        if (typeof window.lastTaggableClicked !== 'undefined') {
+            insert_at_caret(window.lastTaggableClicked.id, select.val());
+        }
+
+        // Reset the select and exit
+        select.val([]);
+        return false;
+    });
+
     // HTML tags to email templates textarea
     $('.html-tag').click(function () {
         var tag_type = $(this).data('tagType');
