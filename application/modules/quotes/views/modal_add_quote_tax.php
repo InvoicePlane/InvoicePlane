@@ -17,13 +17,11 @@
     });
 </script>
 
-<div id="add-quote-tax" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="modal_add_quote_tax" aria-hidden="true">
+<div id="add-quote-tax" class="modal modal-lg" role="dialog" aria-labelledby="modal_add_quote_tax" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('add_quote_tax'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('add_quote_tax'); ?></h4>
         </div>
         <div class="modal-body">
 
@@ -36,8 +34,9 @@
                     <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
-                            <option
-                                    value="<?php echo $tax_rate->tax_rate_id; ?>"><?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?></option>
+                            <option value="<?php echo $tax_rate->tax_rate_id; ?>">
+                                <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
