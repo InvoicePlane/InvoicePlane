@@ -743,8 +743,13 @@ div.table-content {
   display: none;
 }
 
-#settings-tabs > li.active:first-child > a {
-  border-left: 0 !important;
+#settings-tabs {
+  text-align: center;
+
+  > li {
+    float: none;
+    display: inline-block;
+  }
 }
 
 #ipnews-results {

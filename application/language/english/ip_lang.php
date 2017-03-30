@@ -393,6 +393,7 @@ $lang = array(
     'quote_status_email_subject'                   => 'Client %1$s %2$s quote %3$s',
     'quote_tax'                                    => 'Quote Tax',
     'quote_template'                               => 'Quote Template',
+    'quote_templates'                              => 'Quote Templates',
     'quote_to_invoice'                             => 'Quote to Invoice',
     'quotes'                                       => 'Quotes',
     'quotes_expire_after'                          => 'Quotes Expire After (Days)',

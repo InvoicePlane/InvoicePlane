@@ -51,43 +51,55 @@
     };
 </script>
 
-<div class="tab-info">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
 
-    <h4><?php echo trans('updatecheck'); ?></h4><br/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('updatecheck'); ?>
+        </div>
+        <div class="panel-body">
 
-    <div class="form-group">
-        <input type="text" class=" form-control"
-               value="<?php echo $current_version; ?>" readonly="readonly">
+            <div class="form-group">
+                <input type="text" class=" form-control"
+                       value="<?php echo $current_version; ?>" readonly="readonly">
+            </div>
+            <div id="updatecheck-results">
+                <div id="updatecheck-loading" class="btn btn-default btn-sm disabled">
+                    <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_updates'); ?>
+                </div>
+
+                <div id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
+                    <?php echo trans('no_updates_available'); ?>
+                </div>
+
+                <div id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
+                    <?php echo trans('updatecheck_failed'); ?>
+                </div>
+
+                <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
+                   class="btn btn-success btn-sm hidden" target="_blank">
+                    <?php echo trans('updates_available'); ?>
+                </a>
+            </div>
+
+        </div>
     </div>
-    <div id="updatecheck-results">
-        <span id="updatecheck-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_updates'); ?>
-		</span>
 
-        <span id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
-            <?php echo trans('no_updates_available'); ?>
-        </span>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('invoiceplane_news'); ?>
+        </div>
+        <div class="panel-body">
 
-        <span id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
-            <?php echo trans('updatecheck_failed'); ?>
-        </span>
+            <div id="ipnews-results">
+                <div id="ipnews-loading" class="btn btn-default btn-sm disabled">
+                    <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_news'); ?>
+                </div>
 
-        <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
-           class="btn btn-success btn-sm hidden" target="_blank">
-            <?php echo trans('updates_available'); ?>
-        </a>
-    </div>
+                <div id="ipnews-container"></div>
+            </div>
 
-    <hr/>
-
-    <h4><?php echo trans('invoiceplane_news'); ?></h4>
-
-    <div id="ipnews-results">
-        <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_news'); ?>
-		</span>
-
-        <div id="ipnews-container"></div>
+        </div>
     </div>
 
 </div>
