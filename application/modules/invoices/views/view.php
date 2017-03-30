@@ -307,26 +307,26 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php } ?>
                     </h2><br>
                     <span>
-                            <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
-                            <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-                            <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-                            <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
-                        </span>
+                        <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
+                        <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
+                        <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
+                        <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
+                        <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
+                        <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+                    </span>
                     <br><br>
                     <?php if ($invoice->client_phone): ?>
                         <span>
-                              <strong><?php echo trans('phone'); ?>:</strong>
+                            <strong><?php echo trans('phone'); ?>:</strong>
                             <?php echo $invoice->client_phone; ?>
-                            </span>
+                        </span>
                         <br>
                     <?php endif; ?>
                     <?php if ($invoice->client_email): ?>
                         <span>
-                              <strong><?php echo trans('email'); ?>:</strong>
+                            <strong><?php echo trans('email'); ?>:</strong>
                             <?php echo $invoice->client_email; ?>
-                            </span>
+                        </span>
                     <?php endif; ?>
                 </div>
 
