@@ -39,28 +39,47 @@
                             <?php echo $task_statuses["$task->task_status"]['label']; ?>
                         </span>
                     </td>
-                    <td><?php echo $task->task_name; ?></td>
                     <td>
-                        <span class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
+                        <?php echo $task->task_name; ?>
+                    </td>
+                    <td>
+                        <div class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
                             <?php echo date_from_mysql($task->task_finish_date); ?>
-                        </span>
+                        </div>
                     </td>
                     <td>
                         <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, $task->project_name) : ''; ?>
                     </td>
-                    <td><?php echo format_currency($task->task_price); ?></td>
                     <td>
-                        <a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"
-                           title="<?php echo trans('edit'); ?>">
-                            <i class="fa fa-edit fa-margin"></i>
-                        </a>
-                        <?php if (!($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) : ?>
-                            <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
-                               title="<?php echo trans('delete'); ?>"
-                               onclick="return confirm('<?php if ($task->task_status == 4) echo trans('alert_task_delete') . ' ' . trans('delete_record_warning'); ?>');">
-                                <i class="fa fa-trash-o fa-margin"></i>
+                        <?php echo format_currency($task->task_price); ?>
+                    </td>
+                    <td>
+                        <div class="options btn-group">
+                            <a class="btn btn-default btn-sm dropdown-toggle"
+                               data-toggle="dropdown" href="#">
+                                <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
                             </a>
-                        <?php endif; ?>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"
+                                       title="<?php echo trans('edit'); ?>">
+                                        <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>
+                                    </a>
+                                </li>
+                                <?php if (!($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) : ?>
+                                    <li>
+                                        <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
+                                           title="<?php echo trans('delete'); ?>"
+                                           onclick="return confirm('<?php echo $task->task_status == 4 ? trans('alert_task_delete') : trans('delete_record_warning') ?>')"
+                                        >
+                                            <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+
+
                     </td>
                 </tr>
             <?php } ?>
