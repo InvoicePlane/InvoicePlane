@@ -20,39 +20,32 @@
     });
 </script>
 
-<div id="add-invoice-tax" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="add-invoice-tax" aria-hidden="true">
+<div id="add-invoice-tax" class="modal modal-lg" role="dialog" aria-labelledby="add-invoice-tax" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-            <h3><?php echo trans('add_invoice_tax'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('add_invoice_tax'); ?></h4>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
                 <label for="tax_rate_id"><?php echo trans('invoice_tax_rate'); ?>: </label>
-
-                <div class="controls">
-                    <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
-                        <option value="0"><?php echo trans('none'); ?></option>
-                        <?php foreach ($tax_rates as $tax_rate) { ?>
-                            <option value="<?php echo $tax_rate->tax_rate_id; ?>">
-                                <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
+                    <option value="0"><?php echo trans('none'); ?></option>
+                    <?php foreach ($tax_rates as $tax_rate) { ?>
+                        <option value="<?php echo $tax_rate->tax_rate_id; ?>">
+                            <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="include_item_tax"><?php echo trans('tax_rate_placement'); ?></label>
-
-                <div class="controls">
-                    <select name="include_item_tax" id="include_item_tax" class="form-control simple-select">
-                        <option value="0"><?php echo trans('apply_before_item_tax'); ?></option>
-                        <option value="1"><?php echo trans('apply_after_item_tax'); ?></option>
-                    </select>
-                </div>
+                <select name="include_item_tax" id="include_item_tax" class="form-control simple-select">
+                    <option value="0"><?php echo trans('apply_before_item_tax'); ?></option>
+                    <option value="1"><?php echo trans('apply_after_item_tax'); ?></option>
+                </select>
             </div>
 
         </div>

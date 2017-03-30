@@ -1,5 +1,5 @@
 <?php
-  $cv = $this->controller->view_data["custom_values"];
+$cv = $this->controller->view_data["custom_values"];
 ?>
 
 <script>
@@ -45,6 +45,7 @@
         }
         return fileIcon;
     }
+
     $(function () {
         $('.item-task-id').each(function () {
             // Disable client chaning if at least one item already has a task id assigned
@@ -157,14 +158,13 @@
             helper: fixHelper
         });
 
-        $(document).ready(function () {
-            if ($('#invoice_discount_percent').val().length > 0) {
-                $('#invoice_discount_amount').prop('disabled', true);
-            }
-            if ($('#invoice_discount_amount').val().length > 0) {
-                $('#invoice_discount_percent').prop('disabled', true);
-            }
-        });
+        if ($('#invoice_discount_percent').val().length > 0) {
+            $('#invoice_discount_amount').prop('disabled', true);
+        }
+        if ($('#invoice_discount_amount').val().length > 0) {
+            $('#invoice_discount_percent').prop('disabled', true);
+        }
+
         $('#invoice_discount_amount').keyup(function () {
             if (this.value.length > 0) {
                 $('#invoice_discount_percent').prop('disabled', true);
@@ -203,8 +203,7 @@ if ($this->config->item('disable_read_only') == true) {
     <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
 
         <div class="options btn-group btn-group-sm">
-            <a class="btn btn-sm btn-default dropdown-toggle"
-               data-toggle="dropdown" href="#">
+            <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-caret-down no-margin"></i> <?php echo trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
@@ -291,21 +290,23 @@ if ($this->config->item('disable_read_only') == true) {
 </div>
 
 <div id="content">
+
     <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <form id="invoice_form">
         <div class="invoice">
-            <div class="cf row">
-                <div class="col-xs-12 col-md-5">
-                    <div class="pull-left">
-                        <h2>
-                            <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo format_client($invoice) ?></a>
-                            <?php if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) { ?>
-                                <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
-                                      data-toggle="tooltip" data-placement="bottom"
-                                      title="<?php echo trans('change_client'); ?>"></span>
-                            <?php } ?>
-                        </h2><br>
-                        <span>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-5">
+                    <h2>
+                        <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo format_client($invoice) ?></a>
+                        <?php if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) { ?>
+                            <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
+                                  data-toggle="tooltip" data-placement="bottom"
+                                  title="<?php echo trans('change_client'); ?>"></span>
+                        <?php } ?>
+                    </h2><br>
+                    <span>
                             <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
                             <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
                             <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
@@ -313,28 +314,27 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
                             <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
                         </span>
-                        <br><br>
-                        <?php if ($invoice->client_phone): ?>
-                            <span>
+                    <br><br>
+                    <?php if ($invoice->client_phone): ?>
+                        <span>
                               <strong><?php echo trans('phone'); ?>:</strong>
-                                <?php echo $invoice->client_phone; ?>
+                            <?php echo $invoice->client_phone; ?>
                             </span>
-                            <br>
-                        <?php endif; ?>
-                        <?php if ($invoice->client_email): ?>
-                            <span>
+                        <br>
+                    <?php endif; ?>
+                    <?php if ($invoice->client_email): ?>
+                        <span>
                               <strong><?php echo trans('email'); ?>:</strong>
-                                <?php echo $invoice->client_email; ?>
+                            <?php echo $invoice->client_email; ?>
                             </span>
-                        <?php endif; ?>
-
-                    </div>
+                    <?php endif; ?>
                 </div>
 
-                <div class="col-xs-12 col-md-7">
+                <div class="col-xs-12 visible-xs"><br></div>
 
+                <div class="col-xs-12 col-sm-6 col-md-7">
                     <div class="details-box">
-                        <div class=" row">
+                        <div class="row">
 
                             <?php if ($invoice->invoice_sign == -1) { ?>
                                 <div class="col-xs-12">
@@ -349,7 +349,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
                             <?php } ?>
 
-                            <div class="col-xs-12 col-sm-6">
+                            <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
                                     <label><?php echo trans('invoice'); ?> #</label>
@@ -398,13 +398,15 @@ if ($this->config->item('disable_read_only') == true) {
 
                                 <!-- Custom fields -->
                                 <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if($custom_field->custom_field_location != 1){ continue; } ?>
+                                    <?php if ($custom_field->custom_field_location != 1) {
+                                        continue;
+                                    } ?>
                                     <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
                                 <?php endforeach; ?>
 
                             </div>
 
-                            <div class="col-xs-12 col-sm-6">
+                            <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
                                     <label>
@@ -466,77 +468,93 @@ if ($this->config->item('disable_read_only') == true) {
             <hr/>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-4">
+                <div class="col-xs-12 col-md-6">
 
-                    <label><?php echo trans('invoice_terms'); ?></label>
-                    <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
-                        <?php if ($invoice->is_read_only == 1) {
-                            echo 'disabled="disabled"';
-                        } ?>
-                    ><?php echo $invoice->invoice_terms; ?></textarea>
+                    <div class="panel panel-default no-margin">
+                        <div class="panel-heading">
+                            <?php echo trans('invoice_terms'); ?>
+                        </div>
+                        <div class="panel-body">
+                            <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
+                                <?php if ($invoice->is_read_only == 1) {
+                                    echo 'disabled="disabled"';
+                                } ?>
+                            ><?php echo $invoice->invoice_terms; ?></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 visible-xs visible-sm"><br></div>
 
                 </div>
-                <div class="col-xs-12 col-sm-8">
+                <div class="col-xs-12 col-md-6">
 
-                    <label class="control-label"><?php echo trans('attachments'); ?></label>
-                    <br/>
-                    <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="btn btn-default fileinput-button">
-                        <i class="fa fa-plus"></i>
-                        <span><?php echo trans('add_files'); ?></span>
-                    </span>
+                    <div class="panel panel-default no-margin">
 
-                    <!-- dropzone -->
-                    <div class="row">
-                        <div id="actions" class="col-xs-12 col-sm-12">
-                            <div class="col-lg-7"></div>
-                            <div class="col-lg-5">
-                                <!-- The global file processing state -->
-                                <div class="fileupload-process">
-                                    <div id="total-progress" class="progress progress-striped active" role="progressbar"
-                                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                                        <div class="progress-bar progress-bar-success" style="width:0%;"
-                                             data-dz-uploadprogress></div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="panel-heading">
+                            <?php echo trans('attachments'); ?>
+                        </div>
 
-                            <div id="previews" class="table table-condensed table-striped files">
-                                <div id="template" class="file-row">
-                                    <!-- This is used as the file preview template -->
-                                    <div>
-                                        <span class="preview"><img data-dz-thumbnail/></span>
-                                    </div>
-                                    <div>
-                                        <p class="name" data-dz-name></p>
-                                        <strong class="error text-danger" data-dz-errormessage></strong>
-                                    </div>
-                                    <div>
-                                        <p class="size" data-dz-size></p>
+                        <div class="panel-body clearfix">
+                            <!-- The fileinput-button span is used to style the file input field as button -->
+                            <span class="btn btn-default fileinput-button">
+                            <i class="fa fa-plus"></i>
+                            <span><?php echo trans('add_files'); ?></span>
+                        </span>
 
-                                        <div class="progress progress-striped active" role="progressbar"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100" aria-valuenow="0">
-                                            <div class="progress-bar progress-bar-success" style="..."
-                                                 data-dz-uploadprogress></div>
+                            <!-- dropzone -->
+                            <div class="row">
+                                <div id="actions" class="col-xs-12">
+                                    <div class="col-lg-7"></div>
+                                    <div class="col-lg-5">
+                                        <!-- The global file processing state -->
+                                        <div class="fileupload-process">
+                                            <div id="total-progress" class="progress progress-striped active"
+                                                 role="progressbar"
+                                                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                                <div class="progress-bar progress-bar-success" style="width:0%;"
+                                                     data-dz-uploadprogress></div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="pull-left btn-group">
-                                        <button data-dz-download class="btn btn-sm btn-primary">
-                                            <i class="fa fa-download"></i>
-                                            <span><?php echo trans('download'); ?></span>
-                                        </button>
-                                        <?php if ($invoice->is_read_only != 1) { ?>
-                                            <button data-dz-remove class="btn btn-danger btn-sm delete">
-                                                <i class="fa fa-trash-o"></i>
-                                                <span><?php echo trans('delete'); ?></span>
-                                            </button>
-                                        <?php } ?>
+
+                                    <div id="previews" class="table table-condensed files no-margin">
+                                        <div id="template" class="file-row">
+                                            <!-- This is used as the file preview template -->
+                                            <div>
+                                                <span class="preview"><img data-dz-thumbnail/></span>
+                                            </div>
+                                            <div>
+                                                <p class="name" data-dz-name></p>
+                                                <strong class="error text-danger" data-dz-errormessage></strong>
+                                            </div>
+                                            <div>
+                                                <p class="size" data-dz-size></p>
+                                                <div class="progress progress-striped active" role="progressbar"
+                                                     aria-valuemin="0"
+                                                     aria-valuemax="100" aria-valuenow="0">
+                                                    <div class="progress-bar progress-bar-success" style=""
+                                                         data-dz-uploadprogress></div>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left btn-group">
+                                                <button data-dz-download class="btn btn-sm btn-primary">
+                                                    <i class="fa fa-download"></i>
+                                                    <span><?php echo trans('download'); ?></span>
+                                                </button>
+                                                <?php if ($invoice->is_read_only != 1) { ?>
+                                                    <button data-dz-remove class="btn btn-danger btn-sm delete">
+                                                        <i class="fa fa-trash-o"></i>
+                                                        <span><?php echo trans('delete'); ?></span>
+                                                    </button>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- stop dropzone -->
                             </div>
                         </div>
-                        <!-- stop dropzone -->
+
                     </div>
                 </div>
             </div>
@@ -544,30 +562,45 @@ if ($this->config->item('disable_read_only') == true) {
             <?php if ($custom_fields): ?>
                 <div class="row">
                     <div class="col-xs-12">
-                        <fieldset>
-                            <legend><?php echo trans('custom_fields'); ?></legend>
-                            <div class="col-xs-6">
-                                <?php $i = 0; ?>
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if($custom_field->custom_field_location != 0) { continue; } ?>
-                                    <?php $i++; ?>
-                                    <?php if ($i % 2 != 0): ?>
-                                        <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </div>
 
-                            <div class="col-xs-6">
-                                <?php $i = 0; ?>
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if($custom_field->custom_field_location != 0) { continue; } ?>
-                                    <?php $i++; ?>
-                                    <?php if ($i % 2 == 0): ?>
-                                        <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
+                        <hr>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php echo trans('custom_fields'); ?>
                             </div>
-                        </fieldset>
+                            <div class="panel-body">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <?php $i = 0; ?>
+                                        <?php foreach ($custom_fields as $custom_field): ?>
+                                            <?php if ($custom_field->custom_field_location != 0) {
+                                                continue;
+                                            } ?>
+                                            <?php $i++; ?>
+                                            <?php if ($i % 2 != 0): ?>
+                                                <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <?php $i = 0; ?>
+                                        <?php foreach ($custom_fields as $custom_field): ?>
+                                            <?php if ($custom_field->custom_field_location != 0) {
+                                                continue;
+                                            } ?>
+                                            <?php $i++; ?>
+                                            <?php if ($i % 2 == 0): ?>
+                                                <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             <?php endif; ?>
@@ -583,7 +616,6 @@ if ($this->config->item('disable_read_only') == true) {
         </div>
 
     </form>
-
 </div>
 <script>
     // Get the template HTML and remove it from the document

@@ -1,6 +1,5 @@
 <div class="table-responsive">
-
-    <table id="item_table" class="items table table-condensed table-bordered">
+    <table id="item_table" class="items table table-condensed table-bordered no-margin">
         <thead style="display: none">
         <tr>
             <th></th>
@@ -270,6 +269,8 @@
     </table>
 </div>
 
+<br>
+
 <div class="row">
     <div class="col-xs-12 col-md-4">
         <div class="btn-group">
@@ -286,11 +287,12 @@
                 </a>
             <?php } ?>
         </div>
-        <br/><br/>
     </div>
 
+    <div class="col-xs-12 visible-xs visible-sm"><br></div>
+
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
-        <table class="table table-condensed text-right">
+        <table class="table table-bordered text-right">
             <tr>
                 <td style="width: 40%;"><?php echo trans('subtotal'); ?></td>
                 <td style="width: 60%;"

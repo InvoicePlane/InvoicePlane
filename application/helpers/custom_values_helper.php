@@ -92,11 +92,12 @@ function format_boolean($txt)
     return '';
 }
 
-function format_avs($txt){
-  if(!preg_match('/(\d{3})(\d{4})(\d{4})(\d{2})/', $txt, $matches)){
-    return $txt;
-  }
-  return $matches[1].".".$matches[2].".".$matches[3].".".$matches[4];
+function format_avs($txt)
+{
+    if (!preg_match('/(\d{3})(\d{4})(\d{4})(\d{2})/', $txt, $matches)) {
+        return $txt;
+    }
+    return $matches[1] . "." . $matches[2] . "." . $matches[3] . "." . $matches[4];
 
 }
 
@@ -117,12 +118,13 @@ function format_fallback($txt)
  * @param string $class_top
  * @param string $class_bottom
  */
-function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $label_class='')
+function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $label_class = '')
 {
     ?>
     <div class="form-group">
         <div class="<?php echo $class_top; ?>">
-            <label<?php echo ($label_class!=''?" class='".$label_class."'":'');?>><?php echo $custom_field->custom_field_label; ?>: </label>
+            <label<?php echo($label_class != '' ? " class='" . $label_class . "'" : ''); ?>><?php echo $custom_field->custom_field_label; ?>
+                : </label>
         </div>
         <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']'); ?>
         <div class="<?php echo $class_bottom; ?>">
@@ -140,7 +142,7 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             case 'SINGLE-CHOICE':
             $choices = $cv[$custom_field->custom_field_id];
             ?>
-                <select class="form-control" name="custom[<?php echo $custom_field->custom_field_id; ?>]"
+                <select class="form-control simple-select" name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                         id="<?php echo $custom_field->custom_field_id; ?>">
                     <option value=""></option>
                     <?php foreach ($choices as $val): ?>
@@ -163,8 +165,7 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
                         id="<?php echo htmlentities($custom_field->custom_field_id); ?>"
                         name="custom[<?php echo htmlentities($custom_field->custom_field_id); ?>][]"
                         multiple="multiple"
-                        class="form-control"
-                >
+                        class="form-control">
                     <option value=""></option>
                     <?php foreach ($choices as $choice): ?>
                         <?php $sel = (in_array($choice->custom_values_id, $selChoices) ? 'selected="selected"' : ""); ?>

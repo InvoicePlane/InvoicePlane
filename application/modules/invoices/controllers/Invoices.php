@@ -152,7 +152,6 @@ class Invoices extends Admin_Controller
         $fields = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-
         if (!$invoice) {
             show_404();
         }
@@ -166,20 +165,18 @@ class Invoices extends Admin_Controller
             }
         }
 
-
-        foreach($custom_fields as $cfield){
-            foreach($fields as $fvalue){
-              if($fvalue->invoice_custom_fieldid == $cfield->custom_field_id){
-                // TODO: Hackish, may need a better optimization
-                $this->mdl_invoices->set_form_value(
-                  'custom[' . $cfield->custom_field_id . ']',
-                  $fvalue->invoice_custom_fieldvalue
-                );
-                break;
-              }
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
+                if ($fvalue->invoice_custom_fieldid == $cfield->custom_field_id) {
+                    // TODO: Hackish, may need a better optimization
+                    $this->mdl_invoices->set_form_value(
+                        'custom[' . $cfield->custom_field_id . ']',
+                        $fvalue->invoice_custom_fieldvalue
+                    );
+                    break;
+                }
             }
         }
-
 
         $this->layout->set(
             array(
