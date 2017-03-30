@@ -3,6 +3,8 @@
         // Display the create quote modal
         $('#create-quote').modal('show');
 
+        $('.simple-select').select2();
+
         $("#client_id").select2({
             placeholder: "<?php echo htmlentities(trans('client')); ?>",
             ajax: {
@@ -62,13 +64,11 @@
 
 </script>
 
-<div id="create-quote" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="modal_create_quote" aria-hidden="true">
+<div id="create-quote" class="modal modal-lg" role="dialog" aria-labelledby="modal_create_quote" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('create_quote'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('create_quote'); ?></h4>
         </div>
         <div class="modal-body">
 
@@ -101,16 +101,14 @@
 
             <div class="form-group">
                 <label for="invoice_group_id"><?php echo trans('invoice_group'); ?>: </label>
-                <div class="controls">
-                    <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
-                        <?php foreach ($invoice_groups as $invoice_group) { ?>
-                            <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                    <?php if (get_setting('default_quote_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
-                                <?php echo $invoice_group->invoice_group_name; ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
+                    <?php foreach ($invoice_groups as $invoice_group) { ?>
+                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                            <?php check_select(get_setting('default_quote_group'), $invoice_group->invoice_group_id); ?>>
+                            <?php echo $invoice_group->invoice_group_name; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
         </div>
