@@ -36,8 +36,8 @@
                     <td><?php echo $user_types[$user->user_type]; ?></td>
                     <td><?php echo $user->user_email; ?></td>
                     <td>
-                        <div class="options btn-group">
-                            <a class="btn btn-sm btn-default dropdown-toggle"
+                        <div class="options btn-group btn-group-sm ">
+                            <a class="btn btn-default dropdown-toggle"
                                data-toggle="dropdown" href="#">
                                 <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
                             </a>

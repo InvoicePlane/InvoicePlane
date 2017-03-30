@@ -35,13 +35,12 @@
     });
 </script>
 
-<div id="modal_quote_to_invoice" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="modal_quote_to_invoice" aria-hidden="true">
+<div id="modal_quote_to_invoice" class="modal modal-lg" role="dialog" aria-labelledby="modal_quote_to_invoice"
+     aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('quote_to_invoice'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('quote_to_invoice'); ?></h4>
         </div>
         <div class="modal-body">
 
@@ -78,7 +77,7 @@
                 <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
+                            <?php check_select(get_setting('default_invoice_group'), $invoice_group->invoice_group_id); ?>>
                             <?php echo $invoice_group->invoice_group_name; ?></option>
                     <?php } ?>
                 </select>

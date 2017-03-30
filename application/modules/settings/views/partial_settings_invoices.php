@@ -1,279 +1,292 @@
-<div class="tab-info">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
 
-    <div class="row">
-        <div class="col-xs-12 col-md-6">
-
-            <div class="form-group">
-                <label for="settings[default_invoice_group]" class="control-label">
-                    <?php echo trans('default_invoice_group'); ?>
-                </label>
-                <select name="settings[default_invoice_group]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($invoice_groups as $invoice_group) { ?>
-                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                            <?php check_select(get_setting('default_invoice_group'), $invoice_group->invoice_group_id); ?>>
-                            <?php echo $invoice_group->invoice_group_name; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="settings[default_invoice_terms]">
-                    <?php echo trans('default_terms'); ?>
-                </label>
-                <textarea name="settings[default_invoice_terms]" class=" form-control"
-                          rows="3"><?php echo get_setting('default_invoice_terms'); ?></textarea>
-            </div>
-
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('invoices'); ?>
         </div>
-        <div class="col-xs-12 col-md-6">
+        <div class="panel-body">
 
-            <div class="form-group">
-                <label for="settings[invoice_default_payment_method]" class="control-label">
-                    <?php echo trans('default_payment_method'); ?>
-                </label>
-                <select name="settings[invoice_default_payment_method]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php
-                    foreach ($payment_methods as $payment_method) { ?>
-                        <option value="<?php echo $payment_method->payment_method_id; ?>"
-                            <?php check_select($payment_method->payment_method_id, get_setting('invoice_default_payment_method')) ?>>
-                            <?php echo $payment_method->payment_method_name; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
 
-            <div class="form-group">
-                <label for="settings[invoices_due_after]" class="control-label">
-                    <?php echo trans('invoices_due_after'); ?>
-                </label>
-                <input type="text" name="settings[invoices_due_after]" class=" form-control"
-                       value="<?php echo get_setting('invoices_due_after'); ?>">
-            </div>
+                    <div class="form-group">
+                        <label for="settings[default_invoice_group]" class="control-label">
+                            <?php echo trans('default_invoice_group'); ?>
+                        </label>
+                        <select name="settings[default_invoice_group]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($invoice_groups as $invoice_group) { ?>
+                                <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                                    <?php check_select(get_setting('default_invoice_group'), $invoice_group->invoice_group_id); ?>>
+                                    <?php echo $invoice_group->invoice_group_name; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
 
-            <div class="form-group">
-                <label for="settings[generate_invoice_number_for_draft]" class="control-label">
-                    <?php echo trans('generate_invoice_number_for_draft'); ?>
-                </label>
-                <select name="settings[generate_invoice_number_for_draft]" class=" form-control simple-select">
-                    <option value="0">
-                        <?php echo trans('no'); ?>
-                    </option>
-                    <option value="1" <?php check_select(get_setting('generate_invoice_number_for_draft'), '1'); ?>>
-                        <?php echo trans('yes'); ?>
-                    </option>
-                </select>
-            </div>
+                    <div class="form-group">
+                        <label for="settings[default_invoice_terms]">
+                            <?php echo trans('default_terms'); ?>
+                        </label>
+                        <textarea name="settings[default_invoice_terms]" class=" form-control"
+                                  rows="3"><?php echo get_setting('default_invoice_terms'); ?></textarea>
+                    </div>
 
-        </div>
-    </div>
+                </div>
+                <div class="col-xs-12 col-md-6">
 
-    <hr/>
+                    <div class="form-group">
+                        <label for="settings[invoice_default_payment_method]" class="control-label">
+                            <?php echo trans('default_payment_method'); ?>
+                        </label>
+                        <select name="settings[invoice_default_payment_method]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php
+                            foreach ($payment_methods as $payment_method) { ?>
+                                <option value="<?php echo $payment_method->payment_method_id; ?>"
+                                    <?php check_select($payment_method->payment_method_id, get_setting('invoice_default_payment_method')) ?>>
+                                    <?php echo $payment_method->payment_method_name; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
 
-    <div class="row">
-        <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="settings[invoices_due_after]" class="control-label">
+                            <?php echo trans('invoices_due_after'); ?>
+                        </label>
+                        <input type="text" name="settings[invoices_due_after]" class=" form-control"
+                               value="<?php echo get_setting('invoices_due_after'); ?>">
+                    </div>
 
-            <h4><?php echo trans('pdf_settings'); ?></h4>
-            <br/>
+                    <div class="form-group">
+                        <label for="settings[generate_invoice_number_for_draft]" class="control-label">
+                            <?php echo trans('generate_invoice_number_for_draft'); ?>
+                        </label>
+                        <select name="settings[generate_invoice_number_for_draft]" class=" form-control simple-select">
+                            <option value="0">
+                                <?php echo trans('no'); ?>
+                            </option>
+                            <option value="1" <?php check_select(get_setting('generate_invoice_number_for_draft'), '1'); ?>>
+                                <?php echo trans('yes'); ?>
+                            </option>
+                        </select>
+                    </div>
 
-            <div class="form-group">
-                <label for="settings[mark_invoices_sent_pdf]" class="control-label">
-                    <?php echo trans('mark_invoices_sent_pdf'); ?>
-                </label>
-                <select name="settings[mark_invoices_sent_pdf]" class=" form-control simple-select">
-                    <option value="0">
-                        <?php echo trans('no'); ?>
-                    </option>
-                    <option value="1" <?php check_select(get_setting('mark_invoices_sent_pdf'), '1'); ?>>
-                        <?php echo trans('yes'); ?>
-                    </option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="settings[invoice_pre_password]" class="control-label">
-                    <?php echo trans('invoice_pre_password'); ?>
-                </label>
-                <input type="text" name="settings[invoice_pre_password]" class=" form-control"
-                       value="<?php echo get_setting('invoice_pre_password'); ?>">
-            </div>
-
-            <div class="form-group">
-                <label for="settings[include_zugferd]" class="control-label">
-                    <?php echo trans('invoice_pdf_include_zugferd'); ?>
-                </label>
-                <select name="settings[include_zugferd]" class=" form-control simple-select">
-                    <option value="0">
-                        <?php echo trans('no'); ?>
-                    </option>
-                    <option value="1" <?php check_select(get_setting('include_zugferd'), '1'); ?>>
-                        <?php echo trans('yes'); ?>
-                    </option>
-                </select>
-                <p class="help-block"><?php echo trans('invoice_pdf_include_zugferd_help'); ?></p>
-            </div>
-
-        </div>
-        <div class="col-xs-12 col-md-6">
-
-            <h4>&nbsp;</h4>
-            <br/>
-
-            <div class="form-group">
-                <label class="control-label">
-                    <?php echo trans('invoice_logo'); ?>
-                </label>
-                <?php if (get_setting('invoice_logo')) { ?>
-                    <img class="personal_logo" src="<?php echo base_url(); ?>uploads/<?php echo get_setting('invoice_logo'); ?>">
-                    <br>
-                    <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
-                <?php } ?>
-                <input type="file" name="invoice_logo" size="40" class=" form-control"/>
+                </div>
             </div>
 
         </div>
     </div>
 
-    <hr/>
-
-    <div class="row">
-        <div class="col-xs-12 col-md-6">
-
-            <h4><?php echo trans('invoice_template'); ?></h4>
-            <br/>
-
-            <div class="form-group">
-                <label for="settings[pdf_invoice_template]" class="control-label">
-                    <?php echo trans('default_pdf_template'); ?>
-                </label>
-                <select name="settings[pdf_invoice_template]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
-                        <option value="<?php echo $invoice_template; ?>"
-                            <?php check_select(get_setting('pdf_invoice_template'), $invoice_template); ?>>
-                            <?php echo $invoice_template; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="settings[pdf_invoice_template_paid]" class="control-label">
-                    <?php echo trans('pdf_template_paid'); ?>
-                </label>
-                <select name="settings[pdf_invoice_template_paid]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
-                        <option value="<?php echo $invoice_template; ?>"
-                            <?php check_select(get_setting('pdf_invoice_template_paid'), $invoice_template); ?>>
-                            <?php echo $invoice_template; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="settings[pdf_invoice_template_overdue]" class="control-label">
-                    <?php echo trans('pdf_template_overdue'); ?>
-                </label>
-                <select name="settings[pdf_invoice_template_overdue]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
-                        <option value="<?php echo $invoice_template; ?>"
-                            <?php check_select(get_setting('pdf_invoice_template_overdue'), $invoice_template); ?>>
-                            <?php echo $invoice_template; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="settings[public_invoice_template]" class="control-label">
-                    <?php echo trans('default_public_template'); ?>
-                </label>
-                <select name="settings[public_invoice_template]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($public_invoice_templates as $invoice_template) { ?>
-                        <option value="<?php echo $invoice_template; ?>"
-                            <?php check_select(get_setting('public_invoice_template'), $invoice_template); ?>>
-                            <?php echo $invoice_template; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('pdf_settings'); ?>
         </div>
-        <div class="col-xs-12 col-md-6">
+        <div class="panel-body">
 
-            <h4>&nbsp;</h4>
-            <br/>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
 
-            <div class="form-group">
-                <label for="settings[email_invoice_template]" class="control-label">
-                    <?php echo trans('default_email_template'); ?>
-                </label>
-                <select name="settings[email_invoice_template]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($email_templates_invoice as $email_template) { ?>
-                        <option value="<?php echo $email_template->email_template_id; ?>"
-                            <?php check_select(get_setting('email_invoice_template'), $email_template->email_template_id); ?>>
-                            <?php echo $email_template->email_template_title; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+                    <div class="form-group">
+                        <label for="settings[mark_invoices_sent_pdf]" class="control-label">
+                            <?php echo trans('mark_invoices_sent_pdf'); ?>
+                        </label>
+                        <select name="settings[mark_invoices_sent_pdf]" class=" form-control simple-select">
+                            <option value="0">
+                                <?php echo trans('no'); ?>
+                            </option>
+                            <option value="1" <?php check_select(get_setting('mark_invoices_sent_pdf'), '1'); ?>>
+                                <?php echo trans('yes'); ?>
+                            </option>
+                        </select>
+                    </div>
 
-            <div class="form-group">
-                <label for="settings[email_invoice_template_paid]" class="control-label">
-                    <?php echo trans('email_template_paid'); ?>
-                </label>
-                <select name="settings[email_invoice_template_paid]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($email_templates_invoice as $email_template) { ?>
-                        <option value="<?php echo $email_template->email_template_id; ?>"
-                            <?php check_select(get_setting('email_invoice_template_paid'), $email_template->email_template_id); ?>>
-                            <?php echo $email_template->email_template_title; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+                    <div class="form-group">
+                        <label for="settings[invoice_pre_password]" class="control-label">
+                            <?php echo trans('invoice_pre_password'); ?>
+                        </label>
+                        <input type="text" name="settings[invoice_pre_password]" class=" form-control"
+                               value="<?php echo get_setting('invoice_pre_password'); ?>">
+                    </div>
 
-            <div class="form-group">
-                <label for="settings[email_invoice_template_overdue]" class="control-label">
-                    <?php echo trans('email_template_overdue'); ?>
-                </label>
-                <select name="settings[email_invoice_template_overdue]" class=" form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($email_templates_invoice as $email_template) { ?>
-                        <option value="<?php echo $email_template->email_template_id; ?>"
-                            <?php check_select(get_setting('email_invoice_template_overdue'), $email_template->email_template_id); ?>>
-                            <?php echo $email_template->email_template_title; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+                    <div class="form-group">
+                        <label for="settings[include_zugferd]" class="control-label">
+                            <?php echo trans('invoice_pdf_include_zugferd'); ?>
+                        </label>
+                        <select name="settings[include_zugferd]" class=" form-control simple-select">
+                            <option value="0">
+                                <?php echo trans('no'); ?>
+                            </option>
+                            <option value="1" <?php check_select(get_setting('include_zugferd'), '1'); ?>>
+                                <?php echo trans('yes'); ?>
+                            </option>
+                        </select>
+                        <p class="help-block"><?php echo trans('invoice_pdf_include_zugferd_help'); ?></p>
+                    </div>
 
-            <div class="form-group">
-                <label for="settings[public_invoice_template]" class="control-label">
-                    <?php echo trans('pdf_invoice_footer'); ?>
-                </label>
-                <textarea name="settings[pdf_invoice_footer]"
-                          class=" form-control no-margin"><?php echo get_setting('pdf_invoice_footer'); ?></textarea>
-                <p class="help-block"><?php echo trans('pdf_invoice_footer_hint'); ?></p>
+                </div>
+                <div class="col-xs-12 col-md-6">
+
+                    <div class="form-group">
+                        <label class="control-label">
+                            <?php echo trans('invoice_logo'); ?>
+                        </label>
+                        <?php if (get_setting('invoice_logo')) { ?>
+                            <img class="personal_logo"
+                                 src="<?php echo base_url(); ?>uploads/<?php echo get_setting('invoice_logo'); ?>">
+                            <br>
+                            <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
+                        <?php } ?>
+                        <input type="file" name="invoice_logo" size="40" class=" form-control"/>
+                    </div>
+
+                </div>
             </div>
 
         </div>
     </div>
 
-    <hr/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('invoice_template'); ?>
+        </div>
+        <div class="panel-body">
 
-    <div class="row">
-        <div class="col-xs-12 col-md-6">
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
 
-            <h4><?php echo trans('email_settings'); ?></h4>
-            <br/>
+                    <div class="form-group">
+                        <label for="settings[pdf_invoice_template]" class="control-label">
+                            <?php echo trans('default_pdf_template'); ?>
+                        </label>
+                        <select name="settings[pdf_invoice_template]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                                <option value="<?php echo $invoice_template; ?>"
+                                    <?php check_select(get_setting('pdf_invoice_template'), $invoice_template); ?>>
+                                    <?php echo $invoice_template; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings[pdf_invoice_template_paid]" class="control-label">
+                            <?php echo trans('pdf_template_paid'); ?>
+                        </label>
+                        <select name="settings[pdf_invoice_template_paid]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                                <option value="<?php echo $invoice_template; ?>"
+                                    <?php check_select(get_setting('pdf_invoice_template_paid'), $invoice_template); ?>>
+                                    <?php echo $invoice_template; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings[pdf_invoice_template_overdue]" class="control-label">
+                            <?php echo trans('pdf_template_overdue'); ?>
+                        </label>
+                        <select name="settings[pdf_invoice_template_overdue]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                                <option value="<?php echo $invoice_template; ?>"
+                                    <?php check_select(get_setting('pdf_invoice_template_overdue'), $invoice_template); ?>>
+                                    <?php echo $invoice_template; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings[public_invoice_template]" class="control-label">
+                            <?php echo trans('default_public_template'); ?>
+                        </label>
+                        <select name="settings[public_invoice_template]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($public_invoice_templates as $invoice_template) { ?>
+                                <option value="<?php echo $invoice_template; ?>"
+                                    <?php check_select(get_setting('public_invoice_template'), $invoice_template); ?>>
+                                    <?php echo $invoice_template; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="col-xs-12 col-md-6">
+
+                    <div class="form-group">
+                        <label for="settings[email_invoice_template]" class="control-label">
+                            <?php echo trans('default_email_template'); ?>
+                        </label>
+                        <select name="settings[email_invoice_template]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($email_templates_invoice as $email_template) { ?>
+                                <option value="<?php echo $email_template->email_template_id; ?>"
+                                    <?php check_select(get_setting('email_invoice_template'), $email_template->email_template_id); ?>>
+                                    <?php echo $email_template->email_template_title; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings[email_invoice_template_paid]" class="control-label">
+                            <?php echo trans('email_template_paid'); ?>
+                        </label>
+                        <select name="settings[email_invoice_template_paid]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($email_templates_invoice as $email_template) { ?>
+                                <option value="<?php echo $email_template->email_template_id; ?>"
+                                    <?php check_select(get_setting('email_invoice_template_paid'), $email_template->email_template_id); ?>>
+                                    <?php echo $email_template->email_template_title; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings[email_invoice_template_overdue]" class="control-label">
+                            <?php echo trans('email_template_overdue'); ?>
+                        </label>
+                        <select name="settings[email_invoice_template_overdue]" class=" form-control simple-select">
+                            <option value=""><?php echo trans('none'); ?></option>
+                            <?php foreach ($email_templates_invoice as $email_template) { ?>
+                                <option value="<?php echo $email_template->email_template_id; ?>"
+                                    <?php check_select(get_setting('email_invoice_template_overdue'), $email_template->email_template_id); ?>>
+                                    <?php echo $email_template->email_template_title; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="col-xs-12">
+
+                    <div class="form-group">
+                        <label for="settings[public_invoice_template]" class="control-label">
+                            <?php echo trans('pdf_invoice_footer'); ?>
+                        </label>
+                        <textarea name="settings[pdf_invoice_footer]"
+                                  class=" form-control no-margin"><?php echo get_setting('pdf_invoice_footer'); ?></textarea>
+                        <p class="help-block"><?php echo trans('pdf_invoice_footer_hint'); ?></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('email_settings'); ?>
+        </div>
+        <div class="panel-body">
 
             <div class="form-group">
                 <label for="settings[automatic_email_on_recur]" class="control-label">
@@ -289,9 +302,14 @@
                 </select>
             </div>
 
-            <hr/>
-            <h4><?php echo trans('other_settings'); ?></h4>
-            <br/>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('other_settings'); ?>
+        </div>
+        <div class="panel-body">
 
             <div class="form-group">
                 <label for="settings[read_only_toggle]" class="control-label">
@@ -313,92 +331,93 @@
         </div>
     </div>
 
-    <hr>
-
-    <div class="row">
-        <div class="col-xs-12 col-md-6">
-
-            <h4><?php echo trans('sumex_settings'); ?></h4>
-            <br/>
-            <div class="form-group">
-                <label class="control-label">
-                    <?php echo trans('invoice_sumex'); ?>
-                </label>
-                <select name="settings[sumex]" class=" form-control simple-select">
-                    <option value="0">
-                        <?php echo trans('no'); ?>
-                    </option>
-                    <option value="1" <?php check_select(get_setting('sumex'), '1'); ?>>
-                        <?php echo trans('yes'); ?>
-                    </option>
-                </select>
-                <p class="help-block"><?php echo trans('invoice_sumex_help'); ?></p>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label">
-                    <?php echo trans('invoice_sumex_sliptype'); ?>
-                </label>
-                <select name="settings[sumex_sliptype]" class=" form-control simple-select">
-                    <?php
-                    $slipTypes = array("esr9", "esrRed");
-                    foreach ($slipTypes as $k => $v): ?>
-                        <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_sliptype'), $k) ?>>
-                            <?php echo trans('invoice_sumex_sliptype-' . $v); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <p class="help-block"><?php echo trans('invoice_sumex_sliptype_help'); ?></p>
-            </div>
-
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo trans('sumex_settings'); ?>
         </div>
-        <div class="col-xs-12 col-md-6">
-            <h4>&nbsp;</h4>
-            <br/>
-            <div class="form-group">
-                <label class="control-label">
-                    <?php echo trans('invoice_sumex_role'); ?>
-                </label>
-                <select name="settings[sumex_role]" class=" form-control simple-select">
-                    <?php
-                    $roles = Sumex::ROLES;
-                    foreach ($roles as $k => $v): ?>
-                        <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_role'), $k) ?>>
-                            <?php echo trans('invoice_sumex_role_' . $v); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <?php echo trans('invoice_sumex'); ?>
+                        </label>
+                        <select name="settings[sumex]" class=" form-control simple-select">
+                            <option value="0">
+                                <?php echo trans('no'); ?>
+                            </option>
+                            <option value="1" <?php check_select(get_setting('sumex'), '1'); ?>>
+                                <?php echo trans('yes'); ?>
+                            </option>
+                        </select>
+                        <p class="help-block"><?php echo trans('invoice_sumex_help'); ?></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">
+                            <?php echo trans('invoice_sumex_sliptype'); ?>
+                        </label>
+                        <select name="settings[sumex_sliptype]" class=" form-control simple-select">
+                            <?php
+                            $slipTypes = array("esr9", "esrRed");
+                            foreach ($slipTypes as $k => $v): ?>
+                                <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_sliptype'), $k) ?>>
+                                    <?php echo trans('invoice_sumex_sliptype-' . $v); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="help-block"><?php echo trans('invoice_sumex_sliptype_help'); ?></p>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <?php echo trans('invoice_sumex_role'); ?>
+                        </label>
+                        <select name="settings[sumex_role]" class=" form-control simple-select">
+                            <?php
+                            $roles = Sumex::ROLES;
+                            foreach ($roles as $k => $v): ?>
+                                <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_role'), $k) ?>>
+                                    <?php echo trans('invoice_sumex_role_' . $v); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">
+                            <?php echo trans('invoice_sumex_place'); ?>
+                        </label>
+                        <select name="settings[sumex_place]" class=" form-control simple-select">
+                            <?php
+                            $places = Sumex::PLACES;
+                            foreach ($places as $k => $v): ?>
+                                <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_place'), $k); ?>>
+                                    <?php echo trans('invoice_sumex_place_' . $v); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">
+                            <?php echo trans('invoice_sumex_canton'); ?>
+                        </label>
+                        <select name="settings[sumex_canton]" class=" form-control simple-select">
+                            <?php
+                            $cantons = Sumex::CANTONS;
+                            foreach ($cantons as $k => $v): ?>
+                                <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_canton'), $k); ?>>
+                                    <?php echo $v; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label class="control-label">
-                    <?php echo trans('invoice_sumex_place'); ?>
-                </label>
-                <select name="settings[sumex_place]" class=" form-control simple-select">
-                    <?php
-                    $places = Sumex::PLACES;
-                    foreach ($places as $k => $v): ?>
-                        <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_place'), $k); ?>>
-                            <?php echo trans('invoice_sumex_place_' . $v); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label">
-                    <?php echo trans('invoice_sumex_canton'); ?>
-                </label>
-                <select name="settings[sumex_canton]" class=" form-control simple-select">
-                    <?php
-                    $cantons = Sumex::CANTONS;
-                    foreach ($cantons as $k => $v): ?>
-                        <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_canton'), $k); ?>>
-                            <?php echo $v; ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
         </div>
     </div>
 

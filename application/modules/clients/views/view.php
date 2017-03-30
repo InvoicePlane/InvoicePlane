@@ -33,15 +33,14 @@
 </script>
 
 <?php
-  $locations = array();
-  foreach ($custom_fields as $custom_field){
-    if(array_key_exists($custom_field->cf_location,$locations)){
-      $locations[$custom_field->cf_location] += 1;
+$locations = array();
+foreach ($custom_fields as $custom_field) {
+    if (array_key_exists($custom_field->cf_location, $locations)) {
+        $locations[$custom_field->cf_location] += 1;
+    } else {
+        $locations[$custom_field->cf_location] = 1;
     }
-    else{
-      $locations[$custom_field->cf_location] = 1;
-    }
-  }
+}
 ?>
 
 <div id="headerbar">
@@ -77,16 +76,16 @@
     <li><a data-toggle="tab" href="#clientPayments"><?php echo trans('payments'); ?></a></li>
 </ul>
 
-<div id="content" class="tabbable tabs-below">
+<div id="content" class="tabbable tabs-below no-padding">
+    <div class="tab-content no-padding">
 
-    <div class="tab-content table-content">
-
-        <div id="clientDetails" class="tab-pane tab-info active">
+        <div id="clientDetails" class="tab-pane tab-rich-content active">
 
             <?php $this->layout->load_view('layout/alerts'); ?>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+                <div class="col-xs-12 col-sm-6 col-md-6">
+
                     <h3><?php echo format_client($client); ?></h3>
                     <p>
                         <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>
@@ -98,9 +97,9 @@
                     </p>
 
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="col-xs-12 col-sm-6 col-md-6">
 
-                    <table class="table table-condensed table-bordered">
+                    <table class="table table-bordered no-margin">
                         <tr>
                             <th>
                                 <?php echo trans('language'); ?>
@@ -142,179 +141,213 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-6">
-                    <h4><?php echo trans('contact_information'); ?></h4>
-                    <br>
-                    <table class="table table-condensed table-striped">
-                        <?php if ($client->client_email) : ?>
-                            <tr>
-                                <th><?php echo trans('email'); ?></th>
-                                <td><?php echo auto_link($client->client_email, 'email'); ?></td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if ($client->client_phone) : ?>
-                            <tr>
-                                <th><?php echo trans('phone'); ?></th>
-                                <td><?php echo $client->client_phone; ?></td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if ($client->client_mobile) : ?>
-                            <tr>
-                                <th><?php echo trans('mobile'); ?></th>
-                                <td><?php echo $client->client_mobile; ?></td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if ($client->client_fax) : ?>
-                            <tr>
-                                <th><?php echo trans('fax'); ?></th>
-                                <td><?php echo $client->client_fax; ?></td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if ($client->client_web) : ?>
-                            <tr>
-                                <th><?php echo trans('web'); ?></th>
-                                <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
-                            </tr>
-                        <?php endif; ?>
 
-                        <?php foreach ($custom_fields as $custom_field) : ?>
-                            <?php if($custom_field->cf_location != 2){
-                              continue;
-                            } ?>
-                            <tr>
-                                <?php
-                                $column = $custom_field->cf_label;
-                                $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
-                                ?>
-                                <th><?php echo $custom_field->cf_label ?></th>
-                                <td><?php echo nl2br($value); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
+                    <div class="panel panel-default no-margin">
+                        <div class="panel-heading"><?php echo trans('contact_information'); ?></div>
+                        <div class="panel-body table-content">
+                            <table class="table no-margin">
+                                <?php if ($client->client_email) : ?>
+                                    <tr>
+                                        <th><?php echo trans('email'); ?></th>
+                                        <td><?php echo auto_link($client->client_email, 'email'); ?></td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php if ($client->client_phone) : ?>
+                                    <tr>
+                                        <th><?php echo trans('phone'); ?></th>
+                                        <td><?php echo $client->client_phone; ?></td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php if ($client->client_mobile) : ?>
+                                    <tr>
+                                        <th><?php echo trans('mobile'); ?></th>
+                                        <td><?php echo $client->client_mobile; ?></td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php if ($client->client_fax) : ?>
+                                    <tr>
+                                        <th><?php echo trans('fax'); ?></th>
+                                        <td><?php echo $client->client_fax; ?></td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php if ($client->client_web) : ?>
+                                    <tr>
+                                        <th><?php echo trans('web'); ?></th>
+                                        <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
+                                    </tr>
+                                <?php endif; ?>
+
+                                <?php foreach ($custom_fields as $custom_field) : ?>
+                                    <?php if ($custom_field->cf_location != 2) {
+                                        continue;
+                                    } ?>
+                                    <tr>
+                                        <?php
+                                        $column = $custom_field->cf_label;
+                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
+                                        ?>
+                                        <th><?php echo $custom_field->cf_label ?></th>
+                                        <td><?php echo nl2br($value); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="col-xs-12 col-md-6">
-                    <h4><?php echo trans('tax_information'); ?></h4>
-                    <br/>
-                    <table class="table table-condensed table-striped">
-                        <?php if ($client->client_vat_id) : ?>
-                            <tr>
-                                <th><?php echo trans('vat_id'); ?></th>
-                                <td><?php echo $client->client_vat_id; ?></td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if ($client->client_tax_code) : ?>
-                            <tr>
-                                <th><?php echo trans('tax_code'); ?></th>
-                                <td><?php echo $client->client_tax_code; ?></td>
-                            </tr>
-                        <?php endif; ?>
+                    <div class="panel panel-default no-margin">
 
-                        <?php foreach ($custom_fields as $custom_field) : ?>
-                            <?php if($custom_field->cf_location != 4){
-                              continue;
-                            } ?>
-                            <tr>
-                                <?php
-                                $column = $custom_field->cf_label;
-                                $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
-                                ?>
-                                <th><?php echo $custom_field->cf_label ?></th>
-                                <td><?php echo nl2br($value); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
+                        <div class="panel-heading"><?php echo trans('tax_information'); ?></div>
+                        <div class="panel-body table-content">
+                            <table class="table no-margin">
+                                <?php if ($client->client_vat_id) : ?>
+                                    <tr>
+                                        <th><?php echo trans('vat_id'); ?></th>
+                                        <td><?php echo $client->client_vat_id; ?></td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php if ($client->client_tax_code) : ?>
+                                    <tr>
+                                        <th><?php echo trans('tax_code'); ?></th>
+                                        <td><?php echo $client->client_tax_code; ?></td>
+                                    </tr>
+                                <?php endif; ?>
+
+                                <?php foreach ($custom_fields as $custom_field) : ?>
+                                    <?php if ($custom_field->cf_location != 4) {
+                                        continue;
+                                    } ?>
+                                    <tr>
+                                        <?php
+                                        $column = $custom_field->cf_label;
+                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
+                                        ?>
+                                        <th><?php echo $custom_field->cf_label ?></th>
+                                        <td><?php echo nl2br($value); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </table>
+                        </div>
+
+                    </div>
                 </div>
                 <?php if ($client->client_surname != ""): //Client is not a company ?>
                     <div class="col-xs-12 col-md-6">
-                        <h4><?php echo trans('personal_information'); ?></h4>
-                        <br/>
-                        <table class="table table-condensed table-striped">
-                            <tr>
-                                <th><?php echo trans('birthdate'); ?></th>
-                                <td><?php echo format_date($client->client_birthdate); ?></td>
-                            </tr>
-                            <tr>
-                                <th><?php echo trans('gender'); ?></th>
-                                <td><?php echo format_gender($client->client_gender) ?></td>
-                            </tr>
-                            <?php if($this->mdl_settings->setting('sumex') == '1'): ?>
-                            <tr>
-                                <th><?php echo trans('sumex_ssn'); ?></th>
-                                <td><?php echo format_avs($client->client_avs) ?></td>
-                            </tr>
 
-                            <tr>
-                                <th><?php echo trans('sumex_insurednumber'); ?></th>
-                                <td><?php echo htmlentities($client->client_insurednumber) ?></td>
-                            </tr>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php echo trans('personal_information'); ?>
+                            </div>
 
-                            <tr>
-                                <th><?php echo trans('sumex_veka'); ?></th>
-                                <td><?php echo htmlentities($client->client_veka) ?></td>
-                            </tr>
-                            <?php endif; ?>
+                            <div class="panel-body">
+                                <table class="table no-margin">
+                                    <tr>
+                                        <th><?php echo trans('birthdate'); ?></th>
+                                        <td><?php echo format_date($client->client_birthdate); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th><?php echo trans('gender'); ?></th>
+                                        <td><?php echo format_gender($client->client_gender) ?></td>
+                                    </tr>
+                                    <?php if ($this->mdl_settings->setting('sumex') == '1'): ?>
+                                        <tr>
+                                            <th><?php echo trans('sumex_ssn'); ?></th>
+                                            <td><?php echo format_avs($client->client_avs) ?></td>
+                                        </tr>
 
-                            <?php foreach ($custom_fields as $custom_field) : ?>
-                                <?php if($custom_field->cf_location != 3){
-                                  continue;
-                                } ?>
-                                <tr>
-                                    <?php
-                                    $column = $custom_field->cf_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
-                                    ?>
-                                    <th><?php echo $custom_field->cf_label ?></th>
-                                    <td><?php echo nl2br($value); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                    </table>
-                </div>
-              <?php endif; ?>
+                                        <tr>
+                                            <th><?php echo trans('sumex_insurednumber'); ?></th>
+                                            <td><?php echo htmlentities($client->client_insurednumber) ?></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th><?php echo trans('sumex_veka'); ?></th>
+                                            <td><?php echo htmlentities($client->client_veka) ?></td>
+                                        </tr>
+                                    <?php endif; ?>
+
+                                    <?php foreach ($custom_fields as $custom_field) : ?>
+                                        <?php if ($custom_field->cf_location != 3) {
+                                            continue;
+                                        } ?>
+                                        <tr>
+                                            <?php
+                                            $column = $custom_field->cf_label;
+                                            $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
+                                            ?>
+                                            <th><?php echo $custom_field->cf_label ?></th>
+                                            <td><?php echo nl2br($value); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                <?php endif; ?>
             </div>
-            <?php if ($custom_fields) : ?>
+            <?php
+            if ($custom_fields) : ?>
+                <hr>
+
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-                        <h4><?php echo trans('custom_fields'); ?></h4>
-                        <br>
-                        <table class="table table-condensed table-striped">
-                            <?php foreach ($custom_fields as $custom_field) : ?>
-                                <?php if($custom_field->cf_location != 0){
-                                  continue;
-                                } ?>
-                                <tr>
-                                    <?php
-                                    $column = $custom_field->cf_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_'.$custom_field->cf_fid);
-                                    ?>
-                                    <th><?php echo $custom_field->cf_label ?></th>
-                                    <td><?php echo nl2br($value); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </table>
+                        <div class="panel panel-default no-margin">
+
+                            <div class="panel-heading">
+                                <?php echo trans('custom_fields'); ?>
+                            </div>
+                            <div class="panel-body table-content">
+                                <table class="table no-margin">
+                                    <?php foreach ($custom_fields as $custom_field) : ?>
+                                        <?php if ($custom_field->cf_location != 0) {
+                                            continue;
+                                        } ?>
+                                        <tr>
+                                            <?php
+                                            $column = $custom_field->cf_label;
+                                            $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
+                                            ?>
+                                            <th><?php echo $custom_field->cf_label ?></th>
+                                            <td><?php echo nl2br($value); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
 
             <hr>
 
-            <div>
-                <h4><?php echo trans('notes'); ?></h4>
-                <br>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
 
-                <div id="notes_list">
-                    <?php echo $partial_notes; ?>
-                </div>
-                <div class="panel panel-default panel-body">
-                    <form class="row">
-                        <div class="col-xs-12 col-md-10">
-                            <input type="hidden" name="client_id" id="client_id"
-                                   value="<?php echo $client->client_id; ?>">
-                            <textarea id="client_note" class="form-control" rows="1"></textarea>
+                    <div class="panel panel-default no-margin">
+                        <div class="panel-heading">
+                            <?php echo trans('notes'); ?>
                         </div>
-                        <div class="col-xs-12 col-md-2 text-center">
-                            <input type="button" id="save_client_note" class="btn btn-default btn-block"
-                                   value="<?php echo trans('add_notes'); ?>">
+                        <div class="panel-body">
+                            <div id="notes_list">
+                                <?php echo $partial_notes; ?>
+                            </div>
+                            <form class="row">
+                                <div class="col-xs-12 col-md-10">
+                                    <input type="hidden" name="client_id" id="client_id"
+                                           value="<?php echo $client->client_id; ?>">
+                                    <textarea id="client_note" class="form-control" rows="1"></textarea>
+                                </div>
+                                <div class="col-xs-12 col-md-2 text-center">
+                                    <input type="button" id="save_client_note" class="btn btn-default btn-block"
+                                           value="<?php echo trans('add_note'); ?>">
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
+
                 </div>
             </div>
 
