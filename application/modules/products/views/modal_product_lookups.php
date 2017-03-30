@@ -106,8 +106,8 @@
      role="dialog" aria-labelledby="modal-choose-items" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-            <h3><?php echo trans('add_product'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('add_product'); ?></h4>
         </div>
         <div class="modal-body">
 
