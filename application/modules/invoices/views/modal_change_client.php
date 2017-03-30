@@ -57,19 +57,19 @@
     });
 </script>
 
-<div id="change-client" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="modal_create_invoice" aria-hidden="true">
+<div id="change-client" class="modal modal-lg" role="dialog" aria-labelledby="modal_create_invoice" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-            <h3><?php echo trans('change_client'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('change_client'); ?></h4>
         </div>
         <div class="modal-body">
+
+            <input class="hidden" id="invoice_id" value="<?php echo $invoice_id; ?>">
+
             <div class="form-group">
                 <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
             </div>
-
-            <input class="hidden" id="invoice_id" value="<?php echo $invoice_id; ?>">
 
         </div>
 
@@ -85,5 +85,4 @@
         </div>
 
     </form>
-
 </div>

@@ -10,7 +10,7 @@
         });
 
         // Select2 for all select inputs
-        $(".simple-select").select2();
+        $('.simple-select').select2();
 
         // Creates the invoice
         $('#create_recurring_confirm').click(function () {
@@ -39,8 +39,7 @@
         function get_recur_start_date() {
             $.post("<?php echo site_url('invoices/ajax/get_recur_start_date'); ?>", {
                     invoice_date: $('#invoice_date_created').val(),
-                    recur_frequency: $('#recur_frequency').val(),
-                    _ip_csrf: csrf()
+                    recur_frequency: $('#recur_frequency').val()
                 },
                 function (data) {
                     $('#recur_start_date').val(data);
@@ -49,33 +48,28 @@
     });
 </script>
 
-<div id="modal_create_recurring" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
+<div id="modal_create_recurring" class="modal modal-lg"
      role="dialog" aria-labelledby="modal_create_recurring" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('create_recurring'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php echo trans('create_recurring'); ?></h4>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
-                <label><?php echo trans('every'); ?>: </label>
-
-                <div class="controls">
-                    <select name="recur_frequency" id="recur_frequency" class="form-control simple-select"
-                            style="width: 150px;">
-                        <?php foreach ($recur_frequencies as $key => $lang) { ?>
-                            <option value="<?php echo $key; ?>"
-                                    <?php if ($key == '1M') { ?>selected="selected"<?php } ?>><?php echo lang($lang); ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
+                <label for="recur_frequency"><?php echo trans('every'); ?></label>
+                <select name="recur_frequency" id="recur_frequency" class="form-control simple-select">
+                    <?php foreach ($recur_frequencies as $key => $lang) { ?>
+                        <option value="<?php echo $key; ?>">
+                            <?php echo trans($lang); ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
             <div class="form-group has-feedback">
-                <label><?php echo trans('start_date'); ?>: </label>
-
+                <label for="recur_start_date"><?php echo trans('start_date'); ?></label>
                 <div class="input-group">
                     <input name="recur_start_date" id="recur_start_date"
                            class="form-control datepicker">
@@ -86,7 +80,7 @@
             </div>
 
             <div class="form-group has-feedback">
-                <label><?php echo trans('end_date'); ?> (<?php echo lang('optional'); ?>): </label>
+                <label for="recur_end_date"><?php echo trans('end_date'); ?> (<?php echo trans('optional'); ?>)</label>
 
                 <div class="input-group">
                     <input name="recur_end_date" id="recur_end_date"
