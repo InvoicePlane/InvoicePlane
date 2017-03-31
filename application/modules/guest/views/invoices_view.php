@@ -18,16 +18,18 @@
                     <i class="fa fa-check"></i> <?php echo trans('paid') ?>
                 </button>
             <?php } ?>
+            <?php if (get_setting('enable_online_payments') == 'on') : ?>
+                <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
+                   class="btn btn-primary">
+                    <i class="fa fa-credit-card"></i>
+                    <?php echo trans('pay_now'); ?>
+                </a>
+            <?php endif; ?>
             <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                class="btn btn-default" id="btn_generate_pdf"
                data-invoice-id="<?php echo $invoice_id; ?>"
                data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
                 <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
-            </a>
-            <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
-               class="btn btn-primary">
-                <i class="fa fa-credit-card"></i>
-                <?php echo trans('pay_now'); ?>
             </a>
         </div>
     </div>

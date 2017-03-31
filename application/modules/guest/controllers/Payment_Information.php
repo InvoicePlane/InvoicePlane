@@ -41,7 +41,6 @@ class Payment_Information extends Guest_Controller
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance == 0) {
-            //$this->session->set_flashdata('alert_error', lang('invoice_already_paid'));
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
             $disable_form = true;
         }

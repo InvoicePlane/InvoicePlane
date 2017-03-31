@@ -14,7 +14,8 @@
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 </head>
 <body>
@@ -27,21 +28,21 @@
             <h2><?php echo trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
 
             <div class="btn-group">
-                <?php if ($invoice->sumex_id == NULL): ?>
+                <?php if ($invoice->sumex_id == NULL) : ?>
                 <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice_url_key); ?>"
                    class="btn btn-primary">
-                <?php else: ?>
-                  <a href="<?php echo site_url('guest/view/generate_sumex_pdf/' . $invoice_url_key); ?>"
-                     class="btn btn-primary">
-                <?php endif; ?>
-                    <i
-                            class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
-                </a>
-                <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $invoice->invoice_balance > 0) { ?>
-                <a
-                        href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice_url_key); ?>"
-                        class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
-                    </a><?php } ?>
+                    <?php else : ?>
+                    <a href="<?php echo site_url('guest/view/generate_sumex_pdf/' . $invoice_url_key); ?>"
+                       class="btn btn-primary">
+                        <?php endif; ?>
+                        <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+                    </a>
+                    <?php if (get_setting('enable_online_payments') == 'on' && $invoice->invoice_balance > 0) { ?>
+                        <a href="<?php echo site_url('guest/payment_information/form/' . $invoice_url_key); ?>"
+                           class="btn btn-success">
+                            <i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
+                        </a>
+                    <?php } ?>
             </div>
 
         </div>
@@ -272,7 +273,7 @@
                                         <tr class="attachments">
                                             <td><?php echo $attachment['name']; ?></td>
                                             <td>
-                                                <a href="<?php echo base_url('/guest/get/attachment/'.$attachment['fullname']); ?>"
+                                                <a href="<?php echo base_url('/guest/get/attachment/' . $attachment['fullname']); ?>"
                                                    class="btn btn-primary btn-sm">
                                                     <i class="fa fa-download"></i> <?php echo trans('download') ?>
                                                 </a>
