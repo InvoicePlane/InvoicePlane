@@ -80,7 +80,7 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <label class="control-label">
-                                            <?php echo trans('online_payment_creditcard_expiry_year'); ?>
+                                            <?php echo trans('creditcard_expiry_year'); ?>
                                         </label>
                                         <input type="number" name="creditcard_expiry_year" class="input-sm form-control"
                                                min="<?php echo date('Y'); ?>" max="<?php echo date('Y') + 20; ?>">

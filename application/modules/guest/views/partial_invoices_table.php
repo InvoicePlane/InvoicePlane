@@ -42,11 +42,13 @@
                 </td>
                 <td>
                     <div class="options btn-group btn-group-sm">
-                        <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
-                           class="btn btn-primary">
-                            <i class="fa fa-credit-card"></i>
-                            <?php echo trans('pay_now'); ?>
-                        </a>
+                        <?php if (get_setting('enable_online_payments') == 'on') : ?>
+                            <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
+                               class="btn btn-primary">
+                                <i class="fa fa-credit-card"></i>
+                                <?php echo trans('pay_now'); ?>
+                            </a>
+                        <?php endif; ?>
                         <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>"
                            class="btn btn-default">
                             <i class="fa fa-eye"></i>
