@@ -29,7 +29,7 @@
 
             <div class="form-group">
                 <label for="online-payment-select" class="control-label">
-                    <?php echo trans('online_payment'); ?>
+                    <?php echo trans('add_payment_provider'); ?>
                 </label>
                 <select id="online-payment-select" class=" form-control">
                     <option value=""><?php echo trans('none'); ?></option>
