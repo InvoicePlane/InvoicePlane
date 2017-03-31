@@ -10,6 +10,7 @@ $lang = array(
     'online_payment_method'              => 'Online Payment Method',
     'online_payment_creditcard_hint'     => 'If you want to pay via credit card please enter the information below.<br/>The credit card information are not stored on our servers and will be transferred to the online payment gateway using a secure connection.',
     'enable_online_payments'             => 'Enable Online Payments',
+    'add_payment_provider'               => 'Add a Payment Provider',
 
     // Credit card strings
     'creditcard_cvv'                     => 'CVV / CSC',
