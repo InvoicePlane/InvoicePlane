@@ -28,14 +28,13 @@ class Base_Controller extends MX_Controller
             exit;
         }
 
+        // Load basic stuff
         $this->load->library('session');
+        $this->load->helper('redirect');
 
         // Check if database has been configured
         if (!env_bool('SETUP_COMPLETED')) {
-
-            $this->load->helper('redirect');
             redirect('/welcome');
-
         } else {
 
             $this->load->library('encryption');
@@ -49,7 +48,6 @@ class Base_Controller extends MX_Controller
             $this->load->helper('pager');
             $this->load->helper('invoice');
             $this->load->helper('date');
-            $this->load->helper('redirect');
             $this->load->helper('form');
 
             // Load setting model and load settings
