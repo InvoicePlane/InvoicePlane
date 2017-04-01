@@ -56,7 +56,7 @@
 
                         <div class="panel-body">
                             <div class="alert alert-info">
-                                <?php echo trans('creditcard_hint'); ?>
+                                <?php echo trans('online_payment_creditcard_hint'); ?>
                             </div>
 
                             <div class="form-group">
