@@ -24,14 +24,11 @@ class Base_Controller extends MX_Controller
         $this->config->load('invoice_plane');
 
         // Don't allow non-ajax requests to ajax controllers
-        if ($this->ajax_controller and !$this->input->is_ajax_request()) {
+        if ($this->ajax_controller && !$this->input->is_ajax_request()) {
             exit;
         }
 
         $this->load->library('session');
-        $this->load->helper('url');
-        $this->load->helper('trans');
-        $this->load->library('encryption');
 
         // Check if database has been configured
         if (!env_bool('SETUP_COMPLETED')) {
@@ -41,8 +38,13 @@ class Base_Controller extends MX_Controller
 
         } else {
 
-            $this->load->database();
+            $this->load->library('encryption');
             $this->load->library('form_validation');
+            $this->load->library('session');
+            $this->load->database();
+
+            $this->load->helper('url');
+            $this->load->helper('trans');
             $this->load->helper('number');
             $this->load->helper('pager');
             $this->load->helper('invoice');

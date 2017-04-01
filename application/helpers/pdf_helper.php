@@ -86,99 +86,95 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
 }
 
-function generate_invoice_sumex($invoice_id, $stream = true, $client = false){
-  $CI = &get_instance();
+function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
+{
+    $CI = &get_instance();
 
-  $CI->load->model('invoices/mdl_items');
-  $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-  $CI->load->library('Sumex', array(
-    'invoice' => $invoice,
-    'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result()
-  ));
+    $CI->load->model('invoices/mdl_items');
+    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+    $CI->load->library('Sumex', array(
+        'invoice' => $invoice,
+        'items' => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result()
+    ));
 
-  // Append a copy at the end and change the title:
-  // WARNING: The title depends on what invoice type is (TP, TG)
-  // and is language-dependant. Fix accordingly if you really need this hack
-  require FCPATH . '/vendor/autoload.php';
-  $temp = tempnam("/tmp", "invsumex_");
-  $tempCopy = tempnam("/tmp", "invsumex_");
-  $pdf = new FPDI();
-  $sumexPDF = $CI->sumex->pdf();
+    // Append a copy at the end and change the title:
+    // WARNING: The title depends on what invoice type is (TP, TG)
+    // and is language-dependant. Fix accordingly if you really need this hack
+    require FCPATH . '/vendor/autoload.php';
+    $temp = tempnam("/tmp", "invsumex_");
+    $tempCopy = tempnam("/tmp", "invsumex_");
+    $pdf = new FPDI();
+    $sumexPDF = $CI->sumex->pdf();
 
-  $sha1sum = sha1($sumexPDF);
-  $shortsum = substr($sha1sum, 0, 8);
-  $filename = trans('invoice').'_'.$invoice->invoice_number.'_'.$shortsum;
+    $sha1sum = sha1($sumexPDF);
+    $shortsum = substr($sha1sum, 0, 8);
+    $filename = trans('invoice') . '_' . $invoice->invoice_number . '_' . $shortsum;
 
-  if(!$client){
-    file_put_contents($temp, $sumexPDF);
+    if (!$client) {
+        file_put_contents($temp, $sumexPDF);
 
-    // Hackish
-    $sumexPDF = str_replace(
-      "Giustificativo per la richiesta di rimborso",
-      "Copia: Giustificativo per la richiesta di rimborso",
-      $sumexPDF
-    );
+        // Hackish
+        $sumexPDF = str_replace(
+            "Giustificativo per la richiesta di rimborso",
+            "Copia: Giustificativo per la richiesta di rimborso",
+            $sumexPDF
+        );
 
-    file_put_contents($tempCopy, $sumexPDF);
+        file_put_contents($tempCopy, $sumexPDF);
 
-    $pageCount = $pdf->setSourceFile($temp);
+        $pageCount = $pdf->setSourceFile($temp);
 
-    for( $pageNo=1; $pageNo<=$pageCount; $pageNo++ )
-    {
-        $templateId = $pdf->importPage($pageNo);
-        $size = $pdf->getTemplateSize($templateId);
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $templateId = $pdf->importPage($pageNo);
+            $size = $pdf->getTemplateSize($templateId);
 
-        if( $size['w']>$size['h'] ){
-            $pageFormat = 'L';  //  landscape
-        }
-        else{
-            $pageFormat = 'P';  //  portrait
-        }
+            if ($size['w'] > $size['h']) {
+                $pageFormat = 'L';  //  landscape
+            } else {
+                $pageFormat = 'P';  //  portrait
+            }
 
-        $pdf->addPage($pageFormat,array($size['w'],$size['h']));
-        $pdf->useTemplate($templateId);
-    }
-
-    $pageCount = $pdf->setSourceFile($tempCopy);
-
-    for( $pageNo=2; $pageNo<=$pageCount; $pageNo++ )
-    {
-        $templateId = $pdf->importPage($pageNo);
-        $size = $pdf->getTemplateSize($templateId);
-
-        if( $size['w']>$size['h'] ){
-            $pageFormat = 'L';  //  landscape
-        }
-        else{
-            $pageFormat = 'P';  //  portrait
+            $pdf->addPage($pageFormat, array($size['w'], $size['h']));
+            $pdf->useTemplate($templateId);
         }
 
-        $pdf->addPage($pageFormat,array($size['w'],$size['h']));
-        $pdf->useTemplate($templateId);
+        $pageCount = $pdf->setSourceFile($tempCopy);
+
+        for ($pageNo = 2; $pageNo <= $pageCount; $pageNo++) {
+            $templateId = $pdf->importPage($pageNo);
+            $size = $pdf->getTemplateSize($templateId);
+
+            if ($size['w'] > $size['h']) {
+                $pageFormat = 'L';  //  landscape
+            } else {
+                $pageFormat = 'P';  //  portrait
+            }
+
+            $pdf->addPage($pageFormat, array($size['w'], $size['h']));
+            $pdf->useTemplate($templateId);
+        }
+
+        unlink($temp);
+        unlink($tempCopy);
+
+        if ($stream) {
+            header("Content-Type", "application/pdf");
+            $pdf->Output($filename . '.pdf', 'I');
+            return;
+        }
+
+        $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
+        $pdf->Output($filePath, 'F');
+        return $filePath;
+    } else {
+        if ($stream) {
+            return $sumexPDF;
+        }
+
+        $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
+        file_put_contents($filePath, $sumexPDF);
+        return $filePath;
     }
-
-    unlink($temp);
-    unlink($tempCopy);
-
-    if($stream){
-      header("Content-Type", "application/pdf");
-      $pdf->Output($filename.'.pdf', 'I');
-      return;
-    }
-
-    $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
-    $pdf->Output($filePath, 'F');
-    return $filePath;
-  }
-  else{
-    if($stream){
-      return $sumexPDF;
-    }
-
-    $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
-    file_put_contents($filePath, $sumexPDF);
-    return $filePath;
-  }
 }
 
 /**
