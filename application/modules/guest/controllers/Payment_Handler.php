@@ -22,7 +22,7 @@ class Payment_Handler extends Base_Controller
     {
         parent::__construct();
 
-        $this->load->library('encrypt');
+        $this->load->library('crypt');
 
         $this->load->model('invoices/mdl_invoices');
     }
@@ -252,7 +252,7 @@ class Payment_Handler extends Base_Controller
 
             // Decode password fields and checkboxes
             if (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'password') {
-                $value = $this->encrypt->decode($setting->setting_value);
+                $value = $this->crypt->decode($setting->setting_value);
             } elseif (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'checkbox') {
                 $value = $setting->setting_value == 'on' ? true : false;
             } else {

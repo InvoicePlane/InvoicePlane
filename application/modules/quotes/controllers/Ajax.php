@@ -22,7 +22,6 @@ class Ajax extends Admin_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('units/mdl_units');
-        $this->load->library('encrypt');
 
         $quote_id = $this->input->post('quote_id');
 

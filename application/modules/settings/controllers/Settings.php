@@ -23,7 +23,7 @@ class Settings extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_settings');
-        $this->load->library('encrypt');
+        $this->load->library('crypt');
         $this->load->library('form_validation');
     }
 
@@ -56,7 +56,7 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
-                    $this->mdl_settings->save($key, trim($this->encrypt->encode($value)));
+                    $this->mdl_settings->save($key, trim($this->crypt->encode($value)));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
                     $value = is_numeric($value) ? $value : 0;
