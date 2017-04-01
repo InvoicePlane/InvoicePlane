@@ -47,7 +47,6 @@
     </div>
 
     <?php
-    $this->load->library('encrypt');
     foreach ($gateway_drivers as $driver => $fields) :
         $d = strtolower($driver);
         ?>
@@ -89,7 +88,7 @@
                             <input type="<?php echo $setting['type']; ?>" class="input-sm form-control"
                                    name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                 <?php if ($setting['type'] == 'password') : ?>
-                                    value="<?php echo $this->encrypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
+                                    value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
                                 <?php else : ?>
                                     value="<?php echo get_setting('gateway_' . $d . '_' . $key); ?>"
                                 <?php endif; ?>

@@ -95,7 +95,7 @@
                         <?php echo trans('smtp_password'); ?>
                     </label>
                     <input type="password" id="smtp_password" class=" form-control" name="settings[smtp_password]"
-                           value="<?php echo $this->encrypt->decode(get_setting('settings[smtp_password]')); ?>">
+                           value="<?php echo $this->crypt->decode(get_setting('settings[smtp_password]')); ?>">
                     <input type="hidden" name="settings[smtp_password_field_is_password]" value="1">
                 </div>
 
