@@ -44,6 +44,18 @@ function trans($line, $id = '', $default = null)
 }
 
 /**
+ * Echo a language string with the trans helper
+ *
+ * @param string $line
+ * @param string $id
+ * @param null|string $default
+ */
+function _trans($line, $id = '', $default = null)
+{
+    echo trans($line, $id, $default);
+}
+
+/**
  * Load the translations for the given language
  *
  * @param string $language
