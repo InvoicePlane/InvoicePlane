@@ -7,10 +7,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  * Install this file as application/core/MY_Model.php
  *
- * @package    CodeIgniter
- * @author        Kovah (www.kovah.de)
- * @copyright    Copyright (c) 2012, Jesse Terry
- * @link        http://developer13.com
+ * @package     CodeIgniter
+ * @author		Jesse Terry
+ * @copyright	Copyright (c) 2012-2013, Jesse Terry
+ * @link		http://developer13.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -385,12 +385,14 @@ class MY_Model extends CI_Model
     /**
      * Returns the assigned form value to a form input element
      *
-     * @param $key
+     * @param string $key
+     * @param bool $escape
      * @return mixed|string
      */
-    public function form_value($key)
+    public function form_value($key, $escape = false)
     {
-        return (isset($this->form_values[$key])) ? $this->form_values[$key] : '';
+        $value = isset($this->form_values[$key]) ? $this->form_values[$key] : '';
+        return $escape ? htmlspecialchars($value) : $value;
     }
 
     /**
