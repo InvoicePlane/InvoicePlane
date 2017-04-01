@@ -10,6 +10,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
+/**
+ * @param $str
+ * @return bool
+ */
 function diacritics_seems_utf8($str)
 {
     $length = strlen($str);
@@ -169,6 +173,10 @@ function diacritics_remove_accents($string)
     return $string;
 }
 
+/**
+ * @param $text
+ * @return string
+ */
 function diacritics_remove_diacritics($text)
 {
     $trans = array(

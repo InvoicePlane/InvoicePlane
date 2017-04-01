@@ -91,7 +91,8 @@ function reset_language()
  *
  * @return array
  */
-function get_available_languages() {
+function get_available_languages()
+{
     $CI =& get_instance();
     $CI->load->helper('directory');
 
