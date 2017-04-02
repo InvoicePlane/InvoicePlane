@@ -18,7 +18,16 @@ if (!defined('BASEPATH'))
 
 function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null, $zugferd_invoice = false, $associatedFiles = null)
 {
-    $CI = &get_instance();
+	$CI = & get_instance();
+	
+    // ---it---inizio
+    // Speciale motore stampa dompdf: primo motore stampa FI, poi tolto dalla versione originale e mantenuto nella versione italiana.
+    // Questo motore PDF, infatti, mantiene il risultato visualizzato nell'anteprima PDF (a differenza del nuovo motore mPDF).
+    if ($CI->mdl_settings->setting('it_print_engine') == 'dompdf')
+    {
+        return pdf_create_dompdf($html, $filename, $stream);
+    }
+    // ---it---fine
 
     // Get the invoice from the archive if available
     $invoice_array = array();
@@ -26,7 +35,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     // mPDF loading
     define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
     define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
-
+    
     require_once(FCPATH . 'vendor/kovah/mpdf/mpdf.php');
     $mpdf = new mPDF();
 
@@ -116,3 +125,49 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
 
     }
 }
+
+// ---it---inizio Utilizza ancora dompdf: mpdf d� problemi (test con modello fattura s2 software)
+/*
+ * FusionInvoice
+*
+* A free and open source web based invoicing system
+*
+* @package		FusionInvoice
+* @author		Jesse Terry
+* @copyright	Copyright (c) 2012 - 2013, Jesse Terry
+* @license		http://www.fusioninvoice.com/license.txt
+* @link		http://www.fusioninvoice.
+*
+*/
+function pdf_create_dompdf($html, $filename, $stream = TRUE) {
+
+	require_once(APPPATH . 'helpers/dompdf/dompdf_config.inc.php');
+
+	$dompdf = new DOMPDF();
+
+	$dompdf->load_html($html);
+
+	$dompdf->set_paper('a4');	//---it---
+	$dompdf->render();
+
+	if ($stream) {
+
+		$dompdf->stream($filename . '.pdf');
+
+	}
+
+	else {
+
+		$CI =& get_instance();
+
+		$CI->load->helper('file');
+
+		write_file('./uploads/temp/' . $filename . '.pdf', $dompdf->output());
+
+		return './uploads/temp/' . $filename . '.pdf';
+	}
+
+}
+//---it---fine
+
+?>

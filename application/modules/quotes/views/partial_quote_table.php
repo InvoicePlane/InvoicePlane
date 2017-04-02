@@ -53,6 +53,13 @@
                                     <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>
                                 </a>
                             </li>
+                            <?php //---it---inizio ?>
+							<li>
+								<a href="<?php echo site_url('quotes/preview_pdf/' . $quote->quote_id); ?>">
+									<i class="fa fa-file fa-margin"></i> Anteprima PDF
+								</a>
+							</li>
+							<?php //---it---fine ?>
                             <li>
                                 <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
                                    target="_blank">

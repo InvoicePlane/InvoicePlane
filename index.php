@@ -18,9 +18,13 @@
  * is helpful for finding the cause of the problems.
  */
 
-define('IP_URL', '');
+// ---it---inizio
+$http = empty($_SERVER['HTTPS']) ? 'http' : 'https';
+$ip_url = $http.'://'.$_SERVER['HTTP_HOST'].str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+//---it---fine
 
-define('IP_DEBUG', false);
+define('IP_URL', $ip_url);	//---it---: $ip_url
+
 
 /*
  * DO NOT EDIT BELOW THIS LINE!
@@ -46,11 +50,8 @@ define('IP_DEBUG', false);
  *
  */
 
-if (is_dir(__DIR__ . "/application/config/development")) {
-    define('ENVIRONMENT', 'development');
-} else {
-    define('ENVIRONMENT', 'production');
-}
+define('ENVIRONMENT', 'development');
+
 
 /*
  * ---------------------------------------------------------------
@@ -65,11 +66,13 @@ if (defined('ENVIRONMENT')) {
     switch (ENVIRONMENT) {
         case 'development':
             error_reporting(E_ALL);
+            define('IP_DEBUG', true);
             break;
 
         case 'testing':
         case 'production':
             error_reporting(0);
+            define('IP_DEBUG', false);
             break;
 
         default:

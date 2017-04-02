@@ -16,6 +16,8 @@
 */
 $config['base_url'] = IP_URL;
 
+$config['ThermoGest_url'] = 'http://server.thermoclima.loc/GestionaleThermoclima/';
+
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -69,7 +71,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language'] = 'english';
+$config['language'] = 'italian';
 
 /*
 |--------------------------------------------------------------------------
@@ -93,7 +95,7 @@ $config['charset'] = 'UTF-8';
 | value to true
 |
 */
-$config['enable_invoice_deletion'] = false;
+$config['enable_invoice_deletion'] = true;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,7 +108,7 @@ $config['enable_invoice_deletion'] = false;
 | setting the value to true
 |
 */
-$config['disable_read_only'] = false;
+$config['disable_read_only'] = true;
 
 /*
 |--------------------------------------------------------------------------
@@ -272,14 +274,14 @@ $config['encryption_key'] = 'invoiceplane';
 |
 */
 $config['sess_cookie_name'] = 'ip_session';
-$config['sess_expiration'] = 864000; // 10 Days
+$config['sess_expiration'] = 8640000; // 10 Days
 $config['sess_expire_on_close'] = false;
 $config['sess_encrypt_cookie'] = true;
-$config['sess_use_database'] = false;
+$config['sess_use_database'] = true;
 $config['sess_table_name'] = 'ip_sessions';
-$config['sess_match_ip'] = true;
-$config['sess_match_useragent'] = true;
-$config['sess_time_to_update'] = 300;
+$config['sess_match_ip'] = false;
+$config['sess_match_useragent'] = false;
+$config['sess_time_to_update'] = 8640000;
 
 /*
 |--------------------------------------------------------------------------
@@ -323,7 +325,7 @@ $config['global_xss_filtering'] = true;
 $config['csrf_protection'] = false;
 $config['csrf_token_name'] = 'csrf_test_name';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
-$config['csrf_expire'] = 7200;
+$config['csrf_expire'] = 864000;
 
 /*
 |--------------------------------------------------------------------------

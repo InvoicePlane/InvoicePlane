@@ -16,8 +16,9 @@ if (!defined('BASEPATH'))
  *
  */
 
-function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null)
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $isGuest = null, $preview = FALSE/*---it---*/)
 {
+    
     $CI = &get_instance();
 
     $CI->load->model('invoices/mdl_invoices');
@@ -71,15 +72,28 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'output_type' => 'pdf',
         'show_discounts' => $show_discounts,
     );
-
+    
+    global $pdf_preview; $pdf_preview = $preview;    // ---it---
+    $data['preview_pdf'] = $preview;    // ---it--- set preview to override default overflow-y: hidden; in html and body
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
-
-    $CI->load->helper('mpdf');
-    return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, true, $isGuest, $include_zugferd, $associatedFiles);
+    
+    //---it---inizio
+    if ($preview)
+    {
+        echo $html;
+    }
+    else
+    {
+    //---it---fine
+	    $CI->load->helper('mpdf');
+	    return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
+	    		$stream, $invoice->invoice_password, true, $isGuest, $include_zugferd, $associatedFiles);
+	//---it---inizio
+    }
+    //---it---fine
 }
 
-function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
+function generate_quote_pdf($quote_id, $stream = true, $quote_template = null, $preview = FALSE/*---it---*/)
 {
     $CI = &get_instance();
 
@@ -111,10 +125,23 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         'output_type' => 'pdf',
         'show_discounts' => $show_discounts,
     );
-
+    
+    global $pdf_preview; $pdf_preview = $preview;    // ---it---
+    $data['preview_pdf'] = $preview;    // ---it--- set preview to override default overflow-y: hidden; in html and body
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);
-
-    $CI->load->helper('mpdf');
-
-    return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
+    
+    //---it---inizio
+    if ($preview)
+    {
+        echo $html;
+    }
+    else
+    {
+    //---it---fine
+	    $CI->load->helper('mpdf');
+	    
+	    return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
+    //---it---inizio
+    }
+    //---it---fine
 }

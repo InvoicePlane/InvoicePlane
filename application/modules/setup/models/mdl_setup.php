@@ -38,10 +38,12 @@ class Mdl_Setup extends CI_Model
 
         return true;
     }
-
+    
     public function upgrade_tables()
     {
-        // Collect the available SQL files
+        $this->fix_setup_it();	// ---it---
+    	
+    	// Collect the available SQL files
         $sql_files = directory_map(APPPATH . 'modules/setup/sql', true);
 
         // Sort them so they're in natural order
@@ -101,22 +103,22 @@ class Mdl_Setup extends CI_Model
     public function install_default_data()
     {
         $this->db->insert('ip_invoice_groups', array(
-                'invoice_group_name' => 'Invoice Default',
+                'invoice_group_name' => 'Fattura predefinita', //---it---
                 'invoice_group_next_id' => 1)
         );
 
         $this->db->insert('ip_invoice_groups', array(
-                'invoice_group_name' => 'Quote Default',
-                'invoice_group_prefix' => 'QUO',
+                'invoice_group_name' => 'Preventivo predefinito', //---it---
+                'invoice_group_prefix' => 'PRE', //---it---
                 'invoice_group_next_id' => 1)
         );
 
         $this->db->insert('ip_payment_methods', array(
-            'payment_method_name' => 'Cash',
+            'payment_method_name' => 'Contanti', //---it---
         ));
 
         $this->db->insert('ip_payment_methods', array(
-            'payment_method_name' => 'Credit Card',
+            'payment_method_name' => 'Carta di credito', //---it---
         ));
     }
 
@@ -126,16 +128,16 @@ class Mdl_Setup extends CI_Model
 
         $default_settings = array(
             'default_language' => $this->session->userdata('ip_lang'),
-            'date_format' => 'm/d/Y',
-            'currency_symbol' => '$',
+            'date_format' => 'd/m/Y', //---it---
+            'currency_symbol' => '€', //---it---
             'currency_symbol_placement' => 'before',
             'currency_code' => 'USD',
             'invoices_due_after' => 30,
             'quotes_expire_after' => 15,
             'default_invoice_group' => 3,
             'default_quote_group' => 4,
-            'thousands_separator' => ',',
-            'decimal_point' => '.',
+            'thousands_separator' => '.',	//---it---
+            'decimal_point' => ',',	//---it---
             'cron_key' => random_string('alnum', 16),
             'tax_rate_decimal_places' => 2,
             'pdf_invoice_template' => 'InvoicePlane',
@@ -171,7 +173,18 @@ class Mdl_Setup extends CI_Model
 
         $this->db->insert('ip_versions', $version_db_array);
     }
-
+    
+    // ---it---inizio
+    public function fix_setup_it()
+    {
+    	// Fix 000_1.0.0_it.sql iniziale non presente in tabella versioni dopo porting ma campi già presenti in database
+    	if ($this->db->field_exists('user_it_codfisc', 'ip_users') && $this->db->query("SELECT * FROM ip_versions WHERE version_file = '000_1.0.0_it.sql'")->num_rows() == 0)
+    	{
+    		$this->save_version('000_1.0.0_it.sql');
+    	}
+    }
+    // ---it---fine
+    
     /*
      * Place upgrade functions here
      * e.g. if table rows have to be converted

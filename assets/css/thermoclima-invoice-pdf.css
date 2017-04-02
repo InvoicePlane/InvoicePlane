@@ -1,0 +1,95 @@
+/* =============================================================================
+   
+   Thermoclima s.n.c. stylesheet for invoices template
+
+   ========================================================================== */
+
+#company{
+	float:left;
+	width:65%;
+	/*margin-left:5%;*/
+	text-align:center;
+}
+
+.invoice-details {
+	float: right;
+	width: 30%;
+	text-align: left;
+	margin-top: 20px;
+}
+
+.invoice-details table {
+	margin: 0 auto;
+	width: 100%;
+	text-align: inherit;
+	font-size: 14px;
+}
+
+.invoice-details table td {
+	padding-left: 10px;
+}
+
+#client{
+	width: 100%;
+	text-align: left;
+	margin-top: 20px;
+}
+
+.th-small-title {
+	font-size: 10px;
+	color: #2196F3;
+}
+
+#th-payment-details{
+
+}
+
+.label-inline{
+	color: #2196F3;
+	width: 80px;
+	float: left;
+}
+
+.content-after-label{
+	margin-left: 10px;
+	float: left;
+}
+
+.logo-red {
+	color: #F44336;
+}
+
+.logo-blue {
+	color: #2196F3;
+}
+
+.small-text {
+	font-size: 10px;
+}
+
+footer {
+	color: #3A3A3A;
+    border-top: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 1cm;
+}
+
+.box-totale {
+	position: relative;
+	float: right;
+	text-align: left;
+	width: 214px;
+}
+
+.box-info {
+	position: relative;
+	text-align: left;
+	padding: 2cm;
+}
+
+.txt-right {
+	text-align: right;
+	padding-left: 10px;
+}

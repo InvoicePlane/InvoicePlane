@@ -219,7 +219,7 @@
                         </div>
                     </div>
                 </fieldset>
-
+                
                 <fieldset>
 
                     <legend><?php echo trans('tax_information'); ?></legend>

@@ -116,6 +116,11 @@ class Settings extends Admin_Controller
         $current_version = $this->mdl_versions->limit(1)->where('version_sql_errors', 0)->get()->row()->version_file;
         $current_version = str_replace('.sql', '', substr($current_version, strpos($current_version, '_') + 1));
 
+        //---it---inizio - Suffisso _it alla versione (se non già presente nella versione letta dal database)
+        if (strpos($current_version, '_it') === FALSE)
+        	$current_version .= '_it';
+        //---it---fine
+        
         // Set data in the layout
         $this->layout->set(
             array(

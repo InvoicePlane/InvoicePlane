@@ -1,0 +1,165 @@
+<html>
+<head>
+<title>DOMPDF 0.6.0 beta 3 release notes</title>
+<style type="text/css">
+ol {
+	margin:0;
+	padding:0
+}
+p {
+	margin:0
+}
+.c5 {
+	list-style-type:disc;
+	margin:0;
+	padding:0
+}
+.c12 {
+	background-color:#ffffff;
+}
+.c7 {
+	color:#1155cc;
+	text-decoration:underline
+}
+.c1 {
+	color:#000099;
+	text-decoration:underline
+}
+.c8 {
+	font-size:12pt;
+	font-weight:bold
+}
+.c3 {
+	font-size:14pt;
+	font-weight:bold
+}
+.c6 {
+	color:inherit;
+	text-decoration:inherit
+}
+.c2 {
+	padding-left:0pt;
+	margin-left:36pt
+}
+.c10 {
+	font-size:18pt
+}
+.c9 {
+	color:#ff0000
+}
+.c11 {
+	font-weight:bold
+}
+.c4 {
+	height:11pt
+}
+.c0 {
+	direction:ltr
+}
+.title {
+	padding-top:24pt;
+	line-height:1.15;
+	text-align:left;
+	color:#000000;
+	font-size:36pt;
+	font-family:Arial;
+	font-weight:bold;
+	padding-bottom:6pt
+}
+.subtitle {
+	padding-top:18pt;
+	line-height:1.15;
+	text-align:left;
+	color:#666666;
+	font-style:italic;
+	font-size:24pt;
+	font-family:Georgia;
+	padding-bottom:4pt
+}
+body {
+	color:#000000;
+	font-size:11pt;
+	font-family:Arial
+}
+h1 {
+	padding-top:18pt;
+	line-height:1.15;
+	text-align:left;
+	color:#000000;
+	font-size:18pt;
+	font-family:Arial;
+	font-weight:bold;
+	padding-bottom:4pt
+}
+h2 {
+	padding-top:18pt;
+	line-height:1.15;
+	text-align:left;
+	color:#000000;
+	font-size:14pt;
+	font-family:Arial;
+	font-weight:bold;
+	padding-bottom:4pt
+}
+h3 {
+	padding-top:14pt;
+	line-height:1.15;
+	text-align:left;
+	color:#000000;
+	font-size:14pt;
+	font-family:Arial;
+	font-weight:bold;
+	padding-bottom:4pt
+}
+h4 {
+	padding-top:12pt;
+	line-height:1.15;
+	text-align:left;
+	color:#000000;
+	font-size:12pt;
+	font-family:Arial;
+	font-weight:bold;
+	padding-bottom:2pt
+}
+h5 {
+	padding-top:11pt;
+	line-height:1.15;
+	text-align:left;
+	color:#666666;
+	font-size:10pt;
+	font-family:Arial;
+	font-weight:bold;
+	padding-bottom:2pt
+}
+h6 {
+	padding-top:10pt;
+	line-height:1.15;
+	text-align:left;
+	color:#666666;
+	font-style:italic;
+	font-size:10pt;
+	font-family:Arial;
+	padding-bottom:2pt
+}
+</style>
+</head>
+<body class="c12">
+<h2>Requirements</h2>
+<ul>
+	<li>PHP 5.0+ with the DOM extension enabled.   Note that the domxml PECL extension conflicts with the DOM extension and   must be disabled. </li>
+	<li>Some fonts. PDFs internally support   Helvetica, Times-Roman, Courier, Zapf-Dingbats, &amp; Symbol. DOMPDF adds the , but if you wish to   use other fonts or Unicode charsets you will need to install some fonts.   dompdf supports the same fonts as the underlying PDF backends: Type 1   (.pfb with the corresponding .afm) and TrueType (.ttf). At the minimum,   you should probably have the Microsoft core fonts (now available at: <a href="http://corefonts.sourceforge.net/" rel="nofollow">http://corefonts.sourceforge.net/</a>). See below for font installation instructions.</li>
+</ul>
+<h2><a name="Installation"></a>Installation</h2>
+<ol>
+	<li>Untar/unzip the source package in a directory accessible by your webserver. </li>
+	<li>Edit dompdf_config.custom.inc.php (in version 0.6) or dompdf_config.custom.inc.php   (version 0.5) to fit your installation. If you leave the   DOMPDF_PDF_BACKEND setting at 'auto' dompdf will use the bundled   R&amp;OS CPDF class. </li>
+	<li>Give your webserver write permission on the path specified in DOMPDF_FONT_DIR (lib/fonts by default). Under *nix,   ideally you can make the webserver group the owner of this directory   and give the directory group write permissions. For example, on Debian   systems, Apache runs as the www-data user: </li>
+</ol>
+<blockquote>$ chgrp www-data lib/fonts<br>
+	$ chmod g+w lib/fonts </blockquote>
+<p>If your user is not a member of the www-data group or   you do not have root privileges, you can make the directory world   writable and set the sticky bit: </p>
+<blockquote> $ chmod 1777 lib/fonts </blockquote>
+<h2><a name="Configuration_tool"></a>Configuration tool</h2>
+<p>Since 0.6 beta 2, dompdf has a configuration/helper page available at www/setup.php.   This page will tell you if an extension is missing, and will check if   the temp path is writable. It will also tell you what fonts are   installed for the CPDF backend (the one used by default). </p>
+</body>
+</html>

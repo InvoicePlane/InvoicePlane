@@ -52,3 +52,14 @@ ALTER TABLE ip_invoice_amounts
   MODIFY COLUMN invoice_paid DECIMAL(20, 2);
 ALTER TABLE ip_invoice_amounts
   MODIFY COLUMN invoice_balance DECIMAL(20, 2);
+  
+# ---it---inizio
+# Sposta dati C.F. e P.IVA custom nei nuovi campi aggiunti in progetto originale
+UPDATE ip_users SET user_vat_id = user_it_piva, user_tax_code = user_it_codfisc;
+UPDATE ip_clients SET client_vat_id = client_it_piva, client_tax_code = client_it_codfisc;
+# Elimina campi C.F. e P.IVA custom già trasferiti in nuovi campi nativi
+ALTER TABLE `ip_users` DROP `user_it_piva`;
+ALTER TABLE `ip_users` DROP `user_it_codfisc`;
+ALTER TABLE `ip_clients` DROP `client_it_piva`;
+ALTER TABLE `ip_clients` DROP `client_it_codfisc`;
+# ---it---fine

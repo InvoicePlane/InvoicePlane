@@ -158,7 +158,16 @@ class Quotes extends Admin_Controller
 
         generate_quote_pdf($quote_id, $stream, $quote_template);
     }
-
+    
+    // ---it---inizio
+    public function preview_pdf($quote_id, $stream = TRUE, $quote_template = NULL)
+    {
+    	$this->load->helper('pdf');
+    
+    	generate_quote_pdf($quote_id, $stream, $quote_template, TRUE);
+    }
+    // ---it---fine
+    
     public function delete_quote_tax($quote_id, $quote_tax_rate_id)
     {
         $this->load->model('mdl_quote_tax_rates');

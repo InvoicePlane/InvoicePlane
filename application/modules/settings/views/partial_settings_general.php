@@ -314,7 +314,17 @@
         <?php } ?>
         <input type="file" name="login_logo" size="40" class="input-sm form-control"/>
     </div>
-
+    
+	<?php //---it---inizio ?>
+	<div class="form-group">
+		<label class="control-label"><?php echo lang('it_motore_stampa'); ?>: </label>
+		<select name="settings[it_print_engine]" class="form-control">
+			<option value="mpdf" <?php if ($this->mdl_settings->setting('it_print_engine') == 'mpdf') { ?>selected="selected"<?php } ?>><?php echo lang('it_motore_stampa_mpdf'); ?></option>
+			<option value="dompdf" <?php if ($this->mdl_settings->setting('it_print_engine') == 'dompdf') { ?>selected="selected"<?php } ?>><?php echo lang('it_motore_stampa_dompdf'); ?></option>
+		</select>
+	</div>
+	<?php //---it---fine ?>
+	
     <hr/>
     <h4><?php echo trans('system_settings'); ?></h4>
     <br/>

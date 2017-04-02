@@ -32,10 +32,16 @@
     <div id="content">
         <div id="logo"><span>InvoicePlane</span></div>
         <p class="alert alert-info text-center">
+            <!-- ---it---inizio -->
+            <span class="text-muted">Bitte installiere InvoicePlane.</span><br/>
+            Si prega di installare InvoicePlane
+            <!-- ---it---fine -->
+            <!-- ---it---ORIGINALE
             Please install InvoicePlane.<br/>
             <span class="text-muted">Bitte installiere InvoicePlane.</span><br/>
             <span class="text-muted">S'il vous plaît installer InvoicePlane</span><br/>
             <span class="text-muted">Por favor, instale InvoicePlane</span><br/>
+             -->
         </p>
 
         <div class="btn-group btn-group-justified">

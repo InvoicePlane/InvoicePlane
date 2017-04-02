@@ -8,6 +8,7 @@
 </script>
 
 <div class="container">
+
     <div class="install-panel">
 
         <h1 id="logo"><span>InvoicePlane</span></h1>
