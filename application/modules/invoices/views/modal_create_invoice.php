@@ -7,8 +7,8 @@
         $('.simple-select').select2();
 
         // Select2 for all select inputs
-        $("#client_id").select2({
-            placeholder: "<?php echo htmlentities(trans('client')); ?>",
+        $('#client_id').select2({
+            placeholder: "<?php echo trans('client'); ?>",
             ajax: {
                 url: "<?php echo site_url('clients/ajax/name_query'); ?>",
                 dataType: 'json',
@@ -110,7 +110,7 @@
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                 <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
-                            <?php echo $invoice_group->invoice_group_name; ?>
+                            <?php _htmlsc($invoice_group->invoice_group_name); ?>
                         </option>
                     <?php } ?>
                 </select>

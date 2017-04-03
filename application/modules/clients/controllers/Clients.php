@@ -160,8 +160,7 @@ class Clients extends Admin_Controller
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'countries' => get_country_list(trans('cldr')),
-                'selected_country' => $this->mdl_clients->form_value('client_country') ?:
-                    get_setting('default_country'),
+                'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
                 'languages' => get_available_languages(),
             )
         );

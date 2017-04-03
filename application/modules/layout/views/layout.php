@@ -37,7 +37,7 @@ $this->layout->load_view('layout/includes/navbar');
     }
     ?>
     <div id="main-content">
-    <?php echo $content; ?>
+        <?php echo $content; ?>
     </div>
 
 </div>

@@ -15,23 +15,23 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_User_Custom extends Validator
 {
+    public static $positions = array(
+        'custom_fields',
+        'account_information',
+        'address',
+        'tax_information',
+        'contact_information'
+    );
     public $table = 'ip_user_custom';
     public $primary_key = 'ip_user_custom.user_custom_id';
-
-    public static $positions = array(
-      'custom_fields',
-      'account_information',
-      'address',
-      'tax_information',
-      'contact_information'
-    );
 
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_user_custom.*, ip_custom_fields.*', false);
     }
 
-    public function default_join(){
+    public function default_join()
+    {
         $this->db->join('ip_custom_fields', 'ip_user_custom.user_custom_fieldid = ip_custom_fields.custom_field_id');
     }
 
@@ -57,20 +57,20 @@ class Mdl_User_Custom extends Validator
                 return true;
             }
 
-            foreach($form_data as $key=>$value){
-              $db_array = array(
-                'user_id' => $user_id,
-                'user_custom_fieldid' => $key,
-                'user_custom_fieldvalue' => $value
-              );
+            foreach ($form_data as $key => $value) {
+                $db_array = array(
+                    'user_id' => $user_id,
+                    'user_custom_fieldid' => $key,
+                    'user_custom_fieldvalue' => $value
+                );
 
-              $user_custom = $this->where('user_id', $user_id)->where('user_custom_fieldid', $key)->get();
+                $user_custom = $this->where('user_id', $user_id)->where('user_custom_fieldid', $key)->get();
 
-              if ($user_custom->num_rows()) {
-                  $user_custom_id = $user_custom->row()->user_custom_id;
-              }
+                if ($user_custom->num_rows()) {
+                    $user_custom_id = $user_custom->row()->user_custom_id;
+                }
 
-              parent::save($user_custom_id, $db_array);
+                parent::save($user_custom_id, $db_array);
             }
             return true;
         }
@@ -78,7 +78,8 @@ class Mdl_User_Custom extends Validator
         return $result;
     }
 
-    public function get_by_useid($user_id){
+    public function get_by_useid($user_id)
+    {
         $result = $this->where('ip_user_custom.user_id', $user_id)->get()->result();
         return $result;
     }

@@ -117,14 +117,17 @@ function format_fallback($txt)
  * @param $cv
  * @param string $class_top
  * @param string $class_bottom
+ * @param string $label_class
  */
 function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $label_class = '')
 {
     ?>
     <div class="form-group">
         <div class="<?php echo $class_top; ?>">
-            <label<?php echo($label_class != '' ? " class='" . $label_class . "'" : ''); ?>><?php echo $custom_field->custom_field_label; ?>
-                : </label>
+            <label<?php echo($label_class != '' ? " class='" . $label_class . "'" : ''); ?>
+                    for="custom[<?php echo $custom_field->custom_field_id; ?>]">
+                <?php _htmlsc($custom_field->custom_field_label); ?>
+            </label>
         </div>
         <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']'); ?>
         <div class="<?php echo $class_bottom; ?>">
@@ -134,9 +137,9 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
                 $dateValue = ($fieldValue == "" ? "" : date_from_mysql($fieldValue));
                 ?>
             <input type="text" class="form-control input-sm datepicker"
-                   name="custom[<?php echo htmlentities($custom_field->custom_field_id); ?>]"
-                   id="<?php echo htmlentities($custom_field->custom_field_id); ?>"
-                   value="<?php echo htmlentities($dateValue); ?>">
+                   name="custom[<?php echo $custom_field->custom_field_id; ?>]"
+                   id="<?php echo $custom_field->custom_field_id; ?>"
+                   value="<?php echo $dateValue; ?>">
             <?php
             break;
             case 'SINGLE-CHOICE':
@@ -144,15 +147,11 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             ?>
                 <select class="form-control simple-select" name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                         id="<?php echo $custom_field->custom_field_id; ?>">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($choices as $val): ?>
-                        <?php if ($val->custom_values_id == $fieldValue) {
-                            $selected = " selected ";
-                        } else {
-                            $selected = "";
-                        } ?>
-                        <option value="<?php echo htmlentities($val->custom_values_id) ?>"<?php echo $selected; ?>>
-                            <?php echo htmlentities($val->custom_values_value); ?>
+                        <option value="<?php echo $val->custom_values_id; ?>"
+                            <?php check_select($val->custom_values_id, $fieldValue); ?>>
+                            <?php _htmlsc($val->custom_values_value); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -161,39 +160,38 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             case 'MULTIPLE-CHOICE':
             $choices = $cv[$custom_field->custom_field_id];
             $selChoices = explode(',', $fieldValue); ?>
-                <select
-                        id="<?php echo htmlentities($custom_field->custom_field_id); ?>"
-                        name="custom[<?php echo htmlentities($custom_field->custom_field_id); ?>][]"
+                <select id="<?php echo $custom_field->custom_field_id; ?>"
+                        name="custom[<?php echo $custom_field->custom_field_id; ?>][]"
                         multiple="multiple"
                         class="form-control">
-                    <option value=""></option>
+                    <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($choices as $choice): ?>
-                        <?php $sel = (in_array($choice->custom_values_id, $selChoices) ? 'selected="selected"' : ""); ?>
-                        <option value="<?php echo htmlentities($choice->custom_values_id); ?>" <?php echo $sel; ?>><?php echo htmlentities($choice->custom_values_value); ?></option>
+                        <option value="<?php echo $choice->custom_values_id; ?>" <?php check_select(in_array($choice->custom_values_id, $selChoices)); ?>>
+                            <?php _htmlsc($choice->custom_values_value); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
                 <script>
-                    $('#<?php echo htmlentities($custom_field->custom_field_id); ?>').select2();
+                    $('#<?php echo $custom_field->custom_field_id; ?>').select2();
                 </script>
             <?php
             break;
             case 'BOOLEAN':
             ?>
-                <select
-                        id="<?php echo htmlentities($custom_field->custom_field_id); ?>"
-                        name="custom[<?php echo htmlentities($custom_field->custom_field_id); ?>]"
+                <select id="<?php echo $custom_field->custom_field_id; ?>"
+                        name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                         class="form-control">
-                    <option value="0" <?php echo($fieldValue == '0' ? "selected" : ''); ?>><?php echo trans('false'); ?></option>
-                    <option value="1" <?php echo($fieldValue == '1' ? "selected" : ''); ?>><?php echo trans('true'); ?></option>
+                    <option value="0" <?php check_select($fieldValue, '0'); ?>><?php echo trans('false'); ?></option>
+                    <option value="1" <?php check_select($fieldValue, '1'); ?>><?php echo trans('true'); ?></option>
                 </select>
             <?php
             break;
             default:
             ?>
             <input type="text" class="form-control"
-                   name="custom[<?php echo htmlentities($custom_field->custom_field_id); ?>]"
-                   id="<?php echo htmlentities($custom_field->custom_field_id); ?>"
-                   value="<?php echo htmlentities($fieldValue); ?>">
+                   name="custom[<?php echo $custom_field->custom_field_id; ?>]"
+                   id="<?php echo $custom_field->custom_field_id; ?>"
+                   value="<?php _htmlsc($fieldValue); ?>">
             <?php } ?>
         </div>
     </div>

@@ -50,7 +50,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="project_name" id="project_name" class="form-control"
-                       value="<?php echo $this->mdl_projects->form_value('project_name'); ?>">
+                       value="<?php echo $this->mdl_projects->form_value('project_name', true); ?>">
             </div>
         </div>
         <div class="form-group">

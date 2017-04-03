@@ -28,7 +28,7 @@
             <div class="form-group">
                 <label for="custom_field_label"><?php echo trans('label'); ?></label>
                 <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
-                       value="<?php echo htmlentities($this->mdl_custom_fields->form_value('custom_field_label')); ?>">
+                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label', true); ?>">
             </div>
 
             <div class="form-group">
@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label for="custom_field_order"><?php echo trans('order'); ?></label>
                 <input type="number" name="custom_field_order" id="custom_field_order" class="form-control"
-                       value="<?php echo htmlentities($this->mdl_custom_fields->form_value('custom_field_order')); ?>">
+                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_order', true); ?>">
             </div>
 
             <div class="form-group">

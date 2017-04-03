@@ -145,6 +145,45 @@ class Payment_Handler extends Base_Controller
         }
     }
 
+    private function initialize_gateway($driver)
+    {
+        $d = strtolower($driver);
+        $settings = get_gateway_settings($driver);
+
+        // Get the payment gateway fields
+        $this->config->load('payment_gateways');
+        $gateway_settings = $this->config->item('payment_gateways');
+        $gateway_settings = $gateway_settings[$driver];
+
+        $gateway_init = array();
+        foreach ($settings as $setting) {
+            // Sanitize the field key
+            $key = str_replace('gateway_' . $d . '_', '', $setting->setting_key);
+            $key = str_replace('gateway_' . $d, '', $key);
+
+            // skip empty key
+            if (!$key) continue;
+
+            // Decode password fields and checkboxes
+            if (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'password') {
+                $value = $this->crypt->decode($setting->setting_value);
+            } elseif (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'checkbox') {
+                $value = $setting->setting_value == 'on' ? true : false;
+            } else {
+                $value = $setting->setting_value;
+            }
+
+            $gateway_init[$key] = $value;
+        }
+
+        // Load Omnipay and initialize the gateway
+        require_once(FCPATH . 'vendor/autoload.php');
+        $gateway = \Omnipay\Omnipay::create($driver);
+        $gateway->initialize($gateway_init);
+
+        return $gateway;
+    }
+
     public function payment_return($invoice_url_key, $driver)
     {
         $d = strtolower($driver);
@@ -171,18 +210,6 @@ class Payment_Handler extends Base_Controller
             // Set the failure flash message
             $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
         }
-
-        // Redirect to guest invoice view with flash message
-        redirect('guest/view/invoice/' . $invoice_url_key);
-    }
-
-    public function payment_cancel($invoice_url_key, $driver)
-    {
-        // Validate the response
-        $this->payment_validate($invoice_url_key, $driver, true);
-
-        // Set the cancel flash message
-        $this->session->set_flashdata('alert_info', trans('online_payment_payment_cancelled'));
 
         // Redirect to guest invoice view with flash message
         redirect('guest/view/invoice/' . $invoice_url_key);
@@ -231,43 +258,16 @@ class Payment_Handler extends Base_Controller
         return false;
     }
 
-    private function initialize_gateway($driver)
+    public function payment_cancel($invoice_url_key, $driver)
     {
-        $d = strtolower($driver);
-        $settings = get_gateway_settings($driver);
+        // Validate the response
+        $this->payment_validate($invoice_url_key, $driver, true);
 
-        // Get the payment gateway fields
-        $this->config->load('payment_gateways');
-        $gateway_settings = $this->config->item('payment_gateways');
-        $gateway_settings = $gateway_settings[$driver];
+        // Set the cancel flash message
+        $this->session->set_flashdata('alert_info', trans('online_payment_payment_cancelled'));
 
-        $gateway_init = array();
-        foreach ($settings as $setting) {
-            // Sanitize the field key
-            $key = str_replace('gateway_' . $d . '_', '', $setting->setting_key);
-            $key = str_replace('gateway_' . $d, '', $key);
-
-            // skip empty key
-            if (!$key) continue;
-
-            // Decode password fields and checkboxes
-            if (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'password') {
-                $value = $this->crypt->decode($setting->setting_value);
-            } elseif (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'checkbox') {
-                $value = $setting->setting_value == 'on' ? true : false;
-            } else {
-                $value = $setting->setting_value;
-            }
-
-            $gateway_init[$key] = $value;
-        }
-
-        // Load Omnipay and initialize the gateway
-        require_once(FCPATH . 'vendor/autoload.php');
-        $gateway = \Omnipay\Omnipay::create($driver);
-        $gateway->initialize($gateway_init);
-
-        return $gateway;
+        // Redirect to guest invoice view with flash message
+        redirect('guest/view/invoice/' . $invoice_url_key);
     }
 
 }

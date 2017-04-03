@@ -10,7 +10,7 @@
                 <label for="settings[quotes_expire_after]" class="control-label">
                     <?php echo trans('quotes_expire_after'); ?>
                 </label>
-                <input type="text" name="settings[quotes_expire_after]" class=" form-control"
+                <input type="number" name="settings[quotes_expire_after]" class=" form-control"
                        value="<?php echo get_setting('quotes_expire_after'); ?>">
             </div>
 
@@ -48,15 +48,15 @@
                     <?php echo trans('quote_pre_password'); ?>
                 </label>
                 <input type="text" name="settings[quote_pre_password]" class=" form-control"
-                       value="<?php echo get_setting('quote_pre_password'); ?>">
+                       value="<?php echo get_setting('quote_pre_password', '', true); ?>">
             </div>
 
             <div class="form-group">
                 <label for="settings[default_quote_notes]">
                     <?php echo trans('default_notes'); ?>
                 </label>
-                <textarea name="settings[default_quote_notes]" rows="3" class=" form-control"
-                ><?php echo get_setting('default_quote_notes'); ?></textarea>
+                <textarea name="settings[default_quote_notes]" rows="3"
+                          class="form-control"><?php echo nl2br(get_setting('default_quote_notes', '', true)); ?></textarea>
             </div>
 
             <div class="form-group">

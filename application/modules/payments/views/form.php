@@ -48,7 +48,7 @@
                     <?php if (!$payment_id) { ?>
                         <?php foreach ($open_invoices as $invoice) { ?>
                             <option value="<?php echo $invoice->invoice_id; ?>"
-                                    <?php if ($this->mdl_payments->form_value('invoice_id') == $invoice->invoice_id) { ?>selected="selected"<?php } ?>>
+                                <?php check_select($this->mdl_payments->form_value('invoice_id'), $invoice->invoice_id); ?>>
                                 <?php echo $invoice->invoice_number . ' - ' . format_client($invoice) . ' - ' . format_currency($invoice->invoice_balance); ?>
                             </option>
                         <?php } ?>
@@ -121,7 +121,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <textarea name="payment_note"
-                          class="form-control"><?php echo $this->mdl_payments->form_value('payment_note'); ?></textarea>
+                          class="form-control"><?php echo $this->mdl_payments->form_value('payment_note', true); ?></textarea>
             </div>
 
         </div>

@@ -17,10 +17,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param mixed $default
  * @return string
  */
-function get_setting($setting_key, $default = '')
+function get_setting($setting_key, $default = '', $escape = false)
 {
     $CI = &get_instance();
-    return $CI->mdl_settings->setting($setting_key, $default);
+    $value = $CI->mdl_settings->setting($setting_key, $default);
+    return $escape ? htmlsc($value) : $value;
 }
 
 /**
