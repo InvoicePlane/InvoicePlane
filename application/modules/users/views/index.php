@@ -32,7 +32,7 @@
             <tbody>
             <?php foreach ($users as $user) { ?>
                 <tr>
-                    <td><?php echo $user->user_name; ?></td>
+                    <td><?php _htmlsc($user->user_name); ?></td>
                     <td><?php echo $user_types[$user->user_type]; ?></td>
                     <td><?php echo $user->user_email; ?></td>
                     <td>

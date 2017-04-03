@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label for="custom_values_label"><?php echo trans('field'); ?>: </label>
                     <input type="text" name="custom_values_label" id="custom_values_label" class="form-control"
-                           value="<?php echo $field->custom_field_label; ?>" disabled="disabled">
+                           value="<?php _htmlsc($field->custom_field_label); ?>" disabled="disabled">
                 </div>
 
                 <div class="form-group">
@@ -36,8 +36,9 @@
                             disabled="disabled">
                         <?php foreach ($custom_values_types as $type): ?>
                             <?php $alpha = str_replace('-', '_', strtolower($type)); ?>
-                            <option value="<?php echo $type; ?>"
-                                <?php echo($field->custom_field_type == $type ? 'selected="selected"' : ''); ?>><?php echo trans($alpha); ?></option>
+                            <option value="<?php echo $type; ?>" <?php check_select($field->custom_field_type, $type); ?>>
+                                <?php echo trans($alpha); ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -57,7 +58,7 @@
                         <?php foreach ($elements as $element) { ?>
                             <tr>
                                 <td><?php echo $element->custom_values_id; ?></td>
-                                <td><?php echo $element->custom_values_value; ?></td>
+                                <td><?php _htmlsc($element->custom_values_value); ?></td>
                                 <td>
                                     <div class="options btn-group">
                                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"

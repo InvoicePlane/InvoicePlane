@@ -13,7 +13,7 @@
     <title>
         <?php
         if (get_setting('custom_title') != '') {
-            echo get_setting('custom_title');
+            echo get_setting('custom_title', '', true);
         } else {
             echo 'InvoicePlane';
         } ?>

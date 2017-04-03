@@ -17,16 +17,16 @@
                            id="task-id-<?php echo $task->task_id ?>" value="<?php echo $task->task_id; ?>">
                 </td>
                 <td nowrap class="text-left">
-                    <b><?php echo isset($task->project_name) ? $task->project_name : ''; ?></b>
+                    <b><?php echo isset($task->project_name) ? htmlsc($task->project_name) : ''; ?></b>
                 </td>
                 <td>
-                    <b><?php echo $task->task_name; ?></b>
+                    <b><?php _htmlsc($task->task_name); ?></b>
                 </td>
                 <td>
                     <b><?php echo date_from_mysql($task->task_finish_date); ?></b>
                 </td>
                 <td>
-                    <?php echo nl2br($task->task_description); ?>
+                    <?php echo nl2br(htmlsc($task->task_description)); ?>
                 </td>
                 <td class="amount">
                     <?php echo format_currency($task->task_price); ?>

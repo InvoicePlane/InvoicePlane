@@ -27,7 +27,7 @@
                         <?php echo trans('unit_name'); ?>
                     </label>
                     <input type="text" name="unit_name" id="unit_name" class="form-control"
-                           value="<?php echo $this->mdl_units->form_value('unit_name'); ?>">
+                           value="<?php echo $this->mdl_units->form_value('unit_name', true); ?>">
                 </div>
 
                 <div class="form-group">
@@ -35,7 +35,7 @@
                         <?php echo trans('unit_name_plrl'); ?>
                     </label>
                     <input type="text" name="unit_name_plrl" id="unit_name_plrl" class="form-control"
-                           value="<?php echo $this->mdl_units->form_value('unit_name_plrl'); ?>">
+                           value="<?php echo $this->mdl_units->form_value('unit_name_plrl', true); ?>">
                 </div>
 
             </div>

@@ -2,22 +2,22 @@
     <table class="table table-striped">
         <thead>
         <tr>
+            <th><?php echo trans('active'); ?></th>
             <th><?php echo trans('client_name'); ?></th>
             <th><?php echo trans('email_address'); ?></th>
             <th><?php echo trans('phone_number'); ?></th>
             <th class="amount"><?php echo trans('balance'); ?></th>
-            <th><?php echo trans('active'); ?></th>
             <th><?php echo trans('options'); ?></th>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($records as $client) : ?>
             <tr>
-                <td><?php echo anchor('clients/view/' . $client->client_id, format_client($client)); ?></td>
-                <td><?php echo $client->client_email; ?></td>
-                <td><?php echo(($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : ''))); ?></td>
+                <td><?php echo ($client->client_active) ? trans('yes') : trans('no'); ?></td>
+                <td><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
+                <td><?php _htmlsc($client->client_email); ?></td>
+                <td><?php _htmlsc($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : '')); ?></td>
                 <td class="amount"><?php echo format_currency($client->client_invoice_balance); ?></td>
-                <td><?php echo ($client->client_active) ? trans('yes') : lang('no'); ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">

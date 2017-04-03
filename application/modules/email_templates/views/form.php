@@ -25,7 +25,7 @@
                 <div class="form-group">
                     <label for="email_template_title" class="control-label"><?php echo trans('title'); ?></label>
                     <input type="text" name="email_template_title" id="email_template_title"
-                           value="<?php echo $this->mdl_email_templates->form_value('email_template_title'); ?>"
+                           value="<?php echo $this->mdl_email_templates->form_value('email_template_title', true); ?>"
                            class="form-control">
                 </div>
 
@@ -55,7 +55,7 @@
                     </label>
                     <input type="text" name="email_template_from_name" id="email_template_from_name"
                            class="form-control taggable"
-                           value="<?php echo $this->mdl_email_templates->form_value('email_template_from_name'); ?>">
+                           value="<?php echo $this->mdl_email_templates->form_value('email_template_from_name', true); ?>">
                 </div>
 
                 <div class="form-group">
@@ -64,19 +64,19 @@
                     </label>
                     <input type="text" name="email_template_from_email" id="email_template_from_email"
                            class="form-control taggable"
-                           value="<?php echo $this->mdl_email_templates->form_value('email_template_from_email'); ?>">
+                           value="<?php echo $this->mdl_email_templates->form_value('email_template_from_email', true); ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="email_template_cc" class="control-label"><?php echo trans('cc'); ?></label>
                     <input type="text" name="email_template_cc" id="email_template_cc" class="form-control taggable"
-                           value="<?php echo $this->mdl_email_templates->form_value('email_template_cc'); ?>">
+                           value="<?php echo $this->mdl_email_templates->form_value('email_template_cc', true); ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="email_template_bcc" class="control-label"><?php echo trans('bcc'); ?>: </label>
                     <input type="text" name="email_template_bcc" id="email_template_bcc" class="form-control taggable"
-                           value="<?php echo $this->mdl_email_templates->form_value('email_template_bcc'); ?>">
+                           value="<?php echo $this->mdl_email_templates->form_value('email_template_bcc', true); ?>">
                 </div>
 
                 <div class="form-group">
@@ -85,7 +85,7 @@
                     </label>
                     <input type="text" name="email_template_subject" id="email_template_subject"
                            class="form-control taggable"
-                           value="<?php echo html_escape($this->mdl_email_templates->form_value('email_template_subject')); ?>">
+                           value="<?php echo $this->mdl_email_templates->form_value('email_template_subject', true); ?>">
                 </div>
 
                 <div class="form-group">
@@ -159,7 +159,7 @@
                     </div>
 
                     <textarea name="email_template_body" id="email_template_body" rows="5"
-                              class="email-template-body form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body'); ?></textarea>
+                              class="email-template-body form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?></textarea>
                     <br>
 
                     <div class="panel panel-default">

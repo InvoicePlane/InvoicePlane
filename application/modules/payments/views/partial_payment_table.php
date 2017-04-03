@@ -23,12 +23,12 @@
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $payment->client_id); ?>"
                        title="<?php echo trans('view_client'); ?>">
-                        <?php echo format_client($payment); ?>
+                        <?php _htmlsc(format_client($payment)); ?>
                     </a>
                 </td>
                 <td><?php echo format_currency($payment->payment_amount); ?></td>
-                <td><?php echo $payment->payment_method_name; ?></td>
-                <td><?php echo $payment->payment_note; ?></td>
+                <td><?php _htmlsc($payment->payment_method_name); ?></td>
+                <td><?php _htmlsc($payment->payment_note); ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">

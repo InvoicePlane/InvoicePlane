@@ -49,6 +49,7 @@ class Base_Controller extends MX_Controller
             $this->load->helper('invoice');
             $this->load->helper('date');
             $this->load->helper('form');
+            $this->load->helper('echo');
 
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');

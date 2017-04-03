@@ -50,7 +50,7 @@
                 <input type="text" name="client_name" id="client_name"
                        class="form-control" autocomplete="off"
                        data-provide="typeahead" data-items="8" data-source=''
-                       value="<?php echo $quote->client_name; ?>">
+                       value="<?php _htmlsc($quote->client_name); ?>">
             </div>
 
             <div class="form-group has-feedback">
@@ -76,7 +76,7 @@
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                             <?php echo get_setting('default_quote_group') != $invoice_group->invoice_group_id ? '' : 'selected="selected"' ?>>
-                            <?php echo $invoice_group->invoice_group_name; ?>
+                            <?php _htmlsc($invoice_group->invoice_group_name); ?>
                         </option>
                     <?php } ?>
                 </select>

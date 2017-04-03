@@ -120,7 +120,7 @@
                                 <?php if (isset($filter_family) && $family->family_id == $filter_family) {
                                     echo ' selected="selected"';
                                 } ?>>
-                                <?php echo $family->family_name; ?>
+                                <?php _htmlsc($family->family_name); ?>
                             </option>
                         <?php } ?>
                     </select>

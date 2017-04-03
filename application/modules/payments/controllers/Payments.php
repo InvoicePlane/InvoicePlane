@@ -120,16 +120,16 @@ class Payments extends Admin_Controller
 
         $fields = $this->mdl_payment_custom->get_by_payid($id);
 
-        foreach($custom_fields as $cfield){
-            foreach($fields as $fvalue){
-              if($fvalue->payment_custom_fieldid == $cfield->custom_field_id){
-                // TODO: Hackish, may need a better optimization
-                $this->mdl_payments->set_form_value(
-                  'custom[' . $cfield->custom_field_id . ']',
-                  $fvalue->payment_custom_fieldvalue
-                );
-                break;
-              }
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
+                if ($fvalue->payment_custom_fieldid == $cfield->custom_field_id) {
+                    // TODO: Hackish, may need a better optimization
+                    $this->mdl_payments->set_form_value(
+                        'custom[' . $cfield->custom_field_id . ']',
+                        $fvalue->payment_custom_fieldvalue
+                    );
+                    break;
+                }
             }
         }
 

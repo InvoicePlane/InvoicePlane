@@ -298,42 +298,41 @@ if ($this->config->item('disable_read_only') == true) {
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-5">
-                    <h2>
-                        <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo format_client($invoice) ?></a>
+
+                    <h3>
+                        <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>">
+                            <?php _htmlsc(format_client($invoice)) ?>
+                        </a>
                         <?php if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) { ?>
                             <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
                                   data-toggle="tooltip" data-placement="bottom"
                                   title="<?php echo trans('change_client'); ?>"></span>
                         <?php } ?>
-                    </h2><br>
-                    <span>
-                        <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-                        <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
-                        <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
-                        <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-                        <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-                        <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
-                    </span>
-                    <br><br>
+                    </h3>
+                    <br>
+                    <div class="client-address">
+                        <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
+                    </div>
+                    <hr>
                     <?php if ($invoice->client_phone): ?>
-                        <span>
-                            <strong><?php echo trans('phone'); ?>:</strong>
-                            <?php echo $invoice->client_phone; ?>
-                        </span>
-                        <br>
+                        <div>
+                            <?php echo trans('phone'); ?>:&nbsp;
+                            <?php _htmlsc($invoice->client_phone); ?>
+                        </div>
                     <?php endif; ?>
                     <?php if ($invoice->client_email): ?>
-                        <span>
-                            <strong><?php echo trans('email'); ?>:</strong>
+                        <div>
+                            <?php echo trans('email'); ?>:&nbsp;
                             <?php echo $invoice->client_email; ?>
-                        </span>
+                        </div>
                     <?php endif; ?>
+
                 </div>
 
                 <div class="col-xs-12 visible-xs"><br></div>
 
-                <div class="col-xs-12 col-sm-6 col-md-7">
-                    <div class="details-box">
+                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1">
+                    <div class="details-box panel panel-default panel-body">
                         <div class="row">
 
                             <?php if ($invoice->invoice_sign == -1) { ?>
@@ -454,7 +453,6 @@ if ($this->config->item('disable_read_only') == true) {
                                             echo 'disabled="disabled"';
                                         } ?>>
                                 </div>
-
                             </div>
 
                         </div>
@@ -462,6 +460,8 @@ if ($this->config->item('disable_read_only') == true) {
                 </div>
 
             </div>
+
+            <br>
 
             <?php $this->layout->load_view('invoices/partial_item_table'); ?>
 

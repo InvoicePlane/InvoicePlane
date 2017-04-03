@@ -29,7 +29,7 @@
                     <?php echo trans('email_address'); ?>
                 </label>
                 <input type="email" name="user_email" id="user_email" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_email'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_email', true); ?>">
                 <span class="help-block"><?php echo trans('setup_user_email_info'); ?></span>
             </div>
 
@@ -38,7 +38,7 @@
                     <?php echo trans('name'); ?>
                 </label>
                 <input type="text" name="user_name" id="user_name" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_name'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_name', true); ?>">
                 <span class="help-block"><?php echo trans('setup_user_name_info'); ?></span>
             </div>
 
@@ -82,7 +82,7 @@
                     <?php echo trans('street_address'); ?>
                 </label>
                 <input type="text" name="user_address_1" id="user_address_1" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_address_1'); ?>">
+                       value="<?php echo $this->mdl_users->form_value('user_address_1', true); ?>">
             </div>
 
             <div class="form-group">
@@ -90,7 +90,7 @@
                     <?php echo trans('street_address_2'); ?>
                 </label>
                 <input type="text" name="user_address_2" id="user_address_2" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_address_2', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 
@@ -99,7 +99,7 @@
                     <?php echo trans('city'); ?>
                 </label>
                 <input type="text" name="user_city" id="user_city" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_city'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_city', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 
@@ -108,7 +108,7 @@
                     <?php echo trans('state'); ?>
                 </label>
                 <input type="text" name="user_state" id="user_state" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_state'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_state', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 
@@ -117,7 +117,7 @@
                     <?php echo trans('zip_code'); ?>
                 </label>
                 <input type="text" name="user_zip" id="user_zip" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_zip'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_zip', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 
@@ -129,9 +129,7 @@
                     <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($countries as $cldr => $country) { ?>
                         <option value="<?php echo $cldr; ?>"
-                            <?php if ($this->mdl_users->form_value('user_country') == $cldr) {
-                                echo 'selected="selected"';
-                            } ?>>
+                            <?php check_select($this->mdl_users->form_value('user_country'), $cldr); ?>>
                             <?php echo $country ?>
                         </option>
                     <?php } ?>
@@ -147,7 +145,7 @@
                     <?php echo trans('phone'); ?>
                 </label>
                 <input type="text" name="user_phone" id="user_phone" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_phone'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_phone', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 
@@ -156,7 +154,7 @@
                     <?php echo trans('fax'); ?>
                 </label>
                 <input type="text" name="user_fax" id="user_fax" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_fax'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_fax', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 
@@ -165,7 +163,7 @@
                     <?php echo trans('mobile'); ?>
                 </label>
                 <input type="text" name="user_mobile" id="user_mobile" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_mobile', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 
@@ -174,7 +172,7 @@
                     <?php echo trans('web'); ?>
                 </label>
                 <input type="text" name="user_web" id="user_web" class="form-control"
-                       value="<?php echo $this->mdl_users->form_value('user_web'); ?>"
+                       value="<?php echo $this->mdl_users->form_value('user_web', true); ?>"
                        placeholder="<?php echo trans('optional'); ?>">
             </div>
 

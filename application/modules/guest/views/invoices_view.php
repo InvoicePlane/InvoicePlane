@@ -51,27 +51,22 @@
 
                         <h3><?php echo format_client($invoice); ?></h3>
 
-                        <div>
-                            <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
-                            <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-                            <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-                            <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+                        <div class="client-address">
+                            <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
                         </div>
                         <br><br>
 
                         <?php if ($invoice->client_phone) { ?>
                             <span>
                             <strong><?php echo trans('phone'); ?>:</strong>
-                                <?php echo $invoice->client_phone; ?>
+                                <?php _htmlsc($invoice->client_phone); ?>
                         </span><br>
                         <?php } ?>
 
                         <?php if ($invoice->client_email) { ?>
                             <span>
                             <strong><?php echo trans('email'); ?>:</strong>
-                                <?php echo $invoice->client_email; ?>
+                                <?php _htmlsc($invoice->client_email); ?>
                         </span>
                         <?php } ?>
 
@@ -119,7 +114,7 @@
                                 <?php echo $i;
                                 $i++; ?>
                             </td>
-                            <td><?php echo $item->item_name; ?></td>
+                            <td><?php _htmlsc($item->item_name); ?></td>
                             <td>
                                 <span class="pull-left"><?php echo trans('quantity'); ?></span>
                                 <span class="pull-right amount"><?php echo $item->item_quantity; ?></span>
@@ -138,7 +133,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-muted"><?php echo nl2br($item->item_description); ?></td>
+                            <td class="text-muted"><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                             <td>
                                 <span class="pull-left"><?php echo trans('price'); ?></span>
                                 <span class="pull-right amount">
@@ -209,7 +204,7 @@
             <?php if ($invoice->invoice_terms): ?>
                 <p>
                     <strong><?php echo trans('invoice_terms'); ?></strong><br/>
-                    <?php echo nl2br($invoice->invoice_terms); ?>
+                    <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
                 </p>
             <?php endif; ?>
 

@@ -124,16 +124,16 @@ class Quotes extends Admin_Controller
             }
         }
 
-        foreach($custom_fields as $cfield){
-            foreach($fields as $fvalue){
-              if($fvalue->quote_custom_fieldid == $cfield->custom_field_id){
-                // TODO: Hackish, may need a better optimization
-                $this->mdl_quotes->set_form_value(
-                  'custom[' . $cfield->custom_field_id . ']',
-                  $fvalue->quote_custom_fieldvalue
-                );
-                break;
-              }
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
+                if ($fvalue->quote_custom_fieldid == $cfield->custom_field_id) {
+                    // TODO: Hackish, may need a better optimization
+                    $this->mdl_quotes->set_form_value(
+                        'custom[' . $cfield->custom_field_id . ']',
+                        $fvalue->quote_custom_fieldvalue
+                    );
+                    break;
+                }
             }
         }
 

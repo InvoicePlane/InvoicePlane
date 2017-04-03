@@ -19,7 +19,7 @@
                         <?php echo trans('name'); ?>
                     </label>
                     <input type="text" name="invoice_group_name" id="invoice_group_name" class="form-control"
-                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_name'); ?>">
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_name', true); ?>">
                 </div>
 
                 <div class="form-group">
@@ -28,7 +28,7 @@
                     </label>
                     <input type="text" class="form-control taggable"
                            name="invoice_group_identifier_format" id="invoice_group_identifier_format"
-                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_identifier_format'); ?>"
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_identifier_format', true); ?>"
                            placeholder="INV-{{{id}}}">
                 </div>
 
