@@ -31,8 +31,8 @@
             <tbody>
             <?php foreach ($units as $unit) { ?>
                 <tr>
-                    <td><?php echo $unit->unit_name; ?></td>
-                    <td><?php echo $unit->unit_name_plrl; ?></td>
+                    <td><?php _htmlsc($unit->unit_name); ?></td>
+                    <td><?php _htmlsc($unit->unit_name_plrl); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

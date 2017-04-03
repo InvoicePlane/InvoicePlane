@@ -44,7 +44,7 @@ foreach ($custom_fields as $custom_field) {
 ?>
 
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo format_client($client); ?></h1>
+    <h1 class="headerbar-title"><?php _htmlsc(format_client($client)); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
@@ -86,14 +86,9 @@ foreach ($custom_fields as $custom_field) {
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">
 
-                    <h3><?php echo format_client($client); ?></h3>
+                    <h3><?php _htmlsc(format_client($client)); ?></h3>
                     <p>
-                        <?php echo ($client->client_address_1) ? $client->client_address_1 . '<br>' : ''; ?>
-                        <?php echo ($client->client_address_2) ? $client->client_address_2 . '<br>' : ''; ?>
-                        <?php echo ($client->client_city) ? $client->client_city : ''; ?>
-                        <?php echo ($client->client_state) ? $client->client_state : ''; ?>
-                        <?php echo ($client->client_zip) ? $client->client_zip : ''; ?>
-                        <?php echo ($client->client_country) ? '<br>' . $client->client_country : ''; ?>
+                        <?php $this->layout->load_view('clients/partial_client_address'); ?>
                     </p>
 
                 </div>
@@ -155,19 +150,19 @@ foreach ($custom_fields as $custom_field) {
                                 <?php if ($client->client_phone) : ?>
                                     <tr>
                                         <th><?php echo trans('phone'); ?></th>
-                                        <td><?php echo $client->client_phone; ?></td>
+                                        <td><?php _htmlsc($client->client_phone); ?></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($client->client_mobile) : ?>
                                     <tr>
                                         <th><?php echo trans('mobile'); ?></th>
-                                        <td><?php echo $client->client_mobile; ?></td>
+                                        <td><?php _htmlsc($client->client_mobile); ?></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($client->client_fax) : ?>
                                     <tr>
                                         <th><?php echo trans('fax'); ?></th>
-                                        <td><?php echo $client->client_fax; ?></td>
+                                        <td><?php _htmlsc($client->client_fax); ?></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($client->client_web) : ?>
@@ -187,7 +182,7 @@ foreach ($custom_fields as $custom_field) {
                                         $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                         ?>
                                         <th><?php echo $custom_field->cf_label ?></th>
-                                        <td><?php echo nl2br($value); ?></td>
+                                        <td><?php _htmlsc($value); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </table>
@@ -204,13 +199,13 @@ foreach ($custom_fields as $custom_field) {
                                 <?php if ($client->client_vat_id) : ?>
                                     <tr>
                                         <th><?php echo trans('vat_id'); ?></th>
-                                        <td><?php echo $client->client_vat_id; ?></td>
+                                        <td><?php _htmlsc($client->client_vat_id); ?></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($client->client_tax_code) : ?>
                                     <tr>
                                         <th><?php echo trans('tax_code'); ?></th>
-                                        <td><?php echo $client->client_tax_code; ?></td>
+                                        <td><?php _htmlsc($client->client_tax_code); ?></td>
                                     </tr>
                                 <?php endif; ?>
 
@@ -224,7 +219,7 @@ foreach ($custom_fields as $custom_field) {
                                         $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                         ?>
                                         <th><?php echo $custom_field->cf_label ?></th>
-                                        <td><?php echo nl2br($value); ?></td>
+                                        <td><?php _htmlsc($value); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </table>
@@ -232,7 +227,12 @@ foreach ($custom_fields as $custom_field) {
 
                     </div>
                 </div>
-                <?php if ($client->client_surname != ""): //Client is not a company ?>
+            </div>
+
+            <?php if ($client->client_surname != ""): //Client is not a company ?>
+                <hr>
+
+                <div class="row">
                     <div class="col-xs-12 col-md-6">
 
                         <div class="panel panel-default">
@@ -258,12 +258,12 @@ foreach ($custom_fields as $custom_field) {
 
                                         <tr>
                                             <th><?php echo trans('sumex_insurednumber'); ?></th>
-                                            <td><?php echo htmlentities($client->client_insurednumber) ?></td>
+                                            <td><?php _htmlsc($client->client_insurednumber) ?></td>
                                         </tr>
 
                                         <tr>
                                             <th><?php echo trans('sumex_veka'); ?></th>
-                                            <td><?php echo htmlentities($client->client_veka) ?></td>
+                                            <td><?php _htmlsc($client->client_veka) ?></td>
                                         </tr>
                                     <?php endif; ?>
 
@@ -277,7 +277,7 @@ foreach ($custom_fields as $custom_field) {
                                             $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                             ?>
                                             <th><?php echo $custom_field->cf_label ?></th>
-                                            <td><?php echo nl2br($value); ?></td>
+                                            <td><?php _htmlsc($value); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </table>
@@ -285,8 +285,9 @@ foreach ($custom_fields as $custom_field) {
                         </div>
 
                     </div>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endif; ?>
+
             <?php
             if ($custom_fields) : ?>
                 <hr>
@@ -310,7 +311,7 @@ foreach ($custom_fields as $custom_field) {
                                             $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                             ?>
                                             <th><?php echo $custom_field->cf_label ?></th>
-                                            <td><?php echo nl2br($value); ?></td>
+                                            <td><?php _htmlsc($value); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </table>
@@ -334,17 +335,14 @@ foreach ($custom_fields as $custom_field) {
                             <div id="notes_list">
                                 <?php echo $partial_notes; ?>
                             </div>
-                            <form class="row">
-                                <div class="col-xs-12 col-md-10">
-                                    <input type="hidden" name="client_id" id="client_id"
-                                           value="<?php echo $client->client_id; ?>">
-                                    <textarea id="client_note" class="form-control" rows="1"></textarea>
-                                </div>
-                                <div class="col-xs-12 col-md-2 text-center">
-                                    <input type="button" id="save_client_note" class="btn btn-default btn-block"
-                                           value="<?php echo trans('add_note'); ?>">
-                                </div>
-                            </form>
+                            <input type="hidden" name="client_id" id="client_id"
+                                   value="<?php echo $client->client_id; ?>">
+                            <div class="input-group">
+                                <textarea id="client_note" class="form-control" rows="2" style="resize:none"></textarea>
+                                <span id="save_client_note" class="input-group-addon btn btn-default">
+                                    <?php echo trans('add_note'); ?>
+                                </span>
+                            </div>
                         </div>
                     </div>
 

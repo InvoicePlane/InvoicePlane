@@ -32,7 +32,7 @@
                     <?php endif; ?>
                 </td>
                 <td>
-                    <?php echo $invoice->client_name; ?>
+                    <?php _htmlsc($invoice->client_name); ?>
                 </td>
                 <td>
                     <?php echo format_currency($invoice->invoice_total); ?>

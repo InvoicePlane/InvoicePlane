@@ -149,7 +149,7 @@
                                     <?php echo anchor('quotes/view/' . $quote->quote_id, ($quote->quote_number ? $quote->quote_number : $quote->quote_id)); ?>
                                 </td>
                                 <td>
-                                    <?php echo anchor('clients/view/' . $quote->client_id, format_client($quote)); ?>
+                                    <?php echo anchor('clients/view/' . $quote->client_id, htmlsc(format_client($quote))); ?>
                                 </td>
                                 <td class="amount">
                                     <?php echo format_currency($quote->quote_total); ?>
@@ -222,7 +222,7 @@
                                     <?php echo anchor('invoices/view/' . $invoice->invoice_id, ($invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id)); ?>
                                 </td>
                                 <td>
-                                    <?php echo anchor('clients/view/' . $invoice->client_id, format_client($invoice)); ?>
+                                    <?php echo anchor('clients/view/' . $invoice->client_id, htmlsc(format_client($invoice))); ?>
                                 </td>
                                 <td class="amount">
                                     <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
@@ -278,10 +278,10 @@
                             <?php foreach ($projects as $project) { ?>
                                 <tr>
                                     <td>
-                                        <?php echo anchor('projects/view/' . $project->project_id, $project->project_name); ?>
+                                        <?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?>
                                     </td>
                                     <td>
-                                        <?php echo anchor('clients/view/' . $project->client_id, format_client($project)); ?>
+                                        <?php echo anchor('clients/view/' . $project->client_id, htmlsc(format_client($project))); ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -321,7 +321,7 @@
                                     </span>
                                     </td>
                                     <td>
-                                        <?php echo anchor('tasks/form/' . $task->task_id, $task->task_name) ?>
+                                        <?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?>
                                     </td>
                                     <td>
                                     <span class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
@@ -329,7 +329,7 @@
                                     </span>
                                     </td>
                                     <td>
-                                        <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, $task->project_name) : ''; ?>
+                                        <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, htmlsc($task->project_name)) : ''; ?>
                                     </td>
                                 </tr>
                             <?php } ?>

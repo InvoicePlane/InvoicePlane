@@ -27,7 +27,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="payment_method_name" id="payment_method_name" class="form-control"
-                       value="<?php echo $this->mdl_payment_methods->form_value('payment_method_name'); ?>">
+                       value="<?php echo $this->mdl_payment_methods->form_value('payment_method_name', true); ?>">
             </div>
         </div>
 

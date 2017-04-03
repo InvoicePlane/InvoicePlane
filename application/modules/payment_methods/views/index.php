@@ -30,7 +30,7 @@
             <tbody>
             <?php foreach ($payment_methods as $payment_method) { ?>
                 <tr>
-                    <td><?php echo $payment_method->payment_method_name; ?></td>
+                    <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

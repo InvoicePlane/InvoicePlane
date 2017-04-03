@@ -194,43 +194,35 @@ $cv = $this->controller->view_data["custom_values"];
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-5">
-                    <h2>
+
+                    <h3>
                         <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>">
-                            <?php echo format_client($quote); ?>
+                            <?php _htmlsc(format_client($quote)) ?>
                         </a>
-                        <?php if ($quote->quote_status_id == 1): ?>
+                        <?php if ($quote->quote_status_id == 1) { ?>
                             <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
                                   data-toggle="tooltip" data-placement="bottom"
                                   title="<?php echo trans('change_client'); ?>"></span>
-                        <?php endif; ?>
-                    </h2>
+                        <?php } ?>
+                    </h3>
                     <br>
-                    <span>
-                        <?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
-                        <?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>
-                        <?php echo ($quote->client_city) ? $quote->client_city : ''; ?>
-                        <?php echo ($quote->client_state) ? $quote->client_state : ''; ?>
-                        <?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
-                        <?php echo ($quote->client_country) ? '<br>' . $quote->client_country : ''; ?>
-                    </span>
-                    <br><br>
+                    <div class="client-address">
+                        <?php $this->layout->load_view('clients/partial_client_address', array('client' => $quote)); ?>
+                    </div>
+                    <hr>
                     <?php if ($quote->client_phone): ?>
-                        <span>
-                            <strong>
-                                <?php echo trans('phone'); ?>:
-                            </strong>
-                            <?php echo $quote->client_phone; ?>
-                        </span>
-                        <br>
+                        <div>
+                            <?php echo trans('phone'); ?>:&nbsp;
+                            <?php _htmlsc($quote->client_phone); ?>
+                        </div>
                     <?php endif; ?>
                     <?php if ($quote->client_email): ?>
-                        <span>
-                            <strong>
-                                <?php echo trans('email'); ?>:
-                            </strong>
+                        <div>
+                            <?php echo trans('email'); ?>:&nbsp;
                             <?php echo $quote->client_email; ?>
-                        </span>
+                        </div>
                     <?php endif; ?>
+
                 </div>
 
                 <div class="col-xs-12 visible-xs"><br></div>
@@ -341,7 +333,7 @@ $cv = $this->controller->view_data["custom_values"];
                     </div>
                     <div class="panel-body">
                         <textarea name="notes" id="notes" rows="3"
-                                  class="input-sm form-control"><?php echo $quote->notes; ?></textarea>
+                                  class="input-sm form-control"><?php echo nl2br(htmlsc($quote->notes)); ?></textarea>
                     </div>
                 </div>
 

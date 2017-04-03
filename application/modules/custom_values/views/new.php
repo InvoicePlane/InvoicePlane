@@ -17,21 +17,20 @@
                 <?php $alpha = str_replace("-", "_", strtolower($field->custom_field_type)); ?>
 
                 <div class="form-group">
-                    <label><?php echo trans('field'); ?></label>
-                    <input type="text" class="form-control"
-                           value="<?php echo htmlentities($field->custom_field_label); ?>" disabled="disabled"/>
+                    <label for="custom_field_label"><?php echo trans('field'); ?></label>
+                    <input type="text" class="form-control" id="custom_field_label"
+                           value="<?php _htmlsc($field->custom_field_label); ?>" disabled="disabled"/>
                 </div>
 
                 <div class="form-group">
-                    <label><?php echo trans('type'); ?></label>
-                    <input type="text" class="form-control"
-                           value="<?php echo htmlentities(trans($alpha)); ?>" disabled="disabled"/>
+                    <label for="custom_field_type"><?php echo trans('type'); ?></label>
+                    <input type="text" class="form-control" id="custom_field_type"
+                           value="<?php _htmlsc(trans($alpha)); ?>" disabled="disabled"/>
                 </div>
 
                 <div class="form-group">
                     <label for="custom_values_value"><?php echo trans('value'); ?></label>
-                    <input type="text" class="form-control" name="custom_values_value" id="custom_values_value"
-                           value=""/>
+                    <input type="text" class="form-control" name="custom_values_value" id="custom_values_value"/>
                 </div>
 
             </div>

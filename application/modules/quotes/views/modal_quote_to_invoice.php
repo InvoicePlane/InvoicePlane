@@ -67,7 +67,7 @@
                 <label for="invoice_password"><?php echo trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
                        value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password') ?>"
-                       style="margin: 0 auto;" autocomplete="off">
+                       autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -78,7 +78,7 @@
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                             <?php check_select(get_setting('default_invoice_group'), $invoice_group->invoice_group_id); ?>>
-                            <?php echo $invoice_group->invoice_group_name; ?></option>
+                            <?php _htmlsc($invoice_group->invoice_group_name); ?></option>
                     <?php } ?>
                 </select>
             </div>

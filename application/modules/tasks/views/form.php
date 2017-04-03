@@ -1,7 +1,5 @@
 <?php
-if ($this->mdl_tasks->form_value('task_id') &&
-    ($this->mdl_tasks->form_value('task_status') == 4)
-):
+if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('task_status') == 4) :
     ?>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -25,7 +23,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
-        <?php if ($this->mdl_tasks->form_value('task_id') && ($this->mdl_tasks->form_value('task_status') == 4)) : ?>
+        <?php if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('task_status') == 4) : ?>
             <div class="alert alert-warning small"><?php echo trans('info_task_readonly') ?></div>
         <?php endif ?>
 
@@ -35,7 +33,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
                     <div class="panel-heading">
                         <?php if ($this->mdl_tasks->form_value('task_id')) : ?>
                             #<?php echo $this->mdl_tasks->form_value('task_id'); ?>&nbsp;
-                            <?php echo $this->mdl_tasks->form_value('task_name'); ?>
+                            <?php echo $this->mdl_tasks->form_value('task_name', true); ?>
                         <?php else : ?>
                             <?php echo trans('new_task'); ?>
                         <?php endif; ?>
@@ -45,13 +43,13 @@ if ($this->mdl_tasks->form_value('task_id') &&
                         <div class="form-group">
                             <label for="task_name"><?php echo trans('task_name'); ?></label>
                             <input type="text" name="task_name" id="task_name" class="form-control"
-                                   value="<?php echo $this->mdl_tasks->form_value('task_name'); ?>">
+                                   value="<?php echo $this->mdl_tasks->form_value('task_name', true); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="task_description"><?php echo trans('task_description'); ?></label>
                             <textarea name="task_description" id="task_description" class="form-control" rows="3"
-                            ><?php echo $this->mdl_tasks->form_value('task_description'); ?></textarea>
+                            ><?php echo $this->mdl_tasks->form_value('task_description', true); ?></textarea>
                         </div>
 
                         <div class="form-group">
@@ -119,7 +117,7 @@ if ($this->mdl_tasks->form_value('task_id') &&
                                 <?php foreach ($projects as $project) { ?>
                                     <option value="<?php echo $project->project_id; ?>"
                                         <?php check_select($this->mdl_tasks->form_value('project_id'), $project->project_id); ?>>
-                                        <?php echo $project->project_name; ?>
+                                        <?php echo htmlspecialchars($project->project_name); ?>
                                     </option>
                                 <?php } ?>
                             </select>

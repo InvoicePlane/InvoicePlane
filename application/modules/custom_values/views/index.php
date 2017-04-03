@@ -33,7 +33,7 @@
             <?php $alpha = str_replace("-", "_", strtolower($custom_values->custom_field_type)); ?>
             <tr>
                 <td><?php echo $custom_values->custom_field_id; ?></td>
-                <td><?php echo $custom_values->custom_field_label; ?></td>
+                <td><?php _htmlsc($custom_values->custom_field_label); ?></td>
                 <td><?php echo $custom_values->count; ?></td>
                 <td><?php echo trans($alpha); ?></td>
                 <td>

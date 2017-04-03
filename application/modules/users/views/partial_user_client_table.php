@@ -11,7 +11,7 @@
         <tbody>
         <?php foreach ($user_clients as $user_client) { ?>
             <tr>
-                <td><?php echo format_client($user_client); ?></td>
+                <td><?php _htmlsc(format_client($user_client)); ?></td>
                 <td>
                     <?php if ($id) { ?>
                         <a href="<?php echo site_url('users/delete_user_client/' . $id . '/' . $user_client->user_client_id); ?>">

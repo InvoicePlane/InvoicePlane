@@ -66,8 +66,8 @@
                     <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($email_templates as $email_template): ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
-                                <?php if ($selected_email_template == $email_template->email_template_id) { ?>selected="selected"<?php } ?>>
-                            <?php echo $email_template->email_template_title; ?>
+                            <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
+                            <?php _htmlsc($email_template->email_template_title); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -80,7 +80,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="from_name" id="from_name" class="form-control"
-                       value="<?php echo $invoice->user_name; ?>">
+                       value="<?php _htmlsc($invoice->user_name); ?>">
             </div>
         </div>
 
@@ -133,8 +133,7 @@
                     <option value=""><?php echo trans('none'); ?></option>
                     <?php foreach ($pdf_templates as $pdf_template): ?>
                         <option value="<?php echo $pdf_template; ?>"
-                                <?php if ($selected_pdf_template == $pdf_template):
-                                ?>selected="selected"<?php endif; ?>>
+                            <?php check_select($selected_pdf_template, $pdf_template); ?>>
                             <?php echo $pdf_template; ?>
                         </option>
                     <?php endforeach; ?>

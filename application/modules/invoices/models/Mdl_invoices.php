@@ -417,7 +417,6 @@ class Mdl_Invoices extends Response_Model
     }
 
 
-
     /**
      * @param int $invoice_id
      */

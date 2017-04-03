@@ -20,8 +20,8 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox"
-                               name="settings[enable_online_payments]" <?php check_select(get_setting(''), 1, '==', true) ?>>
+                        <input type="checkbox" name="settings[enable_online_payments]"
+                            <?php check_select(get_setting(''), 1, '==', true) ?>>
                         <?php echo trans('enable_online_payments'); ?>
                     </label>
                 </div>

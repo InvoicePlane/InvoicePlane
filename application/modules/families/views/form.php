@@ -26,7 +26,7 @@
                         <?php echo trans('family_name'); ?>
                     </label>
                     <input type="text" name="family_name" id="family_name" class="form-control"
-                           value="<?php echo $this->mdl_families->form_value('family_name'); ?>">
+                           value="<?php echo $this->mdl_families->form_value('family_name', true); ?>">
                 </div>
 
             </div>

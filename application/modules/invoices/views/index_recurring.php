@@ -35,7 +35,7 @@
                         } else {
                             echo 'label-default';
                         } ?>">
-                            <?php echo lang($invoice->recur_status); ?>
+                            <?php echo trans($invoice->recur_status); ?>
                         </span>
                         </td>
                         <td>
@@ -44,7 +44,7 @@
                             </a>
                         </td>
                         <td>
-                            <?php echo anchor('clients/view/' . $invoice->client_id, $invoice->client_name); ?>
+                            <?php echo anchor('clients/view/' . $invoice->client_id, htmlsc($invoice->client_name)); ?>
                         </td>
                         <td>
                             <?php echo date_from_mysql($invoice->recur_start_date); ?>
@@ -53,7 +53,7 @@
                             <?php echo date_from_mysql($invoice->recur_end_date); ?>
                         </td>
                         <td>
-                            <?php echo lang($recur_frequencies[$invoice->recur_frequency]); ?>
+                            <?php echo trans($recur_frequencies[$invoice->recur_frequency]); ?>
                         </td>
                         <td>
                             <?php echo date_from_mysql($invoice->recur_next_date); ?></td>

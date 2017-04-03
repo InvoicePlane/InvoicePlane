@@ -18,16 +18,6 @@ class Mdl_Custom_Fields extends MY_Model
     public $table = 'ip_custom_fields';
     public $primary_key = 'ip_custom_fields.custom_field_id';
 
-    public function default_select()
-    {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*', false);
-    }
-
-    public function default_order_by()
-    {
-        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
-    }
-
     /**
      * @param $element
      * @return string
@@ -48,6 +38,16 @@ class Mdl_Custom_Fields extends MY_Model
         $CI = &get_instance();
         $CI->load->module("custom_values/mdl_custom_values");
         return Mdl_Custom_Values::custom_types();
+    }
+
+    public function default_select()
+    {
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*', false);
+    }
+
+    public function default_order_by()
+    {
+        $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
     }
 
     /**
@@ -95,16 +95,6 @@ class Mdl_Custom_Fields extends MY_Model
     }
 
     /**
-     * @param $column
-     * @return $this
-     */
-    public function get_by_id($column)
-    {
-        $this->where('custom_field_id', $column);
-        return $this->get()->row();
-    }
-
-    /**
      * @param null $id
      * @param null $db_array
      * @return null
@@ -122,6 +112,16 @@ class Mdl_Custom_Fields extends MY_Model
         // Save the record to ip_custom_fields
         $id = parent::save($id, $db_array);
         return $id;
+    }
+
+    /**
+     * @param $column
+     * @return $this
+     */
+    public function get_by_id($column)
+    {
+        $this->where('custom_field_id', $column);
+        return $this->get()->row();
     }
 
     /**
@@ -175,6 +175,25 @@ class Mdl_Custom_Fields extends MY_Model
     }
 
     /**
+     * @param $id
+     */
+    public function delete($id)
+    {
+        $custom_field = $this->get_by_id($id);
+        parent::delete($id);
+    }
+
+    /**
+     * @param $table
+     * @return $this
+     */
+    public function by_table($table)
+    {
+        $this->filter_where('custom_field_table', $table);
+        return $this;
+    }
+
+    /**
      * @param $table_name
      * @param $old_column_name
      * @param $new_column_name
@@ -210,25 +229,6 @@ class Mdl_Custom_Fields extends MY_Model
         );
 
         $this->dbforge->add_column($table_name, $column);
-    }
-
-    /**
-     * @param $id
-     */
-    public function delete($id)
-    {
-        $custom_field = $this->get_by_id($id);
-        parent::delete($id);
-    }
-
-    /**
-     * @param $table
-     * @return $this
-     */
-    public function by_table($table)
-    {
-        $this->filter_where('custom_field_table', $table);
-        return $this;
     }
 
 }

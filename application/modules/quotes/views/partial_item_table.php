@@ -78,7 +78,7 @@
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
                             <option value="<?php echo $unit->unit_id; ?>">
-                                <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
+                                <?php echo htmlsc($unit->unit_name) . "/" . htmlsc($unit->unit_name_plrl); ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -115,7 +115,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('item'); ?></span>
                         <input type="text" name="item_name" class="input-sm form-control"
-                               value="<?php echo html_escape($item->item_name); ?>">
+                               value="<?php _htmlsc($item->item_name); ?>">
                     </div>
                 </td>
                 <td class="td-amount td-quantity">
@@ -150,7 +150,7 @@
                             <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php if ($item->item_tax_rate_id == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
-                                    <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
+                                    <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                 </option>
                             <?php } ?>
                         </select>
@@ -167,8 +167,8 @@
                 <td class="td-textarea">
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('description'); ?></span>
-                        <textarea name="item_description"
-                                  class="input-sm form-control"><?php echo $item->item_description; ?></textarea>
+                        <textarea name="item_description" class="input-sm form-control"
+                        ><?php echo nl2br(htmlsc($item->item_description)); ?></textarea>
                     </div>
                 </td>
                 <td class="td-amount">
@@ -179,8 +179,8 @@
                             <option value="0"><?php echo trans('none'); ?></option>
                             <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"
-                                        <?php if ($item->item_product_unit_id == $unit->unit_id) { ?>selected="selected"<?php } ?>>
-                                    <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
+                                    <?php check_select($item->item_product_unit_id, $unit->unit_id); ?>>
+                                    <?php echo htmlsc($unit->unit_name) . "/" . htmlsc($unit->unit_name_plrl); ?>
                                 </option>
                             <?php } ?>
                         </select>
@@ -252,7 +252,7 @@
                         foreach ($quote_tax_rates as $quote_tax_rate) { ?>
                             <span class="text-muted">
                             <?php echo anchor('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id, '<i class="fa fa-trash-o"></i>');
-                            echo ' ' . $quote_tax_rate->quote_tax_rate_name . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent); ?>
+                            echo ' ' . htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent); ?>
                                 %</span>&nbsp;
                             <span class="amount">
                                 <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
@@ -281,7 +281,6 @@
                             <input id="quote_discount_percent" name="quote_discount_percent"
                                    value="<?php echo format_amount($quote->quote_discount_percent != 0 ? $quote->quote_discount_percent : ''); ?>"
                                    class="discount-option form-control input-sm amount">
-
                             <div class="input-group-addon">&percnt;</div>
                         </div>
                     </div>

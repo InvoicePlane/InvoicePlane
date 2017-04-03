@@ -64,9 +64,9 @@
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                             <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) {
                                 echo 'selected="selected"';
-                                $credit_invoice_group = $invoice_group->invoice_group_name;
+                                $credit_invoice_group = htmlsc($invoice_group->invoice_group_name);
                             } ?>>
-                            <?php echo $invoice_group->invoice_group_name; ?>
+                            <?php echo $credit_invoice_group; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -75,9 +75,9 @@
             <p><strong><?php echo trans('credit_invoice_details'); ?></strong></p>
 
             <ul>
-                <li><?php echo trans('client') . ': ' . $invoice->client_name ?></li>
-                <li><?php echo trans('credit_invoice_date') . ': ' . $credit_date ?></li>
-                <li><?php echo trans('invoice_group') . ': ' . $credit_invoice_group ?></li>
+                <li><?php echo trans('client') . ': ' . htmlsc($invoice->client_name); ?></li>
+                <li><?php echo trans('credit_invoice_date') . ': ' . $credit_date; ?></li>
+                <li><?php echo trans('invoice_group') . ': ' . $credit_invoice_group; ?></li>
             </ul>
 
             <div class="alert alert-danger no-margin">

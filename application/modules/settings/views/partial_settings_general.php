@@ -119,7 +119,7 @@
                             <?php echo trans('currency_symbol'); ?>
                         </label>
                         <input type="text" name="settings[currency_symbol]" class=" form-control"
-                               value="<?php echo get_setting('currency_symbol'); ?>">
+                               value="<?php echo get_setting('currency_symbol', '', true); ?>">
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@
                             <?php echo trans('thousands_separator'); ?>
                         </label>
                         <input type="text" name="settings[thousands_separator]" class=" form-control"
-                               value="<?php echo get_setting('thousands_separator'); ?>">
+                               value="<?php echo get_setting('thousands_separator', '', true); ?>">
                     </div>
                 </div>
 
@@ -160,7 +160,7 @@
                             <?php echo trans('decimal_point'); ?>
                         </label>
                         <input type="text" name="settings[decimal_point]" class=" form-control"
-                               value="<?php echo get_setting('decimal_point'); ?>">
+                               value="<?php echo get_setting('decimal_point', '', true); ?>">
                     </div>
                 </div>
             </div>
@@ -214,7 +214,7 @@
                             <?php echo trans('currency_code'); ?>
                         </label>
                         <input type="text" name="settings[currency_code]" class=" form-control"
-                               value="<?php echo get_setting('currency_code'); ?>">
+                               value="<?php echo get_setting('currency_code', '', true); ?>">
                     </div>
                 </div>
             </div>
@@ -339,7 +339,7 @@
                             <?php echo trans('custom_title'); ?>
                         </label>
                         <input type="text" name="settings[custom_title]" class=" form-control"
-                               value="<?php echo get_setting('custom_title'); ?>">
+                               value="<?php echo get_setting('custom_title', '', true); ?>">
                     </div>
                 </div>
             </div>
@@ -359,8 +359,8 @@
                 <p class="help-block">
                     <?php echo trans('example'); ?>:
                     <span style="font-family: Monaco, Lucida Console, monospace">
-                <?php echo format_currency(123456.78); ?>
-            </span>
+                        <?php echo format_currency(123456.78); ?>
+                    </span>
                 </p>
             </div>
 

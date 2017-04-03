@@ -31,8 +31,8 @@
             <tbody>
             <?php foreach ($projects as $project) { ?>
                 <tr>
-                    <td><?php echo anchor('projects/view/' . $project->project_id, $project->project_name); ?></td>
-                    <td><?php echo ($project->client_id) ? $project->client_name : trans('none'); ?></td>
+                    <td><?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?></td>
+                    <td><?php echo ($project->client_id) ? htmlsc($project->client_name) : trans('none'); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

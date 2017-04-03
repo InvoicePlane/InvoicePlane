@@ -19,7 +19,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="tax_rate_name" id="tax_rate_name" class="form-control"
-                       value="<?php echo $this->mdl_tax_rates->form_value('tax_rate_name'); ?>">
+                       value="<?php echo $this->mdl_tax_rates->form_value('tax_rate_name', true); ?>">
             </div>
         </div>
 

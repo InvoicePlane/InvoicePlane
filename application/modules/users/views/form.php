@@ -60,7 +60,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <?php echo trans('name'); ?>
                                 </label>
                                 <input type="text" name="user_name" id="user_name" class="form-control"
-                                       value="<?php echo $this->mdl_users->form_value('user_name'); ?>">
+                                       value="<?php echo $this->mdl_users->form_value('user_name', true); ?>">
                             </div>
 
                             <div class="form-group">
@@ -68,7 +68,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <?php echo trans('company'); ?>
                                 </label>
                                 <input type="text" name="user_company" id="user_company" class="form-control"
-                                       value="<?php echo $this->mdl_users->form_value('user_company'); ?>">
+                                       value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
                             </div>
 
                             <div class="form-group">
@@ -76,7 +76,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <?php echo trans('email_address'); ?>
                                 </label>
                                 <input type="text" name="user_email" id="user_email" class="form-control"
-                                       value="<?php echo $this->mdl_users->form_value('user_email'); ?>">
+                                       value="<?php echo $this->mdl_users->form_value('user_email', true); ?>">
                             </div>
 
                             <?php if (!$id) { ?>
@@ -114,7 +114,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         $usr_lang = $this->session->userdata('user_language');
                                         ?>
                                         <option value="<?php echo $language; ?>"
-                                            <?php echo $usr_lang == $language ? 'selected="selected"' : '' ?>>
+                                            <?php check_select($usr_lang, $language); ?>>
                                             <?php echo ucfirst($language); ?>
                                         </option>
                                     <?php } ?>
@@ -128,7 +128,7 @@ $cv = $this->controller->view_data["custom_values"];
                                 <select name="user_type" id="user_type" class="form-control simple-select">
                                     <?php foreach ($user_types as $key => $type) { ?>
                                         <option value="<?php echo $key; ?>"
-                                                <?php if ($this->mdl_users->form_value('user_type') == $key) { ?>selected="selected"<?php } ?>>
+                                            <?php check_select($this->mdl_users->form_value('user_type'), $key); ?>>
                                             <?php echo $type; ?>
                                         </option>
                                     <?php } ?>
@@ -148,7 +148,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('street_address'); ?>
                                     </label>
                                     <input type="text" name="user_address_1" id="user_address_1" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_address_1'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_address_1', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -156,7 +156,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('street_address_2'); ?>
                                     </label>
                                     <input type="text" name="user_address_2" id="user_address_2" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_address_2', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -164,7 +164,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('city'); ?>
                                     </label>
                                     <input type="text" name="user_city" id="user_city" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_city'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_city', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -172,7 +172,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('state'); ?>
                                     </label>
                                     <input type="text" name="user_state" id="user_state" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_state'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_state', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -180,7 +180,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('zip_code'); ?>
                                     </label>
                                     <input type="text" name="user_zip" id="user_zip" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_zip'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_zip', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -224,7 +224,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('vat_id'); ?>
                                     </label>
                                     <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_vat_id'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -232,7 +232,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('tax_code'); ?>
                                     </label>
                                     <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_tax_code'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -240,7 +240,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('user_iban'); ?>
                                     </label>
                                     <input type="text" name="user_iban" id="user_iban" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_iban'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -249,7 +249,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     </label>
                                     <input type="text" name="user_subscribernumber" id="user_subscribernumber"
                                            class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_subscribernumber'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_subscribernumber', true); ?>">
                                 </div>
 
                                 <!-- Custom fields -->
@@ -280,7 +280,7 @@ $cv = $this->controller->view_data["custom_values"];
                                             <?php echo trans('gln'); ?>
                                         </label>
                                         <input type="text" name="user_gln" id="user_gln" class="form-control"
-                                               value="<?php echo $this->mdl_users->form_value('user_gln'); ?>">
+                                               value="<?php echo $this->mdl_users->form_value('user_gln', true); ?>">
                                     </div>
 
                                     <div class="form-group">
@@ -288,7 +288,7 @@ $cv = $this->controller->view_data["custom_values"];
                                             <?php echo trans('sumex_rcc'); ?>
                                         </label>
                                         <input type="text" name="user_rcc" id="user_rcc" class="form-control"
-                                               value="<?php echo $this->mdl_users->form_value('user_rcc'); ?>">
+                                               value="<?php echo $this->mdl_users->form_value('user_rcc', true); ?>">
                                     </div>
                                 </div>
 
@@ -306,7 +306,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('phone_number'); ?>
                                     </label>
                                     <input type="text" name="user_phone" id="user_phone" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_phone'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_phone', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -314,7 +314,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('fax_number'); ?>
                                     </label>
                                     <input type="text" name="user_fax" id="user_fax" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_fax'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_fax', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -322,7 +322,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('mobile_number'); ?>
                                     </label>
                                     <input type="text" name="user_mobile" id="user_mobile" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_mobile', true); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -330,7 +330,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php echo trans('web_address'); ?>
                                     </label>
                                     <input type="text" name="user_web" id="user_web" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_web'); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_web', true); ?>">
                                 </div>
 
                                 <!-- Custom fields -->
