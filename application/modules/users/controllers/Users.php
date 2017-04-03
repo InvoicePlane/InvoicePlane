@@ -143,8 +143,7 @@ class Users extends Admin_Controller
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'countries' => get_country_list(trans('cldr')),
-                'selected_country' => $this->mdl_users->form_value('user_country') ?:
-                    get_setting('default_country'),
+                'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'),
                 'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
                 'languages' => get_available_languages(),
             )

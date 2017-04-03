@@ -1,48 +1,48 @@
 <?php
-  $cv = $this->controller->view_data["custom_values"];
+$cv = $this->controller->view_data["custom_values"];
 ?>
 <script>
-    function getIcon(fullname){
-      var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
-      if(fileFormat){
-        fileFormat = fileFormat[1];
-      }
-      else{
-        fileFormat = "";
-      }
+    function getIcon(fullname) {
+        var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
+        if (fileFormat) {
+            fileFormat = fileFormat[1];
+        }
+        else {
+            fileFormat = "";
+        }
 
-      var fileIcon = "default";
+        var fileIcon = "default";
 
-      switch(fileFormat){
-        case "pdf":
-          fileIcon = "file-pdf";
-        break;
+        switch (fileFormat) {
+            case "pdf":
+                fileIcon = "file-pdf";
+                break;
 
-        case "mp3":
-        case "wav":
-        case "ogg":
-          fileIcon = "file-audio";
-        break;
+            case "mp3":
+            case "wav":
+            case "ogg":
+                fileIcon = "file-audio";
+                break;
 
-        case "doc":
-        case "docx":
-        case "odt":
-          fileIcon = "file-document";
-        break;
+            case "doc":
+            case "docx":
+            case "odt":
+                fileIcon = "file-document";
+                break;
 
-        case "xls":
-        case "xlsx":
-        case "ods":
-          fileIcon = "file-spreadsheet";
-        break;
+            case "xls":
+            case "xlsx":
+            case "ods":
+                fileIcon = "file-spreadsheet";
+                break;
 
-        case "ppt":
-        case "pptx":
-        case "odp":
-          fileIcon = "file-presentation";
-        break;
-      }
-      return fileIcon;
+            case "ppt":
+            case "pptx":
+            case "odp":
+                fileIcon = "file-presentation";
+                break;
+        }
+        return fileIcon;
     }
     $(function () {
         $('.btn_add_product').click(function () {
@@ -504,7 +504,9 @@ if ($this->config->item('disable_read_only') == true) {
 
                                 <!-- Custom fields -->
                                 <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if($custom_field->custom_field_location != 1){ continue; } ?>
+                                    <?php if ($custom_field->custom_field_location != 1) {
+                                        continue;
+                                    } ?>
                                     <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
                                 <?php endforeach; ?>
                             </div>
@@ -605,7 +607,9 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-6">
                                 <?php $i = 0; ?>
                                 <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if($custom_field->custom_field_location != 0) { continue; } ?>
+                                    <?php if ($custom_field->custom_field_location != 0) {
+                                        continue;
+                                    } ?>
                                     <?php $i++; ?>
                                     <?php if ($i % 2 != 0): ?>
                                         <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
@@ -616,7 +620,9 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-6">
                                 <?php $i = 0; ?>
                                 <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if($custom_field->custom_field_location != 0) { continue; } ?>
+                                    <?php if ($custom_field->custom_field_location != 0) {
+                                        continue;
+                                    } ?>
                                     <?php $i++; ?>
                                     <?php if ($i % 2 == 0): ?>
                                         <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
@@ -678,7 +684,7 @@ if ($this->config->item('disable_read_only') == true) {
                         fileIcon = getIcon(val.fullname);
 
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.svg');
+                            '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
                     }
 
                     thisDropzone.emit("complete", mockFile);
@@ -701,7 +707,7 @@ if ($this->config->item('disable_read_only') == true) {
     myDropzone.on("addedfile", function (file) {
         var fileIcon = getIcon(file.name);
         myDropzone.emit("thumbnail", file,
-          '<?php echo base_url('assets/core/img/file-icons/'); ?>'+ fileIcon + '.svg');
+            '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
         createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $invoice->invoice_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
     });
 

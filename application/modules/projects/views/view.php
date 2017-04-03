@@ -30,14 +30,9 @@
                         <strong><?php echo format_client($project); ?></strong>
                     </div>
                     <div class="panel-body">
-                        <p>
-                            <?php echo ($project->client_address_1) ? $project->client_address_1 . '<br>' : ''; ?>
-                            <?php echo ($project->client_address_2) ? $project->client_address_2 . '<br>' : ''; ?>
-                            <?php echo ($project->client_city) ? $project->client_city : ''; ?>
-                            <?php echo ($project->client_state) ? $project->client_state : ''; ?>
-                            <?php echo ($project->client_zip) ? $project->client_zip : ''; ?>
-                            <?php echo ($project->client_country) ? '<br>' . $project->client_country : ''; ?>
-                        </p>
+                        <div class="client-address">
+                            <?php $this->layout->load_view('clients/partial_client_address', array('client' => $project)); ?>
+                        </div>
                     </div>
                 </div>
 
@@ -72,7 +67,7 @@
                             <?php foreach ($tasks as $task) { ?>
                                 <tr>
                                     <td>
-                                        <?php echo anchor('tasks/form/' . $task->task_id, $task->task_name) ?>
+                                        <?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?>
                                     </td>
                                     <td>
                                 <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
@@ -84,7 +79,7 @@
                                     <?php echo date_from_mysql($task->task_finish_date); ?>
                                 </span>
                                     </td>
-                                    <td><?php echo $task->project_name; ?></td>
+                                    <td><?php _htmlsc($task->project_name); ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>

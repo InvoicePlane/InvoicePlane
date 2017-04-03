@@ -92,12 +92,10 @@
                             <option value=""><?php echo trans('none'); ?></option>
                             <?php foreach ($payment_methods as $payment_method) { ?>
                                 <option value="<?php echo $payment_method->payment_method_id; ?>"
-                                    <?php if (isset($invoice_payment_method)
+                                    <?php check_select(isset($invoice_payment_method)
                                         && $invoice_payment_method == $payment_method->payment_method_id
-                                    ) {
-                                        echo 'selected="selected"';
-                                    } ?>>
-                                    <?php echo $payment_method->payment_method_name; ?>
+                                    ); ?>>
+                                    <?php _htmlsc($payment_method->payment_method_name); ?>
                                 </option>
                             <?php } ?>
                         </select>

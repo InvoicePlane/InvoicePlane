@@ -46,20 +46,16 @@
             <div class="col-xs-12 col-md-9">
 
                 <h2><?php echo format_client($quote); ?></h2><br>
-                <span>
-                    <?php echo ($quote->client_address_1) ? $quote->client_address_1 . '<br>' : ''; ?>
-                    <?php echo ($quote->client_address_2) ? $quote->client_address_2 . '<br>' : ''; ?>
-                    <?php echo ($quote->client_city) ? $quote->client_city : ''; ?>
-                    <?php echo ($quote->client_state) ? $quote->client_state : ''; ?>
-                    <?php echo ($quote->client_zip) ? $quote->client_zip : ''; ?>
-                    <?php echo ($quote->client_country) ? '<br>' . $quote->client_country : ''; ?>
-                </span>
+                <div class="client-address">
+                    <?php $this->layout->load_view('clients/partial_client_address', array('client' => $quote)); ?>
+                </div>
                 <br><br>
                 <?php if ($quote->client_phone) { ?>
-                    <span><strong><?php echo trans('phone'); ?>:</strong> <?php echo $quote->client_phone; ?></span><br>
+                    <span><strong><?php echo trans('phone'); ?>:</strong> <?php _htmlsc($quote->client_phone); ?></span>
+                    <br>
                 <?php } ?>
                 <?php if ($quote->client_email) { ?>
-                    <span><strong><?php echo trans('email'); ?>:</strong> <?php echo $quote->client_email; ?></span>
+                    <span><strong><?php echo trans('email'); ?>:</strong> <?php _htmlsc($quote->client_email); ?></span>
                 <?php } ?>
 
             </div>
@@ -106,7 +102,7 @@
                             <?php echo $i;
                             $i++; ?>
                         </td>
-                        <td><?php echo $item->item_name; ?></td>
+                        <td><?php _htmlsc($item->item_name); ?></td>
                         <td>
                             <span class="pull-left"><?php echo trans('quantity'); ?></span>
                             <span class="pull-right amount"><?php echo $item->item_quantity; ?></span>
@@ -121,7 +117,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-muted"><?php echo $item->item_description; ?></td>
+                        <td class="text-muted"><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                         <td>
                             <span class="pull-left"><?php echo trans('price'); ?></span>
                             <span class="pull-right amount"><?php format_amount($item->item_price); ?></span>

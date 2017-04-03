@@ -65,7 +65,7 @@
                         <?php echo trans('smtp_server_address'); ?>
                     </label>
                     <input type="text" name="settings[smtp_server_address]" class=" form-control"
-                           value="<?php echo get_setting('smtp_server_address'); ?>">
+                           value="<?php echo get_setting('smtp_server_address', '', true); ?>">
                 </div>
 
                 <div class="form-group">
@@ -87,7 +87,7 @@
                         <?php echo trans('smtp_username'); ?>
                     </label>
                     <input type="text" name="settings[smtp_username]" class=" form-control"
-                           value="<?php echo get_setting('smtp_username'); ?>">
+                           value="<?php echo get_setting('smtp_username', '', true); ?>">
                 </div>
 
                 <div class="form-group">

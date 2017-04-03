@@ -29,7 +29,7 @@
         <tbody>
         <?php foreach ($email_templates as $email_template) { ?>
             <tr>
-                <td><?php echo $email_template->email_template_title; ?></td>
+                <td><?php _htmlsc($email_template->email_template_title); ?></td>
                 <td><?php echo lang($email_template->email_template_type); ?></td>
                 <td>
                     <div class="options btn-group">

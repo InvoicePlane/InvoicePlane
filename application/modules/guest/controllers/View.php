@@ -61,6 +61,27 @@ class View extends Base_Controller
         }
     }
 
+    private function get_attachments($key)
+    {
+        $path = UPLOADS_FOLDER . '/customer_files';
+        $files = scandir($path);
+        $attachments = array();
+
+        if ($files !== false) {
+            foreach ($files as $file) {
+                if ('.' != $file && '..' != $file && strpos($file, $key) !== false) {
+                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                    $obj['fullname'] = $file;
+                    $obj['size'] = filesize($path . '/' . $file);
+                    $obj['fullpath'] = base_url($path . '/' . $file);
+                    $attachments[] = $obj;
+                }
+            }
+        }
+
+        return $attachments;
+    }
+
     /**
      * @param $invoice_url_key
      * @param bool $stream
@@ -166,26 +187,6 @@ class View extends Base_Controller
 
             $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
         }
-    }
-
-    private function get_attachments($key){
-      $path = UPLOADS_FOLDER.'/customer_files';
-      $files = scandir($path);
-      $attachments = array();
-
-      if ($files !== false) {
-          foreach ($files as $file) {
-              if ('.' != $file && '..' != $file && strpos($file, $key) !== false) {
-                  $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
-                  $obj['fullname'] = $file;
-                  $obj['size'] = filesize($path . '/' . $file);
-                  $obj['fullpath'] = base_url($path . '/' . $file);
-                  $attachments[] = $obj;
-              }
-          }
-      }
-
-      return $attachments;
     }
 
     /**

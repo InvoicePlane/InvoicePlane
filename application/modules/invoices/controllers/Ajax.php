@@ -266,6 +266,7 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'client_id' => $this->input->post('client_id'),
+            'clients' => $this->mdl_clients->get_latest(),
         );
 
         $this->layout->load_view('invoices/modal_create_invoice', $data);
@@ -302,7 +303,9 @@ class Ajax extends Admin_Controller
         $data = array(
             'client_id' => $this->input->post('client_id'),
             'invoice_id' => $this->input->post('invoice_id'),
+            'clients' => $this->mdl_clients->get_latest(),
         );
+
         $this->layout->load_view('invoices/modal_change_client', $data);
     }
 
@@ -351,7 +354,7 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'invoice_id' => $this->input->post('invoice_id'),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))->get()->row()
+            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))->get()->row(),
         );
 
         $this->layout->load_view('invoices/modal_copy_invoice', $data);

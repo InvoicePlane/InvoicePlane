@@ -15,20 +15,20 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Quote_Custom extends Validator
 {
+    public static $positions = array(
+        'custom_fields',
+        'properties'
+    );
     public $table = 'ip_quote_custom';
     public $primary_key = 'ip_quote_custom.quote_custom_id';
-
-    public static $positions = array(
-      'custom_fields',
-      'properties'
-    );
 
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_quote_custom.*, ip_custom_fields.*', false);
     }
 
-    public function default_join(){
+    public function default_join()
+    {
         $this->db->join('ip_custom_fields', 'ip_quote_custom.quote_custom_fieldid = ip_custom_fields.custom_field_id');
     }
 
@@ -51,20 +51,20 @@ class Mdl_Quote_Custom extends Validator
             $fData = $this->_formdata;
             $quote_custom_id = null;
 
-            foreach($fData as $key=>$value){
-              $db_array = array(
-                'quote_id' => $quote_id,
-                'quote_custom_fieldid' => $key,
-                'quote_custom_fieldvalue' => $value
-              );
+            foreach ($fData as $key => $value) {
+                $db_array = array(
+                    'quote_id' => $quote_id,
+                    'quote_custom_fieldid' => $key,
+                    'quote_custom_fieldvalue' => $value
+                );
 
-              $quote_custom = $this->where('quote_id', $quote_id)->where('quote_custom_fieldid', $key)->get();
+                $quote_custom = $this->where('quote_id', $quote_id)->where('quote_custom_fieldid', $key)->get();
 
-              if ($quote_custom->num_rows()) {
-                  $quote_custom_id = $quote_custom->row()->quote_custom_id;
-              }
+                if ($quote_custom->num_rows()) {
+                    $quote_custom_id = $quote_custom->row()->quote_custom_id;
+                }
 
-              parent::save($quote_custom_id, $db_array);
+                parent::save($quote_custom_id, $db_array);
             }
 
             return true;
@@ -73,7 +73,8 @@ class Mdl_Quote_Custom extends Validator
         return $result;
     }
 
-    public function by_id($quote_id){
+    public function by_id($quote_id)
+    {
         $this->db->where('ip_quote_custom.quote_id', $quote_id);
         return $this;
     }

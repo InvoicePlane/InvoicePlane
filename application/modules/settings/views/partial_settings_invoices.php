@@ -29,7 +29,7 @@
                             <?php echo trans('default_terms'); ?>
                         </label>
                         <textarea name="settings[default_invoice_terms]" class=" form-control"
-                                  rows="3"><?php echo get_setting('default_invoice_terms'); ?></textarea>
+                                  rows="3"><?php echo get_setting('default_invoice_terms', '', true); ?></textarea>
                     </div>
 
                 </div>
@@ -55,7 +55,7 @@
                         <label for="settings[invoices_due_after]" class="control-label">
                             <?php echo trans('invoices_due_after'); ?>
                         </label>
-                        <input type="text" name="settings[invoices_due_after]" class=" form-control"
+                        <input type="number" name="settings[invoices_due_after]" class=" form-control"
                                value="<?php echo get_setting('invoices_due_after'); ?>">
                     </div>
 
@@ -107,7 +107,7 @@
                             <?php echo trans('invoice_pre_password'); ?>
                         </label>
                         <input type="text" name="settings[invoice_pre_password]" class=" form-control"
-                               value="<?php echo get_setting('invoice_pre_password'); ?>">
+                               value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                     </div>
 
                     <div class="form-group">

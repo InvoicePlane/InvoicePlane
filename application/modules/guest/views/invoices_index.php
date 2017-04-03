@@ -56,7 +56,7 @@
                             <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                         </td>
                         <td>
-                            <?php echo format_client($invoice); ?>
+                            <?php _htmlsc(format_client($invoice)); ?>
                         </td>
                         <td>
                             <?php echo format_currency($invoice->invoice_total); ?>

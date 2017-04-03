@@ -40,7 +40,7 @@
                         </span>
                     </td>
                     <td>
-                        <?php echo $task->task_name; ?>
+                        <?php echo htmlspecialchars($task->task_name); ?>
                     </td>
                     <td>
                         <div class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">

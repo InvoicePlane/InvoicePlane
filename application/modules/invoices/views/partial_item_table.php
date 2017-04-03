@@ -134,7 +134,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('item'); ?></span>
                         <input type="text" name="item_name" class="input-sm form-control"
-                               value="<?php echo html_escape($item->item_name); ?>"
+                               value="<?php _htmlsc($item->item_name); ?>"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
@@ -182,7 +182,7 @@
                             <option value="0"><?php echo trans('none'); ?></option>
                             <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                        <?php if ($item->item_tax_rate_id == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
+                                    <?php check_select($item->item_tax_rate_id, $tax_rate->tax_rate_id); ?>>
                                     <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
                                 </option>
                             <?php } ?>
@@ -208,7 +208,7 @@
                                       class="input-sm form-control"
                                 <?php if ($invoice->is_read_only == 1) {
                                     echo 'disabled="disabled"';
-                                } ?>><?php echo $item->item_description; ?></textarea>
+                                } ?>><?php echo nl2br(htmlsc($item->item_description)); ?></textarea>
                         </div>
                     </td>
                 <?php else: ?>
@@ -231,8 +231,8 @@
                             <option value="0"><?php echo trans('none'); ?></option>
                             <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"
-                                        <?php if ($item->item_product_unit_id == $unit->unit_id) { ?>selected="selected"<?php } ?>>
-                                    <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
+                                    <?php check_select($item->item_product_unit_id, $unit->unit_id); ?>>
+                                    <?php echo htmlsc($unit->unit_name) . "/" . htmlsc($unit->unit_name_plrl); ?>
                                 </option>
                             <?php } ?>
                         </select>
@@ -309,7 +309,7 @@
                         foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
                             <span class="text-muted">
                             <?php echo anchor('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id, '<i class="fa fa-trash-o"></i>');
-                            echo ' ' . $invoice_tax_rate->invoice_tax_rate_name . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent); ?>
+                            echo ' ' . htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent); ?>
                                 %</span>&nbsp;
                             <span class="amount">
                                 <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
@@ -331,9 +331,7 @@
                                 <?php if ($invoice->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>>
-
-                            <div
-                                    class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                            <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                         </div>
                     </div>
                     <div class="discount-field">

@@ -112,6 +112,24 @@ class Mdl_Clients extends Response_Model
         );
     }
 
+    /**
+     * @param int $amount
+     * @return mixed
+     */
+    function get_latest($amount = 10)
+    {
+        return $this->mdl_clients
+            ->where('client_active', 1)
+            ->order_by('client_id', 'DESC')
+            ->limit($amount)
+            ->get()
+            ->result();
+    }
+
+    /**
+     * @param $input
+     * @return string
+     */
     function fix_avs($input)
     {
         if ($input != "") {

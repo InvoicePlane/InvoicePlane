@@ -65,7 +65,7 @@
                     <?php foreach ($email_templates as $email_template): ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
                                 <?php if ($selected_email_template == $email_template->email_template_id) { ?>selected="selected"<?php } ?>>
-                            <?php echo $email_template->email_template_title; ?>
+                            <?php _htmlsc($email_template->email_template_title); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -78,7 +78,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="from_name" id="from_name" class="form-control"
-                       value="<?php echo $quote->user_name; ?>">
+                       value="<?php _htmlsc($quote->user_name); ?>">
             </div>
         </div>
 

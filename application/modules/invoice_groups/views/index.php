@@ -32,7 +32,7 @@
             <tbody>
             <?php foreach ($invoice_groups as $invoice_group) { ?>
                 <tr>
-                    <td><?php echo $invoice_group->invoice_group_name; ?></td>
+                    <td><?php _htmlsc($invoice_group->invoice_group_name); ?></td>
                     <td><?php echo $invoice_group->invoice_group_next_id; ?></td>
                     <td><?php echo $invoice_group->invoice_group_left_pad; ?></td>
                     <td>

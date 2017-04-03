@@ -30,7 +30,7 @@
             <tbody>
             <?php foreach ($families as $family) { ?>
                 <tr>
-                    <td><?php echo $family->family_name; ?></td>
+                    <td><?php _htmlsc($family->family_name); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"
