@@ -21,7 +21,7 @@
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" name="settings[enable_online_payments]"
-                            <?php check_select(get_setting(''), 1, '==', true) ?>>
+                            <?php check_select(get_setting('enable_online_payments'), 'on', '==', true) ?>>
                         <?php echo trans('enable_online_payments'); ?>
                     </label>
                 </div>
