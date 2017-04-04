@@ -31,6 +31,7 @@ class Base_Controller extends MX_Controller
         // Load basic stuff
         $this->load->library('session');
         $this->load->helper('redirect');
+        $this->load->helper('url');
 
         // Check if database has been configured
         if (!env_bool('SETUP_COMPLETED')) {
@@ -42,7 +43,6 @@ class Base_Controller extends MX_Controller
             $this->load->library('session');
             $this->load->database();
 
-            $this->load->helper('url');
             $this->load->helper('trans');
             $this->load->helper('number');
             $this->load->helper('pager');
