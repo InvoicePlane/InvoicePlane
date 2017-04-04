@@ -243,7 +243,7 @@ class Ajax extends Admin_Controller
         $data = array(
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'client_id' => $this->input->post('client_id'),
+            'client' => $this->mdl_clients->get_by_id($this->input->post('client_id')),
             'clients' => $this->mdl_clients->get_latest(),
         );
 

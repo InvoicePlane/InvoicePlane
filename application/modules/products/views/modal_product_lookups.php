@@ -43,7 +43,7 @@
         });
 
         // Toggle checkbox when click on row
-        $('.product').click(function (event) {
+        $(document).on('click', '.product', function (event) {
             if (event.target.type !== 'checkbox') {
                 $(':checkbox', this).trigger('click');
             }

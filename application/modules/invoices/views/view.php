@@ -313,7 +313,9 @@ if ($this->config->item('disable_read_only') == true) {
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
                     </div>
-                    <hr>
+                    <?php if ($invoice->client_phone || $invoice->client_email) : ?>
+                        <hr>
+                    <?php endif; ?>
                     <?php if ($invoice->client_phone): ?>
                         <div>
                             <?php echo trans('phone'); ?>:&nbsp;
@@ -455,6 +457,22 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
                             </div>
 
+                            <?php if ($invoice->invoice_status_id != 1) { ?>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="invoice-guest-url"><?php echo trans('guest_url'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" id="invoice-guest-url" readonly class="form-control"
+                                                   value="<?php echo site_url('guest/view/invoice/' . $invoice->invoice_url_key) ?>">
+                                            <span class="input-group-addon to-clipboard cursor-pointer"
+                                                  data-clipboard-target="#invoice-guest-url">
+                                                <i class="fa fa-clipboard fa-fw"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
                         </div>
                     </div>
                 </div>
@@ -479,7 +497,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <?php if ($invoice->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>
-                            ><?php echo $invoice->invoice_terms; ?></textarea>
+                            ><?php _htmlsc($invoice->invoice_terms); ?></textarea>
                         </div>
                     </div>
 
@@ -604,14 +622,6 @@ if ($this->config->item('disable_read_only') == true) {
                     </div>
                 </div>
             <?php endif; ?>
-
-
-            <?php if ($invoice->invoice_status_id != 1) { ?>
-                <p class="padded">
-                    <?php echo trans('guest_url'); ?>:
-                    <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
-                </p>
-            <?php } ?>
 
         </div>
 
