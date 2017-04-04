@@ -3,39 +3,12 @@
         // Display the create invoice modal
         $('#change-client').modal('show');
 
-        $("#client_id").select2({
-            placeholder: "<?php echo htmlentities(trans('client')); ?>",
-            ajax: {
-                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        query: params.term,
-                        page: params.page,
-                        _ip_csrf: Cookies.get('ip_csrf_cookie')
-                    };
-                },
-                processResults: function (data) {
-                    console.log(data);
-                    return {
-                        results: data
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) {
-                return markup;
-            },
-            minimumInputLength: 2
-        });
+        <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
 
         // Creates the invoice
         $('#client_change_confirm').click(function () {
-            // Posts the data to validate and create the invoice;
-            // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/change_client'); ?>", {
-                    client_id: $('#client_id').val(),
+                    client_id: $('#change_client_id').val(),
                     quote_id: $('#quote_id').val()
                 },
                 function (data) {
@@ -67,7 +40,9 @@
         <div class="modal-body">
 
             <div class="form-group">
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
+                <label for="change_client_id"><?php echo trans('client'); ?></label>
+                <select name="client_id" id="change_client_id" class="client-id-select form-control"
+                        autofocus="autofocus"></select>
             </div>
 
             <input class="hidden" id="quote_id" value="<?php echo $quote_id; ?>">

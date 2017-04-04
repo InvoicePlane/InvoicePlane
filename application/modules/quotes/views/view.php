@@ -209,7 +209,9 @@ $cv = $this->controller->view_data["custom_values"];
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', array('client' => $quote)); ?>
                     </div>
-                    <hr>
+                    <?php if ($quote->client_phone || $quote->client_email) : ?>
+                        <hr>
+                    <?php endif; ?>
                     <?php if ($quote->client_phone): ?>
                         <div>
                             <?php echo trans('phone'); ?>:&nbsp;
@@ -305,9 +307,15 @@ $cv = $this->controller->view_data["custom_values"];
 
                                 <?php if ($quote->quote_status_id != 1) { ?>
                                     <div class="quote-properties">
-                                        <label><?php echo trans('guest_url'); ?></label>
-                                        <input type="text" class="form-control input-sm" readonly
-                                               value="<?php echo site_url('guest/view/quote/' . $quote->quote_url_key); ?>">
+                                        <label for="quote-guest-url"><?php echo trans('guest_url'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" id="quote-guest-url" readonly class="form-control"
+                                                   value="<?php echo site_url('guest/view/quote/' . $quote->quote_url_key); ?>">
+                                            <span class="input-group-addon to-clipboard cursor-pointer"
+                                                  data-clipboard-target="#quote-guest-url">
+                                                <i class="fa fa-clipboard fa-fw"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 <?php } ?>
 
@@ -333,7 +341,7 @@ $cv = $this->controller->view_data["custom_values"];
                     </div>
                     <div class="panel-body">
                         <textarea name="notes" id="notes" rows="3"
-                                  class="input-sm form-control"><?php echo nl2br(htmlsc($quote->notes)); ?></textarea>
+                                  class="input-sm form-control"><?php _htmlsc($quote->notes); ?></textarea>
                     </div>
                 </div>
 

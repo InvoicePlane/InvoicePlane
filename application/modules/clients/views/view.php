@@ -181,7 +181,7 @@ foreach ($custom_fields as $custom_field) {
                                         $column = $custom_field->cf_label;
                                         $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                         ?>
-                                        <th><?php echo $custom_field->cf_label ?></th>
+                                        <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -218,7 +218,7 @@ foreach ($custom_fields as $custom_field) {
                                         $column = $custom_field->cf_label;
                                         $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                         ?>
-                                        <th><?php echo $custom_field->cf_label ?></th>
+                                        <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -276,7 +276,7 @@ foreach ($custom_fields as $custom_field) {
                                             $column = $custom_field->cf_label;
                                             $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                             ?>
-                                            <th><?php echo $custom_field->cf_label ?></th>
+                                            <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -310,7 +310,7 @@ foreach ($custom_fields as $custom_field) {
                                             $column = $custom_field->cf_label;
                                             $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->cf_fid);
                                             ?>
-                                            <th><?php echo $custom_field->cf_label ?></th>
+                                            <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
                                         </tr>
                                     <?php endforeach; ?>

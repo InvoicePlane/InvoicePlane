@@ -6,40 +6,14 @@
         // Enable select2 for all selects
         $('.simple-select').select2();
 
-        // Select2 for all select inputs
-        $('#client_id').select2({
-            placeholder: "<?php echo trans('client'); ?>",
-            ajax: {
-                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        query: params.term,
-                        page: params.page,
-                        _ip_csrf: Cookies.get('ip_csrf_cookie')
-                    };
-                },
-                processResults: function (data) {
-                    console.log(data);
-                    return {
-                        results: data
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) {
-                return markup;
-            },
-            minimumInputLength: 2
-        });
+        <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
 
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
             // will create the new client if necessar
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
-                    client_id: $('#client_id').val(),
+                    client_id: $('#create_invoice_client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
@@ -80,8 +54,13 @@
                    value="<?php echo get_setting('invoice_default_payment_method'); ?>">
 
             <div class="form-group">
-                <label for="client_id"><?php echo trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
+                <label for="create_invoice_client_id"><?php echo trans('client'); ?></label>
+                <select name="client_id" id="create_invoice_client_id" class="client-id-select form-control"
+                        autofocus="autofocus">
+                    <?php if (!empty($client)) : ?>
+                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
+                    <?php endif; ?>
+                </select>
             </div>
 
             <div class="form-group has-feedback">

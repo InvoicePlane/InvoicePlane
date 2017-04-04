@@ -87,7 +87,8 @@ module.exports = function (grunt) {
                 'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
                 'node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js',
                 'node_modules/select2/dist/js/select2.full.js',
-                'node_modules/dropzone/dist/dropzone.js'
+                'node_modules/dropzone/dist/dropzone.js',
+                'node_modules/clipboard/dist/clipboard.js'
             ],
             dest: 'assets/core/js/dependencies.js'
         }

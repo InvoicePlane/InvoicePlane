@@ -174,7 +174,10 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
     // Select2 for all select inputs
-    $(".simple-select").select2();
+    $('.simple-select').select2();
+
+    // Enable clipboard toggles
+    var clipboards = new Clipboard('.to-clipboard');
 
     // Keep track of the last "taggable" input/textarea
     $('.taggable').on('focus', function () {
