@@ -489,13 +489,11 @@ class Mdl_Invoices extends Response_Model
      */
     public function mark_viewed($invoice_id)
     {
-        $this->db->select('invoice_status_id');
-        $this->db->where('invoice_id', $invoice_id);
+        $invoice = $this->get_by_id($invoice_id);
 
-        $invoice = $this->db->get('ip_invoices');
-
-        if ($invoice->num_rows()) {
-            if ($invoice->row()->invoice_status_id == 2) {
+        if (!empty($invoice)) {
+            if ($invoice->invoice_status_id == 2) {
+                $this->db->where('invoice_id', $invoice_id);
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 3);
                 $this->db->update('ip_invoices');
@@ -515,15 +513,21 @@ class Mdl_Invoices extends Response_Model
      */
     public function mark_sent($invoice_id)
     {
-        $this->db->select('invoice_status_id');
-        $this->db->where('invoice_id', $invoice_id);
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        $invoice = $this->db->get('ip_invoices');
+        if (!empty($invoice)) {
+            if ($invoice->invoice_status_id == 1) {
+                // Generate new invoice number if applicable
+                if (get_setting('generate_invoice_number_for_draft') == 0) {
+                    $invoice_number =  $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id);
+                } else {
+                    $invoice_number = $invoice->invoice_number;
+                }
 
-        if ($invoice->num_rows()) {
-            if ($invoice->row()->invoice_status_id == 1) {
+                // Set new date and save
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 2);
+                $this->db->set('invoice_number', $invoice_number);
                 $this->db->update('ip_invoices');
             }
 
