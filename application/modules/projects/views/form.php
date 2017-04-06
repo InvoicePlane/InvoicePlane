@@ -43,23 +43,13 @@
         <?php $this->layout->load_view('layout/alerts'); ?>
 
         <div class="form-group">
-            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="project_name" class="control-label">
-                    <?php echo trans('project_name'); ?>:
-                </label>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <input type="text" name="project_name" id="project_name" class="form-control"
-                       value="<?php echo $this->mdl_projects->form_value('project_name', true); ?>">
-            </div>
+            <label for="project_name"><?php echo trans('project_name'); ?></label>
+            <input type="text" name="project_name" id="project_name" class="form-control"
+                   value="<?php echo $this->mdl_projects->form_value('project_name', true); ?>">
         </div>
         <div class="form-group">
-            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label class="control-label"><?php echo trans('client'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
-            </div>
+            <label for="client_id"><?php echo trans('client'); ?></label>
+            <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
         </div>
 
     </div>
