@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title><?php echo trans('invoice'); ?></title>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/templates.css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/templates.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom-pdf.css">
 </head>
 <body>
@@ -15,7 +16,7 @@
 
     <div id="client">
         <div>
-            <b><?php echo format_client($invoice); ?></b>
+            <b><?php _htmlsc(format_client($invoice)); ?></b>
         </div>
         <?php if ($invoice->client_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $invoice->client_vat_id . '</div>';
@@ -24,21 +25,21 @@
             echo '<div>' . trans('tax_code_short') . ': ' . $invoice->client_tax_code . '</div>';
         }
         if ($invoice->client_address_1) {
-            echo '<div>' . $invoice->client_address_1 . '</div>';
+            echo '<div>' . htmlsc($invoice->client_address_1) . '</div>';
         }
         if ($invoice->client_address_2) {
-            echo '<div>' . $invoice->client_address_2 . '</div>';
+            echo '<div>' . htmlsc($invoice->client_address_2) . '</div>';
         }
         if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
             echo '<div>';
             if ($invoice->client_city) {
-                echo $invoice->client_city . ' ';
+                echo htmlsc($invoice->client_city) . ' ';
             }
             if ($invoice->client_state) {
-                echo $invoice->client_state . ' ';
+                echo htmlsc($invoice->client_state) . ' ';
             }
             if ($invoice->client_zip) {
-                echo $invoice->client_zip;
+                echo htmlsc($invoice->client_zip);
             }
             echo '</div>';
         }
@@ -49,12 +50,12 @@
         echo '<br/>';
 
         if ($invoice->client_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . $invoice->client_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
         } ?>
 
     </div>
     <div id="company">
-        <div><b><?php echo $invoice->user_name; ?></b></div>
+        <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
         <?php if ($invoice->user_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $invoice->user_vat_id . '</div>';
         }
@@ -62,21 +63,21 @@
             echo '<div>' . trans('tax_code_short') . ': ' . $invoice->user_tax_code . '</div>';
         }
         if ($invoice->user_address_1) {
-            echo '<div>' . $invoice->user_address_1 . '</div>';
+            echo '<div>' . htmlsc($invoice->user_address_1) . '</div>';
         }
         if ($invoice->user_address_2) {
-            echo '<div>' . $invoice->user_address_2 . '</div>';
+            echo '<div>' . htmlsc($invoice->user_address_2) . '</div>';
         }
         if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
             echo '<div>';
             if ($invoice->user_city) {
-                echo $invoice->user_city . ' ';
+                echo htmlsc($invoice->user_city) . ' ';
             }
             if ($invoice->user_state) {
-                echo $invoice->user_state . ' ';
+                echo htmlsc($invoice->user_state) . ' ';
             }
             if ($invoice->user_zip) {
-                echo $invoice->user_zip;
+                echo htmlsc($invoice->user_zip);
             }
             echo '</div>';
         }
@@ -87,10 +88,10 @@
         echo '<br/>';
 
         if ($invoice->user_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . $invoice->user_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->user_phone) . '</div>';
         }
         if ($invoice->user_fax) {
-            echo '<div>' . trans('fax_abbr') . ': ' . $invoice->user_fax . '</div>';
+            echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($invoice->user_fax) . '</div>';
         }
         ?>
     </div>
@@ -116,7 +117,7 @@
             <?php if ($payment_method): ?>
                 <tr>
                     <td><?php echo trans('payment_method') . ': '; ?></td>
-                    <td><?php echo $payment_method->payment_method_name; ?></td>
+                    <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
                 </tr>
             <?php endif; ?>
         </table>
@@ -142,13 +143,13 @@
         <?php
         foreach ($items as $item) { ?>
             <tr>
-                <td><?php echo $item->item_name; ?></td>
-                <td><?php echo nl2br($item->item_description); ?></td>
+                <td><?php _htmlsc($item->item_name); ?></td>
+                <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                 <td class="text-right">
                     <?php echo format_amount($item->item_quantity); ?>
                     <?php if ($item->item_product_unit) : ?>
                         <br>
-                        <small><?php echo $item->item_product_unit; ?></small>
+                        <small><?php _htmlsc($item->item_product_unit); ?></small>
                     <?php endif; ?>
                 </td>
                 <td class="text-right">
@@ -189,7 +190,7 @@
         <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
             <tr>
                 <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
-                    <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%)'; ?>
+                    <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%)'; ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
@@ -230,7 +231,7 @@
     <?php if ($invoice->invoice_terms) : ?>
         <div class="notes">
             <b><?php echo trans('terms'); ?></b><br/>
-            <?php echo nl2br($invoice->invoice_terms); ?>
+            <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
         </div>
     <?php endif; ?>
 </footer>

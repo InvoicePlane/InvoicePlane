@@ -29,8 +29,8 @@
             <td><?php echo date_from_mysql($result->payment_date, true); ?></td>
             <td><?php echo $result->invoice_number; ?></td>
             <td><?php echo format_client($result); ?></td>
-            <td><?php echo $result->payment_method_name; ?></td>
-            <td><?php echo nl2br($result->payment_note); ?></td>
+            <td><?php _htmlsc($result->payment_method_name); ?></td>
+            <td><?php echo nl2br(htmlsc($result->payment_note)); ?></td>
             <td class="amount"><?php echo format_currency($result->payment_amount);
                 $sum = $sum + $result->payment_amount; ?></td>
         </tr>
