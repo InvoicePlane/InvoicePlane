@@ -59,7 +59,6 @@ class Settings extends Admin_Controller
                     $this->mdl_settings->save($key, trim($this->crypt->encode($value)));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
-                    $value = is_numeric($value) ? $value : 0;
                     $this->mdl_settings->save($key, standardize_amount($value));
                 } else {
                     if (in_array($key, $empty_values_allowed) || !empty($value) || $value == '0') {
