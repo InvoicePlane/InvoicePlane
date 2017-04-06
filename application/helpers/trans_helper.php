@@ -100,7 +100,7 @@ function get_available_languages()
     sort($languages);
 
     for ($i = 0; $i < count($languages); $i++) {
-        $languages[$i] = str_replace('/', '', $languages[$i]);
+        $languages[$i] = str_replace(array('\\', '/'), '', $languages[$i]);
     }
 
     return $languages;
