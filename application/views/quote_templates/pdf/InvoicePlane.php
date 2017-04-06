@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title><?php echo trans('quote'); ?></title>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/templates.css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/templates.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom-pdf.css">
 </head>
 <body>
@@ -15,7 +16,7 @@
 
     <div id="client">
         <div>
-            <b><?php echo $quote->client_name; ?></b>
+            <b><?php _htmlsc($quote->client_name); ?></b>
         </div>
         <?php if ($quote->client_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $quote->client_vat_id . '</div>';
@@ -24,26 +25,26 @@
             echo '<div>' . trans('tax_code_short') . ': ' . $quote->client_tax_code . '</div>';
         }
         if ($quote->client_address_1) {
-            echo '<div>' . $quote->client_address_1 . '</div>';
+            echo '<div>' . htmlsc($quote->client_address_1) . '</div>';
         }
         if ($quote->client_address_2) {
-            echo '<div>' . $quote->client_address_2 . '</div>';
+            echo '<div>' . htmlsc($quote->client_address_2) . '</div>';
         }
         if ($quote->client_city || $quote->client_state || $quote->client_zip) {
             echo '<div>';
             if ($quote->client_city) {
-                echo $quote->client_city . ' ';
+                echo htmlsc($quote->client_city) . ' ';
             }
             if ($quote->client_state) {
-                echo $quote->client_state . ' ';
+                echo htmlsc($quote->client_state) . ' ';
             }
             if ($quote->client_zip) {
-                echo $quote->client_zip;
+                echo htmlsc($quote->client_zip);
             }
             echo '</div>';
         }
         if ($quote->client_state) {
-            echo '<div>' . $quote->client_state . '</div>';
+            echo '<div>' . htmlsc($quote->client_state) . '</div>';
         }
         if ($quote->client_country) {
             echo '<div>' . get_country_name(trans('cldr'), $quote->client_country) . '</div>';
@@ -52,12 +53,12 @@
         echo '<br/>';
 
         if ($quote->client_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . $quote->client_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($quote->client_phone) . '</div>';
         } ?>
 
     </div>
     <div id="company">
-        <div><b><?php echo $quote->user_name; ?></b></div>
+        <div><b><?php _htmlsc($quote->user_name); ?></b></div>
         <?php if ($quote->user_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $quote->user_vat_id . '</div>';
         }
@@ -65,21 +66,21 @@
             echo '<div>' . trans('tax_code_short') . ': ' . $quote->user_tax_code . '</div>';
         }
         if ($quote->user_address_1) {
-            echo '<div>' . $quote->user_address_1 . '</div>';
+            echo '<div>' . htmlsc($quote->user_address_1) . '</div>';
         }
         if ($quote->user_address_2) {
-            echo '<div>' . $quote->user_address_2 . '</div>';
+            echo '<div>' . htmlsc($quote->user_address_2) . '</div>';
         }
         if ($quote->user_city || $quote->user_state || $quote->user_zip) {
             echo '<div>';
             if ($quote->user_city) {
-                echo $quote->user_city . ' ';
+                echo htmlsc($quote->user_city) . ' ';
             }
             if ($quote->user_state) {
-                echo $quote->user_state . ' ';
+                echo htmlsc($quote->user_state) . ' ';
             }
             if ($quote->user_zip) {
-                echo $quote->user_zip;
+                echo htmlsc($quote->user_zip);
             }
             echo '</div>';
         }
@@ -90,10 +91,10 @@
         echo '<br/>';
 
         if ($quote->user_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . $quote->user_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($quote->user_phone) . '</div>';
         }
         if ($quote->user_fax) {
-            echo '<div>' . trans('fax_abbr') . ': ' . $quote->user_fax . '</div>';
+            echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($quote->user_fax) . '</div>';
         }
         ?>
     </div>
@@ -139,13 +140,13 @@
         <?php
         foreach ($items as $item) { ?>
             <tr>
-                <td><?php echo $item->item_name; ?></td>
-                <td><?php echo nl2br($item->item_description); ?></td>
+                <td><?php _htmlsc($item->item_name); ?></td>
+                <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                 <td class="text-right">
                     <?php echo format_amount($item->item_quantity); ?>
                     <?php if ($item->item_product_unit) : ?>
                         <br>
-                        <small><?php echo $item->item_product_unit; ?></small>
+                        <small><?php _htmlsc($item->item_product_unit); ?></small>
                     <?php endif; ?>
                 </td>
                 <td class="text-right">
@@ -210,7 +211,7 @@
     <?php if ($quote->notes) : ?>
         <div class="notes">
             <b><?php echo trans('notes'); ?></b><br/>
-            <?php echo nl2br($quote->notes); ?>
+            <?php echo nl2br(htmlsc($quote->notes)); ?>
         </div>
     <?php endif; ?>
 </footer>

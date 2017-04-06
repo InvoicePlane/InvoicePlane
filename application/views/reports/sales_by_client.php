@@ -20,7 +20,7 @@
     </tr>
     <?php foreach ($results as $result) { ?>
         <tr>
-            <td><?php echo format_client($result); ?></td>
+            <td><?php _htmlsc(format_client($result)); ?></td>
             <td class="amount"><?php echo $result->invoice_count; ?></td>
             <td class="amount"><?php echo format_currency($result->sales); ?></td>
             <td class="amount"><?php echo format_currency($result->sales_with_tax); ?></td>
