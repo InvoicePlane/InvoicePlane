@@ -279,14 +279,16 @@ $cv = $this->controller->view_data['custom_values'];
                             <label for="client_birthdate"><?php echo trans('birthdate'); ?></label>
                             <?php
                             $bdate = $this->mdl_clients->form_value('client_birthdate');
-                            if ($bdate != "0000-00-00" && $bdate) {
+                            if ($bdate && $bdate != "0000-00-00") {
                                 $bdate = date_from_mysql($bdate);
+                            } else {
+                                $bdate = '';
                             }
                             ?>
                             <div class="input-group">
                                 <input type="text" name="client_birthdate" id="client_birthdate"
                                        class="form-control datepicker"
-                                       value="<?php echo htmlspecialchars($bdate); ?>">
+                                       value="<?php _htmlsc($bdate); ?>">
                                 <span class="input-group-addon">
                                 <i class="fa fa-calendar fa-fw"></i>
                             </span>
