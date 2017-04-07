@@ -44,14 +44,14 @@
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('item_discount'); ?></span>
                     <input type="text" name="item_discount_amount" class="input-sm form-control amount"
-                           value="" data-toggle="tooltip" data-placement="bottom"
+                           data-toggle="tooltip" data-placement="bottom"
                            title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                 </div>
             </td>
-            <td class="td-amount">
+            <td>
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
-                    <select name="item_tax_rate_id" class="form-control input-sm simple-select">
+                    <select name="item_tax_rate_id" class="form-control input-sm">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>">
@@ -141,11 +141,10 @@
                                title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                     </div>
                 </td>
-                <td class="td-amount">
+                <td>
                     <div class="input-group">
                         <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
-                        <select name="item_tax_rate_id"
-                                class="form-control input-sm">
+                        <select name="item_tax_rate_id" class="form-control input-sm">
                             <option value="0"><?php echo trans('none'); ?></option>
                             <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"

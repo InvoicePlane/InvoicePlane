@@ -49,14 +49,14 @@
                            title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                 </div>
             </td>
-            <td class="td-amount">
+            <td>
                 <div class="input-group">
                     <span class="input-group-addon"><?php echo trans('tax_rate'); ?></span>
                     <select name="item_tax_rate_id" class="form-control input-sm">
                         <option value="0"><?php echo trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                    <?php if (get_setting('default_item_tax_rate') == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
+                                    <?php check_select(get_setting('default_item_tax_rate'), $tax_rate->tax_rate_id); ?>>
                                 <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
                             </option>
                         <?php } ?>
