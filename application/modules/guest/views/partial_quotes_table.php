@@ -3,12 +3,12 @@
 
         <thead>
         <tr>
-            <th><?php echo trans('quote'); ?></th>
-            <th><?php echo trans('created'); ?></th>
-            <th><?php echo trans('due_date'); ?></th>
-            <th><?php echo trans('client_name'); ?></th>
-            <th><?php echo trans('amount'); ?></th>
-            <th><?php echo trans('options'); ?></th>
+            <th><?php _trans('quote'); ?></th>
+            <th><?php _trans('created'); ?></th>
+            <th><?php _trans('due_date'); ?></th>
+            <th><?php _trans('client_name'); ?></th>
+            <th><?php _trans('amount'); ?></th>
+            <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
 
@@ -17,14 +17,14 @@
             <tr>
                 <td>
                     <a href="<?php echo site_url('guest/quotes/view/' . $quote->quote_id); ?>"
-                       title="<?php echo trans('edit'); ?>">
+                       title="<?php _trans('edit'); ?>">
                         <?php echo $quote->quote_number; ?>
                     </a>
                     <?php if ($quote->quote_status_id == 4) : ?>
-                        <span class="text-success"><?php echo trans('approved'); ?></span>
+                        <span class="text-success"><?php _trans('approved'); ?></span>
                     <?php endif; ?>
                     <?php if ($quote->quote_status_id == 5) : ?>
-                        <span class="text-danger"><?php echo trans('rejected'); ?></span>
+                        <span class="text-danger"><?php _trans('rejected'); ?></span>
                     <?php endif; ?>
                 </td>
                 <td>
@@ -45,23 +45,23 @@
                             <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
                                class="btn btn-success btn-sm">
                                 <i class="fa fa-check"></i>
-                                <?php echo trans('approve'); ?>
+                                <?php _trans('approve'); ?>
                             </a>
                             <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
                                class="btn btn-danger btn-sm">
                                 <i class="fa fa-ban"></i>
-                                <?php echo trans('reject'); ?>
+                                <?php _trans('reject'); ?>
                             </a>
                         <?php } ?>
                         <a href="<?php echo site_url('guest/quotes/view/' . $quote->quote_id); ?>"
                            class="btn btn-default btn-sm">
                             <i class="fa fa-eye"></i>
-                            <?php echo trans('view'); ?>
+                            <?php _trans('view'); ?>
                         </a>
                         <a href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote->quote_id); ?>"
                            class="btn btn-default btn-sm">
                             <i class="fa fa-print"></i>
-                            <?php echo trans('pdf'); ?>
+                            <?php _trans('pdf'); ?>
                         </a>
                     </div>
                 </td>

@@ -1,13 +1,13 @@
-<!doctype html lang="<?php echo trans('cldr'); ?>">
+<!doctype html lang="<?php _trans('cldr'); ?>">
 
 <!--[if lt IE 7]>
-<html class="no-js ie6 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie6 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 7]>
-<html class="no-js ie7 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie7 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 8]>
-<html class="no-js ie8 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie8 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="<?php echo trans('cldr'); ?>"> <!--<![endif]-->
+<html class="no-js" lang="<?php _trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
 
@@ -20,7 +20,7 @@
 <body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php _trans('please_enable_js'); ?></div>
 </noscript>
 
 <?php
@@ -48,7 +48,7 @@ $this->layout->load_view('layout/includes/navbar');
 
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>

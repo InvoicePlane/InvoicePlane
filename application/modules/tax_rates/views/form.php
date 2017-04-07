@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('tax_rate_form'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('tax_rate_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -14,7 +14,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label class="control-label">
-                    <?php echo trans('tax_rate_name'); ?>
+                    <?php _trans('tax_rate_name'); ?>
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
@@ -26,7 +26,7 @@
         <div class="form-group has-feedback">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label class="control-label">
-                    <?php echo trans('tax_rate_percent'); ?>
+                    <?php _trans('tax_rate_percent'); ?>
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">

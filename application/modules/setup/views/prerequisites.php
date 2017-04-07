@@ -6,9 +6,9 @@
 
             <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
-            <legend><?php echo trans('setup_prerequisites'); ?></legend>
+            <legend><?php _trans('setup_prerequisites'); ?></legend>
 
-            <p><?php echo trans('setup_prerequisites_message'); ?></p>
+            <p><?php _trans('setup_prerequisites_message'); ?></p>
 
             <?php foreach ($basics as $basic) {
                 if (isset($basic['warning'])) { ?>
@@ -34,11 +34,11 @@
 
             <?php if ($errors) { ?>
                 <a href="javascript:history.go(0)" class="btn btn-danger">
-                    <?php echo trans('try_again'); ?>
+                    <?php _trans('try_again'); ?>
                 </a>
             <?php } else { ?>
                 <input class="btn btn-success" type="submit" name="btn_continue"
-                       value="<?php echo trans('continue'); ?>">
+                       value="<?php _trans('continue'); ?>">
             <?php } ?>
 
         </form>

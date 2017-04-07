@@ -9,7 +9,7 @@
 </script>
 
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+    <h1 class="headerbar-title"><?php _trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
@@ -22,14 +22,14 @@
                 <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
                    class="btn btn-primary">
                     <i class="fa fa-credit-card"></i>
-                    <?php echo trans('pay_now'); ?>
+                    <?php _trans('pay_now'); ?>
                 </a>
             <?php endif; ?>
             <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                class="btn btn-default" id="btn_generate_pdf"
                data-invoice-id="<?php echo $invoice_id; ?>"
                data-invoice-balance="<?php echo $invoice->invoice_balance; ?>">
-                <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+                <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>
             </a>
         </div>
     </div>
@@ -58,14 +58,14 @@
 
                         <?php if ($invoice->client_phone) { ?>
                             <span>
-                            <strong><?php echo trans('phone'); ?>:</strong>
+                            <strong><?php _trans('phone'); ?>:</strong>
                                 <?php _htmlsc($invoice->client_phone); ?>
                         </span><br>
                         <?php } ?>
 
                         <?php if ($invoice->client_email) { ?>
                             <span>
-                            <strong><?php echo trans('email'); ?>:</strong>
+                            <strong><?php _trans('email'); ?>:</strong>
                                 <?php _htmlsc($invoice->client_email); ?>
                         </span>
                         <?php } ?>
@@ -77,15 +77,15 @@
 
                     <table class="table table-bordered">
                         <tr>
-                            <td><?php echo trans('invoice'); ?> #</td>
+                            <td><?php _trans('invoice'); ?> #</td>
                             <td><?php echo $invoice->invoice_number; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo trans('date'); ?></td>
+                            <td><?php _trans('date'); ?></td>
                             <td><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo trans('due_date'); ?></td>
+                            <td><?php _trans('due_date'); ?></td>
                             <td><?php echo date_from_mysql($invoice->invoice_date_due); ?></td>
                         </tr>
                     </table>
@@ -99,7 +99,7 @@
                     <thead>
                     <tr>
                         <th></th>
-                        <th><?php echo trans('item'); ?> / <?php echo lang('description'); ?></th>
+                        <th><?php _trans('item'); ?> / <?php echo lang('description'); ?></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -116,17 +116,17 @@
                             </td>
                             <td><?php _htmlsc($item->item_name); ?></td>
                             <td>
-                                <span class="pull-left"><?php echo trans('quantity'); ?></span>
+                                <span class="pull-left"><?php _trans('quantity'); ?></span>
                                 <span class="pull-right amount"><?php echo $item->item_quantity; ?></span>
                             </td>
                             <td>
-                                <span class="pull-left"><?php echo trans('item_discount'); ?></span>
+                                <span class="pull-left"><?php _trans('item_discount'); ?></span>
                                 <span class="pull-right amount">
                                     <?php echo format_currency($item->item_discount); ?>
                                 </span>
                             </td>
                             <td>
-                                <span class="pull-left"><?php echo trans('subtotal'); ?></span>
+                                <span class="pull-left"><?php _trans('subtotal'); ?></span>
                                 <span class="pull-right amount">
                                     <?php echo format_currency($item->item_subtotal); ?>
                                 </span>
@@ -135,19 +135,19 @@
                         <tr>
                             <td class="text-muted"><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                             <td>
-                                <span class="pull-left"><?php echo trans('price'); ?></span>
+                                <span class="pull-left"><?php _trans('price'); ?></span>
                                 <span class="pull-right amount">
                                     <?php echo format_currency($item->item_price); ?>
                                 </span>
                             </td>
                             <td>
-                                <span class="pull-left"><?php echo trans('tax'); ?></span>
+                                <span class="pull-left"><?php _trans('tax'); ?></span>
                                 <span class="pull-right amount">
                                     <?php echo format_currency($item->item_tax_total); ?>
                                 </span>
                             </td>
                             <td>
-                                <span class="pull-left"><?php echo trans('total'); ?></span>
+                                <span class="pull-left"><?php _trans('total'); ?></span>
                                 <span class="pull-right amount">
                                     <?php echo format_currency($item->item_total); ?>
                                 </span>
@@ -162,13 +162,13 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th class="text-right"><?php echo trans('subtotal'); ?></th>
-                        <th class="text-right"><?php echo trans('item_tax'); ?></th>
-                        <th class="text-right"><?php echo trans('invoice_tax'); ?></th>
-                        <th class="text-right"><?php echo trans('discount'); ?></th>
-                        <th class="text-right"><?php echo trans('total'); ?></th>
-                        <th class="text-right"><?php echo trans('paid'); ?></th>
-                        <th class="text-right"><?php echo trans('balance'); ?></th>
+                        <th class="text-right"><?php _trans('subtotal'); ?></th>
+                        <th class="text-right"><?php _trans('item_tax'); ?></th>
+                        <th class="text-right"><?php _trans('invoice_tax'); ?></th>
+                        <th class="text-right"><?php _trans('discount'); ?></th>
+                        <th class="text-right"><?php _trans('total'); ?></th>
+                        <th class="text-right"><?php _trans('paid'); ?></th>
+                        <th class="text-right"><?php _trans('balance'); ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -203,7 +203,7 @@
 
             <?php if ($invoice->invoice_terms): ?>
                 <p>
-                    <strong><?php echo trans('invoice_terms'); ?></strong><br/>
+                    <strong><?php _trans('invoice_terms'); ?></strong><br/>
                     <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
                 </p>
             <?php endif; ?>

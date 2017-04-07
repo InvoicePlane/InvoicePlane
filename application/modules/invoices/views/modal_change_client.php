@@ -36,14 +36,14 @@
     <form class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="panel-title"><?php echo trans('change_client'); ?></h4>
+            <h4 class="panel-title"><?php _trans('change_client'); ?></h4>
         </div>
         <div class="modal-body">
 
             <input class="hidden" id="invoice_id" value="<?php echo $invoice_id; ?>">
 
             <div class="form-group">
-                <label for="change_client_id"><?php echo trans('client'); ?></label>
+                <label for="change_client_id"><?php _trans('client'); ?></label>
                 <select name="client_id" id="change_client_id" class="client-id-select form-control"
                         autofocus="autofocus"></select>
             </div>
@@ -53,10 +53,10 @@
         <div class="modal-footer">
             <div class="btn-group">
                 <button class="btn btn-success" id="client_change_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
+                    <i class="fa fa-check"></i> <?php _trans('submit'); ?>
                 </button>
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
                 </button>
             </div>
         </div>

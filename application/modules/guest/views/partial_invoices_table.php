@@ -3,13 +3,13 @@
 
         <thead>
         <tr>
-            <th><?php echo trans('invoice'); ?></th>
-            <th><?php echo trans('created'); ?></th>
-            <th><?php echo trans('due_date'); ?></th>
-            <th><?php echo trans('client_name'); ?></th>
-            <th><?php echo trans('amount'); ?></th>
-            <th><?php echo trans('balance'); ?></th>
-            <th><?php echo trans('options'); ?></th>
+            <th><?php _trans('invoice'); ?></th>
+            <th><?php _trans('created'); ?></th>
+            <th><?php _trans('due_date'); ?></th>
+            <th><?php _trans('client_name'); ?></th>
+            <th><?php _trans('amount'); ?></th>
+            <th><?php _trans('balance'); ?></th>
+            <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
 
@@ -46,18 +46,18 @@
                             <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
                                class="btn btn-primary">
                                 <i class="fa fa-credit-card"></i>
-                                <?php echo trans('pay_now'); ?>
+                                <?php _trans('pay_now'); ?>
                             </a>
                         <?php endif; ?>
                         <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>"
                            class="btn btn-default">
                             <i class="fa fa-eye"></i>
-                            <?php echo trans('view'); ?>
+                            <?php _trans('view'); ?>
                         </a>
                         <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                            class="btn btn-default">
                             <i class="fa fa-print"></i>
-                            <?php echo trans('pdf'); ?>
+                            <?php _trans('pdf'); ?>
                         </a>
                     </div>
                 </td>

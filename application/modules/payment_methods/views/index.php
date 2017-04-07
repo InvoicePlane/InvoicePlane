@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo trans('payment_methods'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('payment_methods'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('payment_methods/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+            <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
 
@@ -22,8 +22,8 @@
 
             <thead>
             <tr>
-                <th><?php echo trans('payment_method'); ?></th>
-                <th><?php echo trans('options'); ?></th>
+                <th><?php _trans('payment_method'); ?></th>
+                <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -36,20 +36,20 @@
                             <a class="btn btn-default btn-sm dropdown-toggle"
                                data-toggle="dropdown" href="#">
                                 <i class="fa fa-cog"></i>
-                                <?php echo trans('options'); ?>
+                                <?php _trans('options'); ?>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('payment_methods/form/' . $payment_method->payment_method_id); ?>">
                                         <i class="fa fa-edit fa-margin"></i>
-                                        <?php echo trans('edit'); ?>
+                                        <?php _trans('edit'); ?>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo site_url('payment_methods/delete/' . $payment_method->payment_method_id); ?>"
-                                       onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
+                                       onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
                                         <i class="fa fa-trash-o fa-margin"></i>
-                                        <?php echo trans('delete'); ?>
+                                        <?php _trans('delete'); ?>
                                     </a>
                                 </li>
                             </ul>

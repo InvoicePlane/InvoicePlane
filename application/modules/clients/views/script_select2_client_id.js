@@ -1,5 +1,5 @@
 $(".client-id-select").select2({
-    placeholder: "<?php echo trans('client'); ?>",
+    placeholder: "<?php _trans('client'); ?>",
     ajax: {
         url: "<?php echo site_url('clients/ajax/name_query'); ?>",
         dataType: 'json',

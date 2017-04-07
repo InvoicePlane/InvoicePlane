@@ -11,21 +11,21 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="panel-title"><?php echo trans('delete_quote'); ?></h4>
+            <h4 class="panel-title"><?php _trans('delete_quote'); ?></h4>
         </div>
         <div class="modal-body">
 
-            <div class="alert alert-danger"><?php echo trans('delete_quote_warning'); ?></div>
+            <div class="alert alert-danger"><?php _trans('delete_quote_warning'); ?></div>
 
         </div>
         <div class="modal-footer">
             <div class="btn-group">
                 <button id="modal_delete_quote_confirm" class="btn btn-danger"
                         data-quote-id="<?php echo $quote->quote_id; ?>">
-                    <i class="fa fa-trash-o"></i> <?php echo trans('yes'); ?>
+                    <i class="fa fa-trash-o"></i> <?php _trans('yes'); ?>
                 </button>
                 <button class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('no'); ?>
+                    <i class="fa fa-times"></i> <?php _trans('no'); ?>
                 </button>
             </div>
         </div>

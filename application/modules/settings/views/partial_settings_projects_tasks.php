@@ -2,7 +2,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <?php echo trans('projects'); ?>
+            <?php _trans('projects'); ?>
         </div>
         <div class="panel-body">
 
@@ -11,15 +11,15 @@
 
                     <div class="form-group">
                         <label for="settings[projects_enabled]" class="control-label">
-                            <?php echo trans('enable_projects'); ?>
+                            <?php _trans('enable_projects'); ?>
                         </label>
                         <select name="settings[projects_enabled]" class="form-control simple-select"
                                 id="settings[projects_enabled]">
                             <option value="0">
-                                <?php echo trans('no'); ?>
+                                <?php _trans('no'); ?>
                             </option>
                             <option value="1" <?php check_select(get_setting('projects_enabled'), '1'); ?>>
-                                <?php echo trans('yes'); ?>
+                                <?php _trans('yes'); ?>
                             </option>
                         </select>
                     </div>
@@ -29,7 +29,7 @@
 
                     <div class="form-group">
                         <label for="settings[default_hourly_rate]" class="control-label">
-                            <?php echo trans('default_hourly_rate'); ?>
+                            <?php _trans('default_hourly_rate'); ?>
                         </label>
                         <div class="input-group">
                             <input type="text" name="settings[default_hourly_rate]" id="settings[default_hourly_rate]"

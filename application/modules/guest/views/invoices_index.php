@@ -1,6 +1,6 @@
 <div id="headerbar">
 
-    <h1 class="headerbar-title"><?php echo trans('invoices'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('invoices'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <?php echo pager(site_url('guest/invoices/status/' . $this->uri->segment(4)), 'mdl_invoices'); ?>
@@ -10,11 +10,11 @@
         <div class="btn-group btn-group-sm index-options">
             <a href="<?php echo site_url('guest/invoices/status/open'); ?>"
                class="btn <?php echo $status == 'open' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('open'); ?>
+                <?php _trans('open'); ?>
             </a>
             <a href="<?php echo site_url('guest/invoices/status/paid'); ?>"
                class="btn  <?php echo $status == 'paid' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('paid'); ?>
+                <?php _trans('paid'); ?>
             </a>
         </div>
     </div>
@@ -31,13 +31,13 @@
 
                 <thead>
                 <tr>
-                    <th><?php echo trans('invoice'); ?></th>
-                    <th><?php echo trans('created'); ?></th>
-                    <th><?php echo trans('due_date'); ?></th>
-                    <th><?php echo trans('client_name'); ?></th>
-                    <th><?php echo trans('amount'); ?></th>
-                    <th><?php echo trans('balance'); ?></th>
-                    <th><?php echo trans('options'); ?></th>
+                    <th><?php _trans('invoice'); ?></th>
+                    <th><?php _trans('created'); ?></th>
+                    <th><?php _trans('due_date'); ?></th>
+                    <th><?php _trans('client_name'); ?></th>
+                    <th><?php _trans('amount'); ?></th>
+                    <th><?php _trans('balance'); ?></th>
+                    <th><?php _trans('options'); ?></th>
                 </tr>
                 </thead>
 
@@ -69,17 +69,17 @@
                                 <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
                                    class="btn btn-primary">
                                     <i class="fa fa-credit-card"></i>
-                                    <?php echo trans('pay_now'); ?>
+                                    <?php _trans('pay_now'); ?>
                                 </a>
                                 <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>"
                                    class="btn btn-default">
                                     <i class="fa fa-eye"></i>
-                                    <?php echo trans('view'); ?>
+                                    <?php _trans('view'); ?>
                                 </a>
                                 <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                    class="btn btn-default">
                                     <i class="fa fa-print"></i>
-                                    <?php echo trans('pdf'); ?>
+                                    <?php _trans('pdf'); ?>
                                 </a>
                             </div>
                         </td>

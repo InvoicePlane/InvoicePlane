@@ -3,14 +3,14 @@
 
         <thead>
         <tr>
-            <th><?php echo trans('status'); ?></th>
-            <th><?php echo trans('invoice'); ?></th>
-            <th><?php echo trans('created'); ?></th>
-            <th><?php echo trans('due_date'); ?></th>
-            <th><?php echo trans('client_name'); ?></th>
-            <th style="text-align: right;"><?php echo trans('amount'); ?></th>
-            <th style="text-align: right;"><?php echo trans('balance'); ?></th>
-            <th><?php echo trans('options'); ?></th>
+            <th><?php _trans('status'); ?></th>
+            <th><?php _trans('invoice'); ?></th>
+            <th><?php _trans('created'); ?></th>
+            <th><?php _trans('due_date'); ?></th>
+            <th><?php _trans('client_name'); ?></th>
+            <th style="text-align: right;"><?php _trans('amount'); ?></th>
+            <th style="text-align: right;"><?php _trans('balance'); ?></th>
+            <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
 
@@ -44,7 +44,7 @@
 
                 <td>
                     <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>"
-                       title="<?php echo trans('edit'); ?>">
+                       title="<?php _trans('edit'); ?>">
                         <?php echo($invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id); ?>
                     </a>
                 </td>
@@ -61,7 +61,7 @@
 
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"
-                       title="<?php echo trans('view_client'); ?>">
+                       title="<?php _trans('view_client'); ?>">
                         <?php _htmlsc(format_client($invoice)); ?>
                     </a>
                 </td>
@@ -79,25 +79,25 @@
                 <td>
                     <div class="options btn-group<?php echo $dropup ? ' dropup' : ''; ?>">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
+                            <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
                             <?php if ($invoice->is_read_only != 1) { ?>
                                 <li>
                                     <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
-                                        <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>
+                                        <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
                                     </a>
                                 </li>
                             <?php } ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                    target="_blank">
-                                    <i class="fa fa-print fa-margin"></i> <?php echo trans('download_pdf'); ?>
+                                    <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
-                                    <i class="fa fa-send fa-margin"></i> <?php echo trans('send_email'); ?>
+                                    <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>
                                 </a>
                             </li>
                             <li>
@@ -106,14 +106,14 @@
                                    data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
                                    data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
                                     <i class="fa fa-money fa-margin"></i>
-                                    <?php echo trans('enter_payment'); ?>
+                                    <?php _trans('enter_payment'); ?>
                                 </a>
                             </li>
                             <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
                                 <li>
                                     <a href="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
-                                       onclick="return confirm('<?php echo trans('delete_invoice_warning'); ?>');">
-                                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                                       onclick="return confirm('<?php _trans('delete_invoice_warning'); ?>');">
+                                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                                     </a>
                                 </li>
                             <?php } ?>

@@ -1,14 +1,14 @@
 <div id="headerbar">
 
-    <h1 class="headerbar-title"><?php echo trans('quotes'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('quotes'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
                 data-toggle="collapse" data-target="#ip-submenu-collapse">
-            <i class="fa fa-bars"></i> <?php echo trans('submenu'); ?>
+            <i class="fa fa-bars"></i> <?php _trans('submenu'); ?>
         </button>
         <a class="create-quote btn btn-sm btn-primary" href="#">
-            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+            <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
 
@@ -20,31 +20,31 @@
         <div class="btn-group btn-group-sm index-options">
             <a href="<?php echo site_url('quotes/status/all'); ?>"
                class="btn <?php echo $status == 'all' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('all'); ?>
+                <?php _trans('all'); ?>
             </a>
             <a href="<?php echo site_url('quotes/status/draft'); ?>"
                class="btn <?php echo $status == 'draft' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('draft'); ?>
+                <?php _trans('draft'); ?>
             </a>
             <a href="<?php echo site_url('quotes/status/sent'); ?>"
                class="btn <?php echo $status == 'sent' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('sent'); ?>
+                <?php _trans('sent'); ?>
             </a>
             <a href="<?php echo site_url('quotes/status/viewed'); ?>"
                class="btn <?php echo $status == 'viewed' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('viewed'); ?>
+                <?php _trans('viewed'); ?>
             </a>
             <a href="<?php echo site_url('quotes/status/approved'); ?>"
                class="btn <?php echo $status == 'approved' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('approved'); ?>
+                <?php _trans('approved'); ?>
             </a>
             <a href="<?php echo site_url('quotes/status/rejected'); ?>"
                class="btn <?php echo $status == 'rejected' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('rejected'); ?>
+                <?php _trans('rejected'); ?>
             </a>
             <a href="<?php echo site_url('quotes/status/canceled'); ?>"
                class="btn <?php echo $status == 'canceled' ? 'btn-primary' : 'btn-default' ?>">
-                <?php echo trans('canceled'); ?>
+                <?php _trans('canceled'); ?>
             </a>
         </div>
     </div>
@@ -62,31 +62,31 @@
             <div class="btn-group btn-group-sm index-options">
                 <a href="<?php echo site_url('quotes/status/all'); ?>"
                    class="btn <?php echo $status == 'all' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php echo trans('all'); ?>
+                    <?php _trans('all'); ?>
                 </a>
                 <a href="<?php echo site_url('quotes/status/draft'); ?>"
                    class="btn <?php echo $status == 'draft' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php echo trans('draft'); ?>
+                    <?php _trans('draft'); ?>
                 </a>
                 <a href="<?php echo site_url('quotes/status/sent'); ?>"
                    class="btn <?php echo $status == 'sent' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php echo trans('sent'); ?>
+                    <?php _trans('sent'); ?>
                 </a>
                 <a href="<?php echo site_url('quotes/status/viewed'); ?>"
                    class="btn <?php echo $status == 'viewed' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php echo trans('viewed'); ?>
+                    <?php _trans('viewed'); ?>
                 </a>
                 <a href="<?php echo site_url('quotes/status/approved'); ?>"
                    class="btn <?php echo $status == 'approved' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php echo trans('approved'); ?>
+                    <?php _trans('approved'); ?>
                 </a>
                 <a href="<?php echo site_url('quotes/status/rejected'); ?>"
                    class="btn <?php echo $status == 'rejected' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php echo trans('rejected'); ?>
+                    <?php _trans('rejected'); ?>
                 </a>
                 <a href="<?php echo site_url('quotes/status/canceled'); ?>"
                    class="btn <?php echo $status == 'canceled' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php echo trans('canceled'); ?>
+                    <?php _trans('canceled'); ?>
                 </a>
             </div>
         </div>

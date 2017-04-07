@@ -40,7 +40,7 @@
             $(this).datepicker({
                 autoclose: true,
                 format: '<?php echo date_format_datepicker(); ?>',
-                language: '<?php echo trans('cldr'); ?>',
+                language: '<?php _trans('cldr'); ?>',
                 weekStart: '<?php echo get_setting('first_day_of_week'); ?>',
                 todayBtn: "linked"
             });

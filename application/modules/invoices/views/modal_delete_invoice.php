@@ -12,11 +12,11 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="panel-title"><?php echo trans('delete_invoice'); ?></h4>
+            <h4 class="panel-title"><?php _trans('delete_invoice'); ?></h4>
         </div>
         <div class="modal-body">
 
-            <div class="alert alert-danger"><?php echo trans('delete_invoice_warning'); ?></div>
+            <div class="alert alert-danger"><?php _trans('delete_invoice_warning'); ?></div>
 
         </div>
         <div class="modal-footer">
@@ -27,7 +27,7 @@
                     <?php echo trans('confirm_deletion') ?>
                 </a>
                 <a href="#" class="btn btn-default" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
+                    <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
                 </a>
             </div>
         </div>

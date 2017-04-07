@@ -3,13 +3,13 @@
 
         <thead>
         <tr>
-            <th><?php echo trans('status'); ?></th>
-            <th><?php echo trans('quote'); ?></th>
-            <th><?php echo trans('created'); ?></th>
-            <th><?php echo trans('due_date'); ?></th>
-            <th><?php echo trans('client_name'); ?></th>
-            <th style="text-align: right; padding-right: 25px;"><?php echo trans('amount'); ?></th>
-            <th><?php echo trans('options'); ?></th>
+            <th><?php _trans('status'); ?></th>
+            <th><?php _trans('quote'); ?></th>
+            <th><?php _trans('created'); ?></th>
+            <th><?php _trans('due_date'); ?></th>
+            <th><?php _trans('client_name'); ?></th>
+            <th style="text-align: right; padding-right: 25px;"><?php _trans('amount'); ?></th>
+            <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
 
@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     <a href="<?php echo site_url('quotes/view/' . $quote->quote_id); ?>"
-                       title="<?php echo trans('edit'); ?>">
+                       title="<?php _trans('edit'); ?>">
                         <?php echo($quote->quote_number ? $quote->quote_number : $quote->quote_id); ?>
                     </a>
                 </td>
@@ -43,7 +43,7 @@
                 </td>
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"
-                       title="<?php echo trans('view_client'); ?>">
+                       title="<?php _trans('view_client'); ?>">
                         <?php _htmlsc(format_client($quote)); ?>
                     </a>
                 </td>
@@ -54,29 +54,29 @@
                     <div class="options btn-group<?php echo $dropup ? ' dropup' : ''; ?>">
                         <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
                            href="#">
-                            <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
+                            <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="<?php echo site_url('quotes/view/' . $quote->quote_id); ?>">
-                                    <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>
+                                    <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
                                    target="_blank">
-                                    <i class="fa fa-print fa-margin"></i> <?php echo trans('download_pdf'); ?>
+                                    <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
-                                    <i class="fa fa-send fa-margin"></i> <?php echo trans('send_email'); ?>
+                                    <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('quotes/delete/' . $quote->quote_id); ?>"
-                                   onclick="return confirm('<?php echo trans('delete_quote_warning'); ?>');">
-                                    <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                                   onclick="return confirm('<?php _trans('delete_quote_warning'); ?>');">
+                                    <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                                 </a>
                             </li>
                         </ul>

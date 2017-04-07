@@ -107,14 +107,14 @@
     <form class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="panel-title"><?php echo trans('add_product'); ?></h4>
+            <h4 class="panel-title"><?php _trans('add_product'); ?></h4>
         </div>
         <div class="modal-body">
 
             <div class="form-inline">
                 <div class="form-group filter-form">
                     <select name="filter_family" id="filter_family" class="form-control simple-select">
-                        <option value=""><?php echo trans('any_family'); ?></option>
+                        <option value=""><?php _trans('any_family'); ?></option>
                         <?php foreach ($families as $family) { ?>
                             <option value="<?php echo $family->family_id; ?>"
                                 <?php if (isset($filter_family) && $family->family_id == $filter_family) {
@@ -127,13 +127,13 @@
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control" name="filter_product" id="filter_product"
-                           placeholder="<?php echo trans('product_name'); ?>"
+                           placeholder="<?php _trans('product_name'); ?>"
                            value="<?php echo $filter_product ?>">
                 </div>
                 <button type="button" id="filter-button"
-                        class="btn btn-default"><?php echo trans('search_product'); ?></button>
+                        class="btn btn-default"><?php _trans('search_product'); ?></button>
                 <button type="button" id="product-reset-button" class="btn btn-default">
-                    <?php echo trans('reset'); ?>
+                    <?php _trans('reset'); ?>
                 </button>
             </div>
 
@@ -148,11 +148,11 @@
             <div class="btn-group">
                 <button class="select-items-confirm btn btn-success" type="button">
                     <i class="fa fa-check"></i>
-                    <?php echo trans('submit'); ?>
+                    <?php _trans('submit'); ?>
                 </button>
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
                     <i class="fa fa-times"></i>
-                    <?php echo trans('cancel'); ?>
+                    <?php _trans('cancel'); ?>
                 </button>
             </div>
         </div>

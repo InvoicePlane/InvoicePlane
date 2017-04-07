@@ -7,9 +7,9 @@
 
             <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
-            <legend><?php echo trans('setup_choose_language'); ?></legend>
+            <legend><?php _trans('setup_choose_language'); ?></legend>
 
-            <p><?php echo trans('setup_choose_language_message'); ?></p>
+            <p><?php _trans('setup_choose_language_message'); ?></p>
 
             <select name="ip_lang" class="form-control simple-select">
                 <?php foreach ($languages as $language) { ?>
@@ -22,7 +22,7 @@
 
             <br/>
 
-            <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo trans('continue'); ?>">
+            <input class="btn btn-success" type="submit" name="btn_continue" value="<?php _trans('continue'); ?>">
 
         </form>
 

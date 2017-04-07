@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo trans('users'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('users'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('users/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+            <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
 
@@ -22,10 +22,10 @@
 
             <thead>
             <tr>
-                <th><?php echo trans('name'); ?></th>
-                <th><?php echo trans('user_type'); ?></th>
-                <th><?php echo trans('email_address'); ?></th>
-                <th><?php echo trans('options'); ?></th>
+                <th><?php _trans('name'); ?></th>
+                <th><?php _trans('user_type'); ?></th>
+                <th><?php _trans('email_address'); ?></th>
+                <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -40,24 +40,24 @@
                             <?php if ($user->user_type == 2) : ?>
                                 <a href="<?php echo site_url('user_clients/user/' . $user->user_id); ?>"
                                    class="btn btn-default">
-                                    <i class="fa fa-list fa-margin"></i> <?php echo trans('assigned_clients'); ?>
+                                    <i class="fa fa-list fa-margin"></i> <?php _trans('assigned_clients'); ?>
                                 </a>
                             <?php endif; ?>
                             <a class="btn btn-default dropdown-toggle"
                                data-toggle="dropdown" href="#">
-                                <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
+                                <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('users/form/' . $user->user_id); ?>">
-                                        <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>
+                                        <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
                                     </a>
                                 </li>
                                 <?php if ($user->user_id <> 1) { ?>
                                     <li>
                                         <a href="<?php echo site_url('users/delete/' . $user->user_id); ?>"
-                                           onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
-                                            <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                                           onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
+                                            <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                                         </a>
                                     </li>
                                 <?php } ?>

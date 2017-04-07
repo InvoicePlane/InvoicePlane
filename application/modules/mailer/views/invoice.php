@@ -25,17 +25,17 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('email_invoice'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('email_invoice'); ?></h1>
 
         <div class="headerbar-item pull-right">
             <div class="btn-group btn-group-sm">
                 <button class="btn btn-primary ajax-loader" name="btn_send" value="1">
                     <i class="fa fa-send"></i>
-                    <?php echo trans('send'); ?>
+                    <?php _trans('send'); ?>
                 </button>
                 <button class="btn btn-danger" name="btn_cancel" value="1">
                     <i class="fa fa-times"></i>
-                    <?php echo trans('cancel'); ?>
+                    <?php _trans('cancel'); ?>
                 </button>
             </div>
         </div>
@@ -47,7 +47,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="to_email" class="control-label"><?php echo trans('to_email'); ?>: </label>
+                <label for="to_email" class="control-label"><?php _trans('to_email'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="to_email" id="to_email" class="form-control"
@@ -59,11 +59,11 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="email_template" class="control-label"><?php echo trans('email_template'); ?>: </label>
+                <label for="email_template" class="control-label"><?php _trans('email_template'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="email_template" id="email_template" class="form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
+                    <option value=""><?php _trans('none'); ?></option>
                     <?php foreach ($email_templates as $email_template): ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
                             <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
@@ -76,7 +76,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="from_name" class="control-label"><?php echo trans('from_name'); ?>: </label>
+                <label for="from_name" class="control-label"><?php _trans('from_name'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="from_name" id="from_name" class="form-control"
@@ -86,7 +86,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="from_email" class="control-label"><?php echo trans('from_email'); ?>: </label>
+                <label for="from_email" class="control-label"><?php _trans('from_email'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="from_email" id="from_email" class="form-control"
@@ -96,7 +96,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="cc" class="control-label"><?php echo trans('cc'); ?>: </label>
+                <label for="cc" class="control-label"><?php _trans('cc'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="cc" id="cc" value="" class="form-control">
@@ -105,7 +105,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="bcc" class="control-label"><?php echo trans('bcc'); ?>: </label>
+                <label for="bcc" class="control-label"><?php _trans('bcc'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="bcc" id="bcc" value="" class="form-control">
@@ -114,7 +114,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="subject" class="control-label"><?php echo trans('subject'); ?>: </label>
+                <label for="subject" class="control-label"><?php _trans('subject'); ?>: </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="subject" id="subject" class="form-control"
@@ -125,12 +125,12 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="pdf_template" class="control-label">
-                    <?php echo trans('pdf_template'); ?>:
+                    <?php _trans('pdf_template'); ?>:
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="pdf_template" id="pdf_template" class="form-control simple-select">
-                    <option value=""><?php echo trans('none'); ?></option>
+                    <option value=""><?php _trans('none'); ?></option>
                     <?php foreach ($pdf_templates as $pdf_template): ?>
                         <option value="<?php echo $pdf_template; ?>"
                             <?php check_select($selected_pdf_template, $pdf_template); ?>>
@@ -144,7 +144,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="email_template_body">
-                    <?php echo trans('body'); ?>:
+                    <?php _trans('body'); ?>:
                 </label>
             </div>
 
@@ -183,7 +183,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php echo trans('preview'); ?>
+                        <?php _trans('preview'); ?>
                         <span id="email-template-preview-reload" class="pull-right cursor-pointer">
                             <i class="fa fa-refresh"></i>
                         </span>
@@ -196,14 +196,14 @@
         </div>
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label class="control-label"><?php echo trans('attachments'); ?>: </label>
+                <label class="control-label"><?php _trans('attachments'); ?>: </label>
             </div>
             <!-- dropzone -->
             <div id="actions" class="col-xs-12 col-sm-6 row">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 <span class="btn btn-success fileinput-button">
                     <i class="fa fa-plus"></i>
-                     <span><?php echo trans('add_files'); ?></span>
+                     <span><?php _trans('add_files'); ?></span>
                 </span>
 
                 <div class="col-lg-7"></div>
@@ -241,7 +241,7 @@
                         <div>
                             <button data-dz-remove class="btn btn-danger delete">
                                 <i class="glyphicon glyphicon-trash"></i>
-                                <span><?php echo trans('delete'); ?></span>
+                                <span><?php _trans('delete'); ?></span>
                             </button>
                         </div>
                     </div>

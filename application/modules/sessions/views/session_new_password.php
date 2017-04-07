@@ -35,7 +35,7 @@
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php _trans('please_enable_js'); ?></div>
 </noscript>
 
 <br>
@@ -44,7 +44,7 @@
 
     <div id="password_reset" class="panel panel-default panel-body col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
 
-        <h3><?php echo trans('set_new_password'); ?></h3>
+        <h3><?php _trans('set_new_password'); ?></h3>
 
         <br/>
 
@@ -58,15 +58,15 @@
             <input name="user_id" value="<?php echo $user_id; ?>" class="hidden">
 
             <div class="form-group">
-                <label for="new_password" class="control-label"><?php echo trans('new_password'); ?></label>
+                <label for="new_password" class="control-label"><?php _trans('new_password'); ?></label>
                 <input type="password" name="new_password" id="new_password" class="form-control"
-                       placeholder="<?php echo trans('new_password'); ?>" required autofocus>
+                       placeholder="<?php _trans('new_password'); ?>" required autofocus>
             </div>
 
             <input type="hidden" name="btn_new_password" value="true">
 
             <button type="submit" class="btn btn-success">
-                <i class="fa fa-key fa-margin"></i> <?php echo trans('set_new_password'); ?>
+                <i class="fa fa-key fa-margin"></i> <?php _trans('set_new_password'); ?>
             </button>
 
         </form>

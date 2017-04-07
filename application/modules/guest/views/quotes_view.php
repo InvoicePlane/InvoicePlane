@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo trans('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
+    <h1 class="headerbar-title"><?php _trans('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
 
     <div class="pull-right">
         <div class="btn-group btn-group-sm">
@@ -7,28 +7,28 @@
                 <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
                    class="btn btn-success">
                     <i class="fa fa-check"></i>
-                    <?php echo trans('approve_this_quote'); ?>
+                    <?php _trans('approve_this_quote'); ?>
                 </a>
                 <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
                    class="btn btn-danger">
                     <i class="fa fa-times-circle"></i>
-                    <?php echo trans('reject_this_quote'); ?>
+                    <?php _trans('reject_this_quote'); ?>
                 </a>
             <?php } elseif ($quote->quote_status_id == 4) { ?>
                 <a href="#" class="btn btn-success disabled">
                     <i class="fa fa-check"></i>
-                    <?php echo trans('quote_approved'); ?>
+                    <?php _trans('quote_approved'); ?>
                 </a>
             <?php } elseif ($quote->quote_status_id == 5) { ?>
                 <a href="#" class="btn btn-danger disabled">
                     <i class="fa fa-times-circle"></i>
-                    <?php echo trans('quote_rejected'); ?>
+                    <?php _trans('quote_rejected'); ?>
                 </a>
             <?php } ?>
 
             <a href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote_id); ?>"
                class="btn btn-default" id="btn_generate_pdf">
-                <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+                <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>
             </a>
         </div>
 
@@ -51,11 +51,11 @@
                 </div>
                 <br><br>
                 <?php if ($quote->client_phone) { ?>
-                    <span><strong><?php echo trans('phone'); ?>:</strong> <?php _htmlsc($quote->client_phone); ?></span>
+                    <span><strong><?php _trans('phone'); ?>:</strong> <?php _htmlsc($quote->client_phone); ?></span>
                     <br>
                 <?php } ?>
                 <?php if ($quote->client_email) { ?>
-                    <span><strong><?php echo trans('email'); ?>:</strong> <?php _htmlsc($quote->client_email); ?></span>
+                    <span><strong><?php _trans('email'); ?>:</strong> <?php _htmlsc($quote->client_email); ?></span>
                 <?php } ?>
 
             </div>
@@ -64,15 +64,15 @@
 
                 <table class="table table-bordered">
                     <tr>
-                        <td><?php echo trans('quote'); ?> #</td>
+                        <td><?php _trans('quote'); ?> #</td>
                         <td><?php echo $quote->quote_number; ?></td>
                     </tr>
                     <tr>
-                        <td><?php echo trans('date'); ?></td>
+                        <td><?php _trans('date'); ?></td>
                         <td><?php echo date_from_mysql($quote->quote_date_created); ?></td>
                     </tr>
                     <tr>
-                        <td><?php echo trans('due_date'); ?></td>
+                        <td><?php _trans('due_date'); ?></td>
                         <td><?php echo date_from_mysql($quote->quote_date_expires); ?></td>
                     </tr>
                 </table>
@@ -87,7 +87,7 @@
                 <thead>
                 <tr>
                     <th style="width:20px;"></th>
-                    <th><?php echo trans('item'); ?> / <?php echo lang('description'); ?></th>
+                    <th><?php _trans('item'); ?> / <?php echo lang('description'); ?></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -104,30 +104,30 @@
                         </td>
                         <td><?php _htmlsc($item->item_name); ?></td>
                         <td>
-                            <span class="pull-left"><?php echo trans('quantity'); ?></span>
+                            <span class="pull-left"><?php _trans('quantity'); ?></span>
                             <span class="pull-right amount"><?php echo $item->item_quantity; ?></span>
                         </td>
                         <td>
-                            <span class="pull-left"><?php echo trans('discount'); ?></span>
+                            <span class="pull-left"><?php _trans('discount'); ?></span>
                             <span class="pull-right amount"><?php echo format_currency($item->item_discount); ?></span>
                         </td>
                         <td>
-                            <span class="pull-left"><?php echo trans('subtotal'); ?></span>
+                            <span class="pull-left"><?php _trans('subtotal'); ?></span>
                             <span class="pull-right amount"><?php echo format_currency($item->item_subtotal); ?></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="text-muted"><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                         <td>
-                            <span class="pull-left"><?php echo trans('price'); ?></span>
+                            <span class="pull-left"><?php _trans('price'); ?></span>
                             <span class="pull-right amount"><?php format_amount($item->item_price); ?></span>
                         </td>
                         <td>
-                            <span class="pull-left"><?php echo trans('tax'); ?></span>
+                            <span class="pull-left"><?php _trans('tax'); ?></span>
                             <span class="pull-right amount"><?php echo format_amount($item->item_tax_total); ?></span>
                         </td>
                         <td>
-                            <span class="pull-left"><?php echo trans('total'); ?></span>
+                            <span class="pull-left"><?php _trans('total'); ?></span>
                             <span class="pull-right amount"><?php echo format_currency($item->item_total); ?></span>
                         </td>
                     </tr>
@@ -141,11 +141,11 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th class="text-right"><?php echo trans('subtotal'); ?></th>
-                    <th class="text-right"><?php echo trans('item_tax'); ?></th>
-                    <th class="text-right"><?php echo trans('quote_tax'); ?></th>
-                    <th class="text-right"><?php echo trans('discount'); ?></th>
-                    <th class="text-right"><?php echo trans('total'); ?></th>
+                    <th class="text-right"><?php _trans('subtotal'); ?></th>
+                    <th class="text-right"><?php _trans('item_tax'); ?></th>
+                    <th class="text-right"><?php _trans('quote_tax'); ?></th>
+                    <th class="text-right"><?php _trans('discount'); ?></th>
+                    <th class="text-right"><?php _trans('total'); ?></th>
                 </tr>
                 </thead>
                 <tbody>
