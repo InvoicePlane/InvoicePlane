@@ -36,7 +36,13 @@
                     <td><?php echo $user_types[$user->user_type]; ?></td>
                     <td><?php echo $user->user_email; ?></td>
                     <td>
-                        <div class="options btn-group btn-group-sm ">
+                        <div class="options btn-group btn-group-sm">
+                            <?php if ($user->user_type == 2) : ?>
+                                <a href="<?php echo site_url('user_clients/user/' . $user->user_id); ?>"
+                                   class="btn btn-default">
+                                    <i class="fa fa-list fa-margin"></i> <?php echo trans('assigned_clients'); ?>
+                                </a>
+                            <?php endif; ?>
                             <a class="btn btn-default dropdown-toggle"
                                data-toggle="dropdown" href="#">
                                 <i class="fa fa-cog"></i> <?php echo trans('options'); ?>

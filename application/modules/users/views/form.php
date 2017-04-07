@@ -373,29 +373,6 @@ $cv = $this->controller->view_data["custom_values"];
 
                     </div>
 
-                    <div id="guest_fields">
-
-                        <div class="panel panel-default">
-
-                            <div class="panel-heading">
-                                <?php echo trans('client_access'); ?>&nbsp;
-
-                                <button id="add-user-client-modal" class="btn btn-default btn-xs" type="button">
-                                    <i class="fa fa-plus"></i>
-                                    <?php echo trans('add_client'); ?>
-                                </button>
-                            </div>
-
-                            <div class="panel-body">
-                                <div id="div_user_client_table">
-                                    <?php echo $user_client_table; ?>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
             </div>

@@ -31,7 +31,26 @@ class Mdl_User_Clients extends MY_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_clients.client_name');
+        $this->db->order_by('ip_clients.client_name', 'ACS');
+    }
+
+    /**
+     * @return array
+     */
+    public function validation_rules()
+    {
+        return array(
+            'user_id' => array(
+                'field' => 'user_id',
+                'label' => trans('user'),
+                'rules' => 'required'
+            ),
+            'client_id' => array(
+                'field' => 'client_id',
+                'label' => trans('client'),
+                'rules' => 'required'
+            ),
+        );
     }
 
     /**

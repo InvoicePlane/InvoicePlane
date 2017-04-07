@@ -229,4 +229,28 @@ class Mdl_Clients extends Response_Model
         return $this;
     }
 
+    /**
+     * @param $user_id
+     * @return $this
+     */
+    public function get_not_assigned_to_user($user_id)
+    {
+        $this->load->model('user_clients/mdl_user_clients');
+        $clients = $this->mdl_user_clients->select('ip_user_clients.client_id')
+            ->assigned_to($user_id)->get()->result();
+
+        $assigned_clients = [];
+        foreach ($clients as $client)
+        {
+            $assigned_clients[] = $client->client_id;
+        }
+
+        if (count($assigned_clients) > 0) {
+            $this->where_not_in('ip_clients.client_id', $assigned_clients);
+        }
+
+        $this->is_active();
+        return $this->get()->result();
+    }
+
 }
