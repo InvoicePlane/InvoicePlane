@@ -240,7 +240,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php echo trans('personal_information'); ?>
                             </div>
 
-                            <div class="panel-body">
+                            <div class="panel-body table-content">
                                 <table class="table no-margin">
                                     <tr>
                                         <th><?php echo trans('birthdate'); ?></th>
