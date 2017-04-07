@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo trans('dashboard'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('dashboard'); ?></h1>
 </div>
 
 <div id="content">
@@ -7,7 +7,7 @@
     <div class="panel panel-default">
 
         <div class="panel-heading">
-            <?php echo trans('quotes_requiring_approval'); ?>
+            <?php _trans('quotes_requiring_approval'); ?>
         </div>
 
         <div class="panel-body no-padding">
@@ -15,7 +15,7 @@
             <?php if ($open_quotes) { ?>
                 <?php echo $this->layout->load_view('guest/partial_quotes_table', array('quotes' => $open_quotes)); ?>
             <?php } else { ?>
-                <div class="alert text-success no-margin"><?php echo trans('no_quotes_requiring_approval'); ?></div>
+                <div class="alert text-success no-margin"><?php _trans('no_quotes_requiring_approval'); ?></div>
             <?php } ?>
 
         </div>
@@ -23,14 +23,14 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <?php echo trans('overdue_invoices'); ?>
+            <?php _trans('overdue_invoices'); ?>
         </div>
         <div class="panel-body no-padding">
 
             <?php if ($overdue_invoices) { ?>
                 <?php echo $this->layout->load_view('guest/partial_invoices_table', array('invoices' => $overdue_invoices)); ?>
             <?php } else { ?>
-                <div class="alert text-success no-margin"><?php echo trans('no_overdue_invoices'); ?></div>
+                <div class="alert text-success no-margin"><?php _trans('no_overdue_invoices'); ?></div>
             <?php } ?>
 
         </div>
@@ -39,7 +39,7 @@
     <div class="panel panel-default">
 
         <div class="panel-heading">
-            <?php echo trans('open_invoices'); ?>
+            <?php _trans('open_invoices'); ?>
         </div>
 
         <div class="panel-body no-padding">

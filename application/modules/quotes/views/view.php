@@ -135,45 +135,45 @@ $cv = $this->controller->view_data["custom_values"];
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                <?php echo trans('options'); ?> <i class="fa fa-chevron-down"></i>
+                <?php _trans('options'); ?> <i class="fa fa-chevron-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
-                        <?php echo trans('add_quote_tax'); ?>
+                        <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
-                        <?php echo trans('download_pdf'); ?>
+                        <?php _trans('download_pdf'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
-                        <?php echo trans('send_email'); ?>
+                        <?php _trans('send_email'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_quote_to_invoice"
                        data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-refresh fa-margin"></i>
-                        <?php echo trans('quote_to_invoice'); ?>
+                        <?php _trans('quote_to_invoice'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_copy_quote"
                        data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
-                        <?php echo trans('copy_quote'); ?>
+                        <?php _trans('copy_quote'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#delete-quote" data-toggle="modal">
-                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                     </a>
                 </li>
             </ul>
@@ -181,7 +181,7 @@ $cv = $this->controller->view_data["custom_values"];
 
         <a href="#" class="btn btn-success btn-sm ajax-loader" id="btn_save_quote">
             <i class="fa fa-check"></i>
-            <?php echo trans('save'); ?>
+            <?php _trans('save'); ?>
         </a>
     </div>
 
@@ -202,7 +202,7 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php if ($quote->quote_status_id == 1) { ?>
                             <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
                                   data-toggle="tooltip" data-placement="bottom"
-                                  title="<?php echo trans('change_client'); ?>"></span>
+                                  title="<?php _trans('change_client'); ?>"></span>
                         <?php } ?>
                     </h3>
                     <br>
@@ -214,13 +214,13 @@ $cv = $this->controller->view_data["custom_values"];
                     <?php endif; ?>
                     <?php if ($quote->client_phone): ?>
                         <div>
-                            <?php echo trans('phone'); ?>:&nbsp;
+                            <?php _trans('phone'); ?>:&nbsp;
                             <?php _htmlsc($quote->client_phone); ?>
                         </div>
                     <?php endif; ?>
                     <?php if ($quote->client_email): ?>
                         <div>
-                            <?php echo trans('email'); ?>:&nbsp;
+                            <?php _trans('email'); ?>:&nbsp;
                             <?php echo $quote->client_email; ?>
                         </div>
                     <?php endif; ?>
@@ -237,16 +237,16 @@ $cv = $this->controller->view_data["custom_values"];
 
                                 <div class="quote-properties">
                                     <label for="quote_number">
-                                        <?php echo trans('quote'); ?> #
+                                        <?php _trans('quote'); ?> #
                                     </label>
                                     <input type="text" id="quote_number" class="form-control input-sm"
                                         <?php if ($quote->quote_number) : ?> value="<?php echo $quote->quote_number; ?>"
-                                        <?php else : ?> placeholder="<?php echo trans('not_set'); ?>"
+                                        <?php else : ?> placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>>
                                 </div>
                                 <div class="quote-properties has-feedback">
                                     <label for="quote_date_created">
-                                        <?php echo trans('date'); ?>
+                                        <?php _trans('date'); ?>
                                     </label>
                                     <div class="input-group">
                                         <input name="quote_date_created" id="quote_date_created"
@@ -259,7 +259,7 @@ $cv = $this->controller->view_data["custom_values"];
                                 </div>
                                 <div class="quote-properties has-feedback">
                                     <label for="quote_date_expires">
-                                        <?php echo trans('expires'); ?>
+                                        <?php _trans('expires'); ?>
                                     </label>
                                     <div class="input-group">
                                         <input name="quote_date_expires" id="quote_date_expires"
@@ -284,7 +284,7 @@ $cv = $this->controller->view_data["custom_values"];
 
                                 <div class="quote-properties">
                                     <label for="quote_status_id">
-                                        <?php echo trans('status'); ?>
+                                        <?php _trans('status'); ?>
                                     </label>
                                     <select name="quote_status_id" id="quote_status_id"
                                             class="form-control input-sm simple-select">
@@ -299,7 +299,7 @@ $cv = $this->controller->view_data["custom_values"];
                                 </div>
                                 <div class="quote-properties">
                                     <label for="quote_password">
-                                        <?php echo trans('quote_password'); ?>
+                                        <?php _trans('quote_password'); ?>
                                     </label>
                                     <input type="text" id="quote_password" class="form-control input-sm"
                                            value="<?php echo $quote->quote_password; ?>">
@@ -307,7 +307,7 @@ $cv = $this->controller->view_data["custom_values"];
 
                                 <?php if ($quote->quote_status_id != 1) { ?>
                                     <div class="quote-properties">
-                                        <label for="quote-guest-url"><?php echo trans('guest_url'); ?></label>
+                                        <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>
                                         <div class="input-group">
                                             <input type="text" id="quote-guest-url" readonly class="form-control"
                                                    value="<?php echo site_url('guest/view/quote/' . $quote->quote_url_key); ?>">
@@ -337,7 +337,7 @@ $cv = $this->controller->view_data["custom_values"];
 
                 <div class="panel panel-default no-margin">
                     <div class="panel-heading">
-                        <?php echo trans('notes'); ?>
+                        <?php _trans('notes'); ?>
                     </div>
                     <div class="panel-body">
                         <textarea name="notes" id="notes" rows="3"
@@ -353,14 +353,14 @@ $cv = $this->controller->view_data["custom_values"];
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
-                        <?php echo trans('attachments'); ?>
+                        <?php _trans('attachments'); ?>
                     </div>
 
                     <div class="panel-body clearfix">
                         <!-- The fileinput-button span is used to style the file input field as button -->
                         <span class="btn btn-default fileinput-button">
                             <i class="fa fa-plus"></i>
-                            <span><?php echo trans('add_files'); ?></span>
+                            <span><?php _trans('add_files'); ?></span>
                         </span>
 
                         <!-- dropzone -->
@@ -407,11 +407,11 @@ $cv = $this->controller->view_data["custom_values"];
                                         <div class="pull-left btn-group">
                                             <button data-dz-download class="btn btn-sm btn-primary">
                                                 <i class="fa fa-download"></i>
-                                                <span><?php echo trans('download'); ?></span>
+                                                <span><?php _trans('download'); ?></span>
                                             </button>
                                             <button data-dz-remove class="btn btn-danger btn-sm delete">
                                                 <i class="fa fa-trash-o"></i>
-                                                <span><?php echo trans('delete'); ?></span>
+                                                <span><?php _trans('delete'); ?></span>
                                             </button>
                                         </div>
                                     </div>
@@ -432,7 +432,7 @@ $cv = $this->controller->view_data["custom_values"];
 
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <?php echo trans('custom_fields'); ?>
+                                    <?php _trans('custom_fields'); ?>
                                 </div>
                                 <div class="panel-body">
                                     <div class="col-xs-6">

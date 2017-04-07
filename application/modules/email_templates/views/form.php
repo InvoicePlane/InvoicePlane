@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('email_template_form'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('email_template_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -23,26 +23,26 @@
             <div class="col-xs-12 col-md-6 col-md-offset-3">
 
                 <div class="form-group">
-                    <label for="email_template_title" class="control-label"><?php echo trans('title'); ?></label>
+                    <label for="email_template_title" class="control-label"><?php _trans('title'); ?></label>
                     <input type="text" name="email_template_title" id="email_template_title"
                            value="<?php echo $this->mdl_email_templates->form_value('email_template_title', true); ?>"
                            class="form-control">
                 </div>
 
                 <div class="form-group">
-                    <label for="email_template_type" class="control-label"><?php echo trans('type'); ?></label>
+                    <label for="email_template_type" class="control-label"><?php _trans('type'); ?></label>
                     <div class="radio">
                         <label>
                             <input type="radio" name="email_template_type" id="email_template_type_invoice"
                                    value="invoice" checked>
-                            <?php echo trans('invoice'); ?>
+                            <?php _trans('invoice'); ?>
                         </label>
                     </div>
                     <div class="radio">
                         <label>
                             <input type="radio" name="email_template_type" id="email_template_type_invoice"
                                    value="quote">
-                            <?php echo trans('quote'); ?>
+                            <?php _trans('quote'); ?>
                         </label>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
 
                 <div class="form-group">
                     <label for="email_template_from_name" class="control-label">
-                        <?php echo trans('from_name'); ?>
+                        <?php _trans('from_name'); ?>
                     </label>
                     <input type="text" name="email_template_from_name" id="email_template_from_name"
                            class="form-control taggable"
@@ -60,7 +60,7 @@
 
                 <div class="form-group">
                     <label for="email_template_from_email" class="control-label">
-                        <?php echo trans('from_email'); ?>
+                        <?php _trans('from_email'); ?>
                     </label>
                     <input type="text" name="email_template_from_email" id="email_template_from_email"
                            class="form-control taggable"
@@ -68,20 +68,20 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email_template_cc" class="control-label"><?php echo trans('cc'); ?></label>
+                    <label for="email_template_cc" class="control-label"><?php _trans('cc'); ?></label>
                     <input type="text" name="email_template_cc" id="email_template_cc" class="form-control taggable"
                            value="<?php echo $this->mdl_email_templates->form_value('email_template_cc', true); ?>">
                 </div>
 
                 <div class="form-group">
-                    <label for="email_template_bcc" class="control-label"><?php echo trans('bcc'); ?>: </label>
+                    <label for="email_template_bcc" class="control-label"><?php _trans('bcc'); ?>: </label>
                     <input type="text" name="email_template_bcc" id="email_template_bcc" class="form-control taggable"
                            value="<?php echo $this->mdl_email_templates->form_value('email_template_bcc', true); ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="email_template_subject" class="control-label">
-                        <?php echo trans('subject'); ?>
+                        <?php _trans('subject'); ?>
                     </label>
                     <input type="text" name="email_template_subject" id="email_template_subject"
                            class="form-control taggable"
@@ -90,13 +90,13 @@
 
                 <div class="form-group">
                     <label for="email_template_pdf_template" class="control-label">
-                        <?php echo trans('pdf_template'); ?>:
+                        <?php _trans('pdf_template'); ?>:
                     </label>
                     <select name="email_template_pdf_template" id="email_template_pdf_template"
                             class="form-control simple-select">
-                        <option value=""><?php echo trans('none'); ?></option>
+                        <option value=""><?php _trans('none'); ?></option>
 
-                        <optgroup label="<?php echo trans('invoices'); ?>">
+                        <optgroup label="<?php _trans('invoices'); ?>">
                             <?php foreach ($invoice_templates as $template): ?>
                                 <option class="hidden-invoice" value="<?php echo $template; ?>"
                                     <?php check_select($selected_pdf_template, $template); ?>>
@@ -105,7 +105,7 @@
                             <?php endforeach; ?>
                         </optgroup>
 
-                        <optgroup label="<?php echo trans('quotes'); ?>">
+                        <optgroup label="<?php _trans('quotes'); ?>">
                             <?php foreach ($quote_templates as $template): ?>
                                 <option class="hidden-quote" value="<?php echo $template; ?>"
                                     <?php check_select($selected_pdf_template, $template); ?>>
@@ -125,7 +125,7 @@
             <div class="col-xs-12 col-md-6">
 
                 <label for="email_template_body">
-                    <?php echo trans('body'); ?>
+                    <?php _trans('body'); ?>
                 </label>
                 <div class="form-group">
 
@@ -164,7 +164,7 @@
 
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <?php echo trans('preview'); ?>
+                            <?php _trans('preview'); ?>
                             <span id="email-template-preview-reload" class="pull-right cursor-pointer">
                                 <i class="fa fa-refresh"></i>
                             </span>
@@ -180,39 +180,39 @@
             <div class="col-xs-12 col-md-6">
 
                 <div class="panel panel-default">
-                    <div class="panel-heading"><?php echo trans('email_template_tags'); ?></div>
+                    <div class="panel-heading"><?php _trans('email_template_tags'); ?></div>
                     <div class="panel-body">
 
-                        <p class="small"><?php echo trans('email_template_tags_instructions'); ?></p>
+                        <p class="small"><?php _trans('email_template_tags_instructions'); ?></p>
 
                         <div class="form-group">
-                            <label for="tags_client"><?php echo trans('client'); ?></label>
+                            <label for="tags_client"><?php _trans('client'); ?></label>
                             <select id="tags_client" class="tag-select form-control">
                                 <option value="{{{client_name}}}">
-                                    <?php echo trans('client_name'); ?>
+                                    <?php _trans('client_name'); ?>
                                 </option>
                                 <option value="{{{client_surname}}}">
-                                    <?php echo trans('client_surname'); ?>
+                                    <?php _trans('client_surname'); ?>
                                 </option>
                                 <option value="{{{client_address_1}}}">
-                                    <?php echo trans('address') . ' 1'; ?>
+                                    <?php _trans('address') . ' 1'; ?>
                                 </option>
                                 <option value="{{{client_address_2}}}">
-                                    <?php echo trans('address') . ' 2'; ?>
+                                    <?php _trans('address') . ' 2'; ?>
                                 </option>
                                 <option value="{{{client_city}}}">
-                                    <?php echo trans('city'); ?>
+                                    <?php _trans('city'); ?>
                                 </option>
                                 <option value="{{{client_state}}}">
-                                    <?php echo trans('state'); ?>
+                                    <?php _trans('state'); ?>
                                 </option>
                                 <option value="{{{client_zip}}}">
-                                    <?php echo trans('zip'); ?>
+                                    <?php _trans('zip'); ?>
                                 </option>
                                 <option value="{{{client_country}}}">
-                                    <?php echo trans('country'); ?>
+                                    <?php _trans('country'); ?>
                                 </option>
-                                <optgroup label="<?php echo trans('custom_fields'); ?>">
+                                <optgroup label="<?php _trans('custom_fields'); ?>">
                                     <?php foreach ($custom_fields['ip_client_custom'] as $custom) { ?>
                                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
                                             <?php echo $custom->custom_field_label; ?>
@@ -223,64 +223,64 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tags_user"><?php echo trans('user'); ?></label>
+                            <label for="tags_user"><?php _trans('user'); ?></label>
                             <select id="tags_user" class="tag-select form-control">
                                 <option value="{{{user_name}}}">
-                                    <?php echo trans('name'); ?>
+                                    <?php _trans('name'); ?>
                                 </option>
                                 <option value="{{{user_company}}}">
-                                    <?php echo trans('company'); ?>
+                                    <?php _trans('company'); ?>
                                 </option>
                                 <option value="{{{user_address_1}}}">
-                                    <?php echo trans('address') . ' 1'; ?>
+                                    <?php _trans('address') . ' 1'; ?>
                                 </option>
                                 <option value="{{{user_address_2}}}">
-                                    <?php echo trans('address') . ' 2'; ?>
+                                    <?php _trans('address') . ' 2'; ?>
                                 </option>
                                 <option value="{{{user_city}}}">
-                                    <?php echo trans('city'); ?>
+                                    <?php _trans('city'); ?>
                                 </option>
                                 <option value="{{{user_state}}}">
-                                    <?php echo trans('state'); ?>
+                                    <?php _trans('state'); ?>
                                 </option>
                                 <option value="{{{user_zip}}}">
-                                    <?php echo trans('zip'); ?>
+                                    <?php _trans('zip'); ?>
                                 </option>
                                 <option value="{{{user_country}}}">
-                                    <?php echo trans('country'); ?>
+                                    <?php _trans('country'); ?>
                                 </option>
-                                <optgroup label="<?php echo trans('contact_information'); ?>">
+                                <optgroup label="<?php _trans('contact_information'); ?>">
                                     <option value="{{{user_phone}}}">
-                                        <?php echo trans('phone'); ?>
+                                        <?php _trans('phone'); ?>
                                     </option>
                                     <option value="{{{user_fax}}}">
-                                        <?php echo trans('fax'); ?>
+                                        <?php _trans('fax'); ?>
                                     </option>
                                     <option value="{{{user_mobile}}}">
-                                        <?php echo trans('mobile'); ?>
+                                        <?php _trans('mobile'); ?>
                                     </option>
                                     <option value="{{{user_email}}}">
-                                        <?php echo trans('email'); ?>
+                                        <?php _trans('email'); ?>
                                     </option>
                                     <option value="{{{user_web}}}">
-                                        <?php echo trans('web_address'); ?>
+                                        <?php _trans('web_address'); ?>
                                     </option>
                                 </optgroup>
-                                <optgroup label="<?php echo trans('sumex_information'); ?>">
+                                <optgroup label="<?php _trans('sumex_information'); ?>">
                                     <option value="{{{user_subscribernumber}}}">
-                                        <?php echo trans('user_subscriber_number'); ?>
+                                        <?php _trans('user_subscriber_number'); ?>
                                     </option>
                                     <option value="{{{user_iban}}}">
-                                        <?php echo trans('user_iban'); ?>
+                                        <?php _trans('user_iban'); ?>
                                     </option>
                                     <option value="{{{user_gln}}}">
-                                        <?php echo trans('gln'); ?>
+                                        <?php _trans('gln'); ?>
                                     </option>
                                     <option value="{{{user_rcc}}}">
-                                        <?php echo trans('sumex_rcc'); ?>
+                                        <?php _trans('sumex_rcc'); ?>
                                     </option>
                                 </optgroup>
-                                <optgroup label="<?php echo trans('custom_fields'); ?>">
+                                <optgroup label="<?php _trans('custom_fields'); ?>">
                                     <?php foreach ($custom_fields['ip_user_custom'] as $custom) { ?>
                                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
                                             <?php echo $custom->custom_field_label; ?>
@@ -291,36 +291,36 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tags_client"><?php echo trans('invoices'); ?></label>
+                            <label for="tags_client"><?php _trans('invoices'); ?></label>
                             <select id="tags_client" class="tag-select form-control">
                                 <option value="{{{invoice_guest_url}}}">
-                                    <?php echo trans('guest_url'); ?>
+                                    <?php _trans('guest_url'); ?>
                                 </option>
                                 <option value="{{{invoice_number}}}">
-                                    <?php echo trans('id'); ?>
+                                    <?php _trans('id'); ?>
                                 </option>
                                 <option value="{{{invoice_date_due}}}">
-                                    <?php echo trans('due_date'); ?>
+                                    <?php _trans('due_date'); ?>
                                 </option>
                                 <option value="{{{invoice_date_created}}}">
-                                    <?php echo trans('created'); ?>
+                                    <?php _trans('created'); ?>
                                 </option>
                                 <option value="{{{invoice_terms}}}">
-                                    <?php echo trans('invoice_terms'); ?>
+                                    <?php _trans('invoice_terms'); ?>
                                 </option>
                                 <option value="{{{invoice_total}}}">
-                                    <?php echo trans('total'); ?>
+                                    <?php _trans('total'); ?>
                                 </option>
                                 <option value="{{{invoice_paid}}}">
-                                    <?php echo trans('total_paid'); ?>
+                                    <?php _trans('total_paid'); ?>
                                 </option>
                                 <option value="{{{invoice_balance}}}">
-                                    <?php echo trans('balance'); ?>
+                                    <?php _trans('balance'); ?>
                                 </option>
                                 <option value="{{{invoice_status}}}">
-                                    <?php echo trans('status'); ?>
+                                    <?php _trans('status'); ?>
                                 </option>
-                                <optgroup label="<?php echo trans('custom_fields'); ?>">
+                                <optgroup label="<?php _trans('custom_fields'); ?>">
                                     <?php foreach ($custom_fields['ip_invoice_custom'] as $custom) { ?>
                                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
                                             <?php echo $custom->custom_field_label; ?>
@@ -331,51 +331,51 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tags_client"><?php echo trans('invoices'); ?></label>
+                            <label for="tags_client"><?php _trans('invoices'); ?></label>
                             <select id="tags_client" class="tag-select form-control">
                                 <option value="{{{sumex_reason}}}">
-                                    <?php echo trans('reason'); ?>
+                                    <?php _trans('reason'); ?>
                                 </option>
                                 <option value="{{{sumex_diagnosis}}}">
-                                    <?php echo trans('invoice_sumex_diagnosis'); ?>
+                                    <?php _trans('invoice_sumex_diagnosis'); ?>
                                 </option>
                                 <option value="{{{sumex_observations}}}">
-                                    <?php echo trans('sumex_observations'); ?>
+                                    <?php _trans('sumex_observations'); ?>
                                 </option>
                                 <option value="{{{sumex_treatmentstart}}}">
-                                    <?php echo trans('treatment') . ' ' . trans('start'); ?>
+                                    <?php _trans('treatment') . ' ' . trans('start'); ?>
                                 </option>
                                 <option value="{{{sumex_treatmentend}}}">
-                                    <?php echo trans('treatment') . ' ' . trans('end'); ?>
+                                    <?php _trans('treatment') . ' ' . trans('end'); ?>
                                 </option>
                                 <option value="{{{sumex_casedate}}}">
-                                    <?php echo trans('case_date'); ?>
+                                    <?php _trans('case_date'); ?>
                                 </option>
                                 <option value="{{{sumex_casenumber}}}">
-                                    <?php echo trans('case_number'); ?>
+                                    <?php _trans('case_number'); ?>
                                 </option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="tags_client"><?php echo trans('invoices'); ?></label>
+                            <label for="tags_client"><?php _trans('invoices'); ?></label>
                             <select id="tags_client" class="tag-select form-control">
                                 <option value="{{{quote_total}}}">
-                                    <?php echo trans('total'); ?>
+                                    <?php _trans('total'); ?>
                                 </option>
                                 <option value="{{{quote_date_created}}}">
-                                    <?php echo trans('quote_date'); ?>
+                                    <?php _trans('quote_date'); ?>
                                 </option>
                                 <option value="{{{quote_date_expires}}}">
-                                    <?php echo trans('expires'); ?>
+                                    <?php _trans('expires'); ?>
                                 </option>
                                 <option value="{{{quote_number}}}">
-                                    <?php echo trans('id'); ?>
+                                    <?php _trans('id'); ?>
                                 </option>
                                 <option value="{{{quote_guest_url}}}">
-                                    <?php echo trans('guest_url'); ?>
+                                    <?php _trans('guest_url'); ?>
                                 </option>
-                                <optgroup label="<?php echo trans('custom_fields'); ?>">
+                                <optgroup label="<?php _trans('custom_fields'); ?>">
                                     <?php foreach ($custom_fields['ip_quote_custom'] as $custom) { ?>
                                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
                                             <?php echo $custom->custom_field_label; ?>

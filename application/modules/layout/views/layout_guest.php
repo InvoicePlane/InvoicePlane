@@ -1,13 +1,13 @@
-<!doctype html lang="<?php echo trans('cldr'); ?>">
+<!doctype html lang="<?php _trans('cldr'); ?>">
 
 <!--[if lt IE 7]>
-<html class="no-js ie6 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie6 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 7]>
-<html class="no-js ie7 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie7 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 8]>
-<html class="no-js ie8 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie8 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="<?php echo trans('cldr'); ?>"> <!--<![endif]-->
+<html class="no-js" lang="<?php _trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
     <title>
@@ -67,8 +67,8 @@
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
-                       title="<?php echo trans('logout'); ?>">
-                        <span class="visible-xs">&nbsp;<?php echo trans('logout'); ?></span>
+                       title="<?php _trans('logout'); ?>">
+                        <span class="visible-xs">&nbsp;<?php _trans('logout'); ?></span>
                         <i class="fa fa-power-off"></i>
                     </a>
                 </li>
@@ -84,26 +84,26 @@
     } ?>">
         <ul>
             <li>
-                <a href="<?php echo site_url('guest'); ?>" title="<?php echo trans('dashboard'); ?>" class="tip"
+                <a href="<?php echo site_url('guest'); ?>" title="<?php _trans('dashboard'); ?>" class="tip"
                    data-placement="right">
                     <i class="fa fa-dashboard"></i>
                 </a>
             </li>
             <li>
-                <a href="<?php echo site_url('guest/quotes/index'); ?>" title="<?php echo trans('quotes'); ?>"
+                <a href="<?php echo site_url('guest/quotes/index'); ?>" title="<?php _trans('quotes'); ?>"
                    class="tip"
                    data-placement="right">
                     <i class="fa fa-file"></i>
                 </a>
             </li>
             <li>
-                <a href="<?php echo site_url('guest/invoices/index'); ?>" title="<?php echo trans('invoices'); ?>"
+                <a href="<?php echo site_url('guest/invoices/index'); ?>" title="<?php _trans('invoices'); ?>"
                    class="tip" data-placement="right">
                     <i class="fa fa-file-text"></i>
                 </a>
             </li>
             <li>
-                <a href="<?php echo site_url('guest/payments/index'); ?>" title="<?php echo trans('payments'); ?>"
+                <a href="<?php echo site_url('guest/payments/index'); ?>" title="<?php _trans('payments'); ?>"
                    class="tip" data-placement="right">
                     <i class="fa fa-money"></i>
                 </a>
@@ -123,7 +123,7 @@
 
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>

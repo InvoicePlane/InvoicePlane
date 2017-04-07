@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('assign_client'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('assign_client'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -23,7 +23,7 @@
                     </div>
                     <div class="panel-body">
 
-                        <label for="client_id"><?php echo trans('client'); ?></label>
+                        <label for="client_id"><?php _trans('client'); ?></label>
                         <select name="client_id" id="client_id" class="form-control simple-select"
                                 autofocus="autofocus">
                             <?php

@@ -1,6 +1,6 @@
 <div id="headerbar">
 
-    <h1 class="headerbar-title"><?php echo trans('invoice_archive'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('invoice_archive'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <form action="<?php echo site_url('invoices/archive/'); ?>" method="post">
@@ -8,7 +8,7 @@
                 <input name="invoice_number" id="invoice_number" type="text" class="form-control input-sm">
                 <span class="input-group-btn">
                     <button class="btn btn-default btn-sm"
-                            type="submit"><?php echo trans('filter_invoices'); ?></button>
+                            type="submit"><?php _trans('filter_invoices'); ?></button>
                 </span>
             </div>
         </form>

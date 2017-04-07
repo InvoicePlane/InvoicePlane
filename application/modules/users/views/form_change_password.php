@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('change_password'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('change_password'); ?></h1>
         <?php echo $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -16,13 +16,13 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php echo trans('change_password'); ?>
+                        <?php _trans('change_password'); ?>
                     </div>
 
                     <div class="panel-body">
                         <div class="form-group">
                             <label for="user_password">
-                                <?php echo trans('password'); ?>
+                                <?php _trans('password'); ?>
                             </label>
                             <input type="password" name="user_password" id="user_password"
                                    class="form-control">
@@ -30,7 +30,7 @@
 
                         <div class="form-group">
                             <label for="user_passwordv">
-                                <?php echo trans('verify_password'); ?>
+                                <?php _trans('verify_password'); ?>
                             </label>
                             <input type="password" name="user_passwordv" id="user_passwordv"
                                    class="form-control">

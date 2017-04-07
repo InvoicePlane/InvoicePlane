@@ -12,7 +12,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <?php echo trans('general'); ?>
+            <?php _trans('general'); ?>
         </div>
         <div class="panel-body">
 
@@ -20,7 +20,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[default_language]" class="control-label">
-                            <?php echo trans('language'); ?>
+                            <?php _trans('language'); ?>
                         </label>
                         <select name="settings[default_language]" class=" form-control simple-select">
                             <?php foreach ($languages as $language) {
@@ -37,7 +37,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[system_theme]" class="control-label">
-                            <?php echo trans('theme'); ?>
+                            <?php _trans('theme'); ?>
                         </label>
                         <select name="settings[system_theme]" class=" form-control simple-select">
                             <?php foreach ($available_themes as $theme_key => $theme_name) { ?>
@@ -54,7 +54,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[first_day_of_week]" class="control-label">
-                            <?php echo trans('first_day_of_week'); ?>
+                            <?php _trans('first_day_of_week'); ?>
                         </label>
                         <select name="settings[first_day_of_week]" class=" form-control simple-select">
                             <?php foreach ($first_days_of_weeks as $first_day_of_week_id => $first_day_of_week_name) { ?>
@@ -70,7 +70,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[date_format]" class="control-label">
-                            <?php echo trans('date_format'); ?>
+                            <?php _trans('date_format'); ?>
                         </label>
                         <select name="settings[date_format]" class=" form-control simple-select">
                             <?php foreach ($date_formats as $date_format) { ?>
@@ -88,10 +88,10 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[default_country]" class="control-label">
-                            <?php echo trans('default_country'); ?>
+                            <?php _trans('default_country'); ?>
                         </label>
                         <select name="settings[default_country]" class=" form-control simple-select">
-                            <option value=""><?php echo trans('none'); ?></option>
+                            <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($countries as $cldr => $country) { ?>
                                 <option value="<?php echo $cldr; ?>" <?php check_select(get_setting('default_country'), $cldr); ?>>
                                     <?php echo $country ?>
@@ -108,7 +108,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <?php echo trans('amount_settings'); ?>
+            <?php _trans('amount_settings'); ?>
         </div>
         <div class="panel-body">
 
@@ -116,7 +116,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label class="control-label">
-                            <?php echo trans('currency_symbol'); ?>
+                            <?php _trans('currency_symbol'); ?>
                         </label>
                         <input type="text" name="settings[currency_symbol]" class=" form-control"
                                value="<?php echo get_setting('currency_symbol', '', true); ?>">
@@ -126,17 +126,17 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[currency_symbol_placement]" class="control-label">
-                            <?php echo trans('currency_symbol_placement'); ?>
+                            <?php _trans('currency_symbol_placement'); ?>
                         </label>
                         <select name="settings[currency_symbol_placement]" class=" form-control simple-select">
                             <option value="before" <?php check_select(get_setting('currency_symbol_placement'), 'before'); ?>>
-                                <?php echo trans('before_amount'); ?>
+                                <?php _trans('before_amount'); ?>
                             </option>
                             <option value="after" <?php check_select(get_setting('currency_symbol_placement'), 'after'); ?>>
-                                <?php echo trans('after_amount'); ?>
+                                <?php _trans('after_amount'); ?>
                             </option>
                             <option value="afterspace" <?php check_select(get_setting('currency_symbol_placement'), 'afterspace'); ?>>
-                                <?php echo trans('after_amount_space'); ?>
+                                <?php _trans('after_amount_space'); ?>
                             </option>
                         </select>
                     </div>
@@ -147,7 +147,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[thousands_separator]" class="control-label">
-                            <?php echo trans('thousands_separator'); ?>
+                            <?php _trans('thousands_separator'); ?>
                         </label>
                         <input type="text" name="settings[thousands_separator]" class=" form-control"
                                value="<?php echo get_setting('thousands_separator', '', true); ?>">
@@ -157,7 +157,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[decimal_point]" class="control-label">
-                            <?php echo trans('decimal_point'); ?>
+                            <?php _trans('decimal_point'); ?>
                         </label>
                         <input type="text" name="settings[decimal_point]" class=" form-control"
                                value="<?php echo get_setting('decimal_point', '', true); ?>">
@@ -169,7 +169,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label class="control-label">
-                            <?php echo trans('tax_rate_decimal_places'); ?>
+                            <?php _trans('tax_rate_decimal_places'); ?>
                         </label>
                         <select name="settings[tax_rate_decimal_places]" class=" form-control simple-select"
                                 id="tax_rate_decimal_places">
@@ -186,7 +186,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label class="control-label">
-                            <?php echo trans('default_list_limit'); ?>
+                            <?php _trans('default_list_limit'); ?>
                         </label>
                         <select name="settings[default_list_limit]" class=" form-control simple-select"
                                 id="default_list_limit">
@@ -211,7 +211,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label class="control-label">
-                            <?php echo trans('currency_code'); ?>
+                            <?php _trans('currency_code'); ?>
                         </label>
                         <input type="text" name="settings[currency_code]" class=" form-control"
                                value="<?php echo get_setting('currency_code', '', true); ?>">
@@ -225,7 +225,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <?php echo trans('dashboard'); ?>
+            <?php _trans('dashboard'); ?>
         </div>
         <div class="panel-body">
 
@@ -233,26 +233,26 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[quote_overview_period]" class="control-label">
-                            <?php echo trans('quote_overview_period'); ?>
+                            <?php _trans('quote_overview_period'); ?>
                         </label>
                         <select name="settings[quote_overview_period]" class=" form-control simple-select">
                             <option value="this-month" <?php check_select(get_setting('quote_overview_period'), 'this-month'); ?>>
-                                <?php echo trans('this_month'); ?>
+                                <?php _trans('this_month'); ?>
                             </option>
                             <option value="last-month" <?php check_select(get_setting('quote_overview_period'), 'last-month'); ?>>
-                                <?php echo trans('last_month'); ?>
+                                <?php _trans('last_month'); ?>
                             </option>
                             <option value="this-quarter" <?php check_select(get_setting('quote_overview_period'), 'this-quarter'); ?>>
-                                <?php echo trans('this_quarter'); ?>
+                                <?php _trans('this_quarter'); ?>
                             </option>
                             <option value="last-quarter" <?php check_select(get_setting('quote_overview_period'), 'last-quarter'); ?>>
-                                <?php echo trans('last_quarter'); ?>
+                                <?php _trans('last_quarter'); ?>
                             </option>
                             <option value="this-year" <?php check_select(get_setting('quote_overview_period'), 'this-year'); ?>>
-                                <?php echo trans('this_year'); ?>
+                                <?php _trans('this_year'); ?>
                             </option>
                             <option value="last-year" <?php check_select(get_setting('quote_overview_period'), 'last-year'); ?>>
-                                <?php echo trans('last_year'); ?>
+                                <?php _trans('last_year'); ?>
                             </option>
                         </select>
                     </div>
@@ -261,26 +261,26 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="settings[invoice_overview_period]" class="control-label">
-                            <?php echo trans('invoice_overview_period'); ?>
+                            <?php _trans('invoice_overview_period'); ?>
                         </label>
                         <select name="settings[invoice_overview_period]" class=" form-control simple-select">
                             <option value="this-month" <?php check_select(get_setting('invoice_overview_period'), 'this-month'); ?>>
-                                <?php echo trans('this_month'); ?>
+                                <?php _trans('this_month'); ?>
                             </option>
                             <option value="last-month" <?php check_select(get_setting('invoice_overview_period'), 'last-month'); ?>>
-                                <?php echo trans('last_month'); ?>
+                                <?php _trans('last_month'); ?>
                             </option>
                             <option value="this-quarter" <?php check_select(get_setting('invoice_overview_period'), 'this-quarter'); ?>>
-                                <?php echo trans('this_quarter'); ?>
+                                <?php _trans('this_quarter'); ?>
                             </option>
                             <option value="last-quarter" <?php check_select(get_setting('invoice_overview_period'), 'last-quarter'); ?>>
-                                <?php echo trans('last_quarter'); ?>
+                                <?php _trans('last_quarter'); ?>
                             </option>
                             <option value="this-year" <?php check_select(get_setting('invoice_overview_period'), 'this-year'); ?>>
-                                <?php echo trans('this_year'); ?>
+                                <?php _trans('this_year'); ?>
                             </option>
                             <option value="last-year" <?php check_select(get_setting('invoice_overview_period'), 'last-year'); ?>>
-                                <?php echo trans('last_year'); ?>
+                                <?php _trans('last_year'); ?>
                             </option>
                         </select>
                     </div>
@@ -291,15 +291,15 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label class="control-label">
-                            <?php echo trans('disable_quickactions'); ?>
+                            <?php _trans('disable_quickactions'); ?>
                         </label>
                         <select name="settings[disable_quickactions]" class=" form-control simple-select"
                                 id="disable_quickactions">
                             <option value="0">
-                                <?php echo trans('no'); ?>
+                                <?php _trans('no'); ?>
                             </option>
                             <option value="1" <?php check_select(get_setting('disable_quickactions'), '1'); ?>>
-                                <?php echo trans('yes'); ?>
+                                <?php _trans('yes'); ?>
                             </option>
                         </select>
                     </div>
@@ -311,7 +311,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <?php echo trans('interface'); ?>
+            <?php _trans('interface'); ?>
         </div>
         <div class="panel-body">
 
@@ -319,15 +319,15 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label class="control-label">
-                            <?php echo trans('disable_sidebar'); ?>
+                            <?php _trans('disable_sidebar'); ?>
                         </label>
                         <select name="settings[disable_sidebar]" class=" form-control simple-select"
                                 id="disable_sidebar">
                             <option value="0">
-                                <?php echo trans('no'); ?>
+                                <?php _trans('no'); ?>
                             </option>
                             <option value="1" <?php check_select(get_setting('disable_sidebar'), '1'); ?>>
-                                <?php echo trans('yes'); ?>
+                                <?php _trans('yes'); ?>
                             </option>
                         </select>
                     </div>
@@ -336,7 +336,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label class="control-label">
-                            <?php echo trans('custom_title'); ?>
+                            <?php _trans('custom_title'); ?>
                         </label>
                         <input type="text" name="settings[custom_title]" class=" form-control"
                                value="<?php echo get_setting('custom_title', '', true); ?>">
@@ -346,18 +346,18 @@
 
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo trans('monospaced_font_for_amounts'); ?>
+                    <?php _trans('monospaced_font_for_amounts'); ?>
                 </label>
                 <select name="settings[monospace_amounts]" class=" form-control simple-select"
                         id="monospace_amounts">
-                    <option value="0"><?php echo trans('no'); ?></option>
+                    <option value="0"><?php _trans('no'); ?></option>
                     <option value="1" <?php check_select(get_setting('monospace_amounts'), '1'); ?>>
-                        <?php echo trans('yes'); ?>
+                        <?php _trans('yes'); ?>
                     </option>
                 </select>
 
                 <p class="help-block">
-                    <?php echo trans('example'); ?>:
+                    <?php _trans('example'); ?>:
                     <span style="font-family: Monaco, Lucida Console, monospace">
                         <?php echo format_currency(123456.78); ?>
                     </span>
@@ -366,7 +366,7 @@
 
             <div class="form-group">
                 <label class="control-label">
-                    <?php echo trans('login_logo'); ?>
+                    <?php _trans('login_logo'); ?>
                 </label>
                 <?php if (get_setting('login_logo')) { ?>
                     <img class="personal_logo"
@@ -381,27 +381,27 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <?php echo trans('system_settings'); ?>
+            <?php _trans('system_settings'); ?>
         </div>
         <div class="panel-body">
 
             <div class="form-group">
                 <label for="settings[bcc_mails_to_admin]" class="control-label">
-                    <?php echo trans('bcc_mails_to_admin'); ?>
+                    <?php _trans('bcc_mails_to_admin'); ?>
                 </label>
                 <select name="settings[bcc_mails_to_admin]" class=" form-control simple-select">
-                    <option value="0"><?php echo trans('no'); ?></option>
+                    <option value="0"><?php _trans('no'); ?></option>
                     <option value="1" <?php check_select(get_setting('bcc_mails_to_admin'), '1'); ?>>
-                        <?php echo trans('yes'); ?>
+                        <?php _trans('yes'); ?>
                     </option>
                 </select>
 
-                <p class="help-block"><?php echo trans('bcc_mails_to_admin_hint'); ?></p>
+                <p class="help-block"><?php _trans('bcc_mails_to_admin_hint'); ?></p>
             </div>
 
             <div class="form-group">
                 <label for="settings[cron_key]" class="control-label">
-                    <?php echo trans('cron_key'); ?>
+                    <?php _trans('cron_key'); ?>
                 </label>
 
                 <div class="input-group">
@@ -409,7 +409,7 @@
                            value="<?php echo get_setting('cron_key'); ?>">
                     <div class="input-group-btn">
                         <button id="btn_generate_cron_key" type="button" class="btn btn-primary btn-block">
-                            <i class="fa fa-recycle fa-margin"></i> <?php echo trans('generate'); ?>
+                            <i class="fa fa-recycle fa-margin"></i> <?php _trans('generate'); ?>
                         </button>
                     </div>
                 </div>

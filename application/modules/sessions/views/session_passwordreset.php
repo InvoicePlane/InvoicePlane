@@ -35,7 +35,7 @@
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php _trans('please_enable_js'); ?></div>
 </noscript>
 
 <br>
@@ -47,26 +47,26 @@
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
-        <h3><?php echo trans('password_reset'); ?></h3>
+        <h3><?php _trans('password_reset'); ?></h3>
 
         <br/>
 
-        <p><?php echo trans('password_reset_info'); ?></p>
+        <p><?php _trans('password_reset_info'); ?></p>
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="form-group">
-                <label for="email" class="hidden"><?php echo trans('email'); ?></label>
+                <label for="email" class="hidden"><?php _trans('email'); ?></label>
                 <input type="text" name="email" id="email" class="form-control"
-                       placeholder="<?php echo trans('email'); ?>" required autofocus>
+                       placeholder="<?php _trans('email'); ?>" required autofocus>
             </div>
 
             <input type="hidden" name="btn_reset" value="true">
 
             <button type="submit" class="btn btn-danger">
-                <i class="fa fa-key fa-margin"></i> <?php echo trans('reset_password'); ?>
+                <i class="fa fa-key fa-margin"></i> <?php _trans('reset_password'); ?>
             </button>
 
         </form>

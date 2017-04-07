@@ -35,7 +35,7 @@
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php _trans('please_enable_js'); ?></div>
 </noscript>
 
 <br>
@@ -47,7 +47,7 @@
         <?php if ($login_logo) { ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
         <?php } else { ?>
-            <h1><?php echo trans('login'); ?></h1>
+            <h1><?php _trans('login'); ?></h1>
         <?php } ?>
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
@@ -57,26 +57,26 @@
             <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="form-group">
-                <label for="email" class="control-label"><?php echo trans('email'); ?></label>
+                <label for="email" class="control-label"><?php _trans('email'); ?></label>
                 <input type="email" name="email" id="email" class="form-control"
-                       placeholder="<?php echo trans('email'); ?>" required autofocus
+                       placeholder="<?php _trans('email'); ?>" required autofocus
                     <?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
             </div>
 
             <div class="form-group">
-                <label for="password" class="control-label"><?php echo trans('password'); ?></label>
+                <label for="password" class="control-label"><?php _trans('password'); ?></label>
                 <input type="password" name="password" id="password" class="form-control"
-                       placeholder="<?php echo trans('password'); ?>" required
+                       placeholder="<?php _trans('password'); ?>" required
                     <?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
             </div>
 
             <input type="hidden" name="btn_login" value="true">
 
             <button type="submit" class="btn btn-primary">
-                <i class="fa fa-unlock fa-margin"></i> <?php echo trans('login'); ?>
+                <i class="fa fa-unlock fa-margin"></i> <?php _trans('login'); ?>
             </button>
             <a href="<?php echo site_url('sessions/passwordreset'); ?>" class="btn btn-default">
-                <?php echo trans('forgot_your_password'); ?>
+                <?php _trans('forgot_your_password'); ?>
             </a>
 
         </form>

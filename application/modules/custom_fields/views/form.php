@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('custom_field_form'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('custom_field_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -14,7 +14,7 @@
             <?php $this->layout->load_view('layout/alerts'); ?>
 
             <div class="form-group">
-                <label for="custom_field_table"><?php echo trans('table'); ?></label>
+                <label for="custom_field_table"><?php _trans('table'); ?></label>
                 <select name="custom_field_table" id="custom_field_table" class="form-control simple-select">
                     <?php foreach ($custom_field_tables as $table => $label) { ?>
                         <option value="<?php echo $table; ?>"
@@ -26,32 +26,32 @@
             </div>
 
             <div class="form-group">
-                <label for="custom_field_label"><?php echo trans('label'); ?></label>
+                <label for="custom_field_label"><?php _trans('label'); ?></label>
                 <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
                        value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label', true); ?>">
             </div>
 
             <div class="form-group">
-                <label for="custom_field_type"><?php echo trans('type'); ?></label>
+                <label for="custom_field_type"><?php _trans('type'); ?></label>
                 <select name="custom_field_type" id="custom_field_type" class="form-control simple-select">
                     <?php foreach ($custom_field_types as $type) { ?>
                         <?php $alpha = str_replace("-", "_", strtolower($type)); ?>
                         <option value="<?php echo $type; ?>"
                             <?php check_select($this->mdl_custom_fields->form_value('custom_field_type'), $type); ?>>
-                            <?php echo trans($alpha); ?>
+                            <?php _trans($alpha); ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="custom_field_order"><?php echo trans('order'); ?></label>
+                <label for="custom_field_order"><?php _trans('order'); ?></label>
                 <input type="number" name="custom_field_order" id="custom_field_order" class="form-control"
                        value="<?php echo $this->mdl_custom_fields->form_value('custom_field_order', true); ?>">
             </div>
 
             <div class="form-group">
-                <label for="custom_field_location"><?php echo trans('position'); ?></label>
+                <label for="custom_field_location"><?php _trans('position'); ?></label>
 
                 <?php
                 $positions = array(

@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('add_unit'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('add_unit'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -24,7 +24,7 @@
 
                 <div class="form-group">
                     <label for="unit_name">
-                        <?php echo trans('unit_name'); ?>
+                        <?php _trans('unit_name'); ?>
                     </label>
                     <input type="text" name="unit_name" id="unit_name" class="form-control"
                            value="<?php echo $this->mdl_units->form_value('unit_name', true); ?>">
@@ -32,7 +32,7 @@
 
                 <div class="form-group">
                     <label for="unit_name_plrl">
-                        <?php echo trans('unit_name_plrl'); ?>
+                        <?php _trans('unit_name_plrl'); ?>
                     </label>
                     <input type="text" name="unit_name_plrl" id="unit_name_plrl" class="form-control"
                            value="<?php echo $this->mdl_units->form_value('unit_name_plrl', true); ?>">

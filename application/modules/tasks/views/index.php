@@ -1,9 +1,9 @@
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo trans('tasks'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('tasks'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('tasks/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+            <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
 
@@ -22,12 +22,12 @@
 
             <thead>
             <tr>
-                <th><?php echo trans('status'); ?></th>
-                <th><?php echo trans('task_name'); ?></th>
-                <th><?php echo trans('task_finish_date'); ?></th>
-                <th><?php echo trans('project'); ?></th>
-                <th><?php echo trans('task_price'); ?></th>
-                <th><?php echo trans('options'); ?></th>
+                <th><?php _trans('status'); ?></th>
+                <th><?php _trans('task_name'); ?></th>
+                <th><?php _trans('task_finish_date'); ?></th>
+                <th><?php _trans('project'); ?></th>
+                <th><?php _trans('task_price'); ?></th>
+                <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -57,22 +57,22 @@
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"
                                data-toggle="dropdown" href="#">
-                                <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
+                                <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"
-                                       title="<?php echo trans('edit'); ?>">
-                                        <i class="fa fa-edit fa-margin"></i> <?php echo trans('edit'); ?>
+                                       title="<?php _trans('edit'); ?>">
+                                        <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
                                     </a>
                                 </li>
                                 <?php if (!($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) : ?>
                                     <li>
                                         <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
-                                           title="<?php echo trans('delete'); ?>"
+                                           title="<?php _trans('delete'); ?>"
                                            onclick="return confirm('<?php echo $task->task_status == 4 ? trans('alert_task_delete') : trans('delete_record_warning') ?>')"
                                         >
-                                            <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                                            <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                                         </a>
                                     </li>
                                 <?php endif; ?>

@@ -3,7 +3,7 @@
     <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('products_form'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('products_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -21,7 +21,7 @@
                             #<?php echo $this->mdl_products->form_value('product_id'); ?>&nbsp;
                             <?php echo $this->mdl_products->form_value('product_name', true); ?>
                         <?php else : ?>
-                            <?php echo trans('new_product'); ?>
+                            <?php _trans('new_product'); ?>
                         <?php endif; ?>
 
                     </div>
@@ -29,11 +29,11 @@
 
                         <div class="form-group">
                             <label for="family_id">
-                                <?php echo trans('family'); ?>
+                                <?php _trans('family'); ?>
                             </label>
 
                             <select name="family_id" id="family_id" class="form-control simple-select">
-                                <option value="0"><?php echo trans('select_family'); ?></option>
+                                <option value="0"><?php _trans('select_family'); ?></option>
                                 <?php foreach ($families as $family) { ?>
                                     <option value="<?php echo $family->family_id; ?>"
                                         <?php check_select($this->mdl_products->form_value('family_id'), $family->family_id) ?>
@@ -44,7 +44,7 @@
 
                         <div class="form-group">
                             <label for="product_sku">
-                                <?php echo trans('product_sku'); ?>
+                                <?php _trans('product_sku'); ?>
                             </label>
 
                             <input type="text" name="product_sku" id="product_sku" class="form-control"
@@ -53,7 +53,7 @@
 
                         <div class="form-group">
                             <label for="product_name">
-                                <?php echo trans('product_name'); ?>
+                                <?php _trans('product_name'); ?>
                             </label>
 
                             <input type="text" name="product_name" id="product_name" class="form-control" required
@@ -62,7 +62,7 @@
 
                         <div class="form-group">
                             <label for="product_description">
-                                <?php echo trans('product_description'); ?>
+                                <?php _trans('product_description'); ?>
                             </label>
 
                             <textarea name="product_description" id="product_description" class="form-control"
@@ -71,7 +71,7 @@
 
                         <div class="form-group">
                             <label for="product_price">
-                                <?php echo trans('product_price'); ?>
+                                <?php _trans('product_price'); ?>
                             </label>
 
                             <div class="input-group has-feedback">
@@ -83,11 +83,11 @@
 
                         <div class="form-group">
                             <label for="unit_id">
-                                <?php echo trans('product_unit'); ?>
+                                <?php _trans('product_unit'); ?>
                             </label>
 
                             <select name="unit_id" id="unit_id" class="form-control simple-select">
-                                <option value="0"><?php echo trans('select_unit'); ?></option>
+                                <option value="0"><?php _trans('select_unit'); ?></option>
                                 <?php foreach ($units as $unit) { ?>
                                     <option value="<?php echo $unit->unit_id; ?>"
                                         <?php check_select($this->mdl_products->form_value('unit_id'), $unit->unit_id); ?>
@@ -98,11 +98,11 @@
 
                         <div class="form-group">
                             <label for="tax_rate_id">
-                                <?php echo trans('tax_rate'); ?>
+                                <?php _trans('tax_rate'); ?>
                             </label>
 
                             <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
-                                <option value="0"><?php echo trans('none'); ?></option>
+                                <option value="0"><?php _trans('none'); ?></option>
                                 <?php foreach ($tax_rates as $tax_rate) { ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php check_select($this->mdl_products->form_value('tax_rate_id'), $tax_rate->tax_rate_id); ?>>
@@ -121,13 +121,13 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php echo trans('extra_information'); ?>
+                        <?php _trans('extra_information'); ?>
                     </div>
                     <div class="panel-body">
 
                         <div class="form-group">
                             <label for="provider_name">
-                                <?php echo trans('provider_name'); ?>
+                                <?php _trans('provider_name'); ?>
                             </label>
 
                             <input type="text" name="provider_name" id="provider_name" class="form-control"
@@ -136,7 +136,7 @@
 
                         <div class="form-group">
                             <label for="purchase_price">
-                                <?php echo trans('purchase_price'); ?>
+                                <?php _trans('purchase_price'); ?>
                             </label>
 
                             <div class="input-group has-feedback">
@@ -151,13 +151,13 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php echo trans('invoice_sumex'); ?>
+                        <?php _trans('invoice_sumex'); ?>
                     </div>
                     <div class="panel-body">
 
                         <div class="form-group">
                             <label for="product_tariff">
-                                <?php echo trans('product_tariff'); ?>
+                                <?php _trans('product_tariff'); ?>
                             </label>
 
                             <input type="text" name="product_tariff" id="product_tariff" class="form-control"

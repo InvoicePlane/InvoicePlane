@@ -1,13 +1,13 @@
-<!doctype html lang="<?php echo trans('cldr'); ?>">
+<!doctype html lang="<?php _trans('cldr'); ?>">
 
 <!--[if lt IE 7]>
-<html class="no-js ie6 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie6 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 7]>
-<html class="no-js ie7 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie7 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 8]>
-<html class="no-js ie8 oldie" lang="<?php echo trans('cldr'); ?>"> <![endif]-->
+<html class="no-js ie8 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="<?php echo trans('cldr'); ?>"> <!--<![endif]-->
+<html class="no-js" lang="<?php _trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
     <title>InvoicePlane Setup</title>
@@ -31,7 +31,7 @@
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php _trans('please_enable_js'); ?></div>
 </noscript>
 
 <?php echo $content; ?>

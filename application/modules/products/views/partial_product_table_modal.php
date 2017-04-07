@@ -2,11 +2,11 @@
     <table class="table table-bordered table-striped">
         <tr>
             <th>&nbsp;</th>
-            <th><?php echo trans('product_sku'); ?></th>
-            <th><?php echo trans('family_name'); ?></th>
-            <th><?php echo trans('product_name'); ?></th>
-            <th><?php echo trans('product_description'); ?></th>
-            <th class="text-right"><?php echo trans('product_price'); ?></th>
+            <th><?php _trans('product_sku'); ?></th>
+            <th><?php _trans('family_name'); ?></th>
+            <th><?php _trans('product_name'); ?></th>
+            <th><?php _trans('product_description'); ?></th>
+            <th class="text-right"><?php _trans('product_price'); ?></th>
         </tr>
         <?php foreach ($products as $product) { ?>
             <tr class="product">

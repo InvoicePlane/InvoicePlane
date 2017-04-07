@@ -202,19 +202,19 @@ if ($this->config->item('disable_read_only') == true) {
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
                data-toggle="dropdown" href="#">
-                <i class="fa fa-caret-down no-margin"></i> <?php echo trans('options'); ?>
+                <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
                 <?php if ($invoice->is_read_only != 1) { ?>
                     <li>
                         <a href="#add-invoice-tax" data-toggle="modal">
-                            <i class="fa fa-plus fa-margin"></i> <?php echo trans('add_invoice_tax'); ?>
+                            <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
                         </a>
                     </li>
                 <?php } ?>
                 <li>
                     <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-minus fa-margin"></i> <?php echo trans('create_credit_invoice'); ?>
+                        <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
                 <?php if ($invoice->invoice_balance != 0) : ?>
@@ -224,7 +224,7 @@ if ($this->config->item('disable_read_only') == true) {
                            data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
                            data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
                             <i class="fa fa-credit-card fa-margin"></i>
-                            <?php echo trans('enter_payment'); ?>
+                            <?php _trans('enter_payment'); ?>
                         </a>
                     </li>
                 <?php endif; ?>
@@ -232,20 +232,20 @@ if ($this->config->item('disable_read_only') == true) {
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-file-text fa-margin"></i>
-                        <?php echo trans('generate_copy'); ?>
+                        <?php _trans('generate_copy'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_sumex"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-user-md fa-margin"></i>
-                        <?php echo trans('generate_sumex'); ?>
+                        <?php _trans('generate_sumex'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
-                        <?php echo trans('send_email'); ?>
+                        <?php _trans('send_email'); ?>
                     </a>
                 </li>
                 <li class="divider"></li>
@@ -253,21 +253,21 @@ if ($this->config->item('disable_read_only') == true) {
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-repeat fa-margin"></i>
-                        <?php echo trans('create_recurring'); ?>
+                        <?php _trans('create_recurring'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_copy_invoice"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
-                        <?php echo trans('copy_invoice'); ?>
+                        <?php _trans('copy_invoice'); ?>
                     </a>
                 </li>
                 <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
                     <li>
                         <a href="#delete-invoice" data-toggle="modal">
                             <i class="fa fa-trash-o fa-margin"></i>
-                            <?php echo trans('delete'); ?>
+                            <?php _trans('delete'); ?>
                         </a>
                     </li>
                 <?php } ?>
@@ -276,18 +276,18 @@ if ($this->config->item('disable_read_only') == true) {
 
         <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
             <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
-                <i class="fa fa-check"></i> <?php echo trans('save'); ?>
+                <i class="fa fa-check"></i> <?php _trans('save'); ?>
             </a>
         <?php } ?>
     </div>
 
     <div class="headerbar-item invoice-labels pull-right">
         <?php if ($invoice->invoice_is_recurring) { ?>
-            <span class="label label-info"><?php echo trans('recurring'); ?></span>
+            <span class="label label-info"><?php _trans('recurring'); ?></span>
         <?php } ?>
         <?php if ($invoice->is_read_only == 1) { ?>
             <span class="label label-danger">
-                <i class="fa fa-read-only"></i> <?php echo trans('read_only'); ?>
+                <i class="fa fa-read-only"></i> <?php _trans('read_only'); ?>
             </span>
         <?php } ?>
     </div>
@@ -320,14 +320,14 @@ if ($this->config->item('disable_read_only') == true) {
                         <br><br>
                         <?php if ($invoice->client_phone): ?>
                             <span>
-                              <strong><?php echo trans('phone'); ?>:</strong>
+                              <strong><?php _trans('phone'); ?>:</strong>
                                 <?php echo $invoice->client_phone; ?>
                             </span>
                             <br>
                         <?php endif; ?>
                         <?php if ($invoice->client_email): ?>
                             <span>
-                              <strong><?php echo trans('email'); ?>:</strong>
+                              <strong><?php _trans('email'); ?>:</strong>
                                 <?php echo $invoice->client_email; ?>
                             </span>
                         <?php endif; ?>
@@ -337,14 +337,14 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php echo '<b>' . trans('gender') . ':</b> ' . format_gender($invoice->client_gender); ?>
                     </div>
                     <div class="col-md-6">
-                        <h3><?php echo trans('treatment'); ?></h3>
+                        <h3><?php _trans('treatment'); ?></h3>
                         <br>
                         <div class="col-xs-12 col-md-8">
                             <table class="items table">
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><?php echo trans('start'); ?></span>
+                                            <span class="input-group-addon"><?php _trans('start'); ?></span>
                                             <input id="invoice_sumex_treatmentstart" name="sumex_treatmentstart"
                                                    class="input-sm form-control datepicker"
                                                    value="<?php echo date_from_mysql($invoice->sumex_treatmentstart); ?>"
@@ -355,7 +355,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><?php echo trans('end'); ?></span>
+                                            <span class="input-group-addon"><?php _trans('end'); ?></span>
                                             <input id="invoice_sumex_treatmentend" name="sumex_treatmentend"
                                                    class="input-sm form-control datepicker"
                                                    value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>"
@@ -366,13 +366,13 @@ if ($this->config->item('disable_read_only') == true) {
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><?php echo trans('reason'); ?></span>
+                                            <span class="input-group-addon"><?php _trans('reason'); ?></span>
                                             <select name="invoice_sumex_reason" id="invoice_sumex_reason"
                                                     class="form-control input-sm simple-select">
                                                 <?php $reasons = ['disease', 'accident', 'maternity', 'prevention', 'birthdefect', 'unknown']; ?>
                                                 <?php foreach ($reasons as $key => $reason): ?>
                                                     <?php $selected = ($invoice->sumex_reason == $key ? " selected" : ""); ?>
-                                                    <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php echo trans('reason_' . $reason); ?></option>
+                                                    <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php _trans('reason_' . $reason); ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
@@ -381,7 +381,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><?php echo trans('case_date'); ?></span>
+                                            <span class="input-group-addon"><?php _trans('case_date'); ?></span>
                                             <input id="invoice_sumex_casedate" name="sumex_casedate"
                                                    class="input-sm form-control datepicker"
                                                    value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>"
@@ -392,7 +392,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><?php echo trans('case_number'); ?></span>
+                                            <span class="input-group-addon"><?php _trans('case_number'); ?></span>
                                             <input id="invoice_sumex_casenumber" name="sumex_casenumber"
                                                    class="input-sm form-control"
                                                    value="<?php echo htmlentities($invoice->sumex_casenumber); ?>"
@@ -403,7 +403,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><?php echo trans('invoice_sumex_diagnosis'); ?></span>
+                                            <span class="input-group-addon"><?php _trans('invoice_sumex_diagnosis'); ?></span>
                                             <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis"
                                                    class="input-sm form-control"
                                                    value="<?php echo htmlentities($invoice->sumex_diagnosis); ?>"
@@ -436,7 +436,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-12 col-sm-12">
 
                                 <div class="invoice-properties">
-                                    <label><?php echo trans('status');
+                                    <label><?php _trans('status');
                                         if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
                                             echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
                                         }
@@ -457,13 +457,13 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                                 <div class="invoice-properties">
-                                    <label><?php echo trans('invoice'); ?> #</label>
+                                    <label><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number"
                                            class="input-sm form-control"
                                         <?php if ($invoice->invoice_number) : ?>
                                             value="<?php echo $invoice->invoice_number; ?>"
                                         <?php else : ?>
-                                            placeholder="<?php echo trans('not_set'); ?>"
+                                            placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>
                                         <?php if ($invoice->is_read_only == 1) {
                                             echo 'disabled="disabled"';
@@ -471,7 +471,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                                 <div class="invoice-properties has-feedback">
-                                    <label><?php echo trans('date'); ?></label>
+                                    <label><?php _trans('date'); ?></label>
 
                                     <div class="input-group">
                                         <input name="invoice_date_created" id="invoice_date_created"
@@ -487,7 +487,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
 
                                 <div class="invoice-properties has-feedback">
-                                    <label><?php echo trans('due_date'); ?></label>
+                                    <label><?php _trans('due_date'); ?></label>
 
                                     <div class="input-group">
                                         <input name="invoice_date_due" id="invoice_date_due"
@@ -523,7 +523,7 @@ if ($this->config->item('disable_read_only') == true) {
             <div class="row">
                 <div class="col-xs-12 col-sm-4">
 
-                    <label><?php echo trans('sumex_observations'); ?></label>
+                    <label><?php _trans('sumex_observations'); ?></label>
                     <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control"
                               rows="3"
                         <?php if ($invoice->is_read_only == 1) {
@@ -535,12 +535,12 @@ if ($this->config->item('disable_read_only') == true) {
 
                 <div class="col-xs-12 col-sm-8">
 
-                    <label class="control-label"><?php echo trans('attachments'); ?></label>
+                    <label class="control-label"><?php _trans('attachments'); ?></label>
                     <br/>
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="btn btn-default fileinput-button">
                         <i class="fa fa-plus"></i>
-                        <span><?php echo trans('add_files'); ?></span>
+                        <span><?php _trans('add_files'); ?></span>
                     </span>
 
                     <!-- dropzone -->
@@ -581,12 +581,12 @@ if ($this->config->item('disable_read_only') == true) {
                                     <div class="pull-left btn-group">
                                         <button data-dz-download class="btn btn-sm btn-primary">
                                             <i class="fa fa-download"></i>
-                                            <span><?php echo trans('download'); ?></span>
+                                            <span><?php _trans('download'); ?></span>
                                         </button>
                                         <?php if ($invoice->is_read_only != 1) { ?>
                                             <button data-dz-remove class="btn btn-danger btn-sm delete">
                                                 <i class="fa fa-trash-o"></i>
-                                                <span><?php echo trans('delete'); ?></span>
+                                                <span><?php _trans('delete'); ?></span>
                                             </button>
                                         <?php } ?>
                                     </div>
@@ -603,7 +603,7 @@ if ($this->config->item('disable_read_only') == true) {
                 <div class="row">
                     <div class="col-xs-12">
                         <fieldset>
-                            <legend><?php echo trans('custom_fields'); ?></legend>
+                            <legend><?php _trans('custom_fields'); ?></legend>
                             <div class="col-xs-6">
                                 <?php $i = 0; ?>
                                 <?php foreach ($custom_fields as $custom_field): ?>
@@ -637,7 +637,7 @@ if ($this->config->item('disable_read_only') == true) {
 
             <?php if ($invoice->invoice_status_id != 1) { ?>
                 <p class="padded">
-                    <?php echo trans('guest_url'); ?>:
+                    <?php _trans('guest_url'); ?>:
                     <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
                 </p>
             <?php } ?>
@@ -663,7 +663,7 @@ if ($this->config->item('disable_read_only') == true) {
         thumbnailHeight: 80,
         parallelUploads: 20,
         uploadMultiple: false,
-        dictRemoveFileConfirmation: '<?php echo trans('delete_attachment_warning'); ?>',
+        dictRemoveFileConfirmation: '<?php _trans('delete_attachment_warning'); ?>',
         previewTemplate: previewTemplate,
         autoQueue: true, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews

@@ -31,7 +31,7 @@
     <?php } ?>
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php echo trans('payment_form'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('payment_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -41,7 +41,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="invoice_id" class="control-label"><?php echo trans('invoice'); ?></label>
+                <label for="invoice_id" class="control-label"><?php _trans('invoice'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="invoice_id" id="invoice_id" class="form-control simple-select">
@@ -63,7 +63,7 @@
 
         <div class="form-group has-feedback">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="payment_date" class="control-label"><?php echo trans('date'); ?></label>
+                <label for="payment_date" class="control-label"><?php _trans('date'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <div class="input-group">
@@ -79,7 +79,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="payment_amount" class="control-label"><?php echo trans('amount'); ?></label>
+                <label for="payment_amount" class="control-label"><?php _trans('amount'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="payment_amount" id="payment_amount" class="form-control"
@@ -90,7 +90,7 @@
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="payment_method_id" class="control-label">
-                    <?php echo trans('payment_method'); ?>
+                    <?php _trans('payment_method'); ?>
                 </label>
             </div>
             <div class="col-xs-12 col-sm-6 payment-method-wrapper">
@@ -117,7 +117,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="payment_note" class="control-label"><?php echo trans('note'); ?></label>
+                <label for="payment_note" class="control-label"><?php _trans('note'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <textarea name="payment_note"
