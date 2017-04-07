@@ -1,21 +1,39 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
+$CI =& get_instance();
+if (!isset($CI)) $CI = new CI_Controller();;
+$CI->load->helper('url');
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>404 Page Not Found</title>
     <link rel="stylesheet"
-          href="/assets/invoiceplane/css/style.css">
+          href="<?php echo base_url('assets/invoiceplane/css/style.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('assets/core/css/custom.css'); ?>">
 </head>
-<body class="error">
-<div id="ip-logo">
-  <img src="/assets/core/img/logo_400x200.png"/>
+<body class="has-error">
+
+<div class="container text-center">
+    <img src="<?php echo base_url('assets/core/img/logo_400x200.png') ?>"/>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+
+            <br>
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <?php echo $heading; ?>
+                </div>
+                <div class="panel-body text-danger">
+                    <?php echo $message; ?>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
-<div class="error-container">
-  <h1><?php echo $heading; ?></h1>
-  <p class="error-text"><?php echo $message; ?></p>
-</div>
 </body>
 </html>
