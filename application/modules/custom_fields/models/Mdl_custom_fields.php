@@ -18,28 +18,6 @@ class Mdl_Custom_Fields extends MY_Model
     public $table = 'ip_custom_fields';
     public $primary_key = 'ip_custom_fields.custom_field_id';
 
-    /**
-     * @param $element
-     * @return string
-     */
-    public static function get_nicename($element)
-    {
-        if (in_array($element, Mdl_Custom_Fields::custom_types())) {
-            return strtolower(str_replace('-', '', $element));
-        }
-        return 'fallback';
-    }
-
-    /**
-     * @return array
-     */
-    public static function custom_types()
-    {
-        $CI = &get_instance();
-        $CI->load->module("custom_values/mdl_custom_values");
-        return Mdl_Custom_Values::custom_types();
-    }
-
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*', false);
@@ -48,6 +26,20 @@ class Mdl_Custom_Fields extends MY_Model
     public function default_order_by()
     {
         $this->db->order_by('custom_field_table ASC, custom_field_order ASC, custom_field_label ASC');
+    }
+
+    /**
+     * @return array
+     */
+    public function custom_tables()
+    {
+        return array(
+            'ip_client_custom' => 'client',
+            'ip_invoice_custom' => 'invoice',
+            'ip_payment_custom' => 'payment',
+            'ip_quote_custom' => 'quote',
+            'ip_user_custom' => 'user'
+        );
     }
 
     /**
@@ -82,6 +74,28 @@ class Mdl_Custom_Fields extends MY_Model
                 'rules' => 'is_natural'
             )
         );
+    }
+
+    /**
+     * @param $element
+     * @return string
+     */
+    public static function get_nicename($element)
+    {
+        if (in_array($element, Mdl_Custom_Fields::custom_types())) {
+            return strtolower(str_replace('-', '', $element));
+        }
+        return 'fallback';
+    }
+
+    /**
+     * @return array
+     */
+    public static function custom_types()
+    {
+        $CI = &get_instance();
+        $CI->load->module("custom_values/mdl_custom_values");
+        return Mdl_Custom_Values::custom_types();
     }
 
     /**
@@ -161,20 +175,6 @@ class Mdl_Custom_Fields extends MY_Model
     }
 
     /**
-     * @return array
-     */
-    public function custom_tables()
-    {
-        return array(
-            'ip_client_custom' => 'client',
-            'ip_invoice_custom' => 'invoice',
-            'ip_payment_custom' => 'payment',
-            'ip_quote_custom' => 'quote',
-            'ip_user_custom' => 'user'
-        );
-    }
-
-    /**
      * @param $id
      */
     public function delete($id)
@@ -229,6 +229,37 @@ class Mdl_Custom_Fields extends MY_Model
         );
 
         $this->dbforge->add_column($table_name, $column);
+    }
+
+    public function get_values_for_fields($custom_field_model, $model_id)
+    {
+        $this->load->model('custom_fields/' . $custom_field_model);
+
+        $fields = $this->$custom_field_model->by_id($model_id)->get()->result();
+
+        if (empty($fields)) {
+            return array();
+        }
+
+        $this->load->model('custom_values/mdl_custom_values');
+
+        $values = array();
+        $custom_field = str_replace('mdl_', '', $custom_field_model);
+
+        foreach ($fields as $field) {
+            // Get the custom field value
+            $field_id_field = $custom_field . '_fieldvalue';
+            $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_field);
+
+            if ($custom_value->num_rows() > 0) {
+                $custom_value = $custom_value->result()[0];
+                $field->custom_value_label = $custom_value->custom_values_value;
+            }
+
+            $values[] = $field;
+        }
+
+        return $values;
     }
 
 }

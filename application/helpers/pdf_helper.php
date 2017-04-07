@@ -23,10 +23,12 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 {
     $CI = &get_instance();
 
-    $CI->load->model('invoices/mdl_invoices');
     $CI->load->model('invoices/mdl_items');
+    $CI->load->model('invoices/mdl_invoices');
     $CI->load->model('invoices/mdl_invoice_tax_rates');
+    $CI->load->model('custom_fields/mdl_custom_fields');
     $CI->load->model('payment_methods/mdl_payment_methods');
+
     $CI->load->helper('country');
     $CI->load->helper('client');
 
@@ -53,6 +55,17 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         }
     }
 
+    // Get all custom fields
+    $custom_fields = array(
+        'invoice' => $CI->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
+        'client' => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
+        'user' => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
+    );
+
+    if ($invoice->quote_id) {
+        $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $invoice->quote_id);
+    }
+
     // PDF associated files
     $include_zugferd = $CI->mdl_settings->setting('include_zugferd');
 
@@ -77,6 +90,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'payment_method' => $payment_method,
         'output_type' => 'pdf',
         'show_discounts' => $show_discounts,
+        'custom_fields' => $custom_fields,
     );
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
@@ -214,12 +228,20 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         }
     }
 
+    // Get all custom fields
+    $custom_fields = array(
+        'quote' => $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
+        'client' => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
+        'user' => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
+    );
+
     $data = array(
         'quote' => $quote,
         'quote_tax_rates' => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
         'items' => $items,
         'output_type' => 'pdf',
         'show_discounts' => $show_discounts,
+        'custom_fields' => $custom_fields,
     );
 
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);

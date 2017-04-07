@@ -78,6 +78,20 @@ class Mdl_User_Custom extends Validator
         return $result;
     }
 
+    /**
+     * @param integer $user_id
+     * @return $this
+     */
+    public function by_id($user_id)
+    {
+        $this->db->where('ip_user_custom.user_id', $user_id);
+        return $this;
+    }
+
+    /**
+     * @param integer $user_id
+     * @return mixed
+     */
     public function get_by_useid($user_id)
     {
         $result = $this->where('ip_user_custom.user_id', $user_id)->get()->result();
