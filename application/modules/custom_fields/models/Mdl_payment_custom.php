@@ -70,6 +70,16 @@ class Mdl_Payment_Custom extends Validator
         return $result;
     }
 
+    /**
+     * @param integer $payment_id
+     * @return $this
+     */
+    public function by_id($payment_id)
+    {
+        $this->db->where('ip_payment_custom.payment_id', $payment_id);
+        return $this;
+    }
+
     public function get_by_payid($payment_id)
     {
         $result = $this->where('ip_payment_custom.payment_id', $payment_id)->get()->result();
