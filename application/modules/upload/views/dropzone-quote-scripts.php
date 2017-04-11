@@ -50,8 +50,8 @@
 
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>",
-        headers: {
-            'X-CSRFToken': Cookies.get('ip_csrf_cookie')
+        params: {
+            '_ip_csrf': Cookies.get('ip_csrf_cookie')
         },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
