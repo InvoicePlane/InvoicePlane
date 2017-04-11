@@ -67,16 +67,14 @@ class Upload extends Admin_Controller
                 move_uploaded_file($tempFile, $targetFile);
 
                 echo json_encode([
-                    'success' => true,
-                    '_csrf' => $this->security->get_csrf_hash(),
+                    'success' => true
                 ]);
 
             } else {
                 // If file exists then echo the error and set a http error response
                 echo json_encode([
                     'success' => false,
-                    'message' => trans('error_duplicate_file'),
-                    '_csrf' => $this->security->get_csrf_hash(),
+                    'message' => trans('error_duplicate_file')
                 ]);
                 http_response_code(404);
             }
