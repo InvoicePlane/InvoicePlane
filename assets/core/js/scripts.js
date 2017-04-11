@@ -142,14 +142,17 @@ $(document).ready(function () {
 
     // Automatical CSRF protection for all POST requests
     $.ajaxPrefilter(function (options) {
-
         if (options.type === 'post' || options.type === 'POST' || options.type === 'Post') {
             if (options.data === '') {
-                options.data += '?_ip_csrf=' +  Cookies.get('ip_csrf_cookie');
+                options.data += '?_ip_csrf=' + Cookies.get('ip_csrf_cookie');
             } else {
-                options.data += '&_ip_csrf=' +  Cookies.get('ip_csrf_cookie');
+                options.data += '&_ip_csrf=' + Cookies.get('ip_csrf_cookie');
             }
         }
+    });
+
+    $(document).ajaxComplete(function () {
+        $('[name="_ip_csrf"]').val(Cookies.get('ip_csrf_cookie'));
     });
 
     // Correct the height of the content area
