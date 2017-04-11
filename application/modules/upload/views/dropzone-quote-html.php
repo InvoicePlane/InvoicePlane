@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default no-margin">
 
     <div class="panel-heading">
         <?php _trans('attachments'); ?>
