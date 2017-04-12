@@ -32,6 +32,7 @@ class Setup extends MX_Controller
         $this->load->helper('language');
         $this->load->helper('trans');
         $this->load->helper('settings');
+        $this->load->helper('echo');
 
         $this->load->model('mdl_setup');
 
