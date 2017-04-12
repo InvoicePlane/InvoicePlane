@@ -75,7 +75,7 @@ class ZugferdXml
 
         // IncludedNote
         $noteNode = $this->doc->createElement('ram:IncludedNote');
-        $noteNode->appendChild($this->doc->createElement('ram:Content', $this->invoice->invoice_terms));
+        $noteNode->appendChild($this->doc->createElement('ram:Content', htmlsc($this->invoice->invoice_terms)));
         $node->appendChild($noteNode);
 
         return $node;
@@ -120,15 +120,15 @@ class ZugferdXml
     protected function xmlSellerTradeParty($index = '', $item = '')
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
-        $node->appendChild($this->doc->createElement('ram:Name', $this->invoice->user_name));
+        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
-        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', $this->invoice->user_zip));
-        $addressNode->appendChild($this->doc->createElement('ram:LineOne', $this->invoice->user_address_1));
-        $addressNode->appendChild($this->doc->createElement('ram:LineTwo', $this->invoice->user_address_2));
-        $addressNode->appendChild($this->doc->createElement('ram:CityName', $this->invoice->user_city));
-        $addressNode->appendChild($this->doc->createElement('ram:CountryID', $this->invoice->user_country));
+        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->user_zip)));
+        $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->user_address_1)));
+        $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->user_address_2)));
+        $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->user_city)));
+        $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->user_country)));
 
         $node->appendChild($addressNode);
         return $node;
@@ -141,16 +141,16 @@ class ZugferdXml
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
-        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', $this->invoice->client_zip));
-        $addressNode->appendChild($this->doc->createElement('ram:LineOne', $this->invoice->client_address_1));
-        $addressNode->appendChild($this->doc->createElement('ram:LineTwo', $this->invoice->client_address_2));
-        $addressNode->appendChild($this->doc->createElement('ram:CityName', $this->invoice->client_city));
-        $addressNode->appendChild($this->doc->createElement('ram:CountryID', $this->invoice->client_country));
+        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->client_zip)));
+        $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->client_address_1)));
+        $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->client_address_2)));
+        $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->client_city)));
+        $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->client_country)));
         $node->appendChild($addressNode);
 
         // SpecifiedTaxRegistration
         $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->client_vat_id));
-        $node->appendChild($this->xmlSpecifiedTaxRegistration('FC', $this->invoice->client_tax_code));
+        $node->appendChild($this->xmlSpecifiedTaxRegistration('FC', htmlsc($this->invoice->client_tax_code)));
 
         return $node;
     }
@@ -273,7 +273,7 @@ class ZugferdXml
 
         // SpecifiedTradeProduct
         $tradeNode = $this->doc->createElement('ram:SpecifiedTradeProduct');
-        $tradeNode->appendChild($this->doc->createElement('ram:Name', $item->item_name . "\n" . $item->item_description));
+        $tradeNode->appendChild($this->doc->createElement('ram:Name', htmlsc($item->item_name) . "\n" . htmlsc($item->item_description)));
         $node->appendChild($tradeNode);
 
         return $node;
