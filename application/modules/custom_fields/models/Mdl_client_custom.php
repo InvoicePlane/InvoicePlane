@@ -27,14 +27,7 @@ class Mdl_Client_Custom extends Validator
 
     public function default_select()
     {
-        $this->db->select(
-            "ip_client_custom.client_custom_fieldvalue as cf_value,
-         ip_custom_fields.custom_field_type as cf_type,
-         ip_custom_fields.custom_field_label as cf_label,
-         ip_custom_fields.custom_field_id as cf_fid,
-         ip_custom_fields.custom_field_location as cf_location,
-         ip_client_custom.client_custom_id as cc_id"
-        );
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_client_custom.*, ip_custom_fields.*', false);
     }
 
     public function default_order_by()
@@ -75,7 +68,7 @@ class Mdl_Client_Custom extends Validator
                 $client_custom = $this->where('client_id', $client_id)->where('client_custom_fieldid', $key)->get();
 
                 if ($client_custom->num_rows()) {
-                    $client_custom_id = $client_custom->row()->cc_id;
+                    $client_custom_id = $client_custom->row()->client_custom_id;
                 }
 
                 parent::save($client_custom_id, $db_array);
@@ -100,13 +93,13 @@ class Mdl_Client_Custom extends Validator
 
             if ($values != null) {
                 foreach ($values as $value) {
-                    $type = $value->cf_type;
+                    $type = $value->custom_field_type;
                     if ($type != null) {
                         $nicename = Mdl_Custom_Fields::get_nicename(
                             $type
                         );
-                        $formatted = call_user_func("format_" . $nicename, $value->cf_value);
-                        $this->set_form_value('cf_' . $value->cf_fid, $formatted);
+                        $formatted = call_user_func("format_" . $nicename, $value->client_custom_fieldvalue);
+                        $this->set_form_value('cf_' . $value->custom_field_id, $formatted);
                     }
                 }
             }

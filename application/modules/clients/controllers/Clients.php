@@ -141,11 +141,11 @@ class Clients extends Admin_Controller
 
         foreach ($custom_fields as $cfield) {
             foreach ($fields as $fvalue) {
-                if ($fvalue->cf_fid == $cfield->custom_field_id) {
+                if ($fvalue->client_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_clients->set_form_value(
                         'custom[' . $cfield->custom_field_id . ']',
-                        $fvalue->cf_value
+                        $fvalue->client_custom_fieldvalue
                     );
                     break;
                 }
