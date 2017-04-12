@@ -15,9 +15,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  * @param $object
  * @param $body
+ * @param $model_id
  * @return mixed
  */
-function parse_template($object, $body)
+function parse_template($object, $body, $model_id)
 {
     if (preg_match_all('/{{{([^{|}]*)}}}/', $body, $template_vars)) {
         foreach ($template_vars[1] as $var) {
@@ -53,7 +54,25 @@ function parse_template($object, $body)
                     $replace = site_url('guest/view/quote/' . $object->quote_url_key);
                     break;
                 default:
-                    $replace = $object->{$var};
+                    // Check if it's a custom field
+                    if (preg_match('/ip_cf_([0-9].*)/', $var, $cf_id)) {
+                        // Get the custom field
+                        $CI =& get_instance();
+                        $CI->load->model('custom_fields/mdl_custom_fields');
+                        $cf = $CI->mdl_custom_fields->get_by_id($cf_id[1]);
+
+                        if ($cf) {
+                            // Get the values for the custom field
+                            $cf_model = str_replace('ip_', 'mdl_', $cf->custom_field_table);
+                            $replace = $CI->mdl_custom_fields
+                                ->get_value_for_field($cf_id[1], $cf_model, $model_id);
+                        } else {
+                            $replace = '';
+                        }
+                        var_dump($cf, $replace, $cf_model, $model_id);exit;
+                    } else {
+                        $replace = isset($object->{$var}) ? $object->{$var} : $var;
+                    }
             }
 
             $body = str_replace('{{{' . $var . '}}}', $replace, $body);
