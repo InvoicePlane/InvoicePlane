@@ -268,7 +268,7 @@ class Mdl_Custom_Fields extends MY_Model
 
         foreach ($fields as $field) {
             // Get the custom field value
-            $field_id_field = $custom_field . '_fieldvalue';
+            $field_id_field = $custom_field . '_fieldid';
             $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_field);
 
             if ($custom_value->num_rows() > 0) {
