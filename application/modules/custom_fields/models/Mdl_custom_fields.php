@@ -231,6 +231,26 @@ class Mdl_Custom_Fields extends MY_Model
         $this->dbforge->add_column($table_name, $column);
     }
 
+    public function get_value_for_field($field_id, $custom_field_model, $model_id)
+    {
+        $this->load->model('custom_fields/' . $custom_field_model);
+
+        $cf_table = str_replace('mdl_', '', $custom_field_model);
+        $cf_model_name = str_replace('_custom', '', $cf_table);
+
+        $value = $this->$custom_field_model
+            ->where($cf_table . '_fieldid', $field_id)
+            ->where($cf_model_name . '_id', $model_id)
+            ->get()->result();
+
+        if (empty($value)) {
+            return '';
+        }
+
+        $value_key = $cf_table . '_fieldvalue';
+        return isset($value->$value_key) ? $value->$value_key : '';
+    }
+
     public function get_values_for_fields($custom_field_model, $model_id)
     {
         $this->load->model('custom_fields/' . $custom_field_model);
