@@ -158,6 +158,7 @@ $lang = array(
     'email_address'                                => 'Email Address',
     'email_invoice'                                => 'Email Invoice',
     'email_not_configured'                         => 'Before you can send Email, you have to configure your Email settings in the System Settings area.',
+    'email_to_address_missing'                     => 'You have to specify an email address the email should be sent to.',
     'email_pdf_attachment'                         => 'Attach Quote/Invoice on email?',
     'email_quote'                                  => 'Email Quote',
     'email_send_method'                            => 'Email Sending Method',

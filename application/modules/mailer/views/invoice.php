@@ -49,7 +49,7 @@
 
                 <div class="form-group">
                     <label for="to_email"><?php _trans('to_email'); ?></label>
-                    <input type="text" name="to_email" id="to_email" class="form-control"
+                    <input type="email" name="to_email" id="to_email" class="form-control" required
                            value="<?php echo $invoice->client_email; ?>">
                 </div>
 
@@ -76,7 +76,7 @@
 
                 <div class="form-group">
                     <label for="from_email"><?php _trans('from_email'); ?></label>
-                    <input type="text" name="from_email" id="from_email" class="form-control"
+                    <input type="email" name="from_email" id="from_email" class="form-control"
                            value="<?php echo $invoice->user_email; ?>">
                 </div>
 
