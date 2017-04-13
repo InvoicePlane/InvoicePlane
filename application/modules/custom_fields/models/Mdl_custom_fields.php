@@ -268,15 +268,16 @@ class Mdl_Custom_Fields extends MY_Model
 
         foreach ($fields as $field) {
             // Get the custom field value
-            $field_id_field = $custom_field . '_fieldid';
-            $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_field);
+            $field_id_fieldid = $custom_field . '_fieldid';
+            $field_id_fieldlabel = $custom_field . '_fieldvalue';
+            $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_fieldid);
 
             if ($custom_value->num_rows() > 0) {
                 $custom_value = $custom_value->result()[0];
                 $field->custom_value_label = $custom_value->custom_values_value;
             }
 
-            $values[] = $field;
+            $values[$field->custom_field_label] = $field->$field_id_fieldlabel;
         }
 
         return $values;
