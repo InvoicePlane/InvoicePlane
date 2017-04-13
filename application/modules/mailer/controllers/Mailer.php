@@ -103,10 +103,17 @@ class Mailer extends Admin_Controller
     public function send_invoice($invoice_id)
     {
         if ($this->input->post('btn_cancel')) {
-            redirect('invoices');
+            redirect('invoices/view/' . $invoice_id);
         }
 
         if (!$this->mailer_configured) return;
+
+        $to = $this->input->post('to_email');
+
+        if (empty($to)) {
+            $this->session->set_flashdata('alert_danger', trans('email_to_address_missing'));
+            redirect('mailer/invoice/' . $invoice_id);
+        }
 
         $this->load->model('upload/mdl_uploads');
         $from = array(
@@ -115,7 +122,6 @@ class Mailer extends Admin_Controller
         );
 
         $pdf_template = $this->input->post('pdf_template');
-        $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
 
         if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
@@ -143,18 +149,25 @@ class Mailer extends Admin_Controller
     public function send_quote($quote_id)
     {
         if ($this->input->post('btn_cancel')) {
-            redirect('quotes');
+            redirect('quotes/view/' . $quote_id);
         }
 
         if (!$this->mailer_configured) return;
+
+        $to = $this->input->post('to_email');
+
+        if (empty($to)) {
+            $this->session->set_flashdata('alert_danger', trans('email_to_address_missing'));
+            redirect('mailer/quote/' . $quote_id);
+        }
 
         $this->load->model('upload/mdl_uploads');
         $from = array(
             $this->input->post('from_email'),
             $this->input->post('from_name')
         );
+
         $pdf_template = $this->input->post('pdf_template');
-        $to = $this->input->post('to_email');
         $subject = $this->input->post('subject');
 
         if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
