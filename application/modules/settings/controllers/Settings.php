@@ -56,7 +56,7 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
-                    $this->mdl_settings->save($key, trim($this->crypt->encode($value)));
+                    $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
                     $this->mdl_settings->save($key, standardize_amount($value));
