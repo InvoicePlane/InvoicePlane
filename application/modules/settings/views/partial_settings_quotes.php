@@ -56,7 +56,7 @@
                     <?php _trans('default_notes'); ?>
                 </label>
                 <textarea name="settings[default_quote_notes]" rows="3"
-                          class="form-control"><?php echo nl2br(get_setting('default_quote_notes', '', true)); ?></textarea>
+                          class="form-control"><?php echo get_setting('default_quote_notes', '', true); ?></textarea>
             </div>
 
             <div class="form-group">
