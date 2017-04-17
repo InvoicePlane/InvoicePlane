@@ -206,6 +206,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     $CI->load->model('quotes/mdl_quotes');
     $CI->load->model('quotes/mdl_quote_items');
     $CI->load->model('quotes/mdl_quote_tax_rates');
+    $CI->load->model('custom_fields/mdl_custom_fields');
     $CI->load->helper('country');
     $CI->load->helper('client');
 
