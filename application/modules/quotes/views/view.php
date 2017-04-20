@@ -364,29 +364,31 @@ $cv = $this->controller->view_data["custom_values"];
                                     <?php _trans('custom_fields'); ?>
                                 </div>
                                 <div class="panel-body">
-                                    <div class="col-xs-6">
-                                        <?php $i = 0; ?>
-                                        <?php foreach ($custom_fields as $custom_field): ?>
-                                            <?php if ($custom_field->custom_field_location != 0) {
-                                                continue;
-                                            } ?>
-                                            <?php $i++; ?>
-                                            <?php if ($i % 2 != 0): ?>
-                                                <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <?php $i = 0; ?>
-                                        <?php foreach ($custom_fields as $custom_field): ?>
-                                            <?php if ($custom_field->custom_field_location != 0) {
-                                                continue;
-                                            } ?>
-                                            <?php $i++; ?>
-                                            <?php if ($i % 2 == 0): ?>
-                                                <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <?php $i = 0; ?>
+                                            <?php foreach ($custom_fields as $custom_field): ?>
+                                                <?php if ($custom_field->custom_field_location != 0) {
+                                                    continue;
+                                                } ?>
+                                                <?php $i++; ?>
+                                                <?php if ($i % 2 != 0): ?>
+                                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <?php $i = 0; ?>
+                                            <?php foreach ($custom_fields as $custom_field): ?>
+                                                <?php if ($custom_field->custom_field_location != 0) {
+                                                    continue;
+                                                } ?>
+                                                <?php $i++; ?>
+                                                <?php if ($i % 2 == 0): ?>
+                                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
