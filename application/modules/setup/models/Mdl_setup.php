@@ -308,16 +308,15 @@ class Mdl_Setup extends CI_Model
 
             preg_match('/^ip_(.*?)_custom$/i', $value['table'], $matches);
             $table_type = $matches[1];
-            $table_name = $value['table'] . "_new";
+            $table_name = $value['table'] . '_new';
 
             if ($res->num_rows()) {
                 foreach ($res->result() as $row) {
 
-                    $escaped_table_name = $this->db->escape($table_name);
                     $escaped_table_type = $this->db->escape($row->{$table_type . '_id'});
                     $escaped_column = $this->db->escape($row->{$value['column']});
 
-                    $query = "INSERT INTO $escaped_table_name
+                    $query = "INSERT INTO $table_name
                         (" . $table_type . "_id, " . $table_type . "_custom_fieldid, " . $table_type . "_custom_fieldvalue)
                         VALUES (
                             $escaped_table_type,
