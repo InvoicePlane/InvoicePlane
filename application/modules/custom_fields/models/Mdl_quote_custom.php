@@ -48,10 +48,15 @@ class Mdl_Quote_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $fData = $this->_formdata;
+            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+
+            if (is_null($form_data)) {
+                return true;
+            }
+
             $quote_custom_id = null;
 
-            foreach ($fData as $key => $value) {
+            foreach ($form_data as $key => $value) {
                 $db_array = array(
                     'quote_id' => $quote_id,
                     'quote_custom_fieldid' => $key,

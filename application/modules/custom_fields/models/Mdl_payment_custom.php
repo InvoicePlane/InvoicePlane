@@ -46,9 +46,15 @@ class Mdl_Payment_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $fData = $this->_formdata;
+            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+
+            if (is_null($form_data)) {
+                return true;
+            }
+
             $payment_custom_id = null;
-            foreach ($fData as $key => $value) {
+
+            foreach ($form_data as $key => $value) {
                 $db_array = array(
                     'payment_id' => $payment_id,
                     'payment_custom_fieldid' => $key,
