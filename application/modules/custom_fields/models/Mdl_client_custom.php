@@ -113,20 +113,20 @@ class Mdl_Client_Custom extends Validator
      * @param integer $client_id
      * @return $this
      */
-    public function by_id($client_id)
+    public function get_by_client($client_id)
     {
-        $this->db->where('ip_client_custom.client_id', $client_id);
-        return $this;
+        $this->where('client_id', $client_id);
+        return $this->get();
     }
 
     /**
      * @param integer $client_id
      * @return $this
      */
-    public function get_by_client($client_id)
+    public function by_id($client_id)
     {
-        $this->where('client_id', $client_id);
-        return $this->get();
+        $this->db->where('ip_client_custom.client_id', $client_id);
+        return $this;
     }
 
     /**
