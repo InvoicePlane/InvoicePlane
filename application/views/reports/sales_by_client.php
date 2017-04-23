@@ -1,11 +1,15 @@
-<html>
+<!DOCTYPE html>
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
     <title><?php echo trans('sales_by_client'); ?></title>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/reports.css" type="text/css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/reports.css" type="text/css">
 </head>
 <body>
 
-<h3 class="report_title"><?php echo trans('sales_by_client'); ?></h3>
+<h3 class="report_title">
+    <?php echo trans('sales_by_client'); ?><br/>
+    <small><?php echo $from_date . ' - ' . $to_date ?></small>
+</h3>
 
 <table>
     <tr>
@@ -16,12 +20,13 @@
     </tr>
     <?php foreach ($results as $result) { ?>
         <tr>
-            <td><?php echo $result->client_name; ?></td>
+            <td><?php _htmlsc(format_client($result)); ?></td>
             <td class="amount"><?php echo $result->invoice_count; ?></td>
             <td class="amount"><?php echo format_currency($result->sales); ?></td>
             <td class="amount"><?php echo format_currency($result->sales_with_tax); ?></td>
         </tr>
     <?php } ?>
 </table>
+
 </body>
 </html>

@@ -1,19 +1,19 @@
-<!doctype html>
+<!doctype html lang="<?php _trans('cldr'); ?>">
 
 <!--[if lt IE 7]>
-<html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<html class="no-js ie6 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 7]>
-<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<html class="no-js ie7 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if IE 8]>
-<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<html class="no-js ie8 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<html class="no-js" lang="<?php _trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
     <title>
         <?php
-        if ($this->mdl_settings->setting('custom_title') != '') {
-            echo $this->mdl_settings->setting('custom_title');
+        if (get_setting('custom_title') != '') {
+            echo get_setting('custom_title', '', true);
         } else {
             echo 'InvoicePlane';
         } ?>
@@ -23,30 +23,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 
-    <?php if ($this->mdl_settings->setting('monospace_amounts') == 1) { ?>
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/monospace.css">
+    <?php if (get_setting('monospace_amounts') == 1) { ?>
+        <link rel="stylesheet"
+              href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/monospace.css">
     <?php } ?>
 
     <!--[if lt IE 9]>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/html5shiv-3.7.2.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/respond-1.4.2.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
     <![endif]-->
 
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-1.12.3.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-3.3.6.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/default/js/libs/jquery-ui-1.11.4.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
 
 </head>
-
-<body class="<?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
-    echo 'hidden-sidebar';
-} ?>">
+<body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 
 <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
@@ -70,8 +67,8 @@
                 <li>
                     <a href="<?php echo site_url('sessions/logout'); ?>"
                        class="tip icon logout" data-placement="bottom"
-                       data-original-title="<?php echo trans('logout'); ?>">
-                        <span class="visible-xs">&nbsp;<?php echo trans('logout'); ?></span>
+                       title="<?php _trans('logout'); ?>">
+                        <span class="visible-xs">&nbsp;<?php _trans('logout'); ?></span>
                         <i class="fa fa-power-off"></i>
                     </a>
                 </li>
@@ -80,51 +77,53 @@
     </div>
 </nav>
 
-<div class="sidebar hidden-xs <?php if ($this->mdl_settings->setting('disable_sidebar') == 1) {
-    echo 'hidden';
-} ?>">
-    <ul>
-        <li>
-            <a href="<?php echo site_url('guest'); ?>" title="<?php echo trans('dashboard'); ?>" class="tip"
-               data-placement="right">
-                <i class="fa fa-dashboard"></i>
-            </a>
-        </li>
-        <li>
-            <a href="<?php echo site_url('guest/quotes/index'); ?>" title="<?php echo trans('quotes'); ?>" class="tip"
-               data-placement="right">
-                <i class="fa fa-file"></i>
-            </a>
-        </li>
-        <li>
-            <a href="<?php echo site_url('guest/invoices/index'); ?>" title="<?php echo trans('invoices'); ?>"
-               class="tip" data-placement="right">
-                <i class="fa fa-file-text"></i>
-            </a>
-        </li>
-        <li>
-            <a href="<?php echo site_url('guest/payments/index'); ?>" title="<?php echo trans('payments'); ?>"
-               class="tip" data-placement="right">
-                <i class="fa fa-money"></i>
-            </a>
-        </li>
-    </ul>
-</div>
-
 <div id="main-area">
 
-    <div id="modal-placeholder"></div>
+    <div class="sidebar hidden-xs <?php if (get_setting('disable_sidebar') == 1) {
+        echo 'hidden';
+    } ?>">
+        <ul>
+            <li>
+                <a href="<?php echo site_url('guest'); ?>" title="<?php _trans('dashboard'); ?>" class="tip"
+                   data-placement="right">
+                    <i class="fa fa-dashboard"></i>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('guest/quotes/index'); ?>" title="<?php _trans('quotes'); ?>"
+                   class="tip"
+                   data-placement="right">
+                    <i class="fa fa-file"></i>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('guest/invoices/index'); ?>" title="<?php _trans('invoices'); ?>"
+                   class="tip" data-placement="right">
+                    <i class="fa fa-file-text"></i>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('guest/payments/index'); ?>" title="<?php _trans('payments'); ?>"
+                   class="tip" data-placement="right">
+                    <i class="fa fa-money"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
 
-    <?php echo $content; ?>
+    <div id="main-content">
+        <?php echo $content; ?>
+    </div>
 
 </div>
 
-<script defer src="<?php echo base_url(); ?>assets/default/js/plugins.js"></script>
-<script defer src="<?php echo base_url(); ?>assets/default/js/scripts.min.js"></script>
-<script defer src="<?php echo base_url(); ?>assets/default/js/libs/bootstrap-datepicker.min.js"></script>
+<div id="modal-placeholder"></div>
+
+<?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
+
+<script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script
-        src="<?php echo base_url(); ?>assets/default/js/locales/bootstrap-datepicker.<?php echo trans('cldr'); ?>.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>

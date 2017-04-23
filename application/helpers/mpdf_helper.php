@@ -1,22 +1,29 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
-function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null, $zugferd_invoice = false, $associatedFiles = null)
+/**
+ * Create a PDF
+ *
+ * @param $html
+ * @param $filename
+ * @param bool $stream
+ * @param null $password
+ * @param null $isInvoice
+ * @param null $is_guest
+ * @param bool $zugferd_invoice
+ * @param null $associated_files
+ * @return string
+ */
+function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $is_guest = null, $zugferd_invoice = false, $associated_files = null)
 {
     $CI = &get_instance();
 
@@ -24,11 +31,13 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     $invoice_array = array();
 
     // mPDF loading
-    define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
-    define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
+    if (!defined('_MPDF_TEMP_PATH')) {
+        define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
+        define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
+    }
 
-    require_once(FCPATH . 'vendor/kovah/mpdf/mpdf.php');
-    $mpdf = new mPDF();
+    require_once(FCPATH . 'vendor/autoload.php');
+    $mpdf = new \Mpdf\Mpdf();
 
     // mPDF configuration
     $mpdf->useAdobeCJK = true;
@@ -44,8 +53,8 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         $CI->load->helper('zugferd');
         $mpdf->PDFA = true;
         $mpdf->PDFAauto = true;
-        $mpdf->SetAdditionalRdf(zugferd_rdf());
-        $mpdf->SetAssociatedFiles($associatedFiles);
+        $mpdf->SetAdditionalXmpRdf(zugferd_rdf());
+        $mpdf->SetAssociatedFiles($associated_files);
     }
 
     // Set a password if set for the voucher
@@ -59,7 +68,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     }
 
     // Set the footer if voucher is invoice and if set in settings
-    if ($isInvoice && !empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
+    if (!empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
@@ -72,7 +81,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
             array_push($invoice_array, $file);
         }
 
-        if (!empty($invoice_array) && !is_null($isGuest)) {
+        if (!empty($invoice_array) && !is_null($is_guest)) {
             rsort($invoice_array);
 
             if ($stream) {

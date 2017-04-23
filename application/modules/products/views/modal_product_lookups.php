@@ -1,7 +1,9 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create invoice modal
         $('#modal-choose-items').modal('show');
+
+        $(".simple-select").select2();
 
         // Creates the invoice
         $('.select-items-confirm').click(function () {
@@ -15,7 +17,7 @@
                 product_ids: product_ids
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                items = JSON.parse(data);
+                var items = JSON.parse(data);
 
                 for (var key in items) {
                     // Set default tax rate id if empty
@@ -33,6 +35,7 @@
                     last_item_row.find('input[name=item_quantity]').val('1');
                     last_item_row.find('select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
                     last_item_row.find('input[name=item_product_id]').val(items[key].product_id);
+                    last_item_row.find('select[name=item_product_unit_id]').val(items[key].unit_id);
 
                     $('#modal-choose-items').modal('hide');
                 }
@@ -40,10 +43,26 @@
         });
 
         // Toggle checkbox when click on row
-        $('.product').click(function (event) {
+        $(document).on('click', '.product', function (event) {
             if (event.target.type !== 'checkbox') {
                 $(':checkbox', this).trigger('click');
             }
+        });
+
+        // Reset the form
+        $('#product-reset-button').click(function () {
+            var product_table = $('#product-lookup-table');
+
+            product_table.html('<h2 class="text-center"><i class="fa fa-spin fa-spinner"></i></h2>');
+
+            var lookup_url = "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/";
+            lookup_url += Math.floor(Math.random() * 1000) + '/?';
+            lookup_url += "&reset_table=true";
+
+            // Reload modal with settings
+            window.setTimeout(function () {
+                product_table.load(lookup_url);
+            }, 250);
         });
 
         // Filter on search button click
@@ -60,6 +79,10 @@
         function products_filter() {
             var filter_family = $('#filter_family').val();
             var filter_product = $('#filter_product').val();
+            var product_table = $('#product-lookup-table');
+
+            product_table.html('<h2 class="text-center"><i class="fa fa-spin fa-spinner"></i></h2>');
+
             var lookup_url = "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/";
             lookup_url += Math.floor(Math.random() * 1000) + '/?';
 
@@ -71,124 +94,68 @@
                 lookup_url += "&filter_product=" + filter_product;
             }
 
-            // refresh modal
-            $('#modal-choose-items').modal('hide');
-            $('#modal-placeholder').load(lookup_url);
+            // Reload modal with settings
+            window.setTimeout(function () {
+                product_table.load(lookup_url);
+            }, 250);
         }
     });
 </script>
 
-<div id="modal-choose-items" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
+<div id="modal-choose-items" class="modal col-xs-12 col-sm-10 col-sm-offset-1"
      role="dialog" aria-labelledby="modal-choose-items" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('add_product'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php _trans('add_product'); ?></h4>
         </div>
         <div class="modal-body">
-            <div class="row">
-                <div class="col-xs-8">
-                    <div class="form-inline">
-                        <div class="form-group filter-form">
-                            <!-- ToDo
-					<select name="filter_family" id="filter_family" class="form-control">
-						<option value=""><?php echo trans('any_family'); ?></option>
-						<?php foreach ($families as $family) { ?>
-						<option value="<?php echo $family->family_id; ?>"
-							<?php if (isset($filter_family) && $family->family_id == $filter_family) {
-                                echo ' selected="selected"';
-                            } ?>><?php echo $family->family_name; ?></option>
-						<?php } ?>
-					</select>
-					-->
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="filter_product" id="filter_product"
-                                   placeholder="<?php echo trans('product_name'); ?>"
-                                   value="<?php echo $filter_product ?>">
-                        </div>
-                        <button type="button" id="filter-button"
-                                class="btn btn-default"><?php echo trans('search_product'); ?></button>
-                        <!-- ToDo
-                        <button type="button" id="reset-button" class="btn btn-default">
-                            <?php //echo trans('reset'); ?>
-                        </button>
-                        -->
-                    </div>
+
+            <div class="form-inline">
+                <div class="form-group filter-form">
+                    <select name="filter_family" id="filter_family" class="form-control simple-select">
+                        <option value=""><?php _trans('any_family'); ?></option>
+                        <?php foreach ($families as $family) { ?>
+                            <option value="<?php echo $family->family_id; ?>"
+                                <?php if (isset($filter_family) && $family->family_id == $filter_family) {
+                                    echo ' selected="selected"';
+                                } ?>>
+                                <?php _htmlsc($family->family_name); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
                 </div>
-                <div class="col-xs-4 text-right">
-                    <div class="btn-group">
-                        <button class="btn btn-danger" type="button" data-dismiss="modal">
-                            <i class="fa fa-times"></i>
-                            <?php echo trans('cancel'); ?>
-                        </button>
-                        <button class="select-items-confirm btn btn-success" type="button">
-                            <i class="fa fa-check"></i>
-                            <?php echo trans('submit'); ?>
-                        </button>
-                    </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="filter_product" id="filter_product"
+                           placeholder="<?php _trans('product_name'); ?>"
+                           value="<?php echo $filter_product ?>">
                 </div>
+                <button type="button" id="filter-button"
+                        class="btn btn-default"><?php _trans('search_product'); ?></button>
+                <button type="button" id="product-reset-button" class="btn btn-default">
+                    <?php _trans('reset'); ?>
+                </button>
             </div>
+
             <br/>
 
-            <div class="table-responsive">
-                <table id="products_table" class="table table-bordered table-striped">
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th><?php echo trans('product_sku'); ?></th>
-                        <th><?php echo trans('family_name'); ?></th>
-                        <th><?php echo trans('product_name'); ?></th>
-                        <th><?php echo trans('product_description'); ?></th>
-                        <th class="text-right"><?php echo trans('product_price'); ?></th>
-                    </tr>
-                    <?php foreach ($products as $product) { ?>
-                        <tr class="product">
-                            <td class="text-left">
-                                <input type="checkbox" name="product_ids[]"
-                                       value="<?php echo $product->product_id; ?>">
-                            </td>
-                            <td nowrap class="text-left">
-                                <b><?php echo $product->product_sku; ?></b>
-                            </td>
-                            <td>
-                                <b><?php echo $product->family_name; ?></b>
-                            </td>
-                            <td>
-                                <b><?php echo $product->product_name; ?></b>
-                            </td>
-                            <td>
-                                <?php echo nl2br($product->product_description); ?>
-                            </td>
-                            <td class="text-right">
-                                <?php echo format_currency($product->product_price); ?>
-                            </td>
-                        </tr>
-                        <!-- Todo
-						<tr class="bold-border">
-                            <td colspan="3">
-                                <?php echo $product->product_description; ?>
-                            </td>
-                        </tr>
-						-->
-                    <?php } ?>
-                </table>
+            <div id="product-lookup-table">
+                <?php $this->layout->load_view('products/partial_product_table_modal'); ?>
             </div>
-        </div>
 
+        </div>
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i>
-                    <?php echo trans('cancel'); ?>
-                </button>
                 <button class="select-items-confirm btn btn-success" type="button">
                     <i class="fa fa-check"></i>
-                    <?php echo trans('submit'); ?>
+                    <?php _trans('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                    <?php _trans('cancel'); ?>
                 </button>
             </div>
         </div>
-
     </form>
 
 </div>

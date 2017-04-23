@@ -12,8 +12,8 @@
 <head>
     <title>
         <?php
-        if ($this->mdl_settings->setting('custom_title') != '') {
-            echo $this->mdl_settings->setting('custom_title');
+        if (get_setting('custom_title') != '') {
+            echo get_setting('custom_title');
         } else {
             echo 'InvoicePlane';
         } ?>
@@ -24,17 +24,18 @@
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/default/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-    <link href="<?php echo base_url(); ?>assets/default/css/style.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/default/css/custom.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css"
+          rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/core/css/custom.css" rel="stylesheet">
 
 </head>
 
 <body>
 
 <noscript>
-    <div class="alert alert-danger no-margin"><?php echo trans('please_enable_js'); ?></div>
+    <div class="alert alert-danger no-margin"><?php _trans('please_enable_js'); ?></div>
 </noscript>
 
 <br>
@@ -46,37 +47,33 @@
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
-        <h3><?php echo trans('password_reset'); ?></h3>
+        <h3><?php _trans('password_reset'); ?></h3>
 
         <br/>
 
-        <p><?php echo trans('password_reset_info'); ?></p>
+        <p><?php _trans('password_reset_info'); ?></p>
 
-        <form class="form-horizontal" method="post"
-              action="<?php echo site_url($this->uri->uri_string()); ?>">
+        <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+
+            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="form-group">
-                <div class="col-xs-12 col-sm-3">
-                    <label for="email" class="control-label"><?php echo trans('email'); ?></label>
-                </div>
-                <div class="col-xs-12 col-sm-9">
-                    <input type="text" name="email" id="email" class="form-control"
-                           placeholder="<?php echo trans('email'); ?>">
-                </div>
+                <label for="email" class="hidden"><?php _trans('email'); ?></label>
+                <input type="text" name="email" id="email" class="form-control"
+                       placeholder="<?php _trans('email'); ?>" required autofocus>
             </div>
 
-            <input type="submit" name="btn_reset" class="btn btn-block btn-danger"
-                   value="<?php echo trans('reset_password'); ?>">
+            <input type="hidden" name="btn_reset" value="true">
+
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-key fa-margin"></i> <?php _trans('reset_password'); ?>
+            </button>
 
         </form>
 
     </div>
 
 </div>
-
-<script type="text/javascript">
-    document.getElementById("email").focus();
-</script>
 
 </body>
 </html>

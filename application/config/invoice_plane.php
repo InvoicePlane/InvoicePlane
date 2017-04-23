@@ -7,8 +7,8 @@ $config = array(
         'next_link' => '&rsaquo;',
         'prev_link' => '&lsaquo;',
         'last_link' => '&rsaquo;&rsaquo;',
-        'full_tag_open' => '<div class="pagination"><ul>',
-        'full_tag_close' => '</ul></div>',
+        'full_tag_open' => '<ul class="pagination">',
+        'full_tag_close' => '</ul>',
         'first_tag_open' => '<li>',
         'first_tag_close' => '</li>',
         'last_tag_open' => '<li>',
@@ -20,5 +20,6 @@ $config = array(
         'prev_tag_open' => '<li>',
         'prev_tag_close' => '</li>',
         'num_links' => '10'
-    )
+    ),
+
 );

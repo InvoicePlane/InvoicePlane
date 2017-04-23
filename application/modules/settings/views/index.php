@@ -1,53 +1,60 @@
-<script type="text/javascript">
+<script>
     $().ready(function () {
         $('#btn-submit').click(function () {
             $('#form-settings').submit();
         });
         $("[name='settings[default_country]']").select2({
-            placeholder: "<?php echo trans('country'); ?>",
+            placeholder: "<?php _trans('country'); ?>",
             allowClear: true
         });
     });
 </script>
 
 <div id="headerbar">
-    <h1><?php echo trans('settings'); ?></h1>
-    <?php $this->layout->load_view('layout/header_buttons'); ?>
+    <h1 class="headerbar-title"><?php _trans('settings'); ?></h1>
+    <?php $this->layout->load_view('layout/header_buttons', array('hide_cancel_button' => true)); ?>
 </div>
 
 <ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">
     <li class="active">
-        <a data-toggle="tab" href="#settings-general"><?php echo trans('general'); ?></a>
+        <a data-toggle="tab" href="#settings-general"><?php _trans('general'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-invoices"><?php echo trans('invoices'); ?></a>
+        <a data-toggle="tab" href="#settings-invoices"><?php _trans('invoices'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-quotes"><?php echo trans('quotes'); ?></a>
+        <a data-toggle="tab" href="#settings-quotes"><?php _trans('quotes'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-taxes"><?php echo trans('taxes'); ?></a>
+        <a data-toggle="tab" href="#settings-taxes"><?php _trans('taxes'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-email"><?php echo trans('email'); ?></a>
+        <a data-toggle="tab" href="#settings-email"><?php _trans('email'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-merchant"><?php echo trans('merchant_account'); ?></a>
+        <a data-toggle="tab" href="#settings-online-payment"><?php echo lang('online_payment'); ?></a>
     </li>
     <li>
-        <a data-toggle="tab" href="#settings-updates"><?php echo trans('updates'); ?></a>
+        <a data-toggle="tab" href="#settings-projects-tasks"><?php _trans('projects'); ?></a>
+    </li>
+    <li>
+        <a data-toggle="tab" href="#settings-updates"><?php _trans('updates'); ?></a>
     </li>
 </ul>
 
 <form method="post" id="form-settings" enctype="multipart/form-data">
 
+    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+
     <div class="tabbable tabs-below">
 
-        <div class="tab-content col-xs-12 col-md-10 col-lg-8">
+        <div class="tab-content">
+
+            <div class="col-xs-12 col-md-8 col-md-offset-2">
+                <?php $this->layout->load_view('layout/alerts'); ?>
+            </div>
 
             <div id="settings-general" class="tab-pane active">
-                <?php $this->layout->load_view('layout/alerts'); ?>
-
                 <?php $this->layout->load_view('settings/partial_settings_general'); ?>
             </div>
 
@@ -67,8 +74,12 @@
                 <?php $this->layout->load_view('settings/partial_settings_email'); ?>
             </div>
 
-            <div id="settings-merchant" class="tab-pane">
-                <?php $this->layout->load_view('settings/partial_settings_merchant'); ?>
+            <div id="settings-online-payment" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_online_payment'); ?>
+            </div>
+
+            <div id="settings-projects-tasks" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_projects_tasks'); ?>
             </div>
 
             <div id="settings-updates" class="tab-pane">
