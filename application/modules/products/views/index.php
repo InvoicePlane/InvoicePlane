@@ -29,7 +29,9 @@
                 <th><?php _trans('product_price'); ?></th>
                 <th><?php _trans('product_unit'); ?></th>
                 <th><?php _trans('tax_rate'); ?></th>
-                <th><?php _trans('product_tariff'); ?></th>
+                <?php if (get_setting('sumex')) : ?>
+                    <th><?php _trans('product_tariff'); ?></th>
+                <?php endif; ?>
                 <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
@@ -44,7 +46,9 @@
                     <td class="amount"><?php echo format_currency($product->product_price); ?></td>
                     <td><?php _htmlsc($product->unit_name); ?></td>
                     <td><?php echo ($product->tax_rate_id) ? htmlsc($product->tax_rate_name) : trans('none'); ?></td>
-                    <td><?php _htmlsc($product->product_tariff); ?></td>
+                    <?php if (get_setting('sumex')) : ?>
+                        <td><?php _htmlsc($product->product_tariff); ?></td>
+                    <?php endif; ?>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"
