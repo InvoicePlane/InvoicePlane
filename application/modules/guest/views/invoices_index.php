@@ -66,7 +66,7 @@
                         </td>
                         <td>
                             <div class="options btn-group btn-group-sm">
-                                <?php if (get_setting('enable_online_payments')) : ?>
+                                <?php if ($invoice->invoice_status_id != 4 && get_setting('enable_online_payments')) : ?>
                                     <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
                                        class="btn btn-primary">
                                         <i class="fa fa-credit-card"></i>

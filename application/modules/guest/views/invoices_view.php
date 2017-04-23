@@ -18,7 +18,7 @@
                     <i class="fa fa-check"></i> <?php echo trans('paid') ?>
                 </button>
             <?php } ?>
-            <?php if (get_setting('enable_online_payments') == 'on') : ?>
+            <?php if ($invoice->invoice_status_id != 4 && get_setting('enable_online_payments') == 'on') : ?>
                 <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
                    class="btn btn-primary">
                     <i class="fa fa-credit-card"></i>
