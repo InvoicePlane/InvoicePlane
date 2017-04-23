@@ -240,8 +240,7 @@ class Mdl_Clients extends Response_Model
             ->assigned_to($user_id)->get()->result();
 
         $assigned_clients = [];
-        foreach ($clients as $client)
-        {
+        foreach ($clients as $client) {
             $assigned_clients[] = $client->client_id;
         }
 

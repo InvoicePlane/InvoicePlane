@@ -76,8 +76,10 @@
 
                         <div class="checkbox">
                             <label>
-                                <input type="hidden" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" value="0">
-                                <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" value="1"
+                                <input type="hidden" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
+                                       value="0">
+                                <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
+                                       value="1"
                                     <?php check_select(get_setting('gateway_' . $d . '_' . $key), 1, '==', true) ?>>
                                 <?php _trans('online_payment_' . $key, '', $setting['label']); ?>
                             </label>

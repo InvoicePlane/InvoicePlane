@@ -69,7 +69,6 @@ function parse_template($object, $body, $model_id)
                         } else {
                             $replace = '';
                         }
-                        var_dump($cf, $replace, $cf_model, $model_id);exit;
                     } else {
                         $replace = isset($object->{$var}) ? $object->{$var} : $var;
                     }
