@@ -92,6 +92,9 @@ class Payment_Handler extends Base_Controller
             // Process the response
             if ($response->isSuccessful()) {
 
+                $payment_note = trans('transaction_reference') . ': ' . $response->getTransactionReference() . "\n";
+                $payment_note .= trans('payment_provider') . ': ' . ucwords(str_replace('_', ' ', $d));
+
                 // Set invoice to paid
                 $this->load->model('payments/mdl_payments');
 
@@ -100,6 +103,7 @@ class Payment_Handler extends Base_Controller
                     'payment_date' => date('Y-m-d'),
                     'payment_amount' => $invoice->invoice_balance,
                     'payment_method_id' => $invoice->payment_method,
+                    'payment_note' => $payment_note,
                 );
 
                 $this->mdl_payments->save(null, $db_array);
