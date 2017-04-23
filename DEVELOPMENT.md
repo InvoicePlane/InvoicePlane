@@ -29,10 +29,10 @@ The following tasks need to be accomplished before starting to work on and with 
 
 The following steps are required to make InvoicePlane runnable:
 
-* Duplicate the `ipconfig.php.example` file and rename the duplicate to `ipconfig.php`.
+* Make a copy of the `ipconfig.php.example` file and rename the copy to `ipconfig.php`.
 * Run `composer install`.
 * Run `npm install`.
-* Run `grunt`.
+* Run `grunt build`.
 
 Then point your webserver to the InvoicePlane directory. That's it.
 
@@ -61,6 +61,6 @@ On the setup screen specify localhost, root, *blank password*, invoiceplane as t
 __Ask questions!__ Please ask questions related to this process if you are unclear.
 
 ---
-  
-*Please notice: The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
-and their usage is restricted! For more information visit invoiceplane.com/license-copyright*
+
+> _The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
+and their usage is restricted! For more information visit invoiceplane.com/license-copyright_

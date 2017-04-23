@@ -1,5 +1,5 @@
 ================================================================================
-Copyright Notice for InvoicePlane
+Copyright Notice for the InvoicePlane trademark
 ================================================================================
 The name 'InvoicePlane' and the InvoicePlane logo are original copyright
 of InvoicePlane.com / Kovah.de and the following restrictions apply to
@@ -18,6 +18,8 @@ You are NOT allowed to:
 - alter the name 'InvoicePlane' or the InvoicePlane logo in any way or
 - sell or redistribute the application under the name 'InvoicePlane' and the
     InvoicePlane logo.
+
+Please contact us for more information or permission for exceptional cases.
 
 ================================================================================
 License for InvoicePlane

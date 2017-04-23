@@ -4,11 +4,13 @@
 
 Every help is welcome, you don't have to be a professional PHP developer or SQL database engineer.
 If you are not familiar with PHP or coding in general you could also help us in other ways.
+You may also join our [Slack Chat](https://invoiceplane-slack.herokuapp.com/) to discuss certain
+topics with other developers or get some help.
 
 ## Contents
 
 * Get familiar with our Development Guidelines
-* Get familiar with our Development Guidelines
+* Tools for development
 * Contributing Code
 
 ---
@@ -26,14 +28,7 @@ Use JShint / JSlint to check your JavaScript code and try to resolve all code is
 ### CSS
 We use SASS only.
 
-
-## Tools for development
-We received some licenses for commercial development tools you can use if you want. Please contact use at mail@invoiceplane.com to get the license / access as we can't publish them here.
-
-* JetBrains PhpStorm (PHP IDE)
-* Balsamiq Mockups
-* Mailtrap.io eMail Testing Solution
-
+---
 
 ## Contributing Code
 
@@ -51,9 +46,17 @@ We received some licenses for commercial development tools you can use if you wa
 4. Submit the pull request, reference the issue ID in the title and add a meaningful description.
 
 
-Please ask questions related to this process if you are unclear.
+Please ask questions related to this process if you are unclear. Asking before doing anything may save you and us time.
 
 ---
-  
-*Please notice: The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
-and their usage is restricted! For more information visit invoiceplane.com/license-copyright*
+
+## Tools for development
+We received some licenses for commercial development tools you can use if you want. Please contact use at mail@invoiceplane.com to get the license / access as we can't publish them here.
+
+* JetBrains PhpStorm (PHP IDE)
+* Mailtrap.io eMail Testing Solution
+
+---
+
+> _The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
+and their usage is restricted! For more information visit invoiceplane.com/license-copyright_
