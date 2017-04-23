@@ -520,7 +520,7 @@ class Mdl_Invoices extends Response_Model
             if ($invoice->invoice_status_id == 1) {
                 // Generate new invoice number if applicable
                 if (get_setting('generate_invoice_number_for_draft') == 0) {
-                    $invoice_number =  $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id);
+                    $invoice_number = $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id);
                 } else {
                     $invoice_number = $invoice->invoice_number;
                 }
