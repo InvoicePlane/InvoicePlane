@@ -10,7 +10,7 @@
                 <div class="col-xs-12 col-md-6">
 
                     <div class="form-group">
-                        <label for="settings[projects_enabled]" class="control-label">
+                        <label for="settings[projects_enabled]">
                             <?php _trans('enable_projects'); ?>
                         </label>
                         <select name="settings[projects_enabled]" class="form-control simple-select"
@@ -28,7 +28,7 @@
                 <div class="col-xs-12 col-md-6">
 
                     <div class="form-group">
-                        <label for="settings[default_hourly_rate]" class="control-label">
+                        <label for="settings[default_hourly_rate]">
                             <?php _trans('default_hourly_rate'); ?>
                         </label>
                         <div class="input-group">

@@ -28,10 +28,10 @@
             </div>
 
             <div class="form-group">
-                <label for="online-payment-select" class="control-label">
+                <label for="online-payment-select">
                     <?php _trans('add_payment_provider'); ?>
                 </label>
-                <select id="online-payment-select" class=" form-control">
+                <select id="online-payment-select" class="form-control">
                     <option value=""><?php _trans('none'); ?></option>
                     <?php foreach ($gateway_drivers as $driver => $fields) {
                         $d = strtolower($driver);
@@ -82,11 +82,12 @@
                     <?php else : ?>
 
                         <div class="form-group">
-                            <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" class="control-label">
+                            <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]">
                                 <?php _trans('online_payment_' . $key, '', $setting['label']); ?>
                             </label>
                             <input type="<?php echo $setting['type']; ?>" class="input-sm form-control"
                                    name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
+                                   id="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                 <?php if ($setting['type'] == 'password') : ?>
                                     value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
                                 <?php else : ?>
@@ -105,10 +106,11 @@
                 <hr>
 
                 <div class="form-group">
-                    <label for="settings[gateway_<?php echo $d; ?>_currency]" class="control-label">
+                    <label for="settings[gateway_<?php echo $d; ?>_currency]">
                         <?php _trans('currency'); ?>
                     </label>
                     <select name="settings[gateway_<?php echo $d; ?>_currency]"
+                            id="settings[gateway_<?php echo $d; ?>_currency]"
                             class="input-sm form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
                         <?php foreach ($gateway_currency_codes as $val => $key) { ?>
@@ -121,11 +123,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="settings[gateway_<?php echo $d; ?>_payment_method]"
-                           class="control-label">
+                    <label for="settings[gateway_<?php echo $d; ?>_payment_method]">
                         <?php _trans('online_payment_method'); ?>
                     </label>
                     <select name="settings[gateway_<?php echo $d; ?>_payment_method]"
+                            id="settings[gateway_<?php echo $d; ?>_payment_method]"
                             class="input-sm form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
                         <?php foreach ($payment_methods as $payment_method) { ?>
