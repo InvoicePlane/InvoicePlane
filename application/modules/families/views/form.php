@@ -1,31 +1,34 @@
-<form method="post" class="form-horizontal">
+<form method="post">
+
+    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
-        <h1><?php echo trans('add_family'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans('add_family'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
     <div id="content">
 
-        <?php $this->layout->load_view('layout/alerts'); ?>
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-md-offset-3">
 
-        <input class="hidden" name="is_update" type="hidden"
-            <?php if ($this->mdl_families->form_value('is_update')) {
-                echo 'value="1"';
-            } else {
-                echo 'value="0"';
-            } ?>
-        >
+                <?php $this->layout->load_view('layout/alerts'); ?>
 
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
-                <label for="family_name" class="control-label">
-                    <?php echo trans('family_name'); ?>:
-                </label>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <input type="text" name="family_name" id="family_name" class="form-control"
-                       value="<?php echo $this->mdl_families->form_value('family_name'); ?>">
+                <input class="hidden" name="is_update" type="hidden"
+                    <?php if ($this->mdl_families->form_value('is_update')) {
+                        echo 'value="1"';
+                    } else {
+                        echo 'value="0"';
+                    } ?>>
+
+                <div class="form-group">
+                    <label for="family_name">
+                        <?php _trans('family_name'); ?>
+                    </label>
+                    <input type="text" name="family_name" id="family_name" class="form-control"
+                           value="<?php echo $this->mdl_families->form_value('family_name', true); ?>">
+                </div>
+
             </div>
         </div>
 

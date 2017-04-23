@@ -1,4 +1,5 @@
 <?php
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * CodeIgniter CRUD Model 2
@@ -6,10 +7,10 @@
  *
  * Install this file as application/core/MY_Model.php
  *
- * @package    CodeIgniter
- * @author        Kovah (www.kovah.de)
- * @copyright    Copyright (c) 2012, Jesse Terry
- * @link        http://developer13.com
+ * @package     CodeIgniter
+ * @author		Jesse Terry
+ * @copyright	Copyright (c) 2012-2013, Jesse Terry
+ * @link		http://developer13.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,15 +33,12 @@
  */
 class MY_Model extends CI_Model
 {
-
     public $table;
     public $primary_key;
     public $default_limit = 15;
     public $page_links;
     public $query;
     public $form_values = array();
-    protected $default_validation_rules = 'validation_rules';
-    protected $validation_rules;
     public $validation_errors;
     public $total_rows;
     public $date_created_field;
@@ -61,6 +59,8 @@ class MY_Model extends CI_Model
     public $last_offset;
     public $id;
     public $filter = array();
+    protected $default_validation_rules = 'validation_rules';
+    protected $validation_rules;
 
     public function __call($name, $arguments)
     {
@@ -92,22 +92,10 @@ class MY_Model extends CI_Model
         return $this;
     }
 
-    private function run_filters()
-    {
-        foreach ($this->filter as $filter) {
-            call_user_func_array(array($this->db, $filter[0]), $filter[1]);
-        }
-
-        /**
-         * Clear the filter array since this should only be run once per model
-         * execution
-         */
-        $this->filter = array();
-    }
-
     /**
-     * Query builder which listens to methods in child model.
-     * @param type $exclude
+     * Query builder which listens to methods in child model
+     *
+     * @param array $exclude
      */
     private function set_defaults($exclude = array())
     {
@@ -126,9 +114,26 @@ class MY_Model extends CI_Model
         }
     }
 
+    private function run_filters()
+    {
+        foreach ($this->filter as $filter) {
+            call_user_func_array(array($this->db, $filter[0]), $filter[1]);
+        }
+
+        /**
+         * Clear the filter array since this should only be run once per model
+         * execution
+         */
+        $this->filter = array();
+    }
+
     /**
-     * Call when paginating results.
+     * Call when paginating results
      * $this->model_name->paginate()
+     *
+     * @param $base_url
+     * @param int $offset
+     * @param int $uri_segment
      */
     public function paginate($base_url, $offset = 0, $uri_segment = 3)
     {
@@ -168,13 +173,12 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Retrieves a single record based on primary key value.
+     * Function to save an entry to the database
+     *
+     * @param null $id
+     * @param null $db_array
+     * @return null
      */
-    public function get_by_id($id)
-    {
-        return $this->where($this->primary_key, $id)->get()->row();
-    }
-
     public function save($id = null, $db_array = null)
     {
         if (!$db_array) {
@@ -226,6 +230,8 @@ class MY_Model extends CI_Model
     /**
      * Returns an array based on $_POST input matching the ruleset used to
      * validate the form submission.
+     *
+     * @return array
      */
     public function db_array()
     {
@@ -243,8 +249,10 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Deletes a record based on primary key value.
+     * Deletes a record based on primary key value
      * $this->model_name->delete(5);
+     *
+     * @param $id
      */
     public function delete($id)
     {
@@ -253,8 +261,10 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Returns the CI query result object.
+     * Returns the CI query result object
      * $this->model_name->get()->result();
+     *
+     * @return mixed
      */
     public function result()
     {
@@ -262,8 +272,10 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Returns the CI query row object.
+     * Returns the CI query row object
      * $this->model_name->get()->row();
+     *
+     * @return mixed
      */
     public function row()
     {
@@ -271,8 +283,10 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Returns CI query result array.
+     * Returns CI query result array
      * $this->model_name->get()->result_array();
+     *
+     * @return mixed
      */
     public function result_array()
     {
@@ -280,8 +294,10 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Returns CI query row array.
+     * Returns CI query row array
      * $this->model_name->get()->row_array();
+     *
+     * @return mixed
      */
     public function row_array()
     {
@@ -289,8 +305,10 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Returns CI query num_rows().
+     * Returns CI query num_rows()
      * $this->model_name->get()->num_rows();
+     *
+     * @return mixed
      */
     public function num_rows()
     {
@@ -298,7 +316,8 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Used to retrieve record by ID and populate $this->form_values.
+     * Used to retrieve record by ID and populate $this->form_values
+     *
      * @param int $id
      * @return boolean
      */
@@ -320,11 +339,23 @@ class MY_Model extends CI_Model
     }
 
     /**
+     * Retrieves a single record based on primary key value
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function get_by_id($id)
+    {
+        return $this->where($this->primary_key, $id)->get()->row();
+    }
+
+    /**
      * Performs validation on submitted form. By default, looks for method in
      * child model called validation_rules, but can be forced to run validation
      * on any method in child model which returns array of validation rules.
-     * @param string $validation_rules
-     * @return boolean
+     *
+     * @param null|string $validation_rules
+     * @return mixed
      */
     public function run_validation($validation_rules = null)
     {
@@ -352,25 +383,32 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Returns the assigned form value to a form input element.
-     * @param type $key
-     * @return type
+     * Returns the assigned form value to a form input element
+     *
+     * @param string $key
+     * @param bool $escape
+     * @return mixed|string
      */
-    public function form_value($key)
+    public function form_value($key, $escape = false)
     {
-        return (isset($this->form_values[$key])) ? $this->form_values[$key] : '';
+        $value = isset($this->form_values[$key]) ? $this->form_values[$key] : '';
+        return $escape ? htmlspecialchars($value) : $value;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     */
     public function set_form_value($key, $value)
     {
         $this->form_values[$key] = $value;
     }
 
+    /**
+     * @param $id
+     */
     public function set_id($id)
     {
         $this->id = $id;
     }
-
 }
-
-?>

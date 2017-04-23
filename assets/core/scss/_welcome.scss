@@ -1,0 +1,100 @@
+/*
+|   =========================================================
+|   InvoicePlane Setup Styles
+|   https://invoiceplane.com
+|   =========================================================
+|   The following styles are needed to display InvoicePlane
+|   properly. Only edit them if you know what you are doing!
+|   =========================================================
+*/
+
+body {
+  background-color: #fff;
+}
+
+img {
+  vertical-align: middle;
+}
+
+a:hover, a:active, a:focus {
+  outline: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+.fa.fa-margin {
+  margin-right: 7px;
+}
+
+.container {
+  max-width: 750px;
+}
+
+#content {
+  @extend .panel;
+  @extend .panel-body;
+  @extend .panel-default;
+  margin-top: 50px;
+}
+
+#logo {
+  margin: 20px auto;
+  display: block;
+  width: 200px;
+  height: 100px;
+  background: url('../../core/img/logo_200x100.png') center center no-repeat;
+
+  span {
+    display: none;
+  }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2) {
+  #logo {
+    background: url('../../core/img/logo_400x200.png') center center no-repeat;
+    background-size: 200px 100px;
+  }
+}
+
+.install-panel {
+  @extend .panel;
+  @extend .panel-default;
+  @extend .panel-body;
+  margin-top: 30px;
+
+  h2 {
+    @extend legend;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .btn {
+    margin-top: 15px;
+  }
+
+  .alert {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .label {
+    width: auto;
+  }
+
+}
+
+.btn {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.optional {
+  float: right;
+  font-size: small;
+  color: #888;
+}

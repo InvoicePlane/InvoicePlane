@@ -1,22 +1,24 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
-function parse_template($object, $body)
+/**
+ * Parse a template by predefined template tags
+ *
+ * @param $object
+ * @param $body
+ * @param $model_id
+ * @return mixed
+ */
+function parse_template($object, $body, $model_id)
 {
     if (preg_match_all('/{{{([^{|}]*)}}}/', $body, $template_vars)) {
         foreach ($template_vars[1] as $var) {
@@ -52,7 +54,24 @@ function parse_template($object, $body)
                     $replace = site_url('guest/view/quote/' . $object->quote_url_key);
                     break;
                 default:
-                    $replace = $object->{$var};
+                    // Check if it's a custom field
+                    if (preg_match('/ip_cf_([0-9].*)/', $var, $cf_id)) {
+                        // Get the custom field
+                        $CI =& get_instance();
+                        $CI->load->model('custom_fields/mdl_custom_fields');
+                        $cf = $CI->mdl_custom_fields->get_by_id($cf_id[1]);
+
+                        if ($cf) {
+                            // Get the values for the custom field
+                            $cf_model = str_replace('ip_', 'mdl_', $cf->custom_field_table);
+                            $replace = $CI->mdl_custom_fields
+                                ->get_value_for_field($cf_id[1], $cf_model, $model_id);
+                        } else {
+                            $replace = '';
+                        }
+                    } else {
+                        $replace = isset($object->{$var}) ? $object->{$var} : $var;
+                    }
             }
 
             $body = str_replace('{{{' . $var . '}}}', $replace, $body);
@@ -62,6 +81,12 @@ function parse_template($object, $body)
     return $body;
 }
 
+/**
+ * Returns the appropriate PDF template for the given invoice
+ *
+ * @param $invoice
+ * @return mixed
+ */
 function select_pdf_invoice_template($invoice)
 {
     $CI =& get_instance();
@@ -78,6 +103,12 @@ function select_pdf_invoice_template($invoice)
     }
 }
 
+/**
+ * Returns the appropriate email template for the given invoice
+ *
+ * @param $invoice
+ * @return mixed
+ */
 function select_email_invoice_template($invoice)
 {
     $CI =& get_instance();

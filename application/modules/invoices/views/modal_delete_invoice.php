@@ -1,23 +1,23 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('#modal_delete_invoice_confirm').click(function () {
-            // alert($(this).data('invoice-id'));
             invoice_id = $(this).data('invoice-id');
             window.location = '<?php echo site_url('invoices/delete'); ?>/' + invoice_id;
         });
     });
 </script>
 
-<div id="delete-invoice" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
-     role="dialog" aria-labelledby="delete-invoice" aria-hidden="true">
+<div id="delete-invoice" class="modal modal-lg" role="dialog" aria-labelledby="delete-invoice" aria-hidden="true">
+
     <div class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('delete_invoice'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php _trans('delete_invoice'); ?></h4>
         </div>
         <div class="modal-body">
-            <p class="alert alert-danger"><?php echo trans('delete_invoice_warning'); ?></p>
+
+            <div class="alert alert-danger"><?php _trans('delete_invoice_warning'); ?></div>
+
         </div>
         <div class="modal-footer">
             <div class="btn-group">
@@ -26,11 +26,11 @@
                     <i class="fa fa-trash-o"></i>
                     <?php echo trans('confirm_deletion') ?>
                 </a>
-
-                <a href="#" class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('no'); ?>
+                <a href="#" class="btn btn-default" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
                 </a>
             </div>
         </div>
     </div>
+
 </div>

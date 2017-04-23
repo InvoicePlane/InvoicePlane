@@ -3,14 +3,14 @@
 
         <thead>
         <tr>
-            <th><?php echo trans('payment_date'); ?></th>
-            <th><?php echo trans('invoice_date'); ?></th>
-            <th><?php echo trans('invoice'); ?></th>
-            <th><?php echo trans('client'); ?></th>
-            <th><?php echo trans('amount'); ?></th>
-            <th><?php echo trans('payment_method'); ?></th>
-            <th><?php echo trans('note'); ?></th>
-            <th><?php echo trans('options'); ?></th>
+            <th><?php _trans('payment_date'); ?></th>
+            <th><?php _trans('invoice_date'); ?></th>
+            <th><?php _trans('invoice'); ?></th>
+            <th><?php _trans('client'); ?></th>
+            <th><?php _trans('amount'); ?></th>
+            <th><?php _trans('payment_method'); ?></th>
+            <th><?php _trans('note'); ?></th>
+            <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
 
@@ -22,30 +22,30 @@
                 <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $payment->client_id); ?>"
-                       title="<?php echo trans('view_client'); ?>">
-                        <?php echo $payment->client_name; ?>
+                       title="<?php _trans('view_client'); ?>">
+                        <?php _htmlsc(format_client($payment)); ?>
                     </a>
                 </td>
                 <td><?php echo format_currency($payment->payment_amount); ?></td>
-                <td><?php echo $payment->payment_method_name; ?></td>
-                <td><?php echo $payment->payment_note; ?></td>
+                <td><?php _htmlsc($payment->payment_method_name); ?></td>
+                <td><?php _htmlsc($payment->payment_note); ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-cog"></i> <?php echo trans('options'); ?>
+                            <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="<?php echo site_url('payments/form/' . $payment->payment_id); ?>">
                                     <i class="fa fa-edit fa-margin"></i>
-                                    <?php echo trans('edit'); ?>
+                                    <?php _trans('edit'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('payments/delete/' . $payment->payment_id); ?>"
-                                   onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
+                                   onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
                                     <i class="fa fa-trash-o fa-margin"></i>
-                                    <?php echo trans('delete'); ?>
+                                    <?php _trans('delete'); ?>
                                 </a>
                             </li>
                         </ul>

@@ -1,20 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title><?php
-        if ($this->mdl_settings->setting('custom_title') != '') {
-            echo $this->mdl_settings->setting('custom_title');
-        } else {
-            echo 'quotePlane';
-        } ?> - <?php echo trans('quote'); ?> <?php echo $quote->quote_number; ?></title>
+    <title>
+        <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
+        - <?php echo trans('quote'); ?> <?php echo $quote->quote_number; ?>
+    </title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/style.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom.css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 
 </head>
 <body>
@@ -28,16 +28,20 @@
             <h2><?php echo trans('quote') . ' ' . $quote->quote_number; ?></h2>
 
             <div class="btn-group">
+                <?php if (in_array($quote->quote_status_id, array(2, 3))) : ?>
+                    <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
+                       class="btn btn-success">
+                        <i class="fa fa-check"></i><?php echo trans('approve_this_quote'); ?>
+                    </a>
+                    <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
+                       class="btn btn-danger">
+                        <i class="fa fa-times-circle"></i><?php echo trans('reject_this_quote'); ?>
+                    </a>
+                <?php endif; ?>
                 <a href="<?php echo site_url('guest/view/generate_quote_pdf/' . $quote_url_key); ?>"
                    class="btn btn-primary">
-                    <i
-                        class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
+                    <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                 </a>
-                <?php if ($this->mdl_settings->setting('merchant_enabled') == 1 and $quote->quote_balance > 0) { ?>
-                <a
-                    href="<?php echo site_url('guest/payment_handler/make_payment/' . $quote_url_key); ?>"
-                    class="btn btn-success"><i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>
-                    </a><?php } ?>
             </div>
 
         </div>
@@ -55,8 +59,7 @@
         <div class="quote">
 
             <?php
-            $logo = invoice_logo();
-            if ($logo) {
+            if ($logo = invoice_logo()) {
                 echo $logo . '<br><br>';
             }
             ?>
@@ -64,7 +67,7 @@
             <div class="row">
                 <div class="col-xs-12 col-md-6 col-lg-5">
 
-                    <h4><?php echo $quote->user_name; ?></h4>
+                    <h4><?php _htmlsc($quote->user_name); ?></h4>
                     <p><?php if ($quote->user_vat_id) {
                             echo lang("vat_id_short") . ": " . $quote->user_vat_id . '<br>';
                         } ?>
@@ -72,30 +75,30 @@
                             echo lang("tax_code_short") . ": " . $quote->user_tax_code . '<br>';
                         } ?>
                         <?php if ($quote->user_address_1) {
-                            echo $quote->user_address_1 . '<br>';
+                            echo htmlsc($quote->user_address_1) . '<br>';
                         } ?>
                         <?php if ($quote->user_address_2) {
-                            echo $quote->user_address_2 . '<br>';
+                            echo htmlsc($quote->user_address_2) . '<br>';
                         } ?>
                         <?php if ($quote->user_city) {
-                            echo $quote->user_city . ' ';
+                            echo htmlsc($quote->user_city) . ' ';
                         } ?>
                         <?php if ($quote->user_state) {
-                            echo $quote->user_state . ' ';
+                            echo htmlsc($quote->user_state) . ' ';
                         } ?>
                         <?php if ($quote->user_zip) {
-                            echo $quote->user_zip . '<br>';
+                            echo htmlsc($quote->user_zip) . '<br>';
                         } ?>
-                        <?php if ($quote->user_phone) { ?><?php echo trans('phone_abbr'); ?>: <?php echo $quote->user_phone; ?>
+                        <?php if ($quote->user_phone) { ?><?php echo trans('phone_abbr'); ?>: <?php echo htmlsc($quote->user_phone); ?>
                             <br><?php } ?>
-                        <?php if ($quote->user_fax) { ?><?php echo trans('fax_abbr'); ?>: <?php echo $quote->user_fax; ?><?php } ?>
+                        <?php if ($quote->user_fax) { ?><?php echo trans('fax_abbr'); ?>: <?php echo htmlsc($quote->user_fax); ?><?php } ?>
                     </p>
 
                 </div>
                 <div class="col-lg-2"></div>
                 <div class="col-xs-12 col-md-6 col-lg-5 text-right">
 
-                    <h4><?php echo $quote->client_name; ?></h4>
+                    <h4><?php _htmlsc($quote->client_name); ?></h4>
                     <p><?php if ($quote->client_vat_id) {
                             echo lang("vat_id_short") . ": " . $quote->client_vat_id . '<br>';
                         } ?>
@@ -103,22 +106,22 @@
                             echo lang("tax_code_short") . ": " . $quote->client_tax_code . '<br>';
                         } ?>
                         <?php if ($quote->client_address_1) {
-                            echo $quote->client_address_1 . '<br>';
+                            echo htmlsc($quote->client_address_1) . '<br>';
                         } ?>
                         <?php if ($quote->client_address_2) {
-                            echo $quote->client_address_2 . '<br>';
+                            echo htmlsc($quote->client_address_2) . '<br>';
                         } ?>
                         <?php if ($quote->client_city) {
-                            echo $quote->client_city . ' ';
+                            echo htmlsc($quote->client_city) . ' ';
                         } ?>
                         <?php if ($quote->client_state) {
-                            echo $quote->client_state . ' ';
+                            echo htmlsc($quote->client_state) . ' ';
                         } ?>
                         <?php if ($quote->client_zip) {
-                            echo $quote->client_zip . '<br>';
+                            echo htmlsc($quote->client_zip) . '<br>';
                         } ?>
                         <?php if ($quote->client_phone) {
-                            echo trans('phone_abbr') . ': ' . $quote->client_phone; ?>
+                            echo trans('phone_abbr') . ': ' . htmlsc($quote->client_phone); ?>
                             <br>
                         <?php } ?>
                     </p>
@@ -165,9 +168,15 @@
                         <tbody>
                         <?php foreach ($items as $item) : ?>
                             <tr>
-                                <td><?php echo $item->item_name; ?></td>
-                                <td><?php echo nl2br($item->item_description); ?></td>
-                                <td class="amount"><?php echo format_amount($item->item_quantity); ?></td>
+                                <td><?php _htmlsc($item->item_name); ?></td>
+                                <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
+                                <td class="amount">
+                                    <?php echo format_amount($item->item_quantity); ?>
+                                    <?php if ($item->item_product_unit) : ?>
+                                        <br>
+                                        <small><?php _htmlsc($item->item_product_unit); ?></small>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="amount"><?php echo format_currency($item->item_price); ?></td>
                                 <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
                                 <td class="amount"><?php echo format_currency($item->item_total); ?></td>
@@ -226,7 +235,7 @@
                     <?php if ($quote->notes) { ?>
                         <div class="col-xs-12 col-md-6">
                             <h4><?php echo trans('notes'); ?></h4>
-                            <p><?php echo nl2br($quote->notes); ?></p>
+                            <p><?php echo nl2br(htmlsc($quote->notes)); ?></p>
                         </div>
                     <?php } ?>
 
@@ -254,12 +263,9 @@
 
                 </div>
 
-            </div>
-
-        </div>
-
-    </div>
-
+            </div><!-- .quote-items -->
+        </div><!-- .quote -->
+    </div><!-- #content -->
 </div>
 
 </body>

@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     // Update check
     window.onload = function () {
         var checktime = 2000;
@@ -7,10 +7,9 @@
         var current_version = "<?php echo $current_version; ?>";
         current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
 
-        // Get the latest version from updates.invoiceplane.com
+        // Get the latest version from the InvoicePlane IDS
         $.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {
             <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-
             var updatecheck = data.current_version.replace(/\./g, '');
 
             // Compare each versions and replace the placeholder with a download button
@@ -33,7 +32,6 @@
         // Get the latest news
         $.getJSON("https://ids.invoiceplane.com/get_news", function (data) {
             <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-
             setTimeout(function () {
                 $('#ipnews-loading').addClass('hidden');
                 data.forEach(function (news) {
@@ -51,45 +49,57 @@
             $('#ipnews-failed').removeClass('hidden');
         });
     };
-
 </script>
 
-<div class="tab-info">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
 
-    <h4><?php echo trans('updatecheck'); ?></h4><br/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php _trans('updatecheck'); ?>
+        </div>
+        <div class="panel-body">
 
-    <div class="form-group">
-        <input type="text" class="input-sm form-control"
-               value="<?php echo $current_version; ?>" readonly="readonly">
+            <div class="form-group">
+                <input type="text" class="form-control"
+                       value="<?php echo $current_version; ?>" readonly="readonly">
+            </div>
+            <div id="updatecheck-results">
+                <div id="updatecheck-loading" class="btn btn-default btn-sm disabled">
+                    <i class="fa fa-circle-o-notch fa-spin"></i> <?php _trans('checking_for_updates'); ?>
+                </div>
+
+                <div id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
+                    <?php _trans('no_updates_available'); ?>
+                </div>
+
+                <div id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
+                    <?php _trans('updatecheck_failed'); ?>
+                </div>
+
+                <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
+                   class="btn btn-success btn-sm hidden" target="_blank">
+                    <?php _trans('updates_available'); ?>
+                </a>
+            </div>
+
+        </div>
     </div>
-    <div id="updatecheck-results">
-        <span id="updatecheck-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_updates'); ?>
-		</span>
 
-        <span id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
-            <?php echo trans('no_updates_available'); ?>
-        </span>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php _trans('invoiceplane_news'); ?>
+        </div>
+        <div class="panel-body">
 
-        <span id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
-            <?php echo trans('updatecheck_failed'); ?>
-        </span>
+            <div id="ipnews-results">
+                <div id="ipnews-loading" class="btn btn-default btn-sm disabled">
+                    <i class="fa fa-circle-o-notch fa-spin"></i> <?php _trans('checking_for_news'); ?>
+                </div>
 
-        <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
-           class="btn btn-success btn-sm hidden" target="_blank">
-            <?php echo trans('updates_available'); ?>
-        </a>
+                <div id="ipnews-container"></div>
+            </div>
+
+        </div>
     </div>
 
-    <hr/>
-
-    <h4><?php echo trans('invoiceplane_news'); ?></h4>
-
-    <div id="ipnews-results">
-        <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_news'); ?>
-		</span>
-
-        <div id="ipnews-container"></div>
-    </div>
 </div>

@@ -1,13 +1,13 @@
 <div id="headerbar">
-    <h1><?php echo trans('import_data'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('import_data'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('import/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+            <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('import/index'), 'mdl_import'); ?>
     </div>
 
@@ -22,13 +22,13 @@
 
             <thead>
             <tr>
-                <th><?php echo trans('id'); ?></th>
-                <th><?php echo trans('date'); ?></th>
-                <th><?php echo trans('clients'); ?></th>
-                <th><?php echo trans('invoices'); ?></th>
-                <th><?php echo trans('invoice_items'); ?></th>
-                <th><?php echo trans('payments'); ?></th>
-                <th><?php echo trans('options'); ?></th>
+                <th><?php _trans('id'); ?></th>
+                <th><?php _trans('date'); ?></th>
+                <th><?php _trans('clients'); ?></th>
+                <th><?php _trans('invoices'); ?></th>
+                <th><?php _trans('invoice_items'); ?></th>
+                <th><?php _trans('payments'); ?></th>
+                <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
 
@@ -42,14 +42,15 @@
                     <td><?php echo $import->num_invoice_items; ?></td>
                     <td><?php echo $import->num_payments; ?></td>
                     <td>
-                        <div class="options btn-group">
-                            <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i
-                                    class="fa fa-cog"></i> <?php echo trans('options'); ?></a>
+                        <div class="options btn-group btn-group-sm">
+                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-cog"></i> <?php _trans('options'); ?>
+                            </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="<?php echo site_url('import/delete/' . $import->import_id); ?>"
-                                       onclick="return confirm('<?php echo trans('delete_record_warning'); ?>');">
-                                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('delete'); ?>
+                                       onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
+                                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                                     </a>
                                 </li>
                             </ul>
@@ -61,4 +62,5 @@
 
         </table>
     </div>
+
 </div>

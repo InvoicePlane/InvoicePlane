@@ -1,21 +1,21 @@
 <div id="headerbar">
-    <h1><?php echo trans('version_history'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('version_history'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('settings/versions/index'), 'mdl_versions'); ?>
     </div>
 </div>
 
 <div id="content" class="table-content">
 
-    <div class="table-responsive-">
-        <table class="table table-striped">
+    <div class="table-responsive">
+        <table class="table">
 
             <thead>
             <tr>
-                <th><?php echo trans('date_applied'); ?></th>
-                <th><?php echo trans('sql_file'); ?></th>
-                <th><?php echo trans('errors'); ?></th>
+                <th><?php _trans('date_applied'); ?></th>
+                <th><?php _trans('sql_file'); ?></th>
+                <th><?php _trans('errors'); ?></th>
             </tr>
             </thead>
 

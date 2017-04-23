@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         // Display the create quote modal
         $('#modal_create_recurring').modal('show');
@@ -8,6 +8,9 @@
         $('#recur_frequency').change(function () {
             get_recur_start_date();
         });
+
+        // Select2 for all select inputs
+        $('.simple-select').select2();
 
         // Creates the invoice
         $('#create_recurring_confirm').click(function () {
@@ -20,7 +23,7 @@
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
-                    if (response.success == '1') {
+                    if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/<?php echo $invoice_id; ?>";
                     }
                     else {
@@ -43,36 +46,30 @@
                 });
         }
     });
-
 </script>
 
-<div id="modal_create_recurring" class="modal col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2"
+<div id="modal_create_recurring" class="modal modal-lg"
      role="dialog" aria-labelledby="modal_create_recurring" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
-            <a data-dismiss="modal" class="close"><i class="fa fa-close"></i></a>
-
-            <h3><?php echo trans('create_recurring'); ?></h3>
+            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
+            <h4 class="panel-title"><?php _trans('create_recurring'); ?></h4>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
-                <label><?php echo trans('every'); ?>: </label>
-
-                <div class="controls">
-                    <select name="recur_frequency" id="recur_frequency" class="form-control"
-                            style="width: 150px;">
-                        <?php foreach ($recur_frequencies as $key => $lang) { ?>
-                            <option value="<?php echo $key; ?>"
-                                    <?php if ($key == '1M') { ?>selected="selected"<?php } ?>><?php echo lang($lang); ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
+                <label for="recur_frequency"><?php _trans('every'); ?></label>
+                <select name="recur_frequency" id="recur_frequency" class="form-control simple-select">
+                    <?php foreach ($recur_frequencies as $key => $lang) { ?>
+                        <option value="<?php echo $key; ?>">
+                            <?php _trans($lang); ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
             <div class="form-group has-feedback">
-                <label><?php echo trans('start_date'); ?>: </label>
-
+                <label for="recur_start_date"><?php _trans('start_date'); ?></label>
                 <div class="input-group">
                     <input name="recur_start_date" id="recur_start_date"
                            class="form-control datepicker">
@@ -83,7 +80,7 @@
             </div>
 
             <div class="form-group has-feedback">
-                <label><?php echo trans('end_date'); ?> (<?php echo lang('optional'); ?>): </label>
+                <label for="recur_end_date"><?php _trans('end_date'); ?> (<?php echo trans('optional'); ?>)</label>
 
                 <div class="input-group">
                     <input name="recur_end_date" id="recur_end_date"
@@ -98,11 +95,11 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-danger" type="button" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php echo trans('cancel'); ?>
-                </button>
                 <button class="btn btn-success" id="create_recurring_confirm" type="button">
-                    <i class="fa fa-check"></i> <?php echo trans('submit'); ?>
+                    <i class="fa fa-check"></i> <?php _trans('submit'); ?>
+                </button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
                 </button>
             </div>
         </div>

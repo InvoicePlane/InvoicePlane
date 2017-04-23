@@ -1,29 +1,32 @@
 <div id="headerbar">
 
-    <h1><?php echo trans('invoices'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('invoices'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <a class="create-invoice btn btn-sm btn-primary" href="#">
-            <i class="fa fa-plus"></i> <?php echo trans('new'); ?>
+            <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('invoices/client/' . $client_id . '/' . $status), 'mdl_invoices'); ?>
     </div>
 
-    <div class="pull-right">
-        <ul class="nav nav-pills index-options">
-            <li <?php if ($status == 'open') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/client/' . $client_id . '/open'); ?>"><?php echo trans('open'); ?></a>
-            </li>
-            <li <?php if ($status == 'closed') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/client/' . $client_id . '/closed'); ?>"><?php echo trans('closed'); ?></a>
-            </li>
-            <li <?php if ($status == 'overdue') { ?>class="active"<?php } ?>><a
-                    href="<?php echo site_url('invoices/client/' . $client_id . '/overdue'); ?>"><?php echo trans('overdue'); ?></a>
-            </li>
-        </ul>
+    <div class="headerbar-item pull-right">
+        <div class="btn-group btn-group-sm index-options">
+            <a href="<?php echo site_url('invoices/client/' . $client_id . '/open'); ?>"
+               class="btn <?php echo $status == 'open' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('open'); ?>
+            </a>
+            <a href="<?php echo site_url('invoices/client/' . $client_id . '/closed'); ?>"
+               class="btn  <?php echo $status == 'closed' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('closed'); ?>
+            </a>
+            <a href="<?php echo site_url('invoices/client/' . $client_id . '/overdue'); ?>"
+               class="btn  <?php echo $status == 'overdue' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('overdue'); ?>
+            </a>
+        </div>
     </div>
 
 </div>

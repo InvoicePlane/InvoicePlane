@@ -1,5 +1,19 @@
 <?php
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+/*
+ * InvoicePlane
+ *
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
+ */
+
+/**
+ * @param $str
+ * @return bool
+ */
 function diacritics_seems_utf8($str)
 {
     $length = strlen($str);
@@ -159,6 +173,10 @@ function diacritics_remove_accents($string)
     return $string;
 }
 
+/**
+ * @param $text
+ * @return string
+ */
 function diacritics_remove_diacritics($text)
 {
     $trans = array(

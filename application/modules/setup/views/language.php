@@ -5,23 +5,26 @@
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <legend><?php echo trans('setup_choose_language'); ?></legend>
+            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
 
-            <p><?php echo trans('setup_choose_language_message'); ?></p>
+            <legend><?php _trans('setup_choose_language'); ?></legend>
 
-            <select name="ip_lang" class="form-control">
+            <p><?php _trans('setup_choose_language_message'); ?></p>
+
+            <select name="ip_lang" class="form-control simple-select">
                 <?php foreach ($languages as $language) { ?>
                     <option value="<?php echo $language; ?>"
-                            <?php if ($language == 'english') { ?>selected="selected"<?php } ?>><?php echo ucfirst($language); ?></option>
+                            <?php if ($language == 'english') { ?>selected="selected"<?php } ?>>
+                        <?php echo ucfirst(str_replace('/', '', $language)); ?>
+                    </option>
                 <?php } ?>
             </select>
 
             <br/>
 
-            <input class="btn btn-success" type="submit" name="btn_continue" value="<?php echo trans('continue'); ?>">
+            <input class="btn btn-success" type="submit" name="btn_continue" value="<?php _trans('continue'); ?>">
 
         </form>
 
     </div>
 </div>
-
