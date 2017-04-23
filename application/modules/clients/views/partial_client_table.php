@@ -42,7 +42,7 @@
                             </li>
                             <li>
                                 <a href="#" class="client-create-invoice"
-                                   data-client_id="<?php echo $client->client_id; ?>">
+                                   data-client-id="<?php echo $client->client_id; ?>">
                                     <i class="fa fa-file-text fa-margin"></i> <?php _trans('create_invoice'); ?>
                                 </a>
                             </li>
