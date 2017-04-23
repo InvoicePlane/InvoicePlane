@@ -35,11 +35,12 @@ class Ajax extends Admin_Controller
 
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
+        $escapedQuery = str_replace("%","",$escapedQuery);
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->like('client_name', $escapedQuery)
-            ->or_like('client_surname', $escapedQuery)
-            ->or_like('client_name', $escapedQuery)
+            ->having('client_name LIKE \''.$escapedQuery.'%\'')
+            ->or_having('client_surname LIKE \''.$escapedQuery.'%\'')
+            ->or_having('client_fullname LIKE \''.$escapedQuery.'%\'')
             ->order_by('client_name')
             ->get()
             ->result();
