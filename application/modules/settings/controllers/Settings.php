@@ -46,8 +46,6 @@ class Settings extends Admin_Controller
             }
 
             // Save the submitted settings
-            $empty_values_allowed = $this->config->item('settings_empty_allowed');
-
             foreach ($settings as $key => $value) {
                 if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
                     // Skip all meta fields
