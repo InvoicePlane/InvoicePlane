@@ -46,24 +46,26 @@ class Settings extends Admin_Controller
             }
 
             // Save the submitted settings
-            $empty_values_allowed = $this->config->item('settings_empty_allowed');
-
             foreach ($settings as $key => $value) {
                 if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
-                    // Skip field meta fields
+                    // Skip all meta fields
                     continue;
                 }
 
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
+
                     // Encrypt passwords but don't save empty passwords
                     $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
+
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
+
                     // Format amount inputs
                     $this->mdl_settings->save($key, standardize_amount($value));
+
                 } else {
-                    if (in_array($key, $empty_values_allowed) || !empty($value) || $value == '0') {
-                        $this->mdl_settings->save($key, $value);
-                    }
+
+                    $this->mdl_settings->save($key, $value);
+
                 }
             }
 
