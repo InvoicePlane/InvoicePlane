@@ -4,7 +4,7 @@
         online_payment_select.select2().on('change', function () {
             var driver = online_payment_select.val();
             $('.gateway-settings:not(.active-gateway)').addClass('hidden');
-            $('#gateway-settings-' + driver).removeClass('hidden');
+            $('#gateway-settings-' + driver).removeClass('hidden').addClass('active-gateway');
         });
     });
 </script>
@@ -20,18 +20,19 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="settings[enable_online_payments]"
-                            <?php check_select(get_setting('enable_online_payments'), 'on', '==', true) ?>>
+                        <input type="hidden" name="settings[enable_online_payments]" value="0">
+                        <input type="checkbox" name="settings[enable_online_payments]" value="1"
+                            <?php check_select(get_setting('enable_online_payments'), 1, '==', true) ?>>
                         <?php _trans('enable_online_payments'); ?>
                     </label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="online-payment-select" class="control-label">
+                <label for="online-payment-select">
                     <?php _trans('add_payment_provider'); ?>
                 </label>
-                <select id="online-payment-select" class=" form-control">
+                <select id="online-payment-select" class="form-control">
                     <option value=""><?php _trans('none'); ?></option>
                     <?php foreach ($gateway_drivers as $driver => $fields) {
                         $d = strtolower($driver);
@@ -51,15 +52,17 @@
         $d = strtolower($driver);
         ?>
         <div id="gateway-settings-<?php echo $d; ?>"
-             class="gateway-settings panel panel-default <?php echo get_setting('gateway_' . $d) == 'on' ? 'active-gateway' : 'hidden'; ?>">
+             class="gateway-settings panel panel-default <?php echo get_setting('gateway_' . $d . '_enabled') ? 'active-gateway' : 'hidden'; ?>">
 
             <div class="panel-heading">
                 <?php echo ucwords(str_replace('_', ' ', $driver)); ?>
                 <div class="pull-right">
                     <div class="checkbox no-margin">
                         <label>
-                            <input type="checkbox" name="settings[gateway_<?php echo $d; ?>]"
-                                <?php check_select(get_setting('gateway_' . $d), 'on', '==', true) ?>>
+                            <input type="hidden" name="settings[gateway_<?php echo $d; ?>_enabled]" value="0">
+                            <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_enabled]" value="1"
+                                   id="settings[gateway_<?php echo $d; ?>_enabled]"
+                                <?php check_select(get_setting('gateway_' . $d . '_enabled'), 1, '==', true) ?>>
                             <?php _trans('enabled'); ?>
                         </label>
                     </div>
@@ -73,8 +76,9 @@
 
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
-                                    <?php check_select(get_setting('gateway_' . $d . '_' . $key), 'on', '==', true) ?>>
+                                <input type="hidden" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" value="0">
+                                <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" value="1"
+                                    <?php check_select(get_setting('gateway_' . $d . '_' . $key), 1, '==', true) ?>>
                                 <?php _trans('online_payment_' . $key, '', $setting['label']); ?>
                             </label>
                         </div>
@@ -82,11 +86,12 @@
                     <?php else : ?>
 
                         <div class="form-group">
-                            <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" class="control-label">
+                            <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]">
                                 <?php _trans('online_payment_' . $key, '', $setting['label']); ?>
                             </label>
                             <input type="<?php echo $setting['type']; ?>" class="input-sm form-control"
                                    name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
+                                   id="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                 <?php if ($setting['type'] == 'password') : ?>
                                     value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
                                 <?php else : ?>
@@ -105,10 +110,11 @@
                 <hr>
 
                 <div class="form-group">
-                    <label for="settings[gateway_<?php echo $d; ?>_currency]" class="control-label">
+                    <label for="settings[gateway_<?php echo $d; ?>_currency]">
                         <?php _trans('currency'); ?>
                     </label>
                     <select name="settings[gateway_<?php echo $d; ?>_currency]"
+                            id="settings[gateway_<?php echo $d; ?>_currency]"
                             class="input-sm form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
                         <?php foreach ($gateway_currency_codes as $val => $key) { ?>
@@ -121,11 +127,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="settings[gateway_<?php echo $d; ?>_payment_method]"
-                           class="control-label">
+                    <label for="settings[gateway_<?php echo $d; ?>_payment_method]">
                         <?php _trans('online_payment_method'); ?>
                     </label>
                     <select name="settings[gateway_<?php echo $d; ?>_payment_method]"
+                            id="settings[gateway_<?php echo $d; ?>_payment_method]"
                             class="input-sm form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
                         <?php foreach ($payment_methods as $payment_method) { ?>
