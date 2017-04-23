@@ -1003,16 +1003,16 @@
         },
         {
             "name": "omnipay/mollie",
-            "version": "v3.1",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-mollie.git",
-                "reference": "66342a755df2d01954f753ee59656115da6f57d0"
+                "reference": "8a81a9980a3de726e6badb2ca0edc3728bba6c95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-mollie/zipball/66342a755df2d01954f753ee59656115da6f57d0",
-                "reference": "66342a755df2d01954f753ee59656115da6f57d0",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-mollie/zipball/8a81a9980a3de726e6badb2ca0edc3728bba6c95",
+                "reference": "8a81a9980a3de726e6badb2ca0edc3728bba6c95",
                 "shasum": ""
             },
             "require": {
@@ -1056,7 +1056,7 @@
                 "pay",
                 "payment"
             ],
-            "time": "2016-09-14T09:25:40+00:00"
+            "time": "2016-10-11T09:44:09+00:00"
         },
         {
             "name": "omnipay/multisafepay",
