@@ -42,7 +42,7 @@
                 </td>
                 <td>
                     <div class="options btn-group btn-group-sm">
-                        <?php if (get_setting('enable_online_payments') == 'on') : ?>
+                        <?php if (get_setting('enable_online_payments') == 1) : ?>
                             <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
                                class="btn btn-primary">
                                 <i class="fa fa-credit-card"></i>

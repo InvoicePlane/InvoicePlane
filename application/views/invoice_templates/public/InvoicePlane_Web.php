@@ -34,7 +34,7 @@
                         <?php endif; ?>
                         <i class="fa fa-print"></i> <?php echo trans('download_pdf'); ?>
                     </a>
-                    <?php if (get_setting('enable_online_payments') == 'on' && $invoice->invoice_balance > 0) { ?>
+                    <?php if (get_setting('enable_online_payments') == 1 && $invoice->invoice_balance > 0) { ?>
                         <a href="<?php echo site_url('guest/payment_information/form/' . $invoice_url_key); ?>"
                            class="btn btn-success">
                             <i class="fa fa-credit-card"></i> <?php echo trans('pay_now'); ?>

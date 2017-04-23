@@ -4,7 +4,7 @@
         online_payment_select.select2().on('change', function () {
             var driver = online_payment_select.val();
             $('.gateway-settings:not(.active-gateway)').addClass('hidden');
-            $('#gateway-settings-' + driver).removeClass('hidden');
+            $('#gateway-settings-' + driver).removeClass('hidden').addClass('active-gateway');
         });
     });
 </script>
@@ -20,8 +20,9 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="settings[enable_online_payments]"
-                            <?php check_select(get_setting('enable_online_payments'), 'on', '==', true) ?>>
+                        <input type="hidden" name="settings[enable_online_payments]" value="0">
+                        <input type="checkbox" name="settings[enable_online_payments]" value="1"
+                            <?php check_select(get_setting('enable_online_payments'), 1, '==', true) ?>>
                         <?php _trans('enable_online_payments'); ?>
                     </label>
                 </div>
@@ -51,15 +52,17 @@
         $d = strtolower($driver);
         ?>
         <div id="gateway-settings-<?php echo $d; ?>"
-             class="gateway-settings panel panel-default <?php echo get_setting('gateway_' . $d) == 'on' ? 'active-gateway' : 'hidden'; ?>">
+             class="gateway-settings panel panel-default <?php echo get_setting('gateway_' . $d . '_enabled') ? 'active-gateway' : 'hidden'; ?>">
 
             <div class="panel-heading">
                 <?php echo ucwords(str_replace('_', ' ', $driver)); ?>
                 <div class="pull-right">
                     <div class="checkbox no-margin">
                         <label>
-                            <input type="checkbox" name="settings[gateway_<?php echo $d; ?>]"
-                                <?php check_select(get_setting('gateway_' . $d), 'on', '==', true) ?>>
+                            <input type="hidden" name="settings[gateway_<?php echo $d; ?>_enabled]" value="0">
+                            <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_enabled]" value="1"
+                                   id="settings[gateway_<?php echo $d; ?>_enabled]"
+                                <?php check_select(get_setting('gateway_' . $d . '_enabled'), 1, '==', true) ?>>
                             <?php _trans('enabled'); ?>
                         </label>
                     </div>
@@ -73,8 +76,9 @@
 
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
-                                    <?php check_select(get_setting('gateway_' . $d . '_' . $key), 'on', '==', true) ?>>
+                                <input type="hidden" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" value="0">
+                                <input type="checkbox" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]" value="1"
+                                    <?php check_select(get_setting('gateway_' . $d . '_' . $key), 1, '==', true) ?>>
                                 <?php _trans('online_payment_' . $key, '', $setting['label']); ?>
                             </label>
                         </div>
