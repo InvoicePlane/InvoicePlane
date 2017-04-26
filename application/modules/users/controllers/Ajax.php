@@ -51,8 +51,6 @@ class Ajax extends Admin_Controller
 
     public function load_user_client_table()
     {
-        $this->load->helper('client');
-
         $session_user_clients = $this->session->userdata('user_clients');
 
         if ($session_user_clients) {
@@ -77,7 +75,6 @@ class Ajax extends Admin_Controller
     public function modal_add_user_client($user_id = null)
     {
         $this->load->model('clients/mdl_clients');
-        $this->load->helper('client');
 
         if ($session_user_clients = $this->session->userdata('user_clients')) {
             $clients = $this->mdl_clients->where_not_in('ip_clients.client_id', $session_user_clients)->get()->result();

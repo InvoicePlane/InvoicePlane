@@ -44,7 +44,6 @@ class Clients extends Admin_Controller
 
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
-        $this->load->helper('client');
 
         $this->layout->set(
             array(
@@ -180,8 +179,6 @@ class Clients extends Admin_Controller
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
-
-        $this->load->helper('client');
 
         $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();

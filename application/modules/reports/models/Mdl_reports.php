@@ -22,7 +22,6 @@ class Mdl_Reports extends CI_Model
      */
     public function sales_by_client($from_date = null, $to_date = null)
     {
-        $this->load->helper('client');
         $this->db->select('client_name, client_surname, CONCAT(client_name," ", client_surname) AS client_namesurname');
 
         if ($from_date and $to_date) {
@@ -114,7 +113,6 @@ class Mdl_Reports extends CI_Model
      */
     public function payment_history($from_date = null, $to_date = null)
     {
-        $this->load->helper('client');
         $this->load->model('payments/mdl_payments');
 
         if ($from_date and $to_date) {
@@ -199,7 +197,6 @@ class Mdl_Reports extends CI_Model
      */
     public function sales_by_year($from_date = null, $to_date = null, $minQuantity = null, $maxQuantity = null, $taxChecked = False)
     {
-        $this->load->helper('client');
         if ($minQuantity == "") $minQuantity = 0;
 
         if ($from_date == "") $from_date = date("Y-m-d");

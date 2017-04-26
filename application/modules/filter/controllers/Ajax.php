@@ -64,7 +64,6 @@ class Ajax extends Admin_Controller
     public function filter_clients()
     {
         $this->load->model('clients/mdl_clients');
-        $this->load->helper('client');
 
         $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);

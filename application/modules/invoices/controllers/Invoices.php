@@ -56,8 +56,6 @@ class Invoices extends Admin_Controller
                 break;
         }
 
-        $this->load->helper('client');
-
         $this->mdl_invoices->paginate(site_url('invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 

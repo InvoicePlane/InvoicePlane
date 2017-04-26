@@ -59,7 +59,6 @@ class Quotes extends Admin_Controller
                 break;
         }
 
-        $this->load->helper('client');
         $this->mdl_quotes->paginate(site_url('quotes/status/' . $status), $page);
         $quotes = $this->mdl_quotes->result();
 
@@ -84,7 +83,6 @@ class Quotes extends Admin_Controller
     public function view($quote_id)
     {
         $this->load->helper('custom_values');
-        $this->load->helper('client');
         $this->load->model('mdl_quote_items');
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('units/mdl_units');

@@ -25,8 +25,6 @@ class User_Clients extends Admin_Controller
         $this->load->model('users/mdl_users');
         $this->load->model('clients/mdl_clients');
         $this->load->model('user_clients/mdl_user_clients');
-
-        $this->load->helper('client');
     }
 
     public function index()

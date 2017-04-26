@@ -31,11 +31,12 @@ function env($env_key, $default = null) {
 /**
  * Small helper function to get bool values for the env setting
  *
- * @param $env_key
+ * @param string $env_key
+ * @param boolean $default
  * @return bool
  */
-function env_bool($env_key) {
-    return getenv($env_key) === 'true' ? true : false;
+function env_bool($env_key, $default = false) {
+    return env($env_key, $default) === 'true' ? true : false;
 }
 
 // Enable debug mode if enabled
