@@ -208,7 +208,7 @@
                                       class="input-sm form-control"
                                 <?php if ($invoice->is_read_only == 1) {
                                     echo 'disabled="disabled"';
-                                } ?>><?php echo nl2br(htmlsc($item->item_description)); ?></textarea>
+                                } ?>><?php echo htmlsc($item->item_description); ?></textarea>
                         </div>
                     </td>
                 <?php else: ?>
