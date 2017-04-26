@@ -91,6 +91,12 @@ module.exports = function (grunt) {
                 'node_modules/clipboard/dist/clipboard.js'
             ],
             dest: 'assets/core/js/dependencies.js'
+        },
+        zxcvbn: {
+            src: [
+                'node_modules/zxcvbn/dist/zxcvbn.js'
+            ],
+            dest: 'assets/core/js/zxcvbn.js'
         }
     });
 
@@ -154,6 +160,7 @@ module.exports = function (grunt) {
         'postcss:dev',
         'concat:legacy',
         'concat:dependencies',
+        'concat:zxcvbn',
         'copy:datepickerlocale',
         'copy:fontawesome',
         'copy:devjs'
@@ -165,6 +172,7 @@ module.exports = function (grunt) {
         'postcss:dev',
         'concat:legacy',
         'concat:dependencies',
+        'concat:zxcvbn',
         'copy:datepickerlocale',
         'copy:fontawesome',
         'copy:devjs',
@@ -177,6 +185,7 @@ module.exports = function (grunt) {
         'postcss:build',
         'concat:legacy',
         'concat:dependencies',
+        'concat:zxcvbn',
         'uglify:build',
         'clean:build',
         'copy:datepickerlocale',

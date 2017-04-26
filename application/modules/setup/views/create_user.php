@@ -7,6 +7,8 @@
     });
 </script>
 
+<script src="<?php echo base_url(); ?>assets/core/js/zxcvbn.js"></script>
+
 <div class="container">
     <div class="install-panel">
 
@@ -46,7 +48,14 @@
                 <label for="user_password">
                     <?php _trans('password'); ?>
                 </label>
-                <input type="password" name="user_password" id="user_password" class="form-control">
+                <input type="password" name="user_password" id="user_password"
+                       class="form-control passwordmeter-input">
+                <div class="progress" style="height:3px;">
+                    <div class="progress-bar progress-bar-danger passmeter passmeter-1" style="width: 33%"></div>
+                    <div class="progress-bar progress-bar-warning passmeter passmeter-2" style="display: none; width: 33%"></div>
+                    <div class="progress-bar progress-bar-success passmeter passmeter-3" style="display: none; width: 34%"></div>
+                </div>
+
                 <span class="help-block"><?php _trans('setup_user_password_info'); ?></span>
             </div>
 
