@@ -21,7 +21,6 @@ class View extends Base_Controller
     public function invoice($invoice_url_key)
     {
         $this->load->model('invoices/mdl_invoices');
-        $this->load->helper('client');
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
 

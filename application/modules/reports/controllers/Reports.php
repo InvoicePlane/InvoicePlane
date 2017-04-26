@@ -70,7 +70,6 @@ class Reports extends Admin_Controller
                 'results' => $this->mdl_reports->invoice_aging()
             );
 
-            $this->load->helper('client');
             $html = $this->load->view('reports/invoice_aging', $data, true);
 
             $this->load->helper('mpdf');
