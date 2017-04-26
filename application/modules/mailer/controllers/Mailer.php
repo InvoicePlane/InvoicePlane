@@ -57,10 +57,18 @@ class Mailer extends Admin_Controller
             $this->layout->set('email_template', '{}');
         }
 
+        // Get all custom fields
+        $this->load->model('custom_fields/mdl_custom_fields');
+        $custom_fields = array();
+        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
+            $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
+        }
+
         $this->layout->set('selected_pdf_template', select_pdf_invoice_template($invoice));
         $this->layout->set('selected_email_template', $email_template_id);
         $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result());
         $this->layout->set('invoice', $invoice);
+        $this->layout->set('custom_fields', $custom_fields);
         $this->layout->set('pdf_templates', $this->mdl_templates->get_invoice_templates());
         $this->layout->buffer('content', 'mailer/invoice');
         $this->layout->render();
@@ -87,10 +95,18 @@ class Mailer extends Admin_Controller
             $this->layout->set('email_template', '{}');
         }
 
+        // Get all custom fields
+        $this->load->model('custom_fields/mdl_custom_fields');
+        $custom_fields = array();
+        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
+            $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
+        }
+
         $this->layout->set('selected_pdf_template', get_setting('pdf_quote_template'));
         $this->layout->set('selected_email_template', $email_template_id);
         $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
         $this->layout->set('quote', $this->mdl_quotes->get_by_id($quote_id));
+        $this->layout->set('custom_fields', $custom_fields);
         $this->layout->set('pdf_templates', $this->mdl_templates->get_quote_templates());
         $this->layout->buffer('content', 'mailer/quote');
         $this->layout->render();
@@ -123,11 +139,12 @@ class Mailer extends Admin_Controller
 
         $pdf_template = $this->input->post('pdf_template');
         $subject = $this->input->post('subject');
+        $body = $this->input->post('body');
 
-        if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
-            $body = htmlspecialchars_decode($this->input->post('body'));
+        if (strlen($body) != strlen(strip_tags($body))) {
+            $body = htmlspecialchars_decode($body);
         } else {
-            $body = htmlspecialchars_decode(nl2br($this->input->post('body')));
+            $body = htmlspecialchars_decode(nl2br($body));
         }
 
         $cc = $this->input->post('cc');

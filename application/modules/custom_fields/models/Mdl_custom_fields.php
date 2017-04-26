@@ -211,12 +211,13 @@ class Mdl_Custom_Fields extends MY_Model
             ->where($cf_model_name . '_id', $model_id)
             ->get()->result();
 
-        if (empty($value)) {
+        $value_key = $cf_table . '_fieldvalue';
+
+        if (!isset($value[0]->$value_key)) {
             return '';
         }
 
-        $value_key = $cf_table . '_fieldvalue';
-        return isset($value->$value_key) ? $value->$value_key : '';
+        return $value[0]->$value_key;
     }
 
     /**
