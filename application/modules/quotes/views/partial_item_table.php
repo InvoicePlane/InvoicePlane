@@ -167,7 +167,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('description'); ?></span>
                         <textarea name="item_description" class="input-sm form-control"
-                        ><?php echo nl2br(htmlsc($item->item_description)); ?></textarea>
+                        ><?php echo htmlsc($item->item_description); ?></textarea>
                     </div>
                 </td>
                 <td class="td-amount">

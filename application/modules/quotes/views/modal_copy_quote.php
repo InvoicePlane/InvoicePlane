@@ -5,11 +5,13 @@
         // Select2 for all select inputs
         $(".simple-select").select2();
 
+        <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
+
         // Creates the quote
         $('#copy_quote_confirm').click(function () {
             $.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
-                    client_name: $('#client_name').val(),
+                    client_id: $('#client_id').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     user_id: $('#user_id').val()
@@ -44,13 +46,13 @@
             <input type="hidden" name="user_id" id="user_id" value="<?php echo $quote->user_id; ?>">
 
             <div class="form-group">
-                <label for="client_name">
-                    <?php _trans('client'); ?>
-                </label>
-                <input type="text" name="client_name" id="client_name"
-                       class="form-control" autocomplete="off"
-                       data-provide="typeahead" data-items="8" data-source=''
-                       value="<?php _htmlsc($quote->client_name); ?>">
+                <label for="create_quote_client_id"><?php _trans('client'); ?></label>
+                <select name="client_id" id="create_quote_client_id" class="client-id-select form-control"
+                        autofocus="autofocus">
+                    <?php if (!empty($client)) : ?>
+                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
+                    <?php endif; ?>
+                </select>
             </div>
 
             <div class="form-group has-feedback">

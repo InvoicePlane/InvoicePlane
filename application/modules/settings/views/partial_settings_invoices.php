@@ -289,7 +289,7 @@
                             <?php _trans('pdf_invoice_footer'); ?>
                         </label>
                         <textarea name="settings[pdf_invoice_footer]" id="settings[pdf_invoice_footer]"
-                                  class="form-control no-margin"><?php echo get_setting('pdf_invoice_footer'); ?></textarea>
+                                  class="form-control no-margin"><?php echo get_setting('pdf_invoice_footer', '', true); ?></textarea>
                         <p class="help-block"><?php _trans('pdf_invoice_footer_hint'); ?></p>
                     </div>
 

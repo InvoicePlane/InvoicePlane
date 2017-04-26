@@ -879,6 +879,18 @@ legend, .install-step h2 {
   transform: rotate(22deg);
 }
 
+.passwordmeter-input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 0;
+  padding-bottom: $padding-base-vertical + 3px;
+
+  + .progress {
+    height: 3px;
+    margin: -3px 0 0;
+  }
+}
+
 /*
 |   =========================================================
 |   Login

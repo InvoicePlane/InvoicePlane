@@ -87,7 +87,6 @@ class Projects extends Admin_Controller
         }
 
         $this->load->model('tasks/mdl_tasks');
-        $this->load->helper('client');
 
         $this->layout->set(array(
             'project' => $project,

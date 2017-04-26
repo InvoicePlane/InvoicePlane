@@ -82,21 +82,21 @@ $cv = $this->controller->view_data["custom_values"];
                             <?php if (!$id) { ?>
                                 <div class="form-group">
                                     <label for="user_password">
-                                        <?php _trans('verify_password'); ?>
+                                        <?php _trans('password'); ?>
                                     </label>
                                     <input type="password" name="user_password" id="user_password" class="form-control">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="user_password">
-                                        <?php _trans('password'); ?>
+                                        <?php _trans('verify_password'); ?>
                                     </label>
                                     <input type="password" name="user_passwordv" id="user_passwordv"
                                            class="form-control">
                                 </div>
                             <?php } else { ?>
                                 <div class="form-group">
-                                    <a href="<?php site_url('users/change_password/' . $id) ?>" class="btn btn-default">
+                                    <a href="<?php echo site_url('users/change_password/' . $id); ?>" class="btn btn-default">
                                         <?php _trans('change_password'); ?>
                                     </a>
                                 </div>

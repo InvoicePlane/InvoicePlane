@@ -21,7 +21,6 @@ class Ajax extends Admin_Controller
     {
         // Load the model & helper
         $this->load->model('clients/mdl_clients');
-        $this->load->helper('client');
 
         $response = array();
 
