@@ -22,6 +22,10 @@ class Setup extends MX_Controller
      */
     public function __construct()
     {
+        if (env_bool('DISABLE_SETUP', false)) {
+            show_error('The setup is disabled.', 403);
+        }
+
         parent::__construct();
 
         $this->load->library('session');
@@ -40,6 +44,8 @@ class Setup extends MX_Controller
 
         if (!$this->session->userdata('ip_lang')) {
             $this->session->set_userdata('ip_lang', 'english');
+        } else {
+            set_language($this->session->userdata('ip_lang'));
         }
 
         $this->lang->load('ip', $this->session->userdata('ip_lang'));
