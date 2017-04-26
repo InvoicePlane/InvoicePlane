@@ -177,7 +177,6 @@ class Ajax extends Admin_Controller
     {
         $this->load->module('layout');
         $this->load->model('clients/mdl_clients');
-        $this->load->helper('client');
 
         $data = array(
             'client_id' => $this->input->post('client_id'),
@@ -233,9 +232,7 @@ class Ajax extends Admin_Controller
 
     public function modal_create_quote()
     {
-        $this->load->helper('client');
         $this->load->module('layout');
-
         $this->load->model('invoice_groups/mdl_invoice_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('clients/mdl_clients');

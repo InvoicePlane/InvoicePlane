@@ -44,8 +44,6 @@ class Users extends Admin_Controller
      */
     public function form($id = null)
     {
-        $this->load->helper('client');
-
         if ($this->input->post('btn_cancel')) {
             redirect('users');
         }

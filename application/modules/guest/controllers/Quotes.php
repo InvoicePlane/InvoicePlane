@@ -37,7 +37,6 @@ class Quotes extends Guest_Controller
      */
     public function status($status = 'open', $page = 0)
     {
-        $this->load->helper('client');
         redirect_to_set();
 
         // Determine which group of quotes to load
@@ -74,7 +73,6 @@ class Quotes extends Guest_Controller
      */
     public function view($quote_id)
     {
-        $this->load->helper('client');
         redirect_to_set();
 
         $this->load->model('quotes/mdl_quote_items');

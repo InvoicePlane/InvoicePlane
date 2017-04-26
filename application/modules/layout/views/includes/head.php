@@ -71,13 +71,11 @@
 
         $(document).on('click', '.client-create-invoice', function () {
             var client_id = $(this).data('client-id');
-            console.log(this, client_id);
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_invoice'); ?>", {client_id: client_id});
         });
 
         $(document).on('click', '.client-create-quote', function () {
             var client_id = $(this).data('client-id');
-            console.log(this, client_id);
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {client_id: client_id});
         });
 
