@@ -166,7 +166,8 @@ $cv = $this->controller->view_data["custom_values"];
                 </li>
                 <li>
                     <a href="#" id="btn_copy_quote"
-                       data-quote-id="<?php echo $quote_id; ?>">
+                       data-quote-id="<?php echo $quote_id; ?>"
+                       data-client-id="<?php echo $quote->client_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_quote'); ?>
                     </a>
