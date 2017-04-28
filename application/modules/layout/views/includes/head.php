@@ -1,5 +1,10 @@
 <title>
-    <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
+    <?php
+    if (get_setting('custom_title') != '') {
+        echo get_setting('custom_title', '', true);
+    } else {
+        echo 'InvoicePlane';
+    } ?>
 </title>
 
 <meta charset="utf-8">
