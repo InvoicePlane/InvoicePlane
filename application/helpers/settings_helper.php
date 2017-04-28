@@ -15,6 +15,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  * @param string $setting_key
  * @param mixed $default
+ * @param boolean $escape
  * @return string
  */
 function get_setting($setting_key, $default = '', $escape = false)
