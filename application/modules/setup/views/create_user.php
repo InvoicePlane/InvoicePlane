@@ -4,6 +4,20 @@
             placeholder: "<?php _trans('country'); ?>",
             allowClear: true
         });
+
+        var password_input = $('.passwordmeter-input');
+        if (password_input) {
+            password_input.on('input', function(){
+                var strength = zxcvbn(password_input.val());
+
+                $('.passmeter-2, .passmeter-3').hide();
+                if (strength.score === 4) {
+                    $('.passmeter-2, .passmeter-3').show();
+                } else if (strength.score === 3) {
+                    $('.passmeter-2').show();
+                }
+            });
+        }
     });
 </script>
 
