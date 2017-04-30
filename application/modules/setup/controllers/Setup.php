@@ -153,7 +153,6 @@ class Setup extends MX_Controller
             './uploads/customer_files',
             './uploads/temp',
             './uploads/temp/mpdf',
-            './application/config/',
             './application/logs',
         );
 
@@ -210,9 +209,9 @@ class Setup extends MX_Controller
         }
 
         // Check if the set credentials are correct
-        $check_databse = $this->check_database();
+        $check_database = $this->check_database();
 
-        $this->layout->set('database', $check_databse);
+        $this->layout->set('database', $check_database);
         $this->layout->set('errors', $this->errors);
         $this->layout->buffer('content', 'setup/configure_database');
         $this->layout->render('setup');
@@ -251,41 +250,45 @@ class Setup extends MX_Controller
      */
     private function check_database()
     {
-        $this->load->library('lib_mysql');
-
         // Reload the ipconfig.php file
         global $dotenv;
         $dotenv->overload();
 
-        // Load the database config
+        // Load the database config and configure it to test the connection
         include(APPPATH . 'config/database.php');
         $db = $db['default'];
+        $db['autoinit'] = false;
+        $db['db_debug'] = false;
 
-        $can_connect = $this->lib_mysql->connect($db['hostname'], $db['username'], $db['password']);
+        // Check if there is some configuration set
+        if (empty($db['hostname'])) {
+            $this->errors += 1;
+
+            return array(
+                'message' => trans('cannot_connect_database_server'),
+                'success' => false,
+            );
+        }
+
+        // Initialize the database connection, turn off automatic error reporting to display connection issues manually
+        error_reporting(0);
+        $db_object = $this->load->database($db, true);
+
+        // Try to initialize the database connection
+        $can_connect = $db_object->conn_id ? true : false;
 
         if (!$can_connect) {
             $this->errors += 1;
 
             return array(
-                'message' => trans('cannot_connect_database_server'),
-                'success' => 0
-            );
-        }
-
-        $can_select_db = $this->lib_mysql->select_db($can_connect, $db['database']);
-
-        if (!$can_select_db) {
-            $this->errors += 1;
-
-            return array(
-                'message' => trans('cannot_select_specified_database'),
-                'success' => 0
+                'message' => trans('setup_db_cannot_connect'),
+                'success' => false,
             );
         }
 
         return array(
             'message' => trans('database_properly_configured'),
-            'success' => 1
+            'success' => true,
         );
     }
 

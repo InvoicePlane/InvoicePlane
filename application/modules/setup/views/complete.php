@@ -15,16 +15,6 @@
 
         <p class="alert alert-warning">
             <?php _trans('setup_complete_secure_setup'); ?>
-            <br/>
-            <code>Redirect /setup
-                <?php
-                if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'])
-                    echo 'https';
-                else
-                    echo 'http';
-                echo '://' . $_SERVER['HTTP_HOST'] . '/'
-                ?>
-            </code>
         </p>
 
         <?php if ($this->session->userdata('setup_notice')) {
