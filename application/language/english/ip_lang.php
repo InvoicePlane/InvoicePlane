@@ -325,6 +325,7 @@ $lang = array(
     'password_reset_info'                          => 'You will get an Email with a link to reset your password.',
     'password_reset_failed'                        => 'An error occurred while trying to send your password reset email. Please review the application logs or contact the system administrator.',
     'pay_now'                                      => 'Pay Now',
+    'pay_now_for'                                  => 'Pay Now for',
     'payment'                                      => 'Payment',
     'payment_cannot_exceed_balance'                => 'Payment amount cannot exceed invoice balance.',
     'payment_date'                                 => 'Payment Date',
