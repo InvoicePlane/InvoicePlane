@@ -173,6 +173,7 @@ $lang = array(
     'email_template_tags'                          => 'Email Template Tags',
     'email_template_tags_instructions'             => 'Template tags can be used to add dynamic information like the client name or an invoice number to the email template. Click on the Body textfield and then select a tag from the drop down. It will be automatically inserted into the textfield.',
     'email_templates'                              => 'Email Templates',
+    'enabled'                                      => 'Enabled',
     'enable_debug_mode'                            => 'Enable the Debug Mode',
     'end_date'                                     => 'End Date',
     'enter_payment'                                => 'Enter Payment',
