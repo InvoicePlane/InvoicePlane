@@ -17,7 +17,7 @@ if (!defined('BASEPATH')) {
  * 
  */
 
-class Payment_Information extends Guest_Controller
+class Payment_Information extends Base_Controller
 {
     public function __construct()
     {
@@ -28,11 +28,11 @@ class Payment_Information extends Guest_Controller
 
     public function form($invoice_url_key)
     {
+        $this->load->model('payment_methods/mdl_payment_methods');
         $disable_form = false;
 
         // Check if the invoice exists and is billable
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)
-            ->where_in('ip_invoices.client_id', $this->user_clients)
             ->get()->row();
 
         if (!$invoice) {
@@ -65,16 +65,24 @@ class Payment_Information extends Guest_Controller
             }
         }
 
-        $this->layout->set(
-            array(
-                'disable_form' => $disable_form,
-                'invoice' => $invoice,
-                'gateways' => $available_drivers,
-            )
+        // Get additional invoice information
+        $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
+        if ($invoice->payment_method == 0) {
+            $payment_method = null;
+        }
+
+        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
+
+        // Return the view
+        $view_data = array(
+            'disable_form' => $disable_form,
+            'invoice' => $invoice,
+            'gateways' => $available_drivers,
+            'payment_method' => $payment_method,
+            'is_overdue' => $is_overdue,
         );
 
-        $this->layout->buffer('content', 'guest/payment_information');
-        $this->layout->render('layout_guest');
+        $this->load->view('guest/payment_information', $view_data);
 
     }
 

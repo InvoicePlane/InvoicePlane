@@ -90,10 +90,15 @@
                 <tr>
                     <td style="border-bottom: none;">&nbsp;</td>
                     <td style="border-bottom: none;text-align:center;"><?php
-                        if ($quarter == "t1") echo trans('Q1') . "/" . $year;
-                        else if ($quarter == "t2") echo trans('Q2') . "/" . $year;
-                        else if ($quarter == "t3") echo trans('Q3') . "/" . $year;
-                        else if ($quarter == "t4") echo trans('Q4') . "/" . $year;
+                        if ($quarter == "t1") {
+                            echo trans('Q1') . "/" . $year;
+                        } else if ($quarter == "t2") {
+                            echo trans('Q2') . "/" . $year;
+                        } else if ($quarter == "t3") {
+                            echo trans('Q3') . "/" . $year;
+                        } else if ($quarter == "t4") {
+                            echo trans('Q4') . "/" . $year;
+                        }
                         ?></td>
                     <td style="border-bottom: none;text-align:center;"><?php if ($value > 0) {
                             echo format_currency($value);

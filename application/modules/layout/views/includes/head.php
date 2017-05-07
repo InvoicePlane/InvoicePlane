@@ -72,7 +72,10 @@
         $(document).on('click', '#btn_copy_quote', function () {
             var quote_id = $(this).data('quote-id');
             var client_id = $(this).data('client-id');
-            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {quote_id: quote_id, client_id: client_id});
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_copy_quote'); ?>", {
+                quote_id: quote_id,
+                client_id: client_id
+            });
         });
 
         $(document).on('click', '.client-create-invoice', function () {

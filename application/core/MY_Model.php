@@ -319,7 +319,7 @@ class MY_Model extends CI_Model
      * Used to retrieve record by ID and populate $this->form_values
      *
      * @param int $id
-     * @return boolean
+     * @return boolean|null
      */
     public function prep_form($id = null)
     {
@@ -396,7 +396,7 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param $value
      */
     public function set_form_value($key, $value)

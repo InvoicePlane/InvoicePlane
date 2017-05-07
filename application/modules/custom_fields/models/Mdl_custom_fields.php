@@ -31,7 +31,7 @@ class Mdl_Custom_Fields extends MY_Model
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public static function custom_types()
     {

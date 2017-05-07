@@ -277,6 +277,9 @@ class Mdl_Quotes extends Response_Model
         return $db_array;
     }
 
+    /**
+     * @param string $quote_date_created
+     */
     public function get_date_due($quote_date_created)
     {
         $quote_date_expires = new DateTime($quote_date_created);

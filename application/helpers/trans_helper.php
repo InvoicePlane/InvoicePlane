@@ -57,13 +57,14 @@ function set_language($language)
     $CI->lang->language = array();
 
     // Load system language if no custom language is set
-    $language = $language == 'system' ? $CI->mdl_settings->setting('default_language') : $language;
+    $default_lang = isset($CI->mdl_settings) ? $CI->mdl_settings->setting('default_language') : 'english';
+    $new_language = ($language == 'system' ? $default_lang : $language);
 
     // Set the new language
-    $CI->lang->load('ip', $language);
-    $CI->lang->load('form_validation', $language);
-    $CI->lang->load('custom', $language);
-    $CI->lang->load('gateway', $language);
+    $CI->lang->load('ip', $new_language);
+    $CI->lang->load('form_validation', $new_language);
+    $CI->lang->load('custom', $new_language);
+    $CI->lang->load('gateway', $new_language);
 }
 
 /**
@@ -79,7 +80,8 @@ function reset_language()
     $CI->lang->language = array();
 
     // Reset to the default language
-    $default_lang = $CI->mdl_settings->setting('default_language');
+    $default_lang = isset($CI->mdl_settings) ? $CI->mdl_settings->setting('default_language') : 'english';
+
     $CI->lang->load('ip', $default_lang);
     $CI->lang->load('form_validation', $default_lang);
     $CI->lang->load('custom', $default_lang);

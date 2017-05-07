@@ -40,7 +40,7 @@ class Mdl_Setup extends CI_Model
     }
 
     /**
-     * @param $contents
+     * @param string $contents
      */
     private function execute_contents($contents)
     {

@@ -128,7 +128,7 @@ function is_date($date)
 }
 
 /**
- * @return mixed
+ * @return string
  */
 function date_format_setting()
 {
@@ -142,7 +142,7 @@ function date_format_setting()
 }
 
 /**
- * @return mixed
+ * @return string
  */
 function date_format_datepicker()
 {

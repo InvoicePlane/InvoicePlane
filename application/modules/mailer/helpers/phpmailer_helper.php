@@ -45,8 +45,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
             if (get_setting('smtp_authentication')) {
                 $mail->SMTPAuth = true;
 
-                $encoded = $CI->mdl_settings->get('smtp_password');
-                $decoded = $CI->crypt->decode($encoded);
+                $decoded = $CI->crypt->decode($CI->mdl_settings->get('smtp_password'));
 
                 $mail->Username = get_setting('smtp_username');
                 $mail->Password = $decoded;
@@ -55,6 +54,17 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
             // Is a security method required?
             if (get_setting('smtp_security')) {
                 $mail->SMTPSecure = get_setting('smtp_security');
+            }
+
+            // Check if certificates should not be verified
+            if (!get_setting('smtp_verify_certs', true)) {
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
             }
 
             break;
