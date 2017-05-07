@@ -39,7 +39,9 @@ class Mailer extends Admin_Controller
      */
     public function invoice($invoice_id)
     {
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $this->load->model('invoices/mdl_templates');
         $this->load->model('invoices/mdl_invoices');
@@ -79,7 +81,9 @@ class Mailer extends Admin_Controller
      */
     public function quote($quote_id)
     {
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $this->load->model('invoices/mdl_templates');
         $this->load->model('quotes/mdl_quotes');
@@ -122,7 +126,9 @@ class Mailer extends Admin_Controller
             redirect('invoices/view/' . $invoice_id);
         }
 
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $to = $this->input->post('to_email');
 
@@ -169,7 +175,9 @@ class Mailer extends Admin_Controller
             redirect('quotes/view/' . $quote_id);
         }
 
-        if (!$this->mailer_configured) return;
+        if (!$this->mailer_configured) {
+            return;
+        }
 
         $to = $this->input->post('to_email');
 

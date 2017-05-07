@@ -91,7 +91,9 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
                             <label for="task_status"><?php _trans('status'); ?></label>
                             <select name="task_status" id="task_status" class="form-control simple-select">
                                 <?php foreach ($task_statuses as $key => $status) {
-                                    if ($this->mdl_tasks->form_value('task_status') != 4 && $key == 4) continue; ?>
+                                    if ($this->mdl_tasks->form_value('task_status') != 4 && $key == 4) {
+                                        continue;
+                                    } ?>
                                     <option value="<?php echo $key; ?>" <?php check_select($key, $this->mdl_tasks->form_value('task_status')); ?>>
                                         <?php echo $status['label']; ?>
                                     </option>

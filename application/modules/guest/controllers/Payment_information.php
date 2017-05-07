@@ -67,7 +67,9 @@ class Payment_Information extends Base_Controller
 
         // Get additional invoice information
         $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-        if ($invoice->payment_method == 0) $payment_method = null;
+        if ($invoice->payment_method == 0) {
+            $payment_method = null;
+        }
 
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 

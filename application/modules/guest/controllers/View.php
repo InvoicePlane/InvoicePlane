@@ -36,7 +36,9 @@ class View extends Base_Controller
             }
 
             $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-            if ($invoice->payment_method == 0) $payment_method = null;
+            if ($invoice->payment_method == 0) {
+                $payment_method = null;
+            }
 
             // Attachments
             $attachments = $this->get_attachments($invoice_url_key);

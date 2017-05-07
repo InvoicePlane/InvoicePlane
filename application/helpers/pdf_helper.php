@@ -43,7 +43,9 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-    if ($invoice->payment_method == 0) $payment_method = false;
+    if ($invoice->payment_method == 0) {
+        $payment_method = false;
+    }
 
     // Determine if discounts should be displayed
     $items = $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result();

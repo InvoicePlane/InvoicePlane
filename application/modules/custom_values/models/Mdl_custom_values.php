@@ -19,7 +19,7 @@ class Mdl_Custom_Values extends MY_Model
     public $primary_key = 'ip_custom_values.custom_values_id';
 
     /**
-     * @return array
+     * @return string[]
      */
     public static function custom_types()
     {
@@ -27,7 +27,7 @@ class Mdl_Custom_Values extends MY_Model
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public static function user_input_types()
     {
@@ -39,7 +39,7 @@ class Mdl_Custom_Values extends MY_Model
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public static function custom_value_fields()
     {

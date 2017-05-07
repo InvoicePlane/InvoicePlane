@@ -47,9 +47,9 @@ function invoice_logo_pdf()
  * Returns a Swiss IS / IS+ code line
  * Documentation: https://www.postfinance.ch/binp/postfinance/public/dam.M26m_i6_6ceYcN2XtAN4w8OHMynQG7FKxJVK8TtQzr0.spool/content/dam/pf/de/doc/consult/manual/dlserv/inpayslip_isr_man_en.pdf
  *
- * @param $slipType
+ * @param string $slipType
  * @param $amount
- * @param $rnumb
+ * @param string $rnumb
  * @param $subNumb
  * @return string
  * @throws Error
@@ -89,7 +89,8 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
  * See https://www.postfinance.ch/binp/postfinance/public/dam.Ii-X5NgtAixO8cQPvja46blV6d7cZCyGUscxO15L5S8.spool/content/dam/pf/de/doc/consult/manual/dldata/efin_recdescr_man_en.pdf
  * Page 5
  *
- * @return string
+ * @param string $in
+ * @return integer
  */
 function invoice_recMod10($in)
 {

@@ -41,7 +41,7 @@ class Upload extends Admin_Controller
     /**
      * @param $customerId
      * @param $url_key
-     * @return bool
+     * @return boolean|null
      */
     public function upload_file($customerId, $url_key)
     {
@@ -85,7 +85,7 @@ class Upload extends Admin_Controller
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @param string $chmod
      * @return bool
      */

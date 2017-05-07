@@ -112,7 +112,9 @@ class Mdl_Settings extends CI_Model
         $themes = [];
 
         foreach ($found_folders as $theme) {
-            if ($theme == 'core') continue;
+            if ($theme == 'core') {
+                continue;
+            }
 
             // Get the theme info file
             $theme = str_replace('/', '', $theme);

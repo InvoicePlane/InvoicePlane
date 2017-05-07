@@ -130,11 +130,11 @@
                             </div>
                         </div>
                         <?php if (!empty($invoice->invoice_terms)) : ?>
-                        <div class="col-xs-12 text-muted">
-                            <br>
-                            <h4><?php echo trans('terms'); ?></h4>
-                            <div><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></div>
-                        </div>
+                            <div class="col-xs-12 text-muted">
+                                <br>
+                                <h4><?php echo trans('terms'); ?></h4>
+                                <div><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></div>
+                            </div>
                         <?php endif; ?>
                     </div>
 

@@ -33,7 +33,7 @@ function mailer_configured()
  * @param $from
  * @param $to
  * @param $subject
- * @param $body
+ * @param string $body
  * @param null $cc
  * @param null $bcc
  * @param null $attachments
@@ -75,7 +75,7 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
  * @param $from
  * @param $to
  * @param $subject
- * @param $body
+ * @param string $body
  * @param null $cc
  * @param null $bcc
  * @param null $attachments
@@ -107,7 +107,7 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
 /**
  * Send an email if the status of an email changed
  * @param $quote_id
- * @param $status string "accepted" or "rejected"
+ * @param string $status string "accepted" or "rejected"
  * @return bool if the email was sent
  */
 function email_quote_status($quote_id, $status)
@@ -115,7 +115,9 @@ function email_quote_status($quote_id, $status)
     ini_set('display_errors', 'on');
     error_reporting(E_ALL);
 
-    if (!mailer_configured()) return false;
+    if (!mailer_configured()) {
+        return false;
+    }
 
     $CI = &get_instance();
     $CI->load->helper('mailer/phpmailer');
