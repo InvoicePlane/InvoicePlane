@@ -166,7 +166,9 @@ class Payment_Handler extends Base_Controller
             $key = str_replace('gateway_' . $d, '', $key);
 
             // skip empty key
-            if (!$key) continue;
+            if (!$key) {
+                continue;
+            }
 
             // Decode password fields and checkboxes
             if (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'password') {
@@ -181,7 +183,6 @@ class Payment_Handler extends Base_Controller
         }
 
         // Load Omnipay and initialize the gateway
-        require_once(FCPATH . 'vendor/autoload.php');
         $gateway = \Omnipay\Omnipay::create($driver);
         $gateway->initialize($gateway_init);
 

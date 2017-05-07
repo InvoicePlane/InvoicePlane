@@ -88,6 +88,9 @@ class ZugferdXml
         return $el;
     }
 
+    /**
+     * @return string|null
+     */
     function zugferdFormattedDate($date)
     {
         if ($date && $date <> '0000-00-00') {
@@ -155,6 +158,9 @@ class ZugferdXml
         return $node;
     }
 
+    /**
+     * @param string $schemeID
+     */
     protected function xmlSpecifiedTaxRegistration($schemeID, $content)
     {
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
@@ -200,7 +206,9 @@ class ZugferdXml
     {
         $result = [];
         foreach ($this->items as $item) {
-            if ($item->item_tax_rate_percent == 0) continue;
+            if ($item->item_tax_rate_percent == 0) {
+                continue;
+            }
 
             if (!isset($result[$item->item_tax_rate_percent])) {
                 $result[$item->item_tax_rate_percent] = 0;
@@ -221,6 +229,9 @@ class ZugferdXml
         return $node;
     }
 
+    /**
+     * @param string $name
+     */
     protected function currencyElement($name, $amount, $nb_decimals = 2)
     {
         $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
@@ -300,6 +311,9 @@ class ZugferdXml
         return $node;
     }
 
+    /**
+     * @param string $name
+     */
     protected function quantityElement($name, $quantity)
     {
         $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));

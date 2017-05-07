@@ -14,10 +14,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * Create a PDF
  *
  * @param $html
- * @param $filename
+ * @param string $filename
  * @param bool $stream
  * @param null $password
- * @param null $isInvoice
+ * @param boolean $isInvoice
  * @param null $is_guest
  * @param bool $zugferd_invoice
  * @param null $associated_files
@@ -36,7 +36,6 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
     }
 
-    require_once(FCPATH . 'vendor/autoload.php');
     $mpdf = new \Mpdf\Mpdf();
 
     // mPDF configuration

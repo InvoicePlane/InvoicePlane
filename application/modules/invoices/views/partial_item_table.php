@@ -128,7 +128,9 @@
                             echo 'disabled="disabled"';
                         } ?>>
                     <input type="hidden" name="item_task_id" class="item-task-id"
-                           value="<?php if ($item->item_task_id) echo $item->item_task_id; ?>">
+                           value="<?php if ($item->item_task_id) {
+                               echo $item->item_task_id;
+                           } ?>">
                     <input type="hidden" name="item_product_id" value="<?php echo $item->item_product_id; ?>">
 
                     <div class="input-group">

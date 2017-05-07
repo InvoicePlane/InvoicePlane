@@ -124,8 +124,9 @@ class Mdl_Import extends Response_Model
             $fileheaders = null;
             if ($row == 1) {
                 foreach ($headers as $header) {
-                    if (!in_array($header, $data))
+                    if (!in_array($header, $data)) {
                         return false;
+                    }
                 }
                 $fileheaders = $data;
             } elseif ($row > 1) {

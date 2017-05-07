@@ -43,7 +43,9 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-    if ($invoice->payment_method == 0) $payment_method = false;
+    if ($invoice->payment_method == 0) {
+        $payment_method = false;
+    }
 
     // Determine if discounts should be displayed
     $items = $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result();
@@ -115,7 +117,6 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
     // Append a copy at the end and change the title:
     // WARNING: The title depends on what invoice type is (TP, TG)
     // and is language-dependant. Fix accordingly if you really need this hack
-    require FCPATH . '/vendor/autoload.php';
     $temp = tempnam("/tmp", "invsumex_");
     $tempCopy = tempnam("/tmp", "invsumex_");
     $pdf = new FPDI();

@@ -7,7 +7,7 @@
 
         var password_input = $('.passwordmeter-input');
         if (password_input) {
-            password_input.on('input', function(){
+            password_input.on('input', function () {
                 var strength = zxcvbn(password_input.val());
 
                 $('.passmeter-2, .passmeter-3').hide();
@@ -66,8 +66,10 @@
                        class="form-control passwordmeter-input">
                 <div class="progress" style="height:3px;">
                     <div class="progress-bar progress-bar-danger passmeter passmeter-1" style="width: 33%"></div>
-                    <div class="progress-bar progress-bar-warning passmeter passmeter-2" style="display: none; width: 33%"></div>
-                    <div class="progress-bar progress-bar-success passmeter passmeter-3" style="display: none; width: 34%"></div>
+                    <div class="progress-bar progress-bar-warning passmeter passmeter-2"
+                         style="display: none; width: 33%"></div>
+                    <div class="progress-bar progress-bar-success passmeter passmeter-3"
+                         style="display: none; width: 34%"></div>
                 </div>
 
                 <span class="help-block"><?php _trans('setup_user_password_info'); ?></span>

@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * @param $str
+ * @param string $str
  * @return bool
  */
 function diacritics_seems_utf8($str)
@@ -19,16 +19,32 @@ function diacritics_seems_utf8($str)
     $length = strlen($str);
     for ($i = 0; $i < $length; $i++) {
         $c = ord($str[$i]);
-        if ($c < 0x80) $n = 0; # 0bbbbbbb
-        elseif (($c & 0xE0) == 0xC0) $n = 1; # 110bbbbb
-        elseif (($c & 0xF0) == 0xE0) $n = 2; # 1110bbbb
-        elseif (($c & 0xF8) == 0xF0) $n = 3; # 11110bbb
-        elseif (($c & 0xFC) == 0xF8) $n = 4; # 111110bb
-        elseif (($c & 0xFE) == 0xFC) $n = 5; # 1111110b
-        else return false; # Does not match any model
+        if ($c < 0x80) {
+            $n = 0;
+        } # 0bbbbbbb
+        elseif (($c & 0xE0) == 0xC0) {
+            $n = 1;
+        } # 110bbbbb
+        elseif (($c & 0xF0) == 0xE0) {
+            $n = 2;
+        } # 1110bbbb
+        elseif (($c & 0xF8) == 0xF0) {
+            $n = 3;
+        } # 11110bbb
+        elseif (($c & 0xFC) == 0xF8) {
+            $n = 4;
+        } # 111110bb
+        elseif (($c & 0xFE) == 0xFC) {
+            $n = 5;
+        } # 1111110b
+        else {
+            return false;
+        }
+        # Does not match any model
         for ($j = 0; $j < $n; $j++) { # n bytes matching 10bbbbbb follow ?
-            if ((++$i == $length) || ((ord($str[$i]) & 0xC0) != 0x80))
+            if ((++$i == $length) || ((ord($str[$i]) & 0xC0) != 0x80)) {
                 return false;
+            }
         }
     }
     return true;
@@ -44,8 +60,9 @@ function diacritics_seems_utf8($str)
  */
 function diacritics_remove_accents($string)
 {
-    if (!preg_match('/[\x80-\xff]/', $string))
+    if (!preg_match('/[\x80-\xff]/', $string)) {
         return $string;
+    }
 
     if (diacritics_seems_utf8($string)) {
         $chars = array(
@@ -174,7 +191,7 @@ function diacritics_remove_accents($string)
 }
 
 /**
- * @param $text
+ * @param string $text
  * @return string
  */
 function diacritics_remove_diacritics($text)

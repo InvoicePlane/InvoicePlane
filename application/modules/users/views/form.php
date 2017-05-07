@@ -96,7 +96,8 @@ $cv = $this->controller->view_data["custom_values"];
                                 </div>
                             <?php } else { ?>
                                 <div class="form-group">
-                                    <a href="<?php echo site_url('users/change_password/' . $id); ?>" class="btn btn-default">
+                                    <a href="<?php echo site_url('users/change_password/' . $id); ?>"
+                                       class="btn btn-default">
                                         <?php _trans('change_password'); ?>
                                     </a>
                                 </div>

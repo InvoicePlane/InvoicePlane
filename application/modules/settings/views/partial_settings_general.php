@@ -380,6 +380,23 @@
                     </div>
 
                 </div>
+                <div class="col-xs-12 col-md-6">
+
+                    <div class="form-group">
+                        <label for="settings[reports_in_new_tab]">
+                            <?php _trans('open_reports_in_new_tab'); ?>
+                        </label>
+                        <select name="settings[reports_in_new_tab]" id="settings[reports_in_new_tab]"
+                                class="form-control simple-select">
+                            <option value="0"><?php _trans('no'); ?></option>
+                            <option value="1" <?php check_select(get_setting('reports_in_new_tab'), '1'); ?>>
+                                <?php _trans('yes'); ?>
+                            </option>
+                        </select>
+                    </div>
+
+
+                </div>
             </div>
 
         </div>
