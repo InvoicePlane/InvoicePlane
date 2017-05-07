@@ -223,7 +223,7 @@
                     <div class="form-group">
                         <button class="btn btn-success btn-lg ajax-loader" type="submit">
                             <i class="fa fa-credit-card fa-margin"></i>
-                            <?php echo trans('pay_now_for') . ' ' . format_currency($invoice->invoice_balance); ?>
+                            <?php echo trans('pay_now') . ': ' . format_currency($invoice->invoice_balance); ?>
                         </button>
                     </div>
 
