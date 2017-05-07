@@ -568,6 +568,7 @@ $lang = array(
     'year_prefix'                                  => 'Year Prefix',
     'years'                                        => 'Years',
     'yes'                                          => 'Yes',
+    'zip'                                          => 'Zip Code',
     'zip_code'                                     => 'Zip Code',
 
     //Time Management
