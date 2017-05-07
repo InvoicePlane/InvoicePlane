@@ -120,27 +120,6 @@ class Settings extends Admin_Controller
 
         $this->load->helper('country');
 
-//        echo '<pre>';
-//        foreach ($gateways as $d => $setting) {
-//            $g = \Omnipay\Omnipay::create($d);
-//            echo "'$d' => array(\n";
-//            foreach ($g->getDefaultParameters() as $s => $val) {
-//                if (is_string($s)) {
-//                    echo "    '$s' => array(\n";
-//                    if ($s == 'testMode' || $s == 'developerMode' ) {
-//                        echo "        'type' => 'checkbox',\n";
-//                    } else {
-//                        echo "        'type' => 'text',\n";
-//                    }
-//                    echo "        'label' => '" . ucwords(implode(' ', preg_split('/(?=[A-Z])/', $s))) . "',\n";
-//                    echo "    ),\n";
-//                }
-//            }
-//            echo "),\n";
-//        }
-//        echo '</pre>';
-//        exit;
-
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
         $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
