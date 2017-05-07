@@ -35,9 +35,7 @@
                         </label>
                         <select name="settings[email_pdf_attachment]" id="settings[email_pdf_attachment]"
                                 class="form-control simple-select">
-                            <option value="0">
-                                <?php _trans('no'); ?>
-                            </option>
+                            <option value="0"><?php _trans('no'); ?></option>
                             <option value="1" <?php check_select(get_setting('email_pdf_attachment'), '1'); ?>>
                                 <?php _trans('yes'); ?>
                             </option>
@@ -135,6 +133,20 @@
                                 </option>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label for="settings[smtp_verify_certs]">
+                                <?php _trans('smtp_verify_certs'); ?>
+                            </label>
+                            <select name="settings[smtp_verify_certs]" id="settings[smtp_verify_certs]"
+                                    class="form-control simple-select">
+                                <option value="1"><?php _trans('yes'); ?></option>
+                                <option value="0" <?php check_select(get_setting('smtp_verify_certs'), '0'); ?>>
+                                    <?php _trans('no'); ?>
+                                </option>
+                            </select>
+                        </div>
+
                     </div>
 
                 </div>
