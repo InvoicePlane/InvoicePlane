@@ -120,9 +120,6 @@ class Settings extends Admin_Controller
 
         $this->load->helper('country');
 
-        // Load Omnipay
-        require_once(FCPATH . 'vendor/autoload.php');
-
 //        echo '<pre>';
 //        foreach ($gateways as $d => $setting) {
 //            $g = \Omnipay\Omnipay::create($d);
