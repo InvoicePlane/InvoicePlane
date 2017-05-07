@@ -625,6 +625,9 @@ class Sumex
         return $node;
     }
 
+    /**
+     * @param integer $recordId
+     */
     protected function generateRecord($recordId, $item)
     {
         $node = $this->doc->createElement('invoice:record_other');

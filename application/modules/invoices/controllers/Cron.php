@@ -22,7 +22,9 @@ class Cron extends Base_Controller
     {
         // Check the provided cron key
         if ($cron_key != get_setting('cron_key')) {
-            if (IP_DEBUG) log_message('error', 'Wrong cron key provided!');
+            if (IP_DEBUG) {
+                log_message('error', 'Wrong cron key provided!');
+            }
             exit('Wrong cron key!');
         }
 

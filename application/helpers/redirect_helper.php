@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Redirect the user to a given URL
  *
- * @param $fallback_url_string
+ * @param string $fallback_url_string
  * @param bool $redirect
  * @return mixed
  */

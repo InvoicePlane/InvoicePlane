@@ -23,9 +23,9 @@ class Mdl_Clients extends Response_Model
     public function default_select()
     {
         $this->db->select(
-          'SQL_CALC_FOUND_ROWS '.$this->table.'.*, '.
-          'CONCAT('.$this->table.'.client_name, " ", '.$this->table.'.client_surname) as client_fullname'
-        , false);
+            'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
+            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname'
+            , false);
     }
 
     public function default_order_by()
@@ -220,12 +220,6 @@ class Mdl_Clients extends Response_Model
         return $this;
     }
 
-    public function is_active()
-    {
-        $this->filter_where('client_active', 1);
-        return $this;
-    }
-
     public function is_inactive()
     {
         $this->filter_where('client_active', 0);
@@ -253,6 +247,12 @@ class Mdl_Clients extends Response_Model
 
         $this->is_active();
         return $this->get()->result();
+    }
+
+    public function is_active()
+    {
+        $this->filter_where('client_active', 1);
+        return $this;
     }
 
 }

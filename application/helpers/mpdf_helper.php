@@ -14,10 +14,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * Create a PDF
  *
  * @param $html
- * @param $filename
+ * @param string $filename
  * @param bool $stream
  * @param null $password
- * @param null $isInvoice
+ * @param boolean $isInvoice
  * @param null $is_guest
  * @param bool $zugferd_invoice
  * @param null $associated_files

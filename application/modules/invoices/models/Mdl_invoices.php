@@ -358,7 +358,7 @@ class Mdl_Invoices extends Response_Model
     }
 
     /**
-     * @param $invoice_date_created
+     * @param string $invoice_date_created
      * @return string
      */
     public function get_date_due($invoice_date_created)
@@ -408,7 +408,6 @@ class Mdl_Invoices extends Response_Model
     }
 
     /**
-     * @param int $invoice_id
      * @return mixed
      */
     public function get_custom_values($id)

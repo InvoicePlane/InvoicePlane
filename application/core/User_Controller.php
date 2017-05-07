@@ -17,8 +17,8 @@ class User_Controller extends Base_Controller
 {
     /**
      * User_Controller constructor.
-     * @param $required_key
-     * @param $required_val
+     * @param string $required_key
+     * @param integer $required_val
      */
     public function __construct($required_key, $required_val)
     {
