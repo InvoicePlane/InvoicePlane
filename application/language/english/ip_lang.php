@@ -311,6 +311,7 @@ $lang = array(
     'open'                                         => 'Open',
     'open_invoices'                                => 'Open Invoices',
     'open_quotes'                                  => 'Open Quotes',
+    'open_reports_in_new_tab'                      => 'Open Reports in a new Browser Tab',
     'optional'                                     => 'Optional',
     'options'                                      => 'Options',
     'order'                                        => 'Order',
