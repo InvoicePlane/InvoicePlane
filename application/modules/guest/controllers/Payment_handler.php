@@ -181,7 +181,6 @@ class Payment_Handler extends Base_Controller
         }
 
         // Load Omnipay and initialize the gateway
-        require_once(FCPATH . 'vendor/autoload.php');
         $gateway = \Omnipay\Omnipay::create($driver);
         $gateway->initialize($gateway_init);
 

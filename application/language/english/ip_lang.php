@@ -49,7 +49,7 @@ $lang = array(
     'calendar_week_4'                              => '4 Weeks',
     'calendar_month_1'                             => '1 Month',
     'calendar_month_2'                             => '2 Months',
-    'calendar_month_3'                             => '2 Months',
+    'calendar_month_3'                             => '3 Months',
     'calendar_month_4'                             => '4 Months',
     'calendar_month_5'                             => '5 Months',
     'calendar_month_6'                             => '6 Months',
@@ -173,6 +173,7 @@ $lang = array(
     'email_template_tags'                          => 'Email Template Tags',
     'email_template_tags_instructions'             => 'Template tags can be used to add dynamic information like the client name or an invoice number to the email template. Click on the Body textfield and then select a tag from the drop down. It will be automatically inserted into the textfield.',
     'email_templates'                              => 'Email Templates',
+    'enabled'                                      => 'Enabled',
     'enable_debug_mode'                            => 'Enable the Debug Mode',
     'end_date'                                     => 'End Date',
     'enter_payment'                                => 'Enter Payment',
@@ -567,6 +568,7 @@ $lang = array(
     'year_prefix'                                  => 'Year Prefix',
     'years'                                        => 'Years',
     'yes'                                          => 'Yes',
+    'zip'                                          => 'Zip Code',
     'zip_code'                                     => 'Zip Code',
 
     //Time Management

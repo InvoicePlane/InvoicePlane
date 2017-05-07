@@ -11,6 +11,7 @@
     "vlucas/phpdotenv": "^2.4",
     "setasign/fpdi-fpdf": "^1.6.1",
     "codeigniter/framework": "^3.1",
-    "omnipay/omnipay": "~2.0"
+    "omnipay/omnipay": "~2.0",
+    "paragonie/random_compat": "^2.0"
   }
 }
