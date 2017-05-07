@@ -483,6 +483,7 @@ $lang = array(
     'smtp_ssl'                                     => 'SSL',
     'smtp_tls'                                     => 'TLS',
     'smtp_username'                                => 'SMTP Username',
+    'smtp_verify_certs'                            => 'Verify SMTP certificates',
     'sql_file'                                     => 'SQL File',
     'start_date'                                   => 'Start Date',
     'state'                                        => 'State',
