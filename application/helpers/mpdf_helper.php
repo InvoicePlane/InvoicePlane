@@ -36,7 +36,6 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
     }
 
-    require_once(FCPATH . 'vendor/autoload.php');
     $mpdf = new \Mpdf\Mpdf();
 
     // mPDF configuration

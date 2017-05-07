@@ -115,7 +115,6 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
     // Append a copy at the end and change the title:
     // WARNING: The title depends on what invoice type is (TP, TG)
     // and is language-dependant. Fix accordingly if you really need this hack
-    require FCPATH . '/vendor/autoload.php';
     $temp = tempnam("/tmp", "invsumex_");
     $tempCopy = tempnam("/tmp", "invsumex_");
     $pdf = new FPDI();
