@@ -76,6 +76,7 @@ class Payment_Handler extends Base_Controller
                 'amount' => $invoice->invoice_balance,
                 'currency' => $driver_currency,
                 'card' => $credit_card,
+                'description' => sprintf(trans('payment_description'), $invoice->invoice_number),
                 'metadata' => array(
                     'invoice_number' => $invoice->invoice_number,
                     'invoice_guest_url' => $invoice->invoice_url_key
