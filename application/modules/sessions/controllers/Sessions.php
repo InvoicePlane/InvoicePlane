@@ -196,7 +196,6 @@ class Sessions extends Base_Controller
 
                     if (!phpmail_send($email_from, $email, trans('password_reset'), $email_message)) {
                         $email_failed = true;
-                        log_message('error', $this->email->print_debugger());
                     }
 
                 } else {
