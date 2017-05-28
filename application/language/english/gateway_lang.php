@@ -14,6 +14,7 @@ $lang = array(
     'payment_provider'                   => 'Payment Provider',
     'add_payment_provider'               => 'Add a Payment Provider',
     'transaction_reference'              => 'Transaction Reference',
+    'payment_description'                => 'Payment for Invoice %s',
 
     // Credit card strings
     'creditcard_cvv'                     => 'CVV / CSC',
