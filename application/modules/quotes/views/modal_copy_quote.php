@@ -11,7 +11,7 @@
         $('#copy_quote_confirm').click(function () {
             $.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
-                    client_id: $('#client_id').val(),
+                    client_id: $('#create_quote_client_id').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     user_id: $('#user_id').val()
