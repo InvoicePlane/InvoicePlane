@@ -15,7 +15,7 @@
             });
         });
 
-        var selected_email_template = '<?php echo $email_template ?>';
+        var selected_email_template = <?php echo $email_template ?>;
         inject_email_template(template_fields, selected_email_template);
     });
 </script>
