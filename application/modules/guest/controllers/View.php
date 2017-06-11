@@ -20,6 +20,10 @@ class View extends Base_Controller
      */
     public function invoice($invoice_url_key)
     {
+        if (!$invoice_url_key) {
+            show_404();
+        }
+
         $this->load->model('invoices/mdl_invoices');
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
@@ -141,6 +145,10 @@ class View extends Base_Controller
      */
     public function quote($quote_url_key)
     {
+        if (!$quote_url_key) {
+            show_404();
+        }
+
         $this->load->model('quotes/mdl_quotes');
 
         $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
