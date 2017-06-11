@@ -65,7 +65,7 @@ $lang = array(
     // Status / Error Messages
     'online_payment_payment_cancelled'   => 'Payment cancelled.',
     'online_payment_payment_failed'      => 'Payment failed. Please try again.',
-    'online_payment_payment_successful'  => 'Payment successful!',
+    'online_payment_payment_successful'  => 'Payment for Invoice %s successful!',
     'online_payment_payment_redirect'    => 'Please wait while we redirect you to the payment page...',
     'online_payment_3dauth_redirect'     => 'Please wait while we redirect you to your card issuer for authentication...'
 );
