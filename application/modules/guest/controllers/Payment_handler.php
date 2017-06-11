@@ -76,6 +76,7 @@ class Payment_Handler extends Base_Controller
                 'amount' => $invoice->invoice_balance,
                 'currency' => $driver_currency,
                 'card' => $credit_card,
+                'description' => sprintf(trans('payment_description'), $invoice->invoice_number),
                 'metadata' => array(
                     'invoice_number' => $invoice->invoice_number,
                     'invoice_guest_url' => $invoice->invoice_url_key
@@ -118,10 +119,10 @@ class Payment_Handler extends Base_Controller
                 $this->db->insert('ip_merchant_responses', $db_array);
 
                 // Redirect user and display the success message
-                $this->session->set_flashdata('alert_success', trans('online_payment_payment_successful'));
+                $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
                 $this->session->keep_flashdata('alert_success');
 
-                redirect(site_url('guest/invoices/status/paid'));
+                redirect('guest/view/invoice/' . $invoice->invoice_url_key);
 
             } elseif ($response->isRedirect()) {
 
@@ -195,8 +196,6 @@ class Payment_Handler extends Base_Controller
 
         // See if the response can be validated
         if ($this->payment_validate($invoice_url_key, $driver)) {
-            // Set the success flash message
-            $this->session->set_flashdata('alert_success', trans('online_payment_payment_successful'));
 
             // Save the payment for the invoice
             $this->load->model('payments/mdl_payments');
@@ -211,6 +210,10 @@ class Payment_Handler extends Base_Controller
             );
 
             $this->mdl_payments->save(null, $db_array);
+
+            // Set the success flash message
+            $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+
         } else {
             // Set the failure flash message
             $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
