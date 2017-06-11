@@ -52,8 +52,12 @@ class Settings extends Admin_Controller
                     continue;
                 }
 
-                if (isset($settings[$key . '_field_is_password']) && $value != '') {
+                if (isset($settings[$key . '_field_is_password']) && empty($value)) {
+                    // Password field, but empty value, let's skip it
+                    continue;
+                }
 
+                if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
                     $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
 

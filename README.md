@@ -1,5 +1,5 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 1.5.2_
+#### _Version 1.5.3_
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
@@ -19,7 +19,7 @@ _Notice: Please download InvoicePlane from our [website](https://invoiceplane.co
 
 #### Remove `index.php` from the URL
 
-If you want to remove `index.php` from the URL, follow these instructions. However, this is not a requirement for InvoicePlane to run. If it's not working correctly, take a step back and use the application with out removing that part from the URL.
+If you want to remove `index.php` from the URL, follow these instructions. However, this is an optional step and not a requirement. If it's not working correctly, take a step back and use the application with out removing that part from the URL.
 
 1. Make sure that [mod_rewrite](https://go.invoiceplane.com/apachemodrewrite) is enabled on your web server.
 2. Set the `REMOVE_INDEXPHP` setting in your `ipconfig.php` to `true`.

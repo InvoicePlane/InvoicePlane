@@ -14,6 +14,7 @@ $lang = array(
     'payment_provider'                   => 'Payment Provider',
     'add_payment_provider'               => 'Add a Payment Provider',
     'transaction_reference'              => 'Transaction Reference',
+    'payment_description'                => 'Payment for Invoice %s',
 
     // Credit card strings
     'creditcard_cvv'                     => 'CVV / CSC',
@@ -64,7 +65,7 @@ $lang = array(
     // Status / Error Messages
     'online_payment_payment_cancelled'   => 'Payment cancelled.',
     'online_payment_payment_failed'      => 'Payment failed. Please try again.',
-    'online_payment_payment_successful'  => 'Payment successful!',
+    'online_payment_payment_successful'  => 'Payment for Invoice %s successful!',
     'online_payment_payment_redirect'    => 'Please wait while we redirect you to the payment page...',
     'online_payment_3dauth_redirect'     => 'Please wait while we redirect you to your card issuer for authentication...'
 );
