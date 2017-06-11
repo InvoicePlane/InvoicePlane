@@ -46,13 +46,7 @@
 
         <hr>
 
-        <?php if ($flash_message) { ?>
-            <div class="alert alert-info">
-                <?php echo $flash_message; ?>
-            </div>
-        <?php } else {
-            echo '<br>';
-        } ?>
+        <?php echo $this->layout->load_view('layout/alerts'); ?>
 
         <div class="invoice">
 
@@ -255,42 +249,43 @@
                     echo '<img src="' . base_url('assets/core/img/overdue.png') . '" class="overdue-stamp">';
                 } ?>
 
-                <hr>
-
-                <div class="row">
-
-                    <?php if ($invoice->invoice_terms) { ?>
-                        <div class="col-xs-12 col-md-6">
-                            <h4><?php echo trans('terms'); ?></h4>
-                            <p><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></p>
-                        </div>
-                    <?php } ?>
-
-                    <?php
-                    if (count($attachments) > 0) { ?>
-                        <div class="col-xs-12 col-md-6">
-                            <h4><?php echo trans('attachments'); ?></h4>
-                            <div class="table-responsive">
-                                <table class="table table-condensed">
-                                    <?php foreach ($attachments as $attachment) { ?>
-                                        <tr class="attachments">
-                                            <td><?php echo $attachment['name']; ?></td>
-                                            <td>
-                                                <a href="<?php echo base_url('/guest/get/attachment/' . $attachment['fullname']); ?>"
-                                                   class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-download"></i> <?php echo trans('download') ?>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </table>
-                            </div>
-                        </div>
-                    <?php } ?>
-
-                </div>
-
             </div><!-- .invoice-items -->
+
+            <hr>
+
+            <div class="row">
+
+                <?php if ($invoice->invoice_terms) { ?>
+                    <div class="col-xs-12 col-md-6">
+                        <h4><?php echo trans('terms'); ?></h4>
+                        <p><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></p>
+                    </div>
+                <?php } ?>
+
+                <?php
+                if (count($attachments) > 0) { ?>
+                    <div class="col-xs-12 col-md-6">
+                        <h4><?php echo trans('attachments'); ?></h4>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <?php foreach ($attachments as $attachment) { ?>
+                                    <tr class="attachments">
+                                        <td><?php echo $attachment['name']; ?></td>
+                                        <td>
+                                            <a href="<?php echo base_url('/guest/get/attachment/' . $attachment['fullname']); ?>"
+                                               class="btn btn-primary btn-sm">
+                                                <i class="fa fa-download"></i> <?php echo trans('download') ?>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </table>
+                        </div>
+                    </div>
+                <?php } ?>
+
+            </div>
+
         </div><!-- .invoice-items -->
     </div><!-- #content -->
 </div>
