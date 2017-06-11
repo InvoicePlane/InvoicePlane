@@ -18,7 +18,7 @@ class View extends Base_Controller
     /**
      * @param $invoice_url_key
      */
-    public function invoice($invoice_url_key)
+    public function invoice($invoice_url_key = '')
     {
         if (!$invoice_url_key) {
             show_404();
@@ -28,42 +28,42 @@ class View extends Base_Controller
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
 
-        if ($invoice->num_rows() == 1) {
-            $this->load->model('invoices/mdl_items');
-            $this->load->model('invoices/mdl_invoice_tax_rates');
-            $this->load->model('payment_methods/mdl_payment_methods');
-
-            $invoice = $invoice->row();
-
-            if ($this->session->userdata('user_type') <> 1 and $invoice->invoice_status_id == 2) {
-                $this->mdl_invoices->mark_viewed($invoice->invoice_id);
-            }
-
-            $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-            if ($invoice->payment_method == 0) {
-                $payment_method = null;
-            }
-
-            // Attachments
-            $attachments = $this->get_attachments($invoice_url_key);
-
-            $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
-
-            $data = array(
-                'invoice' => $invoice,
-                'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-                'invoice_url_key' => $invoice_url_key,
-                'flash_message' => $this->session->flashdata('flash_message'),
-                'payment_method' => $payment_method,
-                'is_overdue' => $is_overdue,
-                'attachments' => $attachments,
-            );
-
-            $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
-        } else {
-            echo '<h2>' . trans('invoice_not_found') . '</h2>';
+        if ($invoice->num_rows() != 1) {
+            show_404();
         }
+
+        $this->load->model('invoices/mdl_items');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
+        $this->load->model('payment_methods/mdl_payment_methods');
+
+        $invoice = $invoice->row();
+
+        if ($this->session->userdata('user_type') <> 1 and $invoice->invoice_status_id == 2) {
+            $this->mdl_invoices->mark_viewed($invoice->invoice_id);
+        }
+
+        $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
+        if ($invoice->payment_method == 0) {
+            $payment_method = null;
+        }
+
+        // Attachments
+        $attachments = $this->get_attachments($invoice_url_key);
+
+        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
+
+        $data = array(
+            'invoice' => $invoice,
+            'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_url_key' => $invoice_url_key,
+            'flash_message' => $this->session->flashdata('flash_message'),
+            'payment_method' => $payment_method,
+            'is_overdue' => $is_overdue,
+            'attachments' => $attachments,
+        );
+
+        $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
     }
 
     private function get_attachments($key)
@@ -143,7 +143,7 @@ class View extends Base_Controller
     /**
      * @param $quote_url_key
      */
-    public function quote($quote_url_key)
+    public function quote($quote_url_key = '')
     {
         if (!$quote_url_key) {
             show_404();
@@ -153,49 +153,50 @@ class View extends Base_Controller
 
         $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
 
-        if ($quote->num_rows() == 1) {
-            $this->load->model('quotes/mdl_quote_items');
-            $this->load->model('quotes/mdl_quote_tax_rates');
-
-
-            $quote = $quote->row();
-
-            if ($this->session->userdata('user_type') <> 1 and $quote->quote_status_id == 2) {
-                $this->mdl_quotes->mark_viewed($quote->quote_id);
-            }
-
-            // Attachments
-            $attachments = $this->get_attachments($quote_url_key);
-            /*$path = '/uploads/customer_files';
-            $files = scandir(getcwd() . $path);
-            $attachments = array();
-
-            if ($files !== false) {
-                foreach ($files as $file) {
-                    if ('.' != $file && '..' != $file && strpos($file, $quote_url_key) !== false) {
-                        $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
-                        $obj['fullname'] = $file;
-                        $obj['size'] = filesize($path . '/' . $file);
-                        $obj['fullpath'] = base_url($path . '/' . $file);
-                        $attachments[] = $obj;
-                    }
-                }
-            }*/
-
-            $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
-
-            $data = array(
-                'quote' => $quote,
-                'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
-                'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
-                'quote_url_key' => $quote_url_key,
-                'flash_message' => $this->session->flashdata('flash_message'),
-                'is_expired' => $is_expired,
-                'attachments' => $attachments,
-            );
-
-            $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
+        if ($quote->num_rows() != 1) {
+            show_404();
         }
+
+        $this->load->model('quotes/mdl_quote_items');
+        $this->load->model('quotes/mdl_quote_tax_rates');
+
+        $quote = $quote->row();
+
+        if ($this->session->userdata('user_type') <> 1 and $quote->quote_status_id == 2) {
+            $this->mdl_quotes->mark_viewed($quote->quote_id);
+        }
+
+        // Attachments
+        $attachments = $this->get_attachments($quote_url_key);
+        /*$path = '/uploads/customer_files';
+        $files = scandir(getcwd() . $path);
+        $attachments = array();
+
+        if ($files !== false) {
+            foreach ($files as $file) {
+                if ('.' != $file && '..' != $file && strpos($file, $quote_url_key) !== false) {
+                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                    $obj['fullname'] = $file;
+                    $obj['size'] = filesize($path . '/' . $file);
+                    $obj['fullpath'] = base_url($path . '/' . $file);
+                    $attachments[] = $obj;
+                }
+            }
+        }*/
+
+        $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
+
+        $data = array(
+            'quote' => $quote,
+            'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
+            'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
+            'quote_url_key' => $quote_url_key,
+            'flash_message' => $this->session->flashdata('flash_message'),
+            'is_expired' => $is_expired,
+            'attachments' => $attachments,
+        );
+
+        $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
     }
 
     /**
