@@ -483,6 +483,7 @@ $lang = array(
     'smtp_tls'                                     => 'TLS',
     'smtp_username'                                => 'SMTP Username',
     'smtp_verify_certs'                            => 'Verify SMTP certificates',
+    'search_clients_results_extended'              => 'More permissive clients search',
     'sql_file'                                     => 'SQL File',
     'start_date'                                   => 'Start Date',
     'state'                                        => 'State',

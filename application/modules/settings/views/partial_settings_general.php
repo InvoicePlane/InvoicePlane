@@ -105,6 +105,21 @@
                         </select>
                     </div>
                 </div>
+                
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="settings[search_clients_results_extended]">
+                            <?php _trans('search_clients_results_extended'); ?>
+                        </label>
+                        <select name="settings[search_clients_results_extended]" id="settings[search_clients_results_extended]"
+                                class="form-control simple-select">
+                            <option value="0"><?php _trans('no'); ?></option>
+                            <option value="1" <?php check_select(get_setting('search_clients_results_extended'), '1'); ?>>
+                                <?php _trans('yes'); ?>
+                            </option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
         </div>

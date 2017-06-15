@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -31,15 +31,18 @@ class Ajax extends Admin_Controller
             echo json_encode($response);
             exit;
         }
+        
+        // Search for clients: Return results for chars "in the middle" of the name as well
+        get_setting('search_clients_results_extended', false) ? $moreClientsQuery = '%' : $moreClientsQuery = '';
 
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
         $escapedQuery = str_replace("%", "", $escapedQuery);
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having('client_name LIKE \'%' . $escapedQuery . '%\'')
-            ->or_having('client_surname LIKE \'%' . $escapedQuery . '%\'')
-            ->or_having('client_fullname LIKE \'%' . $escapedQuery . '%\'')
+            ->having('client_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->or_having('client_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->or_having('client_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
             ->order_by('client_name')
             ->get()
             ->result();
