@@ -7,6 +7,7 @@ $(".client-id-select").select2({
         data: function (params) {
             return {
                 query: params.term,
+                permissive: $('input#permissive').val(),
                 page: params.page,
                 _ip_csrf: Cookies.get('ip_csrf_cookie')
             };
