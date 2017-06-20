@@ -37,13 +37,40 @@ class Clients extends Admin_Controller
      */
     public function status($status = 'active', $page = 0)
     {
-        if (is_numeric(array_search($status, array('active', 'inactive')))) {
-            $function = 'is_' . $status;
-            $this->mdl_clients->$function();
+        $status_result = array();
+        if ($status == 'all')
+            $status_result = [0,1];
+        elseif ($status == 'active')
+            $status_result = [1];
+        else
+            $status_result = [0];
+
+        $client_results = $this->mdl_clients->with_total_balance_with_currency($status_result);
+
+        //Create an array of number of clients omitting duplicated client in client results
+        //and assigned empty string for client invoice balance to process further.
+        $clients = array();
+
+        foreach ($client_results as $client) {
+            $clients[$client->client_id] = clone $client;
+            $clients[$client->client_id]->client_invoice_balance = '';
         }
 
-        $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
-        $clients = $this->mdl_clients->result();
+        //Fill the array created above with invoice balance concatenated with total amounts
+        //for a client in different currencies.
+        foreach ($client_results as $client){
+            if (!empty($client->invoice_currency)) {
+                $amount = $client->client_invoice_balance;
+                $symbol = get_currency_symbol($client->invoice_currency);
+
+                if ($amount != 0) {
+                    if ($clients[$client->client_id]->client_invoice_balance)
+                        $clients[$client->client_id]->client_invoice_balance = format_string_type_currency($amount, $symbol, $clients[$client->client_id]->client_invoice_balance);
+                    else
+                        $clients[$client->client_id]->client_invoice_balance = format_string_type_currency($amount, $symbol);
+                }
+            }
+        }
 
         $this->layout->set(
             array(
@@ -180,12 +207,57 @@ class Clients extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
 
-        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
+        $client_with_currencies = $this->mdl_clients->get_invoice_amounts_for_client($client_id);
+        //$client_with_currencies resultset consist of rows containing clients grouped by currencies.
+
+        //Get result amounts (balance/paid/total) concatenated with amounts in multiple currencies and return
+        //these amounts to first element of array.
+        if(!empty($client_with_currencies)){
+            $balance = $total = $paid = '';
+
+            foreach ($client_with_currencies as $client) {
+                if (!empty($client->invoice_currency)){
+                    $client_invoice_balance = $client->client_invoice_balance;
+                    $client_invoice_paid = $client->client_invoice_paid;
+                    $client_invoice_total = $client->client_invoice_total;
+                    $symbol = get_currency_symbol($client->invoice_currency);
+
+                    if (!empty($client_invoice_balance) && $client_invoice_balance!='0') {
+                        if ($balance)
+                            $balance = format_string_type_currency($client_invoice_balance, $symbol, $balance);
+                        else
+                            $balance = format_string_type_currency($client_invoice_balance, $symbol);
+                    }
+
+                    if (!empty($client_invoice_paid) && $client_invoice_paid!='0') {
+                        if ($paid)
+                            $paid = format_string_type_currency($client_invoice_paid, $symbol, $paid);
+                        else
+                            $paid = format_string_type_currency($client_invoice_paid, $symbol);
+                    }
+
+                    if (!empty($client_invoice_total) && $client_invoice_total!='0') {
+                        if ($total)
+                            $total = format_string_type_currency($client_invoice_total, $symbol, $total);
+                        else
+                            $total = format_string_type_currency($client_invoice_total, $symbol);
+
+                    }
+                }
+            }
+
+            $client_with_currencies[0]->client_invoice_balance = $balance;
+            $client_with_currencies[0]->client_invoice_paid = $paid;
+            $client_with_currencies[0]->client_invoice_total = $total;
+
+            $client = $client_with_currencies[0];
+        }
+
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
 
         $this->mdl_client_custom->prep_form($client_id);
 
-        if (!$client) {
+        if (empty($client)) {
             show_404();
         }
 

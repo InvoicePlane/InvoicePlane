@@ -73,6 +73,7 @@ class Ajax extends Admin_Controller
             }
 
             $invoice_status = $this->input->post('invoice_status_id');
+            $invoice_currency = $this->input->post('invoice_currency');
 
             if ($this->input->post('invoice_discount_amount') === '') {
                 $invoice_discount_amount = floatval(0);
@@ -104,6 +105,7 @@ class Ajax extends Admin_Controller
                 'payment_method' => $this->input->post('payment_method'),
                 'invoice_discount_amount' => standardize_amount($invoice_discount_amount),
                 'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
+                'invoice_currency' => $invoice_currency
             );
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
@@ -441,6 +443,30 @@ class Ajax extends Admin_Controller
         }
 
         echo json_encode($response);
+    }
+
+    public function get_currency_symbol()
+    {
+        $currency_id = $this->input->post('currency_id');
+        $current_currency_id = $this->input->post('current_currency_id');
+        $currency_symbol = get_currency_symbol($currency_id);
+        $current_currency_symbol = get_currency_symbol($current_currency_id);
+
+        if (!empty($currency_symbol)) {
+            $response = array(
+                'success' => 1,
+                'symbol' => $currency_symbol,
+                'current_symbol' => $current_currency_symbol
+            );
+        } else {
+            $response = array(
+                'success' => 0,
+                'symbol' => '',
+                'current_symbol' => ''
+            );
+        }
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
     }
 
 }

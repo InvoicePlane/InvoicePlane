@@ -50,6 +50,22 @@
                             </div>
                         </div>
 
+                        <div class="form-group has-feedback">
+                            <label for="invoice_currency">
+                                <?php _trans('Currency'); ?>
+                            </label>
+
+                            <div class="input-group">
+                                <select name="invoice_currency" id="invoice_currency" class="form-control input-sm simple-select">
+                                    <?php foreach ($invoice_currencies as $key => $currency) { ?>
+                                        <option value="<?php echo $key; ?>">
+                                            <?php echo $currency['label']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
                         <input type="submit" class="btn btn-success" name="btn_submit"
                                value="<?php _trans('run_report'); ?>">
 

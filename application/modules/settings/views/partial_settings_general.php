@@ -124,8 +124,7 @@
                             <?php _trans('currency_symbol'); ?>
                         </label>
                         <input type="text" name="settings[currency_symbol]" id="settings[currency_symbol]"
-                               class="form-control"
-                               value="<?php echo get_setting('currency_symbol', '', true); ?>">
+                               class="form-control" value="$" disabled="disabled">
                     </div>
                 </div>
 

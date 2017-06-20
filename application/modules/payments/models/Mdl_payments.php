@@ -30,6 +30,7 @@ class Mdl_Payments extends Response_Model
         	  ip_clients.client_id,
             ip_invoices.invoice_number,
             ip_invoices.invoice_date_created,
+            ip_invoices.invoice_currency,
             ip_payments.*", false);
     }
 

@@ -108,7 +108,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php _trans('total_billed'); ?>
                             </th>
                             <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_total); ?>
+                                <?php echo $client->client_invoice_total; ?>
                             </td>
                         </tr>
                         <tr>
@@ -116,7 +116,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php _trans('total_paid'); ?>
                             </th>
                             <th class="td-amount">
-                                <?php echo format_currency($client->client_invoice_paid); ?>
+                                <?php echo $client->client_invoice_paid; ?>
                             </th>
                         </tr>
                         <tr>
@@ -124,7 +124,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php _trans('total_balance'); ?>
                             </th>
                             <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_balance); ?>
+                                <?php echo $client->client_invoice_balance; ?>
                             </td>
                         </tr>
                     </table>

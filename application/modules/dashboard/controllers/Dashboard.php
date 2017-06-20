@@ -26,6 +26,32 @@ class Dashboard extends Admin_Controller
 
         $quote_overview_period = get_setting('quote_overview_period');
         $invoice_overview_period = get_setting('invoice_overview_period');
+        $return = array();
+        foreach (currencies() as $key => $currency) {
+            $return[$key] = array(
+                'invoice_currency' => $key,
+                'amount' => 0
+            );
+        }
+
+        $overdue_results = $this->mdl_invoices->is_overdue()->get()->result();
+
+        foreach ($overdue_results as $result) {
+            $result_amount = $result->invoice_balance;
+            $return[$result->invoice_currency]['amount'] +=  $result_amount;
+        }
+
+        $overdue_amounts = '';
+        foreach ($return as $row){
+            $amount = $row['amount'];
+            $symbol = get_currency_symbol($row['invoice_currency']);
+            if($amount){
+                if($overdue_amounts)
+                    $overdue_amounts = format_string_type_currency($amount, $symbol, $overdue_amounts);
+                else
+                    $overdue_amounts = format_string_type_currency($amount, $symbol);
+            }
+        }
 
         $this->layout->set(
             array(
@@ -37,7 +63,7 @@ class Dashboard extends Admin_Controller
                 'quotes' => $this->mdl_quotes->limit(10)->get()->result(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'quote_statuses' => $this->mdl_quotes->statuses(),
-                'overdue_invoices' => $this->mdl_invoices->is_overdue()->get()->result(),
+                'overdue_invoices' => $overdue_amounts,
                 'projects' => $this->mdl_projects->get_latest()->get()->result(),
                 'tasks' => $this->mdl_tasks->get_latest()->get()->result(),
                 'task_statuses' => $this->mdl_tasks->statuses(),

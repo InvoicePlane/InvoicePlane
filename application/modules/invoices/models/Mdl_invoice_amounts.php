@@ -332,55 +332,55 @@ class Mdl_Invoice_Amounts extends CI_Model
             default:
             case 'this-month':
                 $results = $this->db->query("
-					SELECT ip_invoices.invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					SELECT ip_invoices.invoice_status_id, ip_invoices.invoice_currency, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW())
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+					GROUP BY ip_invoices.invoice_status_id, ip_invoices.invoice_currency")->result_array();
                 break;
             case 'last-month':
                 $results = $this->db->query("
-					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					SELECT invoice_status_id, invoice_currency, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+					GROUP BY ip_invoices.invoice_status_id, ip_invoices.invoice_currency")->result_array();
                 break;
             case 'this-quarter':
                 $results = $this->db->query("
-					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					SELECT invoice_status_id, invoice_currency (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW())
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+					GROUP BY ip_invoices.invoice_status_id, ip_invoices.invoice_currency")->result_array();
                 break;
             case 'last-quarter':
                 $results = $this->db->query("
-					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					SELECT invoice_status_id, invoice_currency, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+					GROUP BY ip_invoices.invoice_status_id, ip_invoices.invoice_currency")->result_array();
                 break;
             case 'this-year':
                 $results = $this->db->query("
-					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					SELECT invoice_status_id, invoice_currency, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+					GROUP BY ip_invoices.invoice_status_id, ip_invoices.invoice_currency")->result_array();
                 break;
             case 'last-year':
                 $results = $this->db->query("
-					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
+					SELECT invoice_status_id, invoice_currency, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW() - INTERVAL 1 YEAR)
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+					GROUP BY ip_invoices.invoice_status_id, ip_invoices.invoice_currency")->result_array();
                 break;
         }
 
@@ -393,11 +393,21 @@ class Mdl_Invoice_Amounts extends CI_Model
                 'label' => $status['label'],
                 'href' => $status['href'],
                 'sum_total' => 0,
-                'num_total' => 0
+                'num_total' => 0,
+                'amount' => ''
             );
         }
 
         foreach ($results as $result) {
+            $result_amount = $result['sum_total'];
+            $result_symbol = get_currency_symbol($result['invoice_currency']);
+            $amount = $return[$result['invoice_status_id']]['amount'];
+
+            if($amount)
+                $return[$result['invoice_status_id']]['amount'] = format_string_type_currency($result_amount, $result_symbol, $amount);
+            else
+                $return[$result['invoice_status_id']]['amount'] = format_string_type_currency($result_amount, $result_symbol);
+
             $return[$result['invoice_status_id']] = array_merge($return[$result['invoice_status_id']], $result);
         }
 
