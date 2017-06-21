@@ -8,20 +8,20 @@
     "packages": [
         {
             "name": "codeigniter/framework",
-            "version": "3.1.4",
+            "version": "3.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bcit-ci/CodeIgniter.git",
-                "reference": "873608df8be83420474e3cf9fc749a8ed12a6c09"
+                "reference": "6c7a4266410070d30f8f6bcdf9c9e67f3d6478e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/873608df8be83420474e3cf9fc749a8ed12a6c09",
-                "reference": "873608df8be83420474e3cf9fc749a8ed12a6c09",
+                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/6c7a4266410070d30f8f6bcdf9c9e67f3d6478e3",
+                "reference": "6c7a4266410070d30f8f6bcdf9c9e67f3d6478e3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.4"
+                "php": ">=5.3.7"
             },
             "require-dev": {
                 "mikey179/vfsstream": "1.1.*",
@@ -37,7 +37,7 @@
             ],
             "description": "The CodeIgniter framework",
             "homepage": "https://codeigniter.com",
-            "time": "2017-03-20T15:51:08+00:00"
+            "time": "2017-06-19T08:33:58+00:00"
         },
         {
             "name": "guzzle/guzzle",
@@ -1060,16 +1060,16 @@
         },
         {
             "name": "omnipay/multisafepay",
-            "version": "v2.3.5",
+            "version": "v2.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-multisafepay.git",
-                "reference": "9c086904894c98277e01826445660d849033cef0"
+                "reference": "6d7a6d64fa0e124b90767e505ea105f4c3ecbadd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-multisafepay/zipball/9c086904894c98277e01826445660d849033cef0",
-                "reference": "9c086904894c98277e01826445660d849033cef0",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-multisafepay/zipball/6d7a6d64fa0e124b90767e505ea105f4c3ecbadd",
+                "reference": "6d7a6d64fa0e124b90767e505ea105f4c3ecbadd",
                 "shasum": ""
             },
             "require": {
@@ -1114,7 +1114,7 @@
                 "pay",
                 "payment"
             ],
-            "time": "2017-04-09T10:57:36+00:00"
+            "time": "2017-05-28T06:28:10+00:00"
         },
         {
             "name": "omnipay/netaxept",
