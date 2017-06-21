@@ -73,7 +73,7 @@
                    value="<?php echo get_setting('invoice_default_payment_method'); ?>">
 
             <input class="hidden" id="permissive"
-                   value="<?php echo get_setting('search_clients_results_extended'); ?>">
+                   value="<?php echo get_setting('enable_permissive_search_Clients'); ?>">
 
             <div class="form-group has-feedback">
                 <label for="create_invoice_client_id"><?php _trans('client'); ?></label>
@@ -84,8 +84,8 @@
                             <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
                         <?php endif; ?>
                     </select>
-                    <span id="permissive" class="input-group-addon" title="<?php _trans('search_clients_results_extended'); ?>" style="cursor:pointer;">
-                        <i class="fa fa-toggle-<?php echo get_setting('search_clients_results_extended') ? 'on' : 'off' ?> fa-fw" ></i>
+                    <span id="permissive" class="input-group-addon" title="<?php _trans('enable_permissive_search_Clients'); ?>" style="cursor:pointer;">
+                        <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_Clients') ? 'on' : 'off' ?> fa-fw" ></i>
                     </span>
                 </div>
             </div>
