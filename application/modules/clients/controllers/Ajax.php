@@ -64,7 +64,7 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_settings');
         $permissiveness = $this->input->get('permissiveness');
         if(!preg_match('!^[0-1]{1}$!',$permissiveness)){exit;}
-        $this->mdl_settings->save('enable_permissive_search_Clients', $permissiveness);
+        $this->mdl_settings->save('enable_permissive_search_clients', $permissiveness);
     }
 
     public function save_client_note()
