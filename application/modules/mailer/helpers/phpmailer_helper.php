@@ -69,6 +69,7 @@ function phpmail_send(
 
     $mail->Subject = $subject;
     $mail->Body = $message;
+    $mail->AltBody = $mail->normalizeBreaks($mail->html2text($message));
 
 
     if (is_array($from)) {
