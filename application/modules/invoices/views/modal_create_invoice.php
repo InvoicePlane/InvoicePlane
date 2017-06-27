@@ -9,21 +9,21 @@
         <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
 
         // Toggle on/off permissive search on clients names
-        $('span#permissive').click(function () {
-            if( $('input#permissive').val() == ('1') ){
-                $.get("<?php echo site_url('clients/ajax/save_permissiveness_preference'); ?>", {
-                        permissiveness: '0'
+        $('span#toggle_permissive_search_clients').click(function () {
+            if( $('input#input_permissive_search_clients').val() == ('1') ){
+                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
+                        permissive_search_clients: '0'
                     });
-                $('input#permissive').val('0');
-                $('span#permissive i').removeClass('fa-toggle-on');
-                $('span#permissive i').addClass('fa-toggle-off');
+                $('input#input_permissive_search_clients').val('0');
+                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-on');
+                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-off');
             } else {
-                $.get("<?php echo site_url('clients/ajax/save_permissiveness_preference'); ?>", {
-                        permissiveness: '1'
+                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
+                        permissive_search_clients: '1'
                     });
-                $('input#permissive').val('1');
-                $('span#permissive i').removeClass('fa-toggle-off');
-                $('span#permissive i').addClass('fa-toggle-on');
+                $('input#input_permissive_search_clients').val('1');
+                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-off');
+                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-on');
             }
         });
 
@@ -72,7 +72,7 @@
             <input class="hidden" id="payment_method_id"
                    value="<?php echo get_setting('invoice_default_payment_method'); ?>">
 
-            <input class="hidden" id="permissive"
+            <input class="hidden" id="input_permissive_search_clients"
                    value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
 
             <div class="form-group has-feedback">
@@ -84,7 +84,7 @@
                             <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
                         <?php endif; ?>
                     </select>
-                    <span id="permissive" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                    <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
                         <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
                     </span>
                 </div>
