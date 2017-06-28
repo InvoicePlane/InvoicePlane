@@ -33,13 +33,10 @@ class Get extends Base_Controller
             $fileExt = $pathParts['extension'];
             $fileSize = filesize($filePath);
 
-            $save_ctype = isset($this->content_types[$fileExt]);
-            $ctype = $save_ctype ? $this->content_types[$fileExt] : $this->ctype_default;
-
             header("Expires: -1");
             header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
             header("Content-Disposition: attachment; filename=\"$filename\"");
-            header("Content-Type: " . $ctype);
+            header("Content-Type: application/octet-stream");
             header("Content-Length: " . $fileSize);
 
             echo file_get_contents($filePath);
