@@ -26,14 +26,15 @@ class Ajax extends Admin_Controller
 
         // Get the post input
         $query = $this->input->get('query');
+        $permissiveSearchClients = $this->input->get('permissive_search_clients');
 
         if (empty($query)) {
             echo json_encode($response);
             exit;
         }
-        
-        // Search for clients: Return results for chars "in the middle" of the name as well
-        get_setting('search_clients_results_extended', false) ? $moreClientsQuery = '%' : $moreClientsQuery = '';
+
+        // Search for chars "in the middle" of clients names
+        $permissiveSearchClients ? $moreClientsQuery = '%' : $moreClientsQuery = '';
 
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
@@ -56,6 +57,14 @@ class Ajax extends Admin_Controller
 
         // Return the results
         echo json_encode($response);
+    }
+
+    public function save_preference_permissive_search_clients()
+    {
+        $this->load->model('mdl_settings');
+        $permissiveSearchClients = $this->input->get('permissive_search_clients');
+        if(!preg_match('!^[0-1]{1}$!',$permissiveSearchClients)){exit;}
+        $this->mdl_settings->save('enable_permissive_search_clients', $permissiveSearchClients);
     }
 
     public function save_client_note()
