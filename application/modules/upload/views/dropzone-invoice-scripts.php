@@ -138,7 +138,7 @@
             downloadButtonList[$i].addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                window.open(fileUrl);
+                location.href = fileUrl;
                 return false;
             });
         }
