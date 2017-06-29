@@ -17,7 +17,7 @@
                 <td><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
                 <td><?php _htmlsc($client->client_email); ?></td>
                 <td><?php _htmlsc($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : '')); ?></td>
-                <td class="amount"><?php echo format_currency($client->client_invoice_balance); ?></td>
+                <td class="amount"><?php echo $client->client_invoice_balance; ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">

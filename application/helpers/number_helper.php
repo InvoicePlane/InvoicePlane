@@ -16,10 +16,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param $amount
  * @return string
  */
-function format_currency($amount)
+function format_currency($amount, $currency_id= '')
 {
     global $CI;
-    $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
+    $currency_symbol = empty($currency_id) ? $CI->mdl_settings->setting('currency_symbol') : get_currency_symbol($currency_id);
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
@@ -66,5 +66,43 @@ function standardize_amount($amount)
     $amount = str_replace($thousands_separator, '', $amount);
     $amount = str_replace($decimal_point, '.', $amount);
 
+    return $amount;
+}
+
+/**
+ * Output the amount in string format like $12,000 + €50,000
+ *
+ * @param $amount, $symbol, $other_amount (amount which is formatted already)
+ * @return $amount string
+ */
+function format_string_type_currency($amount, $symbol, $other_amount = '') {
+    global $CI;
+    $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
+    $decimal_point = $CI->mdl_settings->setting('decimal_point');
+    $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
+
+    if (!empty($other_amount)) {
+        switch ($currency_symbol_placement) {
+            case 'before':
+                $amount = $other_amount . ' + ' . $symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+                break;
+            case 'afterspace':
+                $amount = $other_amount . ' + ' . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . '&nbsp;' . $symbol;
+                break;
+            default:
+                $amount = $other_amount . ' + ' . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . $symbol;
+        }
+    } else {
+        switch ($currency_symbol_placement) {
+            case 'before':
+                $amount = $symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+                break;
+            case 'afterspace':
+                $amount = number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . '&nbsp;' . $symbol;
+                break;
+            default:
+                $amount = number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . $symbol;
+        }
+    }
     return $amount;
 }

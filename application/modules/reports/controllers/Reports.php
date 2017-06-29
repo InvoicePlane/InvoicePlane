@@ -51,6 +51,7 @@ class Reports extends Admin_Controller
                 'results' => $this->mdl_reports->payment_history($this->input->post('from_date'), $this->input->post('to_date')),
                 'from_date' => $this->input->post('from_date'),
                 'to_date' => $this->input->post('to_date'),
+                'invoice_currency' => $this->input->post('invoice_currency'),
             );
 
             $html = $this->load->view('reports/payment_history', $data, true);
@@ -59,6 +60,12 @@ class Reports extends Admin_Controller
 
             pdf_create($html, trans('payment_history'), true);
         }
+
+        $this->layout->set(
+            array(
+                'invoice_currencies' => currencies(),
+            )
+        );
 
         $this->layout->buffer('content', 'reports/payment_history_index')->render();
     }

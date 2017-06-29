@@ -24,24 +24,26 @@
     $sum = 0;
 
     foreach ($results as $result) {
-        ?>
-        <tr>
-            <td><?php echo date_from_mysql($result->payment_date, true); ?></td>
-            <td><?php echo $result->invoice_number; ?></td>
-            <td><?php echo format_client($result); ?></td>
-            <td><?php _htmlsc($result->payment_method_name); ?></td>
-            <td><?php echo nl2br(htmlsc($result->payment_note)); ?></td>
-            <td class="amount"><?php echo format_currency($result->payment_amount);
-                $sum = $sum + $result->payment_amount; ?></td>
-        </tr>
-        <?php
+        if($result->invoice_currency == $invoice_currency) {
+            ?>
+            <tr>
+                <td><?php echo date_from_mysql($result->payment_date, true); ?></td>
+                <td><?php echo $result->invoice_number; ?></td>
+                <td><?php echo format_client($result); ?></td>
+		<td><?php _htmlsc($result->payment_method_name); ?></td>
+                <td><?php echo nl2br(htmlsc($result->payment_note)); ?></td>
+                <td class="amount"><?php echo format_currency($result->payment_amount, $result->invoice_currency);
+                    $sum = $sum + $result->payment_amount; ?></td>
+            </tr>
+            <?php
+        }
     }
 
     if (!empty($results)) {
         ?>
         <tr>
             <td colspan=5><?php echo trans('total'); ?></td>
-            <td class="amount"><?php echo format_currency($sum); ?></td>
+            <td class="amount"><?php echo format_currency($sum, $result->invoice_currency); ?></td>
         </tr>
     <?php } ?>
 </table>

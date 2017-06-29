@@ -74,7 +74,8 @@ $cv = $this->controller->view_data["custom_values"];
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
-                    payment_method: $('#payment_method').val()
+                    payment_method: $('#payment_method').val(),
+                    invoice_currency: $('#invoice_currency').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -138,6 +139,25 @@ $cv = $this->controller->view_data["custom_values"];
         });
         <?php endif; ?>
 
+        // Changes currency symbol with selected other currency from dropdown.
+        var current_currency = $(".invoice-properties select#invoice_currency").val();
+        $(".invoice-properties select#invoice_currency").change(function () {
+            $.post('<?php echo site_url('invoices/ajax/get_currency_symbol'); ?>',
+                {
+                    currency_id: $(this).val(),
+                    current_currency_id: current_currency
+                }, function (data) {
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    var response = JSON.parse(data);
+                    $('.custom-currency').each(function(){
+                        var str = $(this).text();
+                        var res = str.replace(response.current_symbol, response.symbol);
+                        $(this).text(res);
+                    });
+                    current_currency = $(".invoice-properties select#invoice_currency").val();
+                });
+
+        });
     });
 </script>
 
@@ -361,6 +381,20 @@ if ($this->config->item('disable_read_only') == true) {
                                     } ?>
                                     <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
                                 <?php endforeach; ?>
+
+                                <div class="invoice-properties">
+                                    <label>
+                                        <?php _trans('currency'); ?>
+                                    </label>
+                                    <select name="invoice_currency" id="invoice_currency" class="form-control input-sm simple-select">
+                                        <?php foreach ($invoice_currencies as $key => $currency) { ?>
+                                            <option value="<?php echo $key; ?>"
+                                                    <?php if ($key == $invoice->invoice_currency) { ?>selected="selected"<?php } ?>>
+                                                <?php echo $currency['label']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
 
                             </div>
 

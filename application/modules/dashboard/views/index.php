@@ -81,7 +81,7 @@
                             </td>
                             <td class="amount">
                         <span class="<?php echo $total['class']; ?>">
-                            <?php echo format_currency($total['sum_total']); ?>
+                            <?php echo $total['amount']; ?>
                         </span>
                             </td>
                         </tr>
@@ -95,15 +95,11 @@
                     <span class="text-muted"><?php _trans('no_overdue_invoices'); ?></span>
                 </div>
             <?php } else {
-                $overdue_invoices_total = 0;
-                foreach ($overdue_invoices as $invoice) {
-                    $overdue_invoices_total += $invoice->invoice_balance;
-                }
                 ?>
                 <div class="panel panel-danger panel-heading">
                     <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> ' . trans('overdue_invoices'), 'class="text-danger"'); ?>
                     <span class="pull-right text-danger">
-                        <?php echo format_currency($overdue_invoices_total); ?>
+                        <?php echo $overdue_invoices; ?>
                     </span>
                 </div>
             <?php } ?>
@@ -223,7 +219,7 @@
                                     <?php echo anchor('clients/view/' . $invoice->client_id, htmlsc(format_client($invoice))); ?>
                                 </td>
                                 <td class="amount">
-                                    <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
+                                    <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign, $invoice->invoice_currency); ?>
                                 </td>
                                 <td style="text-align: center;">
                                     <?php if ($invoice->sumex_id != null): ?>
