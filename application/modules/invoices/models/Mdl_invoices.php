@@ -263,7 +263,6 @@ class Mdl_Invoices extends Response_Model
         $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
         $form_data = array();
-        print_r($db_array);
         foreach($db_array as $val){
           $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
         }
