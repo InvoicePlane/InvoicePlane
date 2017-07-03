@@ -238,6 +238,7 @@ class Mdl_Invoices extends Response_Model
                 'item_description' => $invoice_item->item_description,
                 'item_quantity' => $invoice_item->item_quantity,
                 'item_price' => $invoice_item->item_price,
+                'item_discount_amount' => $invoice_item->item_discount_amount,
                 'item_order' => $invoice_item->item_order
             );
 
@@ -259,13 +260,13 @@ class Mdl_Invoices extends Response_Model
 
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
-        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
-        if (count($db_array) > 2) {
-            unset($db_array['invoice_custom_id']);
-            $db_array['invoice_id'] = $target_id;
-            $this->mdl_invoice_custom->save_custom($target_id, $db_array);
+        $form_data = array();
+        foreach($db_array as $val){
+          $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
         }
+        $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
     /**
@@ -287,6 +288,7 @@ class Mdl_Invoices extends Response_Model
                 'item_description' => $invoice_item->item_description,
                 'item_quantity' => -$invoice_item->item_quantity,
                 'item_price' => $invoice_item->item_price,
+                'item_discount_amount' => $invoice_item->item_discount_amount,
                 'item_order' => $invoice_item->item_order
             );
 
@@ -308,13 +310,14 @@ class Mdl_Invoices extends Response_Model
 
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
-        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
-        if (count($db_array) > 2) {
-            unset($db_array['invoice_custom_id']);
-            $db_array['invoice_id'] = $target_id;
-            $this->mdl_invoice_custom->save_custom($target_id, $db_array);
+        $form_data = array();
+        print_r($db_array);
+        foreach($db_array as $val){
+          $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
         }
+        $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
     /**
