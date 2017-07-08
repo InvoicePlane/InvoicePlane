@@ -122,7 +122,7 @@
                                     <?php if ($payment_method): ?>
                                         <tr>
                                             <td><?php echo trans('payment_method') . ': '; ?></td>
-                                            <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
+                                            <td style="text-align:right;"><?php _htmlsc($payment_method->payment_method_name); ?></td>
                                         </tr>
                                     <?php endif; ?>
                                     </tbody>
