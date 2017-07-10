@@ -1,4 +1,4 @@
-<!doctype html lang="<?php _trans('cldr'); ?>">
+<!DOCTYPE html>
 
 <!--[if lt IE 7]>
 <html class="no-js ie6 oldie" lang="<?php _trans('cldr'); ?>"> <![endif]-->
