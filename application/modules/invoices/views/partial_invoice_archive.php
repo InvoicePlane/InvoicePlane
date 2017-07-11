@@ -14,7 +14,7 @@
             <tr>
                 <td>
                     <a href="<?php echo site_url('invoices/download/' . basename($invoice)); ?>"
-                       title="<?php _trans('invoice'); ?>" target="_blank">
+                       title="<?php _trans('invoice'); ?>">
                         <?php echo basename($invoice); ?>
                     </a>
                 </td>
