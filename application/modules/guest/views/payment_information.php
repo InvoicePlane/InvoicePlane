@@ -58,7 +58,7 @@
 
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a href="<?php echo site_url('guest/invoices/generate_pdf/'); ?>">
+                <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice->invoice_url_key); ?>">
                     <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>
                 </a>
             </li>
