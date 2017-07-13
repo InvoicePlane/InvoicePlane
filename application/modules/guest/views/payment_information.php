@@ -58,7 +58,7 @@
 
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a href="<?php echo site_url('guest/invoices/generate_pdf/'); ?>">
+                <a href="<?php echo site_url('guest/view/generate_invoice_pdf/' . $invoice->invoice_url_key); ?>">
                     <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>
                 </a>
             </li>
@@ -103,7 +103,7 @@
                                     <tbody>
                                     <tr>
                                         <td><?php echo trans('invoice_date'); ?></td>
-                                        <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
+                                        <td class="text-right"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                                     </tr>
                                     <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
                                         <td><?php echo trans('due_date'); ?></td>
@@ -113,16 +113,16 @@
                                     </tr>
                                     <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
                                         <td><?php echo trans('total'); ?></td>
-                                        <td style="text-align:right;"><?php echo format_currency($invoice->invoice_total); ?></td>
+                                        <td class="text-right"><?php echo format_currency($invoice->invoice_total); ?></td>
                                     </tr>
                                     <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
                                         <td><?php echo trans('balance'); ?></td>
-                                        <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
+                                        <td class="text-right"><?php echo format_currency($invoice->invoice_balance); ?></td>
                                     </tr>
                                     <?php if ($payment_method): ?>
                                         <tr>
                                             <td><?php echo trans('payment_method') . ': '; ?></td>
-                                            <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
+                                            <td class="text-right"><?php _htmlsc($payment_method->payment_method_name); ?></td>
                                         </tr>
                                     <?php endif; ?>
                                     </tbody>
