@@ -140,10 +140,11 @@
                             <?php _trans('invoice_logo'); ?>
                         </label>
                         <?php if (get_setting('invoice_logo')) { ?>
+                            <br/>
                             <img class="personal_logo"
                                  src="<?php echo base_url(); ?>uploads/<?php echo get_setting('invoice_logo'); ?>">
                             <br>
-                            <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
+                            <?php echo anchor('settings/remove_logo/invoice', trans('remove_logo')); ?><br/>
                         <?php } ?>
                         <input type="file" name="invoice_logo" size="40" class="form-control"/>
                     </div>
