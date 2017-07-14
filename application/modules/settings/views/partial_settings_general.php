@@ -372,9 +372,10 @@
                             <?php _trans('login_logo'); ?>
                         </label>
                         <?php if (get_setting('login_logo')) { ?>
+                            <br/>
                             <img class="personal_logo"
                                  src="<?php echo base_url(); ?>uploads/<?php echo get_setting('login_logo'); ?>"><br>
-                            <?php echo anchor('settings/remove_logo/login', 'Remove Logo'); ?><br>
+                            <?php echo anchor('settings/remove_logo/login', trans('remove_logo')); ?><br/>
                         <?php } ?>
                         <input type="file" name="login_logo" id="login_logo" class="form-control"/>
                     </div>
