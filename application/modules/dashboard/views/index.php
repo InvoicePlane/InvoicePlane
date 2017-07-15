@@ -154,7 +154,7 @@
                                 </td>
                                 <td style="text-align: center;">
                                     <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
-                                       title="<?php _trans('download_pdf'); ?>" target="_blank">
+                                       title="<?php _trans('download_pdf'); ?>">
                                         <i class="fa fa-file-pdf-o"></i>
                                     </a>
                                 </td>
@@ -228,12 +228,12 @@
                                 <td style="text-align: center;">
                                     <?php if ($invoice->sumex_id != null): ?>
                                         <a href="<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice->invoice_id); ?>"
-                                           title="<?php _trans('download_pdf'); ?>" target="_blank">
+                                           title="<?php _trans('download_pdf'); ?>">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
                                     <?php else: ?>
                                         <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-                                           title="<?php _trans('download_pdf'); ?>" target="_blank">
+                                           title="<?php _trans('download_pdf'); ?>">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
                                     <?php endif; ?>
