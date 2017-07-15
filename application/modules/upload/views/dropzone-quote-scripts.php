@@ -68,11 +68,11 @@
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
 
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                    createDownloadButton(mockFile, '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
+                    createDownloadButton(mockFile, '<?php echo site_url('upload/get_file/'); ?>' + val.fullname);
 
                     if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo site_url('upload/get_file'); ?>' + val.fullname);
+                            '<?php echo site_url('upload/get_file/'); ?>' + val.fullname);
                     } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo site_url('assets/default/img/favicon.png'); ?>');
@@ -121,7 +121,7 @@
             downloadButtonList[$i].addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                window.open(fileUrl);
+                location.href = fileUrl;
                 return false;
             });
         }
