@@ -51,7 +51,7 @@
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>",
         params: {
-            '_ip_csrf': Cookies.get('ip_csrf_cookie')
+            '<?= $this->config->item('csrf_token_name'); ?>': Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
         },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
@@ -125,7 +125,7 @@
             url: "<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>",
             data: {
                 'name': file.name.replace(/\s+/g, '_'),
-                _ip_csrf: Cookies.get('ip_csrf_cookie')
+                <?= $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
             }
         }, function (response) {
             <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>

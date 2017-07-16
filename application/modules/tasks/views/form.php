@@ -12,7 +12,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
 
 <form method="post" id="task-form">
 
-    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+    <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('tasks_form'); ?></h1>
