@@ -249,9 +249,9 @@
                                         <tr class="attachments">
                                             <td><?php echo $attachment['name']; ?></td>
                                             <td>
-                                                <a href="<?php echo $attachment['fullpath']; ?>"
+                                                <a href="<?php echo base_url('/guest/get/attachment/' . $attachment['fullname']); ?>"
                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-download"></i> <?php echo trans('download') ?>
+                                                    <i class="fa fa-download"></i> <?php _trans('download') ?>
                                                 </a>
                                             </td>
                                         </tr>
