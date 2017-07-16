@@ -52,7 +52,7 @@
 
         <form method="post" action="<?php echo site_url('sessions/passwordreset'); ?>">
 
-            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+            <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
             <input name="token" value="<?php echo $token; ?>" class="hidden">
             <input name="user_id" value="<?php echo $user_id; ?>" class="hidden">

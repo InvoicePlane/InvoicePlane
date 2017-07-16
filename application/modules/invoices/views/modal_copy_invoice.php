@@ -16,7 +16,7 @@
                     return {
                         query: params.term,
                         page: params.page,
-                        _ip_csrf: Cookies.get('ip_csrf_cookie')
+                        <?= $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
                     };
                 },
                 processResults: function (data) {
