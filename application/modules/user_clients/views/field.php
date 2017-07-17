@@ -1,6 +1,6 @@
 <form method="post">
 
-    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+    <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('assigned_clients'); ?></h1>
