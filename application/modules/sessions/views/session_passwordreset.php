@@ -55,7 +55,7 @@
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+            <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
             <div class="form-group">
                 <label for="email" class="hidden"><?php _trans('email'); ?></label>
