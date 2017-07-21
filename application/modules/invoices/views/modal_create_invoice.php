@@ -8,6 +8,25 @@
 
         <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
 
+        // Toggle on/off permissive search on clients names
+        $('span#toggle_permissive_search_clients').click(function () {
+            if( $('input#input_permissive_search_clients').val() == ('1') ){
+                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
+                        permissive_search_clients: '0'
+                    });
+                $('input#input_permissive_search_clients').val('0');
+                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-on');
+                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-off');
+            } else {
+                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
+                        permissive_search_clients: '1'
+                    });
+                $('input#input_permissive_search_clients').val('1');
+                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-off');
+                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-on');
+            }
+        });
+
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
@@ -53,14 +72,22 @@
             <input class="hidden" id="payment_method_id"
                    value="<?php echo get_setting('invoice_default_payment_method'); ?>">
 
-            <div class="form-group">
+            <input class="hidden" id="input_permissive_search_clients"
+                   value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+
+            <div class="form-group has-feedback">
                 <label for="create_invoice_client_id"><?php _trans('client'); ?></label>
-                <select name="client_id" id="create_invoice_client_id" class="client-id-select form-control"
-                        autofocus="autofocus">
-                    <?php if (!empty($client)) : ?>
-                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
-                    <?php endif; ?>
-                </select>
+                <div class="input-group">
+                    <select name="client_id" id="create_invoice_client_id" class="client-id-select form-control"
+                            autofocus="autofocus">
+                        <?php if (!empty($client)) : ?>
+                            <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
+                        <?php endif; ?>
+                    </select>
+                    <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                        <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
+                    </span>
+                </div>
             </div>
 
             <div class="form-group has-feedback">

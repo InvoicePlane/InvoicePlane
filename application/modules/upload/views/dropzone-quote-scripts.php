@@ -51,7 +51,7 @@
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>",
         params: {
-            '_ip_csrf': Cookies.get('ip_csrf_cookie')
+            '<?= $this->config->item('csrf_token_name'); ?>': Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
         },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
@@ -68,11 +68,11 @@
                     var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
 
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                    createDownloadButton(mockFile, '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
+                    createDownloadButton(mockFile, '<?php echo site_url('upload/get_file/'); ?>' + val.fullname);
 
                     if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo site_url('upload/get_file'); ?>' + val.fullname);
+                            '<?php echo site_url('upload/get_file/'); ?>' + val.fullname);
                     } else {
                         thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                             '<?php echo site_url('assets/default/img/favicon.png'); ?>');
@@ -110,7 +110,7 @@
             url: "<?php echo site_url('upload/delete_file/' . $quote->quote_url_key) ?>",
             data: {
                 name: file.name,
-                _ip_csrf: Cookies.get('ip_csrf_cookie')
+                <?= $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
             }
         });
     });
@@ -121,7 +121,7 @@
             downloadButtonList[$i].addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                window.open(fileUrl);
+                location.href = fileUrl;
                 return false;
             });
         }

@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -26,20 +26,24 @@ class Ajax extends Admin_Controller
 
         // Get the post input
         $query = $this->input->get('query');
+        $permissiveSearchClients = $this->input->get('permissive_search_clients');
 
         if (empty($query)) {
             echo json_encode($response);
             exit;
         }
 
+        // Search for chars "in the middle" of clients names
+        $permissiveSearchClients ? $moreClientsQuery = '%' : $moreClientsQuery = '';
+
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
         $escapedQuery = str_replace("%", "", $escapedQuery);
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having('client_name LIKE \'' . $escapedQuery . '%\'')
-            ->or_having('client_surname LIKE \'' . $escapedQuery . '%\'')
-            ->or_having('client_fullname LIKE \'' . $escapedQuery . '%\'')
+            ->having('client_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->or_having('client_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->or_having('client_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
             ->order_by('client_name')
             ->get()
             ->result();
@@ -53,6 +57,14 @@ class Ajax extends Admin_Controller
 
         // Return the results
         echo json_encode($response);
+    }
+
+    public function save_preference_permissive_search_clients()
+    {
+        $this->load->model('mdl_settings');
+        $permissiveSearchClients = $this->input->get('permissive_search_clients');
+        if(!preg_match('!^[0-1]{1}$!',$permissiveSearchClients)){exit;}
+        $this->mdl_settings->save('enable_permissive_search_clients', $permissiveSearchClients);
     }
 
     public function save_client_note()

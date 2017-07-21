@@ -24,7 +24,7 @@
 
 <form method="post" class="form-horizontal">
 
-    <input type="hidden" name="_ip_csrf" value="<?= $this->security->get_csrf_hash() ?>">
+    <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
     <?php if ($payment_id) { ?>
         <input type="hidden" name="payment_id" value="<?php echo $payment_id; ?>">

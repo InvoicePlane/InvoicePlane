@@ -175,6 +175,7 @@ $lang = array(
     'email_templates'                              => 'Email Templates',
     'enabled'                                      => 'Enabled',
     'enable_debug_mode'                            => 'Enable the Debug Mode',
+    'enable_permissive_search_clients'             => 'Enable permissive search',
     'end_date'                                     => 'End Date',
     'enter_payment'                                => 'Enter Payment',
     'errors'                                       => 'Errors',
