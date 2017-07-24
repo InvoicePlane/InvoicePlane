@@ -56,11 +56,11 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
         $invoice = generate_invoice_sumex($invoice_id, false, true);
     }
 
-    $message = parse_template($db_invoice, $body, $invoice_id);
-    $subject = parse_template($db_invoice, $subject, $invoice_id);
-    $cc = parse_template($db_invoice, $cc, $invoice_id);
-    $bcc = parse_template($db_invoice, $bcc, $invoice_id);
-    $from = array(parse_template($db_invoice, $from[0], $invoice_id), parse_template($db_invoice, $from[1], $invoice_id));
+    $message = parse_template($db_invoice, $body);
+    $subject = parse_template($db_invoice, $subject);
+    $cc = parse_template($db_invoice, $cc);
+    $bcc = parse_template($db_invoice, $bcc);
+    $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -93,11 +93,11 @@ function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $c
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
-    $message = parse_template($db_quote, $body, $quote_id);
-    $subject = parse_template($db_quote, $subject, $quote_id);
-    $cc = parse_template($db_quote, $cc, $quote_id);
-    $bcc = parse_template($db_quote, $bcc, $quote_id);
-    $from = array(parse_template($db_quote, $from[0], $quote_id), parse_template($db_quote, $from[1], $quote_id));
+    $message = parse_template($db_quote, $body);
+    $subject = parse_template($db_quote, $subject);
+    $cc = parse_template($db_quote, $cc);
+    $bcc = parse_template($db_quote, $bcc);
+    $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
 
     $message = (empty($message) ? ' ' : $message);
 

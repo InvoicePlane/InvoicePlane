@@ -79,7 +79,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
 
     $mail->Subject = $subject;
     $mail->Body = $message;
-
+    $mail->AltBody = $mail->normalizeBreaks($mail->html2text($message));
 
     if (is_array($from)) {
         // This array should be address, name

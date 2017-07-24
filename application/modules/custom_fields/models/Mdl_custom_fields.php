@@ -199,7 +199,7 @@ class Mdl_Custom_Fields extends MY_Model
      * @param integer $model_id
      * @return string
      */
-    public function get_value_for_field($field_id, $custom_field_model, $model_id)
+    public function get_value_for_field($field_id, $custom_field_model, $object)
     {
         $this->load->model('custom_fields/' . $custom_field_model);
 
@@ -208,7 +208,7 @@ class Mdl_Custom_Fields extends MY_Model
 
         $value = $this->$custom_field_model
             ->where($cf_table . '_fieldid', $field_id)
-            ->where($cf_model_name . '_id', $model_id)
+        ->where($cf_model_name . '_id', $object->{$cf_model_name . '_id'})
             ->get()->result();
 
         $value_key = $cf_table . '_fieldvalue';
