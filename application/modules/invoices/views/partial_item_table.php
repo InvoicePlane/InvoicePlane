@@ -120,7 +120,22 @@
         <?php foreach ($items as $item) { ?>
             <tbody class="item">
             <tr>
-                <td rowspan="2" class="td-icon"><i class="fa fa-arrows cursor-move"></i></td>
+                <td rowspan="2" class="td-icon">
+                    <i class="fa fa-arrows cursor-move"></i>
+                    <?php
+                        if ($invoice->invoice_is_recurring) {
+                            if ($item->item_is_recurring || is_null($item->item_is_recurring)) {
+                                $itemRecurrenceState = '1';
+                                $itemRecurrenceClass = 'fa-calendar-check-o text-success';
+                            } else {
+                                $itemRecurrenceState = '0';
+                                $itemRecurrenceClass = 'fa-calendar-o text-muted';
+                            }
+                            echo '<br/><i title="'.trans('recurring').'" class="js-item-recurrence-toggler cursor-pointer fa '.$itemRecurrenceClass.'"></i><input type="hidden" name="item_is_recurring" value="'.$itemRecurrenceState.'"/>'.PHP_EOL;
+                        }
+                    ?>
+                </td>
+
                 <td class="td-text">
                     <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>"
