@@ -138,6 +138,21 @@ $cv = $this->controller->view_data["custom_values"];
         });
         <?php endif; ?>
 
+        <?php if ($invoice->invoice_is_recurring) : ?>
+        $(".js-item-recurrence-toggler").click(function(){
+            var itemRecurrenceState = $(this).next("input").val();
+            if (itemRecurrenceState === ("1")) {
+                $(this).next("input").val("0");
+                $(this).removeClass("fa-calendar-check-o text-success");
+                $(this).addClass("fa-calendar-o text-muted");
+            } else {
+                $(this).next("input").val("1");
+                $(this).removeClass("fa-calendar-o text-muted");
+                $(this).addClass("fa-calendar-check-o text-success");
+            }
+        });
+        <?php endif; ?>
+
     });
 </script>
 
@@ -349,8 +364,8 @@ if ($this->config->item('disable_read_only') == true) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
                                         <span class="input-group-addon">
-		                                    <i class="fa fa-calendar fa-fw"></i>
-		                                </span>
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
                                     </div>
                                 </div>
 
