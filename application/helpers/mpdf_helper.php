@@ -73,7 +73,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     }
 
     // Watermark
-    if (isset($CI->mdl_settings->settings['pdf_watermark']) AND $CI->mdl_settings->settings['pdf_watermark']==='1') {
+    if (get_setting('pdf_watermark')) {
         $mpdf->showWatermarkText = true;
     }
 
