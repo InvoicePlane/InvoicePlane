@@ -72,6 +72,11 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
 
+    // Watermark
+    if (get_setting('pdf_watermark')) {
+        $mpdf->showWatermarkText = true;
+    }
+
     $mpdf->WriteHTML($html);
 
     if ($isInvoice) {
