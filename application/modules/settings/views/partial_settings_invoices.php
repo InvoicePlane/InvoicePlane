@@ -108,6 +108,21 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="settings[pdf_watermark]">
+                            <?php _trans('pdf_watermark'); ?>
+                        </label>
+                        <select name="settings[pdf_watermark]" id="settings[pdf_watermark]"
+                                class="form-control simple-select">
+                            <option value="0">
+                                <?php _trans('no'); ?>
+                            </option>
+                            <option value="1" <?php check_select(get_setting('pdf_watermark'), '1'); ?>>
+                                <?php _trans('yes'); ?>
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="settings[invoice_pre_password]">
                             <?php _trans('invoice_pre_password'); ?>
                         </label>

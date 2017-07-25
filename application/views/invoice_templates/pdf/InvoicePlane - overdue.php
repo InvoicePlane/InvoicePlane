@@ -248,6 +248,8 @@
 
 </main>
 
+<watermarktext content="<?php _trans('overdue'); ?>" alpha="0.3" />
+
 <footer>
     <?php if ($invoice->invoice_terms) : ?>
         <div class="notes">
