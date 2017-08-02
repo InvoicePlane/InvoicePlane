@@ -153,6 +153,43 @@
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
+                        <label for="settings[currency_code]">
+                            <?php _trans('currency_code'); ?>
+                        </label>
+                        <select name="settings[currency_code]"
+                                id="settings[currency_code]"
+                                class="input-sm form-control simple-select">
+                            <?php foreach ($gateway_currency_codes as $val => $key) { ?>
+                                <option value="<?php echo $val; ?>"
+                                    <?php check_select(get_setting('currency_code', '', true), $val); ?>>
+                                    <?php echo $val; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="tax_rate_decimal_places">
+                            <?php _trans('tax_rate_decimal_places'); ?>
+                        </label>
+                        <select name="settings[tax_rate_decimal_places]" class="form-control simple-select"
+                                id="tax_rate_decimal_places">
+                            <option value="2" <?php check_select(get_setting('tax_rate_decimal_places'), '2'); ?>>
+                                2
+                            </option>
+                            <option value="3" <?php check_select(get_setting('tax_rate_decimal_places'), '3'); ?>>
+                                3
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
                         <label for="settings[thousands_separator]">
                             <?php _trans('thousands_separator'); ?>
                         </label>
@@ -175,23 +212,6 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <div class="form-group">
-                        <label for="tax_rate_decimal_places">
-                            <?php _trans('tax_rate_decimal_places'); ?>
-                        </label>
-                        <select name="settings[tax_rate_decimal_places]" class="form-control simple-select"
-                                id="tax_rate_decimal_places">
-                            <option value="2" <?php check_select(get_setting('tax_rate_decimal_places'), '2'); ?>>
-                                2
-                            </option>
-                            <option value="3" <?php check_select(get_setting('tax_rate_decimal_places'), '3'); ?>>
-                                3
-                            </option>
-                        </select>
-                    </div>
-                </div>
-
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
                         <label for="default_list_limit">
