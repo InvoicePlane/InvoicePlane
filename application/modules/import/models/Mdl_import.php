@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -119,9 +119,10 @@ class Mdl_Import extends Response_Model
         // Init an array to store the inserted ids
         $ids = array();
 
+        $fileheaders = null;
+
         while (($data = fgetcsv($handle, 1000, ",")) <> false) {
             // Check to make sure the file headers match the expected headers
-            $fileheaders = null;
             if ($row == 1) {
                 foreach ($headers as $header) {
                     if (!in_array($header, $data)) {
