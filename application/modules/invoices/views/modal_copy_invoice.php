@@ -16,8 +16,10 @@
                     return {
                         query: params.term,
                         page: params.page,
-                        <?= $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
-                    };
+                    <?php echo $this->config->item('csrf_token_name'); ?>:
+                    Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
+                }
+                    ;
                 },
                 processResults: function (data) {
                     console.log(data);

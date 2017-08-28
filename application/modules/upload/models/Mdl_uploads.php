@@ -51,7 +51,8 @@ class Mdl_Uploads extends Response_Model
             foreach ($query->result() as $row) {
                 array_push($names, array(
                     'path' => getcwd() . '/uploads/customer_files/' . $row->file_name_new,
-                    'filename' => $row->file_name_original));
+                    'filename' => $row->file_name_original
+                ));
             }
         }
 
@@ -74,7 +75,8 @@ class Mdl_Uploads extends Response_Model
             foreach ($query->result() as $row) {
                 array_push($names, array(
                     'path' => getcwd() . '/uploads/customer_files/' . $row->file_name_new,
-                    'filename' => $row->file_name_original));
+                    'filename' => $row->file_name_original
+                ));
             }
         }
 

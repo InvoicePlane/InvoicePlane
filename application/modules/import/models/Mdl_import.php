@@ -287,7 +287,10 @@ class Mdl_Import extends Response_Model
                             if ($tax_rate->num_rows()) {
                                 $data[$key] = $tax_rate->row()->tax_rate_id;
                             } else {
-                                $this->db->insert('ip_tax_rates', array('tax_rate_name' => $data[$key], 'tax_rate_percent' => $data[$key]));
+                                $this->db->insert('ip_tax_rates', array(
+                                    'tax_rate_name' => $data[$key],
+                                    'tax_rate_percent' => $data[$key]
+                                ));
                                 $data[$key] = $this->db->insert_id();
                             }
                         } else {

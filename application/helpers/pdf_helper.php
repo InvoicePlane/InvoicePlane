@@ -75,13 +75,15 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     if ($include_zugferd) {
         $CI->load->helper('zugferd');
 
-        $associatedFiles = array(array(
-            'name' => 'ZUGFeRD-invoice.xml',
-            'description' => 'ZUGFeRD Invoice',
-            'AFRelationship' => 'Alternative',
-            'mime' => 'text/xml',
-            'path' => generate_invoice_zugferd_xml_temp_file($invoice, $items)
-        ));
+        $associatedFiles = array(
+            array(
+                'name' => 'ZUGFeRD-invoice.xml',
+                'description' => 'ZUGFeRD Invoice',
+                'AFRelationship' => 'Alternative',
+                'mime' => 'text/xml',
+                'path' => generate_invoice_zugferd_xml_temp_file($invoice, $items)
+            )
+        );
     } else {
         $associatedFiles = null;
     }

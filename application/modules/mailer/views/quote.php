@@ -22,7 +22,8 @@
 
 <form method="post" action="<?php echo site_url('mailer/send_quote/' . $quote->quote_id) ?>">
 
-    <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
+    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
+           value="<?php echo $this->security->get_csrf_hash() ?>">
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('email_quote'); ?></h1>
