@@ -242,8 +242,8 @@ class Mdl_Invoices extends Response_Model
                 'item_order' => $invoice_item->item_order,
                 'item_is_recurring' => $invoice_item->item_is_recurring
             );
-            
-            if ( !$copy_recurring_items_only || $invoice_item->item_is_recurring ) {
+
+            if (!$copy_recurring_items_only || $invoice_item->item_is_recurring) {
                 $this->mdl_items->save(null, $db_array);
             }
         }
@@ -266,8 +266,8 @@ class Mdl_Invoices extends Response_Model
         $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
         $form_data = array();
-        foreach($db_array as $val){
-          $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
+        foreach ($db_array as $val) {
+            $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
         }
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
@@ -316,8 +316,8 @@ class Mdl_Invoices extends Response_Model
         $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
         $form_data = array();
-        foreach($db_array as $val){
-          $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
+        foreach ($db_array as $val) {
+            $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
         }
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
@@ -443,7 +443,7 @@ class Mdl_Invoices extends Response_Model
     // Used to check if the invoice is Sumex
     public function is_sumex()
     {
-        $this->where('sumex_id is NOT NULL', null, FALSE);
+        $this->where('sumex_id is NOT NULL', null, false);
         return $this;
     }
 

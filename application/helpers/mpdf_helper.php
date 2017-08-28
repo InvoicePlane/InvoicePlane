@@ -23,8 +23,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param null $associated_files
  * @return string
  */
-function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $is_guest = null, $zugferd_invoice = false, $associated_files = null)
-{
+function pdf_create(
+    $html,
+    $filename,
+    $stream = true,
+    $password = null,
+    $isInvoice = null,
+    $is_guest = null,
+    $zugferd_invoice = false,
+    $associated_files = null
+) {
     $CI = &get_instance();
 
     // Get the invoice from the archive if available

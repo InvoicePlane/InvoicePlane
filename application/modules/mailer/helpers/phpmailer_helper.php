@@ -21,8 +21,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param null $more_attachments
  * @return bool
  */
-function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $cc = null, $bcc = null, $more_attachments = null)
-{
+function phpmail_send(
+    $from,
+    $to,
+    $subject,
+    $message,
+    $attachment_path = null,
+    $cc = null,
+    $bcc = null,
+    $more_attachments = null
+) {
     require_once(FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php');
 
     $CI = &get_instance();

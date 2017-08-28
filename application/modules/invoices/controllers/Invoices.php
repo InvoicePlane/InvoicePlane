@@ -82,7 +82,8 @@ class Invoices extends Admin_Controller
             $invoice_array = glob('./uploads/archive/*' . '_' . $invoiceNumber . '.pdf');
             $this->layout->set(
                 array(
-                    'invoices_archive' => $invoice_array));
+                    'invoices_archive' => $invoice_array
+                ));
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
 
@@ -93,7 +94,8 @@ class Invoices extends Admin_Controller
             rsort($invoice_array);
             $this->layout->set(
                 array(
-                    'invoices_archive' => $invoice_array));
+                    'invoices_archive' => $invoice_array
+                ));
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
         }

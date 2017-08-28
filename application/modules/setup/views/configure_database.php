@@ -5,7 +5,8 @@
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
+            <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
+                   value="<?php echo $this->security->get_csrf_hash() ?>">
 
             <legend><?php _trans('setup_database_details'); ?></legend>
 

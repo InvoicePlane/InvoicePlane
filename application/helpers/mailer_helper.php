@@ -39,8 +39,17 @@ function mailer_configured()
  * @param null $attachments
  * @return bool
  */
-function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $body, $cc = null, $bcc = null, $attachments = null)
-{
+function email_invoice(
+    $invoice_id,
+    $invoice_template,
+    $from,
+    $to,
+    $subject,
+    $body,
+    $cc = null,
+    $bcc = null,
+    $attachments = null
+) {
     $CI = &get_instance();
 
     $CI->load->helper('mailer/phpmailer');
@@ -81,8 +90,17 @@ function email_invoice($invoice_id, $invoice_template, $from, $to, $subject, $bo
  * @param null $attachments
  * @return bool
  */
-function email_quote($quote_id, $quote_template, $from, $to, $subject, $body, $cc = null, $bcc = null, $attachments = null)
-{
+function email_quote(
+    $quote_id,
+    $quote_template,
+    $from,
+    $to,
+    $subject,
+    $body,
+    $cc = null,
+    $bcc = null,
+    $attachments = null
+) {
     $CI = &get_instance();
 
     $CI->load->helper('mailer/phpmailer');

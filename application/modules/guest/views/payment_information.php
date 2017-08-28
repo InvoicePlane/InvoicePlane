@@ -147,7 +147,7 @@
                 <form action="<?php echo site_url('guest/payment_handler/make_payment/'); ?>"
                       method="post" id="payment-information-form">
 
-                    <input type="hidden" name="<?= $this->config->item('csrf_token_name'); ?>" value="<?= $this->security->get_csrf_hash() ?>">
+                    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>" value="<?php echo $this->security->get_csrf_hash() ?>">
 
                     <div class="form-group">
                         <input type="hidden" name="invoice_url_key"

@@ -208,7 +208,7 @@ class Mdl_Custom_Fields extends MY_Model
 
         $value = $this->$custom_field_model
             ->where($cf_table . '_fieldid', $field_id)
-        ->where($cf_model_name . '_id', $object->{$cf_model_name . '_id'})
+            ->where($cf_model_name . '_id', $object->{$cf_model_name . '_id'})
             ->get()->result();
 
         $value_key = $cf_table . '_fieldvalue';

@@ -44,6 +44,7 @@ $cv = $this->controller->view_data["custom_values"];
         }
         return fileIcon;
     }
+
     $(function () {
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load(
@@ -369,7 +370,14 @@ if ($this->config->item('disable_read_only') == true) {
                                             <span class="input-group-addon"><?php _trans('reason'); ?></span>
                                             <select name="invoice_sumex_reason" id="invoice_sumex_reason"
                                                     class="form-control input-sm simple-select">
-                                                <?php $reasons = ['disease', 'accident', 'maternity', 'prevention', 'birthdefect', 'unknown']; ?>
+                                                <?php $reasons = [
+                                                    'disease',
+                                                    'accident',
+                                                    'maternity',
+                                                    'prevention',
+                                                    'birthdefect',
+                                                    'unknown'
+                                                ]; ?>
                                                 <?php foreach ($reasons as $key => $reason): ?>
                                                     <?php $selected = ($invoice->sumex_reason == $key ? " selected" : ""); ?>
                                                     <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php _trans('reason_' . $reason); ?></option>
@@ -657,42 +665,63 @@ if ($this->config->item('disable_read_only') == true) {
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>",
         params: {
-            <?= $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
-        },
-        thumbnailWidth: 80,
-        thumbnailHeight: 80,
-        parallelUploads: 20,
-        uploadMultiple: false,
-        dictRemoveFileConfirmation: '<?php _trans('delete_attachment_warning'); ?>',
-        previewTemplate: previewTemplate,
-        autoQueue: true, // Make sure the files aren't queued until manually added
-        previewsContainer: "#previews", // Define the container to display the previews
-        clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
-        init: function () {
-            thisDropzone = this;
-            $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", function (data) {
-                $.each(data, function (index, val) {
-                    var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
+    <?php echo $this->config->item('csrf_token_name'); ?>:
+    Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
+    },
+    thumbnailWidth: 80,
+        thumbnailHeight
+    :
+    80,
+        parallelUploads
+    :
+    20,
+        uploadMultiple
+    :
+    false,
+        dictRemoveFileConfirmation
+    :
+    '<?php _trans('delete_attachment_warning'); ?>',
+        previewTemplate
+    :
+    previewTemplate,
+        autoQueue
+    :
+    true, // Make sure the files aren't queued until manually added
+        previewsContainer
+    :
+    "#previews", // Define the container to display the previews
+        clickable
+    :
+    ".fileinput-button", // Define the element that should be used as click trigger to select files.
+        init
+    :
 
-                    thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                    createDownloadButton(mockFile, '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
+    function () {
+        thisDropzone = this;
+        $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", function (data) {
+            $.each(data, function (index, val) {
+                var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
 
-                    if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
-                        thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
-                    } else {
-                        fileIcon = getIcon(val.fullname);
+                thisDropzone.options.addedfile.call(thisDropzone, mockFile);
+                createDownloadButton(mockFile, '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
 
-                        thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                            '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
-                    }
+                if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                    thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
+                        '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
+                } else {
+                    fileIcon = getIcon(val.fullname);
 
-                    thisDropzone.emit("complete", mockFile);
-                    thisDropzone.emit("success", mockFile);
-                });
+                    thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
+                        '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
+                }
+
+                thisDropzone.emit("complete", mockFile);
+                thisDropzone.emit("success", mockFile);
             });
-        }
-    });
+        });
+    }
+    })
+    ;
 
     myDropzone.on("success", function (file, response) {
         <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
@@ -731,11 +760,17 @@ if ($this->config->item('disable_read_only') == true) {
             url: "<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>",
             data: {
                 'name': file.name.replace(/\s+/g, '_'),
-                <?= $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
-            }
-        }, function (response) {
+        <?php echo $this->config->item('csrf_token_name'); ?>:
+        Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
+    }
+    },
+
+        function (response) {
             <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
-        });
+        }
+
+    )
+        ;
     });
 
     function createDownloadButton(file, fileUrl) {
