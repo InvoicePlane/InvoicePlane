@@ -224,10 +224,11 @@ class Mdl_Invoices extends Response_Model
      * @param int $source_id
      * @param int $target_id
      */
-    public function copy_invoice($source_id, $target_id, $copy_recurring_items_only=FALSE)
+    public function copy_invoice($source_id, $target_id, $copy_recurring_items_only = false)
     {
         $this->load->model('invoices/mdl_items');
 
+        // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_items as $invoice_item) {
@@ -248,6 +249,7 @@ class Mdl_Invoices extends Response_Model
             }
         }
 
+        // Copy the tax rates
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_tax_rates as $invoice_tax_rate) {
@@ -263,11 +265,11 @@ class Mdl_Invoices extends Response_Model
 
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
-        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
+        $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
         $form_data = array();
-        foreach ($db_array as $val) {
-            $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
+        foreach ($custom_fields as $field) {
+            $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
