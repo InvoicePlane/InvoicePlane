@@ -139,7 +139,7 @@ $cv = $this->controller->view_data["custom_values"];
         <?php endif; ?>
 
         <?php if ($invoice->invoice_is_recurring) : ?>
-        $(".js-item-recurrence-toggler").click(function () {
+        $(document).on('click', '.js-item-recurrence-toggler', function () {
             var itemRecurrenceState = $(this).next("input").val();
             if (itemRecurrenceState === ("1")) {
                 $(this).next("input").val("0");
