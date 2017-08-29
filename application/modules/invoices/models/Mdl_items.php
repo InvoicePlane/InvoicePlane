@@ -117,6 +117,7 @@ class Mdl_Items extends Response_Model
 
     /**
      * @param int $item_id
+     * @return null
      */
     public function delete($item_id)
     {
