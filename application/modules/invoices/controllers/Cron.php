@@ -40,7 +40,6 @@ class Cron extends Base_Controller
             $source_id = $invoice_recurring->invoice_id;
 
             // This is the original invoice
-            // $invoice = $this->db->where('ip_invoices.invoice_id', $source_id)->get('ip_invoices')->row();
             $invoice = $this->mdl_invoices->get_by_id($source_id);
 
             // Create the new invoice
@@ -73,12 +72,14 @@ class Cron extends Base_Controller
 
                 $email_template_id = get_setting('email_invoice_template');
                 if (!$email_template_id) {
-                    return;
+                    log_message('error', '[Recurring Invoices] No email template set in the system settings!');
+                    continue;
                 }
 
                 $email_template = $this->mdl_email_templates->where('email_template_id', $email_template_id)->get();
                 if ($email_template->num_rows() == 0) {
-                    return;
+                    log_message('error', '[Recurring Invoices] No email template set in the system settings!');
+                    continue;
                 }
 
                 $tpl = $email_template->row();
@@ -114,7 +115,7 @@ class Cron extends Base_Controller
                     $this->mdl_invoices->mark_sent($target_id);
                     $this->mdl_invoice_amounts->calculate($target_id);
                 } else {
-                    log_message('error', 'Invoice ' . $target_id . 'could not be sent. Please review your Email settings.');
+                    log_message('error', '[Recurring Invoices] Invoice ' . $target_id . 'could not be sent. Please review your Email settings.');
                 }
             }
         }
