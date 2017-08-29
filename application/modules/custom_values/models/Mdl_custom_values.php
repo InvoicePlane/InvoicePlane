@@ -108,7 +108,7 @@ class Mdl_Custom_Values extends MY_Model
     }
 
     /**
-     * @param $column
+     * @param $id
      * @return $this
      */
     public function get_by_column($id)
@@ -124,6 +124,16 @@ class Mdl_Custom_Values extends MY_Model
     public function get_by_id($id)
     {
         return $this->where('custom_values_id', $id)->get();
+    }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function get_by_ids($ids)
+    {
+        $ids = is_array($ids) ? $ids : explode(',', $ids);
+        return $this->where_in('custom_values_id', $ids)->get();
     }
 
     /**
