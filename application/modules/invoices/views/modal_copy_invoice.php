@@ -16,13 +16,11 @@
                     return {
                         query: params.term,
                         page: params.page,
-                    <?php echo $this->config->item('csrf_token_name'); ?>:
-                    Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
-                }
-                    ;
+                        <?php echo $this->config->item('csrf_token_name'); ?>: Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
+                    };
                 },
                 processResults: function (data) {
-                    console.log(data);
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     return {
                         results: data
                     };
@@ -79,7 +77,11 @@
 
             <div class="form-group">
                 <label for="client_id"><?php _trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
+                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
+                    <option value="<?php echo $invoice->client_id; ?>">
+                        <?php echo format_client($invoice); ?>
+                    </option>
+                </select>
             </div>
 
             <div class="form-group has-feedback">
