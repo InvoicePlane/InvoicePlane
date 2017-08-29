@@ -222,7 +222,7 @@ class Validator extends MY_Model
                         break;
 
                     case "MULTIPLE-CHOICE":
-                        $this->_formdata[$key] = implode(",", $value);
+                        $this->_formdata[$key] = is_array($value) ? implode(',', $value) : $value;
                         break;
 
                     case "TEXT":
