@@ -283,7 +283,7 @@ class Mdl_Users extends Response_Model
         $this->db->where('user_id', $user_id);
         $this->db->update('ip_users', $db_array);
 
-        $this->session->set_flashdata('alert_success', 'Password Successfully Changed');
+        $this->session->set_flashdata('alert_success', trans('password_changed'));
     }
 
     /**

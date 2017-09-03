@@ -29,11 +29,11 @@
 
             <div class="btn-group">
                 <?php if (in_array($quote->quote_status_id, array(2, 3))) : ?>
-                    <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
+                    <a href="<?php echo site_url('guest/view/approve_quote/' . $quote_url_key); ?>"
                        class="btn btn-success">
                         <i class="fa fa-check"></i><?php echo trans('approve_this_quote'); ?>
                     </a>
-                    <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
+                    <a href="<?php echo site_url('guest/view/reject_quote/' . $quote_url_key); ?>"
                        class="btn btn-danger">
                         <i class="fa fa-times-circle"></i><?php echo trans('reject_this_quote'); ?>
                     </a>
@@ -249,9 +249,9 @@
                                         <tr class="attachments">
                                             <td><?php echo $attachment['name']; ?></td>
                                             <td>
-                                                <a href="<?php echo $attachment['fullpath']; ?>"
+                                                <a href="<?php echo base_url('/guest/get/attachment/' . $attachment['fullname']); ?>"
                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-download"></i> <?php echo trans('download') ?>
+                                                    <i class="fa fa-download"></i> <?php _trans('download') ?>
                                                 </a>
                                             </td>
                                         </tr>
