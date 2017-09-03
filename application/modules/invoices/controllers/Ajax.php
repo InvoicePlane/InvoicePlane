@@ -54,7 +54,7 @@ class Ajax extends Admin_Controller
                     }
 
                     $this->mdl_items->save($item_id, $item);
-                } else {
+                } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', trans('item'), 'required');

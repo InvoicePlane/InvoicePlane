@@ -76,13 +76,15 @@ class Mdl_Setup extends CI_Model
     {
         $this->db->insert('ip_invoice_groups', array(
                 'invoice_group_name' => 'Invoice Default',
-                'invoice_group_next_id' => 1)
+                'invoice_group_next_id' => 1
+            )
         );
 
         $this->db->insert('ip_invoice_groups', array(
                 'invoice_group_name' => 'Quote Default',
                 'invoice_group_prefix' => 'QUO',
-                'invoice_group_next_id' => 1)
+                'invoice_group_next_id' => 1
+            )
         );
 
         $this->db->insert('ip_payment_methods', array(

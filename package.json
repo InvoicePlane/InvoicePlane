@@ -1,6 +1,6 @@
 {
   "name": "invoiceplane",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
   "main": "index.js",
   "repository": {
@@ -15,9 +15,9 @@
   "homepage": "https://invoiceplane.com",
   "devDependencies": {
     "autoprefixer": "^6.7.3",
-    "bootstrap-datepicker": "^1.6.4",
+    "bootstrap-datepicker": "^1.7.1",
     "bootstrap-sass": "^3.3.7",
-    "clipboard": "^1.6.1",
+    "clipboard": "^1.7.1",
     "dropzone": "^4.3.0",
     "font-awesome": "^4.7.0",
     "grunt": "^1.0.1",

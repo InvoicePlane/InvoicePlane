@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -54,38 +54,38 @@ class Mdl_Invoices extends Response_Model
             SQL_CALC_FOUND_ROWS
             ip_quotes.*,
             ip_users.user_name,
-			ip_users.user_company,
-			ip_users.user_address_1,
-			ip_users.user_address_2,
-			ip_users.user_city,
-			ip_users.user_state,
-			ip_users.user_zip,
-			ip_users.user_country,
-			ip_users.user_phone,
-			ip_users.user_fax,
-			ip_users.user_mobile,
-			ip_users.user_email,
-			ip_users.user_web,
-			ip_users.user_vat_id,
-			ip_users.user_tax_code,
+            ip_users.user_company,
+            ip_users.user_address_1,
+            ip_users.user_address_2,
+            ip_users.user_city,
+            ip_users.user_state,
+            ip_users.user_zip,
+            ip_users.user_country,
+            ip_users.user_phone,
+            ip_users.user_fax,
+            ip_users.user_mobile,
+            ip_users.user_email,
+            ip_users.user_web,
+            ip_users.user_vat_id,
+            ip_users.user_tax_code,
             ip_users.user_subscribernumber,
             ip_users.user_iban,
             ip_users.user_gln,
             ip_users.user_rcc,
-			ip_clients.*,
+            ip_clients.*,
             ip_invoice_sumex.*,
-			ip_invoice_amounts.invoice_amount_id,
-			IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
-			IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
-			IFnull(ip_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
-			IFnull(ip_invoice_amounts.invoice_total, '0.00') AS invoice_total,
-			IFnull(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
-			IFnull(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
-			ip_invoice_amounts.invoice_sign AS invoice_sign,
+            ip_invoice_amounts.invoice_amount_id,
+            IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
+            IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
+            IFnull(ip_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
+            IFnull(ip_invoice_amounts.invoice_total, '0.00') AS invoice_total,
+            IFnull(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
+            IFnull(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
+            ip_invoice_amounts.invoice_sign AS invoice_sign,
             (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
-			DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
+            DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> '0000-00-00') WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
-			ip_invoices.*", false);
+            ip_invoices.*", false);
     }
 
     public function default_order_by()
@@ -100,7 +100,6 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
-        $this->db->join('ip_payments', 'ip_payments.invoice_id = ip_invoices.invoice_id', 'left');
     }
 
     /**
@@ -224,10 +223,11 @@ class Mdl_Invoices extends Response_Model
      * @param int $source_id
      * @param int $target_id
      */
-    public function copy_invoice($source_id, $target_id)
+    public function copy_invoice($source_id, $target_id, $copy_recurring_items_only = false)
     {
         $this->load->model('invoices/mdl_items');
 
+        // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_items as $invoice_item) {
@@ -238,12 +238,17 @@ class Mdl_Invoices extends Response_Model
                 'item_description' => $invoice_item->item_description,
                 'item_quantity' => $invoice_item->item_quantity,
                 'item_price' => $invoice_item->item_price,
-                'item_order' => $invoice_item->item_order
+                'item_discount_amount' => $invoice_item->item_discount_amount,
+                'item_order' => $invoice_item->item_order,
+                'item_is_recurring' => $invoice_item->item_is_recurring
             );
 
-            $this->mdl_items->save(null, $db_array);
+            if (!$copy_recurring_items_only || $invoice_item->item_is_recurring) {
+                $this->mdl_items->save(null, $db_array);
+            }
         }
 
+        // Copy the tax rates
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_tax_rates as $invoice_tax_rate) {
@@ -259,13 +264,13 @@ class Mdl_Invoices extends Response_Model
 
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
-        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+        $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
-        if (count($db_array) > 2) {
-            unset($db_array['invoice_custom_id']);
-            $db_array['invoice_id'] = $target_id;
-            $this->mdl_invoice_custom->save_custom($target_id, $db_array);
+        $form_data = array();
+        foreach ($custom_fields as $field) {
+            $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
+        $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
     /**
@@ -287,6 +292,7 @@ class Mdl_Invoices extends Response_Model
                 'item_description' => $invoice_item->item_description,
                 'item_quantity' => -$invoice_item->item_quantity,
                 'item_price' => $invoice_item->item_price,
+                'item_discount_amount' => $invoice_item->item_discount_amount,
                 'item_order' => $invoice_item->item_order
             );
 
@@ -308,13 +314,13 @@ class Mdl_Invoices extends Response_Model
 
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
-        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->row_array();
+        $db_array = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
-        if (count($db_array) > 2) {
-            unset($db_array['invoice_custom_id']);
-            $db_array['invoice_id'] = $target_id;
-            $this->mdl_invoice_custom->save_custom($target_id, $db_array);
+        $form_data = array();
+        foreach ($db_array as $val) {
+            $form_data[$val->invoice_custom_fieldid] = $val->invoice_custom_fieldvalue;
         }
+        $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
     /**
@@ -355,6 +361,26 @@ class Mdl_Invoices extends Response_Model
         $db_array['invoice_url_key'] = $this->get_url_key();
 
         return $db_array;
+    }
+
+    /**
+     * @param $invoice
+     * @return mixed
+     */
+    public function get_payments($invoice)
+    {
+        $this->load->model('payments/mdl_payments');
+
+        $this->db->where('invoice_id', $invoice->invoice_id);
+        $payment_results = $this->db->get('ip_payments');
+
+        if ($payment_results->num_rows()) {
+            return $invoice;
+        }
+
+        $invoice->payments = $payment_results->result();
+
+        return $invoice;
     }
 
     /**
@@ -438,7 +464,7 @@ class Mdl_Invoices extends Response_Model
     // Used to check if the invoice is Sumex
     public function is_sumex()
     {
-        $this->where('sumex_id is NOT NULL', null, FALSE);
+        $this->where('sumex_id is NOT NULL', null, false);
         return $this;
     }
 

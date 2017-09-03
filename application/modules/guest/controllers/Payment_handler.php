@@ -85,6 +85,11 @@ class Payment_Handler extends Base_Controller
                 'cancelUrl' => site_url('guest/payment_handler/payment_cancel/' . $invoice->invoice_url_key . '/' . $driver),
             );
 
+            if ($d === 'worldpay') {
+                // Additional param for WorldPay
+                $request['cartId'] = $invoice->invoice_number;
+            }
+
             $this->session->set_userdata($invoice->invoice_url_key . '_online_payment', $request);
 
             // Send the request

@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		  https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -23,18 +23,28 @@ class Get extends Base_Controller
         if (strpos(realpath($filePath), $path) !== 0) {
             header("Status: 403 Forbidden");
             echo '<h1>Forbidden</h1>';
-            return;
+            exit;
         }
 
         $filePath = realpath($filePath);
 
-        if (!file_exists($filePath)) {
-            show_404();
-            return;
+        if (file_exists($filePath)) {
+            $pathParts = pathinfo($filePath);
+            $fileExt = $pathParts['extension'];
+            $fileSize = filesize($filePath);
+
+            header("Expires: -1");
+            header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
+            header("Content-Disposition: attachment; filename=\"$filename\"");
+            header("Content-Type: application/octet-stream");
+            header("Content-Length: " . $fileSize);
+
+            echo file_get_contents($filePath);
+            exit;
         }
 
-        header("Content-Type: " . mime_content_type($filePath));
-        echo file_get_contents($filePath);
+        show_404();
+        exit;
     }
 
 }

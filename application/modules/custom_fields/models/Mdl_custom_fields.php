@@ -36,7 +36,7 @@ class Mdl_Custom_Fields extends MY_Model
     public static function custom_types()
     {
         $CI = &get_instance();
-        $CI->load->module("custom_values/mdl_custom_values");
+        $CI->load->model('custom_values/mdl_custom_values');
         return Mdl_Custom_Values::custom_types();
     }
 
@@ -199,7 +199,7 @@ class Mdl_Custom_Fields extends MY_Model
      * @param integer $model_id
      * @return string
      */
-    public function get_value_for_field($field_id, $custom_field_model, $model_id)
+    public function get_value_for_field($field_id, $custom_field_model, $object)
     {
         $this->load->model('custom_fields/' . $custom_field_model);
 
@@ -208,16 +208,17 @@ class Mdl_Custom_Fields extends MY_Model
 
         $value = $this->$custom_field_model
             ->where($cf_table . '_fieldid', $field_id)
-            ->where($cf_model_name . '_id', $model_id)
+            ->where($cf_model_name . '_id', $object->{$cf_model_name . '_id'})
             ->get()->result();
 
         $value_key = $cf_table . '_fieldvalue';
+        $value_key_serialized = $cf_table . '_fieldvalue_serialized';
 
         if (!isset($value[0]->$value_key)) {
             return '';
         }
 
-        return $value[0]->$value_key;
+        return is_array($value[0]->$value_key) ? $value[0]->$value_key_serialized : $value[0]->$value_key;
     }
 
     /**
@@ -228,6 +229,7 @@ class Mdl_Custom_Fields extends MY_Model
     public function get_values_for_fields($custom_field_model, $model_id)
     {
         $this->load->model('custom_fields/' . $custom_field_model);
+        $this->load->model('custom_values/mdl_custom_values');
 
         $fields = $this->$custom_field_model->by_id($model_id)->get()->result();
 
@@ -235,20 +237,37 @@ class Mdl_Custom_Fields extends MY_Model
             return array();
         }
 
-        $this->load->model('custom_values/mdl_custom_values');
-
         $values = array();
         $custom_field = str_replace('mdl_', '', $custom_field_model);
 
         foreach ($fields as $field) {
             // Get the custom field value
-            $field_id_fieldid = $custom_field . '_fieldid';
             $field_id_fieldlabel = $custom_field . '_fieldvalue';
-            $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_fieldid);
 
-            if ($custom_value->num_rows() > 0) {
-                $custom_value = $custom_value->result()[0];
-                $field->custom_value_label = $custom_value->custom_values_value;
+            if ($field->custom_field_type == 'MULTIPLE-CHOICE') {
+                $custom_values = $this->mdl_custom_values->get_by_ids($field->$field_id_fieldlabel)->result();
+
+                if (!empty($custom_values)) {
+                    $key_serialized = $field_id_fieldlabel . '_serialized';
+
+                    $field->$field_id_fieldlabel = array();
+                    $field->$key_serialized = '';
+
+                    foreach ($custom_values as $custom_value) {
+                        $field->$field_id_fieldlabel[] = $custom_value->custom_values_value;
+
+                        // Add as serialized string
+                        $field->$key_serialized .= $custom_value->custom_values_value;
+                        $field->$key_serialized .= $custom_value === end($custom_values) ? '' : ', ';
+                    }
+                }
+            } else {
+                $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_fieldlabel)->result();
+
+                if (!empty($custom_value)) {
+                    $custom_value = $custom_value[0];
+                    $field->$field_id_fieldlabel = $custom_value->custom_values_value;
+                }
             }
 
             $values[$field->custom_field_label] = $field->$field_id_fieldlabel;

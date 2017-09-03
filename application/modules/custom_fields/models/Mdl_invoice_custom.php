@@ -55,7 +55,6 @@ class Mdl_Invoice_Custom extends Validator
                     'invoice_custom_fieldid' => $key,
                     'invoice_custom_fieldvalue' => $value
                 );
-
                 $invoice_custom = $this->where('invoice_id', $invoice_id)->where('invoice_custom_fieldid', $key)->get();
 
                 if ($invoice_custom->num_rows()) {
