@@ -183,29 +183,31 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/InvoicePlane/mpdf.git",
-                "reference": "b36767b45d615ef4cfea80ee31c103ae62227af6"
+                "reference": "6ca661d1d085ee4801b4c12759bdbfc17aea7f90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InvoicePlane/mpdf/zipball/b36767b45d615ef4cfea80ee31c103ae62227af6",
-                "reference": "b36767b45d615ef4cfea80ee31c103ae62227af6",
+                "url": "https://api.github.com/repos/InvoicePlane/mpdf/zipball/6ca661d1d085ee4801b4c12759bdbfc17aea7f90",
+                "reference": "6ca661d1d085ee4801b4c12759bdbfc17aea7f90",
                 "shasum": ""
             },
             "require": {
                 "ext-gd": "*",
                 "ext-mbstring": "*",
+                "paragonie/random_compat": "^2.0",
                 "php": "^5.6 || ~7.0.0 || ~7.1.0",
                 "psr/log": "^1.0",
                 "setasign/fpdi": "1.6.*"
             },
             "require-dev": {
                 "mockery/mockery": "^0.9.5",
-                "paragonie/random_compat": "^2.0",
                 "phpunit/phpunit": "^5.0",
-                "squizlabs/php_codesniffer": "^2.7.0"
+                "squizlabs/php_codesniffer": "^2.7.0",
+                "tracy/tracy": "^2.4"
             },
             "suggest": {
                 "ext-bcmath": "Needed for generation of some types of barcodes",
+                "ext-xml": "Needed mainly for SVG manipulation",
                 "ext-zlib": "Needed for compression of embedded resources, such as fonts"
             },
             "type": "library",
@@ -222,6 +224,14 @@
                     "src/functions.php"
                 ]
             },
+            "autoload-dev": {
+                "psr-4": {
+                    "Mpdf\\": "tests/Mpdf"
+                },
+                "files": [
+                    "src/functions-dev.php"
+                ]
+            },
             "scripts": {
                 "post-install-cmd": [
                     "php -r \"chmod('./tmp', 0777);\""
@@ -232,12 +242,16 @@
             ],
             "authors": [
                 {
+                    "name": "Matěj Humpál",
+                    "role": "Developer, maintainer"
+                },
+                {
                     "name": "Ian Back",
-                    "role": "Developer"
+                    "role": "Developer (retired)"
                 }
             ],
             "description": "A PHP class to generate PDF files from HTML with Unicode/UTF-8 and CJK support",
-            "homepage": "http://mpdf.github.io",
+            "homepage": "https://mpdf.github.io",
             "keywords": [
                 "pdf",
                 "php",
@@ -248,7 +262,7 @@
                 "source": "https://github.com/mpdf/mpdf",
                 "docs": "http://mpdf.github.io"
             },
-            "time": "2017-02-20T13:36:14+00:00"
+            "time": "2017-09-03T08:34:45+00:00"
         },
         {
             "name": "omnipay/2checkout",
