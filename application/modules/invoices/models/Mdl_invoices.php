@@ -100,7 +100,6 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
-        $this->db->join('ip_payments', 'ip_payments.invoice_id = ip_invoices.invoice_id', 'left');
     }
 
     /**
@@ -362,6 +361,26 @@ class Mdl_Invoices extends Response_Model
         $db_array['invoice_url_key'] = $this->get_url_key();
 
         return $db_array;
+    }
+
+    /**
+     * @param $invoice
+     * @return mixed
+     */
+    public function get_payments($invoice)
+    {
+        $this->load->model('payments/mdl_payments');
+
+        $this->db->where('invoice_id', $invoice->invoice_id);
+        $payment_results = $this->db->get('ip_payments');
+
+        if ($payment_results->num_rows()) {
+            return $invoice;
+        }
+
+        $invoice->payments = $payment_results->result();
+
+        return $invoice;
     }
 
     /**
