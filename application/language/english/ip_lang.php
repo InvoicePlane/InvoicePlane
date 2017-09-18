@@ -92,6 +92,7 @@ $lang = array(
     'create_recurring'                             => 'Create Recurring',
     'created'                                      => 'Created',
     'credit_invoice'                               => 'Credit Invoice',
+    'credit_invoices'                              => 'Credit Invoices',
     'credit_invoice_date'                          => 'Credit invoice date',
     'credit_invoice_details'                       => 'Credit invoice details',
     'credit_invoice_for_invoice'                   => 'Credit invoice for invoice',
