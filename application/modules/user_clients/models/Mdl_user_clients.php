@@ -62,7 +62,7 @@ class Mdl_User_Clients extends MY_Model
         $this->filter_where('ip_user_clients.user_id', $user_id);
         return $this;
     }
-	
+
 	/**
     * 
     * @param $user_id
@@ -81,7 +81,7 @@ class Mdl_User_Clients extends MY_Model
                     'client_id' => $clients[$i]->client_id
                 );
                 
-                $this->db->insert('ip_user_clients',$user_client);
+                $this->db->insert('ip_user_clients', $user_client);
             }
         }
     }
