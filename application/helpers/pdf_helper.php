@@ -103,12 +103,12 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'show_item_discounts' => $show_item_discounts,
         'custom_fields' => $custom_fields,
     );
-    
+
     if ($invoice->creditinvoice_parent_id) {
-		$html = $CI->load->view('invoice_credit_templates/pdf/' . $invoice_template, $data, true);
-	} else {
-		$html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
-	}
+        $html = $CI->load->view('invoice_credit_templates/pdf/' . $invoice_template, $data, true);
+    } else {
+        $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+    }
 
     $CI->load->helper('mpdf');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
