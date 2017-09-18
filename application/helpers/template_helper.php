@@ -91,15 +91,28 @@ function select_pdf_invoice_template($invoice)
 {
     $CI =& get_instance();
 
-    if ($invoice->is_overdue) {
-        // Use the overdue template
-        return $CI->mdl_settings->setting('pdf_invoice_template_overdue');
-    } elseif ($invoice->invoice_status_id == 4) {
-        // Use the paid template
-        return $CI->mdl_settings->setting('pdf_invoice_template_paid');
+    if ($invoice->creditinvoice_parent_id) {
+        if ($invoice->is_overdue) {
+            // Use the overdue template
+            return $CI->mdl_settings->setting('pdf_invoice_credit_template_overdue');
+        } elseif ($invoice->invoice_status_id == 4) {
+            // Use the paid template
+            return $CI->mdl_settings->setting('pdf_invoice_credit_template_paid');
+        } else {
+            // Use the default template
+            return $CI->mdl_settings->setting('pdf_invoice_credit_template');
+        }
     } else {
-        // Use the default template
-        return $CI->mdl_settings->setting('pdf_invoice_template');
+        if ($invoice->is_overdue) {
+            // Use the overdue template
+            return $CI->mdl_settings->setting('pdf_invoice_template_overdue');
+        } elseif ($invoice->invoice_status_id == 4) {
+            // Use the paid template
+            return $CI->mdl_settings->setting('pdf_invoice_template_paid');
+        } else {
+            // Use the default template
+            return $CI->mdl_settings->setting('pdf_invoice_template');
+        }
     }
 }
 
@@ -112,15 +125,28 @@ function select_pdf_invoice_template($invoice)
 function select_email_invoice_template($invoice)
 {
     $CI =& get_instance();
-
-    if ($invoice->is_overdue) {
-        // Use the overdue template
-        return $CI->mdl_settings->setting('email_invoice_template_overdue');
-    } elseif ($invoice->invoice_status_id == 4) {
-        // Use the paid template
-        return $CI->mdl_settings->setting('email_invoice_template_paid');
+    
+    if ($invoice->creditinvoice_parent_id) {
+        if ($invoice->is_overdue) {
+            // Use the overdue template
+            return $CI->mdl_settings->setting('email_invoice_credit_template_overdue');
+        } elseif ($invoice->invoice_status_id == 4) {
+            // Use the paid template
+            return $CI->mdl_settings->setting('email_invoice_credit_template_paid');
+        } else {
+            // Use the default template
+            return $CI->mdl_settings->setting('email_invoice_credit_template');
+        }
     } else {
-        // Use the default template
-        return $CI->mdl_settings->setting('email_invoice_template');
+        if ($invoice->is_overdue) {
+            // Use the overdue template
+            return $CI->mdl_settings->setting('email_invoice_template_overdue');
+        } elseif ($invoice->invoice_status_id == 4) {
+            // Use the paid template
+            return $CI->mdl_settings->setting('email_invoice_template_paid');
+        } else {
+            // Use the default template
+            return $CI->mdl_settings->setting('email_invoice_template');
+        }
     }
 }

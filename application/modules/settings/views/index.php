@@ -23,6 +23,9 @@
         <a data-toggle="tab" href="#settings-invoices"><?php _trans('invoices'); ?></a>
     </li>
     <li>
+        <a data-toggle="tab" href="#settings-invoices-credit"><?php _trans('credit_invoices'); ?></a>
+    </li>
+    <li>
         <a data-toggle="tab" href="#settings-quotes"><?php _trans('quotes'); ?></a>
     </li>
     <li>
@@ -61,6 +64,10 @@
 
             <div id="settings-invoices" class="tab-pane">
                 <?php $this->layout->load_view('settings/partial_settings_invoices'); ?>
+            </div>
+            
+            <div id="settings-invoices-credit" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_invoices_credit'); ?>
             </div>
 
             <div id="settings-quotes" class="tab-pane">

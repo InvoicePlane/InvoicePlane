@@ -126,7 +126,9 @@ class Settings extends Admin_Controller
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
+        $pdf_invoice_credit_templates = $this->mdl_templates->get_invoice_credit_templates('pdf');
         $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
+        $public_invoice_credit_templates = $this->mdl_templates->get_invoice_credit_templates('public');
         $pdf_quote_templates = $this->mdl_templates->get_quote_templates('pdf');
         $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
 
@@ -144,7 +146,9 @@ class Settings extends Admin_Controller
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
                 'public_invoice_templates' => $public_invoice_templates,
+                'public_invoice_credit_templates' => $public_invoice_credit_templates,
                 'pdf_invoice_templates' => $pdf_invoice_templates,
+                'pdf_invoice_credit_templates' => $pdf_invoice_credit_templates,
                 'public_quote_templates' => $public_quote_templates,
                 'pdf_quote_templates' => $pdf_quote_templates,
                 'languages' => get_available_languages(),
@@ -154,6 +158,7 @@ class Settings extends Admin_Controller
                 'available_themes' => $available_themes,
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'email_templates_invoice_credit' => $this->mdl_email_templates->where('email_template_type', 'credit_invoice')->get()->result(),
                 'gateway_drivers' => $gateways,
                 'gateway_currency_codes' => \Omnipay\Common\Currency::all(),
                 'current_version' => $current_version,
