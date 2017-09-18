@@ -36,7 +36,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $invoice = $CI->mdl_invoices->get_payments($invoice);
     
     if ($invoice->creditinvoice_parent_id) {
-    	$invoice_parent = $CI->mdl_invoices->get_by_id($invoice->creditinvoice_parent_id);
+        $invoice_parent = $CI->mdl_invoices->get_by_id($invoice->creditinvoice_parent_id);
         $invoice->parent_number = $invoice_parent->invoice_number;
     }
     
