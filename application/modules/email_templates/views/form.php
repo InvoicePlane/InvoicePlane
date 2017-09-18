@@ -41,6 +41,13 @@
                     </div>
                     <div class="radio">
                         <label>
+                            <input type="radio" name="email_template_type" id="email_template_type_invoice_credit"
+                                   value="credit_invoice" checked>
+                            <?php _trans('credit_invoice'); ?>
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
                             <input type="radio" name="email_template_type" id="email_template_type_invoice"
                                    value="quote">
                             <?php _trans('quote'); ?>

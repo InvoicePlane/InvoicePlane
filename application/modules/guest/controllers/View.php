@@ -27,7 +27,9 @@ class View extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
-
+        
+        
+        
         if ($invoice->num_rows() != 1) {
             show_404();
         }
@@ -62,8 +64,16 @@ class View extends Base_Controller
             'is_overdue' => $is_overdue,
             'attachments' => $attachments,
         );
-
-        $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+        
+        if ($invoice->creditinvoice_parent_id) {
+        	$invoice_parent = $this->mdl_invoices->get_by_id($invoice->creditinvoice_parent_id);
+	        $invoice->parent_number = $invoice_parent->invoice_number;
+        	
+        	$this->load->view('invoice_credit_templates/public/' . get_setting('public_invoice_credit_template') . '.php', $data);
+        } else {
+			$this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+		}
+        
     }
 
     private function get_attachments($key)
