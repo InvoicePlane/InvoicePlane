@@ -84,10 +84,10 @@ class User_Clients extends Admin_Controller
                 $user_update = array(
                     'user_all_clients' => 0
                 );
-                
-               $this->mdl_user_clients->save(); 
+
+               $this->mdl_user_clients->save();
             }
-            
+
             $this->db->where('user_id', $user_id);
             $this->db->update('ip_users', $user_update);
             

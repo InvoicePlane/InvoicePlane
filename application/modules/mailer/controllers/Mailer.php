@@ -68,13 +68,13 @@ class Mailer extends Admin_Controller
 
         $this->layout->set('selected_pdf_template', select_pdf_invoice_template($invoice));
         $this->layout->set('selected_email_template', $email_template_id);
-        
+
         if ($invoice->creditinvoice_parent_id) {
             $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'credit_invoice')->get()->result());
         } else {
             $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result());
-		}
-        
+        }
+
         $this->layout->set('invoice', $invoice);
         $this->layout->set('custom_fields', $custom_fields);
         $this->layout->set('pdf_templates', $this->mdl_templates->get_invoice_templates());
