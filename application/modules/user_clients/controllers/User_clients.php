@@ -88,8 +88,8 @@ class User_Clients extends Admin_Controller
                $this->mdl_user_clients->save(); 
             }
             
-            $this->db->where('user_id',$user_id);
-            $this->db->update('ip_users',$user_update);
+            $this->db->where('user_id', $user_id);
+            $this->db->update('ip_users', $user_update);
             
             redirect('user_clients/user/' . $user_id);
         }

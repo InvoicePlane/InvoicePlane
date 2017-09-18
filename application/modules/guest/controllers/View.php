@@ -66,13 +66,13 @@ class View extends Base_Controller
         );
         
         if ($invoice->creditinvoice_parent_id) {
-        	$invoice_parent = $this->mdl_invoices->get_by_id($invoice->creditinvoice_parent_id);
-	        $invoice->parent_number = $invoice_parent->invoice_number;
-        	
-        	$this->load->view('invoice_credit_templates/public/' . get_setting('public_invoice_credit_template') . '.php', $data);
+            $invoice_parent = $this->mdl_invoices->get_by_id($invoice->creditinvoice_parent_id);
+            $invoice->parent_number = $invoice_parent->invoice_number;
+
+            $this->load->view('invoice_credit_templates/public/' . get_setting('public_invoice_credit_template') . '.php', $data);
         } else {
-			$this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
-		}
+            $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+        }
         
     }
 
