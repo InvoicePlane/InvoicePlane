@@ -108,6 +108,21 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="settings[pdf_watermark]">
+                            <?php _trans('pdf_watermark'); ?>
+                        </label>
+                        <select name="settings[pdf_watermark]" id="settings[pdf_watermark]"
+                                class="form-control simple-select">
+                            <option value="0">
+                                <?php _trans('no'); ?>
+                            </option>
+                            <option value="1" <?php check_select(get_setting('pdf_watermark'), '1'); ?>>
+                                <?php _trans('yes'); ?>
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="settings[invoice_pre_password]">
                             <?php _trans('invoice_pre_password'); ?>
                         </label>
@@ -140,10 +155,11 @@
                             <?php _trans('invoice_logo'); ?>
                         </label>
                         <?php if (get_setting('invoice_logo')) { ?>
+                            <br/>
                             <img class="personal_logo"
                                  src="<?php echo base_url(); ?>uploads/<?php echo get_setting('invoice_logo'); ?>">
                             <br>
-                            <?php echo anchor('settings/remove_logo/invoice', 'Remove Logo'); ?><br>
+                            <?php echo anchor('settings/remove_logo/invoice', trans('remove_logo')); ?><br/>
                         <?php } ?>
                         <input type="file" name="invoice_logo" size="40" class="form-control"/>
                     </div>

@@ -195,8 +195,13 @@ class Mdl_Reports extends CI_Model
      * @param bool $taxChecked
      * @return mixed
      */
-    public function sales_by_year($from_date = null, $to_date = null, $minQuantity = null, $maxQuantity = null, $taxChecked = False)
-    {
+    public function sales_by_year(
+        $from_date = null,
+        $to_date = null,
+        $minQuantity = null,
+        $maxQuantity = null,
+        $taxChecked = false
+    ) {
         if ($minQuantity == "") {
             $minQuantity = 0;
         }

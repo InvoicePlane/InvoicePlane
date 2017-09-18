@@ -180,7 +180,13 @@ class Clients extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
 
-        $client = $this->mdl_clients->with_total()->with_total_balance()->with_total_paid()->where('ip_clients.client_id', $client_id)->get()->row();
+        $client = $this->mdl_clients
+            ->with_total()
+            ->with_total_balance()
+            ->with_total_paid()
+            ->where('ip_clients.client_id', $client_id)
+            ->get()->row();
+
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
 
         $this->mdl_client_custom->prep_form($client_id);

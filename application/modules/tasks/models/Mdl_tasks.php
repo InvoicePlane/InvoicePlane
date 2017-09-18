@@ -263,7 +263,7 @@ class Mdl_Tasks extends Response_Model
             ->get();
 
         foreach ($query->result() as $task) {
-            parent::save($task->task_id, array('task_project_id' => null));
+            parent::save($task->task_id, array('project_id' => null));
         }
     }
 }
