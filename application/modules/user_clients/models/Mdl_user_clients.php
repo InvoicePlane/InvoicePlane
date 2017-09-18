@@ -90,9 +90,9 @@ class Mdl_User_Clients extends MY_Model
     {
         $this->load->model('users/mdl_users');
         $users = $this->mdl_users->where('user_all_clients',1)->get()->result();
-        
+
         $new_users = array();
-        
+
         for ($i = 0; $i < count($users); $i++) {
             array_push($new_users, $users[$i]->user_id);
         }
