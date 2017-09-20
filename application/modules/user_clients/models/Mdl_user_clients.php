@@ -62,5 +62,40 @@ class Mdl_User_Clients extends MY_Model
         $this->filter_where('ip_user_clients.user_id', $user_id);
         return $this;
     }
-
+    
+    /**
+    * 
+    * @param array $users_id
+    */
+    public function set_all_clients_user($users_id)
+    {
+        $this->load->model('clients/mdl_clients');
+        
+        for ($x = 0; $x < count($users_id); $x++) {
+            $clients = $this->mdl_clients->get_not_assigned_to_user($users_id[$x]);
+            
+            for ($i = 0; $i < count($clients); $i++) {
+                $user_client = array(
+                    'user_id' => $users_id[$x],
+                    'client_id' => $clients[$i]->client_id
+                );
+                
+                $this->db->insert('ip_user_clients', $user_client);
+            }
+        }
+    }
+    
+    public function get_users_all_clients()
+    {
+        $this->load->model('users/mdl_users');
+        $users = $this->mdl_users->where('user_all_clients', 1)->get()->result();
+        
+        $new_users = array();
+        
+        for ($i = 0; $i < count($users); $i++) {
+            array_push($new_users, $users[$i]->user_id);
+        }
+        
+        $this->set_all_clients_user($new_users);
+    }
 }
