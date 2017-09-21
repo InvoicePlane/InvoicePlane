@@ -127,7 +127,9 @@ class Settings extends Admin_Controller
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
         $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
+        $pdf_invoice_credit_templates = $this->mdl_templates->get_invoice_credit_templates('pdf');
         $pdf_quote_templates = $this->mdl_templates->get_quote_templates('pdf');
+        $public_invoice_credit_templates = $this->mdl_templates->get_invoice_credit_templates('public');
         $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
 
         // Get all themes
