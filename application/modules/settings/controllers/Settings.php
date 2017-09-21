@@ -146,7 +146,7 @@ class Settings extends Admin_Controller
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
                 'public_invoice_templates' => $public_invoice_templates,
-                'public_invoice_credit_templates' => $pdf_invoice_credit_templates,
+                'public_invoice_credit_templates' => $public_invoice_credit_templates,
                 'pdf_invoice_templates' => $pdf_invoice_templates,
                 'pdf_invoice_credit_templates' => $pdf_invoice_credit_templates,
                 'public_quote_templates' => $public_quote_templates,
