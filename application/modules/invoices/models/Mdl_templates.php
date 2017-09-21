@@ -33,6 +33,21 @@ class Mdl_Templates extends CI_Model
 
         return $templates;
     }
+    
+    public function get_invoice_credit_templates($type = 'pdf')
+    {
+        $this->load->helper('directory');
+
+        if ($type == 'pdf') {
+            $templates = directory_map(APPPATH . '/views/invoice_credit_templates/pdf', true);
+        } elseif ($type == 'public') {
+            $templates = directory_map(APPPATH . '/views/invoice_credit_templates/public', true);
+        }
+
+        $templates = $this->remove_extension($templates);
+
+        return $templates;
+    }
 
     /**
      * @param $files
