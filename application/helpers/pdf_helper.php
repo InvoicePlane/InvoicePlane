@@ -34,7 +34,12 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
-
+    
+    if ($invoice->creditinvoice_parent_id) {
+    	$invoice_parent = $CI->mdl_invoices->get_by_id($invoice->creditinvoice_parent_id);
+        $invoice->parent_number = $invoice_parent->invoice_number;
+    }
+    
     // Override language with system language
     set_language($invoice->client_language);
 
@@ -98,8 +103,12 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'show_item_discounts' => $show_item_discounts,
         'custom_fields' => $custom_fields,
     );
-
-    $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+    
+    if ($invoice->creditinvoice_parent_id) {
+		$html = $CI->load->view('invoice_credit_templates/pdf/' . $invoice_template, $data, true);
+	} else {
+		$html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+	}
 
     $CI->load->helper('mpdf');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
