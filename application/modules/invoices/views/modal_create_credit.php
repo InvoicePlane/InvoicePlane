@@ -59,7 +59,23 @@
             </div>
 
             <div>
-                <select name="invoice_group_id" id="invoice_group_id" class="hidden">
+            	<label><?php echo trans('invoice_group'); ?></label>
+                
+                <select name="invoice_group_id" id="invoice_group_id" class="form-control">
+                <?php foreach ($invoice_groups as $invoice_group) { ?>
+                
+                <option value="<?php echo $invoice_group->invoice_group_id; ?>" 
+                	<?php if (get_setting('default_invoice_credit_group') == $invoice_group->invoice_group_id) {
+                    	echo 'selected="selected"';
+                        $credit_invoice_group = htmlsc($invoice_group->invoice_group_name);
+                     } ?>>
+                     
+                     <?php echo htmlsc($invoice_group->invoice_group_name); ?>
+                     	
+                     </option>
+                
+                 <?php } ?>
+                <!--
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                             <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) {
@@ -69,17 +85,24 @@
                             <?php echo $credit_invoice_group; ?>
                         </option>
                     <?php } ?>
+                -->
                 </select>
             </div>
-
-            <p><strong><?php _trans('credit_invoice_details'); ?></strong></p>
-
-            <ul>
-                <li><?php _trans('client') . ': ' . htmlsc($invoice->client_name); ?></li>
-                <li><?php echo trans('credit_invoice_date') . ': ' . $credit_date; ?></li>
-                <li><?php echo trans('invoice_group') . ': ' . $credit_invoice_group; ?></li>
-            </ul>
-
+            
+            <br/>
+            
+            <div>
+            	<label><strong><?php _trans('credit_invoice_details'); ?></strong></label>
+            	
+            	<ul>
+	                <li><?php echo _trans('client') . ': ' . htmlsc($invoice->client_name).' '.htmlsc($invoice->client_surname); ?></li>
+	                <li><?php echo trans('credit_invoice_date') . ': ' . $credit_date; ?></li>
+	                <!--
+	                <li><?php echo trans('invoice_group') . ': ' . $credit_invoice_group; ?></li>
+	                -->
+	            </ul>
+            </div>
+            
             <div class="alert alert-danger no-margin">
                 <?php _trans('create_credit_invoice_alert'); ?>
             </div>
