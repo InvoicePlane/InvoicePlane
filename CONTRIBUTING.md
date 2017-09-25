@@ -1,17 +1,24 @@
-# Contribution Guide
+# Contribution Information
 
 ## Contribution to InvoicePlane
 
 Every help is welcome, you don't have to be a professional PHP developer or SQL database engineer.
-If you are not familiar with PHP or coding in general you could also help us in other ways.
-You may also join our [Slack Chat](https://invoiceplane-slack.herokuapp.com/) to discuss certain
-topics with other developers or get some help.
+We appreciate any support with helping other users, translating the software or simply spreading
+the word. You can find more information in our [official contribution guide](https://go.invoiceplane.com/contribution).
+
 
 ## Contents
 
+* The Roadmap
 * Get familiar with our Development Guidelines
-* Tools for development
 * Contributing Code
+
+---
+
+## The roadmap
+
+We have a forum thread that is updated on a regular base with the most important bugs and feature requests.
+You can find the overview [here](https://go.invoiceplane.com/roadmapv1).
 
 ---
 
@@ -23,10 +30,10 @@ We are following some strict development guidelines while developing.
 Coding Standard: PSR-2
 
 ### JavaScript
-Use JShint / JSlint to check your JavaScript code and try to resolve all code issues
+Use JShint / JSlint to check your JavaScript code and try to resolve all code issues.
 
 ### CSS
-We use SASS only.
+We use SASS only. The Sass files are compiled to minified and automatically prefixed CSS files.
 
 ---
 
@@ -45,16 +52,7 @@ We use SASS only.
     * Solve all conflicts and check if your code is still working.
 4. Submit the pull request, reference the issue ID in the title and add a meaningful description.
 
-
-Please ask questions related to this process if you are unclear. Asking before doing anything may save you and us time.
-
----
-
-## Tools for development
-We received some licenses for commercial development tools you can use if you want. Please contact use at mail@invoiceplane.com to get the license / access as we can't publish them here.
-
-* JetBrains PhpStorm (PHP IDE)
-* Mailtrap.io eMail Testing Solution
+Please ask questions related to this process if you are unclear. Asking before doing anything will save your and our time.
 
 ---
 
