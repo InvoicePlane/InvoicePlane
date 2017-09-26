@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-$hook['pre_controller'] = array(
+$hook['post_controller_constructor'] = array(
     'class' => 'SetTimezoneClass',
     'function' => 'setTimezone',
     'filename' => 'SetTimezoneClass.php',
