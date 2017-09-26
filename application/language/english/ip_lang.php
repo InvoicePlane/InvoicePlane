@@ -370,6 +370,7 @@ $lang = array(
     'product'                                      => 'Product',
     'product_description'                          => 'Product description',
     'product_families'                             => 'Product families',
+    'product_qty'                                  => 'Qty',
     'product_name'                                 => 'Product name',
     'product_price'                                => 'Price',
     'product_sku'                                  => 'SKU',
@@ -674,5 +675,20 @@ $lang = array(
 
     // Types
     'true'                                         => 'True',
-    'false'                                        => 'False'
+    'false'                                        => 'False',
+    
+    // Warehouse Management
+    'warehouses'                                   => 'Warehouses',
+    'warehouse'                                    => 'Warehouse',
+    'view_warehouses'                              => 'View warehouses',
+    'create_warehouse'                             => 'Create warehouse',
+    'enable_warehouses'                            => 'Enable the Warehouses module',
+    'warehouse_name'                               => 'Name',
+    'warehouse_location'                           => 'Location',
+    'warehouses_form'                              => 'Warehouse form',
+    'warehouse_products_entry'                     => 'Products entry',
+    'warehouse_products_exit'                      => 'Products exit',
+    'warehouse_total_products'                     => 'Total products',
+    'entry'                                        => 'Entry',
+    'exit'                                         => 'Exit',
 );
