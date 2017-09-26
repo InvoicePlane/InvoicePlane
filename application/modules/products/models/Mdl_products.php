@@ -33,6 +33,7 @@ class Mdl_Products extends Response_Model
         $this->db->join('ip_families', 'ip_families.family_id = ip_products.family_id', 'left');
         $this->db->join('ip_units', 'ip_units.unit_id = ip_products.unit_id', 'left');
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_products.tax_rate_id', 'left');
+        $this->db->join('ip_warehouses', 'ip_warehouses.warehouse_id = ip_products.warehouse_id', 'left');
     }
 
     public function by_product($match)
@@ -74,6 +75,16 @@ class Mdl_Products extends Response_Model
                 'field' => 'product_price',
                 'label' => trans('product_price'),
                 'rules' => 'required'
+            ),
+            'product_qty' => array(
+                'field' => 'product_qty',
+                'label' => trans('product_qty'),
+                'rules' => 'numeric'
+            ),
+            'warehouse_id' => array(
+                'field' => 'warehouse_id',
+                'label' => trans('warehouse'),
+                'rules' => 'numeric'
             ),
             'purchase_price' => array(
                 'field' => 'purchase_price',

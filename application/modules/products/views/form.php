@@ -113,6 +113,31 @@
                                 <?php } ?>
                             </select>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="warehouse_id">
+                                <?php _trans('warehouse'); ?>
+                            </label>
+
+                            <select name="warehouse_id" id="warehouse_id" class="form-control simple-select">
+                                <option value="0"><?php _trans('none'); ?></option>
+                                <?php foreach ($warehouses as $warehouse) { ?>
+                                    <option value="<?php echo $warehouse->warehouse_id; ?>"
+                                        <?php check_select($this->mdl_warehouses->form_value('warehouse_id'), $warehouse->warehouse_id); ?>>
+                                        <?php echo $warehouse->warehouse_name; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="product_qty">
+                                <?php _trans('product_qty'); ?>
+                            </label>
+
+                            <input type="text" name="product_qty" id="product_qty" class="form-control numeric"
+                                   value="<?php echo $this->mdl_products->form_value('product_qty'); ?>">
+                        </div>
 
                     </div>
                 </div>

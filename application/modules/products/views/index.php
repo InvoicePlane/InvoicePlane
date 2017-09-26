@@ -26,6 +26,8 @@
                 <th><?php _trans('product_sku'); ?></th>
                 <th><?php _trans('product_name'); ?></th>
                 <th><?php _trans('product_description'); ?></th>
+                <th><?php _trans('product_qty'); ?></th>
+                <th><?php _trans('warehouse'); ?></th>
                 <th><?php _trans('product_price'); ?></th>
                 <th><?php _trans('product_unit'); ?></th>
                 <th><?php _trans('tax_rate'); ?></th>
@@ -43,6 +45,8 @@
                     <td><?php _htmlsc($product->product_sku); ?></td>
                     <td><?php _htmlsc($product->product_name); ?></td>
                     <td><?php echo nl2br(htmlsc($product->product_description)); ?></td>
+                    <td><?php _htmlsc($product->product_qty); ?></td>
+                    <td><?php _htmlsc($product->warehouse_name); ?></td>
                     <td class="amount"><?php echo format_currency($product->product_price); ?></td>
                     <td><?php _htmlsc($product->unit_name); ?></td>
                     <td><?php echo ($product->tax_rate_id) ? htmlsc($product->tax_rate_name) : trans('none'); ?></td>
