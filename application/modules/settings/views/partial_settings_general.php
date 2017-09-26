@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
@@ -100,6 +100,23 @@
                             <?php foreach ($countries as $cldr => $country) { ?>
                                 <option value="<?php echo $cldr; ?>" <?php check_select(get_setting('default_country'), $cldr); ?>>
                                     <?php echo $country ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="settings[default_timezone]">
+                            <?php _trans('default_timezone'); ?>
+                        </label>
+                        <select name="settings[default_timezone]" id="settings[default_timezone]"
+                                class="form-control simple-select">
+                            <option value=""><?php _trans('none'); ?></option>
+                            <?php foreach (tz_list() as $t) { ?>
+                                <option value="<?php print $t['zone'] ?>" <?php check_select(get_setting('default_timezone'), $t['zone']); ?>>
+                                    <?php echo $t['diff_from_GMT'] . ' - ' . $t['zone'] ?>
                                 </option>
                             <?php } ?>
                         </select>
