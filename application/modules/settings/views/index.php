@@ -41,6 +41,9 @@
         <a data-toggle="tab" href="#settings-projects-tasks"><?php _trans('projects'); ?></a>
     </li>
     <li>
+        <a data-toggle="tab" href="#settings-warehouses"><?php _trans('warehouses'); ?></a>
+    </li>
+    <li>
         <a data-toggle="tab" href="#settings-updates"><?php _trans('updates'); ?></a>
     </li>
 </ul>
@@ -88,6 +91,10 @@
 
             <div id="settings-projects-tasks" class="tab-pane">
                 <?php $this->layout->load_view('settings/partial_settings_projects_tasks'); ?>
+            </div>
+            
+            <div id="settings-warehouses" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_warehouses'); ?>
             </div>
 
             <div id="settings-updates" class="tab-pane">
