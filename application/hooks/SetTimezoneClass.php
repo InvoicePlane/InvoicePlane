@@ -15,13 +15,27 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class  SetTimezoneClass
 {
+    
+    public function __construct() {
+        $this->CI =& get_instance();
+    }
+    
     /**
      * Set UTC as the current timezone if no one was set in the PHP ini
      */
     public function setTimezone()
     {
-        if (!ini_get('date.timezone')) {
-            date_default_timezone_set('UTC');
+        $this->CI->load->helper('settings');
+        $this->CI->load->model('settings/mdl_settings');
+        
+        if (get_setting('default_timezone')) {
+            date_default_timezone_set(get_setting('default_timezone'));
+            //ini_set('date.timezone', get_setting('default_timezone'));
+        } else {
+            if (!ini_get('date.timezone')) {
+                date_default_timezone_set('UTC');
+                //ini_set('date.timezone', 'UTC');
+            }
         }
     }
 }
