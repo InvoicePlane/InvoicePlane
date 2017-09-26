@@ -87,6 +87,14 @@
             var client_id = $(this).data('client-id');
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_create_quote'); ?>", {client_id: client_id});
         });
+        
+        $(document).on('click', '.warehouse-products-entry', function () {
+            $('#modal-placeholder').load("<?php echo site_url('warehouses/ajax/modal_warehouse_products_entry'); ?>");
+        });
+        
+        $(document).on('click', '.warehouse-products-exit', function () {
+            $('#modal-placeholder').load("<?php echo site_url('warehouses/ajax/modal_warehouse_products_exit'); ?>");
+        });
 
         $(document).on('click', '.invoice-add-payment', function () {
             invoice_id = $(this).data('invoice-id');
