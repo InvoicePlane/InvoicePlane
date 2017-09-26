@@ -120,6 +120,7 @@ $lang = array(
     'days'                                         => 'Days',
     'decimal_point'                                => 'Decimal Point',
     'default_country'                              => 'Default country',
+    'default_timezone'                             => 'Time zone',
     'default_email_template'                       => 'Default Email Template',
     'default_invoice_group'                        => 'Default Invoice Group',
     'default_invoice_tax_rate'                     => 'Default Invoice Tax Rate',
