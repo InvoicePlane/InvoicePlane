@@ -254,7 +254,7 @@ class Mdl_Custom_Fields extends MY_Model
                     $field->$key_serialized = '';
 
                     foreach ($custom_values as $custom_value) {
-                        $field->$field_id_fieldlabel[] = $custom_value->custom_values_value;
+                        $field->$field_id_fieldlabel[0] = $custom_value->custom_values_value;
 
                         // Add as serialized string
                         $field->$key_serialized .= $custom_value->custom_values_value;
