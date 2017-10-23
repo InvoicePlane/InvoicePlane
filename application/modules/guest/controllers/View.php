@@ -35,6 +35,7 @@ class View extends Base_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->load->model('payment_methods/mdl_payment_methods');
+        $this->load->model('custom_fields/mdl_custom_fields');
 
         $invoice = $invoice->row();
 
@@ -46,6 +47,13 @@ class View extends Base_Controller
         if ($invoice->payment_method == 0) {
             $payment_method = null;
         }
+
+        // Get all custom fields
+        $custom_fields = array(
+            'invoice' => $this->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
+            'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
+            'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
+        );
 
         // Attachments
         $attachments = $this->get_attachments($invoice_url_key);
@@ -61,6 +69,7 @@ class View extends Base_Controller
             'payment_method' => $payment_method,
             'is_overdue' => $is_overdue,
             'attachments' => $attachments,
+            'custom_fields' => $custom_fields,
         );
 
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
