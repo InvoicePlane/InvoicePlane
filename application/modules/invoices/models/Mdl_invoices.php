@@ -226,6 +226,7 @@ class Mdl_Invoices extends Response_Model
     public function copy_invoice($source_id, $target_id, $copy_recurring_items_only = false)
     {
         $this->load->model('invoices/mdl_items');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
 
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
@@ -281,6 +282,7 @@ class Mdl_Invoices extends Response_Model
     public function copy_credit_invoice($source_id, $target_id)
     {
         $this->load->model('invoices/mdl_items');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
 
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
