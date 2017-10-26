@@ -42,7 +42,8 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    user_id: $('#user_id').val()
+                    user_id: $('#user_id').val(),
+                    payment_method: $('#payment_method').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -74,6 +75,8 @@
 
             <input type="hidden" name="user_id" id="user_id" class="form-control"
                    value="<?php echo $invoice->user_id; ?>">
+            <input type="hidden" name="payment_method" id="payment_method" class="form-control"
+                   value="<?php echo $invoice->payment_method; ?>">
 
             <div class="form-group">
                 <label for="client_id"><?php _trans('client'); ?></label>
