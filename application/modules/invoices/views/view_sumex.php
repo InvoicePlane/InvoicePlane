@@ -318,24 +318,36 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
                             <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
                         </span>
-                        <br><br>
+                        <?php if ($invoice->client_phone || $invoice->client_email) : ?>
+                            <hr>
+                        <?php endif; ?>
                         <?php if ($invoice->client_phone): ?>
-                            <span>
-                              <strong><?php _trans('phone'); ?>:</strong>
-                                <?php echo $invoice->client_phone; ?>
-                            </span>
-                            <br>
+                            <div>
+                                <?php _trans('phone'); ?>:&nbsp;
+                                <?php _htmlsc($invoice->client_phone); ?>
+                            </div>
                         <?php endif; ?>
                         <?php if ($invoice->client_email): ?>
-                            <span>
-                              <strong><?php _trans('email'); ?>:</strong>
-                                <?php echo $invoice->client_email; ?>
-                            </span>
+                            <div>
+                                <?php _trans('email'); ?>:&nbsp;
+                                <?php _auto_link($invoice->client_email); ?>
+                            </div>
                         <?php endif; ?>
-                        <br><br>
-                        <?php echo '<b>' . trans('birthdate') . ':</b> ' . format_date($invoice->client_birthdate); ?>
-                        <br>
-                        <?php echo '<b>' . trans('gender') . ':</b> ' . format_gender($invoice->client_gender); ?>
+                        <?php if ($invoice->client_birthdate || $invoice->client_gender) : ?>
+                            <hr>
+                        <?php endif; ?>
+                        <?php if ($invoice->client_birthdate): ?>
+                            <div>
+                                <?php _trans('birthdate'); ?>:&nbsp;
+                                <?php echo format_date($invoice->client_birthdate); ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($invoice->client_gender): ?>
+                            <div>
+                                <?php _trans('birthdate'); ?>:&nbsp;
+                                <?php echo format_gender($invoice->client_gender); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="col-md-6">
                         <h3><?php _trans('treatment'); ?></h3>
@@ -380,7 +392,9 @@ if ($this->config->item('disable_read_only') == true) {
                                                 ]; ?>
                                                 <?php foreach ($reasons as $key => $reason): ?>
                                                     <?php $selected = ($invoice->sumex_reason == $key ? " selected" : ""); ?>
-                                                    <option value="<?php echo $key; ?>"<?php echo $selected; ?>><?php _trans('reason_' . $reason); ?></option>
+                                                    <option value="<?php echo $key; ?>"<?php echo $selected; ?>>
+                                                        <?php _trans('reason_' . $reason); ?>
+                                                    </option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
