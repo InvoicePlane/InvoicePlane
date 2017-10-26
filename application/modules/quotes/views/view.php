@@ -222,7 +222,7 @@ $cv = $this->controller->view_data["custom_values"];
                     <?php if ($quote->client_email): ?>
                         <div>
                             <?php _trans('email'); ?>:&nbsp;
-                            <?php echo $quote->client_email; ?>
+                            <?php _auto_link($quote->client_email); ?>
                         </div>
                     <?php endif; ?>
 

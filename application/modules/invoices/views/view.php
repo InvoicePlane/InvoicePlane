@@ -297,7 +297,7 @@ if ($this->config->item('disable_read_only') == true) {
                     <?php if ($invoice->client_email): ?>
                         <div>
                             <?php _trans('email'); ?>:&nbsp;
-                            <?php echo $invoice->client_email; ?>
+                            <?php _auto_link($invoice->client_email); ?>
                         </div>
                     <?php endif; ?>
 
