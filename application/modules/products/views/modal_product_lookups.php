@@ -99,6 +99,14 @@
                 product_table.load(lookup_url);
             }, 250);
         }
+
+        // Bind enter to product search if search field is focused
+        $(document).keypress(function(e){
+            if (e.which === 13 && $('#filter_product').is(':focus')){
+                $('#filter-button').click();
+                return false;
+            }
+        });
     });
 </script>
 
