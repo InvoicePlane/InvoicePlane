@@ -28,9 +28,16 @@
 <![endif]-->
 
 <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
+<?php if (trans('cldr') != 'en') { ?>
+    <script src="<?php echo base_url(); ?>assets/core/js/locales/select2/<?php _trans('cldr'); ?>.js"></script>
+<?php } ?>
 
 <script>
     Dropzone.autoDiscover = false;
+
+    <?php if (trans('cldr') != 'en') { ?>
+    $.fn.select2.defaults.set('language', '<?php _trans("cldr"); ?>');
+    <?php } ?>
 
     $(function () {
         $('.nav-tabs').tab();
