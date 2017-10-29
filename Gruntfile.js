@@ -118,6 +118,13 @@ module.exports = function (grunt) {
             dest: 'assets/core/js/locales/',
             filter: 'isFile'
         },
+        select2locale: {
+            expand: true,
+            flatten: true,
+            src: ['node_modules/select2/dist/js/i18n/**'],
+            dest: 'assets/core/js/locales/select2/',
+            filter: 'isFile'
+        },
         fontawesome: {
             expand: true,
             flatten: true,
@@ -162,6 +169,7 @@ module.exports = function (grunt) {
         'concat:dependencies',
         'concat:zxcvbn',
         'copy:datepickerlocale',
+        'copy:select2locale',
         'copy:fontawesome',
         'copy:devjs'
     ]);
@@ -174,6 +182,7 @@ module.exports = function (grunt) {
         'concat:dependencies',
         'concat:zxcvbn',
         'copy:datepickerlocale',
+        'copy:select2locale',
         'copy:fontawesome',
         'copy:devjs',
         'watch'
@@ -189,6 +198,7 @@ module.exports = function (grunt) {
         'uglify:build',
         'clean:build',
         'copy:datepickerlocale',
+        'copy:select2locale',
         'copy:fontawesome'
     ]);
 };
