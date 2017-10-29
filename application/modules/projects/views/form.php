@@ -1,31 +1,6 @@
 <script>
     $(function () {
-        $("#client_id").select2({
-            placeholder: "<?php echo htmlentities(trans('client')); ?>",
-            ajax: {
-                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        query: params.term,
-                        page: params.page,
-                        <?= $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
-                    };
-                },
-                processResults: function (data) {
-                    console.log(data);
-                    return {
-                        results: data
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) {
-                return markup;
-            },
-            minimumInputLength: 2
-        });
+        <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
     });
 </script>
 
