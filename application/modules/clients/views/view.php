@@ -144,7 +144,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php if ($client->client_email) : ?>
                                     <tr>
                                         <th><?php _trans('email'); ?></th>
-                                        <td><?php echo auto_link($client->client_email, 'email'); ?></td>
+                                        <td><?php _auto_link($client->client_email, 'email'); ?></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($client->client_phone) : ?>
@@ -168,7 +168,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php if ($client->client_web) : ?>
                                     <tr>
                                         <th><?php _trans('web'); ?></th>
-                                        <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
+                                        <td><?php _auto_link($client->client_web, 'url', true); ?></td>
                                     </tr>
                                 <?php endif; ?>
 

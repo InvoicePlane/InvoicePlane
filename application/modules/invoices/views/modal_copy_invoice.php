@@ -6,32 +6,7 @@
         // Select2 for all select inputs
         $(".simple-select").select2();
 
-        $("#client_id").select2({
-            placeholder: "<?php echo htmlentities(trans('client')); ?>",
-            ajax: {
-                url: "<?php echo site_url('clients/ajax/name_query'); ?>",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        query: params.term,
-                        page: params.page,
-                        <?php echo $this->config->item('csrf_token_name'); ?>: Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
-                    };
-                },
-                processResults: function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                    return {
-                        results: data
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) {
-                return markup;
-            },
-            minimumInputLength: 2
-        });
+        <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
 
         // Creates the invoice
         $('#copy_invoice_confirm').click(function () {
@@ -42,7 +17,8 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    user_id: $('#user_id').val()
+                    user_id: $('#user_id').val(),
+                    payment_method: $('#payment_method').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -74,6 +50,8 @@
 
             <input type="hidden" name="user_id" id="user_id" class="form-control"
                    value="<?php echo $invoice->user_id; ?>">
+            <input type="hidden" name="payment_method" id="payment_method" class="form-control"
+                   value="<?php echo $invoice->payment_method; ?>">
 
             <div class="form-group">
                 <label for="client_id"><?php _trans('client'); ?></label>
