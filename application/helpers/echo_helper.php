@@ -51,3 +51,14 @@ function _trans($line, $id = '', $default = null)
 {
     echo trans($line, $id, $default);
 }
+
+/**
+ * Echo for the auto link function with special chars handling
+ *
+ * @param $str
+ * @param string $type
+ * @param bool $popup
+ */
+function _auto_link($str, $type = 'both', $popup = FALSE) {
+    echo auto_link(htmlsc($str), $type, $popup);
+}

@@ -222,10 +222,12 @@ class Mdl_Invoices extends Response_Model
      * Copies invoice items, tax rates, etc from source to target
      * @param int $source_id
      * @param int $target_id
+     * @param bool $copy_recurring_items_only
      */
     public function copy_invoice($source_id, $target_id, $copy_recurring_items_only = false)
     {
         $this->load->model('invoices/mdl_items');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
 
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
@@ -234,13 +236,17 @@ class Mdl_Invoices extends Response_Model
             $db_array = array(
                 'invoice_id' => $target_id,
                 'item_tax_rate_id' => $invoice_item->item_tax_rate_id,
+                'item_product_id' => $invoice_item->item_product_id,
+                'item_task_id' => $invoice_item->item_task_id,
                 'item_name' => $invoice_item->item_name,
                 'item_description' => $invoice_item->item_description,
                 'item_quantity' => $invoice_item->item_quantity,
                 'item_price' => $invoice_item->item_price,
                 'item_discount_amount' => $invoice_item->item_discount_amount,
                 'item_order' => $invoice_item->item_order,
-                'item_is_recurring' => $invoice_item->item_is_recurring
+                'item_is_recurring' => $invoice_item->item_is_recurring,
+                'item_product_unit' => $invoice_item->item_product_unit,
+                'item_product_unit_id' => $invoice_item->item_product_unit_id,
             );
 
             if (!$copy_recurring_items_only || $invoice_item->item_is_recurring) {
@@ -281,6 +287,7 @@ class Mdl_Invoices extends Response_Model
     public function copy_credit_invoice($source_id, $target_id)
     {
         $this->load->model('invoices/mdl_items');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
 
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
@@ -288,12 +295,17 @@ class Mdl_Invoices extends Response_Model
             $db_array = array(
                 'invoice_id' => $target_id,
                 'item_tax_rate_id' => $invoice_item->item_tax_rate_id,
+                'item_product_id' => $invoice_item->item_product_id,
+                'item_task_id' => $invoice_item->item_task_id,
                 'item_name' => $invoice_item->item_name,
                 'item_description' => $invoice_item->item_description,
-                'item_quantity' => -$invoice_item->item_quantity,
+                'item_quantity' => $invoice_item->item_quantity,
                 'item_price' => $invoice_item->item_price,
                 'item_discount_amount' => $invoice_item->item_discount_amount,
-                'item_order' => $invoice_item->item_order
+                'item_order' => $invoice_item->item_order,
+                'item_is_recurring' => $invoice_item->item_is_recurring,
+                'item_product_unit' => $invoice_item->item_product_unit,
+                'item_product_unit_id' => $invoice_item->item_product_unit_id,
             );
 
             $this->mdl_items->save(null, $db_array);
