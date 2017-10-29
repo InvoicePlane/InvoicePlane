@@ -9,7 +9,7 @@
         <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
 
         // Toggle on/off permissive search on clients names
-        $('span#toggle_permissive_search_clients').click(function () {
+        $('#toggle_permissive_search_clients').click(function () {
             if ($('input#input_permissive_search_clients').val() == ('1')) {
                 $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
                     permissive_search_clients: '0'
