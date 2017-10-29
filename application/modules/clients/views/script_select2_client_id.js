@@ -20,8 +20,5 @@ $(".client-id-select").select2({
         },
         cache: true
     },
-    escapeMarkup: function (markup) {
-        return markup;
-    },
     minimumInputLength: 2
 });
