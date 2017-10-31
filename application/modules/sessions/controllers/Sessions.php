@@ -22,11 +22,15 @@ class Sessions extends Base_Controller
 
     public function login()
     {
+        $file = 'application/logs/loginlog.txt';
         $view_data = array(
             'login_logo' => get_setting('login_logo')
         );
 
         if ($this->input->post('btn_login')) {
+            $log_time = time();
+            $log_line = $_SERVER['REMOTE_ADDR'] . ' ';
+            $log_line .= date('[m/d/Y:G:i:s O] ',$log_time);
 
             $this->db->where('user_email', $this->input->post('email'));
             $query = $this->db->get('ip_users');
@@ -35,23 +39,33 @@ class Sessions extends Base_Controller
             // Check if the user exists
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
+                $log_line .= "loginalert_user_not_found\n";
+                file_put_contents($file, $log_line, FILE_APPEND | LOCK_EX);    
                 redirect('sessions/login');
             } else {
 
                 // Check if the user is marked as active
                 if ($user->user_active == 0) {
                     $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
+                    $log_line .= "loginalert_user_inactive\n";
+                    file_put_contents($file, $log_line, FILE_APPEND | LOCK_EX);    
                     redirect('sessions/login');
                 } else {
 
                     if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
                         if ($this->session->userdata('user_type') == 1) {
+                        $log_line .= "user " . $user->user_email . " logged in\n";
+                        file_put_contents($file, $log_line, FILE_APPEND | LOCK_EX);    
                             redirect('dashboard');
                         } elseif ($this->session->userdata('user_type') == 2) {
+                        $log_line .= "guest logged in\n";
+                        file_put_contents($file, $log_line, FILE_APPEND | LOCK_EX);    
                             redirect('guest');
                         }
                     } else {
                         $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
+                        $log_line .= "loginalert_credentials_incorrect\n";
+                        file_put_contents($file, $log_line, FILE_APPEND | LOCK_EX);    
                         redirect('sessions/login');
                     }
 
