@@ -25,7 +25,7 @@ class Sessions extends Base_Controller
     
     public function login()
     {
-        $file = '/var/www/ip/application/logs/loginlog.txt';
+        $file = 'application/logs/loginlog.txt';
         $view_data = array(
             'login_logo' => get_setting('login_logo')
         );
