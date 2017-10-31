@@ -19,7 +19,7 @@ class Sessions extends Base_Controller
     {
         redirect('sessions/login');
     }
-    
+
     public function login()
     {
         $file = 'application/logs/loginlog.txt';
