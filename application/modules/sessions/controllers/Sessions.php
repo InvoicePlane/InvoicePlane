@@ -19,9 +19,6 @@ class Sessions extends Base_Controller
     {
         redirect('sessions/login');
     }
-
-    
-    
     
     public function login()
     {
