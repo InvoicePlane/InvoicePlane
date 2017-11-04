@@ -19,6 +19,11 @@ class Validator extends MY_Model
     {
         return true;
     }
+    
+    public function validate_markdown()
+    {
+        return true;
+    }
 
     /**
      * @param $value
@@ -226,6 +231,11 @@ class Validator extends MY_Model
                         break;
 
                     case "TEXT":
+                        if ($value == "") {
+                            $this->_formdata[$key] = null;
+                        }
+                        break;
+                    case "MARKDOWN":
                         if ($value == "") {
                             $this->_formdata[$key] = null;
                         }
