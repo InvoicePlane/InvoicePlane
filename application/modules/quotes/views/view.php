@@ -50,7 +50,7 @@ $cv = $this->controller->view_data["custom_values"];
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
-                    custom: $('input[name^=custom],select[name^=custom]').serializeArray()
+                    custom: $('input[name^=custom],textarea[name^=custom],select[name^=custom]').serializeArray()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
