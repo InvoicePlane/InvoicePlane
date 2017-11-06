@@ -9,6 +9,8 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
+ 
+require APPPATH . "third_party/parsedown/Parsedown.php";
 
 /**
  * Shorthand for htmlspecialchars()
@@ -28,6 +30,17 @@ function htmlsc($output)
 function _htmlsc($output)
 {
     echo htmlspecialchars($output, ENT_QUOTES);
+}
+
+/**
+ * Parse markdown to HTML
+ *
+ * @param mixed $output
+ */
+function _markdown($output)
+{
+    $Parsedown = new Parsedown();
+    echo $Parsedown->text($output);
 }
 
 /**
