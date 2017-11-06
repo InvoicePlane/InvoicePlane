@@ -51,7 +51,7 @@
 
                 <div class="form-group">
                     <label for="to_email"><?php _trans('to_email'); ?></label>
-                    <input type="email" name="to_email" id="to_email" class="form-control" required
+                    <input type="email" multiple name="to_email" id="to_email" class="form-control" required
                            value="<?php echo $quote->client_email; ?>">
                 </div>
 
