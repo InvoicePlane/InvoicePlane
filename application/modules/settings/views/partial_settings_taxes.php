@@ -25,6 +25,25 @@
                         </select>
                     </div>
 
+                    <!-- Default invoice tax rate 2 -->
+                    <div class="form-group">
+                        <label for="settings[default_invoice_tax_rate_2]">
+                            <?php _trans('default_invoice_tax_rate_2'); ?>
+                        </label>
+
+                        <select name="settings[default_invoice_tax_rate_2]" id="settings[default_invoice_tax_rate_2]"
+                                class="form-control simple-select">
+                            <option value=""><?php _trans('none'); ?></option>
+                            <?php foreach ($tax_rates as $tax_rate) { ?>
+                                <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                    <?php check_select(get_setting('default_invoice_tax_rate_2'), $tax_rate->tax_rate_id); ?>>
+                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                      </div>                    
+                <!-- end of code for default invoice tax rate 2 -->     
+                    
                     <div class="form-group">
                         <label for="settings[default_include_item_tax]">
                             <?php _trans('default_invoice_tax_rate_placement'); ?>
