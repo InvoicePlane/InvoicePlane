@@ -25,7 +25,7 @@
         </div>
         <div class="form-group">
             <label for="client_id"><?php _trans('client'); ?></label>
-            <select name="client_id" id="client_id" class="form-control" autofocus="autofocus"></select>
+            <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus"></select>
         </div>
 
     </div>
