@@ -205,7 +205,34 @@ class Mdl_Invoices extends Response_Model
 
                 $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
+            
+             // Create the default invoice tax 2 record if applicable
+            if (get_setting('default_invoice_tax_rate_2')) {
+                $db_array = array(
+                    'invoice_id' => $invoice_id,
+                    'tax_rate_id' => get_setting('default_invoice_tax_rate_2'),
+                    'include_item_tax' => get_setting('default_include_item_tax_2', 0),
+                    'invoice_tax_rate_amount' => 0
+                );
+
+                $this->db->insert('ip_invoice_tax_rates', $db_array);
+            }           
         }
+        
+         if ($include_invoice_tax_rates) {
+            // Create the default invoice tax 2 record if applicable
+            if (get_setting('default_invoice_tax_rate_2')) {
+                $db_array = array(
+                    'invoice_id' => $invoice_id,
+                    'tax_rate_id' => get_setting('default_invoice_tax_rate_2'),
+                    'include_item_tax' => get_setting('default_include_item_tax_2', 0),
+                    'invoice_tax_rate_amount' => 0
+                );
+
+                $this->db->insert('ip_invoice_tax_rates', $db_array);
+            }
+        }
+        
         $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
         if (preg_match("/sumex/i", $invgroup->invoice_group_name)) {
             // If the Invoice Group includes "Sumex", make the invoice a Sumex one
