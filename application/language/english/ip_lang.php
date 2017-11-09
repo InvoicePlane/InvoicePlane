@@ -123,6 +123,7 @@ $lang = array(
     'default_email_template'                       => 'Default Email Template',
     'default_invoice_group'                        => 'Default Invoice Group',
     'default_invoice_tax_rate'                     => 'Default Invoice Tax Rate',
+    'default_invoice_tax_rate_2'                   => 'Default Invoice Tax Rate 2',
     'default_invoice_tax_rate_placement'           => 'Default Invoice Tax Rate Placement',
     'default_item_tax_rate'                        => 'Default Item Tax Rate',
     'default_list_limit'                           => 'Number of Items in Lists',
