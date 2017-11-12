@@ -311,9 +311,9 @@ if ( ! isset($view_folder[0]) && is_dir(APPPATH.'views'.DIRECTORY_SEPARATOR))
 
 define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
 
-define('UPLOADS_FOLDER', FCPATH . 'uploads/');
+define('UPLOADS_FOLDER', FCPATH . 'uploads'.DIRECTORY_SEPARATOR);
 
-define('THEME_FOLDER', FCPATH . 'assets/');
+define('THEME_FOLDER', FCPATH . 'assets'.DIRECTORY_SEPARATOR);
 
 define('IPCONFIG_FILE', FCPATH . 'ipconfig.php');
 
