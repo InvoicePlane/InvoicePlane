@@ -157,6 +157,22 @@ class Mailer extends Admin_Controller
         $bcc = $this->input->post('bcc');
         $attachment_files = $this->mdl_uploads->get_invoice_uploads($invoice_id);
 
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+
+        if (!empty($invoice)) {
+            if ($invoice->invoice_status_id == 1) {
+                // Generate new invoice number if applicable
+                if (get_setting('generate_invoice_number_for_draft') == 0) {
+                    $invoice_number = $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id);
+
+                    // Set new invoice number and save
+                    $this->db->where('invoice_id', $invoice_id);
+                    $this->db->set('invoice_number', $invoice_number);
+                    $this->db->update('ip_invoices');
+                }
+            }
+        }
+
         if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_invoices->mark_sent($invoice_id);
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
