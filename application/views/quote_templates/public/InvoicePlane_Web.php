@@ -249,7 +249,7 @@
                                         <tr class="attachments">
                                             <td><?php echo $attachment['name']; ?></td>
                                             <td>
-                                                <a href="<?php echo base_url('/guest/get/attachment/' . $attachment['fullname']); ?>"
+                                                <a href="<?php echo site_url('guest/get/attachment/' . $attachment['fullname']); ?>"
                                                    class="btn btn-primary btn-sm">
                                                     <i class="fa fa-download"></i> <?php _trans('download') ?>
                                                 </a>
