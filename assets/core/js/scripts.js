@@ -43,10 +43,14 @@ function inject_email_template(template_fields, email_template) {
     $.each(email_template, function (key, val) {
         // remove prefix from key
         key = key.replace("email_template_", "");
+        console.log("key : "+ key);
+        console.log("val : "+ val);
         // if key is in template_fields, apply value to form field
         if (val && template_fields.indexOf(key) > -1) {
             if (key === 'body') {
                 $("#" + key).html(val);
+            } else if (key === 'pdf_template') {
+                $("#" + key).val(val).trigger('change');
             } else {
                 $("#" + key).val(val);
             }
