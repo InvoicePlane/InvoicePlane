@@ -107,10 +107,9 @@ class Invoices extends Admin_Controller
      */
     public function download($invoice)
     {
-        $invoice = urldecode($invoice);
         header('Content-type: application/pdf');
-        header('Content-Disposition: attachment; filename="' . $invoice . '"');
-        readfile('./uploads/archive/' . $invoice);
+        header('Content-Disposition: attachment; filename="' . urldecode($invoice) . '"');
+        readfile('./uploads/archive/' . urldecode($invoice));
     }
 
     /**
