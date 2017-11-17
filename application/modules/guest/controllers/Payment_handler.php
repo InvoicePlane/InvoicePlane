@@ -269,7 +269,12 @@ class Payment_Handler extends Base_Controller
 
             $this->db->insert('ip_merchant_responses', $db_array);
 
+            // Validate true if payment is succesful 
+            if($response->isSuccessful()){
             return true;
+            }
+
+            return false;
         }
 
         return false;
