@@ -75,9 +75,15 @@ function pdf_create(
     }
 
     // Set the footer if voucher is invoice and if set in settings
-    if (!empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
+    if (!empty($CI->mdl_settings->settings['pdf_invoice_footer']) && $isInvoice) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
+    }
+
+    // Set the footer if voucher is quote and if set in settings
+    if (!empty($CI->mdl_settings->settings['pdf_quote_footer']) && strpos($filename, trans('quote')) !== false) {
+        $mpdf->setAutoBottomMargin = 'stretch';
+        $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
     // Watermark
