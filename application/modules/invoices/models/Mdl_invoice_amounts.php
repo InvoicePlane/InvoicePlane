@@ -185,9 +185,15 @@ class Mdl_Invoice_Amounts extends CI_Model
             $invoice_amount = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
             // Recalculate the invoice total and balance
-            $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
-            $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
-            $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
+            if(get_setting('invoice_tax_order') === "1") {
+                $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
+                $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
+                $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
+            } else {
+                $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total;
+                $invoice_total = $this->calculate_discount($invoice_id, $invoice_total) + $invoice_amount->invoice_tax_total;
+                $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
+            }
 
             // Update the invoice amount record
             $db_array = array(
