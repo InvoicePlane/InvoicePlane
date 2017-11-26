@@ -433,18 +433,10 @@
                 <div class="col-xs-12 col-md-6">
 
                     <div class="form-group">
-                        <label for="settings[bcc_mails_to_admin]">
+                        <label for="settings[bcc_mails_to_admin_email]">
                             <?php _trans('bcc_mails_to_admin'); ?>
                         </label>
-                        <select name="settings[bcc_mails_to_admin]" id="settings[bcc_mails_to_admin]"
-                                class="form-control simple-select">
-                            <option value="0"><?php _trans('no'); ?></option>
-                            <option value="1" <?php check_select(get_setting('bcc_mails_to_admin'), '1'); ?>>
-                                <?php _trans('yes'); ?>
-                            </option>
-                        </select>
-
-                        <p class="help-block"><?php _trans('bcc_mails_to_admin_hint'); ?></p>
+                        <input type="email" multiple name="settings[bcc_mails_to_admin_email]" id="settings[bcc_mails_to_admin_email]" class="form-control"  value="<?php echo get_setting('bcc_mails_to_admin_email'); ?>">
                     </div>
 
                 </div>
