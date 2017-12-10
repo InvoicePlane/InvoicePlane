@@ -20,7 +20,10 @@ class Mdl_Invoice_Custom extends Validator
         'properties'
     );
     public $table = 'ip_invoice_custom';
-    public $primary_key = 'ip_invoice_custom.invoice_custom_id';
+    public $primary_key = [
+        'ip_invoice_custom.invoice_custom_fieldid',
+        'ip_invoice_custom.invoice_id'
+    ];
 
     public function default_select()
     {
@@ -47,7 +50,7 @@ class Mdl_Invoice_Custom extends Validator
                 return true;
             }
 
-            $invoice_custom_id = null;
+            $invoice_custom_fieldid = null;
 
             foreach ($form_data as $key => $value) {
                 $db_array = array(
@@ -58,10 +61,18 @@ class Mdl_Invoice_Custom extends Validator
                 $invoice_custom = $this->where('invoice_id', $invoice_id)->where('invoice_custom_fieldid', $key)->get();
 
                 if ($invoice_custom->num_rows()) {
-                    $invoice_custom_id = $invoice_custom->row()->invoice_custom_id;
+                    $invoice_custom_fieldid = $invoice_custom->row()->invoice_custom_fieldid;
+
+                    $keys = [
+                        'ip_invoice_custom.invoice_custom_fieldid' => $invoice_custom_fieldid,
+                        'ip_invoice_custom.invoice_id' => $invoice_id
+                    ];
+                }
+                else{
+                    $keys = null;
                 }
 
-                parent::save($invoice_custom_id, $db_array);
+                $this->save($keys, $db_array);
             }
 
             return true;

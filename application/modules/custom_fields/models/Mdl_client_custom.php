@@ -23,7 +23,7 @@ class Mdl_Client_Custom extends Validator
         'tax_information'
     );
     public $table = 'ip_client_custom';
-    public $primary_key = 'ip_client_custom.client_custom_id';
+    public $primary_key = 'ip_client_custom.client_custom_fieldid';
 
     public function default_select()
     {
@@ -56,7 +56,7 @@ class Mdl_Client_Custom extends Validator
                 return true;
             }
 
-            $client_custom_id = null;
+            $client_custom_fieldid = null;
             $db_array['client_id'] = $client_id;
 
             foreach ($form_data as $key => $value) {
@@ -69,10 +69,10 @@ class Mdl_Client_Custom extends Validator
                 $client_custom = $this->where('client_id', $client_id)->where('client_custom_fieldid', $key)->get();
 
                 if ($client_custom->num_rows()) {
-                    $client_custom_id = $client_custom->row()->client_custom_id;
+                    $client_custom_fieldid = $client_custom->row()->client_custom_fieldid;
                 }
 
-                parent::save($client_custom_id, $db_array);
+                parent::save($client_custom_fieldid, $db_array);
             }
 
             return true;
