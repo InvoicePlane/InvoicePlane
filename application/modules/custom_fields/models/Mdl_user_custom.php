@@ -23,7 +23,7 @@ class Mdl_User_Custom extends Validator
         'contact_information'
     );
     public $table = 'ip_user_custom';
-    public $primary_key = 'ip_user_custom.user_custom_id';
+    public $primary_key = 'ip_user_custom.user_custom_fieldid';
 
     public function default_select()
     {
@@ -56,7 +56,7 @@ class Mdl_User_Custom extends Validator
                 return true;
             }
 
-            $user_custom_id = null;
+            $user_custom_fieldid = null;
 
             foreach ($form_data as $key => $value) {
                 $db_array = array(
@@ -68,10 +68,10 @@ class Mdl_User_Custom extends Validator
                 $user_custom = $this->where('user_id', $user_id)->where('user_custom_fieldid', $key)->get();
 
                 if ($user_custom->num_rows()) {
-                    $user_custom_id = $user_custom->row()->user_custom_id;
+                    $user_custom_fieldid = $user_custom->row()->user_custom_fieldid;
                 }
 
-                parent::save($user_custom_id, $db_array);
+                parent::save($user_custom_fieldid, $db_array);
             }
             return true;
         }

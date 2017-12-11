@@ -20,7 +20,7 @@ class Mdl_Quote_Custom extends Validator
         'properties'
     );
     public $table = 'ip_quote_custom';
-    public $primary_key = 'ip_quote_custom.quote_custom_id';
+    public $primary_key = 'ip_quote_custom.quote_custom_fieldid';
 
     public function default_select()
     {
@@ -54,7 +54,7 @@ class Mdl_Quote_Custom extends Validator
                 return true;
             }
 
-            $quote_custom_id = null;
+            $quote_custom_fieldid = null;
 
             foreach ($form_data as $key => $value) {
                 $db_array = array(
@@ -66,10 +66,10 @@ class Mdl_Quote_Custom extends Validator
                 $quote_custom = $this->where('quote_id', $quote_id)->where('quote_custom_fieldid', $key)->get();
 
                 if ($quote_custom->num_rows()) {
-                    $quote_custom_id = $quote_custom->row()->quote_custom_id;
+                    $quote_custom_fieldid = $quote_custom->row()->quote_custom_fieldid;
                 }
 
-                parent::save($quote_custom_id, $db_array);
+                parent::save($quote_custom_fieldid, $db_array);
             }
 
             return true;

@@ -220,7 +220,19 @@ class MY_Model extends CI_Model
                 }
             }
 
-            $this->db->where($this->primary_key, $id);
+            if(is_array($id)){
+                $where = [];
+
+                foreach($this->primary_key as $key){
+                    $where[$key] = $id[$key];
+                }
+
+                $this->db->where($where);
+            }
+            else{
+                $this->db->where($this->primary_key, $id);
+            }
+
             $this->db->update($this->table, $db_array);
 
             return $id;

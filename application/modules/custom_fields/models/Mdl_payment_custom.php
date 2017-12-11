@@ -19,7 +19,7 @@ class Mdl_Payment_Custom extends Validator
         'custom_fields'
     );
     public $table = 'ip_payment_custom';
-    public $primary_key = 'ip_payment_custom.payment_custom_id';
+    public $primary_key = 'ip_payment_custom.payment_custom_fieldid';
 
     public function default_select()
     {
@@ -52,7 +52,7 @@ class Mdl_Payment_Custom extends Validator
                 return true;
             }
 
-            $payment_custom_id = null;
+            $payment_custom_fieldid = null;
 
             foreach ($form_data as $key => $value) {
                 $db_array = array(
@@ -64,10 +64,10 @@ class Mdl_Payment_Custom extends Validator
                 $payment_custom = $this->where('payment_id', $payment_id)->where('payment_custom_fieldid', $key)->get();
 
                 if ($payment_custom->num_rows()) {
-                    $payment_custom_id = $payment_custom->row()->payment_custom_id;
+                    $payment_custom_fieldid = $payment_custom->row()->payment_custom_fieldid;
                 }
 
-                parent::save($payment_custom_id, $db_array);
+                parent::save($payment_custom_fieldid, $db_array);
             }
 
             return true;
