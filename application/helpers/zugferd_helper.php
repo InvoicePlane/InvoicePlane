@@ -22,7 +22,7 @@ function generate_invoice_zugferd_xml_temp_file($invoice, $items)
     $CI->load->helper('file');
 
     $path = './uploads/temp/invoice_' . $invoice->invoice_id . '_zugferd.xml';
-    $CI->load->library('zugferdxml', array('invoice' => $invoice, 'items' => $items));
+    $CI->load->library('zugferdXml', array('invoice' => $invoice, 'items' => $items));
 
     write_file($path, $CI->zugferdxml->xml());
     return $path;
