@@ -79,7 +79,7 @@ class Invoices extends Admin_Controller
         $invoice_array = array();
         if (isset($_POST['invoice_number'])) {
             $invoiceNumber = $_POST['invoice_number'];
-            $invoice_array = glob('./uploads/archive/*' . '_' . $invoiceNumber . '.pdf');
+            $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*' . '_' . $invoiceNumber . '.pdf');
             $this->layout->set(
                 array(
                     'invoices_archive' => $invoice_array
@@ -88,7 +88,7 @@ class Invoices extends Admin_Controller
             $this->layout->render();
 
         } else {
-            foreach (glob('./uploads/archive/*.pdf') as $file) {
+            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
                 array_push($invoice_array, $file);
             }
             rsort($invoice_array);
@@ -109,7 +109,7 @@ class Invoices extends Admin_Controller
     {
         header('Content-type: application/pdf');
         header('Content-Disposition: attachment; filename="' . $invoice . '"');
-        readfile('./uploads/archive/' . $invoice);
+        readfile(UPLOADS_ARCHIVE_FOLDER . $invoice);
     }
 
     /**
