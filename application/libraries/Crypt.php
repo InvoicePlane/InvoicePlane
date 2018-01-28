@@ -51,8 +51,6 @@ class Crypt
      */
     public function encode($data)
     {
-        $CI = &get_instance();
-        $CI->load->library('cryptor');
 
         $key = getenv('ENCRYPTION_KEY');
         if (preg_match("/^base64:(.*)$/", $key, $matches)) {
@@ -70,8 +68,6 @@ class Crypt
      */
     public function decode($data)
     {
-        $CI = &get_instance();
-        $CI->load->library('cryptor');
 
         if (empty($data)) {
             return '';
