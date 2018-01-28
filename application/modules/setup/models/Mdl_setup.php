@@ -345,4 +345,18 @@ class Mdl_Setup extends CI_Model
         $this->db->query('ALTER TABLE ip_custom_fields DROP COLUMN custom_field_column');
     }
 
+    public function upgrade_029_1_5_6()
+    {
+        // The following code will determine if the ip_users table has an existing user_all_clients column
+        // If the table already has the column it will be shown in any user query, so get one now
+        $test_user = $this->db->query('SELECT * FROM `ip_users` ORDER BY `user_id` ASC LIMIT 1')->row();
+
+        // Add new user key if applicable
+        if (!isset($test_user->user_all_clients)) {
+            $this->db->query('ALTER TABLE `ip_users`
+              ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
+              AFTER `user_psalt`;'
+            );
+        }
+    }
 }
