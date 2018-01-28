@@ -206,13 +206,17 @@ class Mdl_Invoices extends Response_Model
                 $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
         }
-        $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
-        if (preg_match("/sumex/i", $invgroup->invoice_group_name)) {
-            // If the Invoice Group includes "Sumex", make the invoice a Sumex one
-            $db_array = array(
-                'sumex_invoice' => $invoice_id
-            );
-            $this->db->insert('ip_invoice_sumex', $db_array);
+
+        if($invoice_group !== '0') {
+            $this->load->model('invoice_groups/mdl_invoice_groups');
+            $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
+            if (preg_match("/sumex/i", $invgroup->invoice_group_name)) {
+                // If the Invoice Group includes "Sumex", make the invoice a Sumex one
+                $db_array = array(
+                    'sumex_invoice' => $invoice_id
+                );
+                $this->db->insert('ip_invoice_sumex', $db_array);
+            }
         }
 
         return $invoice_id;
@@ -422,7 +426,7 @@ class Mdl_Invoices extends Response_Model
     public function get_url_key()
     {
         $this->load->helper('string');
-        return random_string('alnum', 15);
+        return random_string('alnum', 32);
     }
 
     /**
