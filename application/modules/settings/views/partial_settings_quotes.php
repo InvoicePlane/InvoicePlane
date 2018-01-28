@@ -152,6 +152,21 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+
+                    <div class="form-group">
+                        <label for="settings[pdf_quote_footer]">
+                            <?php _trans('pdf_quote_footer'); ?>
+                        </label>
+                        <textarea name="settings[pdf_quote_footer]" id="settings[pdf_quote_footer]"
+                                  class="form-control no-margin"><?php echo get_setting('pdf_quote_footer', '', true); ?></textarea>
+                        <p class="help-block"><?php _trans('pdf_quote_footer_hint'); ?></p>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </div>
 

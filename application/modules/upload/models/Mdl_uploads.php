@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -50,7 +50,7 @@ class Mdl_Uploads extends Response_Model
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 array_push($names, array(
-                    'path' => getcwd() . '/uploads/customer_files/' . $row->file_name_new,
+                    'path' => UPLOADS_CFILES_FOLDER . $row->file_name_new,
                     'filename' => $row->file_name_original
                 ));
             }
@@ -74,7 +74,7 @@ class Mdl_Uploads extends Response_Model
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 array_push($names, array(
-                    'path' => getcwd() . '/uploads/customer_files/' . $row->file_name_new,
+                    'path' => UPLOADS_CFILES_FOLDER . $row->file_name_new,
                     'filename' => $row->file_name_original
                 ));
             }

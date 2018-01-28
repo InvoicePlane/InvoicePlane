@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
@@ -30,6 +30,7 @@ class Cron extends Base_Controller
 
         $this->load->model('invoices/mdl_invoices_recurring');
         $this->load->model('invoices/mdl_invoices');
+        $this->load->model('invoices/mdl_invoice_amounts');
         $this->load->helper('mailer');
 
         // Gather a list of recurring invoices to generate
@@ -58,7 +59,7 @@ class Cron extends Base_Controller
             $target_id = $this->mdl_invoices->create($db_array, false);
 
             // Copy the original invoice to the new invoice
-            $this->mdl_invoices->copy_invoice($source_id, $target_id, true);
+            $this->mdl_invoices->copy_invoice($source_id, $target_id, false);
 
             // Update the next recur date for the recurring invoice
             $this->mdl_invoices_recurring->set_next_recur_date($invoice_recurring->invoice_recurring_id);

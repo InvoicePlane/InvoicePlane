@@ -6,11 +6,11 @@
     }
   ],
   "require": {
-    "phpmailer/phpmailer": "^5.2",
-    "mpdf/mpdf": "dev-development",
+    "phpmailer/phpmailer": "^6.0.3",
+    "mpdf/mpdf": "dev-master",
     "vlucas/phpdotenv": "^2.4",
     "setasign/fpdi-fpdf": "^1.6.1",
-    "codeigniter/framework": "^3.1",
+    "codeigniter/framework": "3.1.6",
     "omnipay/omnipay": "~2.0",
     "paragonie/random_compat": "^2.0"
   }
