@@ -303,7 +303,7 @@ class Mdl_Quotes extends Response_Model
     public function get_url_key()
     {
         $this->load->helper('string');
-        return random_string('alnum', 15);
+        return random_string('alnum', 32);
     }
 
     /**
