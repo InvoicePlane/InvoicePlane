@@ -358,5 +358,12 @@ class Mdl_Setup extends CI_Model
               AFTER `user_psalt`;'
             );
         }
+
+        // Copy the invoice pdf footer to the new quote pdf footer setting
+        $this->load->model('settings/mdl_settings');
+        $this->mdl_settings->load_settings();
+        $this->load->helper('settings');
+
+        $this->mdl_settings->save('pdf_quote_footer', get_setting('pdf_invoice_footer'));
     }
 }
