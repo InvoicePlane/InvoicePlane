@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a2453d93bd48c4f513f4ca4f61dc6f1",
+    "content-hash": "06723f8648d6fb41b2a0a52ab111cb4e",
     "packages": [
         {
             "name": "codeigniter/framework",
-            "version": "3.1.6",
+            "version": "3.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bcit-ci/CodeIgniter.git",
-                "reference": "7e4f63cd4b792e7dc2dc4b8b0183a6072a3f9462"
+                "reference": "02a0518e1c56ba3506f370362ac5ebdb8a138312"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/7e4f63cd4b792e7dc2dc4b8b0183a6072a3f9462",
-                "reference": "7e4f63cd4b792e7dc2dc4b8b0183a6072a3f9462",
+                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/02a0518e1c56ba3506f370362ac5ebdb8a138312",
+                "reference": "02a0518e1c56ba3506f370362ac5ebdb8a138312",
                 "shasum": ""
             },
             "require": {
@@ -37,7 +37,7 @@
             ],
             "description": "The CodeIgniter framework",
             "homepage": "https://codeigniter.com",
-            "time": "2017-09-25T16:43:58+00:00"
+            "time": "2018-01-13T11:57:11+00:00"
         },
         {
             "name": "guzzle/guzzle",
@@ -179,22 +179,22 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "dev-development",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InvoicePlane/mpdf.git",
-                "reference": "37d35026df459cbfcaedecfd8de96552415ad3b1"
+                "reference": "efc51fdfdc960f64385321de34ec7998cf4dc9e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InvoicePlane/mpdf/zipball/37d35026df459cbfcaedecfd8de96552415ad3b1",
-                "reference": "37d35026df459cbfcaedecfd8de96552415ad3b1",
+                "url": "https://api.github.com/repos/InvoicePlane/mpdf/zipball/efc51fdfdc960f64385321de34ec7998cf4dc9e7",
+                "reference": "efc51fdfdc960f64385321de34ec7998cf4dc9e7",
                 "shasum": ""
             },
             "require": {
                 "ext-gd": "*",
                 "ext-mbstring": "*",
-                "paragonie/random_compat": "^2.0",
+                "paragonie/random_compat": "^1.4|^2.0",
                 "php": "^5.6 || ~7.0.0 || ~7.1.0 || ~7.2.0",
                 "psr/log": "^1.0",
                 "setasign/fpdi": "1.6.*"
@@ -259,7 +259,7 @@
                 "source": "https://github.com/mpdf/mpdf",
                 "docs": "http://mpdf.github.io"
             },
-            "time": "2017-10-26T10:28:37+00:00"
+            "time": "2018-01-28T11:44:57+00:00"
         },
         {
             "name": "omnipay/2checkout",
@@ -322,16 +322,16 @@
         },
         {
             "name": "omnipay/authorizenet",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-authorizenet.git",
-                "reference": "229bdb205384f2e3bf844cdf258927895b4858d5"
+                "reference": "ac173a125d9eb8492e9bc4c2521e621fae1c7ee1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-authorizenet/zipball/229bdb205384f2e3bf844cdf258927895b4858d5",
-                "reference": "229bdb205384f2e3bf844cdf258927895b4858d5",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-authorizenet/zipball/ac173a125d9eb8492e9bc4c2521e621fae1c7ee1",
+                "reference": "ac173a125d9eb8492e9bc4c2521e621fae1c7ee1",
                 "shasum": ""
             },
             "require": {
@@ -377,7 +377,7 @@
                 "pay",
                 "payment"
             ],
-            "time": "2017-03-07T14:00:14+00:00"
+            "time": "2018-01-08T10:25:08+00:00"
         },
         {
             "name": "omnipay/buckaroo",
@@ -783,16 +783,16 @@
         },
         {
             "name": "omnipay/firstdata",
-            "version": "v2.3.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-firstdata.git",
-                "reference": "e33826821db88d90886cad6c81a29452d3cf91a2"
+                "reference": "c0123a03bec861e0c00fa19772582dc3639fbb6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-firstdata/zipball/e33826821db88d90886cad6c81a29452d3cf91a2",
-                "reference": "e33826821db88d90886cad6c81a29452d3cf91a2",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-firstdata/zipball/c0123a03bec861e0c00fa19772582dc3639fbb6e",
+                "reference": "c0123a03bec861e0c00fa19772582dc3639fbb6e",
                 "shasum": ""
             },
             "require": {
@@ -837,7 +837,7 @@
                 "pay",
                 "payment"
             ],
-            "time": "2016-01-14T06:24:28+00:00"
+            "time": "2017-07-14T09:26:59+00:00"
         },
         {
             "name": "omnipay/gocardless",
@@ -1412,16 +1412,16 @@
         },
         {
             "name": "omnipay/payflow",
-            "version": "v2.2.2",
+            "version": "v2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-payflow.git",
-                "reference": "8dbfaf9accc1c2b388c9ab89c4b30176396c973a"
+                "reference": "2348f82f7eda1e9fb991767d61a3534e4935e9ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-payflow/zipball/8dbfaf9accc1c2b388c9ab89c4b30176396c973a",
-                "reference": "8dbfaf9accc1c2b388c9ab89c4b30176396c973a",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-payflow/zipball/2348f82f7eda1e9fb991767d61a3534e4935e9ba",
+                "reference": "2348f82f7eda1e9fb991767d61a3534e4935e9ba",
                 "shasum": ""
             },
             "require": {
@@ -1465,7 +1465,7 @@
                 "payflow",
                 "payment"
             ],
-            "time": "2017-05-12T08:10:23+00:00"
+            "time": "2017-11-10T08:14:36+00:00"
         },
         {
             "name": "omnipay/paymentexpress",
@@ -1532,16 +1532,16 @@
         },
         {
             "name": "omnipay/paypal",
-            "version": "v2.6.3",
+            "version": "v2.6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-paypal.git",
-                "reference": "e06c8814deacc793715bb9fd3fcae5995b5d8d6b"
+                "reference": "9e44c31a7038d4a23232b3739b602e8842106c4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-paypal/zipball/e06c8814deacc793715bb9fd3fcae5995b5d8d6b",
-                "reference": "e06c8814deacc793715bb9fd3fcae5995b5d8d6b",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-paypal/zipball/9e44c31a7038d4a23232b3739b602e8842106c4e",
+                "reference": "9e44c31a7038d4a23232b3739b602e8842106c4e",
                 "shasum": ""
             },
             "require": {
@@ -1586,7 +1586,7 @@
                 "paypal",
                 "purchase"
             ],
-            "time": "2016-12-22T12:35:25+00:00"
+            "time": "2017-11-10T08:10:43+00:00"
         },
         {
             "name": "omnipay/pin",
@@ -1982,16 +1982,16 @@
         },
         {
             "name": "phpmailer/phpmailer",
-            "version": "v5.2.25",
+            "version": "v5.2.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "2baf20b01690fba8cf720c1ebcf9b988eda50915"
+                "reference": "70362997bda4376378be7d92d81e2200550923f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/2baf20b01690fba8cf720c1ebcf9b988eda50915",
-                "reference": "2baf20b01690fba8cf720c1ebcf9b988eda50915",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/70362997bda4376378be7d92d81e2200550923f7",
+                "reference": "70362997bda4376378be7d92d81e2200550923f7",
                 "shasum": ""
             },
             "require": {
@@ -2055,7 +2055,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2017-08-28T11:12:07+00:00"
+            "time": "2017-11-04T09:26:05+00:00"
         },
         {
             "name": "psr/log",
@@ -2238,16 +2238,16 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.8.28",
+            "version": "v2.8.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "7fe089232554357efb8d4af65ce209fc6e5a2186"
+                "reference": "d64be24fc1eba62f9daace8a8918f797fc8e87cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/7fe089232554357efb8d4af65ce209fc6e5a2186",
-                "reference": "7fe089232554357efb8d4af65ce209fc6e5a2186",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/d64be24fc1eba62f9daace8a8918f797fc8e87cc",
+                "reference": "d64be24fc1eba62f9daace8a8918f797fc8e87cc",
                 "shasum": ""
             },
             "require": {
@@ -2294,20 +2294,20 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2017-10-01T21:00:16+00:00"
+            "time": "2018-01-03T07:36:31+00:00"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.8.28",
+            "version": "v2.8.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "e6e0170e134bf25d03030b71a19ca409e036157a"
+                "reference": "adf79b0558604c04753576235d39bd9577a5f0c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/e6e0170e134bf25d03030b71a19ca409e036157a",
-                "reference": "e6e0170e134bf25d03030b71a19ca409e036157a",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/adf79b0558604c04753576235d39bd9577a5f0c8",
+                "reference": "adf79b0558604c04753576235d39bd9577a5f0c8",
                 "shasum": ""
             },
             "require": {
@@ -2349,7 +2349,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-10-05T23:06:47+00:00"
+            "time": "2018-01-03T17:12:09+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",

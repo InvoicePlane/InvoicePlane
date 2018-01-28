@@ -394,7 +394,6 @@ CREATE TABLE `ip_users` (
   `user_password`      VARCHAR(60)  NOT NULL,
   `user_web`           VARCHAR(100)          DEFAULT '',
   `user_psalt`         CHAR(22)     NOT NULL,
-  `user_all_clients`   INT(1)       NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
 )
   ENGINE = MyISAM
