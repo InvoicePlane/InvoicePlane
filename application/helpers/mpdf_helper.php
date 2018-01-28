@@ -14,14 +14,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * Create a PDF
  *
  * @param $html
- * @param string $filename
+ * @param $filename
  * @param bool $stream
  * @param null $password
- * @param boolean $isInvoice
+ * @param null $isInvoice
  * @param null $is_guest
  * @param bool $zugferd_invoice
  * @param null $associated_files
+ *
  * @return string
+ * @throws \Mpdf\MpdfException
  */
 function pdf_create(
     $html,
@@ -40,8 +42,8 @@ function pdf_create(
 
     // mPDF loading
     if (!defined('_MPDF_TEMP_PATH')) {
-        define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
-        define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
+        define('_MPDF_TEMP_PATH', UPLOADS_TEMP_MPDF_FOLDER);
+        define('_MPDF_TTFONTDATAPATH', UPLOADS_TEMP_MPDF_FOLDER);
     }
 
     $mpdf = new \Mpdf\Mpdf();
@@ -70,8 +72,8 @@ function pdf_create(
     }
 
     // Check if the archive folder is available
-    if (!(is_dir('./uploads/archive/') || is_link('./uploads/archive/'))) {
-        mkdir('./uploads/archive/', '0777');
+    if (!(is_dir(UPLOADS_ARCHIVE_FOLDER) || is_link(UPLOADS_ARCHIVE_FOLDER))) {
+        mkdir(UPLOADS_ARCHIVE_FOLDER, '0777');
     }
 
     // Set the footer if voucher is invoice and if set in settings
@@ -85,11 +87,11 @@ function pdf_create(
         $mpdf->showWatermarkText = true;
     }
 
-    $mpdf->WriteHTML($html);
+    $mpdf->WriteHTML((string) $html);
 
     if ($isInvoice) {
 
-        foreach (glob(UPLOADS_FOLDER . 'archive/*' . $filename . '.pdf') as $file) {
+        foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf') as $file) {
             array_push($invoice_array, $file);
         }
 
@@ -103,7 +105,7 @@ function pdf_create(
             }
         }
 
-        $archived_file = UPLOADS_FOLDER . 'archive/' . date('Y-m-d') . '_' . $filename . '.pdf';
+        $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
         $mpdf->Output($archived_file, 'F');
 
         if ($stream) {
@@ -118,25 +120,7 @@ function pdf_create(
     if ($stream) {
         return $mpdf->Output($filename . '.pdf', 'I');
     } else {
-
-        $mpdf->Output(UPLOADS_FOLDER . 'temp/' . $filename . '.pdf', 'F');
-
-        // Housekeeping
-        // Delete any files in temp/ directory that are >1 hrs old
-        $interval = 3600;
-        if ($handle = @opendir(preg_replace('/\/$/', '', './uploads/temp/'))) {
-            while (false !== ($file = readdir($handle))) {
-                if (
-                    $file && !in_array($file, ['..', '.', 'remove.txt'])
-                    && !is_dir($file) && (substr($file, 0, 1) !== '.')
-                    && (filemtime('./uploads/temp/' . $file) + $interval) < time()) {
-                        unlink(UPLOADS_FOLDER . 'temp/' . $file);
-                }
-            }
-            closedir($handle);
-        }
-
-        return UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
-
+        $mpdf->Output(UPLOADS_TEMP_FOLDER . $filename . '.pdf', 'F');
+        return UPLOADS_TEMP_FOLDER . $filename . '.pdf';
     }
 }
