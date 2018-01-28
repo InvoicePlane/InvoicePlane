@@ -7,6 +7,7 @@ require dirname(__FILE__) . '/Base.php';
  * Modular Extensions - HMVC
  *
  * Adapted from the CodeIgniter Core Classes
+ *
  * @link    http://codeigniter.com
  *
  * Description:
@@ -38,7 +39,8 @@ require dirname(__FILE__) . '/Base.php';
  **/
 class MX_Controller
 {
-    public $autoload = array();
+
+    public $autoload = [];
 
     public function __construct()
     {

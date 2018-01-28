@@ -4,6 +4,7 @@
  * Modular Extensions - HMVC
  *
  * Adapted from the CodeIgniter Core Classes
+ *
  * @link    http://codeigniter.com
  *
  * Description:
@@ -35,14 +36,17 @@
  **/
 class MX_Config extends CI_Config
 {
-    public function load($file = '', $use_sections = FALSE, $fail_gracefully = FALSE, $_module = '')
+
+    public function load($file = '', $use_sections = false, $fail_gracefully = false, $_module = '')
     {
-        if (in_array($file, $this->is_loaded, TRUE)) return $this->item($file);
+        if (in_array($file, $this->is_loaded, true)) {
+            return $this->item($file);
+        }
 
         $_module OR $_module = CI::$APP->router->fetch_module();
         list($path, $file) = Modules::find($file, $_module, 'config/');
 
-        if ($path === FALSE) {
+        if ($path === false) {
             parent::load($file, $use_sections, $fail_gracefully);
             return $this->item($file);
         }
@@ -51,7 +55,7 @@ class MX_Config extends CI_Config
             /* reference to the config array */
             $current_config =& $this->config;
 
-            if ($use_sections === TRUE) {
+            if ($use_sections === true) {
                 if (isset($current_config[$file])) {
                     $current_config[$file] = array_merge($current_config[$file], $config);
                 } else {

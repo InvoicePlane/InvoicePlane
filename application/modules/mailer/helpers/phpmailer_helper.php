@@ -31,13 +31,11 @@ function phpmail_send(
     $bcc = null,
     $more_attachments = null
 ) {
-    require_once(FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php');
-
     $CI = &get_instance();
     $CI->load->library('crypt');
 
     // Create the basic mailer object
-    $mail = new PHPMailer();
+    $mail = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
 
