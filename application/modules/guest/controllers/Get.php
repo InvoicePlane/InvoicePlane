@@ -17,7 +17,7 @@ class Get extends Base_Controller
 {
     public function attachment($filename)
     {
-        $path = UPLOADS_FOLDER . 'customer_files/';
+        $path = UPLOADS_CFILES_FOLDER;
         $filePath = $path . $filename;
 
         if (strpos(realpath($filePath), $path) !== 0) {
