@@ -51,6 +51,9 @@ class Quotes extends Admin_Controller
             case 'approved':
                 $this->mdl_quotes->is_approved();
                 break;
+            case 'invoiced':
+                $this->mdl_quotes->is_invoiced();
+                break;
             case 'rejected':
                 $this->mdl_quotes->is_rejected();
                 break;
