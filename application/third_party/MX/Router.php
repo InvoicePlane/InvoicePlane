@@ -7,6 +7,7 @@ require dirname(__FILE__) . '/Modules.php';
  * Modular Extensions - HMVC
  *
  * Adapted from the CodeIgniter Core Classes
+ *
  * @link    http://codeigniter.com
  *
  * Description:
@@ -37,7 +38,9 @@ require dirname(__FILE__) . '/Modules.php';
  **/
 class MX_Router extends CI_Router
 {
+
     public $module;
+
     private $located = 0;
 
     public function fetch_module()
@@ -45,9 +48,9 @@ class MX_Router extends CI_Router
         return $this->module;
     }
 
-    protected function _set_request($segments = array())
+    protected function _set_request($segments = [])
     {
-        if ($this->translate_uri_dashes === TRUE) {
+        if ($this->translate_uri_dashes === true) {
             foreach (range(0, 2) as $v) {
                 isset($segments[$v]) && $segments[$v] = str_replace('-', '_', $segments[$v]);
             }
@@ -73,7 +76,7 @@ class MX_Router extends CI_Router
             $segments[1] = 'index';
         }
 
-        array_unshift($segments, NULL);
+        array_unshift($segments, null);
         unset($segments[0]);
         $this->uri->rsegments = $segments;
     }
@@ -90,7 +93,7 @@ class MX_Router extends CI_Router
         }
 
         /* get the segments array elements */
-        list($module, $directory, $controller) = array_pad($segments, 3, NULL);
+        list($module, $directory, $controller) = array_pad($segments, 3, null);
 
         /* check modules */
         foreach (Modules::$locations as $location => $offset) {
@@ -111,13 +114,18 @@ class MX_Router extends CI_Router
                             if (is_file($source . ucfirst($controller) . $ext)) {
                                 $this->located = 3;
                                 return array_slice($segments, 2);
-                            } else $this->located = -1;
+                            } else {
+                                $this->located = -1;
+                            }
                         }
-                    } else
+                    } else {
                         if (is_file($source . ucfirst($directory) . $ext)) {
                             $this->located = 2;
                             return array_slice($segments, 1);
-                        } else $this->located = -1;
+                        } else {
+                            $this->located = -1;
+                        }
+                    }
                 }
 
                 /* module controller exists? */
@@ -128,7 +136,9 @@ class MX_Router extends CI_Router
             }
         }
 
-        if (!empty($this->directory)) return;
+        if (!empty($this->directory)) {
+            return;
+        }
 
         /* application sub-directory controller exists? */
         if ($directory) {
@@ -172,7 +182,7 @@ class MX_Router extends CI_Router
             $sgs = sscanf($_route, '%[^/]/%[^/]/%[^/]/%s', $module, $directory, $class, $method);
 
             // set the module/controller directory location if found
-            if ($this->locate(array($module, $directory, $class))) {
+            if ($this->locate([$module, $directory, $class])) {
                 //reset to class/method
                 switch ($sgs) {
                     case 1:
@@ -211,7 +221,7 @@ class MX_Router extends CI_Router
     public function set_class($class)
     {
         $suffix = $this->config->item('controller_suffix');
-        if (strpos($class, $suffix) === FALSE) {
+        if (strpos($class, $suffix) === false) {
             $class .= $suffix;
         }
         parent::set_class($class);
