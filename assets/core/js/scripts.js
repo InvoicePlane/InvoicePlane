@@ -47,6 +47,8 @@ function inject_email_template(template_fields, email_template) {
         if (val && template_fields.indexOf(key) > -1) {
             if (key === 'body') {
                 $("#" + key).html(val);
+            } else if (key === 'pdf_template') {
+                $("#" + key).val(val).trigger('change');
             } else {
                 $("#" + key).val(val);
             }
