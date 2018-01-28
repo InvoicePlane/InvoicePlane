@@ -157,6 +157,8 @@ class Mailer extends Admin_Controller
         $bcc = $this->input->post('bcc');
         $attachment_files = $this->mdl_uploads->get_invoice_uploads($invoice_id);
 
+        $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
+
         if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_invoices->mark_sent($invoice_id);
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
@@ -204,6 +206,8 @@ class Mailer extends Admin_Controller
         $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
         $attachment_files = $this->mdl_uploads->get_quote_uploads($quote_id);
+
+        $this->mdl_quotes->generate_quote_number_if_applicable($quote_id);
 
         if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_quotes->mark_sent($quote_id);

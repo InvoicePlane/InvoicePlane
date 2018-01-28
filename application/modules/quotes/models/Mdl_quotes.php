@@ -493,4 +493,26 @@ class Mdl_Quotes extends Response_Model
         }
     }
 
+    /**
+     * @param $quote_id
+     */
+    public function generate_quote_number_if_applicable($quote_id)
+    {
+        $quote = $this->mdl_quotes->get_by_id($quote_id);
+
+        if (!empty($quote)) {
+            if ($quote->quote_status_id == 1) {
+                // Generate new invoice number if applicable
+                if (get_setting('generate_quote_number_for_draft') == 0) {
+                    $quote_number = $this->mdl_quotes->get_quote_number($quote->invoice_group_id);
+
+                    // Set new invoice number and save
+                    $this->db->where('quote_id', $quote_id);
+                    $this->db->set('quote_number', $quote_number);
+                    $this->db->update('ip_quotes');
+                }
+            }
+        }
+    }
+
 }
