@@ -100,6 +100,10 @@ $cv = $this->controller->view_data["custom_values"];
             window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
         });
 
+        $('#btn_view_pdf').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_view_pdf'); ?>", {invoice_id: <?php echo $invoice_id; ?>});
+        }); /* Modal+ */
+
         <?php if ($invoice->is_read_only != 1): ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
@@ -209,6 +213,13 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php _trans('download_pdf'); ?>
                     </a>
                 </li>
+                <li><!-- Modal+ -->
+                    <a href="#" id="btn_view_pdf"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-file-pdf-o fa-margin"></i>
+                        <?php _trans('view_pdf'); ?>
+                    </a>
+                </li>                  
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
