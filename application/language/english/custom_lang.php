@@ -13,5 +13,11 @@
  */
 
 $lang = array(
-
+    'bank'                                         => 'Bank',
+    'contact'                                      => 'Contact',
+    'information'                                  => 'information',            
+    'invoicing'                                    => 'Invoicing',
+    'ubl_select_help'                              => 'Select the correct UBL version for your customer or his country. The application will create a Pdf and XML-file.',   
+    'version'                                      => 'version',
+    'view_pdf'                                     => 'View Pdf', 
 );
