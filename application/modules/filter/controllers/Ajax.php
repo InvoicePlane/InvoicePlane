@@ -61,6 +61,27 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('quotes/partial_quote_table', $data);
     }
 
+    public function filter_products()
+    {
+        $this->load->model('products/mdl_products');
+        
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+        
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_products->like("CONCAT_WS('^',LOWER(product_description),LOWER(product_name),LOWER(product_sku))", $keyword);
+            }
+        }
+        
+        $data = array(
+            'products' => $this->mdl_products->get()->result()
+        );
+        
+        $this->layout->load_view('products/index', $data);
+    }
+
     public function filter_clients()
     {
         $this->load->model('clients/mdl_clients');
