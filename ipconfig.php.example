@@ -1,6 +1,7 @@
 <?php exit('No direct script access allowed'); ?>
 # InvoicePlane Configuration File
 
+### START HERE
 # Set your URL without trailing slash here, e.g. http://your-domain.com
 # If you use a subdomain, use http://subdomain.your-domain.com
 # If you use a subfolder, use http://your-domain.com/subfolder
