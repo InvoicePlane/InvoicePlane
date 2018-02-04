@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -303,7 +303,7 @@ class Mdl_Quotes extends Response_Model
     public function get_url_key()
     {
         $this->load->helper('string');
-        return random_string('alnum', 15);
+        return random_string('alnum', 32);
     }
 
     /**
@@ -489,6 +489,28 @@ class Mdl_Quotes extends Response_Model
                 $this->db->where('quote_id', $quote_id);
                 $this->db->set('quote_status_id', 2);
                 $this->db->update('ip_quotes');
+            }
+        }
+    }
+
+    /**
+     * @param $quote_id
+     */
+    public function generate_quote_number_if_applicable($quote_id)
+    {
+        $quote = $this->mdl_quotes->get_by_id($quote_id);
+
+        if (!empty($quote)) {
+            if ($quote->quote_status_id == 1) {
+                // Generate new invoice number if applicable
+                if (get_setting('generate_quote_number_for_draft') == 0) {
+                    $quote_number = $this->mdl_quotes->get_quote_number($quote->invoice_group_id);
+
+                    // Set new invoice number and save
+                    $this->db->where('quote_id', $quote_id);
+                    $this->db->set('quote_number', $quote_number);
+                    $this->db->update('ip_quotes');
+                }
             }
         }
     }

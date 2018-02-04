@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -31,13 +31,11 @@ function phpmail_send(
     $bcc = null,
     $more_attachments = null
 ) {
-    require_once(FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php');
-
     $CI = &get_instance();
     $CI->load->library('crypt');
 
     // Create the basic mailer object
-    $mail = new PHPMailer();
+    $mail = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
 

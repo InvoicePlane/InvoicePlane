@@ -1,15 +1,6 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-/*
- * InvoicePlane
- *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
- */
-
 /*******************
  * Cryptor Class
  *******************
@@ -87,7 +78,10 @@ class Cryptor
         }
 
         // Build an initialisation vector
-        $iv = random_bytes($this->iv_num_bytes);
+        $iv = openssl_random_pseudo_bytes($this->iv_num_bytes, $isStrongCrypto);
+        if (!$isStrongCrypto) {
+            throw new \Exception("Cryptor::encryptString() - Not a strong key");
+        }
 
         // Hash the key
         $keyhash = openssl_digest($key, $this->hash_algo, true);
@@ -195,4 +189,3 @@ class Cryptor
         return $c->decryptString($in, $key, $fmt);
     }
 }
-?>

@@ -48,7 +48,7 @@
                         </div>
                     </td>
                     <td>
-                        <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, $task->project_name) : ''; ?>
+                        <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, htmlsc($task->project_name)) : ''; ?>
                     </td>
                     <td>
                         <?php echo format_currency($task->task_price); ?>
@@ -68,17 +68,18 @@
                                 </li>
                                 <?php if (!($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) : ?>
                                     <li>
-                                        <a href="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
-                                           title="<?php _trans('delete'); ?>"
-                                           onclick="return confirm('<?php echo $task->task_status == 4 ? trans('alert_task_delete') : trans('delete_record_warning') ?>')"
-                                        >
-                                            <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
-                                        </a>
+                                        <form action="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
+                                              method="POST">
+                                            <?php _csrf_field(); ?>
+                                            <button type="submit" class="dropdown-button"
+                                                    onclick="return confirm('<?php echo $task->task_status == 4 ? trans('alert_task_delete') : trans('delete_record_warning') ?>');">
+                                                <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
+                                            </button>
+                                        </form>
                                     </li>
                                 <?php endif; ?>
                             </ul>
                         </div>
-
 
                     </td>
                 </tr>

@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
@@ -206,13 +206,17 @@ class Mdl_Invoices extends Response_Model
                 $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
         }
-        $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
-        if (preg_match("/sumex/i", $invgroup->invoice_group_name)) {
-            // If the Invoice Group includes "Sumex", make the invoice a Sumex one
-            $db_array = array(
-                'sumex_invoice' => $invoice_id
-            );
-            $this->db->insert('ip_invoice_sumex', $db_array);
+
+        if($invoice_group !== '0') {
+            $this->load->model('invoice_groups/mdl_invoice_groups');
+            $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
+            if (preg_match("/sumex/i", $invgroup->invoice_group_name)) {
+                // If the Invoice Group includes "Sumex", make the invoice a Sumex one
+                $db_array = array(
+                    'sumex_invoice' => $invoice_id
+                );
+                $this->db->insert('ip_invoice_sumex', $db_array);
+            }
         }
 
         return $invoice_id;
@@ -422,7 +426,7 @@ class Mdl_Invoices extends Response_Model
     public function get_url_key()
     {
         $this->load->helper('string');
-        return random_string('alnum', 15);
+        return random_string('alnum', 32);
     }
 
     /**
@@ -556,11 +560,7 @@ class Mdl_Invoices extends Response_Model
         if (!empty($invoice)) {
             if ($invoice->invoice_status_id == 1) {
                 // Generate new invoice number if applicable
-                if (get_setting('generate_invoice_number_for_draft') == 0) {
-                    $invoice_number = $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id);
-                } else {
-                    $invoice_number = $invoice->invoice_number;
-                }
+                $invoice_number = $invoice->invoice_number;
 
                 // Set new date and save
                 $this->db->where('invoice_id', $invoice_id);
@@ -574,6 +574,28 @@ class Mdl_Invoices extends Response_Model
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
+            }
+        }
+    }
+
+    /**
+     * @param $invoice_id
+     */
+    public function generate_invoice_number_if_applicable($invoice_id)
+    {
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+
+        if (!empty($invoice)) {
+            if ($invoice->invoice_status_id == 1) {
+                // Generate new invoice number if applicable
+                if (get_setting('generate_invoice_number_for_draft') == 0) {
+                    $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
+
+                    // Set new invoice number and save
+                    $this->db->where('invoice_id', $invoice_id);
+                    $this->db->set('invoice_number', $invoice_number);
+                    $this->db->update('ip_invoices');
+                }
             }
         }
     }
