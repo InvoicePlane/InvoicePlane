@@ -62,3 +62,12 @@ function _trans($line, $id = '', $default = null)
 function _auto_link($str, $type = 'both', $popup = FALSE) {
     echo auto_link(htmlsc($str), $type, $popup);
 }
+
+/**
+ * Output the standard CSRF protection field
+ */
+function _csrf_field() {
+    $CI = &get_instance();
+    echo '<input type="hidden" name="' . $CI->config->item('csrf_token_name');
+    echo '" value="' . $CI->security->get_csrf_hash() . '">';
+}
