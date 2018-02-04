@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
@@ -15,6 +15,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Ajax extends Admin_Controller
 {
+
     public $ajax_controller = true;
 
     public function name_query()
@@ -22,7 +23,7 @@ class Ajax extends Admin_Controller
         // Load the model & helper
         $this->load->model('clients/mdl_clients');
 
-        $response = array();
+        $response = [];
 
         // Get the post input
         $query = $this->input->get('query');
@@ -49,10 +50,38 @@ class Ajax extends Admin_Controller
             ->result();
 
         foreach ($clients as $client) {
-            $response[] = array(
+            $response[] = [
                 'id' => $client->client_id,
                 'text' => htmlsc(format_client($client)),
-            );
+            ];
+        }
+
+        // Return the results
+        echo json_encode($response);
+    }
+
+    /**
+     * Get the latest clients
+     */
+    public function get_latest()
+    {
+        // Load the model & helper
+        $this->load->model('clients/mdl_clients');
+
+        $response = [];
+
+        $clients = $this->mdl_clients
+            ->where('client_active', 1)
+            ->limit(5)
+            ->order_by('client_date_created')
+            ->get()
+            ->result();
+
+        foreach ($clients as $client) {
+            $response[] = [
+                'id' => $client->client_id,
+                'text' => htmlsc(format_client($client)),
+            ];
         }
 
         // Return the results
@@ -78,17 +107,17 @@ class Ajax extends Admin_Controller
         if ($this->mdl_client_notes->run_validation()) {
             $this->mdl_client_notes->save();
 
-            $response = array(
+            $response = [
                 'success' => 1,
                 'new_token' => $this->security->get_csrf_hash(),
-            );
+            ];
         } else {
             $this->load->helper('json_error');
-            $response = array(
+            $response = [
                 'success' => 0,
                 'new_token' => $this->security->get_csrf_hash(),
                 'validation_errors' => json_errors(),
-            );
+            ];
         }
 
         echo json_encode($response);
@@ -97,10 +126,10 @@ class Ajax extends Admin_Controller
     public function load_client_notes()
     {
         $this->load->model('clients/mdl_client_notes');
-        $data = array(
+        $data = [
             'client_notes' => $this->mdl_client_notes->where('client_id',
-                $this->input->post('client_id'))->get()->result()
-        );
+                $this->input->post('client_id'))->get()->result(),
+        ];
 
         $this->layout->load_view('clients/partial_notes', $data);
     }

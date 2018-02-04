@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -51,8 +51,6 @@ class Crypt
      */
     public function encode($data)
     {
-        $CI = &get_instance();
-        $CI->load->library('cryptor');
 
         $key = getenv('ENCRYPTION_KEY');
         if (preg_match("/^base64:(.*)$/", $key, $matches)) {
@@ -70,8 +68,6 @@ class Crypt
      */
     public function decode($data)
     {
-        $CI = &get_instance();
-        $CI->load->library('cryptor');
 
         if (empty($data)) {
             return '';

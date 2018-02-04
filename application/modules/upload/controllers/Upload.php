@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -41,7 +41,6 @@ class Upload extends Admin_Controller
     /**
      * @param $customerId
      * @param $url_key
-     * @return boolean|null
      */
     public function upload_file($customerId, $url_key)
     {
@@ -157,11 +156,11 @@ class Upload extends Admin_Controller
      * Returns the corresponding file as a download and prevents execution of files
      *
      * @param string $filename
-     * @return resource
+     * @return void
      */
     public function get_file($filename)
     {
-        $base_path = UPLOADS_FOLDER . 'customer_files/';
+        $base_path = UPLOADS_CFILES_FOLDER;
         $file_path = $base_path . $filename;
 
         if (strpos(realpath($base_path), realpath($file_path)) != 0) {

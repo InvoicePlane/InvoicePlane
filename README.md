@@ -1,5 +1,5 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 1.5.5_
+#### _Version 1.5.6_
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
@@ -11,7 +11,7 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 1. Download the latest version [from the InvoicePlane website](https://invoiceplane.com/downloads).
 2. Extract the package and copy all files to your webserver / webspace.
 3. Make a copy of the `ipconfig.php.example` file and rename this copy to `ipconfig.php`.
-4. Open the `ipconfig.php` file and add your URL like specified in the file.
+4. Open the `ipconfig.php` file and set your URL like specified in the file.
 5. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
 
 
