@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php echo $project->project_name; ?></h1>
+    <h1 class="headerbar-title"><?php _htmlsc($project->project_name); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
@@ -31,7 +31,7 @@
                     </div>
                     <div class="panel-body">
                         <div class="client-address">
-                            <?php $this->layout->load_view('clients/partial_client_address', array('client' => $project)); ?>
+                            <?php $this->layout->load_view('clients/partial_client_address', ['client' => $project]); ?>
                         </div>
                     </div>
                 </div>
@@ -86,18 +86,18 @@
 
                         </table>
 
-                        <?php if (empty($tasks)) : ?>
-                            <br>
-                            <div class="alert alert-info"><?php echo trans('alert_no_tasks_found') ?></div>
-                        <?php endif; ?>
-
                     </div>
-
                 </div>
+
+                <?php if (empty($tasks)) : ?>
+                    <div class="panel-body">
+                        <div class="alert alert-info no-margin"><?php echo trans('alert_no_tasks_found') ?></div>
+                    </div>
+                <?php endif; ?>
+
             </div>
 
         </div>
     </div>
 
 </div>
-<?php var_dump($task); ?>
