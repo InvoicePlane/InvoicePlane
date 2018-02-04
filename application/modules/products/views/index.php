@@ -62,10 +62,14 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo site_url('products/delete/' . $product->product_id); ?>"
-                                       onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
-                                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
-                                    </a>
+                                    <form action="<?php echo site_url('products/delete/' . $product->product_id); ?>"
+                                          method="POST">
+                                        <?php _csrf_field(); ?>
+                                        <button type="submit" class="dropdown-button"
+                                                onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
+                                            <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
+                                        </button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>
