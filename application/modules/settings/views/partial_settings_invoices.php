@@ -131,7 +131,7 @@
                                value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                     </div>
 
-                    <div class="form-group">
+                    <!-- UBL+ <div class="form-group">
                         <label for="settings[include_zugferd]">
                             <?php _trans('invoice_pdf_include_zugferd'); ?>
                         </label>
@@ -145,7 +145,7 @@
                             </option>
                         </select>
                         <p class="help-block"><?php _trans('invoice_pdf_include_zugferd_help'); ?></p>
-                    </div>
+                    </div> UBL+ -->
 
                 </div>
                 <div class="col-xs-12 col-md-6">

@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -55,7 +55,7 @@ class Mdl_Users extends Response_Model
             'user_email' => array(
                 'field' => 'user_email',
                 'label' => trans('email'),
-                'rules' => 'required|valid_email|is_unique[ip_users.user_email]'
+                'rules' => 'required|callback_validate_email|is_unique[ip_users.user_email]'
             ),
             'user_name' => array(
                 'field' => 'user_name',
@@ -122,7 +122,18 @@ class Mdl_Users extends Response_Model
             ),
             'user_iban' => array(
                 'field' => 'user_iban'
-            ),
+            ),  
+            /* UBL+ */
+            'user_contact' => array(
+                'field' => 'user_contact'
+            ), 
+            'user_bank' => array(
+                'field' => 'user_bank'
+            ), 
+            'user_bic' => array(
+                'field' => 'user_bic'
+            ), 
+            /* UBL+ */              
             # SUMEX
             'user_gln' => array(
                 'field' => 'user_gln'
@@ -147,7 +158,7 @@ class Mdl_Users extends Response_Model
             'user_email' => array(
                 'field' => 'user_email',
                 'label' => trans('email'),
-                'rules' => 'required|valid_email'
+                'rules' => 'required|callback_validate_email'
             ),
             'user_name' => array(
                 'field' => 'user_name',
@@ -204,7 +215,18 @@ class Mdl_Users extends Response_Model
             ),
             'user_iban' => array(
                 'field' => 'user_iban'
-            ),
+            ), 
+            /* UBL+ */
+            'user_contact' => array(
+                'field' => 'user_contact'
+            ), 
+            'user_bank' => array(
+                'field' => 'user_bank'
+            ), 
+            'user_bic' => array(
+                'field' => 'user_bic'
+            ), 
+            /* UBL+ */ 
             # SUMEX
             'user_gln' => array(
                 'field' => 'user_gln'
@@ -234,6 +256,14 @@ class Mdl_Users extends Response_Model
         );
     }
 
+    /**
+     * @param string $str
+     * @return bool
+     */
+    public function validate_email($str)
+    {
+        return filter_var($str, FILTER_VALIDATE_EMAIL) ? true : false;
+    }
 
     /**
      * @return array

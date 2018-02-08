@@ -1,0 +1,15 @@
+# UBL+ changes
+
+ALTER TABLE `ip_clients`
+  ADD COLUMN client_bank TEXT DEFAULT NULL,
+  ADD COLUMN client_iban TEXT DEFAULT NULL,
+  ADD COLUMN client_bic TEXT DEFAULT NULL,
+  ADD COLUMN client_ubl_version TEXT DEFAULT NULL,
+  ADD COLUMN client_contact TEXT DEFAULT NULL;
+
+ALTER TABLE `ip_users`
+  ADD COLUMN user_bank TEXT DEFAULT NULL,
+  ADD COLUMN user_bic VARCHAR(20) DEFAULT NULL,
+  ADD COLUMN user_contact TEXT DEFAULT NULL;
+
+# End UBL+ Changes

@@ -213,13 +213,13 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php _trans('download_pdf'); ?>
                     </a>
                 </li>
-                <li><!-- Modal+ -->
+                <li>
                     <a href="#" id="btn_view_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-file-pdf-o fa-margin"></i>
                         <?php _trans('view_pdf'); ?>
                     </a>
-                </li>                  
+                </li>                 
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
@@ -296,19 +296,32 @@ if ($this->config->item('disable_read_only') == true) {
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
                     </div>
-                    <?php if ($invoice->client_phone || $invoice->client_email) : ?>
+                    <br>
+<!--                    <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                         <hr>
+                    <?php endif; ?>-->
+                    <!-- UBL+ -->
+                    <?php if ($invoice->client_vat_id): ?>
+                        <div>
+                            <strong><?php _trans('vat_id'); ?>:</strong>&nbsp;<?php _htmlsc($invoice->client_vat_id); ?>
+                        </div>
+                    <?php endif; ?>                    
+                    <?php if ($invoice->client_contact): ?>
+                        <div>
+                            <strong><?php _trans('contact'); ?>:</strong>&nbsp;<?php _htmlsc($invoice->client_contact); ?>
+                        </div>
                     <?php endif; ?>
+                    <!-- UBL+ -->                      
                     <?php if ($invoice->client_phone): ?>
                         <div>
-                            <?php _trans('phone'); ?>:&nbsp;
+                            <strong><?php _trans('phone'); ?>:</strong>&nbsp;
                             <?php _htmlsc($invoice->client_phone); ?>
                         </div>
                     <?php endif; ?>
                     <?php if ($invoice->client_email): ?>
                         <div>
-                            <?php _trans('email'); ?>:&nbsp;
-                            <?php _auto_link($invoice->client_email); ?>
+                            <strong><?php _trans('email'); ?>:</strong>&nbsp;
+                            <?php echo $invoice->client_email; ?>
                         </div>
                     <?php endif; ?>
 

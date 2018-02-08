@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -443,7 +443,7 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
-    // Modal+ view PDF
+    // UBL+ modal view PDF
     public function modal_view_pdf()
     {
         $this->load->module('layout');
@@ -460,6 +460,6 @@ class Ajax extends Admin_Controller
         );
 
         $this->layout->load_view('invoices/modal_view_pdf', $data);
-    }    
+    }
 
 }

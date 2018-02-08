@@ -237,13 +237,13 @@ $cv = $this->controller->view_data["custom_values"];
                                            value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
                                 </div>
 
-                                <div class="form-group">
+                                <!--<div class="form-group">
                                     <label for="user_iban">
                                         <?php _trans('user_iban'); ?>
                                     </label>
                                     <input type="text" name="user_iban" id="user_iban" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
-                                </div>
+                                </div>-->
 
                                 <div class="form-group">
                                     <label for="user_subscribernumber">
@@ -301,8 +301,17 @@ $cv = $this->controller->view_data["custom_values"];
                         <div class="panel panel-default">
 
                             <div class="panel-heading"><?php _trans('contact_information'); ?></div>
-
+                            
+                            <!-- UBL+ --> 
                             <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_contact">
+                                        <?php _trans('contact'); ?>
+                                    </label>
+                                    <input type="text" name="user_contact" id="user_contact" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_contact', true); ?>">
+                                </div>
+
                                 <div class="form-group">
                                     <label for="user_phone">
                                         <?php _trans('phone_number'); ?>
@@ -350,7 +359,56 @@ $cv = $this->controller->view_data["custom_values"];
                                 <?php endforeach; ?>
                             </div>
 
-                        </div>
+                        </div> 
+
+                        <!-- UBL+ -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><?php _trans('bank'). _trans('information'); ?></div>
+
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_vat_id">
+                                        <?php _trans('bank'); ?>
+                                    </label>
+                                    <input type="text" name="user_bank" id="user_bank" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_iban">
+                                        <?php _trans('IBAN'); ?>
+                                    </label>
+                                    <input type="text" name="user_iban" id="user_iban" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_bic">
+                                        <?php _trans('BIC'); ?>
+                                    </label>
+                                    <input type="text" name="user_bic" id="user_bic"
+                                           class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_bic', true); ?>">
+                                </div>
+
+                                <!-- Custom fields -->
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if ($custom_field->custom_field_location != 3) {
+                                        continue;
+                                    } ?>
+                                    <?php
+                                    print_field(
+                                        $this->mdl_users,
+                                        $custom_field,
+                                        $cv
+                                    );
+                                    ?>
+                                <?php endforeach; ?>
+                            </div>
+
+                        </div>                        
+                        <!-- UBL+ -->
+                        
                         <?php if ($custom_fields) : ?>
                             <div class="panel panel-default">
                                 <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
