@@ -77,7 +77,7 @@
                             <label for="settings[smtp_mail_from]">
                                 <?php _trans('smtp_mail_from'); ?>
                             </label>
-                            <input type="text" name="settings[smtp_mail_from]" id="settings[smtp_mail_from]"
+                            <input type="email" name="settings[smtp_mail_from]" id="settings[smtp_mail_from]"
                                    class="form-control"
                                    value="<?php echo get_setting('smtp_mail_from', '', true); ?>">
                         </div>
