@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license     https://invoiceplane.com/license.txt
- * @link        https://invoiceplane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  */
 
 /**
@@ -31,8 +31,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper('country');
     $CI->load->helper('client');
-    $CI->load->helper('ubl'); // UBL+ 
-    
+
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
 
@@ -71,28 +70,23 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $invoice->quote_id);
     }
 
-    // START UBL+ changements
-    // Filename
-    $replace = array('.', ' ', '/', '-', '_', '\\', '#');                              
-    $filename = str_replace($replace, '', $invoice->user_vat_id) . '_' . str_replace($replace, '', $invoice->invoice_number);  
-    $shortname = str_replace($replace, '', $invoice->invoice_number);     
-    
-    // Generate the appropriate UBL  
-    $embed_xml = get_ubl_arrlist('embedXML');
-    $include_ubl = false; 
-    $ubl_id = $invoice->client_ubl_version;  
-   
-    // PDF associated or embedded Xml file 
-    $associatedFiles = null;       
-    if ($embed_xml[$ubl_id] == 'true') {
-        $include_ubl = true;   
-        $associatedFiles = array(array(
-            'name' => 'ZUGFeRD-invoice.xml', // 'name' => $ubl_id .'-UBL.xml',
-            'description' => $ubl_id .' UBL Invoice',          
-            'AFRelationship' => 'Alternative',
-            'mime' => 'text/xml',
-            'path' => generate_xml_invoice_file($invoice, $items, $ubl_id, $include_ubl, $filename),
-        ));               
+    // PDF associated files
+    $include_zugferd = $CI->mdl_settings->setting('include_zugferd');
+
+    if ($include_zugferd) {
+        $CI->load->helper('zugferd');
+
+        $associatedFiles = array(
+            array(
+                'name' => 'ZUGFeRD-invoice.xml',
+                'description' => 'ZUGFeRD Invoice',
+                'AFRelationship' => 'Alternative',
+                'mime' => 'text/xml',
+                'path' => generate_invoice_zugferd_xml_temp_file($invoice, $items)
+            )
+        );
+    } else {
+        $associatedFiles = null;
     }
 
     $data = array(
@@ -108,13 +102,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     $CI->load->helper('mpdf');
-    $retval = pdf_create($html, $filename, $stream, $invoice->invoice_password, true, $is_guest, $include_ubl, $associatedFiles);
-    
-    if ($ubl_id != '' && $embed_xml[$ubl_id] !== 'true') {
-        $UBLpath = generate_xml_invoice_file($invoice, $items, $ubl_id, $include_ubl, $filename);          
-    }         
-    
-    return $retval;
+    return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
+        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
 }
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
@@ -193,7 +182,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
             return;
         }
 
-        $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
+        $filePath = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
         $pdf->Output($filePath, 'F');
         return $filePath;
     } else {
@@ -201,7 +190,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
             return $sumexPDF;
         }
 
-        $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
+        $filePath = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
         file_put_contents($filePath, $sumexPDF);
         return $filePath;
     }
@@ -213,7 +202,9 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
  * @param $quote_id
  * @param bool $stream
  * @param null $quote_template
+ *
  * @return string
+ * @throws \Mpdf\MpdfException
  */
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 {

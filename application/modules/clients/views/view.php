@@ -84,7 +84,7 @@ foreach ($custom_fields as $custom_field) {
             <?php $this->layout->load_view('layout/alerts'); ?>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+                <div class="col-xs-12 col-sm-6 col-md-6">
 
                     <h3><?php _htmlsc(format_client($client)); ?></h3>
                     <p>
@@ -92,7 +92,7 @@ foreach ($custom_fields as $custom_field) {
                     </p>
 
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="col-xs-12 col-sm-6 col-md-6">
 
                     <table class="table table-bordered no-margin">
                         <tr>
@@ -135,23 +135,16 @@ foreach ($custom_fields as $custom_field) {
             <hr>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="col-xs-12 col-md-6">
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading"><?php _trans('contact_information'); ?></div>
                         <div class="panel-body table-content">
-                            <table class="table no-margin"> 
-                                <!-- UBL+ added -->
-                                <?php if ($client->client_contact) : ?>
-                                    <tr>
-                                        <th><?php _trans('contact'); ?></th>
-                                        <td><?php _htmlsc($client->client_contact); ?></td>
-                                    </tr>
-                                <?php endif; ?>                             
+                            <table class="table no-margin">
                                 <?php if ($client->client_email) : ?>
                                     <tr>
                                         <th><?php _trans('email'); ?></th>
-                                        <td><?php echo auto_link($client->client_email, 'email'); ?></td>
+                                        <td><?php _auto_link($client->client_email, 'email'); ?></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($client->client_phone) : ?>
@@ -175,7 +168,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php if ($client->client_web) : ?>
                                     <tr>
                                         <th><?php _trans('web'); ?></th>
-                                        <td><?php echo auto_link($client->client_web, 'url', true); ?></td>
+                                        <td><?php _auto_link($client->client_web, 'url', true); ?></td>
                                     </tr>
                                 <?php endif; ?>
 
@@ -197,7 +190,7 @@ foreach ($custom_fields as $custom_field) {
                     </div>
 
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="col-xs-12 col-md-6">
                     <div class="panel panel-default no-margin">
 
                         <div class="panel-heading"><?php _trans('tax_information'); ?></div>
@@ -234,42 +227,6 @@ foreach ($custom_fields as $custom_field) {
 
                     </div>
                 </div>
-                
-                <!-- UBL+ panel added  -->
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                    <div class="panel panel-default no-margin">
-
-                        <div class="panel-heading"><?php echo 'e-'.ucfirst(trans('invoicing')).' '.trans('information'); ?></div>
-                        <div class="panel-body table-content">
-
-                            <table class="table no-margin">
-                                    <tr>
-                                        <th><?php echo trans('send') .' UBL '. trans('version'); ?></th>
-                                        <td><?php echo ($client->client_ubl_version) ? get_ubl_fullname($client->client_ubl_version) : trans('none'); ?></td>
-                                    </tr>                                                  
-                                <?php //if ($client->client_bank) : ?>
-                                    <tr>
-                                        <th><?php echo 'Bank'; ?></th>
-                                        <td><?php echo $client->client_bank; ?></td>
-                                    </tr>
-                                <?php //endif; ?>
-                                <?php //if ($client->client_iban) : ?>
-                                    <tr>
-                                        <th><?php echo 'IBAN'; ?></th>
-                                        <td><?php echo $client->client_iban; ?></td>
-                                    </tr>
-                                <?php //endif; ?>
-                                <?php //if ($client->client_bic) : ?>
-                                    <tr>
-                                        <th><?php echo 'BIC'; ?></th>
-                                        <td><?php echo $client->client_bic; ?></td>
-                                    </tr>
-                                <?php //endif; ?>
-
-                            </table>
-                        </div>
-                    </div>
-                </div>   
             </div>
 
             <?php if ($client->client_surname != ""): //Client is not a company ?>
@@ -406,4 +363,5 @@ foreach ($custom_fields as $custom_field) {
             <?php echo $payment_table; ?>
         </div>
     </div>
+
 </div>

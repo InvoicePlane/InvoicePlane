@@ -187,15 +187,6 @@ $cv = $this->controller->view_data['custom_values'];
                     </div>
 
                     <div class="panel-body">
-                        <!-- UBL+ -->
-                        <div class="form-group">
-                            <label for="client_contact"><?php echo trans('contact'); ?>: </label>
-
-                            <div class="controls">
-                                <input type="text" name="client_contact" id="client_contact" class="form-control"
-                                       value="<?php echo htmlsc($this->mdl_clients->form_value('client_contact')); ?>">
-                            </div>
-                        </div>                    
                         <div class="form-group">
                             <label for="client_phone"><?php _trans('phone_number'); ?></label>
 
@@ -388,58 +379,6 @@ $cv = $this->controller->view_data['custom_values'];
 
             </div>
         </div>
-
-        <!-- UBL+ panel added  -->
-        <div class="row">
-            <div class="col-xs-12 col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <?php echo 'e-' . trans('invoicing'); ?>
-                    </div>
-
-                    <div class="panel-body">
-
-                        <div class="form-group">
-                            <label><?php echo 'UBL '. trans('version'); ?>: </label>
-                                <select name="client_ubl_version" id="client_ubl_version" class="form-control">
-                                    <option value=""><?php echo trans('none'); ?></option>
-                                    <?php foreach ($ublversions as $ublkey => $ublversion) { ?>
-                                        <option value="<?php echo $ublkey; ?>"<?php check_select($ublkey, $this->mdl_clients->form_value('client_ubl_version')) ?>>
-                                            <?php echo $ublversion .' - '. get_country_name(trans('cldr'), $ublcountry[$ublkey]); ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            <p class="help-block"><?php echo trans('ubl_select_help'); ?></p>
-                        </div> 
-                        
-                        <div class="form-group">
-                                <label><?php echo trans('bank'); ?>: </label>
-                            <div class="controls">
-                                <input type="text" name="client_bank" id="client_bank" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_bank'); ?>">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                <label><?php echo trans('IBAN'); ?>: </label>
-                            <div class="controls">
-                                <input type="text" name="client_iban" id="client_iban" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_iban'); ?>">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                <label><?php echo _trans('BIC'); ?>: </label>
-                            <div class="controls">
-                                <input type="text" name="client_bic" id="client_bic" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_bic'); ?>">
-                            </div>                    
-                        </div> 
-                        
-                    </div>
-                </div>                
-            </div>
-        </div>      
-        <!-- UBL+ -->
-        
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">

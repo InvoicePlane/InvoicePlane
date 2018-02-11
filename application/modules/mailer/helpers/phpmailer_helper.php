@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license     https://invoiceplane.com/license.txt
- * @link        https://invoiceplane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  */
 
 /**
@@ -31,13 +31,11 @@ function phpmail_send(
     $bcc = null,
     $more_attachments = null
 ) {
-    require_once(FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php');
-
     $CI = &get_instance();
     $CI->load->library('crypt');
 
     // Create the basic mailer object
-    $mail = new PHPMailer();
+    $mail = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
 
@@ -130,29 +128,6 @@ function phpmail_send(
         $CI->db->where('user_id', 1);
         $admin = $CI->db->get('ip_users')->row();
         $mail->addBCC($admin->user_email);
-    }
-
-    // Add the attachments if supplied - UBL+        
-    if ($attachment_path && get_setting('email_pdf_attachment')) {
-        $attachfile = pathinfo($attachment_path); 
-        $dirname = $attachfile['dirname']; 
-        $filename = $attachfile['filename'];                             
-        $file = $dirname .'/'. $filename; 
-        // check the date prefix: '2017-02-01'_ == today, then strip, copy and attach the new file)
-        if (substr($filename, 0, 10) == date('Y-m-d')) {
-            $file = $dirname.'/'.substr_replace($filename, '', 0, 11);                                                 
-            copy($attachment_path, $file.'.pdf');   
-        }  
-        $mail->addAttachment($file.'.pdf');          
-        
-        // attach the UBL+ file
-        $fullUblname = $dirname.'/efff_'.$filename.'.xml';  
-        if (file_exists($file.'.xml')) {
-            $mail->addAttachment($file.'.xml'); 
-        } elseif (file_exists($fullUblname)) {
-            $mail->addAttachment($fullUblname);
-        } 
-                            
     }
 
     // Add the attachment if supplied

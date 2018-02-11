@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license     https://invoiceplane.com/license.txt
- * @link        https://invoiceplane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  */
 
 /**
@@ -112,21 +112,6 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_veka',
                 'label' => trans('sumex_veka')
             ),
-            'client_contact' => array(      
-                'field' => 'client_contact'
-            ),  //UBL+            
-            'client_ubl_version' => array(
-                'field' => 'client_ubl_version'
-            ), //UBL+
-            'client_bank' => array(
-                'field' => 'client_bank'
-            ), //UBL+          
-            'client_iban' => array(
-                'field' => 'client_iban'
-            ), //UBL+
-            'client_bic' => array(
-                'field' => 'client_bic'
-            ), //UBL+            
         );
     }
 

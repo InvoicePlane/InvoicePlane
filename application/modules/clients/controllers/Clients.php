@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
  * InvoicePlane
  *
- * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
- * @license     https://invoiceplane.com/license.txt
- * @link        https://invoiceplane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license		https://invoiceplane.com/license.txt
+ * @link		https://invoiceplane.com
  */
 
 /**
@@ -66,7 +66,9 @@ class Clients extends Admin_Controller
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
         }
-
+        
+        $new_client = false;
+        
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', array(
@@ -77,12 +79,19 @@ class Clients extends Admin_Controller
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
+            } else {
+                $new_client = true;
             }
         }
-
+        
         if ($this->mdl_clients->run_validation()) {
             $id = $this->mdl_clients->save($id);
-
+            
+            if ($new_client) {
+                $this->load->model('user_clients/mdl_user_clients');
+                $this->mdl_user_clients->get_users_all_clients();
+            }
+            
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
 
@@ -153,9 +162,7 @@ class Clients extends Admin_Controller
 
         $this->load->helper('country');
         $this->load->helper('custom_values');
-        $this->load->helper('ubl'); //UBL+
-        $this->load->helper('directory'); //UBL+  
-        
+
         $this->layout->set(
             array(
                 'custom_fields' => $custom_fields,
@@ -163,8 +170,6 @@ class Clients extends Admin_Controller
                 'countries' => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
                 'languages' => get_available_languages(),
-                'ublversions' => get_ubl_arrlist('full-name'), //UBL+
-                'ublcountry' => get_ubl_arrlist('countrycode'), //UBL+                
             )
         );
 
@@ -183,10 +188,7 @@ class Clients extends Admin_Controller
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
-        
-        $this->load->helper('country'); //UBL+
-        $this->load->helper('ubl'); //UBL+                                                 
-        
+
         $client = $this->mdl_clients
             ->with_total()
             ->with_total_balance()
