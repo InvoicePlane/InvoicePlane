@@ -4,7 +4,7 @@
         var checktime = 2000;
 
         // Get the current version
-        var current_version = "<?php echo $current_version; ?>";
+        var current_version = "<?php echo get_setting('current_version'); ?>";
         current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
 
         // Get the latest version from the InvoicePlane IDS
@@ -61,7 +61,7 @@
 
             <div class="form-group">
                 <input type="text" class="form-control"
-                       value="<?php echo $current_version; ?>" readonly="readonly">
+                       value="<?php echo get_setting('current_version'); ?>" readonly="readonly">
             </div>
             <div id="updatecheck-results">
                 <div id="updatecheck-loading" class="btn btn-default btn-sm disabled">
