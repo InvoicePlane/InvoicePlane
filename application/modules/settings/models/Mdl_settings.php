@@ -62,13 +62,22 @@ class Mdl_Settings extends CI_Model
         $this->db->delete('ip_settings');
     }
 
+    /**
+     * Loads all settings from the database so they are available
+     * without additional queries
+     */
     public function load_settings()
     {
+        // Load all settings from the database
         $ip_settings = $this->db->get('ip_settings')->result();
 
         foreach ($ip_settings as $data) {
             $this->settings[$data->setting_key] = $data->setting_value;
         }
+
+        // Append current version to the settings
+        $this->load->model('settings/mdl_versions');
+        $this->settings['current_version'] = $this->mdl_versions->get_current_version();
     }
 
     /**
