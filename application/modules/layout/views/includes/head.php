@@ -1,11 +1,4 @@
-<title>
-    <?php
-    if (get_setting('custom_title') != '') {
-        echo get_setting('custom_title', '', true);
-    } else {
-        echo 'InvoicePlane';
-    } ?>
-</title>
+<title><?php echo get_setting('custom_title', null, true) ?: 'InvoicePlane';?></title>
 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -14,36 +7,34 @@
 
 <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
-<link rel="stylesheet"
-      href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
+<link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>">
+<link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>">
 
 <?php if (get_setting('monospace_amounts') == 1) { ?>
-    <link rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/monospace.css">
+    <link rel="stylesheet" href="<?php _theme_asset('css/monospace.css'); ?>">
 <?php } ?>
 
 <!--[if lt IE 9]>
-<script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
+<script src="<?php _core_asset('js/legacy.min.js'); ?>"></script>
 <![endif]-->
 
-<script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
+<script src="<?php _core_asset('js/dependencies.min.js'); ?>"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/core/js/locales/select2/<?php _trans('cldr'); ?>.js"></script>
+    <script src="<?php _core_asset('js/locales/select2/' . _trans('cldr') . '.js'); ?>"></script>
 <?php } ?>
 
 <script>
     Dropzone.autoDiscover = false;
 
     <?php if (trans('cldr') != 'en') { ?>
-    $.fn.select2.defaults.set('language', '<?php _trans("cldr"); ?>');
+    $.fn.select2.defaults.set('language', '<?php _trans('cldr'); ?>');
     <?php } ?>
 
     $(function () {
         $('.nav-tabs').tab();
         $('.tip').tooltip();
 
-        $('body').on('focus', ".datepicker", function () {
+        $('body').on('focus', '.datepicker', function () {
             $(this).datepicker({
                 autoclose: true,
                 format: '<?php echo date_format_datepicker(); ?>',
