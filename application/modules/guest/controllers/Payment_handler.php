@@ -180,7 +180,7 @@ class Payment_Handler extends Base_Controller
             if (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'password') {
                 $value = $this->crypt->decode($setting->setting_value);
             } elseif (isset($gateway_settings[$key]) && $gateway_settings[$key]['type'] == 'checkbox') {
-                $value = $setting->setting_value == 'on' ? true : false;
+                $value = $setting->setting_value == '1' ? true : false;
             } else {
                 $value = $setting->setting_value;
             }
