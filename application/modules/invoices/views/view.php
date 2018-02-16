@@ -100,6 +100,30 @@ $cv = $this->controller->view_data["custom_values"];
             window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
         });
 
+        $(document).on('click', '.btn_delete_item', function () {
+            var btn = $(this);
+            var item_id = btn.data('item-id');
+
+            // Just remove the row if no item ID is set (new row)
+            if (typeof item_id === 'undefined') {
+                $(this).parents('.item').remove();
+            }
+
+            $.post("<?php echo site_url('invoices/ajax/delete_item/' . $invoice->invoice_id); ?>", {
+                    'item_id': item_id,
+                },
+                function (data) {
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    var response = JSON.parse(data);
+
+                    if (response.success === 1) {
+                        btn.parents('.item').remove();
+                    } else {
+                        btn.removeClass('btn-link').addClass('btn-danger').prop('disabled', true);
+                    }
+                });
+        });
+
         <?php if ($invoice->is_read_only != 1): ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
