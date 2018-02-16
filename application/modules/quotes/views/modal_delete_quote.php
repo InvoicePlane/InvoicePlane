@@ -1,12 +1,3 @@
-<script>
-    $(function () {
-        $('#modal_delete_quote_confirm').click(function () {
-            quote_id = $(this).data('quote-id');
-            window.location = '<?php echo site_url('quotes/delete'); ?>/' + quote_id;
-        });
-    });
-</script>
-
 <div id="delete-quote" class="modal modal-lg" role="dialog" aria-labelledby="modal_delete_quote" aria-hidden="true">
     <div class="modal-content">
         <div class="modal-header">
@@ -19,15 +10,19 @@
 
         </div>
         <div class="modal-footer">
-            <div class="btn-group">
-                <button id="modal_delete_quote_confirm" class="btn btn-danger"
-                        data-quote-id="<?php echo $quote->quote_id; ?>">
-                    <i class="fa fa-trash-o"></i> <?php _trans('yes'); ?>
-                </button>
-                <button class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-times"></i> <?php _trans('no'); ?>
-                </button>
-            </div>
+            <form action="<?php echo site_url('quotes/delete/' . $quote->quote_id); ?>"
+                  method="POST">
+                <?php _csrf_field(); ?>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('confirm_deletion') ?>
+                    </button>
+                    <a href="#" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 
