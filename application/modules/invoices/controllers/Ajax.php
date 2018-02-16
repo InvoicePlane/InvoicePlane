@@ -443,4 +443,40 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * @param $invoice_id
+     */
+    public function delete_item($invoice_id)
+    {
+        $success = 0;
+        $item_id = $this->input->post('item_id');
+        $this->load->model('mdl_invoices');
+
+        // Only continue if the invoice exists or no item id was provided
+        if ($this->mdl_invoices->get_by_id($invoice_id) || empty($item_id)) {
+
+            // Delete invoice item
+            $this->load->model('mdl_items');
+            $item = $this->mdl_items->delete($item_id);
+
+            // Check if deletion was successful
+            if ($item) {
+
+                $success = 1;
+
+                // Mark task as complete from invoiced
+                if ($item->item_task_id) {
+                    $this->load->model('tasks/mdl_tasks');
+                    $this->mdl_tasks->update_status(3, $item->item_task_id);
+                }
+            }
+
+        }
+
+        // Return the response
+        echo json_encode([
+            'success' => $success
+        ]);
+    }
+
 }
