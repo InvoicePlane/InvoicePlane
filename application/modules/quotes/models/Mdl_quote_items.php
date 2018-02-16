@@ -99,15 +99,23 @@ class Mdl_Quote_Items extends Response_Model
 
     /**
      * @param int $item_id
+     *
+     * @return bool
      */
     public function delete($item_id)
     {
-        // Get the quote id so we can recalculate quote amounts
-        $this->db->select('quote_id');
-        $this->db->where('item_id', $item_id);
-        $quote_id = $this->db->get('ip_quote_items')->row()->quote_id;
+        // Get item:
+        // the invoice id is needed to recalculate quote amounts
+        $query = $this->db->get_where($this->table, ['item_id' => $item_id]);
 
-        // Delete the item
+        if ($query->num_rows() == 0) {
+            return false;
+        }
+
+        $row = $query->row();
+        $quote_id = $row->quote_id;
+
+        // Delete the item itself
         parent::delete($item_id);
 
         // Delete the item amounts
@@ -117,6 +125,8 @@ class Mdl_Quote_Items extends Response_Model
         // Recalculate quote amounts
         $this->load->model('quotes/mdl_quote_amounts');
         $this->mdl_quote_amounts->calculate($quote_id);
+
+        return true;
     }
 
 }
