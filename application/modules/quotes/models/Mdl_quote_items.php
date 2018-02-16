@@ -15,8 +15,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Quote_Items extends Response_Model
 {
+
     public $table = 'ip_quote_items';
+
     public $primary_key = 'ip_quote_items.item_id';
+
     public $date_created_field = 'item_date_added';
 
     public function default_select()
@@ -40,43 +43,44 @@ class Mdl_Quote_Items extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'quote_id' => array(
+        return [
+            'quote_id' => [
                 'field' => 'quote_id',
                 'label' => trans('quote'),
-                'rules' => 'required'
-            ),
-            'item_name' => array(
+                'rules' => 'required',
+            ],
+            'item_name' => [
                 'field' => 'item_name',
                 'label' => trans('item_name'),
-                'rules' => 'required'
-            ),
-            'item_description' => array(
+                'rules' => 'required',
+            ],
+            'item_description' => [
                 'field' => 'item_description',
-                'label' => trans('description')
-            ),
-            'item_quantity' => array(
+                'label' => trans('description'),
+            ],
+            'item_quantity' => [
                 'field' => 'item_quantity',
                 'label' => trans('quantity'),
-            ),
-            'item_price' => array(
+            ],
+            'item_price' => [
                 'field' => 'item_price',
                 'label' => trans('price'),
-            ),
-            'item_tax_rate_id' => array(
+            ],
+            'item_tax_rate_id' => [
                 'field' => 'item_tax_rate_id',
-                'label' => trans('item_tax_rate')
-            ),
-            'item_product_id' => array(
+                'label' => trans('item_tax_rate'),
+            ],
+            'item_product_id' => [
                 'field' => 'item_product_id',
-                'label' => trans('original_product')
-            ),
-        );
+                'label' => trans('original_product'),
+            ],
+        ];
     }
 
     /**
      * @param null $id
      * @param null $db_array
+     *
      * @return int|null
      */
     public function save($id = null, $db_array = null)

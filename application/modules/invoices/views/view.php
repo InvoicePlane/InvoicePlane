@@ -19,7 +19,10 @@ $cv = $this->controller->view_data["custom_values"];
         });
 
         $('.btn_add_task').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
+            $('#modal-placeholder').load(
+                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" +
+                Math.floor(Math.random() * 1000)
+            );
         });
 
         $('.btn_add_row').click(function () {
@@ -42,7 +45,7 @@ $cv = $this->controller->view_data["custom_values"];
         $('#invoice_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {
                 invoice_id: <?php echo $invoice_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($invoice->client_id); ?>"
+                client_id: "<?php echo $this->db->escape_str($invoice->client_id); ?>",
             });
         });
 
@@ -74,7 +77,7 @@ $cv = $this->controller->view_data["custom_values"];
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
-                    payment_method: $('#payment_method').val()
+                    payment_method: $('#payment_method').val(),
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -129,19 +132,20 @@ $cv = $this->controller->view_data["custom_values"];
             var $originals = tr.children();
             var $helper = tr.clone();
             $helper.children().each(function (index) {
-                $(this).width($originals.eq(index).width())
+                $(this).width($originals.eq(index).width());
             });
             return $helper;
         };
 
-        $("#item_table").sortable({
+        $('#item_table').sortable({
             items: 'tbody',
-            helper: fixHelper
+            helper: fixHelper,
         });
 
         if ($('#invoice_discount_percent').val().length > 0) {
             $('#invoice_discount_amount').prop('disabled', true);
         }
+
         if ($('#invoice_discount_amount').val().length > 0) {
             $('#invoice_discount_percent').prop('disabled', true);
         }
@@ -164,15 +168,15 @@ $cv = $this->controller->view_data["custom_values"];
 
         <?php if ($invoice->invoice_is_recurring) : ?>
         $(document).on('click', '.js-item-recurrence-toggler', function () {
-            var itemRecurrenceState = $(this).next("input").val();
-            if (itemRecurrenceState === ("1")) {
-                $(this).next("input").val("0");
-                $(this).removeClass("fa-calendar-check-o text-success");
-                $(this).addClass("fa-calendar-o text-muted");
+            var itemRecurrenceState = $(this).next('input').val();
+            if (itemRecurrenceState === ('1')) {
+                $(this).next('input').val('0');
+                $(this).removeClass('fa-calendar-check-o text-success');
+                $(this).addClass('fa-calendar-o text-muted');
             } else {
-                $(this).next("input").val("1");
-                $(this).removeClass("fa-calendar-o text-muted");
-                $(this).addClass("fa-calendar-check-o text-success");
+                $(this).next('input').val('1');
+                $(this).removeClass('fa-calendar-o text-muted');
+                $(this).addClass('fa-calendar-check-o text-success');
             }
         });
         <?php endif; ?>
@@ -307,7 +311,7 @@ if ($this->config->item('disable_read_only') == true) {
                     </h3>
                     <br>
                     <div class="client-address">
-                        <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
+                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
                     </div>
                     <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                         <hr>
@@ -435,8 +439,9 @@ if ($this->config->item('disable_read_only') == true) {
                                         } ?>>
                                         <option value="0"><?php _trans('select_payment_method'); ?></option>
                                         <?php foreach ($payment_methods as $payment_method) { ?>
-                                            <option <?php if ($invoice->payment_method == $payment_method->payment_method_id) echo "selected" ?>
-                                                    value="<?php echo $payment_method->payment_method_id; ?>">
+                                            <option <?php check_select($invoice->payment_method,
+                                                $payment_method->payment_method_id) ?>
+                                                value="<?php echo $payment_method->payment_method_id; ?>">
                                                 <?php echo $payment_method->payment_method_name; ?>
                                             </option>
                                         <?php } ?>
