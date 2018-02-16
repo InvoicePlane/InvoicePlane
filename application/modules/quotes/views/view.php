@@ -5,7 +5,10 @@ $cv = $this->controller->view_data["custom_values"];
 
     $(function () {
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
+            $('#modal-placeholder').load(
+                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" +
+                    Math.floor(Math.random() * 1000)
+            );
         });
 
         $('.btn_add_row').click(function () {
@@ -15,7 +18,7 @@ $cv = $this->controller->view_data["custom_values"];
         $('#quote_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
                 quote_id: <?php echo $quote_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>"
+                client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
             });
         });
 
@@ -50,7 +53,7 @@ $cv = $this->controller->view_data["custom_values"];
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
-                    custom: $('input[name^=custom],select[name^=custom]').serializeArray()
+                    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -64,7 +67,7 @@ $cv = $this->controller->view_data["custom_values"];
                         var resp_errors = response.validation_errors,
                             all_resp_errors = '';
 
-                        if (typeof(resp_errors) == "string") {
+                        if (typeof(resp_errors) == 'string') {
                             all_resp_errors = resp_errors;
                         } else {
                             for (var key in resp_errors) {
@@ -133,14 +136,14 @@ $cv = $this->controller->view_data["custom_values"];
             var $originals = tr.children();
             var $helper = tr.clone();
             $helper.children().each(function (index) {
-                $(this).width($originals.eq(index).width())
+                $(this).width($originals.eq(index).width());
             });
             return $helper;
         };
 
-        $("#item_table").sortable({
+        $('#item_table').sortable({
             helper: fixHelper,
-            items: 'tbody'
+            items: 'tbody',
         });
     });
 </script>
@@ -232,7 +235,7 @@ $cv = $this->controller->view_data["custom_values"];
                     </h3>
                     <br>
                     <div class="client-address">
-                        <?php $this->layout->load_view('clients/partial_client_address', array('client' => $quote)); ?>
+                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>
                     <?php if ($quote->client_phone || $quote->client_email) : ?>
                         <hr>
