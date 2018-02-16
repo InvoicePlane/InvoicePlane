@@ -78,6 +78,30 @@ $cv = $this->controller->view_data["custom_values"];
                 });
         });
 
+        $(document).on('click', '.btn_delete_item', function () {
+            var btn = $(this);
+            var item_id = btn.data('item-id');
+
+            // Just remove the row if no item ID is set (new row)
+            if (typeof item_id === 'undefined') {
+                $(this).parents('.item').remove();
+            }
+
+            $.post("<?php echo site_url('quotes/ajax/delete_item/' . $quote->quote_id); ?>", {
+                    'item_id': item_id,
+                },
+                function (data) {
+                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    var response = JSON.parse(data);
+
+                    if (response.success === 1) {
+                        btn.parents('.item').remove();
+                    } else {
+                        btn.removeClass('btn-link').addClass('btn-danger').prop('disabled', true);
+                    }
+                });
+        });
+
         $('#btn_generate_pdf').click(function () {
             window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
         });

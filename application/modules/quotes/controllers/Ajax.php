@@ -386,4 +386,33 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * @param $quote_id
+     */
+    public function delete_item($quote_id)
+    {
+        $success = 0;
+        $item_id = $this->input->post('item_id');
+        $this->load->model('mdl_quotes');
+
+        // Only continue if the invoice exists or no item id was provided
+        if ($this->mdl_quotes->get_by_id($quote_id) || empty($item_id)) {
+
+            // Delete invoice item
+            $this->load->model('mdl_quote_items');
+            $item = $this->mdl_quote_items->delete($item_id);
+
+            // Check if deletion was successful
+            if ($item) {
+                $success = 1;
+            }
+
+        }
+
+        // Return the response
+        echo json_encode([
+            'success' => $success,
+        ]);
+    }
+
 }
