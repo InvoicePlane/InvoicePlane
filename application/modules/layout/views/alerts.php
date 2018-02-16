@@ -1,18 +1,24 @@
-<?php if (function_exists('validation_errors')) {
+<?php
+$alert_class = 'alert';
+$alert_class .= isset($without_margin) ? ' no-margin' : '';
+$content = null;
+
+// Get validation errors
+if (function_exists('validation_errors')) {
     if (validation_errors()) {
-        echo validation_errors('<div class="alert alert-danger">', '</div>');
+        echo validation_errors('<div class="' . $alert_class . ' alert-danger">', '</div>');
     }
-} ?>
+}
 
-<?php if ($this->session->flashdata('alert_success')) { ?>
-    <div class="alert alert-success"><?php echo $this->session->flashdata('alert_success'); ?></div>
-<?php } ?>
+// Get success messages
+if ($this->session->flashdata('alert_success')) {
+    echo '<div class="' . $alert_class . ' alert-success">' . $this->session->flashdata('alert_success') . '</div>';
+}
 
-<?php if ($this->session->flashdata('alert_info')) { ?>
-    <div class="alert alert-info"><?php echo $this->session->flashdata('alert_info'); ?></div>
-<?php } ?>
+if ($this->session->flashdata('alert_info')) {
+    echo '<div class="' . $alert_class . ' alert-info">' . $this->session->flashdata('alert_info') . '</div>';
+}
 
-<?php if ($this->session->flashdata('alert_error')) { ?>
-    <div class="alert alert-danger"><?php echo $this->session->flashdata('alert_error'); ?></div>
-<?php } ?>
-
+if ($this->session->flashdata('alert_error')) {
+    echo '<div class="' . $alert_class . ' alert-danger">' . $this->session->flashdata('alert_error') . '</div>';
+}
