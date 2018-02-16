@@ -15,8 +15,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Items extends Response_Model
 {
+
     public $table = 'ip_invoice_items';
+
     public $primary_key = 'ip_invoice_items.item_id';
+
     public $date_created_field = 'item_date_added';
 
     public function default_select()
@@ -43,58 +46,59 @@ class Mdl_Items extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'invoice_id' => array(
+        return [
+            'invoice_id' => [
                 'field' => 'invoice_id',
                 'label' => trans('invoice'),
-                'rules' => 'required'
-            ),
-            'item_sku' => array(
+                'rules' => 'required',
+            ],
+            'item_sku' => [
                 'field' => 'item_sku',
                 'label' => trans('item_sku'),
-                'rules' => 'required|unique'
-            ),
-            'item_name' => array(
+                'rules' => 'required|unique',
+            ],
+            'item_name' => [
                 'field' => 'item_name',
                 'label' => trans('item_name'),
-                'rules' => 'required'
-            ),
-            'item_description' => array(
+                'rules' => 'required',
+            ],
+            'item_description' => [
                 'field' => 'item_description',
-                'label' => trans('description')
-            ),
-            'item_quantity' => array(
+                'label' => trans('description'),
+            ],
+            'item_quantity' => [
                 'field' => 'item_quantity',
                 'label' => trans('quantity'),
-                'rules' => 'required'
-            ),
-            'item_price' => array(
+                'rules' => 'required',
+            ],
+            'item_price' => [
                 'field' => 'item_price',
                 'label' => trans('price'),
-                'rules' => 'required'
-            ),
-            'item_tax_rate_id' => array(
+                'rules' => 'required',
+            ],
+            'item_tax_rate_id' => [
                 'field' => 'item_tax_rate_id',
-                'label' => trans('item_tax_rate')
-            ),
-            'item_product_id' => array(
+                'label' => trans('item_tax_rate'),
+            ],
+            'item_product_id' => [
                 'field' => 'item_product_id',
-                'label' => trans('original_product')
-            ),
-            'item_date' => array(
+                'label' => trans('original_product'),
+            ],
+            'item_date' => [
                 'field' => 'item_date',
-                'label' => trans('item_date')
-            ),
-            'item_is_recurring' => array(
+                'label' => trans('item_date'),
+            ],
+            'item_is_recurring' => [
                 'field' => 'item_is_recurring',
-                'label' => trans('recurring')
-            )
-        );
+                'label' => trans('recurring'),
+            ],
+        ];
     }
 
     /**
      * @param null $id
      * @param null $db_array
+     *
      * @return int|null
      */
     public function save($id = null, $db_array = null)
@@ -117,17 +121,18 @@ class Mdl_Items extends Response_Model
 
     /**
      * @param int $item_id
-     * @return null
+     *
+     * @return bool
      */
     public function delete($item_id)
     {
         // Get item:
         // the invoice id is needed to recalculate invoice amounts
         // and the task id to update status if the item refers a task
-        $query = $this->db->get_where($this->table,
-            array('item_id' => $item_id));
+        $query = $this->db->get_where($this->table, ['item_id' => $item_id]);
+
         if ($query->num_rows() == 0) {
-            return null;
+            return false;
         }
 
         $row = $query->row();
@@ -143,6 +148,7 @@ class Mdl_Items extends Response_Model
         // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
         $this->mdl_invoice_amounts->calculate($invoice_id);
-        return $row;
+
+        return true;
     }
 }

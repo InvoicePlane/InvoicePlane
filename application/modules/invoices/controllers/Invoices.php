@@ -252,26 +252,6 @@ class Invoices extends Admin_Controller
 
     /**
      * @param $invoice_id
-     * @param $item_id
-     */
-    public function delete_item($invoice_id, $item_id)
-    {
-        // Delete invoice item
-        $this->load->model('mdl_items');
-        $item = $this->mdl_items->delete($item_id);
-
-        // Mark item back to complete:
-        if ($item && $item->item_task_id) {
-            $this->load->model('tasks/mdl_tasks');
-            $this->mdl_tasks->update_status(3, $item->item_task_id);
-        }
-
-        // Redirect to invoice view
-        redirect('invoices/view/' . $invoice_id);
-    }
-
-    /**
-     * @param $invoice_id
      * @param bool $stream
      * @param null $invoice_template
      */
