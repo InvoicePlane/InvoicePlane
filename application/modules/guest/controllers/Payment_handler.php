@@ -15,6 +15,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Payment_Handler extends Base_Controller
 {
+
     /**
      * Payment_Handler constructor.
      */
@@ -53,37 +54,38 @@ class Payment_Handler extends Base_Controller
 
             if ($cc_number) {
                 try {
-                    $credit_card = new \Omnipay\Common\CreditCard(array(
+                    $credit_card = new \Omnipay\Common\CreditCard([
                         'number' => $cc_number,
                         'expiryMonth' => $cc_expire_month,
                         'expiryYear' => $cc_expire_year,
-                        'cvv' => $cc_cvv
-                    ));
+                        'cvv' => $cc_cvv,
+                    ]);
                     $credit_card->validate();
                 } catch (\Exception $e) {
                     // Redirect the user and display failure message
-                    $this->session->set_flashdata('alert_error', trans('online_payment_card_invalid') . '<br/>' . $e->getMessage());
+                    $this->session->set_flashdata('alert_error',
+                        trans('online_payment_card_invalid') . '<br/>' . $e->getMessage());
                     redirect('guest/payment_information/form/' . $invoice->invoice_url_key);
                 }
             } else {
-                $credit_card = array();
+                $credit_card = [];
             }
 
             // Set up the api data
             $driver_currency = $this->mdl_settings->setting('gateway_' . $d . '_currency');
 
-            $request = array(
+            $request = [
                 'amount' => $invoice->invoice_balance,
                 'currency' => $driver_currency,
                 'card' => $credit_card,
                 'description' => sprintf(trans('payment_description'), $invoice->invoice_number),
-                'metadata' => array(
+                'metadata' => [
                     'invoice_number' => $invoice->invoice_number,
-                    'invoice_guest_url' => $invoice->invoice_url_key
-                ),
+                    'invoice_guest_url' => $invoice->invoice_url_key,
+                ],
                 'returnUrl' => site_url('guest/payment_handler/payment_return/' . $invoice->invoice_url_key . '/' . $driver),
                 'cancelUrl' => site_url('guest/payment_handler/payment_cancel/' . $invoice->invoice_url_key . '/' . $driver),
-            );
+            ];
 
             if ($d === 'worldpay') {
                 // Additional param for WorldPay
@@ -95,36 +97,42 @@ class Payment_Handler extends Base_Controller
             // Send the request
             $response = $gateway->purchase($request)->send();
 
+            $reference = $response->getTransactionReference() ? $response->getTransactionReference() : '[no transation reference]';
+
             // Process the response
             if ($response->isSuccessful()) {
 
-                $payment_note = trans('transaction_reference') . ': ' . $response->getTransactionReference() . "\n";
+                $payment_note = trans('transaction_reference') . ': ' . $reference . "\n";
                 $payment_note .= trans('payment_provider') . ': ' . ucwords(str_replace('_', ' ', $d));
 
                 // Set invoice to paid
                 $this->load->model('payments/mdl_payments');
 
-                $db_array = array(
+                $db_array = [
                     'invoice_id' => $invoice->invoice_id,
                     'payment_date' => date('Y-m-d'),
                     'payment_amount' => $invoice->invoice_balance,
                     'payment_method_id' => $invoice->payment_method,
                     'payment_note' => $payment_note,
-                );
+                ];
 
                 $this->mdl_payments->save(null, $db_array);
+                $payment_success_msg = sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number);
 
                 // Save gateway response
-                $db_array = array(
+                $db_array = [
                     'invoice_id' => $invoice->invoice_id,
+                    'merchant_response_successful' => true,
                     'merchant_response_date' => date('Y-m-d'),
                     'merchant_response_driver' => $driver,
-                );
+                    'merchant_response' => $payment_success_msg,
+                    'merchant_response_reference' => $reference,
+                ];
 
                 $this->db->insert('ip_merchant_responses', $db_array);
 
                 // Redirect user and display the success message
-                $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+                $this->session->set_flashdata('alert_success', $payment_success_msg);
                 $this->session->keep_flashdata('alert_success');
 
                 redirect('guest/view/invoice/' . $invoice->invoice_url_key);
@@ -137,17 +145,21 @@ class Payment_Handler extends Base_Controller
             } else {
                 // Payment failed
                 // Save the response in the database
-                $db_array = array(
+
+                $db_array = [
                     'invoice_id' => $invoice->invoice_id,
+                    'merchant_response_successful' => false,
                     'merchant_response_date' => date('Y-m-d'),
                     'merchant_response_driver' => $driver,
                     'merchant_response' => $response->getMessage(),
-                );
+                    'merchant_response_reference' => $reference,
+                ];
 
                 $this->db->insert('ip_merchant_responses', $db_array);
 
                 // Redirect the user and display failure message
-                $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed') . '<br/>' . $response->getMessage());
+                $this->session->set_flashdata('alert_error',
+                    trans('online_payment_payment_failed') . '<br/>' . $response->getMessage());
                 $this->session->keep_flashdata('alert_error');
 
                 redirect('guest/payment_information/form/' . $invoice->invoice_url_key);
@@ -155,6 +167,11 @@ class Payment_Handler extends Base_Controller
         }
     }
 
+    /**
+     * @param $driver
+     *
+     * @return mixed
+     */
     private function initialize_gateway($driver)
     {
         $d = strtolower($driver);
@@ -165,7 +182,7 @@ class Payment_Handler extends Base_Controller
         $gateway_settings = $this->config->item('payment_gateways');
         $gateway_settings = $gateway_settings[$driver];
 
-        $gateway_init = array();
+        $gateway_init = [];
         foreach ($settings as $setting) {
             // Sanitize the field key
             $key = str_replace('gateway_' . $d . '_', '', $setting->setting_key);
@@ -195,6 +212,10 @@ class Payment_Handler extends Base_Controller
         return $gateway;
     }
 
+    /**
+     * @param $invoice_url_key
+     * @param $driver
+     */
     public function payment_return($invoice_url_key, $driver)
     {
         $d = strtolower($driver);
@@ -207,17 +228,18 @@ class Payment_Handler extends Base_Controller
 
             $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get()->row();
 
-            $db_array = array(
+            $db_array = [
                 'invoice_id' => $invoice->invoice_id,
                 'payment_date' => date('Y-m-d'),
                 'payment_amount' => $invoice->invoice_balance,
-                'payment_method_id' => (get_setting('gateway_' . $d . '_payment_method')) ? get_setting('gateway_' . $d . '_payment_method') : 0
-            );
+                'payment_method_id' => (get_setting('gateway_' . $d . '_payment_method')) ? get_setting('gateway_' . $d . '_payment_method') : 0,
+            ];
 
             $this->mdl_payments->save(null, $db_array);
 
             // Set the success flash message
-            $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+            $this->session->set_flashdata('alert_success',
+                sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
 
         } else {
             // Set the failure flash message
@@ -228,10 +250,19 @@ class Payment_Handler extends Base_Controller
         redirect('guest/view/invoice/' . $invoice_url_key);
     }
 
+    /**
+     * @param $invoice_url_key
+     * @param $driver
+     * @param bool $canceled
+     *
+     * @return bool
+     */
     private function payment_validate($invoice_url_key, $driver, $canceled = false)
     {
         // Attempt to get the invoice
         $invoice = $this->mdl_invoices->where('invoice_url_key', $invoice_url_key)->get();
+
+        $payment_success = false;
 
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
@@ -247,6 +278,7 @@ class Payment_Handler extends Base_Controller
                 }
 
                 $response = $gateway->completePurchase($params)->send();
+                $payment_success = true;
 
                 $message = $response->getMessage() ? $response->getMessage() : 'No details provided';
             } else {
@@ -255,13 +287,14 @@ class Payment_Handler extends Base_Controller
             }
 
             // Create the record for ip_merchant_responses
-            $db_array = array(
+            $db_array = [
                 'invoice_id' => $invoice->invoice_id,
+                'merchant_response_successful' => $payment_success,
                 'merchant_response_date' => date('Y-m-d'),
                 'merchant_response_driver' => $driver,
                 'merchant_response' => $message,
                 'merchant_response_reference' => $canceled ? '' : $response->getTransactionReference(),
-            );
+            ];
 
             $this->db->insert('ip_merchant_responses', $db_array);
 
@@ -271,6 +304,10 @@ class Payment_Handler extends Base_Controller
         return false;
     }
 
+    /**
+     * @param $invoice_url_key
+     * @param $driver
+     */
     public function payment_cancel($invoice_url_key, $driver)
     {
         // Validate the response
