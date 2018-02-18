@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -182,7 +182,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
             return;
         }
 
-        $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
+        $filePath = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
         $pdf->Output($filePath, 'F');
         return $filePath;
     } else {
@@ -190,7 +190,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
             return $sumexPDF;
         }
 
-        $filePath = UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
+        $filePath = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
         file_put_contents($filePath, $sumexPDF);
         return $filePath;
     }
@@ -202,7 +202,9 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
  * @param $quote_id
  * @param bool $stream
  * @param null $quote_template
+ *
  * @return string
+ * @throws \Mpdf\MpdfException
  */
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 {

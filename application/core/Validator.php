@@ -1,11 +1,13 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -15,6 +17,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Validator extends MY_Model
 {
+
+    /**
+     * @return bool
+     */
     public function validate_text()
     {
         return true;
@@ -22,6 +28,7 @@ class Validator extends MY_Model
 
     /**
      * @param $value
+     *
      * @return bool|null
      */
     public function validate_date($value)
@@ -40,6 +47,7 @@ class Validator extends MY_Model
 
     /**
      * @param $value
+     *
      * @return bool|null
      */
     public function validate_boolean($value)
@@ -58,6 +66,7 @@ class Validator extends MY_Model
     /**
      * @param $value
      * @param $key
+     *
      * @return null
      */
     public function validate_singlechoice($value, $key)
@@ -74,7 +83,8 @@ class Validator extends MY_Model
 
     /**
      * @param $value
-     * @param $key
+     * @param $id
+     *
      * @return bool|null
      */
     public function validate_multiplechoice($value, $id)
@@ -99,27 +109,28 @@ class Validator extends MY_Model
      */
     public function validation_rules()
     {
-        return array(
-            'custom_field_table' => array(
+        return [
+            'custom_field_table' => [
                 'field' => 'custom_field_table',
                 'label' => trans('table'),
-                'rules' => 'required'
-            ),
-            'custom_field_label' => array(
+                'rules' => 'required',
+            ],
+            'custom_field_label' => [
                 'field' => 'custom_field_label',
                 'label' => trans('label'),
-                'rules' => 'required|max_length[50]'
-            ),
-            'custom_field_type' => array(
+                'rules' => 'required|max_length[50]',
+            ],
+            'custom_field_type' => [
                 'field' => 'custom_field_type',
                 'label' => trans('type'),
-                'rules' => 'required'
-            )
-        );
+                'rules' => 'required',
+            ],
+        ];
     }
 
     /**
      * @param $column
+     *
      * @return null
      */
     public function get_field_type($column)
@@ -136,6 +147,7 @@ class Validator extends MY_Model
 
     /**
      * @param $array
+     *
      * @return bool|string
      */
     public function validate($array)
@@ -153,26 +165,28 @@ class Validator extends MY_Model
 
         foreach ($db_array as $key => $value) {
             $model = $this->mdl_custom_fields->where('custom_field_id', $key)->get();
+
             if ($model->num_rows()) {
                 $model = $model->row();
                 if (@$model->custom_field_required == "1") {
                     if ($value == "") {
-                        $errors[] = array(
+                        $errors[] = [
                             "field" => $model->custom_field_id,
                             "label" => $model->custom_field_label,
-                            "error_msg" => "missing field required"
-                        );
+                            "error_msg" => "missing field required",
+                        ];
                         continue;
                     }
                 }
+
                 $result = $this->validate_type($model->custom_field_type, $value, $key);
 
                 if ($result === false) {
-                    $errors[] = array(
+                    $errors[] = [
                         "field" => $model->custom_field_id,
                         "label" => $model->custom_field_label,
-                        "error_msg" => "invalid input"
-                    );
+                        "error_msg" => "invalid input",
+                    ];
                 }
             }
         }
@@ -190,14 +204,12 @@ class Validator extends MY_Model
      * @param $type
      * @param $value
      * @param $key
+     *
      * @return mixed
      */
     public function validate_type($type, $value, $key)
     {
-        $nicename = $this->mdl_custom_fields->get_nicename(
-            $type
-        );
-
+        $nicename = $this->mdl_custom_fields->get_nicename($type);
         $validation_rule = 'validate_' . $nicename;
         return $this->{$validation_rule}($value, $key);
     }
@@ -237,6 +249,7 @@ class Validator extends MY_Model
 
     /**
      * @param $errors
+     *
      * @return string
      */
     public function create_error_text($errors)

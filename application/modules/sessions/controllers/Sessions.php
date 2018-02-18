@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -187,7 +187,11 @@ class Sessions extends Base_Controller
                 $email_message = $this->load->view('emails/passwordreset', array(
                     'resetlink' => $email_resetlink
                 ), true);
-                $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", "$1", base_url());
+
+                $email_from = get_setting('smtp_mail_from');
+                if (emtpy($email_from)) {
+                    $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", "$1", base_url());
+                }
 
                 // Mail the invoice with the pre-configured mailer if possible
                 if (mailer_configured()) {

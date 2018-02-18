@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -345,4 +345,25 @@ class Mdl_Setup extends CI_Model
         $this->db->query('ALTER TABLE ip_custom_fields DROP COLUMN custom_field_column');
     }
 
+    public function upgrade_029_1_5_6()
+    {
+        // The following code will determine if the ip_users table has an existing user_all_clients column
+        // If the table already has the column it will be shown in any user query, so get one now
+        $test_user = $this->db->query('SELECT * FROM `ip_users` ORDER BY `user_id` ASC LIMIT 1')->row();
+
+        // Add new user key if applicable
+        if (!isset($test_user->user_all_clients)) {
+            $this->db->query('ALTER TABLE `ip_users`
+              ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
+              AFTER `user_psalt`;'
+            );
+        }
+
+        // Copy the invoice pdf footer to the new quote pdf footer setting
+        $this->load->model('settings/mdl_settings');
+        $this->mdl_settings->load_settings();
+        $this->load->helper('settings');
+
+        $this->mdl_settings->save('pdf_quote_footer', get_setting('pdf_invoice_footer'));
+    }
 }

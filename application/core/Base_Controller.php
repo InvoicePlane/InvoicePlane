@@ -1,11 +1,13 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -15,8 +17,13 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Base_Controller extends MX_Controller
 {
+
+    /** @var bool */
     public $ajax_controller = false;
 
+    /**
+     * Base_Controller constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -28,10 +35,15 @@ class Base_Controller extends MX_Controller
             exit;
         }
 
+        // Globally disallow GET requests to delete methods
+        $this->load->helper('url');
+        if (strstr(current_url(), 'delete') && $this->input->method() !== 'post') {
+            show_404();
+        }
+
         // Load basic stuff
         $this->load->library('session');
         $this->load->helper('redirect');
-        $this->load->helper('url');
 
         // Check if database has been configured
         if (!env_bool('SETUP_COMPLETED')) {
