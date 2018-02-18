@@ -80,7 +80,9 @@
             }
             ?>
 
-            <?php echo $this->layout->load_view('layout/alerts'); ?>
+            <div class="form-group">
+                <?php echo $this->layout->load_view('layout/alerts', ['without_margin' => true]); ?>
+            </div>
 
             <div class="panel panel-default">
 
@@ -165,6 +167,8 @@
                         </select>
                     </div>
 
+                    <br>
+
                     <div class="panel panel-default">
 
                         <div class="panel-heading">
@@ -173,7 +177,7 @@
 
                         <div class="panel-body">
                             <div class="form-group">
-                                <div class="alert alert-info no-margin">
+                                <div class="alert alert-info no-margin small">
                                     <?php _trans('online_payment_creditcard_hint'); ?>
                                 </div>
                             </div>
@@ -216,9 +220,7 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
 
                     <div class="form-group">
                         <button class="btn btn-success btn-lg ajax-loader" type="submit">
@@ -226,6 +228,8 @@
                             <?php echo trans('pay_now') . ': ' . format_currency($invoice->invoice_balance); ?>
                         </button>
                     </div>
+
+                    <br><br>
 
                 </form>
 

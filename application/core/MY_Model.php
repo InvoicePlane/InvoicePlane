@@ -1,5 +1,7 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /**
  * CodeIgniter CRUD Model 2
@@ -7,10 +9,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  * Install this file as application/core/MY_Model.php
  *
- * @package     CodeIgniter
- * @author		Jesse Terry
- * @copyright	Copyright (c) 2012-2013, Jesse Terry
- * @link		http://developer13.com
+ * @package       CodeIgniter
+ * @author        Jesse Terry
+ * @copyright     Copyright (c) 2012-2013, Jesse Terry
+ * @link          http://developer13.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,42 +35,105 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class MY_Model extends CI_Model
 {
+
     public $table;
+
     public $primary_key;
+
+    /** @var int */
     public $default_limit = 15;
+
     public $page_links;
+
     public $query;
-    public $form_values = array();
+
+    /** @var array */
+    public $form_values = [];
+
     public $validation_errors;
+
     public $total_rows;
+
     public $date_created_field;
+
     public $date_modified_field;
-    public $native_methods = array(
-        'select', 'select_max', 'select_min', 'select_avg', 'select_sum', 'join',
-        'where', 'or_where', 'where_in', 'or_where_in', 'where_not_in', 'or_where_not_in',
-        'like', 'or_like', 'not_like', 'or_not_like', 'group_by', 'distinct', 'having',
-        'or_having', 'order_by', 'limit'
-    );
+
+    /** @var array */
+    public $native_methods = [
+        'select',
+        'select_max',
+        'select_min',
+        'select_avg',
+        'select_sum',
+        'join',
+        'where',
+        'or_where',
+        'where_in',
+        'or_where_in',
+        'where_not_in',
+        'or_where_not_in',
+        'like',
+        'or_like',
+        'not_like',
+        'or_not_like',
+        'group_by',
+        'distinct',
+        'having',
+        'or_having',
+        'order_by',
+        'limit',
+    ];
+
+    /** @var int */
     public $total_pages = 0;
+
+    /** @var int */
     public $current_page;
+
+    /** @var int */
     public $next_page;
+
+    /** @var int */
     public $previous_page;
+
+    /** @var int */
     public $offset;
+
+    /** @var int */
     public $next_offset;
+
+    /** @var int */
     public $previous_offset;
+
+    /** @var int */
     public $last_offset;
+
+    /** @var int */
     public $id;
-    public $filter = array();
+
+    /** @var array */
+    public $filter = [];
+
+    /** @var string */
     protected $default_validation_rules = 'validation_rules';
+
+    /** @var array */
     protected $validation_rules;
 
+    /**
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return $this
+     */
     public function __call($name, $arguments)
     {
         if (substr($name, 0, 7) == 'filter_') {
-            $this->filter[] = array(substr($name, 7), $arguments);
+            $this->filter[] = [substr($name, 7), $arguments];
         } else {
-            call_user_func_array(array($this->db, $name), $arguments);
+            call_user_func_array([$this->db, $name], $arguments);
         }
+
         return $this;
     }
 
@@ -76,6 +141,10 @@ class MY_Model extends CI_Model
      * Sets CI query object and automatically creates active record query
      * based on methods in child model.
      * $this->model_name->get()
+     *
+     * @param bool $include_defaults
+     *
+     * @return $this
      */
     public function get($include_defaults = true)
     {
@@ -87,7 +156,7 @@ class MY_Model extends CI_Model
 
         $this->query = $this->db->get($this->table);
 
-        $this->filter = array();
+        $this->filter = [];
 
         return $this;
     }
@@ -97,7 +166,7 @@ class MY_Model extends CI_Model
      *
      * @param array $exclude
      */
-    private function set_defaults($exclude = array())
+    private function set_defaults($exclude = [])
     {
         $native_methods = $this->native_methods;
 
@@ -117,21 +186,21 @@ class MY_Model extends CI_Model
     private function run_filters()
     {
         foreach ($this->filter as $filter) {
-            call_user_func_array(array($this->db, $filter[0]), $filter[1]);
+            call_user_func_array([$this->db, $filter[0]], $filter[1]);
         }
 
         /**
          * Clear the filter array since this should only be run once per model
          * execution
          */
-        $this->filter = array();
+        $this->filter = [];
     }
 
     /**
      * Call when paginating results
      * $this->model_name->paginate()
      *
-     * @param $base_url
+     * @param     $base_url
      * @param int $offset
      * @param int $uri_segment
      */
@@ -155,11 +224,11 @@ class MY_Model extends CI_Model
         $this->previous_offset = $this->offset - $per_page;
         $this->next_offset = $this->offset + $per_page;
 
-        $config = array(
+        $config = [
             'base_url' => $base_url,
             'total_rows' => $this->total_rows,
-            'per_page' => $per_page
-        );
+            'per_page' => $per_page,
+        ];
 
         $this->last_offset = ($this->total_pages * $per_page) - $per_page;
 
@@ -177,6 +246,7 @@ class MY_Model extends CI_Model
      *
      * @param null $id
      * @param null $db_array
+     *
      * @return null
      */
     public function save($id = null, $db_array = null)
@@ -184,7 +254,9 @@ class MY_Model extends CI_Model
         if (!$db_array) {
             $db_array = $this->db_array();
         }
+
         $datetime = date('Y-m-d H:i:s');
+
         if (!$id) {
             if ($this->date_created_field) {
                 if (is_array($db_array)) {
@@ -211,6 +283,7 @@ class MY_Model extends CI_Model
             $this->db->insert($this->table, $db_array);
 
             return $this->db->insert_id();
+
         } else {
             if ($this->date_modified_field) {
                 if (is_array($db_array)) {
@@ -235,7 +308,7 @@ class MY_Model extends CI_Model
      */
     public function db_array()
     {
-        $db_array = array();
+        $db_array = [];
 
         $validation_rules = $this->{$this->validation_rules}();
 
@@ -319,19 +392,22 @@ class MY_Model extends CI_Model
      * Used to retrieve record by ID and populate $this->form_values
      *
      * @param int $id
+     *
      * @return boolean|null
      */
     public function prep_form($id = null)
     {
-        if (!$_POST and ($id)) {
+        if (!$_POST && $id) {
             $row = $this->get_by_id($id);
 
             if ($row) {
                 foreach ($row as $key => $value) {
                     $this->form_values[$key] = $value;
                 }
+
                 return true;
             }
+
             return false;
         } elseif (!$id) {
             return true;
@@ -342,6 +418,7 @@ class MY_Model extends CI_Model
      * Retrieves a single record based on primary key value
      *
      * @param $id
+     *
      * @return mixed
      */
     public function get_by_id($id)
@@ -355,6 +432,7 @@ class MY_Model extends CI_Model
      * on any method in child model which returns array of validation rules.
      *
      * @param null|string $validation_rules
+     *
      * @return mixed
      */
     public function run_validation($validation_rules = null)
@@ -386,7 +464,8 @@ class MY_Model extends CI_Model
      * Returns the assigned form value to a form input element
      *
      * @param string $key
-     * @param bool $escape
+     * @param bool   $escape
+     *
      * @return mixed|string
      */
     public function form_value($key, $escape = false)
@@ -397,7 +476,7 @@ class MY_Model extends CI_Model
 
     /**
      * @param string $key
-     * @param $value
+     * @param        $value
      */
     public function set_form_value($key, $value)
     {
