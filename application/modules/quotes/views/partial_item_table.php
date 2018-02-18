@@ -61,7 +61,11 @@
                     </select>
                 </div>
             </td>
-            <td class="td-icon text-right td-vert-middle"></td>
+            <td class="td-icon text-right td-vert-middle">
+                <button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>">
+                    <i class="fa fa-trash-o text-danger"></i>
+                </button>
+            </td>
         </tr>
         <tr>
             <td class="td-textarea">
@@ -156,10 +160,10 @@
                     </div>
                 </td>
                 <td class="td-icon text-right td-vert-middle">
-                    <a href="<?php echo site_url('quotes/delete_item/' . $quote->quote_id . '/' . $item->item_id); ?>"
-                       title="<?php _trans('delete'); ?>">
+                    <button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>"
+                            data-item-id="<?php echo $item->item_id; ?>">
                         <i class="fa fa-trash-o text-danger"></i>
-                    </a>
+                    </button>
                 </td>
             </tr>
             <tr>

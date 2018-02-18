@@ -158,6 +158,26 @@ class Payments extends Admin_Controller
     }
 
     /**
+     * @param int $page
+     */
+    public function online_logs($page = 0)
+    {
+        $this->load->model('mdl_payment_logs');
+
+        $this->mdl_payment_logs->paginate(site_url('payments/online_logs'), $page);
+        $payment_logs = $this->mdl_payment_logs->result();
+
+        $this->layout->set(
+            array(
+                'payment_logs' => $payment_logs
+            )
+        );
+
+        $this->layout->buffer('content', 'payments/online_logs');
+        $this->layout->render();
+    }
+
+    /**
      * @param $id
      */
     public function delete($id)

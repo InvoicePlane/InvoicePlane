@@ -20,13 +20,5 @@ $(".client-id-select").select2({
         },
         cache: true
     },
-    initSelection: function (element, callback) {
-        $.ajax("<?php echo site_url('clients/ajax/get_latest'); ?>", {
-            dataType: 'json'
-        }).done(function(data) {
-            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-            callback(data);
-        });
-    },
     minimumInputLength: 1
 });

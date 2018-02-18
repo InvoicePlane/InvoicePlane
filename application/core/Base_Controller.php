@@ -1,5 +1,7 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -15,8 +17,13 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Base_Controller extends MX_Controller
 {
+
+    /** @var bool */
     public $ajax_controller = false;
 
+    /**
+     * Base_Controller constructor.
+     */
     public function __construct()
     {
         parent::__construct();
