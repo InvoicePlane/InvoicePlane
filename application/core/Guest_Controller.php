@@ -1,11 +1,13 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -15,8 +17,13 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Guest_Controller extends User_Controller
 {
-    public $user_clients = array();
 
+    /** @var array */
+    public $user_clients = [];
+
+    /**
+     * Guest_Controller constructor.
+     */
     public function __construct()
     {
         parent::__construct('user_type', 2);
@@ -26,13 +33,7 @@ class Guest_Controller extends User_Controller
         $user_clients = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
 
         if (!$user_clients) {
-            ?>
-            <html style="display:table;width:100%;">
-            <body style="font-family:sans-serif;background:#B94A48;color:#fff;height:100vh;display:table-cell;vertical-align:middle;">
-            <p style="font-size:20px;text-align:center;width:100%;"><?php echo trans('guest_account_denied'); ?></p>
-            </body>
-            </html>
-            <?php
+            show_error(trans('guest_account_denied'), 403);
             exit;
         }
 

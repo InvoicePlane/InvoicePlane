@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
@@ -17,7 +17,7 @@ class Get extends Base_Controller
 {
     public function attachment($filename)
     {
-        $path = UPLOADS_FOLDER . 'customer_files/';
+        $path = UPLOADS_CFILES_FOLDER;
         $filePath = $path . $filename;
 
         if (strpos(realpath($filePath), $path) !== 0) {

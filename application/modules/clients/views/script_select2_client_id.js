@@ -20,5 +20,5 @@ $(".client-id-select").select2({
         },
         cache: true
     },
-    minimumInputLength: 2
+    minimumInputLength: 1
 });

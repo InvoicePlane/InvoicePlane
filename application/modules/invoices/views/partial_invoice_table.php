@@ -109,12 +109,19 @@
                                     <?php _trans('enter_payment'); ?>
                                 </a>
                             </li>
-                            <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
+                            <?php if (
+                                $invoice->invoice_status_id == 1 ||
+                                ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
+                            ) { ?>
                                 <li>
-                                    <a href="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
-                                       onclick="return confirm('<?php _trans('delete_invoice_warning'); ?>');">
-                                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
-                                    </a>
+                                    <form action="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
+                                          method="POST">
+                                        <?php _csrf_field(); ?>
+                                        <button type="submit" class="dropdown-button"
+                                                onclick="return confirm('<?php _trans('delete_invoice_warning'); ?>');">
+                                            <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
+                                        </button>
+                                    </form>
                                 </li>
                             <?php } ?>
                         </ul>

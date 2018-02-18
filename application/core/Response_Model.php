@@ -1,11 +1,13 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -15,9 +17,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Response_Model extends Form_Validation_Model
 {
+
     /**
-     * @param null|int $id
+     * @param null|int   $id
      * @param null|array $db_array
+     *
      * @return null|int
      */
     public function save($id = null, $db_array = null)

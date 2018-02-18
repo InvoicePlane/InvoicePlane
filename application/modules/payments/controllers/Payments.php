@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -154,6 +154,26 @@ class Payments extends Admin_Controller
         }
 
         $this->layout->buffer('content', 'payments/form');
+        $this->layout->render();
+    }
+
+    /**
+     * @param int $page
+     */
+    public function online_logs($page = 0)
+    {
+        $this->load->model('mdl_payment_logs');
+
+        $this->mdl_payment_logs->paginate(site_url('payments/online_logs'), $page);
+        $payment_logs = $this->mdl_payment_logs->result();
+
+        $this->layout->set(
+            array(
+                'payment_logs' => $payment_logs
+            )
+        );
+
+        $this->layout->buffer('content', 'payments/online_logs');
         $this->layout->render();
     }
 

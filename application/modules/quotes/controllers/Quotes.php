@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -175,20 +175,6 @@ class Quotes extends Admin_Controller
 
         // Redirect to quote index
         redirect('quotes/index');
-    }
-
-    /**
-     * @param $quote_id
-     * @param $item_id
-     */
-    public function delete_item($quote_id, $item_id)
-    {
-        // Delete quote item
-        $this->load->model('mdl_quote_items');
-        $this->mdl_quote_items->delete($item_id);
-
-        // Redirect to quote view
-        redirect('quotes/view/' . $quote_id);
     }
 
     /**

@@ -1,11 +1,13 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -15,6 +17,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Invoices extends Admin_Controller
 {
+
     /**
      * Invoices constructor.
      */
@@ -60,14 +63,14 @@ class Invoices extends Admin_Controller
         $invoices = $this->mdl_invoices->result();
 
         $this->layout->set(
-            array(
+            [
                 'invoices' => $invoices,
                 'status' => $status,
                 'filter_display' => true,
                 'filter_placeholder' => trans('filter_invoices'),
                 'filter_method' => 'filter_invoices',
-                'invoice_statuses' => $this->mdl_invoices->statuses()
-            )
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+            ]
         );
 
         $this->layout->buffer('content', 'invoices/index');
@@ -76,30 +79,31 @@ class Invoices extends Admin_Controller
 
     public function archive()
     {
-        $invoice_array = array();
+        $invoice_array = [];
+
         if (isset($_POST['invoice_number'])) {
             $invoiceNumber = $_POST['invoice_number'];
-            $invoice_array = glob('./uploads/archive/*' . '_' . $invoiceNumber . '.pdf');
+            $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*' . '_' . $invoiceNumber . '.pdf');
             $this->layout->set(
-                array(
-                    'invoices_archive' => $invoice_array
-                ));
+                [
+                    'invoices_archive' => $invoice_array,
+                ]);
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
 
         } else {
-            foreach (glob('./uploads/archive/*.pdf') as $file) {
+            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
                 array_push($invoice_array, $file);
             }
+
             rsort($invoice_array);
             $this->layout->set(
-                array(
-                    'invoices_archive' => $invoice_array
-                ));
+                [
+                    'invoices_archive' => $invoice_array,
+                ]);
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
         }
-
     }
 
     /**
@@ -108,8 +112,8 @@ class Invoices extends Admin_Controller
     public function download($invoice)
     {
         header('Content-type: application/pdf');
-        header('Content-Disposition: attachment; filename="' . $invoice . '"');
-        readfile('./uploads/archive/' . $invoice);
+        header('Content-Disposition: attachment; filename="' . urldecode($invoice) . '"');
+        readfile(UPLOADS_ARCHIVE_FOLDER . urldecode($invoice));
     }
 
     /**
@@ -118,13 +122,13 @@ class Invoices extends Admin_Controller
     public function view($invoice_id)
     {
         $this->load->model(
-            array(
+            [
                 'mdl_items',
                 'tax_rates/mdl_tax_rates',
                 'payment_methods/mdl_payment_methods',
                 'mdl_invoice_tax_rates',
                 'custom_fields/mdl_custom_fields',
-            )
+            ]
         );
 
         $this->load->helper("custom_values");
@@ -179,7 +183,7 @@ class Invoices extends Admin_Controller
         }
 
         $this->layout->set(
-            array(
+            [
                 'invoice' => $invoice,
                 'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
                 'invoice_id' => $invoice_id,
@@ -189,32 +193,32 @@ class Invoices extends Admin_Controller
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
-                'custom_js_vars' => array(
+                'custom_js_vars' => [
                     'currency_symbol' => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
-                    'decimal_point' => get_setting('decimal_point')
-                ),
-                'invoice_statuses' => $this->mdl_invoices->statuses()
-            )
+                    'decimal_point' => get_setting('decimal_point'),
+                ],
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+            ]
         );
 
         if ($invoice->sumex_id != null) {
             $this->layout->buffer(
-                array(
-                    array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
-                    array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
-                    array('modal_add_payment', 'payments/modal_add_payment'),
-                    array('content', 'invoices/view_sumex')
-                )
+                [
+                    ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
+                    ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
+                    ['modal_add_payment', 'payments/modal_add_payment'],
+                    ['content', 'invoices/view_sumex'],
+                ]
             );
         } else {
             $this->layout->buffer(
-                array(
-                    array('modal_delete_invoice', 'invoices/modal_delete_invoice'),
-                    array('modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'),
-                    array('modal_add_payment', 'payments/modal_add_payment'),
-                    array('content', 'invoices/view')
-                )
+                [
+                    ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
+                    ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
+                    ['modal_add_payment', 'payments/modal_add_payment'],
+                    ['content', 'invoices/view'],
+                ]
             );
         }
 
@@ -248,26 +252,6 @@ class Invoices extends Admin_Controller
 
     /**
      * @param $invoice_id
-     * @param $item_id
-     */
-    public function delete_item($invoice_id, $item_id)
-    {
-        // Delete invoice item
-        $this->load->model('mdl_items');
-        $item = $this->mdl_items->delete($item_id);
-
-        // Mark item back to complete:
-        if ($item && $item->item_task_id) {
-            $this->load->model('tasks/mdl_tasks');
-            $this->mdl_tasks->update_status(3, $item->item_task_id);
-        }
-
-        // Redirect to invoice view
-        redirect('invoices/view/' . $invoice_id);
-    }
-
-    /**
-     * @param $invoice_id
      * @param bool $stream
      * @param null $invoice_template
      */
@@ -288,10 +272,10 @@ class Invoices extends Admin_Controller
     public function generate_zugferd_xml($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
-        $this->load->library('ZugferdXml', array(
+        $this->load->library('ZugferdXml', [
             'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
-            'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result()
-        ));
+            'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+        ]);
 
         $this->output->set_content_type('text/xml');
         $this->output->set_output($this->zugferdxml->xml());
@@ -309,14 +293,14 @@ class Invoices extends Admin_Controller
 
 
         $this->load->model('invoices/mdl_items');
-        $this->load->library('Sumex', array(
+        $this->load->library('Sumex', [
             'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
             'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-            'options' => array(
+            'options' => [
                 'copy' => "1",
-                'storno' => "0"
-            )
-        ));
+                'storno' => "0",
+            ],
+        ]);
 
         $this->output->set_content_type('application/pdf');
         $this->output->set_output($this->sumex->pdf());

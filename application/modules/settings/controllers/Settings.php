@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -118,7 +118,6 @@ class Settings extends Admin_Controller
         $this->load->model('invoice_groups/mdl_invoice_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('email_templates/mdl_email_templates');
-        $this->load->model('settings/mdl_versions');
         $this->load->model('payment_methods/mdl_payment_methods');
         $this->load->model('invoices/mdl_templates');
 
@@ -132,10 +131,6 @@ class Settings extends Admin_Controller
 
         // Get all themes
         $available_themes = $this->mdl_settings->get_themes();
-
-        // Get the current version
-        $current_version = $this->mdl_versions->limit(1)->where('version_sql_errors', 0)->get()->row()->version_file;
-        $current_version = str_replace('.sql', '', substr($current_version, strpos($current_version, '_') + 1));
 
         // Set data in the layout
         $this->layout->set(
@@ -156,7 +151,6 @@ class Settings extends Admin_Controller
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
                 'gateway_drivers' => $gateways,
                 'gateway_currency_codes' => \Omnipay\Common\Currency::all(),
-                'current_version' => $current_version,
                 'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))
             )
         );

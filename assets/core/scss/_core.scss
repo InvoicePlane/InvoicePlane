@@ -229,6 +229,58 @@ textarea {
   }
 }
 
+// General dropdown style
+.dropdown-button {
+  // Same style as a normal link item
+  display: block;
+  padding: 3px 20px;
+  width: 100%;
+  clear: both;
+  font-weight: normal;
+  line-height: $line-height-base;
+  color: $dropdown-link-color;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  white-space: nowrap; // prevent links from randomly breaking onto new lines
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: $dropdown-link-hover-color;
+    background-color: $dropdown-link-hover-bg;
+  }
+
+  .active > & {
+    &,
+    &:hover,
+    &:focus {
+      color: $dropdown-link-active-color;
+      text-decoration: none;
+      outline: 0;
+      background-color: $dropdown-link-active-bg;
+    }
+  }
+
+  .disabled > & {
+    &,
+    &:hover,
+    &:focus {
+      color: $dropdown-link-disabled-color;
+    }
+
+    // Nuke hover/focus effects
+    &:hover,
+    &:focus {
+      text-decoration: none;
+      background-color: transparent;
+      background-image: none; // Remove CSS gradient
+      @include reset-filter;
+      cursor: $cursor-disabled;
+    }
+  }
+}
+
 #submenu {
   max-width: 100% !important;
 

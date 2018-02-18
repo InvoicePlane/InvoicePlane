@@ -5,9 +5,9 @@
 global $CFG;
 
 /* get module locations from config settings or use the default module location and offset */
-is_array(Modules::$locations = $CFG->item('modules_locations')) OR Modules::$locations = array(
+is_array(Modules::$locations = $CFG->item('modules_locations')) OR Modules::$locations = [
     APPPATH . 'modules/' => '../modules/',
-);
+];
 
 /* PHP5 spl_autoload */
 spl_autoload_register('Modules::autoload');
@@ -16,6 +16,7 @@ spl_autoload_register('Modules::autoload');
  * Modular Extensions - HMVC
  *
  * Adapted from the CodeIgniter Core Classes
+ *
  * @link    http://codeigniter.com
  *
  * Description:
@@ -47,6 +48,7 @@ spl_autoload_register('Modules::autoload');
  **/
 class Modules
 {
+
     public static $routes, $registry, $locations;
 
     /**
@@ -57,7 +59,7 @@ class Modules
     {
         $method = 'index';
 
-        if (($pos = strrpos($module, '/')) != FALSE) {
+        if (($pos = strrpos($module, '/')) != false) {
             $method = substr($module, $pos + 1);
             $module = substr($module, 0, $pos);
         }
@@ -66,9 +68,9 @@ class Modules
             if (method_exists($class, $method)) {
                 ob_start();
                 $args = func_get_args();
-                $output = call_user_func_array(array($class, $method), array_slice($args, 1));
+                $output = call_user_func_array([$class, $method], array_slice($args, 1));
                 $buffer = ob_get_clean();
-                return ($output !== NULL) ? $output : $buffer;
+                return ($output !== null) ? $output : $buffer;
             }
         }
 
@@ -78,7 +80,8 @@ class Modules
     /** Load a module controller **/
     public static function load($module)
     {
-        (is_array($module)) ? list($module, $params) = each($module) : $params = NULL;
+        // @TODO @each will suppress errors but needs to be replaced if the function is removed in PHP 7.3
+        is_array($module) ? list($module, $params) = @each($module) : $params = NULL;
 
         /* get the requested controller class name */
         $alias = strtolower(basename($module));
@@ -89,7 +92,9 @@ class Modules
             list($class) = CI::$APP->router->locate(explode('/', $module));
 
             /* controller cannot be located */
-            if (empty($class)) return;
+            if (empty($class)) {
+                return;
+            }
 
             /* set the module directory */
             $path = APPPATH . 'controllers/' . CI::$APP->router->directory;
@@ -107,13 +112,13 @@ class Modules
     }
 
     /** Load a module file **/
-    public static function load_file($file, $path, $type = 'other', $result = TRUE)
+    public static function load_file($file, $path, $type = 'other', $result = true)
     {
         $file = str_replace(EXT, '', $file);
         $location = $path . $file . EXT;
 
         if ($type === 'other') {
-            if (class_exists($file, FALSE)) {
+            if (class_exists($file, false)) {
                 log_message('debug', "File already loaded: {$location}");
                 return $result;
             }
@@ -122,8 +127,9 @@ class Modules
             /* load config or language array */
             include $location;
 
-            if (!isset($$type) OR !is_array($$type))
+            if (!isset($$type) OR !is_array($$type)) {
                 show_error("{$location} does not contain a valid {$type} array");
+            }
 
             $result = $$type;
         }
@@ -135,7 +141,9 @@ class Modules
     public static function autoload($class)
     {
         /* don't autoload CI_ prefixed classes or those using the config subclass_prefix */
-        if (strstr($class, 'CI_') OR strstr($class, config_item('subclass_prefix'))) return;
+        if (strstr($class, 'CI_') OR strstr($class, config_item('subclass_prefix'))) {
+            return;
+        }
 
         /* autoload Modular Extensions MX core classes */
         if (strstr($class, 'MX_')) {
@@ -169,14 +177,16 @@ class Modules
             }
         }
 
-        if (!isset(self::$routes[$module])) return;
+        if (!isset(self::$routes[$module])) {
+            return;
+        }
 
         /* parse module routes */
         foreach (self::$routes[$module] as $key => $val) {
-            $key = str_replace(array(':any', ':num'), array('.+', '[0-9]+'), $key);
+            $key = str_replace([':any', ':num'], ['.+', '[0-9]+'], $key);
 
             if (preg_match('#^' . $key . '$#', $uri)) {
-                if (strpos($val, '$') !== FALSE AND strpos($key, '(') !== FALSE) {
+                if (strpos($val, '$') !== false AND strpos($key, '(') !== false) {
                     $val = preg_replace('#^' . $key . '$#', $val, $uri);
                 }
                 return explode('/', $module . '/' . $val);
@@ -198,7 +208,7 @@ class Modules
         $file_ext = (pathinfo($file, PATHINFO_EXTENSION)) ? $file : $file . EXT;
 
         $path = ltrim(implode('/', $segments) . '/', '/');
-        $module ? $modules[$module] = $path : $modules = array();
+        $module ? $modules[$module] = $path : $modules = [];
 
         if (!empty($segments)) {
             $modules[array_shift($segments)] = ltrim(implode('/', $segments) . '/', '/');
@@ -209,13 +219,17 @@ class Modules
                 $fullpath = $location . $module . '/' . $base . $subpath;
 
                 if ($base == 'libraries/' OR $base == 'models/') {
-                    if (is_file($fullpath . ucfirst($file_ext))) return array($fullpath, ucfirst($file));
-                } else
-                    /* load non-class files */
-                    if (is_file($fullpath . $file_ext)) return array($fullpath, $file);
+                    if (is_file($fullpath . ucfirst($file_ext))) {
+                        return [$fullpath, ucfirst($file)];
+                    }
+                } else /* load non-class files */ {
+                    if (is_file($fullpath . $file_ext)) {
+                        return [$fullpath, $file];
+                    }
+                }
             }
         }
 
-        return array(FALSE, $file);
+        return [false, $file];
     }
 }

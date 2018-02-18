@@ -1,11 +1,13 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2017 InvoicePlane.com
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
@@ -15,6 +17,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Setup extends MX_Controller
 {
+
     public $errors = 0;
 
     /**
@@ -88,11 +91,11 @@ class Setup extends MX_Controller
         }
 
         $this->layout->set(
-            array(
+            [
                 'basics' => $this->check_basics(),
                 'writables' => $this->check_writables(),
-                'errors' => $this->errors
-            )
+                'errors' => $this->errors,
+            ]
         );
 
         $this->layout->buffer('content', 'setup/prerequisites');
@@ -104,7 +107,7 @@ class Setup extends MX_Controller
      */
     private function check_basics()
     {
-        $checks = array();
+        $checks = [];
 
         $php_required = '5.6';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
@@ -112,28 +115,28 @@ class Setup extends MX_Controller
         if ($php_installed < $php_required) {
             $this->errors += 1;
 
-            $checks[] = array(
+            $checks[] = [
                 'message' => sprintf(trans('php_version_fail'), $php_installed, $php_required),
-                'success' => 0
-            );
+                'success' => 0,
+            ];
         } else {
-            $checks[] = array(
+            $checks[] = [
                 'message' => trans('php_version_success'),
-                'success' => 1
-            );
+                'success' => 1,
+            ];
         }
 
         if (!ini_get('date.timezone')) {
-            $checks[] = array(
+            $checks[] = [
                 'message' => sprintf(trans('php_timezone_fail'), date_default_timezone_get()),
                 'success' => 1,
-                'warning' => 1
-            );
+                'warning' => 1,
+            ];
         } else {
-            $checks[] = array(
+            $checks[] = [
                 'message' => trans('php_timezone_success'),
-                'success' => 1
-            );
+                'success' => 1,
+            ];
         }
 
         return $checks;
@@ -144,32 +147,34 @@ class Setup extends MX_Controller
      */
     private function check_writables()
     {
-        $checks = array();
+        $checks = [];
 
-        $writables = array(
-            './ipconfig.php',
-            './uploads',
-            './uploads/archive',
-            './uploads/customer_files',
-            './uploads/temp',
-            './uploads/temp/mpdf',
-            './application/logs',
-        );
+        $writables = [
+            IPCONFIG_FILE,
+            UPLOADS_FOLDER,
+            UPLOADS_ARCHIVE_FOLDER,
+            UPLOADS_CFILES_FOLDER,
+            UPLOADS_TEMP_FOLDER,
+            UPLOADS_TEMP_MPDF_FOLDER,
+            LOGS_FOLDER,
+        ];
 
         foreach ($writables as $writable) {
+            $writable_check = [
+                'message' => '<code>' . str_replace(FCPATH, '', $writable) . '</code>&nbsp;',
+                'success' => 1,
+            ];
+
             if (!is_writable($writable)) {
-                $checks[] = array(
-                    'message' => $writable . ' ' . trans('is_not_writable'),
-                    'success' => 0
-                );
+                $writable_check['message'] .= trans('is_not_writable');
+                $writable_check['success'] .= 0;
 
                 $this->errors += 1;
             } else {
-                $checks[] = array(
-                    'message' => $writable . ' ' . trans('is_writable'),
-                    'success' => 1
-                );
+                $writable_check['message'] .= trans('is_writable');
             }
+
+            $checks[] = $writable_check;
         }
 
         return $checks;
@@ -264,10 +269,10 @@ class Setup extends MX_Controller
         if (empty($db['hostname'])) {
             $this->errors += 1;
 
-            return array(
+            return [
                 'message' => trans('cannot_connect_database_server'),
                 'success' => false,
-            );
+            ];
         }
 
         // Initialize the database connection, turn off automatic error reporting to display connection issues manually
@@ -280,16 +285,16 @@ class Setup extends MX_Controller
         if (!$can_connect) {
             $this->errors += 1;
 
-            return array(
+            return [
                 'message' => trans('setup_db_cannot_connect'),
                 'success' => false,
-            );
+            ];
         }
 
-        return array(
+        return [
             'message' => trans('database_properly_configured'),
             'success' => true,
-        );
+        ];
     }
 
     public function install_tables()
@@ -306,10 +311,10 @@ class Setup extends MX_Controller
         $this->load_ci_database();
 
         $this->layout->set(
-            array(
+            [
                 'success' => $this->mdl_setup->install_tables(),
-                'errors' => $this->mdl_setup->errors
-            )
+                'errors' => $this->mdl_setup->errors,
+            ]
         );
 
         $this->layout->buffer('content', 'setup/install_tables');
@@ -340,10 +345,10 @@ class Setup extends MX_Controller
         }
 
         $this->layout->set(
-            array(
+            [
                 'success' => $this->mdl_setup->upgrade_tables(),
-                'errors' => $this->mdl_setup->errors
-            )
+                'errors' => $this->mdl_setup->errors,
+            ]
         );
 
         $this->layout->buffer('content', 'setup/upgrade_tables');
@@ -391,10 +396,10 @@ class Setup extends MX_Controller
         }
 
         $this->layout->set(
-            array(
+            [
                 'countries' => get_country_list(trans('cldr')),
                 'languages' => get_available_languages(),
-            )
+            ]
         );
         $this->layout->buffer('content', 'setup/create_user');
         $this->layout->render('setup');

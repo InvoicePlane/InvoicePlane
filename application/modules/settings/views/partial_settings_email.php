@@ -72,6 +72,15 @@
                                    class="form-control"
                                    value="<?php echo get_setting('smtp_server_address', '', true); ?>">
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="settings[smtp_mail_from]">
+                                <?php _trans('smtp_mail_from'); ?>
+                            </label>
+                            <input type="email" name="settings[smtp_mail_from]" id="settings[smtp_mail_from]"
+                                   class="form-control"
+                                   value="<?php echo get_setting('smtp_mail_from', '', true); ?>">
+                        </div>
 
                         <div class="form-group">
                             <label for="settings[smtp_authentication]">
