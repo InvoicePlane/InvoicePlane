@@ -1,2 +1,0 @@
-# Deny access to any raw customer files
-Deny from all
