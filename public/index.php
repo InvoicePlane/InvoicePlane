@@ -232,6 +232,11 @@ switch (IP_ENV) {
     case 'development':
         error_reporting(-1);
         ini_set('display_errors', 1);
+
+        // Also load the Whoops error prettifier
+        $whoops = new \Whoops\Run;
+        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+        $whoops->register();
         break;
 
     case 'testing':
