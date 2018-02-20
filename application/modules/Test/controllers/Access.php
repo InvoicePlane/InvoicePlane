@@ -8,15 +8,12 @@
  * @license        https://invoiceplane.com/license.txt
  * @link           https://invoiceplane.com
  */
-class Test extends Permission_Controller
+class Access extends Base_Controller
 {
-
-    public $module_permission = 'module_permission';
-
     public function index()
     {
-        $this->permission('method_permission');
+        $this->load->model('mdl_test');
 
-        die('Test successfully loaded.');
+        die($this->mdl_test->check());
     }
 }

@@ -8,15 +8,13 @@
  * @license        https://invoiceplane.com/license.txt
  * @link           https://invoiceplane.com
  */
-class Test extends Permission_Controller
+class Ajax extends Permission_Controller
 {
 
-    public $module_permission = 'module_permission';
+    public $ajax_controller = true;
 
     public function index()
     {
-        $this->permission('method_permission');
-
-        die('Test successfully loaded.');
+        die('This is an ajax controller');
     }
 }

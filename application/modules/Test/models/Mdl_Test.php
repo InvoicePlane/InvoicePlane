@@ -1,22 +1,19 @@
 <?php
 
 /**
- * Class Test
+ * Class Mdl_Test
  *
  * @author         InvoicePlane Developers & Contributors
  * @copyright      Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license        https://invoiceplane.com/license.txt
  * @link           https://invoiceplane.com
  */
-class Test extends Permission_Controller
+class Mdl_Test extends IP_Model
 {
+    public $table = 'tests';
 
-    public $module_permission = 'module_permission';
-
-    public function index()
+    public function check()
     {
-        $this->permission('method_permission');
-
-        die('Test successfully loaded.');
+        return $this->table;
     }
 }
