@@ -34,7 +34,7 @@ require(__DIR__ . '/../vendor/autoload.php');
  */
 
 if (!file_exists(__DIR__ . '/../ipconfig')) {
-    exit("The <b>ipconfig</b> file is missing! Please make a copy of the <b>ipconfig.example</b> file and rename it to <b>ipconfig</b>");
+    exit("<div style='font-family:sans-serif;font-size:20px;color:#c33;text-align:center;'>The <b>ipconfig</b> file is missing! Please make a copy of the <b>ipconfig.example</b> file and rename it to <b>ipconfig</b> in your root directory.</div>");
 }
 
 $dotenv = new \Dotenv\Dotenv(__DIR__ . '/../', 'ipconfig');
