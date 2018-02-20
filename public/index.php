@@ -216,6 +216,7 @@ define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
 
 // Set the environment
 define('IP_ENV', env('APP_ENVIRONMENT', 'production'));
+define('ENVIRONMENT', IP_ENV);
 
 // Enable the debug mode if applicable
 define('IP_DEBUG', env_bool('ENABLE_DEBUG'));
