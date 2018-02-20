@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = '';
+$config['base_url'] = env('APP_URL');
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +35,7 @@ $config['base_url'] = '';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = env_bool('REMOVE_INDEX') ? '' : 'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ $config['index_page'] = 'index.php';
 |
 | WARNING: If you set this to 'PATH_INFO', URIs will always be URL-decoded!
 */
-$config['uri_protocol'] = 'REQUEST_URI';
+$config['uri_protocol'] = env('URI_PROTOCOL', 'REQUEST_URI');
 
 /*
 |--------------------------------------------------------------------------
@@ -76,7 +76,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language'] = 'english';
+$config['language'] = env('DEFAULT_LANGUAGE', 'english');
 
 /*
 |--------------------------------------------------------------------------
@@ -223,7 +223,7 @@ $config['allow_get_array'] = true;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = IP_DEBUG ? 2 : 1;
 
 /*
 |--------------------------------------------------------------------------
@@ -324,7 +324,7 @@ $config['cache_query_string'] = false;
 | https://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = env('ENCRYPTION_KEY');
 
 /*
 |--------------------------------------------------------------------------
@@ -377,13 +377,13 @@ $config['encryption_key'] = '';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'ci_session';
-$config['sess_expiration'] = 7200;
-$config['sess_save_path'] = null;
-$config['sess_match_ip'] = false;
-$config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = false;
+$config['sess_driver'] = env('SESS_DRIVER', 'files');
+$config['sess_cookie_name'] = env('SESS_COOKIE_NAME', 'ip_sessions');
+$config['sess_expiration'] = env('SESS_EXPIRATION', 864000);
+$config['sess_save_path'] = env('SESS_SAVE_PATH', null);
+$config['sess_match_ip'] = env_bool('SESS_MATH_IP', false);
+$config['sess_time_to_update'] = env('SESS_TIME_TO_UPDATE', 300);
+$config['sess_regenerate_destroy'] = env_bool('SESS_REGENERATE_DESTROY', false);
 
 /*
 |--------------------------------------------------------------------------
@@ -400,11 +400,11 @@ $config['sess_regenerate_destroy'] = false;
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix'] = '';
-$config['cookie_domain'] = '';
-$config['cookie_path'] = '/';
-$config['cookie_secure'] = false;
-$config['cookie_httponly'] = false;
+$config['cookie_prefix'] = env('COOKIE_PREFIX', '');
+$config['cookie_domain'] = env('COOKIE_DOMAIN', '');
+$config['cookie_path'] = env('COOKIE_PATH', '/');
+$config['cookie_secure'] = env_bool('COOKIE_SECURE', false);
+$config['cookie_httponly'] = env_bool('COOKIE_HTTPONLY', false);
 
 /*
 |--------------------------------------------------------------------------
@@ -448,10 +448,10 @@ $config['global_xss_filtering'] = false;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection'] = false;
-$config['csrf_token_name'] = 'csrf_test_name';
-$config['csrf_cookie_name'] = 'csrf_cookie_name';
-$config['csrf_expire'] = 7200;
+$config['csrf_protection'] = env_bool('CSRF_PROTECTION', true);
+$config['csrf_token_name'] = '_ip_csrf';
+$config['csrf_cookie_name'] = 'ip_csrf_cookie';
+$config['csrf_expire'] = 3600;
 $config['csrf_regenerate'] = true;
 $config['csrf_exclude_uris'] = [];
 
@@ -520,4 +520,4 @@ $config['rewrite_short_tags'] = false;
 | Comma-separated:	'10.0.1.200,192.168.5.0/24'
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
-$config['proxy_ips'] = '';
+$config['proxy_ips'] = env('PROXY_IPS', '');
