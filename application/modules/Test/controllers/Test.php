@@ -18,7 +18,7 @@ if (!defined('BASEPATH')) {
 class Test extends Permission_Controller
 {
 
-    public $controller_permission = 'controller_permission';
+    public $module_permission = 'module_permission';
 
     public function index()
     {

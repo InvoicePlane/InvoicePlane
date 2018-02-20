@@ -3,18 +3,21 @@
 /**
  * Class Permission_Controller
  *
- * After the initial check if the user is logged in the function
+ * After the initial check if the user is logged in the controller
  * checks if the user has the permission defined in the controller's
- * $controller_permission variable (if it's set).
+ * $module_permission variable (if it's set).
  *
- * To be able to specify more detailed permission schemes each controller
- * method is able to call out a different permission by calling
+ * To be able to specify more detailed permission schemes each module
+ * controller is able to check a different permission by calling
  *      $this->permission('permission_key');
+ * directly inside the method.
  *
- * If the user is not alled to acces the controller or the method he
- * is shown the permission denied error page.
+ * If the user is not allowed to access the controller or the method
+ * the permission denied error page is shown.
  * If the current controller is an AJAX or API controller a JSON
  * response is sent instead.
+ *
+ * @TODO Implement logging for failed access tries, check if throttling makes sense
  *
  * @package      InvoicePlane
  * @author       InvoicePlane Developers & Contributors
@@ -27,7 +30,7 @@ class Permission_Controller extends Base_Controller
 {
 
     /** @var string */
-    protected $controller_permission;
+    protected $module_permission;
 
     /** @var string */
     protected $login_route = 'sessions/login';
@@ -45,8 +48,8 @@ class Permission_Controller extends Base_Controller
         $this->checkIfLoggedIn();
 
         // Automatically check if the user is allowed to access the controller
-        if ($this->controller_permission) {
-            $this->permission($this->controller_permission);
+        if ($this->module_permission) {
+            $this->permission($this->module_permission);
         }
     }
 
@@ -99,13 +102,18 @@ class Permission_Controller extends Base_Controller
         return true;
     }
 
+    /**
+     * Send a JSON response to AJAX and API controllers
+     *
+     * @return void
+     */
     private function sendJsonResponse()
     {
         $this->output
             ->set_status_header(403)
             ->set_content_type('application/json')
             ->set_output(json_encode([
-                'success' => false,
+                'status' => 'Permission denied',
                 'code' => 403,
             ]))
             ->_display();
