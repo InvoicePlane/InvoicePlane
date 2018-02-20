@@ -1,6 +1,6 @@
 <?php
 
-// Load the HMVC Router
+// Load the MX Loader
 require_once(dirname(__FILE__) . '/MX/Loader.php');
 
 /**
