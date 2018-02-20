@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') || exit('No direct script access allowed');
+<?php
 
 // Load the HMVC Router
 require_once(dirname(__FILE__) . '/MX/Loader.php');
