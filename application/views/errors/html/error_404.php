@@ -1,37 +1,25 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-?>
 <!DOCTYPE html>
 <html style="display:table;width:100%;">
 <head>
     <meta charset="utf-8">
     <title>InvoicePlane - <?php echo $heading; ?></title>
     <style>
-        html,
-        html * {
-            box-sizing: border-box;
-        }
-
         body {
             font-family: sans-serif;
+            font-size: 16px;
             background: #B94A48;
             color: #fff;
-            height: 100vh;
-            display: table-cell;
-            vertical-align: middle;
-            text-align: center;
-            padding: 2vh 2vw;
+            padding: 2vw;
         }
 
         h4 {
-            font-size: 30px;
-            text-align: center;
-            width: 100%;
+            font-size: 200%;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #B14240;
         }
 
         p {
-            font-size: 16px;
-            width: 100%;
+            font-size: 100%;
         }
     </style>
 </head>

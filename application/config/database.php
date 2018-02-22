@@ -71,27 +71,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 $active_group = 'default';
-$query_builder = TRUE;
+$query_builder = true;
 
-$db['default'] = array(
+$db['default'] = [
     'dsn' => '',
-    'hostname' => getenv('DB_HOSTNAME'),
-    'port' => getenv('DB_PORT'),
-    'username' => getenv('DB_USERNAME'),
-    'password' => getenv('DB_PASSWORD'),
-    'database' => getenv('DB_DATABASE'),
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
+    'hostname' => env('DB_HOSTNAME', ''),
+    'port' => env('DB_PORT', ''),
+    'username' => env('DB_USERNAME', ''),
+    'password' => env('DB_PASSWORD', ''),
+    'database' => env('DB_DATABASE', ''),
+    'dbdriver' => env('DB_DRIVER', 'mysqli'),
+    'dbprefix' => env('DB_PREFIX', ''),
+    'pconnect' => env_bool('DB_PERSISTENT', false),
     'db_debug' => (ENVIRONMENT !== 'production'),
-    'cache_on' => FALSE,
+    'cache_on' => false,
     'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
+    'char_set' => env('DB_CHARSET', 'utf8'),
+    'dbcollat' => env('DB_COLLAT', 'utf8_general_ci'),
     'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);
+    'encrypt' => false,
+    'compress' => false,
+    'stricton' => false,
+    'failover' => [],
+    'save_queries' => true,
+];

@@ -10,10 +10,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	See: https://codeigniter.com/user_guide/libraries/caching.html#memcached
 |
 */
-$config = array(
-    'default' => array(
-        'hostname' => '127.0.0.1',
-        'port' => '11211',
-        'weight' => '1',
-    ),
-);
+$config = [
+    'default' => [
+        'hostname' => env('MEMCACHED_HOST', '127.0.0.1'),
+        'port' => env('MEMCACHED_PORT', '11211'),
+        'weight' => env('MEMCACHED_WEIGHT', '1'),
+    ],
+];
