@@ -26,6 +26,10 @@ class Base_Controller extends MX_Controller
      */
     public function __construct()
     {
+        if (env_bool('ENABLE_DEBUG')) {
+            $this->output->enable_profiler(true);
+        }
+
         parent::__construct();
 
         // Don't allow non-ajax requests to ajax controllers
