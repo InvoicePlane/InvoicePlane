@@ -17,7 +17,7 @@ class Mdl_Test extends IP_Model
     public $primary_key = 'id';
 
     /** @var array */
-    public $joins = [
+    protected $joins = [
         'Mdl_Test_Items' => 'test_id'
     ];
 
