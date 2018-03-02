@@ -40,5 +40,6 @@ class Base_Controller extends MX_Controller
         }
 
         $this->load->library('session');
+        $this->load->database();
     }
 }

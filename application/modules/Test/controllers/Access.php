@@ -14,6 +14,17 @@ class Access extends Base_Controller
     {
         $this->load->model('mdl_test');
 
-        die($this->mdl_test->check());
+        // Test the model relation structure
+        // @Dev: Model database structure needs to be setup adn filled with test data manually!
+        $test = $this->mdl_test->get()->result();
+        $test_row = $this->mdl_test->get()->row();
+        $test_array = $this->mdl_test->where($this->mdl_test->primary_key, 1)
+            ->get()->result_array();
+
+        echo '<pre>';
+        print_r($test);
+        print_r($test_row);
+        print_r($test_array);
+        echo '</pre>';
     }
 }

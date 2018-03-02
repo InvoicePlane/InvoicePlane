@@ -141,9 +141,7 @@ class IP_Model extends CI_Model
         }
 
         $this->run_filters();
-
         $this->query = $this->db->get($this->table);
-
         $this->filter = [];
 
         return $this;
@@ -164,7 +162,7 @@ class IP_Model extends CI_Model
      *
      * @return mixed
      */
-    public function get_by_id($id)
+    public function getById($id)
     {
         return $this->where($this->primary_key, $id)->get()->row();
     }
@@ -345,36 +343,122 @@ class IP_Model extends CI_Model
     }
 
     /**
-     * Returns the CI query result object
+     * Manually join database items that are related to the current item
+     * Instead of using database joins via SQL we use this method to
+     * push related models into a new property.
+     * This will allow us to be more clear in templates, trim database
+     * fields and prevent field collisions across different tables.
+     *
+     * Instead of something like this:
+     *      $invoice->invoice_id
+     *      $invoice->invoice_number
+     *      $invoice->client_id
+     *      $invoice->client_name
+     * we get something like this:
+     *      $invoice->id
+     *      $invoice->number
+     *      $invoice->client->id
+     *      $invoice->client->name
+     * or the following scheme for multiple result items
+     *      $invoice->id
+     *      $invoice->number
+     *      $invoice->items[
+     *          {
+     *              id => 1
+     *              name => Item Name
+     *          }
+     *      ]
+     *
+     * The method automatically determines if the result needs to be an
+     * array or object.
+     *
+     * @param array|object $item
+     * @param bool         $single
+     * @return array
+     */
+    public function joinModels($item, $single = false)
+    {
+        // Only join if the item model has joins specified
+        if (isset($this->joins) && !empty($this->joins)) {
+            $models = $this->joins;
+            $models = is_array($models) ? $models : [$models];
+
+            foreach ($models as $model => $foreign_key) {
+                // Load the specified model
+                $model = strtolower($model);
+                $this->load->model($model);
+
+                // The join key specifies how the property should be named
+                // @TODO join key needs to be specified somewhere?!
+                $join_key = str_replace('mdl_', '', $model);
+                $join_key = $single ? rtrim($join_key, 's') : $join_key;
+
+                // Get the primary key which is most likely to be the item ID
+                $item_id = is_array($item) ? $item[$this->primary_key] : $item->{$this->primary_key};
+
+                // Prepare the query with a simple where() statement
+                $join_query = $this->$model->where($foreign_key, $item_id)->get();
+
+                // If the item is an array, also return the join items as arrays
+                // Also if a single entity should be returned we select the proper database query
+                if (is_array($item)) {
+                    $item[$join_key] = $single ? $join_query->row_array() : $join_query->result_array();
+                } else {
+                    $item->$join_key = $single ? $join_query->row() : $join_query->result();
+                }
+            }
+        }
+
+        return $item;
+    }
+
+    /**
+     * Returns the CI query result object with joined entries
      * $this->model_name->get()->result();
      *
      * @return mixed
      */
     public function result()
     {
-        return $this->query->result();
+        $items = $this->query->result();
+        $return = [];
+
+        foreach ($items as $item) {
+            $return[] = $this->joinModels($item);
+        }
+
+        return $return;
     }
 
     /**
-     * Returns the CI query row object
+     * Returns the CI query row object with joined entries
      * $this->model_name->get()->row();
      *
      * @return mixed
      */
     public function row()
     {
-        return $this->query->row();
+        $item = $this->query->row();
+
+        return $this->joinModels($item, true);
     }
 
     /**
-     * Returns CI query result array
+     * Returns CI query result array with joined entries
      * $this->model_name->get()->result_array();
      *
      * @return mixed
      */
     public function result_array()
     {
-        return $this->query->result_array();
+        $items = $this->query->result_array();
+        $return = [];
+
+        foreach ($items as $item) {
+            $return[] = $this->joinModels($item);
+        }
+
+        return $return;
     }
 
     /**
@@ -385,7 +469,9 @@ class IP_Model extends CI_Model
      */
     public function row_array()
     {
-        return $this->query->row_array();
+        $item = $this->query->row_array();
+
+        return $this->joinModels($item, true);
     }
 
     /**
@@ -409,7 +495,7 @@ class IP_Model extends CI_Model
     public function prep_form($id = null)
     {
         if (!$_POST && $id) {
-            $row = $this->get_by_id($id);
+            $row = $this->getById($id);
 
             if ($row) {
                 foreach ($row as $key => $value) {
