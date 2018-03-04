@@ -293,7 +293,7 @@ if ($this->config->item('disable_read_only') == true) {
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-    <form id="invoice_form">
+    <div id="invoice_form">
         <div class="invoice">
 
             <div class="row">
@@ -560,7 +560,7 @@ if ($this->config->item('disable_read_only') == true) {
 
         </div>
 
-    </form>
+    </div>
 </div>
 
 <?php $this->layout->load_view('upload/dropzone-invoice-scripts'); ?>

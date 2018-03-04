@@ -141,6 +141,7 @@ $lang = array(
     'delete_quote'                                 => 'Delete Quote',
     'delete_quote_warning'                         => 'If you delete this quote you will not be able to recover it later. Are you sure you want to permanently delete this quote?',
     'delete_record_warning'                        => 'Are you sure you wish to delete this record?',
+    'delete_tax_warning'                           => 'Are you sure you wish to delete this tax?',
     'description'                                  => 'Description',
     'details'                                      => 'Details',
     'disable_quickactions'                         => 'Disable the Quickactions',
