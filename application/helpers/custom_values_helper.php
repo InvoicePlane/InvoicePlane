@@ -77,6 +77,10 @@ function format_multiplechoice($txt)
     return implode("\n", $values_text);
 }
 
+/**
+ * @param $txt
+ * @return string
+ */
 function format_boolean($txt)
 {
     if ($txt == null) {
@@ -92,6 +96,10 @@ function format_boolean($txt)
     return '';
 }
 
+/**
+ * @param $txt
+ * @return string
+ */
 function format_avs($txt)
 {
     if (!preg_match('/(\d{3})(\d{4})(\d{4})(\d{2})/', $txt, $matches)) {
