@@ -238,7 +238,8 @@
 
     <div class="col-xs-12 visible-xs visible-sm"><br></div>
 
-    <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
+<!--    <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">-->
+    <div class="col-xs-12">
         <table class="table table-bordered text-right">
             <tr>
                 <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
@@ -252,14 +253,21 @@
                 <td><?php _trans('quote_tax'); ?></td>
                 <td>
                     <?php if ($quote_tax_rates) {
-                        foreach ($quote_tax_rates as $quote_tax_rate) { ?>
-                            <span class="text-muted">
-                            <?php echo anchor('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id, '<i class="fa fa-trash-o"></i>');
-                            echo ' ' . htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent); ?>
-                                %</span>&nbsp;
-                            <span class="amount">
-                                <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
-                            </span>
+                        foreach ($quote_tax_rates as $index => $quote_tax_rate) { ?>
+                            <form method="POST" class="form-inline"
+                                  action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
+                                <?php _csrf_field(); ?>
+                                <span class="amount">
+                                    <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
+                                </span>
+                                <span class="text-muted">
+                                    <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) ?>
+                                </span>
+                                <button type="submit" class="btn btn-xs btn-link"
+                                        onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </form>
                         <?php }
                     } else {
                         echo format_currency('0');
@@ -276,7 +284,7 @@
                                    value="<?php echo format_amount($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
 
                             <div
-                                    class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                         </div>
                     </div>
                     <div class="discount-field">
