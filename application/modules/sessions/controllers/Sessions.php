@@ -189,7 +189,7 @@ class Sessions extends Base_Controller
                 ), true);
 
                 $email_from = get_setting('smtp_mail_from');
-                if (emtpy($email_from)) {
+                if (empty($email_from)) {
                     $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", "$1", base_url());
                 }
 
