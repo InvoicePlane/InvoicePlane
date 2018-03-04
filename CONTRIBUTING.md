@@ -162,7 +162,7 @@ After that there are two commands available for development:
 4. Submit the pull request, reference the issue ID in the title and add a meaningful description.
 
 Please ask questions related to this process if you are unsure. Asking before doing anything
-will save bouth your and our time.
+will save both your and our time.
 
 
 ---
