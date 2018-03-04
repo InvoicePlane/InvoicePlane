@@ -217,7 +217,7 @@ $cv = $this->controller->view_data["custom_values"];
 
 <div id="content">
     <?php echo $this->layout->load_view('layout/alerts'); ?>
-    <form id="quote_form">
+    <div id="quote_form">
         <div class="quote">
 
             <div class="row">
@@ -424,7 +424,7 @@ $cv = $this->controller->view_data["custom_values"];
                     </div>
                 <?php endif; ?>
             </div>
-    </form>
+    </div>
 </div>
 
 <?php $this->layout->load_view('upload/dropzone-quote-scripts'); ?>

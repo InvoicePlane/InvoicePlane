@@ -1,6 +1,6 @@
 # Contribution Information
 
-## Contribution to InvoicePlane
+### Contribution to InvoicePlane
 
 Every help is welcome, you don't have to be a professional PHP developer or SQL database engineer.
 We appreciate any support with helping other users, translating the software or simply spreading
@@ -18,7 +18,7 @@ We have a community forum and a Slack channel so please use them:
 ---
 
 
-## Contents
+### Contents
 
   * Development Guidelines
   * Versioning and Git Branches
@@ -29,13 +29,13 @@ We have a community forum and a Slack channel so please use them:
 ---
 
 
-## Development Guidelines
+### Development Guidelines
 
 To make sure the code is readable and well structured please follow these guidelines.
 We do highly recommend using the [PhpStorm](https://www.jetbrains.com/phpstorm/) IDE
 as it natively supports the correct code formatting.
 
-### PHP
+#### PHP
 All code is formatted according to PSR-1 and PSR-2. These two standards assure that
 the whole code looks the same and is well formatted.  
 Variables and functions are always declared in the `$under_score` formatting, not
@@ -43,11 +43,11 @@ Variables and functions are always declared in the `$under_score` formatting, no
 
 See [PSR-1](https://www.php-fig.org/psr/psr-1/) and [PSR-2](https://www.php-fig.org/psr/psr-2/)
 
-### JavaScript
+#### JavaScript
 Use the Standard JavaScript Code Formatting (https://standardjs.com/) with the only
 change that we do use semicolons.
 
-### CSS
+#### CSS
 All CSS styles are written in [Sass](https://sass-lang.com/) in the SCSS style. You
 do not need to specify any styles with vendor prefixes like `-moz-box-shadow` as
 they are added automatically in the compilation process!
@@ -56,7 +56,7 @@ they are added automatically in the compilation process!
 ---
 
 
-## Versioning and Git Branches
+### Versioning and Git Branches
 
 We do use [SemVer](https://semver.org/) to version InvoicePlane which means:
 
@@ -71,12 +71,12 @@ The InvoicePlane branch structure consists of four different branch types
               from using it for pull requests.
 
   * `1.5`     Branches that contain only a feature version of InvoicePlane, like `1.3`
-              or `1.5` are archive branches that contain the last stable version of that
-              specific
+              or `1.5` are archive branches that contain the last stable release of that
+              specific version.
 
   * `v1.6.0`  Branches that contain a specific version number like `v1.6.0` or `v1.5.4`
               are the development branches. All new code is added to these branches ONLY.
-              If you contribute any code make sue to select the correct branch.
+              If you contribute any code make sure to select the correct branch.
               Remember: bugfixes and small improvements go into minor branches like `v1.5.4`
               and new features or large improvements go into feature branches like `v1.6.0`.
 
@@ -88,9 +88,9 @@ The InvoicePlane branch structure consists of four different branch types
 ---
 
 
-## Getting Started with Development
+### Getting Started with Development
 
-### PHP Development
+#### PHP Development
 
 If you just want to change PHP code or HTML files, you just need to have
 [Composer](https://getcomposer.org/doc/00-intro.md) installed. The tool manages
@@ -102,7 +102,7 @@ the PHP dependencies with the help of the `composer.json` file.
   4. That's it. You are good to go.
 
 
-### Styles and Scripts Development
+#### Styles and Scripts Development
 
 To change the actual styling of the application or scripts you may have to install
 some other tools.
@@ -112,11 +112,11 @@ repository for more information.
 This main repository ONLY manages core styles and scripts. If you want to develop a new
 theme please use the InvoicePlane Themes repository.
 
-  * InvoicePlane requires Node and NPM: [Install both](https://nodejs.org/en/download/)
+  * InvoicePlane requires Node and NPM: [Install both](https://nodejs.org/en/download/)  
     Make sure to use the latest LTS version which is version 8 at the moment.
   * Install Grunt globally by running `npm install -g grunt-cli`.
   
-If you have prepared your machine run `npm install` to install all dependencies.
+If you have prepared your machine, run `npm install` to install all dependencies.
 After that there are two commands available for development:
 
   * `grunt dev`   Compiles all assets and starts watching your development files. If you
@@ -125,15 +125,15 @@ After that there are two commands available for development:
                   All styles and scripts are not minified and sourcemaps are generated for
                   easier development.
 
-  * `grunt build` This command is used to compile all assets for the production use. If
+  * `grunt build` This command is used to compile all assets for the production use. It
                   also minifies all assets to make sure pages load faster. Normally this
-                  command is not used for styles development.
+                  command is not used for development.
 
 
 ---
 
 
-## Contributing Code
+### Contributing Code
 
 **Read this carefully to prevent your pull request from being rejected!**
 
@@ -152,15 +152,17 @@ After that there are two commands available for development:
 3. BEFORE you create a pull request, rebase from the corresponding branch. This is very important
    to make sure that there are no duplicate commits and you do not revert any previous changes.
 
-    * Add the development branch as a remote: `git remote add ip git@github.com:InvoicePlane/InvoicePlane.git`
-    * Do a rebase with the following command: `git pull --rebase ip [branch]`
+    * Add the development branch as a remote:  
+      `git remote add ip git@github.com:InvoicePlane/InvoicePlane.git`
+    * Do a rebase with the following command:  
+      `git pull --rebase ip [branch]`  
       Where `ip` is the name of the remote and `[branch]` the corresponding branch.
     * Solve all conflicts and check if your code is still working.
 
 4. Submit the pull request, reference the issue ID in the title and add a meaningful description.
 
 Please ask questions related to this process if you are unsure. Asking before doing anything
-will save bouth your and our time.
+will save both your and our time.
 
 
 ---
