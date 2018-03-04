@@ -137,7 +137,7 @@ class Mdl_Custom_Values extends MY_Model
     }
 
     /**
-     * @param $column
+     * @param $fid
      * @param $id
      * @return bool
      */

@@ -470,7 +470,7 @@ class Ajax extends Admin_Controller
                 $success = 1;
 
                 // Mark task as complete from invoiced
-                if ($item->item_task_id) {
+                if (isset($item->item_task_id) && $item->item_task_id) {
                     $this->load->model('tasks/mdl_tasks');
                     $this->mdl_tasks->update_status(3, $item->item_task_id);
                 }

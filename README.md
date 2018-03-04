@@ -1,5 +1,5 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 1.5.7_
+#### _Version 1.5.8_
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
@@ -15,11 +15,12 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 5. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
 
 
-_Notice: Please download InvoicePlane from our [website](https://invoiceplane.com/downloads) only as the packages contain additional needed components. If you are a developer, read the [development guide](DEVELOPMENT.md)._
+_Notice: Please download InvoicePlane from our [website](https://invoiceplane.com/downloads) only as the packages contain additional needed components. If you are a developer, read the [development guide](CONTRIBUTING.md)._
+
 
 #### Remove `index.php` from the URL
 
-If you want to remove `index.php` from the URL, follow these instructions. However, this is an optional step and not a requirement. If it's not working correctly, take a step back and use the application with out removing that part from the URL.
+If you want to remove `index.php` from the URL, follow these instructions. However, this is an _optional_ step and not a requirement. If it's not working correctly, take a step back and use the application with out removing that part from the URL.
 
 1. Make sure that [mod_rewrite](https://go.invoiceplane.com/apachemodrewrite) is enabled on your web server.
 2. Set the `REMOVE_INDEXPHP` setting in your `ipconfig.php` to `true`.
@@ -44,7 +45,7 @@ Need some help or want to talk with other about InvoicePlane? Follow these links
 
 ### Security Vulnerabilities
 
-If you discover a security vulnerability please send an e-mail to mail@invoiceplane.com before disclosing the vulnerability to the public.
+If you discover a security vulnerability please send an e-mail to `mail@invoiceplane.com` before disclosing the vulnerability to the public.
 All security vulnerabilities will be promptly addressed.
 
 ---
