@@ -238,8 +238,7 @@
 
     <div class="col-xs-12 visible-xs visible-sm"><br></div>
 
-<!--    <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">-->
-    <div class="col-xs-12">
+    <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
             <tr>
                 <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
