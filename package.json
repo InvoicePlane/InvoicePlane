@@ -36,5 +36,16 @@
     "postcss": "^6.0.18",
     "select2": "^4.0.3",
     "zxcvbn": "^4.4.2"
+  },
+  "dependencies": {
+    "opencollective": "^1.0.3"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/InvoicePlane",
+    "logo": "https://opencollective.com/InvoicePlane/logo.txt"
+  },
+  "scripts": {
+    "postinstall": "opencollective postinstall"
   }
 }
