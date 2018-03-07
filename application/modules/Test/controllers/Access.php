@@ -10,7 +10,30 @@
  */
 class Access extends Base_Controller
 {
+    /**
+     * Access index with Bootstrap test HTML
+     * Route: /test/access/
+     */
     public function index()
+    {
+        $this->layout->render('test/index');
+    }
+
+    /**
+     * Extending Test
+     * Route: /test/access/extender
+     */
+    public function extender()
+    {
+        $this->layout->extend('footer', 'test/partials/footer');
+        $this->layout->render('test/index');
+    }
+
+    /**
+     * Join Test
+     * Route: /test/access/join-test
+     */
+    public function joinTest()
     {
         $this->load->model('mdl_test');
 
