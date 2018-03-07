@@ -1,5 +1,6 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
 #### _Version 1.5.8_
+[![Backers on Open Collective](https://opencollective.com/InvoicePlane/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/InvoicePlane/sponsors/badge.svg)](#sponsors) 
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
@@ -52,3 +53,33 @@ All security vulnerabilities will be promptly addressed.
 
 > _The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
 and their usage is restricted! For more information visit invoiceplane.com/license-copyright_
+
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/InvoicePlane/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/InvoicePlane#backer)]
+
+<a href="https://opencollective.com/InvoicePlane#backers" target="_blank"><img src="https://opencollective.com/InvoicePlane/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/InvoicePlane#sponsor)]
+
+<a href="https://opencollective.com/InvoicePlane/sponsor/0/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/1/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/2/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/3/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/4/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/5/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/6/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/7/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/8/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/InvoicePlane/sponsor/9/website" target="_blank"><img src="https://opencollective.com/InvoicePlane/sponsor/9/avatar.svg"></a>
+
+
