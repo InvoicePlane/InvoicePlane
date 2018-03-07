@@ -58,6 +58,13 @@ class MX_Router extends CI_Router
 
         $segments = $this->locate($segments);
 
+        // [InvoicePlane Change]
+        // Remove dashes from segments to allow routes with dashes like /invoices/show-invoice/1 to be
+        // handled by methods like showInvoice($id) {}
+        $segments = array_map(function ($item) {
+            return str_replace('-', '', $item);
+        }, $segments);
+
         if ($this->located == -1) {
             $this->_set_404override_controller();
             return;
