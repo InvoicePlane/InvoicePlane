@@ -36,7 +36,7 @@ class IP_Form_Validation extends CI_Form_validation
      * @param string $group
      * @return bool
      */
-    function run($module = '', $group = '')
+    public function run($module = '', $group = '')
     {
         (is_object($module)) AND $this->CI = &$module;
         return parent::run($group);

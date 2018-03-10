@@ -150,7 +150,7 @@ class IP_Model extends CI_Model
     /**
      * @param $id
      */
-    public function set_id($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -172,7 +172,7 @@ class IP_Model extends CI_Model
      *
      * @param array $exclude
      */
-    private function set_defaults($exclude = [])
+    private function setDefaults($exclude = [])
     {
         $native_methods = $this->native_methods;
 
@@ -189,7 +189,7 @@ class IP_Model extends CI_Model
         }
     }
 
-    private function run_filters()
+    private function runFilters()
     {
         foreach ($this->filter as $filter) {
             call_user_func_array([$this->db, $filter[0]], $filter[1]);
@@ -216,8 +216,8 @@ class IP_Model extends CI_Model
         $default_list_limit = $this->mdl_settings->setting('default_list_limit');
         $per_page = (empty($default_list_limit) ? $this->default_limit : $default_list_limit);
 
-        $this->set_defaults();
-        $this->run_filters();
+        $this->setDefaults();
+        $this->runFilters();
 
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
@@ -255,7 +255,7 @@ class IP_Model extends CI_Model
     public function save($id = null, $db_array = null)
     {
         if (!$db_array) {
-            $db_array = $this->db_array();
+            $db_array = $this->data();
         }
 
         $datetime = date('Y-m-d H:i:s');
@@ -313,7 +313,7 @@ class IP_Model extends CI_Model
      *
      * @return array
      */
-    public function db_array()
+    public function data()
     {
         $db_array = [];
 
@@ -402,7 +402,7 @@ class IP_Model extends CI_Model
                 // If the item is an array, also return the join items as arrays
                 // Also if a single entity should be returned we select the proper database query
                 if (is_array($item)) {
-                    $item[$join_key] = $single ? $join_query->row_array() : $join_query->result_array();
+                    $item[$join_key] = $single ? $join_query->rowArray() : $join_query->resultArray();
                 } else {
                     $item->$join_key = $single ? $join_query->row() : $join_query->result();
                 }
@@ -445,11 +445,11 @@ class IP_Model extends CI_Model
 
     /**
      * Returns CI query result array with joined entries
-     * $this->model_name->get()->result_array();
+     * $this->model_name->get()->resultArray();
      *
      * @return mixed
      */
-    public function result_array()
+    public function resultArray()
     {
         $items = $this->query->result_array();
         $return = [];
@@ -463,11 +463,11 @@ class IP_Model extends CI_Model
 
     /**
      * Returns CI query row array
-     * $this->model_name->get()->row_array();
+     * $this->model_name->get()->rowArray();
      *
      * @return mixed
      */
-    public function row_array()
+    public function rowArray()
     {
         $item = $this->query->row_array();
 
@@ -476,11 +476,11 @@ class IP_Model extends CI_Model
 
     /**
      * Returns CI query num_rows()
-     * $this->model_name->get()->num_rows();
+     * $this->model_name->get()->count();
      *
      * @return mixed
      */
-    public function num_rows()
+    public function count()
     {
         return $this->query->num_rows();
     }
@@ -492,7 +492,7 @@ class IP_Model extends CI_Model
      *
      * @return boolean|null
      */
-    public function prep_form($id = null)
+    public function prepareForm($id = null)
     {
         if (!$_POST && $id) {
             $row = $this->getById($id);
@@ -520,7 +520,7 @@ class IP_Model extends CI_Model
      *
      * @return mixed
      */
-    public function run_validation($validation_rules = null)
+    public function runValidation($validation_rules = null)
     {
         if (!$validation_rules) {
             $validation_rules = $this->default_validation_rules;
@@ -553,7 +553,7 @@ class IP_Model extends CI_Model
      *
      * @return mixed|string
      */
-    public function form_value($key, $escape = false)
+    public function formValue($key, $escape = false)
     {
         $value = isset($this->form_values[$key]) ? $this->form_values[$key] : '';
         return $escape ? htmlspecialchars($value) : $value;
@@ -563,7 +563,7 @@ class IP_Model extends CI_Model
      * @param string $key
      * @param mixed  $value
      */
-    public function set_form_value($key, $value)
+    public function setFormValue($key, $value)
     {
         $this->form_values[$key] = $value;
     }

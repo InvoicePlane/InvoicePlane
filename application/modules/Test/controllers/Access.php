@@ -42,7 +42,7 @@ class Access extends Base_Controller
         $test = $this->mdl_test->get()->result();
         $test_row = $this->mdl_test->get()->row();
         $test_array = $this->mdl_test->where($this->mdl_test->primary_key, 1)
-            ->get()->result_array();
+            ->get()->resultArray();
 
         echo '<pre>';
         print_r($test);
