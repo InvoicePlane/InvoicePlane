@@ -232,7 +232,6 @@ define('IP_DEBUG', env_bool('ENABLE_DEBUG'));
 switch (IP_ENV) {
     case 'development':
         error_reporting(-1);
-        ini_set('display_errors', 1);
 
         // Also load the Whoops error prettifier
         $whoops = new \Whoops\Run;
@@ -242,7 +241,6 @@ switch (IP_ENV) {
 
     case 'testing':
     case 'production':
-        ini_set('display_errors', 0);
         if (version_compare(PHP_VERSION, '5.3', '>=')) {
             error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
         } else {
