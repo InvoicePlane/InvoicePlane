@@ -1,5 +1,5 @@
 {
-  "name": "invoiceplane",
+  "name": "invoiceplane/invoiceplane",
   "version": "2.0.0",
   "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
   "homepage": "https://invoiceplane.com",
