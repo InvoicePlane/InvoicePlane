@@ -34,16 +34,16 @@ $grays: map-merge((
   "900": $gray-900
 ), $grays);
 
-$blue:    #007bff !default;
+$blue:    #2c8edd !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
-$red:     #dc3545 !default;
-$orange:  #fd7e14 !default;
+$red:     #d9534f !default;
+$orange:  #f0ad4e !default;
 $yellow:  #ffc107 !default;
-$green:   #28a745 !default;
+$green:   #5cb85c !default;
 $teal:    #20c997 !default;
-$cyan:    #17a2b8 !default;
+$cyan:    #5bc0de !default;
 
 $colors: () !default;
 $colors: map-merge((
@@ -115,7 +115,7 @@ $enable-print-styles:       true !default;
 // You can add more entries to the $spacers map, should you need more variation.
 
 // stylelint-disable
-$spacer: 1rem !default;
+$spacer: .8rem !default;
 $spacers: () !default;
 $spacers: map-merge((
   0: 0,
@@ -297,8 +297,8 @@ $hr-margin-y:                 $spacer !default;
 //
 // Customizes the `.table` component with basic values, each used across all table variations.
 
-$table-cell-padding:          .75rem !default;
-$table-cell-padding-sm:       .3rem !default;
+$table-cell-padding:          .6rem !default;
+$table-cell-padding-sm:       .2rem !default;
 
 $table-bg:                    transparent !default;
 $table-accent-bg:             rgba($black, .05) !default;
@@ -322,20 +322,20 @@ $table-dark-color:            $body-bg !default;
 //
 // Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
 
-$input-btn-padding-y:         .375rem !default;
-$input-btn-padding-x:         .75rem !default;
+$input-btn-padding-y:         .25rem !default;
+$input-btn-padding-x:         .5rem !default;
 $input-btn-line-height:       $line-height-base !default;
 
 $input-btn-focus-width:       .2rem !default;
 $input-btn-focus-color:       rgba($component-active-bg, .25) !default;
 $input-btn-focus-box-shadow:  0 0 0 $input-btn-focus-width $input-btn-focus-color !default;
 
-$input-btn-padding-y-sm:      .25rem !default;
-$input-btn-padding-x-sm:      .5rem !default;
+$input-btn-padding-y-sm:      .15rem !default;
+$input-btn-padding-x-sm:      .35rem !default;
 $input-btn-line-height-sm:    $line-height-sm !default;
 
-$input-btn-padding-y-lg:      .5rem !default;
-$input-btn-padding-x-lg:      1rem !default;
+$input-btn-padding-y-lg:      .4rem !default;
+$input-btn-padding-x-lg:      .75rem !default;
 $input-btn-line-height-lg:    $line-height-lg !default;
 
 $input-btn-border-width:      $border-width !default;
@@ -473,8 +473,8 @@ $custom-checkbox-indicator-indeterminate-box-shadow: none !default;
 $custom-radio-indicator-border-radius:          50% !default;
 $custom-radio-indicator-icon-checked:           str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='#{$custom-control-indicator-checked-color}'/%3E%3C/svg%3E"), "#", "%23") !default;
 
-$custom-select-padding-y:           .375rem !default;
-$custom-select-padding-x:          .75rem !default;
+$custom-select-padding-y:           .3rem !default;
+$custom-select-padding-x:           .65rem !default;
 $custom-select-height:              $input-height !default;
 $custom-select-indicator-padding:   1rem !default; // Extra padding to account for the presence of the background-image based indicator
 $custom-select-line-height:         $input-btn-line-height !default;
@@ -530,7 +530,7 @@ $form-feedback-invalid-color:       theme-color("danger") !default;
 // Dropdown menu container and contents.
 
 $dropdown-min-width:                10rem !default;
-$dropdown-padding-y:                .5rem !default;
+$dropdown-padding-y:                .3rem !default;
 $dropdown-spacer:                   .125rem !default;
 $dropdown-bg:                       $white !default;
 $dropdown-border-color:             rgba($black, .15) !default;
@@ -548,8 +548,8 @@ $dropdown-link-active-bg:           $component-active-bg !default;
 
 $dropdown-link-disabled-color:      $gray-600 !default;
 
-$dropdown-item-padding-y:           .25rem !default;
-$dropdown-item-padding-x:           1.5rem !default;
+$dropdown-item-padding-y:           .2rem !default;
+$dropdown-item-padding-x:           1.3rem !default;
 
 $dropdown-header-color:             $gray-600 !default;
 
@@ -569,8 +569,8 @@ $zindex-tooltip:                    1070 !default;
 
 // Navs
 
-$nav-link-padding-y:                .5rem !default;
-$nav-link-padding-x:                1rem !default;
+$nav-link-padding-y:                .4rem !default;
+$nav-link-padding-x:                .8rem !default;
 $nav-link-disabled-color:           $gray-600 !default;
 
 $nav-tabs-border-color:             $gray-300 !default;
@@ -592,7 +592,7 @@ $navbar-padding-x:                  $spacer !default;
 
 $navbar-nav-link-padding-x:         .5rem !default;
 
-$navbar-brand-font-size:            $font-size-lg !default;
+$navbar-brand-font-size:            $font-size-base !default;
 // Compute the navbar-brand padding-y so the navbar-brand will have the same height as navbar-text and nav-link
 $nav-link-height:                   ($font-size-base * $line-height-base + $nav-link-padding-y * 2) !default;
 $navbar-brand-height:               $navbar-brand-font-size * $line-height-base !default;
@@ -600,7 +600,7 @@ $navbar-brand-padding-y:            ($nav-link-height - $navbar-brand-height) / 
 
 $navbar-toggler-padding-y:          .25rem !default;
 $navbar-toggler-padding-x:          .75rem !default;
-$navbar-toggler-font-size:          $font-size-lg !default;
+$navbar-toggler-font-size:          $font-size-base !default;
 $navbar-toggler-border-radius:      $btn-border-radius !default;
 
 $navbar-dark-color:                 rgba($white, .5) !default;
@@ -619,12 +619,12 @@ $navbar-light-toggler-border-color: rgba($black, .1) !default;
 
 // Pagination
 
-$pagination-padding-y:              .5rem !default;
-$pagination-padding-x:              .75rem !default;
-$pagination-padding-y-sm:           .25rem !default;
-$pagination-padding-x-sm:           .5rem !default;
-$pagination-padding-y-lg:           .75rem !default;
-$pagination-padding-x-lg:           1.5rem !default;
+$pagination-padding-y:              .4rem !default;
+$pagination-padding-x:              .6rem !default;
+$pagination-padding-y-sm:           .2rem !default;
+$pagination-padding-x-sm:           .45rem !default;
+$pagination-padding-y-lg:           .6rem !default;
+$pagination-padding-x-lg:           1.3rem !default;
 $pagination-line-height:            1.25 !default;
 
 $pagination-color:                  $link-color !default;
