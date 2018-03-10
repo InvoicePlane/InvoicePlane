@@ -15,6 +15,6 @@ class Ajax extends Permission_Controller
 
     public function index()
     {
-        die('This is an ajax controller');
+        echo 'This is an ajax controller';
     }
 }

@@ -17,6 +17,6 @@ class Test extends Permission_Controller
     {
         $this->permission('method_permission');
 
-        die('Test successfully loaded.');
+        echo 'Test successfully loaded.';
     }
 }
