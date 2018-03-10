@@ -75,7 +75,6 @@ class Permission_Controller extends Base_Controller
     {
         if (empty($this->session->userdata('user_permissions'))) {
             redirect($this->login_route);
-            exit;
         }
     }
 
@@ -117,7 +116,5 @@ class Permission_Controller extends Base_Controller
                 'code' => 403,
             ]))
             ->_display();
-
-        exit;
     }
 }
