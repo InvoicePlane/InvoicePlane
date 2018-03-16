@@ -191,19 +191,6 @@ $cv = $this->controller->view_data["custom_values"];
     });
 </script>
 
-<style>
-    .dropdown-submenu {
-        position: relative;
-    }
-
-    .dropdown-submenu .dropdown-menu {
-        top: 0;
-        left: auto;
-        right: 100%;
-        margin-top: -1px;
-    }
-</style>
-
 <?php
 echo $modal_delete_invoice;
 echo $modal_add_invoice_tax;
