@@ -139,6 +139,8 @@ class Invoices extends Admin_Controller
         $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_invoice_custom');
 
+        $this->load->model('invoices/mdl_templates');
+
         $this->db->reset_query();
 
         /*$invoice_custom = $this->mdl_invoice_custom->where('invoice_id', $invoice_id)->get();
@@ -199,6 +201,7 @@ class Invoices extends Admin_Controller
                     'decimal_point' => get_setting('decimal_point'),
                 ],
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'invoice_pdf_templates' => $this->mdl_templates->get_invoice_templates('pdf'),
             ]
         );
 
@@ -262,6 +265,8 @@ class Invoices extends Admin_Controller
         if (get_setting('mark_invoices_sent_pdf') == 1) {
             $this->mdl_invoices->mark_sent($invoice_id);
         }
+
+        $invoice_template = urldecode($invoice_template);
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
     }
