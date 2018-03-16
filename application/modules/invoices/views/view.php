@@ -248,7 +248,13 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php
                         $invoice_default_pdf = get_setting('pdf_invoice_template');
                         foreach ($invoice_pdf_templates as $template) : ?>
-                            <li><a href="#" class="btn_generate_pdf" data-invoice-template="<?php echo $template; ?>"><?php echo $template; ?></a></li>
+                            <li><a href="#" class="btn_generate_pdf"
+                                   data-invoice-template="<?php echo $template; ?>">
+                                    <i class="fa<?php if($template == $invoice_default_pdf) {
+                                        echo ' fa-chevron-right';
+                                    }?> fa-margin"></i>
+                                    <?php echo $template; ?>
+                                </a></li>
                         <?php endforeach; ?>
                     </ul>
                 </li>

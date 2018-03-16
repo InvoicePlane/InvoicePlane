@@ -90,6 +90,7 @@ class Quotes extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_quote_custom');
+        $this->load->model('invoices/mdl_templates');
 
         $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
         $this->db->reset_query();
@@ -150,7 +151,8 @@ class Quotes extends Admin_Controller
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point' => get_setting('decimal_point')
                 ),
-                'quote_statuses' => $this->mdl_quotes->statuses()
+                'quote_statuses' => $this->mdl_quotes->statuses(),
+                'quote_pdf_templates' => $this->mdl_templates->get_quote_templates('pdf'),
             )
         );
 
@@ -189,6 +191,8 @@ class Quotes extends Admin_Controller
         if (get_setting('mark_quotes_sent_pdf') == 1) {
             $this->mdl_quotes->mark_sent($quote_id);
         }
+
+        $quote_template = urldecode($quote_template);
 
         generate_quote_pdf($quote_id, $stream, $quote_template);
     }
