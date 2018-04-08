@@ -217,21 +217,9 @@
                         <label for="default_list_limit">
                             <?php _trans('default_list_limit'); ?>
                         </label>
-                        <select name="settings[default_list_limit]" class="form-control simple-select"
-                                id="default_list_limit">
-                            <option value="15" <?php check_select(get_setting('default_list_limit'), '15'); ?>>
-                                15
-                            </option>
-                            <option value="25" <?php check_select(get_setting('default_list_limit'), '25'); ?>>
-                                25
-                            </option>
-                            <option value="50" <?php check_select(get_setting('default_list_limit'), '50'); ?>>
-                                50
-                            </option>
-                            <option value="100" <?php check_select(get_setting('default_list_limit'), '100'); ?>>
-                                100
-                            </option>
-                        </select>
+                        <input type="number" name="settings[default_list_limit]" id="default_list_limit"
+                               class="form-control" minlength="1" min="1" required
+                               value="<?php echo get_setting('default_list_limit', 15, true) ?>">
                     </div>
                 </div>
             </div>
