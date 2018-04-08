@@ -20,7 +20,7 @@
 
 <script src="<?php _core_asset('js/dependencies.min.js'); ?>"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php _core_asset('js/locales/select2/' . _trans('cldr') . '.js'); ?>"></script>
+    <script src="<?php _core_asset('js/locales/select2/' . trans('cldr') . '.js'); ?>"></script>
 <?php } ?>
 
 <script>
