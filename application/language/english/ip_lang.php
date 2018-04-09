@@ -254,6 +254,7 @@ $lang = array(
     'invoice_count'                                => 'Invoice Count',
     'invoice_date'                                 => 'Invoice Date',
     'invoice_deletion_forbidden'                   => 'Deleting invoices is forbidden. Please contact the administrator or consult the documentation.',
+    'invoice_generated_from_quote'                 => 'Invoice generated from quote',
     'invoice_group'                                => 'Invoice Group',
     'invoice_group_form'                           => 'Invoice Group Form',
     'invoice_groups'                               => 'Invoice Groups',
