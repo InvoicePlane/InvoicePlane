@@ -54,6 +54,11 @@ class Mdl_Quotes extends Response_Model
                 'label' => trans('canceled'),
                 'class' => 'canceled',
                 'href' => 'quotes/status/canceled'
+            ),
+            '7' => array(
+                'label' => trans('invoiced'),
+                'class' => 'invoiced',
+                'href' => 'quotes/status/invoiced'
             )
         );
     }
@@ -360,6 +365,15 @@ class Mdl_Quotes extends Response_Model
     public function is_approved()
     {
         $this->filter_where('quote_status_id', 4);
+        return $this;
+    }
+    
+    /**
+     * @return $this
+     */
+    public function is_invoiced()
+    {
+        $this->filter_where('quote_status_id', 7);
         return $this;
     }
 
