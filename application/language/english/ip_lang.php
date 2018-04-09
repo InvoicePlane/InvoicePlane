@@ -411,6 +411,7 @@ $lang = array(
     'quote'                                        => 'Quote',
     'quote_approved'                               => 'This quote has been approved',
     'quote_date'                                   => 'Quote Date',
+    'quote_invoiced_in'                            => 'Quote invoiced in invoice',
     'quote_group'                                  => 'Quote Group',
     'quote_overview'                               => 'Quote Overview',
     'quote_overview_period'                        => 'Quote Overview Period',
