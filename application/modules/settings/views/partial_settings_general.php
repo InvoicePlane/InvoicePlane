@@ -1,3 +1,25 @@
+<?php
+/*
+ * @return array
+ */
+function tz_list() {
+    $zones_array = array();
+    $timestamp = time();
+    $dummy_datetime_object = new DateTime();
+    
+    foreach(timezone_identifiers_list() as $key => $zone) {
+        date_default_timezone_set($zone);
+        $zones_array[$key]['zone'] = $zone;
+        $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+
+        $tz = new DateTimeZone($zone);
+        $zones_array[$key]['offset'] = $tz->getOffset($dummy_datetime_object);
+    }
+
+    return $zones_array;
+}
+?>
+
 <script>
     $(function () {
         $('#btn_generate_cron_key').click(function () {
@@ -100,6 +122,23 @@
                             <?php foreach ($countries as $cldr => $country) { ?>
                                 <option value="<?php echo $cldr; ?>" <?php check_select(get_setting('default_country'), $cldr); ?>>
                                     <?php echo $country ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="settings[default_timezone]">
+                            <?php _trans('default_timezone'); ?>
+                        </label>
+                        <select name="settings[default_timezone]" id="settings[default_timezone]"
+                                class="form-control simple-select">
+                            <option value=""><?php _trans('none'); ?></option>
+                            <?php foreach (tz_list() as $t) { ?>
+                                <option value="<?php print $t['zone'] ?>" <?php check_select(get_setting('default_timezone'), $t['zone']); ?>>
+                                    <?php echo $t['diff_from_GMT'] . ' - ' . $t['zone'] ?>
                                 </option>
                             <?php } ?>
                         </select>
