@@ -86,7 +86,7 @@
             </tbody>
 
         </table>
-
+		<?php echo pager_detailed('mdl_tasks'); ?>
     </div>
 
 </div>

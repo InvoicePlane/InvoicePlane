@@ -69,6 +69,7 @@
             </tbody>
 
         </table>
+		<?php echo pager_detailed('mdl_users'); ?>
     </div>
 
 </div>

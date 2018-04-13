@@ -57,5 +57,6 @@
             </tbody>
 
         </table>
+		<?php echo pager_detailed('mdl_families'); ?>
     </div>
 </div>

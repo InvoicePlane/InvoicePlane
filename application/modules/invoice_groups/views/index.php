@@ -61,6 +61,7 @@
             </tbody>
 
         </table>
+		<?php echo pager_detailed('mdl_invoice_groups'); ?>
     </div>
 
 </div>

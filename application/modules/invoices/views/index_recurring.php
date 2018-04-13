@@ -84,6 +84,7 @@
 
             </table>
         </div>
+		<?php echo pager_detailed('mdl_invoices_recurring'); ?>
     </div>
 
 </div>

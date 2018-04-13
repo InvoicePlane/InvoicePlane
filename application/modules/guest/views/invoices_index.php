@@ -91,6 +91,7 @@
 
             </table>
         </div>
+		<?php echo pager_detailed('mdl_invoices'); ?>
     </div>
 
 </div>

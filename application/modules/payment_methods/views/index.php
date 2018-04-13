@@ -60,6 +60,7 @@
             </tbody>
 
         </table>
+		<?php echo pager_detailed('mdl_payment_methods'); ?>
     </div>
 
 </div>

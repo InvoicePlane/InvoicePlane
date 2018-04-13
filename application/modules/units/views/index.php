@@ -59,7 +59,7 @@
             </tbody>
 
         </table>
-
+		<?php echo pager_detailed('mdl_units'); ?>
     </div>
 
 </div>

@@ -58,6 +58,7 @@
             </tbody>
 
         </table>
+		<?php echo pager_detailed('mdl_tax_rates'); ?>
     </div>
 
 </div>

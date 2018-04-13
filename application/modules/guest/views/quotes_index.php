@@ -26,13 +26,10 @@
 </div>
 
 <div id="content" class="table-content">
-
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
+    
     <div id="filter_results">
-
-        <?php echo $this->layout->load_view('layout/alerts'); ?>
-
-        <?php echo $this->layout->load_view('guest/partial_quotes_table'); ?>
-
+        <?php $this->layout->load_view('guest/quotes_partial_table', array('quotes' => $quotes)); ?>
+        <?php echo pager_detailed('mdl_quotes'); ?>
     </div>
-
 </div>

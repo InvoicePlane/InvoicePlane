@@ -68,6 +68,7 @@
 
     <div id="filter_results">
         <?php $this->layout->load_view('clients/partial_client_table'); ?>
+		<?php echo pager_detailed('mdl_clients'); ?>
     </div>
 
 </div>

@@ -75,6 +75,7 @@
             </tbody>
 
         </table>
+		<?php echo pager_detailed('mdl_products'); ?>
     </div>
 
 </div>

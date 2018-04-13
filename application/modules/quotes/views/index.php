@@ -98,6 +98,7 @@
 
     <div id="filter_results">
         <?php $this->layout->load_view('quotes/partial_quote_table', array('quotes' => $quotes)); ?>
+		<?php echo pager_detailed('mdl_quotes'); ?>
     </div>
 
 </div>

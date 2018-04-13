@@ -61,5 +61,7 @@
         </tbody>
 
     </table>
+	
+	<?php echo pager_detailed('mdl_custom_values'); ?>
 
 </div>
