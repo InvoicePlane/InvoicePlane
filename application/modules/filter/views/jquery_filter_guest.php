@@ -10,7 +10,7 @@
     $(function () {
         $('#filter').keyup(function () {
             delay(function () {
-                $.post('<?php echo site_url('filter/ajaxGuest/' . $filter_method); ?>',
+                $.post('<?php echo site_url('filter/ajax_guest/' . $filter_method); ?>',
                     {
                         filter_query: $('#filter').val()
                     }, function (data) {

@@ -26,7 +26,7 @@
     <?php echo $this->layout->load_view('layout/alerts'); ?>
     
     <div id="filter_results">
-        <?php $this->layout->load_view('guest/invoices_partial_table', array('invoices' => $invoices)); ?>
+        <?php $this->layout->load_view('guest/invoices_partial_table', ['invoices' => $invoices]); ?>
         <?php echo pager_detailed('mdl_invoices'); ?>
     </div>
 </div>

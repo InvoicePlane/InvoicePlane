@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Class Ajax
  */
-class AjaxGuest extends Guest_Controller
+class Ajax_guest extends Guest_Controller
 {
     public $ajax_controller = true;
 
