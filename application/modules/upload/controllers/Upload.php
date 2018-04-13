@@ -22,7 +22,6 @@ class Upload extends Admin_Controller
         'gif' => 'image/gif',
         'jpg' => 'image/jpeg',
         'jpeg' => 'image/jpeg',
-        'png' => 'image/png',
         'pdf' => 'application/pdf',
         'png' => 'image/png',
         'txt' => 'text/plain',
@@ -44,62 +43,44 @@ class Upload extends Admin_Controller
      * @param $url_key
      * @return boolean|null
      */
-    public function upload_file($id, $type, $url_key)
+    public function upload_file($customerId, $url_key)
     {
         Upload::create_dir($this->targetPath . '/');
-        
+
         if (!empty($_FILES)) {
-            $total = count($_FILES['file']['name']);
-            $error = 0;
-            
-            if ($type == 'product') {
-                $this->load->model('products/mdl_products');
-                $this->mdl_products->create_product_url_key($id);
-            }
-            
-            for ($i=0; $i<$total; $i++) {
-                $tempFile = $_FILES['file']['tmp_name'][$i];
-                $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name'][$i]);
-                $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
-                $file_exists = file_exists($targetFile);
-                
-                if (!$file_exists) {
-                    // If file does not exists then upload
-                    $data = array(
-                        'url_key' => $url_key,
-                        'file_name_original' => $fileName,
-                        'file_name_new' => $url_key . '_' . $fileName
-                    );
-                    
-                    if ($type == 'client') {
-                       $data['client_id'] = $id;
-                    } else if ($type == 'product') {
-                        $data['product_id'] = $id;
-                    }
+            $tempFile = $_FILES['file']['tmp_name'];
+            $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name']);
+            $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
+            $file_exists = file_exists($targetFile);
 
-                    $this->mdl_uploads->create($data);
+            if (!$file_exists) {
+                // If file does not exists then upload
+                $data = array(
+                    'client_id' => $customerId,
+                    'url_key' => $url_key,
+                    'file_name_original' => $fileName,
+                    'file_name_new' => $url_key . '_' . $fileName
+                );
 
-                    move_uploaded_file($tempFile, $targetFile);
+                $this->mdl_uploads->create($data);
 
-                } else {
-                    $error++;
-                }
-            }
-            
-            if ($error == 0) {
+                move_uploaded_file($tempFile, $targetFile);
+
                 echo json_encode([
-                    'success' => true,
-                    'csrf_hash' => $this->security->get_csrf_hash(),
+                    'success' => true
                 ]);
+
             } else {
+                // If file exists then echo the error and set a http error response
                 echo json_encode([
                     'success' => false,
                     'message' => trans('error_duplicate_file')
                 ]);
                 http_response_code(404);
             }
+
         } else {
-            Upload::show_files($url_key);
+            Upload::show_files($url_key, $customerId);
         }
     }
 
@@ -122,7 +103,7 @@ class Upload extends Admin_Controller
      * @param null $customerId
      * @return void
      */
-    public function show_files($url_key)
+    public function show_files($url_key, $customerId = null)
     {
         $result = array();
         $path = $this->targetPath;
@@ -170,11 +151,6 @@ class Upload extends Admin_Controller
         if (strpos(realpath($path), realpath($finalPath)) == 0) {
             unlink($path . '/' . $url_key . '_' . $fileName);
         }
-        
-        echo json_encode([
-            'success' => true,
-            'csrf_hash' => $this->security->get_csrf_hash(),
-        ]);
     }
 
     /**
@@ -187,32 +163,33 @@ class Upload extends Admin_Controller
     {
         $base_path = UPLOADS_FOLDER . 'customer_files/';
         $file_path = $base_path . $filename;
-        
+
         if (strpos(realpath($base_path), realpath($file_path)) != 0) {
             show_404();
             exit;
         }
-        
+
         $path_parts = pathinfo($file_path);
         $file_ext = $path_parts['extension'];
-        
+
         if (file_exists($file_path)) {
             $file_size = filesize($file_path);
-            
+
             $save_ctype = isset($this->content_types[$file_ext]);
             $ctype = $save_ctype ? $this->content_types[$file_ext] : $this->ctype_default;
-            
+
             header("Expires: -1");
             header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
             header("Content-Disposition: attachment; filename=\"$filename\"");
             header("Content-Type: " . $ctype);
             header("Content-Length: " . $file_size);
-            
+
             echo file_get_contents($file_path);
             exit;
         }
-        
+
         show_404();
         exit;
     }
+
 }

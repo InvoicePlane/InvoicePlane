@@ -29,9 +29,6 @@
 
 <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
 
-<script src="<?php _core_asset('js/jquery.fancybox.min'); ?>"></script>
-<link rel="stylesheet" href="<?php _core_asset('css/jquery.fancybox.min'); ?>">
-
 <script>
     Dropzone.autoDiscover = false;
 

@@ -41,35 +41,29 @@
         }
         return fileIcon;
     }
-    
+
     // Get the template HTML and remove it from the document
     var previewNode = document.querySelector('#template');
     previewNode.id = '';
     var previewTemplate = previewNode.parentNode.innerHTML;
     previewNode.parentNode.removeChild(previewNode);
-    var csrf_hash = '<?php echo $this->security->get_csrf_hash(); ?>';
 
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: '<?php echo site_url('upload/upload_file/' . $quote->client_id . '/client/' . $quote->quote_url_key) ?>',
+        url: '<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>',
+        params: {
+            '<?php echo $this->config->item('csrf_token_name'); ?>': Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>'),
+        },
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
-        uploadMultiple: true,
+        uploadMultiple: false,
         previewTemplate: previewTemplate,
         autoQueue: true, // Make sure the files aren't queued until manually added
         previewsContainer: '#previews', // Define the container to display the previews
         clickable: '.fileinput-button', // Define the element that should be used as click trigger to select files.
-        success: function(file, response){
-            if (response) {
-                response = JSON.parse(response);
-                if (response.success) {
-                    csrf_hash = response.csrf_hash;
-                }
-            }
-        },
         init: function () {
             thisDropzone = this;
-            $.getJSON('<?php echo site_url('upload/upload_file/' . $quote->client_id . '/client/' . $quote->quote_url_key) ?>',
+            $.getJSON('<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>',
                 function (data) {
                     $.each(data, function (index, val) {
                         var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
@@ -77,15 +71,13 @@
                         thisDropzone.options.addedfile.call(thisDropzone, mockFile);
                         createDownloadButton(mockFile, '<?php echo site_url('upload/get_file/'); ?>' + val.fullname);
 
-                        if (val.fullname.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+                        if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
                             thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
                                 '<?php echo site_url('upload/get_file/'); ?>' + val.fullname);
                         }
                         else {
-                            fileIcon = getIcon(val.fullname);
-
                             thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                                '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
+                                '<?php echo site_url('assets/default/img/favicon.png'); ?>');
                         }
 
                         thisDropzone.emit('complete', mockFile);
@@ -96,9 +88,7 @@
     });
 
     myDropzone.on('addedfile', function (file) {
-        var fileIcon = getIcon(file.name);
-        myDropzone.emit('thumbnail', file,
-            '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
+        myDropzone.emit('thumbnail', file, '<?php echo site_url('assets/default/img/favicon.png'); ?>');
         createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $quote->quote_url_key . '_') ?>' +
             file.name.replace(/\s+/g, '_'));
     });
@@ -108,9 +98,8 @@
         document.querySelector('#total-progress .progress-bar').style.width = progress + '%';
     });
 
-    myDropzone.on('sendingmultiple', function (file, xhr, formData) {
+    myDropzone.on('sending', function (file) {
         // Show the total progress bar when upload starts
-        formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', csrf_hash);
         document.querySelector('#total-progress').style.opacity = '1';
     });
 
@@ -124,15 +113,7 @@
             url: '<?php echo site_url('upload/delete_file/' . $quote->quote_url_key) ?>',
             data: {
                 name: file.name,
-                '<?php echo $this->security->get_csrf_token_name(); ?>': csrf_hash
-            },
-            success: function(response){
-                if (response) {
-                    response = JSON.parse(response);
-                    if (response.success) {
-                        csrf_hash = response.csrf_hash;
-                    }
-                }
+                <?php echo $this->config->item('csrf_token_name'); ?>: Cookies.get('<?= $this->config->item('csrf_cookie_name'); ?>')
             }
         });
     });
