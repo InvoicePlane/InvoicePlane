@@ -43,3 +43,37 @@ function pager($base_url, $model)
 
     return $pager;
 }
+
+/**
+ * Returns a printable pagination detailed
+ *
+ * @param $model
+ * @return string
+ */
+function pager_detailed($model)
+{
+    $CI = &get_instance();
+    
+    $current_item_last = $CI->$model->default_limit * $CI->$model->current_page;
+    $current_item_first = ($current_item_last - $CI->$model->default_limit) + 1;
+    $total_pages = ($CI->$model->total_pages > 0)?$CI->$model->total_pages:1;
+    $total_rows = $CI->$model->total_rows;
+    
+    if ($total_rows == 0) {
+        $current_item_last = 0;
+        $current_item_first = 0;
+    }
+    
+    $pager = '<div class="model-pager-detailed">';
+    $pager .= '<div>';
+    $pager .= trans('showing').' '.$current_item_first;
+    $pager .= ' '.trans('to').' '.$current_item_last.' ';
+    $pager .= ' '.trans('from').' '.$CI->$model->total_rows;
+    $pager .= '</div>';
+    $pager .= '<div>';
+    $pager .= trans('page').' '.$CI->$model->current_page;
+    $pager .= ' '.trans('from').' '.$total_pages;
+    $pager .= '</div>';
+    
+    return $pager;
+}

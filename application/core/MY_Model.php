@@ -146,6 +146,8 @@ class MY_Model extends CI_Model
 
         $this->set_defaults();
         $this->run_filters();
+		
+		$this->current_page = ($offset / $per_page) + 1;
 
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
