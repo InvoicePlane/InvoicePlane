@@ -51,7 +51,7 @@
                                 <span><?php _trans('download'); ?></span>
                             </button>
                             <?php if ($invoice->is_read_only != 1) { ?>
-                                <button data-dz-remove class="btn btn-danger btn-sm delete">
+                                <button data-dz-remove class="btn btn-danger btn-sm">
                                     <i class="fa fa-trash-o"></i>
                                     <span><?php _trans('delete'); ?></span>
                                 </button>
