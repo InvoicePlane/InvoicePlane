@@ -84,10 +84,13 @@ function phpmail_send(
             $mail->IsMail();
             break;
     }
+    
+    $aux['message'] = $message;
+    $html_template = $CI->load->view('emails/email_template', $aux, TRUE);
 
     $mail->Subject = $subject;
-    $mail->Body = $message;
-    $mail->AltBody = $mail->normalizeBreaks($mail->html2text($message));
+    $mail->Body = $html_template;
+    $mail->AltBody = $mail->normalizeBreaks($mail->html2text($html_template));
 
     if (is_array($from)) {
         // This array should be address, name

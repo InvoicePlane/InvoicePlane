@@ -18,7 +18,7 @@
     });
 </script>
 
-<div class="col-xs-12 col-md-8 col-md-offset-2">
+<div class="col-xs-12 col-md-4 col-md-offset-2">
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -27,7 +27,7 @@
         <div class="panel-body">
 
             <div class="row">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-12">
 
                     <div class="form-group">
                         <label for="settings[email_pdf_attachment]">
@@ -149,6 +149,106 @@
 
                     </div>
 
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="col-xs-12 col-md-4">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php _trans('email_template'); ?>
+        </div>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+
+                    <div class="form-group">
+                        <label for="settings[email_template_background]">
+                             <?php _trans('email_template_background'); ?>
+                        </label>
+                        <input type="text" name="settings[email_template_background]" id="settings[email_template_background]"
+                               class="form-control"
+                               value="<?php echo get_setting('email_template_background', '', true); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_background_content]">
+                             <?php _trans('email_template_background_content'); ?>
+                        </label>
+                        <input type="text" name="settings[email_template_background_content]" id="settings[email_template_background_content]"
+                               class="form-control"
+                               value="<?php echo get_setting('email_template_background_content', '', true); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_color_titles]">
+                             <?php _trans('email_template_color_titles'); ?>
+                        </label>
+                        <input type="text" name="settings[email_template_color_titles]" id="settings[email_template_color_titles]"
+                               class="form-control"
+                               value="<?php echo get_setting('email_template_color_titles', '', true); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_color_content]">
+                             <?php _trans('email_template_color_content'); ?>
+                        </label>
+                        <input type="text" name="settings[email_template_color_content]" id="settings[email_template_color_content]"
+                               class="form-control"
+                               value="<?php echo get_setting('email_template_color_content', '', true); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_color_links]">
+                             <?php _trans('email_template_color_links'); ?>
+                        </label>
+                        <input type="text" name="settings[email_template_color_links]" id="settings[email_template_color_links]"
+                               class="form-control"
+                               value="<?php echo get_setting('email_template_color_links', '', true); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_color_footer]">
+                             <?php _trans('email_template_color_footer'); ?>
+                        </label>
+                        <input type="text" name="settings[email_template_color_footer]" id="settings[email_template_color_footer]"
+                               class="form-control"
+                               value="<?php echo get_setting('email_template_color_footer', '', true); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_color_powered]">
+                             <?php _trans('email_template_color_powered'); ?>
+                        </label>
+                        <input type="text" name="settings[email_template_color_powered]" id="settings[email_template_color_powered]"
+                               class="form-control"
+                               value="<?php echo get_setting('email_template_color_powered', '', true); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_text_footer]">
+                             <?php _trans('email_template_text_footer'); ?>
+                        </label>
+                        <textarea name="settings[email_template_text_footer]" id="settings[email_template_text_footer]"
+                                  class="form-control"
+                                  rows="3"><?php echo get_setting('email_template_text_footer', '', true); ?></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings[email_template_text_powered]">
+                             <?php _trans('email_template_text_powered'); ?>
+                        </label>
+                        <textarea name="settings[email_template_text_powered]" id="settings[email_template_text_powered]"
+                                  class="form-control"
+                                  rows="3"><?php echo get_setting('email_template_text_powered', '', true); ?></textarea>
+                    </div>
+                    
                 </div>
             </div>
 
