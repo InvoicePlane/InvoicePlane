@@ -82,6 +82,30 @@ class Mdl_Uploads extends Response_Model
 
         return $names;
     }
+    
+    /**
+     * @param $id
+     * @return array
+     */
+    public function get_product_uploads($id)
+    {
+        $this->load->model('products/mdl_products');
+        $product = $this->mdl_products->get_by_id($id);
+        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $product->product_url_key . "'");
+
+        $names = array();
+
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                array_push($names, array(
+                    'path' => getcwd() . '/uploads/customer_files/' . $row->file_name_new,
+                    'filename' => $row->file_name_new
+                ));
+            }
+        }
+
+        return $names;
+    }
 
     /**
      * @param $url_key

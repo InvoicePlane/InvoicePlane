@@ -43,44 +43,62 @@ class Upload extends Admin_Controller
      * @param $url_key
      * @return boolean|null
      */
-    public function upload_file($customerId, $url_key)
+    public function upload_file($id, $type, $url_key)
     {
         Upload::create_dir($this->targetPath . '/');
-
+        
         if (!empty($_FILES)) {
-            $tempFile = $_FILES['file']['tmp_name'];
-            $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name']);
-            $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
-            $file_exists = file_exists($targetFile);
+            $total = count($_FILES['file']['name']);
+            $error = 0;
+            
+            if ($type == 'product') {
+                $this->load->model('products/mdl_products');
+                $this->mdl_products->create_product_url_key($id);
+            }
+            
+            for ($i=0; $i<$total; $i++) {
+                $tempFile = $_FILES['file']['tmp_name'][$i];
+                $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name'][$i]);
+                $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
+                $file_exists = file_exists($targetFile);
+                
+                if (!$file_exists) {
+                    // If file does not exists then upload
+                    $data = array(
+                        'url_key' => $url_key,
+                        'file_name_original' => $fileName,
+                        'file_name_new' => $url_key . '_' . $fileName
+                    );
+                    
+                    if ($type == 'client') {
+                       $data['client_id'] = $id;
+                    } else if ($type == 'product') {
+                        $data['product_id'] = $id;
+                    }
 
-            if (!$file_exists) {
-                // If file does not exists then upload
-                $data = array(
-                    'client_id' => $customerId,
-                    'url_key' => $url_key,
-                    'file_name_original' => $fileName,
-                    'file_name_new' => $url_key . '_' . $fileName
-                );
+                    $this->mdl_uploads->create($data);
 
-                $this->mdl_uploads->create($data);
+                    move_uploaded_file($tempFile, $targetFile);
 
-                move_uploaded_file($tempFile, $targetFile);
-
+                } else {
+                    $error++;
+                }
+            }
+            
+            if ($error == 0) {
                 echo json_encode([
-                    'success' => true
+                    'success' => true,
+                    'csrf_hash' => $this->security->get_csrf_hash(),
                 ]);
-
             } else {
-                // If file exists then echo the error and set a http error response
                 echo json_encode([
                     'success' => false,
                     'message' => trans('error_duplicate_file')
                 ]);
                 http_response_code(404);
             }
-
         } else {
-            Upload::show_files($url_key, $customerId);
+            Upload::show_files($url_key);
         }
     }
 
