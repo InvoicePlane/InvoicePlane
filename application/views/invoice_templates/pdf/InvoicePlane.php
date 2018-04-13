@@ -30,7 +30,7 @@
         if ($invoice->client_address_2) {
             echo '<div>' . htmlsc($invoice->client_address_2) . '</div>';
         }
-        if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
+        if ($invoice->client_city || $invoice->client_zip) {
             echo '<div>';
             if ($invoice->client_city) {
                 echo htmlsc($invoice->client_city) . ' ';
@@ -40,18 +40,22 @@
             }
             echo '</div>';
         }
-        if ($invoice->client_state) {
-            echo '<div>' . htmlsc($invoice->client_state) . ' ';
-        }
-        if ($invoice->client_country) {
-            echo get_country_name(trans('cldr'), $invoice->client_country) . '</div>';
+        if ($invoice->client_state || $invoice->client_country) {
+            echo '<div>';
+            if ($invoice->client_state) {
+                echo htmlsc($invoice->client_state) . ' ';
+            }
+            if ($invoice->client_country) {
+                echo get_country_name(trans('cldr'), $invoice->client_country);
+            }
+            echo '</div>';
         }
 
         if ($invoice->client_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
         } 
         if ($invoice->client_mobile) {
-            echo '<div>M: ' . htmlsc($invoice->client_mobile) . '</div>';
+            echo '<div>' . trans('mobile_abbr') . ': ' . htmlsc($invoice->client_mobile) . '</div>';
         }
         ?>
 
@@ -70,7 +74,7 @@
         if ($invoice->user_address_2) {
             echo '<div>' . htmlsc($invoice->user_address_2) . '</div>';
         }
-        if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
+        if ($invoice->user_city || $invoice->user_zip) {
             echo '<div>';
             if ($invoice->user_city) {
                 echo htmlsc($invoice->user_city) . ' ';
@@ -80,18 +84,22 @@
             }
             echo '</div>';
         }
-        if ($invoice->user_state) {
-            echo '<div>' . htmlsc($invoice->user_state) . ' ';
-        }
-        if ($invoice->user_country) {
-            echo get_country_name(trans('cldr'), $invoice->user_country) . '</div>';
+        if ($invoice->user_state || $invoice->user_country) {
+            echo '<div>';
+            if ($invoice->user_state) {
+                echo htmlsc($invoice->user_state) . ' ';
+            }
+            if ($invoice->user_country) {
+                echo get_country_name(trans('cldr'), $invoice->user_country);
+            }
+            echo '</div>';
         }
 
         if ($invoice->user_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->user_phone) . '</div>';
         }
         if ($invoice->user_mobile) {
-            echo '<div>M: ' . htmlsc($invoice->user_mobile) . '</div>';
+            echo '<div>' . trans('mobile_abbr') . ': ' . htmlsc($invoice->user_mobile) . '</div>';
         }
         if ($invoice->user_fax) {
             echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($invoice->user_fax) . '</div>';

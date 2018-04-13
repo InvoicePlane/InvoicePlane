@@ -30,31 +30,34 @@
         if ($quote->client_address_2) {
             echo '<div>' . htmlsc($quote->client_address_2) . '</div>';
         }
-        if ($quote->client_city || $quote->client_state || $quote->client_zip) {
+        if ($quote->client_city || $quote->client_zip) {
             echo '<div>';
             if ($quote->client_city) {
                 echo htmlsc($quote->client_city) . ' ';
-            }
-            if ($quote->client_state) {
-                echo htmlsc($quote->client_state) . ' ';
             }
             if ($quote->client_zip) {
                 echo htmlsc($quote->client_zip);
             }
             echo '</div>';
         }
-        if ($quote->client_state) {
-            echo '<div>' . htmlsc($quote->client_state) . '</div>';
+        if ($quote->client_state || $quote->client_country) {
+            echo '<div>';
+            if ($quote->client_state) {
+                echo '<div>' . htmlsc($quote->client_state) . ' ';
+            }
+            if ($quote->client_country) {
+                echo get_country_name(trans('cldr'), $quote->client_country) . '</div>';
+            }
+            echo '</div>';
         }
-        if ($quote->client_country) {
-            echo '<div>' . get_country_name(trans('cldr'), $quote->client_country) . '</div>';
-        }
-
-        echo '<br/>';
 
         if ($quote->client_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($quote->client_phone) . '</div>';
-        } ?>
+        } 
+        if ($quote->client_mobile) {
+            echo '<div>' . trans('mobile_abbr') . ': ' . htmlsc($quote->client_mobile) . '</div>';
+        }
+        ?>
 
     </div>
     <div id="company">
@@ -71,27 +74,32 @@
         if ($quote->user_address_2) {
             echo '<div>' . htmlsc($quote->user_address_2) . '</div>';
         }
-        if ($quote->user_city || $quote->user_state || $quote->user_zip) {
+        if ($quote->user_city || $quote->user_zip) {
             echo '<div>';
             if ($quote->user_city) {
                 echo htmlsc($quote->user_city) . ' ';
-            }
-            if ($quote->user_state) {
-                echo htmlsc($quote->user_state) . ' ';
             }
             if ($quote->user_zip) {
                 echo htmlsc($quote->user_zip);
             }
             echo '</div>';
         }
-        if ($quote->user_country) {
-            echo '<div>' . get_country_name(trans('cldr'), $quote->user_country) . '</div>';
+        if ($quote->user_state || $quote->user_country) {
+            echo '<div>';
+            if ($quote->user_state) {
+                echo '<div>' . htmlsc($quote->user_state) . ' ';
+            }
+            if ($quote->user_country) {
+                echo get_country_name(trans('cldr'), $quote->user_country) . '</div>';
+            }
+            echo '</div>';
         }
-
-        echo '<br/>';
 
         if ($quote->user_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($quote->user_phone) . '</div>';
+        }
+        if ($quote->user_mobile) {
+            echo '<div>' . trans('mobile_abbr') . ': ' . htmlsc($quote->user_mobile) . '</div>';
         }
         if ($quote->user_fax) {
             echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($quote->user_fax) . '</div>';
@@ -110,7 +118,7 @@
                 <td><?php echo date_from_mysql($quote->quote_date_created, true); ?></td>
             </tr>
             <tr>
-                <td><?php echo trans('expires') . ': '; ?></td>
+                <td><?php echo trans('due_date') . ': '; ?></td>
                 <td><?php echo date_from_mysql($quote->quote_date_expires, true); ?></td>
             </tr>
             <tr>
@@ -228,7 +236,7 @@
 
 </main>
 
-<footer>
+<footer style="font-size: 0.6em; text-align: justify;">
     <?php if ($quote->notes) : ?>
         <div class="notes">
             <b><?php _trans('notes'); ?></b><br/>
