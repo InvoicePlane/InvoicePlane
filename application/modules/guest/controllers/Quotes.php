@@ -61,9 +61,17 @@ class Quotes extends Guest_Controller
 
         $this->mdl_quotes->paginate(site_url('guest/quotes/status/' . $status), $page);
         $quotes = $this->mdl_quotes->result();
-
-        $this->layout->set('quotes', $quotes);
-        $this->layout->set('status', $status);
+        
+        $this->layout->set(
+            array(
+                'quotes' => $quotes,
+                'status' => $status,
+                'filter_display' => true,
+                'filter_placeholder' => trans('filter_quotes'),
+                'filter_method' => 'filter_quotes',
+            )
+        );
+        
         $this->layout->buffer('content', 'guest/quotes_index');
         $this->layout->render('layout_guest');
     }

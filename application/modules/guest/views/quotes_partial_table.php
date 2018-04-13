@@ -34,7 +34,7 @@
                     <?php echo date_from_mysql($quote->quote_date_expires); ?>
                 </td>
                 <td>
-                    <?php _htmlsc($quote->client_name); ?>
+                    <?php _htmlsc(format_client($quote)); ?>
                 </td>
                 <td>
                     <?php echo format_currency($quote->quote_total); ?>

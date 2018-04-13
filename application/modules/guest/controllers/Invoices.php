@@ -54,7 +54,10 @@ class Invoices extends Guest_Controller
         $this->layout->set(
             array(
                 'invoices' => $invoices,
-                'status' => $status
+                'status' => $status,
+                'filter_display' => true,
+                'filter_placeholder' => trans('filter_invoices'),
+                'filter_method' => 'filter_invoices',
             )
         );
 
