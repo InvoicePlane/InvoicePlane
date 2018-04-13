@@ -64,11 +64,15 @@ function pager_detailed($model)
         $current_item_first = 0;
     }
     
+    if ($current_item_last > $total_rows) {
+        $current_item_last = $total_rows;
+    }
+    
     $pager = '<div class="model-pager-detailed">';
     $pager .= '<div>';
     $pager .= trans('showing').' '.$current_item_first;
     $pager .= ' '.trans('to').' '.$current_item_last.' ';
-    $pager .= ' '.trans('from').' '.$CI->$model->total_rows;
+    $pager .= ' '.trans('from').' '.$total_rows;
     $pager .= '</div>';
     $pager .= '<div>';
     $pager .= trans('page').' '.$CI->$model->current_page;
