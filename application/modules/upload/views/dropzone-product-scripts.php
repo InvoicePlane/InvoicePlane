@@ -48,9 +48,9 @@
     var previewTemplate = previewNode.parentNode.innerHTML;
     previewNode.parentNode.removeChild(previewNode);
     var csrf_hash = '<?php echo $this->security->get_csrf_hash(); ?>';
-
+    
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: '<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/client/' . $invoice->invoice_url_key) ?>',
+        url: '<?php echo site_url('upload/upload_file/' . $product->product_id . '/product/' . $product->product_url_key) ?>',
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
@@ -69,7 +69,7 @@
         },
         init: function () {
             thisDropzone = this;
-            $.getJSON('<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/client/' . $invoice->invoice_url_key) ?>',
+            $.getJSON('<?php echo site_url('upload/upload_file/' . $product->product_id . '/product/' . $product->product_url_key) ?>',
                 function (data) {
                     $.each(data, function (index, val) {
                         var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
@@ -99,7 +99,7 @@
         var fileIcon = getIcon(file.name);
         myDropzone.emit('thumbnail', file,
             '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
-        createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $invoice->invoice_url_key . '_') ?>' +
+        createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $product->product_url_key . '_') ?>' +
             file.name.replace(/\s+/g, '_'));
     });
 
@@ -121,7 +121,7 @@
 
     myDropzone.on('removedfile', function (file) {
         $.post({
-            url: '<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>',
+            url: '<?php echo site_url('upload/delete_file/' . $product->product_url_key) ?>',
             data: {
                 name: file.name,
                 '<?php echo $this->security->get_csrf_token_name(); ?>': csrf_hash

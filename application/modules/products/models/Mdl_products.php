@@ -17,7 +17,16 @@ class Mdl_Products extends Response_Model
 {
     public $table = 'ip_products';
     public $primary_key = 'ip_products.product_id';
-
+    
+    /**
+     * @return string
+     */
+    public function get_url_key()
+    {
+        $this->load->helper('string');
+        return random_string('alnum', 32);
+    }
+    
     public function default_select()
     {
         $this->db->select('SQL_CALC_FOUND_ROWS *', false);
@@ -75,6 +84,11 @@ class Mdl_Products extends Response_Model
                 'label' => trans('product_price'),
                 'rules' => 'required'
             ),
+            'product_qty' => array(
+                'field' => 'product_qty',
+                'label' => trans('product_qty'),
+                'rules' => 'numeric'
+            ),
             'purchase_price' => array(
                 'field' => 'purchase_price',
                 'label' => trans('purchase_price'),
@@ -121,8 +135,24 @@ class Mdl_Products extends Response_Model
         $db_array['family_id'] = (empty($db_array['family_id']) ? null : $db_array['family_id']);
         $db_array['unit_id'] = (empty($db_array['unit_id']) ? null : $db_array['unit_id']);
         $db_array['tax_rate_id'] = (empty($db_array['tax_rate_id']) ? null : $db_array['tax_rate_id']);
-
+        
         return $db_array;
+    }
+    
+    /**
+     * CREATE URL KEY FOR PRODUCT
+     */
+    public function create_product_url_key($id) {
+        $product = $this->get_by_id($id);
+        
+        if ($product->product_url_key == null) {
+            $aux = array(
+                'product_url_key' => $this->get_url_key()
+            );
+            
+            $this->db->where('product_id', $product->product_id);
+            $this->db->update($this->table, $aux);
+        }
     }
 
 }

@@ -167,6 +167,9 @@
 
                     </div>
                 </div>
+				
+				<?php $this->layout->load_view('upload/dropzone-product-html'); ?>
+                <?php $this->layout->load_view('upload/dropzone-product-scripts'); ?>
 
             </div>
         </div>

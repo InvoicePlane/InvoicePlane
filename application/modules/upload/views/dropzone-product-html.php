@@ -3,7 +3,7 @@
     <div class="panel-heading">
         <?php _trans('attachments'); ?>
     </div>
-    
+
     <div class="panel-body clearfix">
         <!-- The fileinput-button span is used to style the file input field as button -->
         <button type="button" class="btn btn-default fileinput-button">
@@ -43,7 +43,7 @@
                         <div>
                             <p class="size" data-dz-size>
                             </p>
-                            <div class="progress progress-striped active hidden"
+                            <div class="progress progress-striped active"
                                  role="progressbar" aria-valuemin="0"
                                  aria-valuemax="100" aria-valuenow="0">
                                 <div class="progress-bar progress-bar-success"

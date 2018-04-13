@@ -31,7 +31,13 @@ class Products extends Admin_Controller
     public function index($page = 0)
     {
         $this->mdl_products->paginate(site_url('products/index'), $page);
+		$this->load->model('upload/mdl_uploads');
+		
         $products = $this->mdl_products->result();
+		
+		foreach ($products as $product){
+            $product->photos = $this->mdl_uploads->get_product_uploads($product->product_id);
+        }
 
         $this->layout->set('products', $products);
         $this->layout->buffer('content', 'products/index');
