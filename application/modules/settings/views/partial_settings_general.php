@@ -2,7 +2,8 @@
 /*
  * @return array
  */
-function tz_list() {
+function tz_list()
+{
     $zones_array = array();
     $timestamp = time();
     $dummy_datetime_object = new DateTime();
