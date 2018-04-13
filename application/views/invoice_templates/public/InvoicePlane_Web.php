@@ -60,7 +60,7 @@
             <div class="row">
                 <div class="col-xs-12 col-md-6 col-lg-5">
 
-                    <h4><?php _htmlsc($invoice->user_name); ?></h4>
+                    <h4><?php _htmlsc(format_client($invoice)); ?></h4>
                     <p><?php if ($invoice->user_vat_id) {
                             echo lang("vat_id_short") . ": " . $invoice->user_vat_id . '<br>';
                         } ?>
@@ -82,8 +82,10 @@
                         <?php if ($invoice->user_zip) {
                             echo htmlsc($invoice->user_zip) . '<br>';
                         } ?>
+                        <?php if ($invoice->user_mobile) { ?>M: <?php echo htmlsc($invoice->user_mobile); ?>
+                        <br><?php } ?>
                         <?php if ($invoice->user_phone) { ?><?php echo trans('phone_abbr'); ?>: <?php echo htmlsc($invoice->user_phone); ?>
-                            <br><?php } ?>
+                        <br><?php } ?>
                         <?php if ($invoice->user_fax) { ?><?php echo trans('fax_abbr'); ?>: <?php echo htmlsc($invoice->user_fax); ?><?php } ?>
                     </p>
 
@@ -115,6 +117,10 @@
                         } ?>
                         <?php if ($invoice->client_phone) {
                             echo trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone); ?>
+                            <br>
+                        <?php } ?>
+                        <?php if ($invoice->client_mobile) {
+                            echo 'M: ' . htmlsc($invoice->client_mobile); ?>
                             <br>
                         <?php } ?>
                     </p>

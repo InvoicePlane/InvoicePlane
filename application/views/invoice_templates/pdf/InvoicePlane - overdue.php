@@ -35,23 +35,25 @@
             if ($invoice->client_city) {
                 echo htmlsc($invoice->client_city) . ' ';
             }
-            if ($invoice->client_state) {
-                echo htmlsc($invoice->client_state) . ' ';
-            }
             if ($invoice->client_zip) {
                 echo htmlsc($invoice->client_zip);
             }
             echo '</div>';
         }
-        if ($invoice->client_country) {
-            echo '<div>' . get_country_name(trans('cldr'), $invoice->client_country) . '</div>';
+        if ($invoice->client_state) {
+            echo '<div>' . htmlsc($invoice->client_state) . ' ';
         }
-
-        echo '<br/>';
+        if ($invoice->client_country) {
+            echo get_country_name(trans('cldr'), $invoice->client_country) . '</div>';
+        }
 
         if ($invoice->client_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
-        } ?>
+        } 
+        if ($invoice->client_mobile) {
+            echo '<div>M: ' . htmlsc($invoice->client_mobile) . '</div>';
+        }
+        ?>
 
     </div>
     <div id="company">
@@ -73,22 +75,23 @@
             if ($invoice->user_city) {
                 echo htmlsc($invoice->user_city) . ' ';
             }
-            if ($invoice->user_state) {
-                echo htmlsc($invoice->user_state) . ' ';
-            }
             if ($invoice->user_zip) {
                 echo htmlsc($invoice->user_zip);
             }
             echo '</div>';
         }
-        if ($invoice->user_country) {
-            echo '<div>' . get_country_name(trans('cldr'), $invoice->user_country) . '</div>';
+        if ($invoice->user_state) {
+            echo '<div>' . htmlsc($invoice->user_state) . ' ';
         }
-
-        echo '<br/>';
+        if ($invoice->user_country) {
+            echo get_country_name(trans('cldr'), $invoice->user_country) . '</div>';
+        }
 
         if ($invoice->user_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->user_phone) . '</div>';
+        }
+        if ($invoice->user_mobile) {
+            echo '<div>M: ' . htmlsc($invoice->user_mobile) . '</div>';
         }
         if ($invoice->user_fax) {
             echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($invoice->user_fax) . '</div>';

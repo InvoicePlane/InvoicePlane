@@ -67,7 +67,7 @@
             <div class="row">
                 <div class="col-xs-12 col-md-6 col-lg-5">
 
-                    <h4><?php _htmlsc($quote->user_name); ?></h4>
+                    <h4><?php _htmlsc(format_client($quote)); ?></h4>
                     <p><?php if ($quote->user_vat_id) {
                             echo lang("vat_id_short") . ": " . $quote->user_vat_id . '<br>';
                         } ?>

@@ -16,7 +16,7 @@
 
     <div id="client">
         <div>
-            <b><?php _htmlsc($quote->client_name); ?></b>
+            <b><?php _htmlsc(format_client($quote)); ?></b>
         </div>
         <?php if ($quote->client_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $quote->client_vat_id . '</div>';
