@@ -236,7 +236,7 @@
 
 </main>
 
-<footer style="font-size: 0.6em; text-align: justify;">
+<footer>
     <?php if ($quote->notes) : ?>
         <div class="notes">
             <b><?php _trans('notes'); ?></b><br/>
