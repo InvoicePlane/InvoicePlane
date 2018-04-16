@@ -82,7 +82,7 @@
                         <?php if ($invoice->user_zip) {
                             echo htmlsc($invoice->user_zip) . '<br>';
                         } ?>
-                        <?php if ($invoice->user_mobile) { ?>M: <?php echo htmlsc($invoice->user_mobile); ?>
+                        <?php if ($invoice->user_mobile) { ?><?php echo trans('mobile_abbr') ?>: <?php echo htmlsc($invoice->user_mobile); ?>
                         <br><?php } ?>
                         <?php if ($invoice->user_phone) { ?><?php echo trans('phone_abbr'); ?>: <?php echo htmlsc($invoice->user_phone); ?>
                         <br><?php } ?>
