@@ -260,6 +260,7 @@ class Invoices extends Admin_Controller
         $this->load->helper('pdf');
 
         if (get_setting('mark_invoices_sent_pdf') == 1) {
+            $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
             $this->mdl_invoices->mark_sent($invoice_id);
         }
 
