@@ -105,7 +105,19 @@ class Invoices extends Admin_Controller
             $this->layout->render();
         }
     }
-
+    
+    /**
+     * @param $invoice_id
+     */
+    public function set_sent($invoice_id)
+    {
+        $this->mdl_invoices->mark_sent($invoice_id);
+        
+        // Redirect to invoice index
+        redirect('invoices/index');
+        
+    }
+    
     /**
      * @param $invoice
      */
