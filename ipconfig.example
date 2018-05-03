@@ -72,6 +72,13 @@ ENABLE_INVOICE_DELETION=false
 
 DISABLE_READ_ONLY=false
 
+## Setup Disabling
+# Once the setup is completed this variable will be set to
+# true. There should be no need to change it back to false
+# later.
+
+DISABLE_SETUP=false
+
 # ////////////////////////////////////////////////////////
 # There are many more configuration variables available
 # that can be set in this file but usually there is no need
