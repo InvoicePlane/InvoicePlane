@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 /**
  * Class IP_Model
  *
@@ -34,6 +36,13 @@ class IP_Model extends CI_Model
     public $date_created_field;
 
     public $date_modified_field;
+
+    public $date_deleted_field;
+
+    public $date_fields = [
+        'created_at',
+        'modified_at',
+    ];
 
     /** @var array */
     public $native_methods = [
@@ -424,6 +433,7 @@ class IP_Model extends CI_Model
         $return = [];
 
         foreach ($items as $item) {
+            $this->processDateFields($item);
             $return[] = $this->joinModels($item);
         }
 
@@ -440,6 +450,8 @@ class IP_Model extends CI_Model
     {
         $item = $this->query->row();
 
+        $this->processDateFields($item);
+
         return $this->joinModels($item, true);
     }
 
@@ -455,6 +467,7 @@ class IP_Model extends CI_Model
         $return = [];
 
         foreach ($items as $item) {
+            $item = $this->processDateFields($item);
             $return[] = $this->joinModels($item);
         }
 
@@ -471,7 +484,46 @@ class IP_Model extends CI_Model
     {
         $item = $this->query->row_array();
 
+        $item = $this->processDateFields($item);
+
         return $this->joinModels($item, true);
+    }
+
+    /**
+     * Convert specified date fields of a model into Carbon powered fields
+     * for more functions out-of-the-box
+     *
+     * @param mixed $item
+     *
+     * @return object|array
+     */
+    public function processDateFields($item)
+    {
+        if ($this->date_fields) {
+            if (!is_array($this->date_fields)) {
+                $this->date_fields = [$this->date_fields];
+            }
+
+            // Loop trough all items and convert basic DATETIME MySQL fields into
+            // Carbon instances
+            foreach ($this->date_fields as $field) {
+                // Process object items
+                if (is_object($item)) {
+                    if (isset($item->$field) && !is_null($item->$field)) {
+                        $item->$field = Carbon::parse($item->$field);
+                    }
+                }
+
+                // Process array items
+                if (is_array($item)) {
+                    if (isset($item[$field]) && !is_null($item[$field])) {
+                        $item[$field] = Carbon::parse($item[$field]);
+                    }
+                }
+            }
+        }
+
+        return $item;
     }
 
     /**

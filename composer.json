@@ -9,9 +9,13 @@
     "php": ">=7.1.0",
     "codeigniter/framework": "3.1.6",
     "vlucas/phpdotenv": "^2.4",
-    "filp/whoops": "^2.1"
+    "filp/whoops": "^2.1",
+    "nesbot/carbon": "^1.27"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.0"
+  },
+  "autoload": {
+    "classmap": ["vendor/nesbot/carbon/src/Carbon/Carbon.php"]
   }
 }
