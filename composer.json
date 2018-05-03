@@ -10,9 +10,32 @@
     "codeigniter/framework": "3.1.6",
     "vlucas/phpdotenv": "^2.4",
     "filp/whoops": "^2.1",
-    "nesbot/carbon": "^1.27"
+    "nesbot/carbon": "^1.27",
+    "magefly/Aauth": "*"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.0"
+  },
+  "repositories":[
+    {
+      "type": "package",
+      "package": {
+        "name": "magefly/Aauth",
+        "version": "2.5.14",
+        "source": {
+          "url": "https://github.com/magefly/CodeIgniter-Aauth",
+          "type": "git",
+          "reference": "master"
+        }
+      }
+    }
+  ],
+  "scripts": {
+    "post-update-cmd": [
+      "php -r \"copy('vendor/magefly/Aauth/application/libraries/Aauth.php', 'application/libraries/vendor/Aauth.php');\""
+    ],
+    "post-install-cmd": [
+      "php -r \"copy('vendor/magefly/Aauth/application/libraries/Aauth.php', 'application/libraries/vendor/Aauth.php');\""
+    ]
   }
 }

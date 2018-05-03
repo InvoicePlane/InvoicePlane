@@ -43,6 +43,9 @@ class Base_Controller extends MX_Controller
         $this->load->library('session');
         $this->load->database();
 
+        // Load the auth library
+        $this->load->library('vendor/Aauth');
+
         // Load the layout module to start building the app
         $this->load->module('layout');
     }
