@@ -89,6 +89,17 @@
                                     </a>
                                 </li>
                             <?php } ?>
+                            <?php if ($invoice->is_read_only != 1) { ?>
+                                <form action="<?php echo site_url('invoices/set_sent/' . $invoice->invoice_id); ?>"
+                                        method="POST">
+                                    <?php _csrf_field(); ?>
+                                    <button type="submit" class="dropdown-button"
+                                            onclick="return confirm('<?php _trans('set_sent_warning'); ?>');">
+                                        <i class="fa fa-envelope fa-margin"></i> <?php _trans('set_sent'); ?>
+                                    </button>
+                                </form>
+                                
+                            <?php } ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                    target="_blank">
