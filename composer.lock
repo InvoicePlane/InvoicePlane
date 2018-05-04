@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d21a605fa327a54bc397bf0b53fa1ce4",
+    "content-hash": "fee1e8383c6af269e6651fce7f97d3de",
     "packages": [
         {
             "name": "codeigniter/framework",
-            "version": "3.1.6",
+            "version": "3.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bcit-ci/CodeIgniter.git",
-                "reference": "7e4f63cd4b792e7dc2dc4b8b0183a6072a3f9462"
+                "reference": "71e647782764184e3aab4faffe6d99176758979f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/7e4f63cd4b792e7dc2dc4b8b0183a6072a3f9462",
-                "reference": "7e4f63cd4b792e7dc2dc4b8b0183a6072a3f9462",
+                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/71e647782764184e3aab4faffe6d99176758979f",
+                "reference": "71e647782764184e3aab4faffe6d99176758979f",
                 "shasum": ""
             },
             "require": {
@@ -37,7 +37,7 @@
             ],
             "description": "The CodeIgniter framework",
             "homepage": "https://codeigniter.com",
-            "time": "2017-09-25T16:43:58+00:00"
+            "time": "2018-03-22T14:48:55+00:00"
         },
         {
             "name": "filp/whoops",
