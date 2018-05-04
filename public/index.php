@@ -150,7 +150,7 @@ define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 define('BASEPATH', $system_path);
 
 // Path to the front controller (this file) directory
-define('FCPATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+define('FCPATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
 // Name of the "system" directory
 define('SYSDIR', basename(BASEPATH));
@@ -220,6 +220,19 @@ define('ENVIRONMENT', IP_ENV);
 
 // Enable the debug mode if applicable
 define('IP_DEBUG', env_bool('ENABLE_DEBUG'));
+
+// Location of the ipconfig file
+define('IPCONFIG_FILE', FCPATH . 'ipconfig');
+
+// Logs folder
+define('LOGS_FOLDER', APPPATH . 'logs' . DIRECTORY_SEPARATOR);
+
+// Uploads folders and folders for temporary files
+define('UPLOADS_FOLDER', FCPATH . 'uploads' . DIRECTORY_SEPARATOR);
+define('UPLOADS_ARCHIVE_FOLDER', UPLOADS_FOLDER . 'archive' . DIRECTORY_SEPARATOR);
+define('UPLOADS_CFILES_FOLDER', UPLOADS_FOLDER . 'customer_files' . DIRECTORY_SEPARATOR);
+define('UPLOADS_TEMP_FOLDER', UPLOADS_FOLDER . 'temp' . DIRECTORY_SEPARATOR);
+define('UPLOADS_TEMP_MPDF_FOLDER', UPLOADS_TEMP_FOLDER . 'mpdf' . DIRECTORY_SEPARATOR);
 
 /*
  *---------------------------------------------------------------

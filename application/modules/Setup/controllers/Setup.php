@@ -10,6 +10,12 @@
  */
 class Setup extends MX_Controller
 {
+    /** @var bool */
+    public $errors = false;
+
+    /**
+     * Setup constructor.
+     */
     public function __construct()
     {
         // Abort if the setup was already run
@@ -19,6 +25,9 @@ class Setup extends MX_Controller
 
         // Load the base controller
         parent::__construct();
+
+        // Load the setup model
+        $this->load->model('mdl_setup');
 
         // Load the layout module and configure it
         $this->load->module('layout');
@@ -35,7 +44,10 @@ class Setup extends MX_Controller
             redirect('setup/requirements');
         }
 
-        $this->layout->render('setup/index');
+        // Reset the setup progress
+        $this->session->unset_userdata('install_step');
+
+        $this->layout->render('setup/index', ['progress' => 12]);
     }
 
     /**
@@ -50,7 +62,12 @@ class Setup extends MX_Controller
 
         $this->checkStep('requirements');
 
-        //
+        $this->layout->render('setup/requirements', [
+            'basics' => $this->checkBasics(),
+            'writables' => $this->checkWritables(),
+            'errors' => $this->errors,
+            'progress' => 24,
+        ]);
     }
 
     /**
@@ -148,5 +165,83 @@ class Setup extends MX_Controller
         if ($this->session->userdata('install_step') !== $step) {
             redirect('setup');
         }
+    }
+
+    /**
+     * Check the basics needed for InvoicePlane such as the PHP version
+     * and a correctly set timezone.
+     *
+     * @return array
+     */
+    private function checkBasics()
+    {
+        $checks = [];
+
+        $php_required = '7.1';
+        $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+
+        if ($php_installed < $php_required) {
+            $this->errors = true;
+
+            $checks[] = [
+                'message' => sprintf(trans('setup_php_version_fail'), $php_installed, $php_required),
+                'success' => false,
+            ];
+        } else {
+            $checks[] = [
+                'message' => trans('setup_php_version_success'),
+                'success' => true,
+            ];
+        }
+
+        if (!ini_get('date.timezone')) {
+            $checks[] = [
+                'message' => sprintf(trans('setup_php_timezone_fail'), date_default_timezone_get()),
+                'success' => true,
+                'warning' => true,
+            ];
+        } else {
+            $checks[] = [
+                'message' => trans('setup_php_timezone_success'),
+                'success' => true,
+            ];
+        }
+
+        return $checks;
+    }
+
+    /**
+     * Check if specific files or folders are writable by the application
+     *
+     * @return array
+     */
+    private function checkWritables()
+    {
+        $checks = [];
+
+        $writables = [
+            IPCONFIG_FILE,
+            LOGS_FOLDER,
+        ];
+
+        foreach ($writables as $writable) {
+            $writable_check = [
+                'message' => '<code>' . str_replace(FCPATH, '', $writable) . '</code>&nbsp;',
+                'success' => true,
+            ];
+
+            if (!is_writable($writable)) {
+                $writable_check['message'] .= trans('setup_file_is_not_writable');
+                $writable_check['success'] = false;
+
+                $this->errors = true;
+            } else {
+                $writable_check['message'] .= trans('setup_file_is_writable');
+            }
+
+            $checks[] = $writable_check;
+        }
+
+        return $checks;
     }
 }
