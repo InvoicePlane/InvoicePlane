@@ -55,18 +55,18 @@ class Setup extends MX_Controller
      */
     public function requirements()
     {
+        $this->checkStep('requirements');
+
         if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'database');
             redirect('setup/database');
         }
 
-        $this->checkStep('requirements');
-
         $this->layout->render('setup/requirements', [
             'basics' => $this->checkBasics(),
             'writables' => $this->checkWritables(),
             'errors' => $this->errors,
-            'progress' => 24,
+            'progress' => 25,
         ]);
     }
 
@@ -75,14 +75,32 @@ class Setup extends MX_Controller
      */
     public function database()
     {
+        $this->checkStep('database');
+
         if ($this->input->post('btn_continue')) {
+            $this->load->database();
+
             $this->session->set_userdata('install_step', 'databaseInit');
             redirect('setup/database-init');
         }
 
-        $this->checkStep('database');
+        if ($this->input->post('db_hostname')) {
+            // Write a new database configuration to the ipconfig.php file
+            $this->write_database_config(
+                $this->input->post('db_hostname'),
+                $this->input->post('db_username'),
+                $this->input->post('db_password'),
+                $this->input->post('db_database'),
+                $this->input->post('db_prefix'),
+                $this->input->post('db_port')
+            );
+        }
 
-        //
+        $this->layout->render('setup/database', [
+            'database' => $this->check_database(),
+            'errors' => $this->errors,
+            'progress' => 38,
+        ]);
     }
 
     /**
@@ -90,14 +108,17 @@ class Setup extends MX_Controller
      */
     public function databaseInit()
     {
+        $this->checkStep('databaseInit');
+
         if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'adminAccount');
             redirect('setup/admin-account');
         }
 
-        $this->checkStep('databaseInit');
-
-        //
+        $this->layout->render('setup/database_init', [
+            'errors' => $this->errors,
+            'progress' => 50,
+        ]);
     }
 
     /**
@@ -243,5 +264,72 @@ class Setup extends MX_Controller
         }
 
         return $checks;
+    }
+
+    /**
+     * @param string $hostname
+     * @param string $username
+     * @param string $password
+     * @param string $database
+     * @param string $prefix
+     * @param int    $port
+     */
+    private function write_database_config($hostname, $username, $password, $database, $prefix, $port = 3306)
+    {
+        $config = file_get_contents(IPCONFIG_FILE);
+
+        $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME=" . $hostname, $config);
+        $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME=" . $username, $config);
+        $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD=" . $password, $config);
+        $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE=" . $database, $config);
+        $config = preg_replace("/DB_PREFIX=(.*)?/", "DB_PREFIX=" . $prefix, $config);
+        $config = preg_replace("/DB_PORT=(.*)?/", "DB_PORT=" . $port, $config);
+
+        write_file(IPCONFIG_FILE, $config);
+    }
+
+    /**
+     * @return array
+     */
+    private function check_database()
+    {
+        // Reload the ipconfig.php file
+        global $dotenv;
+        $dotenv->overload();
+
+        // Load the database config and configure it to test the connection
+        include(APPPATH . 'config/database.php');
+        $db = $db['default'];
+        $db['autoinit'] = false;
+        $db['db_debug'] = false;
+
+        // Check if there is some configuration set
+        if (empty($db['hostname'])) {
+            $this->errors = true;
+
+            return [
+                'message' => trans('cannot_connect_database_server'),
+                'success' => false,
+            ];
+        }
+
+        // Initialize the database connection, turn off automatic error reporting to display connection issues manually
+        error_reporting(0);
+        $db_object = $this->load->database($db, true);
+
+        // Try to initialize the database connection
+        if (!$db_object->initialize()) {
+            $this->errors = true;
+
+            return [
+                'message' => trans('setup_db_cannot_connect'),
+                'success' => false,
+            ];
+        }
+
+        return [
+            'message' => trans('database_properly_configured'),
+            'success' => true,
+        ];
     }
 }
