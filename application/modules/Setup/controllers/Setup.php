@@ -55,7 +55,7 @@ class Setup extends MX_Controller
      */
     public function requirements()
     {
-        $this->checkStep('requirements');
+        $this->check_step('requirements');
 
         if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'database');
@@ -63,8 +63,8 @@ class Setup extends MX_Controller
         }
 
         $this->layout->render('setup/requirements', [
-            'basics' => $this->checkBasics(),
-            'writables' => $this->checkWritables(),
+            'basics' => $this->check_basics(),
+            'writables' => $this->check_writables(),
             'errors' => $this->errors,
             'progress' => 25,
         ]);
@@ -75,7 +75,7 @@ class Setup extends MX_Controller
      */
     public function database()
     {
-        $this->checkStep('database');
+        $this->check_step('database');
 
         if ($this->input->post('btn_continue')) {
             $this->load->database();
@@ -108,9 +108,14 @@ class Setup extends MX_Controller
      */
     public function databaseInit()
     {
-        $this->checkStep('databaseInit');
+        $this->check_step('databaseInit');
 
         if ($this->input->post('btn_continue')) {
+
+            $this->load->database();
+            $this->mdl_setup->run_base_migration();
+            $this->mdl_setup->run_seeds();
+
             $this->session->set_userdata('install_step', 'adminAccount');
             redirect('setup/admin-account');
         }
@@ -126,12 +131,12 @@ class Setup extends MX_Controller
      */
     public function adminAccount()
     {
+        $this->check_step('adminAccount');
+
         if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'systemSettings');
             redirect('setup/system-settings');
         }
-
-        $this->checkStep('adminAccount');
 
         //
     }
@@ -141,12 +146,12 @@ class Setup extends MX_Controller
      */
     public function systemSettings()
     {
+        $this->check_step('systemSettings');
+
         if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'advancedSettings');
             redirect('setup/advanced-settings');
         }
-
-        $this->checkStep('systemSettings');
 
         //
     }
@@ -156,12 +161,12 @@ class Setup extends MX_Controller
      */
     public function advancedSettings()
     {
+        $this->check_step('advancedSettings');
+
         if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('install_step', 'completed');
             redirect('setup/completed');
         }
-
-        $this->checkStep('advancedSettings');
 
         //
     }
@@ -171,7 +176,7 @@ class Setup extends MX_Controller
      */
     public function completed()
     {
-        $this->checkStep('completed');
+        $this->check_step('completed');
 
         //
     }
@@ -181,7 +186,7 @@ class Setup extends MX_Controller
      *
      * @param string $step
      */
-    private function checkStep($step)
+    private function check_step($step)
     {
         if ($this->session->userdata('install_step') !== $step) {
             redirect('setup');
@@ -194,7 +199,7 @@ class Setup extends MX_Controller
      *
      * @return array
      */
-    private function checkBasics()
+    private function check_basics()
     {
         $checks = [];
 
@@ -236,7 +241,7 @@ class Setup extends MX_Controller
      *
      * @return array
      */
-    private function checkWritables()
+    private function check_writables()
     {
         $checks = [];
 

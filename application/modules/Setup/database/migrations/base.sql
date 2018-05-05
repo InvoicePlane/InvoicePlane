@@ -191,6 +191,10 @@ CREATE TABLE `groups` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+INSERT INTO `groups` VALUES ('1', 'admin', 'Super Admin Group');
+INSERT INTO `groups` VALUES ('2', 'public', 'Public Access Group');
+INSERT INTO `groups` VALUES ('3', 'default', 'Default Access Group');
+
 # Dump of table login_attempts
 # ------------------------------------------------------------
 

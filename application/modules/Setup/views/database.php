@@ -7,10 +7,10 @@
 
     <?php if (!$database['success']) { ?>
 
-        <p class="mb-5"><?php _trans('setup_database_message'); ?></p>
+        <p class="mt-5 mb-5"><?php _trans('setup_database_message'); ?></p>
 
         <?php if ($database['message'] && $_POST) { ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-danger mb-5">
                 <b><?php _trans('failure'); ?></b>
                 <br>
                 <?php echo $database['message']; ?>
