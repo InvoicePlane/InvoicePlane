@@ -45,7 +45,10 @@ class Setup extends MX_Controller
         }
 
         // Reset the setup progress
-        $this->session->unset_userdata('install_step');
+        if ($this->session->userdata('install_step') !== '') {
+            // @TODO Add a alert that the setup seems to be restarted [Kovah 2018-05-07]
+            $this->session->unset_userdata('install_step');
+        }
 
         $this->layout->render('setup/index', ['progress' => 12]);
     }
