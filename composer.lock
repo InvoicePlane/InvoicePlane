@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fee1e8383c6af269e6651fce7f97d3de",
+    "content-hash": "bb349aa9785171906727dae4e4af640b",
     "packages": [
         {
             "name": "codeigniter/framework",
@@ -106,7 +106,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/magefly/CodeIgniter-Aauth",
-                "reference": "master"
+                "reference": "2.5-stable"
             },
             "type": "library"
         },

@@ -25,7 +25,7 @@
         "source": {
           "url": "https://github.com/magefly/CodeIgniter-Aauth",
           "type": "git",
-          "reference": "master"
+          "reference": "2.5-stable"
         }
       }
     }
