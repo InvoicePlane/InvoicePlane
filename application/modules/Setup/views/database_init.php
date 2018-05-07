@@ -2,7 +2,7 @@
 
 <p class="mt-5 mb-5"><?php _trans('setup_db_database_init_info'); ?></p>
 
-<form action="/setup/database-init/" method="post">
+<form action="<?php echo site_url('setup/database-init'); ?>" method="post">
 
     <?php _csrf_field(); ?>
 

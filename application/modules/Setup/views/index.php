@@ -5,7 +5,7 @@
     setup will guide you trough the initial configuration of both your database and the application. First, please
     select a language to confinue.</p>
 
-<form action="/setup/" method="post">
+<form action="<?php echo site_url('setup'); ?>" method="post">
 
     <?php _csrf_field(); ?>
 

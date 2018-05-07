@@ -33,7 +33,7 @@
     } ?>
 </ul>
 
-<form action="/setup/requirements" method="post">
+<form action="<?php echo site_url('setup/requirements'); ?>" method="post">
 
     <?php _csrf_field(); ?>
 

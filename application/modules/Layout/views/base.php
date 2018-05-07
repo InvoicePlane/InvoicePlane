@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="/assets/core/core.css">
-    <script src="/assets/core/dependencies.js"></script>
+    <link rel="stylesheet" href="<?php echo base_url('assets/core/core.css'); ?>">
+    <script src="<?php echo base_url('assets/core/dependencies.js'); ?>"></script>
 </head>
 <body>
 

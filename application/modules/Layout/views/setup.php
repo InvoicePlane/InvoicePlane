@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="/assets/core/core.css">
-    <script src="/assets/core/dependencies.js"></script>
+    <link rel="stylesheet" href="<?php echo base_url('assets/core/core.css'); ?>">
+    <script src="<?php echo base_url('assets/core/dependencies.js'); ?>"></script>
 </head>
 <body>
 
@@ -11,7 +11,7 @@
         <div class="setup-wrapper col-md-8 col-lg-6">
 
             <h1 class="ip-logo text-center mt-5">
-                <img src="/assets/ip_logo.svg" alt="InvoicePlane" width="300px">
+                <img src="<?php echo base_url('assets/ip_logo.svg'); ?>" alt="InvoicePlane" width="300px">
             </h1>
 
             <div class="card-wrapper mt-5 mb-4">
