@@ -19,7 +19,7 @@ class Setup extends MX_Controller
     public function __construct()
     {
         // Abort if the setup was already run
-        if (env_bool('DISABLE_SETUP', false)) {
+        if (env('DISABLE_SETUP', false)) {
             show_error('The setup is disabled.', 403);
         }
 

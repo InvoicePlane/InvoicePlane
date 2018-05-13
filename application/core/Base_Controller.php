@@ -23,7 +23,7 @@ class Base_Controller extends MX_Controller
      */
     public function __construct()
     {
-        if (env_bool('ENABLE_DEBUG')) {
+        if (env('ENABLE_DEBUG')) {
             $this->output->enable_profiler(true);
         }
 

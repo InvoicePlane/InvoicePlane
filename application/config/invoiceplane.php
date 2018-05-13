@@ -11,7 +11,7 @@
 | value to true
 |
 */
-$config['enable_invoice_deletion'] = env_bool('ENABLE_INVOICE_DELETION', false);
+$config['enable_invoice_deletion'] = env('ENABLE_INVOICE_DELETION', false);
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +24,4 @@ $config['enable_invoice_deletion'] = env_bool('ENABLE_INVOICE_DELETION', false);
 | setting the value to true
 |
 */
-$config['disable_read_only'] = env_bool('DISABLE_READ_ONLY', false);
+$config['disable_read_only'] = env('DISABLE_READ_ONLY', false);

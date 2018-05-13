@@ -34,7 +34,7 @@ $config['base_url'] = env('APP_URL');
 | variable so that it is blank.
 |
 */
-$config['index_page'] = env_bool('REMOVE_INDEX') ? '' : 'index.php';
+$config['index_page'] = env('REMOVE_INDEX') ? '' : 'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -380,9 +380,9 @@ $config['sess_driver'] = env('SESS_DRIVER', 'files');
 $config['sess_cookie_name'] = env('SESS_COOKIE_NAME', 'ip_sessions');
 $config['sess_expiration'] = env('SESS_EXPIRATION', 864000);
 $config['sess_save_path'] = env('SESS_SAVE_PATH', null);
-$config['sess_match_ip'] = env_bool('SESS_MATH_IP', false);
+$config['sess_match_ip'] = env('SESS_MATH_IP', false);
 $config['sess_time_to_update'] = env('SESS_TIME_TO_UPDATE', 300);
-$config['sess_regenerate_destroy'] = env_bool('SESS_REGENERATE_DESTROY', false);
+$config['sess_regenerate_destroy'] = env('SESS_REGENERATE_DESTROY', false);
 
 /*
 |--------------------------------------------------------------------------
@@ -402,8 +402,8 @@ $config['sess_regenerate_destroy'] = env_bool('SESS_REGENERATE_DESTROY', false);
 $config['cookie_prefix'] = env('COOKIE_PREFIX', '');
 $config['cookie_domain'] = env('COOKIE_DOMAIN', '');
 $config['cookie_path'] = env('COOKIE_PATH', '/');
-$config['cookie_secure'] = env_bool('COOKIE_SECURE', false);
-$config['cookie_httponly'] = env_bool('COOKIE_HTTPONLY', false);
+$config['cookie_secure'] = env('COOKIE_SECURE', false);
+$config['cookie_httponly'] = env('COOKIE_HTTPONLY', false);
 
 /*
 |--------------------------------------------------------------------------
@@ -447,7 +447,7 @@ $config['global_xss_filtering'] = false;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection'] = env_bool('CSRF_PROTECTION', true);
+$config['csrf_protection'] = env('CSRF_PROTECTION', true);
 $config['csrf_token_name'] = '_ip_csrf';
 $config['csrf_cookie_name'] = 'ip_csrf_cookie';
 $config['csrf_expire'] = 3600;

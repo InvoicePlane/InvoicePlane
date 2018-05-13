@@ -81,7 +81,7 @@ $db['default'] = [
     'database' => env('DB_DATABASE', ''),
     'dbdriver' => env('DB_DRIVER', 'mysqli'),
     'dbprefix' => env('DB_PREFIX', ''),
-    'pconnect' => env_bool('DB_PERSISTENT', false),
+    'pconnect' => env('DB_PERSISTENT', false),
     'db_debug' => (ENVIRONMENT !== 'production'),
     'cache_on' => false,
     'cachedir' => '',
