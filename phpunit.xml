@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -21,6 +20,7 @@
       <directory suffix=".php">./application</directory>
       <exclude>
         <directory suffix=".php">/application/core/MX</directory>
+        <directory suffix=".php">/application/libraries/vendor</directory>
       </exclude>
     </whitelist>
   </filter>
