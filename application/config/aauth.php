@@ -10,7 +10,8 @@
 | EXPLANATION
 | -------------------------------------------------------------------
 |
-|   ['no_permission']                   If user don't have permisssion to see the page he will be redirected the page spesificed.
+|   ['no_permission']                   If user don't have permisssion to see the page he will be redirected
+|                                       the page specified.
 |
 |   ['admin_group']                     Name of admin group
 |   ['default_group']                   Name of default group, the new user is added in it
@@ -28,16 +29,19 @@
 |   ['user_variables']                  The table which contains users variables
 |   ['login_attempts']                  The table which contains login attempts
 |
-|   ['remember']                        Remember time (in relative format) elapsed after connecting and automatic LogOut for usage with Cookies
+|   ['remember']                        Remember time (in relative format) elapsed after connecting and automatic
+|                                       LogOut for usage with Cookies.
 |                                       Relative Format (e.g. '+ 1 week', '+ 1 month', '+ first day of next month')
 |                                       for details see http://php.net/manual/de/datetime.formats.relative.php
 |
 |   ['max']                             Maximum char long for Password
 |   ['min']                             Minimum char long for Password
 |
-|   ['additional_valid_chars']          Additional valid chars for username. Non alphanumeric characters that are allowed by default
+|   ['additional_valid_chars']          Additional valid chars for username. Non alphanumeric characters that
+|                                       are allowed by default
 |
-|   ['ddos_protection']                 Enables the DDoS Protection, user will be banned temporary when he exceed the login 'try'
+|   ['ddos_protection']                 Enables the DDoS Protection, user will be banned temporary when he
+                                       exceed the login 'try'
 |
 |   ['recaptcha_active']                Enables reCAPTCHA (for details see www.google.com/recaptcha/admin)
 |   ['recaptcha_login_attempts']        Login Attempts to display reCAPTCHA
@@ -56,7 +60,8 @@
 |
 |   ['login_with_name']                 Login Identificator, if TRUE username needed to login else email address.
 |
-|   ['email']                           Sender email address, used for remind_password, send_verification and reset_password
+|   ['email']                           Sender email address, used for remind_password, send_verification
+                                       and reset_password
 |   ['name']                            Sender name, used for remind_password, send_verification and reset_password
 |   ['email_config']                    Array of Config for CI's Email Library
 |
@@ -66,7 +71,7 @@
 |
 |   ['hash']                            Name of selected hashing algorithm (e.g. "md5", "sha256", "haval160,4", etc..)
 |                                       Please, run hash_algos() for know your all supported algorithms
-|   ['use_password_hash']               Enables to use PHP's own password_hash() function with BCrypt, needs PHP5.5 or higher
+|   ['use_password_hash']               Enables to use PHP's own password_hash() function with BCrypt
 |   ['password_hash_algo']              password_hash algorithm (PASSWORD_DEFAULT, PASSWORD_BCRYPT)
 |                                       for details see http://php.net/manual/de/password.constants.php
 |   ['password_hash_options']           password_hash options array
@@ -74,7 +79,8 @@
 |
 |   ['pm_encryption']                   Enables PM Encryption, needs configured CI Encryption Class.
 |                                       for details see: http://www.codeigniter.com/userguide2/libraries/encryption.html
-|   ['pm_cleanup_max_age']              PM Cleanup max age (in relative format), PM's are older than max age get deleted with 'cleanup_pms()'
+|   ['pm_cleanup_max_age']              PM Cleanup max age (in relative format), PM's are older than max age get
+|                                       deleted with 'cleanup_pms()'
 |                                       Relative Format (e.g. '2 week', '1 month')
 |                                       for details see http://php.net/manual/de/datetime.formats.relative.php
 |
