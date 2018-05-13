@@ -1,0 +1,15 @@
+language: php
+
+php:
+  - '7.0'
+  - '7.1'
+  - '7.2'
+
+before_script:
+  - cp ipconfig.example ipconfig
+  - composer self-update
+  - composer install --no-interaction
+
+branches:
+  only:
+    - v2.0.0
