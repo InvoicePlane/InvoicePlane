@@ -7,12 +7,12 @@
     <p>Filename: <?php echo $exception->getFile(); ?></p>
     <p>Line Number: <?php echo $exception->getLine(); ?></p>
 
-    <?php if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE === true): ?>
+    <?php if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE === true) : ?>
 
         <p>Backtrace:</p>
         <?php foreach ($exception->getTrace() as $error): ?>
 
-            <?php if (isset($error['file']) && strpos($error['file'], realpath(BASEPATH)) !== 0): ?>
+            <?php if (isset($error['file']) && strpos($error['file'], realpath(BASEPATH)) !== 0) : ?>
 
                 <p style="margin-left:10px">
                     File: <?php echo $error['file']; ?><br/>

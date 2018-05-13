@@ -9,7 +9,7 @@ require_once(dirname(__FILE__) . '/MX/Loader.php');
  * @package      InvoicePlane
  * @author       InvoicePlane Developers & Contributors
  * @copyright    Copyright (c) 2012 - 2018, InvoicePlane (https://invoiceplane.com/)
- * @license      http://opensource.org/licenses/MIT	MIT License
+ * @license      http://opensource.org/licenses/MIT     MIT License
  * @link         https://invoiceplane.com
  */
 class IP_Loader extends MX_Loader

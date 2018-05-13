@@ -38,4 +38,4 @@ $lang = [
     'setup_php_timezone_success' => 'A valid timezone is configured.',
     'setup_php_version_fail' => 'PHP version %s is installed but InvoicePlane requires PHP version %s or higher.',
     'setup_php_version_success' => 'PHP appears to meet the installation requirement.',
-];;
+];

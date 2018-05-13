@@ -5,7 +5,7 @@
  * @package      InvoicePlane
  * @author       InvoicePlane Developers & Contributors
  * @copyright    Copyright (c) 2012 - 2018, InvoicePlane (https://invoiceplane.com/)
- * @license      http://opensource.org/licenses/MIT	MIT License
+ * @license      http://opensource.org/licenses/MIT     MIT License
  * @link         https://invoiceplane.com
  *
  * ///////////////////////////////////////////////////////////////
@@ -133,8 +133,8 @@ if (($_temp = realpath($system_path)) !== false) {
 // Is the system path correct?
 if (!is_dir($system_path)) {
     header('HTTP/1.1 503 Service Unavailable.', true, 503);
-    echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: ' . pathinfo(__FILE__,
-            PATHINFO_BASENAME);
+    $syspath = pathinfo(__FILE__, PATHINFO_BASENAME);
+    echo 'Your system folder path is not set correctly. Please open the following file and correct this: ' . $syspath;
     exit(3); // EXIT_CONFIG
 }
 
@@ -177,7 +177,7 @@ if (is_dir($application_folder)) {
         );
 } else {
     header('HTTP/1.1 503 Service Unavailable.', true, 503);
-    echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF;
+    echo 'Your application folder path is not set correctly. Please open the following file and correct this: ' . SELF;
     exit(3); // EXIT_CONFIG
 }
 
@@ -204,7 +204,7 @@ if (!isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)) 
         );
 } else {
     header('HTTP/1.1 503 Service Unavailable.', true, 503);
-    echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF;
+    echo 'Your view folder path is not set correctly. Please open the following file and correct this: ' . SELF;
     exit(3); // EXIT_CONFIG
 }
 

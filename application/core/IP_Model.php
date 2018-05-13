@@ -8,7 +8,7 @@ use Carbon\Carbon;
  * @package      InvoicePlane
  * @author       InvoicePlane Developers & Contributors
  * @copyright    Copyright (c) 2012 - 2018, InvoicePlane (https://invoiceplane.com/)
- * @license      http://opensource.org/licenses/MIT	MIT License
+ * @license      http://opensource.org/licenses/MIT     MIT License
  * @link         https://invoiceplane.com
  */
 class IP_Model extends CI_Model
@@ -127,10 +127,10 @@ class IP_Model extends CI_Model
     {
         if (substr($name, 0, 7) == 'filter_') {
             $this->filter[] = [substr($name, 7), $arguments];
-        } else {
-            call_user_func_array([$this->db, $name], $arguments);
+            return $this;
         }
 
+        call_user_func_array([$this->db, $name], $arguments);
         return $this;
     }
 
@@ -162,50 +162,6 @@ class IP_Model extends CI_Model
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * Retrieves a single record based on primary key value
-     *
-     * @param $id
-     *
-     * @return mixed
-     */
-    public function getById($id)
-    {
-        return $this->where($this->primary_key, $id)->get()->row();
-    }
-
-    /**
-     * Query builder which listens to methods in child model
-     *
-     * @param array $exclude
-     */
-    private function setDefaults($exclude = [])
-    {
-        $native_methods = $this->native_methods;
-
-        foreach ($exclude as $unset_method) {
-            unset($native_methods[array_search($unset_method, $native_methods)]);
-        }
-
-        foreach ($native_methods as $native_method) {
-            $native_method = 'default_' . $native_method;
-
-            if (method_exists($this, $native_method)) {
-                $this->$native_method();
-            }
-        }
-    }
-
-    private function runFilters()
-    {
-        foreach ($this->filter as $filter) {
-            call_user_func_array([$this->db, $filter[0]], $filter[1]);
-        }
-
-        // Clear the filter array since this should only be run once per model execution
-        $this->filter = [];
     }
 
     /**
@@ -254,6 +210,38 @@ class IP_Model extends CI_Model
     }
 
     /**
+     * Query builder which listens to methods in child model
+     *
+     * @param array $exclude
+     */
+    private function setDefaults($exclude = [])
+    {
+        $native_methods = $this->native_methods;
+
+        foreach ($exclude as $unset_method) {
+            unset($native_methods[array_search($unset_method, $native_methods)]);
+        }
+
+        foreach ($native_methods as $native_method) {
+            $native_method = 'default_' . $native_method;
+
+            if (method_exists($this, $native_method)) {
+                $this->$native_method();
+            }
+        }
+    }
+
+    private function runFilters()
+    {
+        foreach ($this->filter as $filter) {
+            call_user_func_array([$this->db, $filter[0]], $filter[1]);
+        }
+
+        // Clear the filter array since this should only be run once per model execution
+        $this->filter = [];
+    }
+
+    /**
      * Function to save an entry to the database
      *
      * @param null $id
@@ -297,7 +285,6 @@ class IP_Model extends CI_Model
             $this->session->set_flashdata('alert_success', trans('record_successfully_created'));
 
             return $this->db->insert_id();
-
         } else {
             if ($this->date_modified_field) {
                 if (is_array($db_array)) {
@@ -349,6 +336,62 @@ class IP_Model extends CI_Model
         $this->db->delete($this->table);
 
         $this->session->set_flashdata('alert_success', trans('record_successfully_deleted'));
+    }
+
+    /**
+     * Returns the CI query result object with joined entries
+     * $this->model_name->get()->result();
+     *
+     * @return mixed
+     */
+    public function result()
+    {
+        $items = $this->query->result();
+        $return = [];
+
+        foreach ($items as $item) {
+            $this->processDateFields($item);
+            $return[] = $this->joinModels($item);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Convert specified date fields of a model into Carbon powered fields
+     * for more functions out-of-the-box
+     *
+     * @param mixed $item
+     *
+     * @return object|array
+     */
+    public function processDateFields($item)
+    {
+        if ($this->date_fields) {
+            if (!is_array($this->date_fields)) {
+                $this->date_fields = [$this->date_fields];
+            }
+
+            // Loop trough all items and convert basic DATETIME MySQL fields into
+            // Carbon instances
+            foreach ($this->date_fields as $field) {
+                // Process object items
+                if (is_object($item)) {
+                    if (isset($item->$field) && !is_null($item->$field)) {
+                        $item->$field = Carbon::parse($item->$field);
+                    }
+                }
+
+                // Process array items
+                if (is_array($item)) {
+                    if (isset($item[$field]) && !is_null($item[$field])) {
+                        $item[$field] = Carbon::parse($item[$field]);
+                    }
+                }
+            }
+        }
+
+        return $item;
     }
 
     /**
@@ -422,25 +465,6 @@ class IP_Model extends CI_Model
     }
 
     /**
-     * Returns the CI query result object with joined entries
-     * $this->model_name->get()->result();
-     *
-     * @return mixed
-     */
-    public function result()
-    {
-        $items = $this->query->result();
-        $return = [];
-
-        foreach ($items as $item) {
-            $this->processDateFields($item);
-            $return[] = $this->joinModels($item);
-        }
-
-        return $return;
-    }
-
-    /**
      * Returns the CI query row object with joined entries
      * $this->model_name->get()->row();
      *
@@ -490,43 +514,6 @@ class IP_Model extends CI_Model
     }
 
     /**
-     * Convert specified date fields of a model into Carbon powered fields
-     * for more functions out-of-the-box
-     *
-     * @param mixed $item
-     *
-     * @return object|array
-     */
-    public function processDateFields($item)
-    {
-        if ($this->date_fields) {
-            if (!is_array($this->date_fields)) {
-                $this->date_fields = [$this->date_fields];
-            }
-
-            // Loop trough all items and convert basic DATETIME MySQL fields into
-            // Carbon instances
-            foreach ($this->date_fields as $field) {
-                // Process object items
-                if (is_object($item)) {
-                    if (isset($item->$field) && !is_null($item->$field)) {
-                        $item->$field = Carbon::parse($item->$field);
-                    }
-                }
-
-                // Process array items
-                if (is_array($item)) {
-                    if (isset($item[$field]) && !is_null($item[$field])) {
-                        $item[$field] = Carbon::parse($item[$field]);
-                    }
-                }
-            }
-        }
-
-        return $item;
-    }
-
-    /**
      * Returns CI query num_rows()
      * $this->model_name->get()->count();
      *
@@ -561,6 +548,18 @@ class IP_Model extends CI_Model
         } elseif (!$id) {
             return true;
         }
+    }
+
+    /**
+     * Retrieves a single record based on primary key value
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        return $this->where($this->primary_key, $id)->get()->row();
     }
 
     /**

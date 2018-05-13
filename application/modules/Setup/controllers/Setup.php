@@ -114,7 +114,6 @@ class Setup extends MX_Controller
         $this->check_step('databaseInit');
 
         if ($this->input->post('btn_continue')) {
-
             $this->load->database();
             $this->mdl_setup->run_base_migration();
             $this->mdl_setup->run_seeds();

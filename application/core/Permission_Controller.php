@@ -17,26 +17,24 @@
  * If the current controller is an AJAX or API controller a JSON
  * response is sent instead.
  *
- * @TODO Implement logging for failed access tries, check if throttling makes sense
+ * @TODO         Implement logging for failed access tries, check if throttling makes sense
  *
  * @package      InvoicePlane
  * @author       InvoicePlane Developers & Contributors
  * @copyright    Copyright (c) 2012 - 2018, InvoicePlane (https://invoiceplane.com/)
- * @license      http://opensource.org/licenses/MIT	MIT License
+ * @license      http://opensource.org/licenses/MIT     MIT License
  * @link         https://invoiceplane.com
  *
  */
 class Permission_Controller extends Base_Controller
 {
 
-    /** @var string */
-    protected $module_permission;
-
-    /** @var string */
-    protected $login_route = 'sessions/login';
-
     /** @var bool */
     public $ajax_controller = false;
+    /** @var string */
+    protected $module_permission;
+    /** @var string */
+    protected $login_route = 'sessions/login';
 
     /**
      * Permission_Controller constructor.
@@ -54,27 +52,26 @@ class Permission_Controller extends Base_Controller
     }
 
     /**
-     * @param string $permission_key
-     */
-    protected function permission(string $permission_key)
-    {
-        if (!$this->hasPermission($permission_key)) {
-
-            if ($this->ajax_controller) {
-                $this->sendJsonResponse();
-            }
-
-            show_error('Permission ' . $permission_key . ' is missing!', 403);
-        }
-    }
-
-    /**
      * If the user has no permissions set, redirect him to the login
      */
     protected function checkIfLoggedIn()
     {
         if (empty($this->session->userdata('user_permissions'))) {
             redirect($this->login_route);
+        }
+    }
+
+    /**
+     * @param string $permission_key
+     */
+    protected function permission(string $permission_key)
+    {
+        if (!$this->hasPermission($permission_key)) {
+            if ($this->ajax_controller) {
+                $this->sendJsonResponse();
+            }
+
+            show_error('Permission ' . $permission_key . ' is missing!', 403);
         }
     }
 
