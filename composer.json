@@ -14,7 +14,8 @@
     "magefly/Aauth": "*"
   },
   "require-dev": {
-    "symfony/var-dumper": "^4.0"
+    "symfony/var-dumper": "^4.0",
+    "phpunit/phpunit": "^7"
   },
   "repositories":[
     {
