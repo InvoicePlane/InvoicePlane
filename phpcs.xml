@@ -12,4 +12,9 @@
     <exclude name="Squiz.Classes.ValidClassName"/>
     <exclude name="PSR1.Methods.CamelCapsMethodName"/>
   </rule>
+
+  <!-- Disable long lines warning for language files -->
+  <rule ref="Generic.Files.LineLength">
+    <exclude-pattern>*/application/language/*</exclude-pattern>
+  </rule>
 </ruleset>
