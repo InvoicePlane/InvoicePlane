@@ -5,7 +5,11 @@
   <!-- Check the applications folder but exclude third-party stuff -->
   <file>./application</file>
   <exclude-pattern type="relative">^/application/core/MX/*</exclude-pattern>
+  <exclude-pattern type="relative">^/application/libraries/vendor/*</exclude-pattern>
 
   <!-- Enable the PSR-2 Code Standard rule -->
-  <rule ref="PSR2"/>
+  <rule ref="PSR2">
+    <exclude name="Squiz.Classes.ValidClassName"/>
+    <exclude name="PSR1.Methods.CamelCapsMethodName"/>
+  </rule>
 </ruleset>
