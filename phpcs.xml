@@ -6,6 +6,7 @@
   <file>./application</file>
   <exclude-pattern type="relative">^/application/core/MX/*</exclude-pattern>
   <exclude-pattern type="relative">^/application/libraries/vendor/*</exclude-pattern>
+  <exclude-pattern type="relative">^/tests/mocks/*</exclude-pattern>
 
   <!-- Enable the PSR-2 Code Standard rule -->
   <rule ref="PSR2">
