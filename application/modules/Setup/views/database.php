@@ -6,7 +6,6 @@
     <?php _csrf_field(); ?>
 
     <?php if (!$database['success']) { ?>
-
         <p class="mt-5 mb-5"><?php _trans('setup_database_message'); ?></p>
 
         <?php if ($database['message'] && $_POST) { ?>

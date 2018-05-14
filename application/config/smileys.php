@@ -14,7 +14,7 @@
 */
 $smileys = [
 
-    //	smiley			image name						width	height	alt
+    //  smiley          image name                      width   height  alt
 
     ':-)' => ['grin.gif', '19', '19', 'grin'],
     ':lol:' => ['lol.gif', '19', '19', 'LOL'],
