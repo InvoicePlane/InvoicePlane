@@ -17,14 +17,13 @@
  * If the current controller is an AJAX or API controller a JSON
  * response is sent instead.
  *
- * @TODO         Implement logging for failed access tries, check if throttling makes sense
+ * @TODO    Implement logging for failed access tries, check if throttling makes sense
  *
- * @package      InvoicePlane
- * @author       InvoicePlane Developers & Contributors
- * @copyright    Copyright (c) 2012 - 2018, InvoicePlane (https://invoiceplane.com/)
- * @license      http://opensource.org/licenses/MIT     MIT License
- * @link         https://invoiceplane.com
- *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018, InvoicePlane
+ * @license     http://opensource.org/licenses/MIT     MIT License
+ * @link        https://invoiceplane.com
  */
 class Permission_Controller extends Base_Controller
 {

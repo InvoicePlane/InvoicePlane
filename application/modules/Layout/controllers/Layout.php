@@ -1,16 +1,13 @@
 <?php
 
-/*
- * InvoicePlane
- *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
- */
-
 /**
  * Class Layout
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018, InvoicePlane
+ * @license     http://opensource.org/licenses/MIT     MIT License
+ * @link        https://invoiceplane.com
  *
  * @property string $layout      Sets the basic layout that should be loaded for the module view
  * @property array  $layout_data Contains all extended sections of the layout

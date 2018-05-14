@@ -5,11 +5,11 @@ use Carbon\Carbon;
 /**
  * Class IP_Model
  *
- * @package      InvoicePlane
- * @author       InvoicePlane Developers & Contributors
- * @copyright    Copyright (c) 2012 - 2018, InvoicePlane (https://invoiceplane.com/)
- * @license      http://opensource.org/licenses/MIT     MIT License
- * @link         https://invoiceplane.com
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018, InvoicePlane
+ * @license     http://opensource.org/licenses/MIT     MIT License
+ * @link        https://invoiceplane.com
  */
 class IP_Model extends CI_Model
 {

@@ -2,8 +2,13 @@
 
 /**
  * Permission Seeder
- *
  * Inserts all permissions needed to run InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018, InvoicePlane
+ * @license     http://opensource.org/licenses/MIT     MIT License
+ * @link        https://invoiceplane.com
  */
 
 // Admin-level permissions
