@@ -4,9 +4,10 @@
 
   <!-- Check the applications folder but exclude third-party stuff -->
   <file>./application</file>
-  <exclude-pattern type="relative">^/application/core/MX/*</exclude-pattern>
-  <exclude-pattern type="relative">^/application/libraries/vendor/*</exclude-pattern>
-  <exclude-pattern type="relative">^/tests/mocks/*</exclude-pattern>
+  <exclude-pattern>*/application/core/MX/*</exclude-pattern>
+  <exclude-pattern>*/application/libraries/vendor/*</exclude-pattern>
+  <exclude-pattern>*/application/logs/*</exclude-pattern>
+  <exclude-pattern>*/tests/mocks/*</exclude-pattern>
 
   <!-- Enable the PSR-2 Code Standard rule -->
   <rule ref="PSR2">
