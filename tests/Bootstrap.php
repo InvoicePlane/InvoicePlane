@@ -20,6 +20,7 @@ $dir = realpath(dirname(__FILE__));
 
 defined('PROJECT_BASE') or define('PROJECT_BASE', realpath($dir . '/../') . '/');
 defined('SYSTEM_PATH') or define('SYSTEM_PATH', PROJECT_BASE . 'vendor/codeigniter/framework/system/');
+define('APPPATH', PROJECT_BASE . DIRECTORY_SEPARATOR . 'application' .  DIRECTORY_SEPARATOR);
 
 define('IPPATH', PROJECT_BASE);
 

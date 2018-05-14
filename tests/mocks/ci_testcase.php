@@ -313,7 +313,7 @@ class CI_TestCase extends \PHPUnit\Framework\TestCase
      * happen in setUp, but someone is bound to forget to
      * call the parent method and debugging this is no fun.
      */
-    public function runBare()
+    public function runBare(): void
     {
         self::$ci_test_instance = $this;
         parent::runBare();
