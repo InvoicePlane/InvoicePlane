@@ -15,7 +15,8 @@
   },
   "require-dev": {
     "symfony/var-dumper": "^4.0",
-    "phpunit/phpunit": "^7"
+    "phpunit/phpunit": "^7",
+    "mikey179/vfsStream": "^1.6"
   },
   "repositories":[
     {

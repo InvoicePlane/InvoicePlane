@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
+<phpunit
+  bootstrap="tests/Bootstrap.php"
+  colors="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  stopOnError="false"
+  stopOnFailure="false"
+  stopOnIncomplete="false"
+  stopOnSkipped="false">
+
   <testsuites>
+    <testsuite name="Base">
+      <file>./tests/SetupTest.php</file>
+    </testsuite>
     <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
     </testsuite>
@@ -15,6 +20,7 @@
       <directory suffix="Test.php">./tests/Unit</directory>
     </testsuite>
   </testsuites>
+
   <filter>
     <whitelist processUncoveredFilesFromWhitelist="true">
       <directory suffix=".php">./application</directory>
@@ -24,7 +30,9 @@
       </exclude>
     </whitelist>
   </filter>
+
   <php>
     <env name="APP_ENVIRONMENT" value="testing"/>
+    <const name="PHPUNIT_TEST" value="1"/>
   </php>
 </phpunit>
