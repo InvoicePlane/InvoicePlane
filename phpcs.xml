@@ -15,6 +15,11 @@
     <exclude name="PSR1.Methods.CamelCapsMethodName"/>
   </rule>
 
+  <!-- Enable Wordpress Security rules -->
+  <rule ref="WordPress.DB.PreparedSQL"/>
+  <rule ref="WordPress.Security.NonceVerification"/>
+  <rule ref="WordPress.Security.EscapeOutput"/>
+
   <!-- Disable long lines warning for language files -->
   <rule ref="Generic.Files.LineLength">
     <exclude-pattern>*/application/language/*</exclude-pattern>
