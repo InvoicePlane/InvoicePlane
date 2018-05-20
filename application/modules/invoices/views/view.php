@@ -52,7 +52,7 @@ $cv = $this->controller->view_data["custom_values"];
         $('#btn_save_invoice').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tbody.item').each(function () {
+            $('#item_table .item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -494,7 +494,12 @@ if ($this->config->item('disable_read_only') == true) {
 
             <br>
 
-            <?php $this->layout->load_view('invoices/partial_item_table'); ?>
+            <?php if (get_setting('show_responsive_itemlist') == 1) {
+					$this->layout->load_view('invoices/partial_itemlist_responsive');
+				  } else {
+					$this->layout->load_view('invoices/partial_itemlist_table'); 
+				  }
+			?>
 
             <hr/>
 

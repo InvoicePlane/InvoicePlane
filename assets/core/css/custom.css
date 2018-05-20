@@ -4,3 +4,25 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
+
+#item_table .input-group {
+	padding-bottom: 0.5rem;
+}
+
+#item_table .input-group-addon {
+	width: 10rem;
+	text-align: right;
+}
+
+#item_table textarea .h135rem {
+	height: 13.5rem;
+}
+
+.mb-1 {
+	margin-bottom: 0.5rem;
+}
+
+.px-2 {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+}
