@@ -372,21 +372,6 @@
                         </select>
                     </div>
 
-					<div class="form-group">
-                        <label for="settings[show_responsive_itemlist]">
-                            <?php _trans('show_responsive_itemlist'); ?>
-                        </label>
-                        <select name="settings[show_responsive_itemlist]" id="settings[show_responsive_itemlist]"
-                                class="form-control simple-select">
-                            <option value="0">
-                                <?php _trans('no'); ?>
-                            </option>
-                            <option value="1" <?php check_select(get_setting('show_responsive_itemlist'), '1'); ?>>
-                                <?php _trans('yes'); ?>
-                            </option>
-                        </select>
-                    </div>
-
                 </div>
             </div>
 

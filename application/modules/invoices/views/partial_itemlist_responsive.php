@@ -4,54 +4,40 @@
 ?>
 
 <div class="row">
-    <div id="item_table" class="items table col-xs-12">
-        <div id="new_row" class="form-group details-box" style="display: none;">
+	<div id="item_table" class="items table col-xs-12">
+    <div id="new_row" class="form-group details-box" style="display: none;">
 			<div class="row">
-				<div class="col-xs-12 col-sm-6">
+				<div class="col-xs-12 col-sm-7 col-md-6 col-lg-5">
 					<div class="row">
-						<div class="col-xs-12 col-sm-1 px-1 text-center">
-							<div class="row">
-								<div class="col-xs-4 col-sm-12">
-									<div class="row">
-										<div class="col-xs-6 col-sm-12">
-											<button type="button" class="btn btn-link up" title="<?php _trans('move_up'); ?>">
-												<i class="fa fa-chevron-up"></i>
-											</button>
-										</div>
-										<div class="col-xs-6 col-sm-12">
-											<button type="button" class="btn btn-link down" title="<?php _trans('move_down'); ?>">
-												<i class="fa fa-chevron-down"></i>
-											</button>
-										</div>
-									</div>
-								</div>
-								<?php if ($invoice->invoice_is_recurring) : ?>
-									<div class="col-xs-2 col-sm-12">
-										<i title="<?php echo trans('recurring') ?>" class="js-item-recurrence-toggler cursor-pointer fa fa-calendar-o text-muted"></i>
-										<input type="hidden" name="item_is_recurring" value=""/>
-									</div>
-								<?php endif; ?>
-								<div class="col-xs-2 col-sm-12">
-									<button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>">
-										<i class="fa fa-trash-o text-danger"></i>
-									</button>
-								</div>
-							</div>
+						<div class="col-xs-12 col-sm-1">
+							<button type="button" class="btn btn-link up" title="<?php _trans('move_up'); ?>">
+								<i class="fa fa-chevron-up"></i>
+							</button>
+							<button type="button" class="btn btn-link down" title="<?php _trans('move_down'); ?>">
+								<i class="fa fa-chevron-down"></i>
+							</button>
+							<?php if ($invoice->invoice_is_recurring) : ?>
+								<i title="<?php echo trans('recurring') ?>" class="js-item-recurrence-toggler cursor-pointer fa fa-calendar-o text-muted"></i>
+								<input type="hidden" name="item_is_recurring" value=""/>
+							<?php endif; ?>
+							<button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>">
+								<i class="fa fa-trash-o text-danger"></i>
+							</button>
 						</div>
 
 						<div class="col-xs-12 col-sm-11">
 							<div class="input-group">
-								<span class="input-group-addon"><?php _trans('item'); ?></span>
+								<label for="item_name" class="input-group-addon"><?php _trans('item'); ?></label>
 								<input type="text" name="item_name" class="input-sm form-control" value="">
 							</div>
 							<?php if ($invoice->sumex_id == ""): ?>
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('description'); ?></span>
+									<label for="item_description" class="input-group-addon"><?php _trans('description'); ?></label>
 									<textarea name="item_description" class="input-sm form-control h135rem"></textarea>
 								</div>
 							<?php else: ?>
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('date'); ?></span>
+									<label for="item_date" class="input-group-addon"><?php _trans('date'); ?></label>
 									<input type="text" name="item_date" class="input-sm form-control datepicker"
 										   value="<?php echo format_date(@$item->item_date); ?>"<?=$invoice_disabled;?>>
 								</div>
@@ -60,15 +46,15 @@
 					</div>
 				</div>
 
-				<div class="col-xs-12 col-sm-6">
+				<div class="col-xs-12 col-sm-5 col-md-6 col-lg-7">
 					<div class="row">
 						<div class="col-xs-12 col-md-6">
 							<div class="input-group">
-								<span class="input-group-addon"><?php _trans('quantity'); ?></span>
+								<label for="item_quantity" class="input-group-addon"><?php _trans('quantity'); ?></label>
 								<input type="text" name="item_quantity" class="input-sm form-control amount" value="">
 							</div>
 							<div class="input-group">
-								<span class="input-group-addon"><?php _trans('product_unit'); ?></span>
+								<label for="item_product_unit_id" class="input-group-addon"><?php _trans('product_unit'); ?></label>
 								<select name="item_product_unit_id" class="form-control input-sm">
 									<option value="0"><?php _trans('none'); ?></option>
 									<?php foreach ($units as $unit) { ?>
@@ -79,17 +65,17 @@
 								</select>
 							</div>
 							<div class="input-group">
-								<span class="input-group-addon"><?php _trans('price'); ?></span>
+								<label for="item_price" class="input-group-addon"><?php _trans('price'); ?></label>
 								<input type="text" name="item_price" class="input-sm form-control amount" value="">
 							</div>
 							<div class="input-group">
-								<span class="input-group-addon"><?php _trans('item_discount'); ?></span>
+								<label for="item_discount_amount" class="input-group-addon"><?php _trans('item_discount'); ?></label>
 								<input type="text" name="item_discount_amount" class="input-sm form-control amount"
 									   value="" data-toggle="tooltip" data-placement="bottom"
 									   title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
 							</div>
 							<div class="input-group">
-								<span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
+								<label for="item_tax_rate_id" class="input-group-addon"><?php _trans('tax_rate'); ?></label>
 								<select name="item_tax_rate_id" class="form-control input-sm">
 									<option value="0"><?php _trans('none'); ?></option>
 									<?php foreach ($tax_rates as $tax_rate) { ?>
@@ -106,7 +92,7 @@
 					<input type="hidden" name="item_id" value="">
 					<input type="hidden" name="item_product_id" value="">
 					<input type="hidden" name="item_task_id" class="item-task-id" value="">
-									
+
 						<div class="col-xs-12 col-md-6 text-right">
 							<div class="row mb-1">
 								<div class="col-xs-9 col-sm-8">
@@ -148,53 +134,39 @@
 			</div>
 		</div>
 
-        <?php foreach ($items as $item) { ?>
-            <div class="item form-group details-box">
+    <?php foreach ($items as $item) { ?>
+      <div class="item form-group details-box">
 				<div class="row">
 					<div class="col-xs-12 col-sm-7 col-md-6 col-lg-5">
 						<div class="row">
-							<div class="col-xs-12 col-sm-1 px-1 text-center">
-								<div class="row">
-									<div class="col-xs-4 col-sm-12">
-										<div class="row">
-											<div class="col-xs-6 col-sm-12">
-												<button type="button" class="btn btn-link up" title="<?php _trans('move_up'); ?>">
-													<i class="fa fa-chevron-up"></i>
-												</button>
-											</div>
-											<div class="col-xs-6 col-sm-12">
-												<button type="button" class="btn btn-link down" title="<?php _trans('move_down'); ?>">
-													<i class="fa fa-chevron-down"></i>
-												</button>
-											</div>
-										</div>
-									</div>
-									<?php if ($invoice->invoice_is_recurring) :
-										if ($item->item_is_recurring == 1 || is_null($item->item_is_recurring)) {
-											$item_recurrence_state = '1';
-											$item_recurrence_class = 'fa-calendar-check-o text-success';
-										} else {
-											$item_recurrence_state = '0';
-											$item_recurrence_class = 'fa-calendar-o text-muted';
-										}
-									?>
-										<div class="col-xs-2 col-sm-12">
-											<i title="<?php echo trans('recurring') ?>"
-												class="js-item-recurrence-toggler cursor-pointer fa <?php echo $item_recurrence_class ?>">
-											</i>
-											<input type="hidden" name="item_is_recurring" value="<?php echo $item_recurrence_state ?>"/>
-										</div>
-									<?php endif; ?>
-									<?php if ($invoice->is_read_only != 1): ?>
-										<div class="col-xs-2 col-sm-12 right">
-											<button type="button" class="btn_delete_item btn btn-link" title="<?php _trans('delete'); ?>" data-item-id="<?php echo $item->item_id; ?>">
-												<i class="fa fa-trash-o text-danger"></i>
-											</button>
-										</div>
-									<?php endif; ?>
-								</div>
+							<div class="col-xs-12 col-sm-1">
+								<button type="button" class="btn btn-link up" title="<?php _trans('move_up'); ?>"<?=$invoice_disabled;?>>
+									<i class="fa fa-chevron-up"></i>
+								</button>
+								<button type="button" class="btn btn-link down" title="<?php _trans('move_down'); ?>"<?=$invoice_disabled;?>>
+									<i class="fa fa-chevron-down"></i>
+								</button>
+								<?php if ($invoice->invoice_is_recurring) :
+									if ($item->item_is_recurring == 1 || is_null($item->item_is_recurring)) {
+										$item_recurrence_state = '1';
+										$item_recurrence_class = 'fa-calendar-check-o text-success';
+									} else {
+										$item_recurrence_state = '0';
+										$item_recurrence_class = 'fa-calendar-o text-muted';
+									}
+								?>
+									<i title="<?php echo trans('recurring') ?>"
+										class="js-item-recurrence-toggler cursor-pointer fa <?php echo $item_recurrence_class ?>">
+									</i>
+									<input type="hidden" name="item_is_recurring" value="<?php echo $item_recurrence_state ?>"/>
+								<?php endif; ?>
+								<?php if ($invoice->is_read_only != 1): ?>
+									<button type="button" class="btn_delete_item btn btn-link" title="<?php _trans('delete'); ?>" data-item-id="<?php echo $item->item_id; ?>">
+										<i class="fa fa-trash-o text-danger"></i>
+									</button>
+								<?php endif; ?>
 							</div>
-					
+
 							<div class="col-xs-12 col-sm-11">
 								<input type="hidden" name="invoice_id" value="<?=$invoice_id;?>">
 								<input type="hidden" name="item_id" value="<?=$item->item_id;?>"<?=$invoice_disabled;?>>
@@ -202,33 +174,33 @@
 								<input type="hidden" name="item_product_id" value="<?=$item->item_product_id;?>">
 
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('item'); ?></span>
+									<label for="item_name" class="input-group-addon"><?php _trans('item'); ?></label>
 									<input type="text" name="item_name" class="input-sm form-control" value="<?=_htmlsc($item->item_name);?>"<?=$invoice_disabled;?>>
 								</div>
 								<?php if ($invoice->sumex_id == "") : ?>
 									<div class="input-group">
-										<span class="input-group-addon"><?php _trans('description'); ?></span>
-										<textarea name="item_description" class="input-sm form-control h135rem"<?=$invoice_disabled;?>><?=htmlsc($item->item_description);?></textarea>
+										<label for="item_description" class="input-group-addon"><?php _trans('description'); ?></label>
+										<textarea name="item_description" class="input-sm form-control"<?=$invoice_disabled;?>><?=htmlsc($item->item_description);?></textarea>
 									</div>
 								<?php else: ?>
 									<div class="input-group">
-										<span class="input-group-addon"><?php _trans('date'); ?></span>
+										<label for="item_date" class="input-group-addon"><?php _trans('date'); ?></label>
 										<input type="text" name="item_date" class="input-sm form-control datepicker" value="<?php echo format_date($item->item_date);?>"<?=$invoice_disabled;?>>
 									</div>
 								<?php endif; ?>
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="col-xs-12 col-sm-5 col-md-6 col-lg-7">
 						<div class="row">
 							<div class="col-xs-12 col-md-6">
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('quantity'); ?></span>
+									<label for="item_quantity" class="input-group-addon"><?php _trans('quantity'); ?></label>
 									<input type="text" name="item_quantity" class="input-sm form-control amount" value="<?=format_amount($item->item_quantity);?>" <?=$invoice_disabled;?>>
 								</div>
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('product_unit'); ?></span>
+									<label for="item_product_unit_id" class="input-group-addon"><?php _trans('product_unit'); ?></label>
 									<select name="item_product_unit_id" class="form-control input-sm"<?=$invoice_disabled;?>>
 										<option value="0"><?php _trans('none'); ?></option>
 										<?php foreach ($units as $unit) { ?>
@@ -238,9 +210,9 @@
 											</option>
 										<?php } ?>
 									</select>
-								</div>							
+								</div>
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('price'); ?></span>
+									<label for="item_price" class="input-group-addon"><?php _trans('price'); ?></label>
 									<input type="text" name="item_price" class="input-sm form-control amount"
 										   value="<?php echo format_amount($item->item_price); ?>"
 										<?php if ($invoice->is_read_only == 1) {
@@ -248,7 +220,7 @@
 										} ?>>
 								</div>
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('item_discount'); ?></span>
+									<label for="item_discount_amount" class="input-group-addon"><?php _trans('item_discount'); ?></label>
 									<input type="text" name="item_discount_amount" class="input-sm form-control amount"
 										   value="<?php echo format_amount($item->item_discount_amount); ?>"
 										   data-toggle="tooltip" data-placement="bottom"
@@ -256,9 +228,9 @@
 										<?php if ($invoice->is_read_only == 1) {
 											echo 'disabled="disabled"';
 										} ?>>
-								</div>								
+								</div>
 								<div class="input-group">
-									<span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
+									<label for="item_tax_rate_id" class="input-group-addon"><?php _trans('tax_rate'); ?></label>
 									<select name="item_tax_rate_id" class="form-control input-sm"
 										<?php if ($invoice->is_read_only == 1) {
 											echo 'disabled="disabled"';
@@ -273,7 +245,7 @@
 									</select>
 								</div>
 							</div>
-							
+
 							<div class="col-xs-12 col-md-6 text-right">
 								<div class="row mb-1">
 									<div class="col-xs-9 col-sm-8">
@@ -314,31 +286,9 @@
 					</div>
 				</div>
 			</div>
-        <?php } ?>
-    </div>
+    <?php } ?>
+  </div>
 </div>
-
-<script>
-	function UpR(k) {
-		var parent = k.parents('.item');
-		var pos = parent.prev();
-		parent.insertBefore(pos);
-	}
-
-	function DownR(k) {
-		var parent = k.parents('.item');
-		var pos = parent.next();
-		parent.insertAfter(pos);
-	}
-
-	$(document).on('click', '.up', function () {
-		UpR($(this));
-	});
-	
-	$(document).on('click', '.down', function () {
-		DownR($(this));
-	});
-</script>
 
 <br/>
 

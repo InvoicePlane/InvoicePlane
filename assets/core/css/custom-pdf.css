@@ -4,3 +4,123 @@
 
    All changes made in this file will override the default styles in PDFs.
    ========================================================================== */
+
+header, main, footer {
+  margin-left: 4mm;
+}
+
+#logo {
+  height: 35mm;
+  margin-bottom: 0;
+}
+
+#invoice-logo { 
+  height: 22mm;
+}
+
+#sender {
+  margin-bottom: 1.5em;
+}
+
+#sender-address {
+  width: 50%;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid #555;
+}
+
+#footer {
+  border-top: 0.5px solid #555;
+  padding-top: 0.2em;
+  margin-left: 4mm;
+  margin-top: 2cm;
+}
+
+#footer table {
+  width: 100%;
+  vertical-align: top;
+  padding:0;margin:0;
+}
+#footer td {padding:0;margin:0;}
+
+#invoice-details {
+  float:right;
+  width:40%;
+  font-size:95%;
+  color:#555;
+}
+
+.div5 { width: 5%; }
+.div10 { width: 10%; }
+.div20 { width: 20%; }
+.div25 { width: 25%; }
+.div33 { width: 32%; }
+.div40 { width: 39%;}
+.div50 { width: 49%; }
+.div60 { width: 59%; }
+
+.small {
+  font-size: 75%;
+  line-height: 110%;
+}
+
+.smaller {
+  font-size: 65%;
+  line-height: 110%;
+}
+
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
+}
+
+.invoice-title {
+  color:#000;
+  font-size:1.4em;
+  line-height:1.4em;
+  font-weight:bold;
+  margin:10px 0 20px;
+}
+
+#greeting {
+  margin: 10px 0;
+}
+#item-table {
+  line-height: 1.2em;
+  font-size: 85%;
+}
+
+#item-table div {
+  padding: 3px 2px;
+  display: block;
+}
+.table-head {
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  line-height: 1.2em;
+ /* margin: 10px 0;*/
+}
+
+.table-row {
+  padding: 5px 0;
+}
+
+footer {
+  border: 0 none;
+  color:#555;
+}
+
+p {
+  padding: 0;
+  margin: 0 0 4px;
+}
+
+.notes {
+  font-size: 85%;
+  margin-top: 10mm;
+}
+.notes p {
+  margin-bottom: 10px;
+}
