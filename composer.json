@@ -1,7 +1,8 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "invoiceplane",
+    "version": "2.0.0",
+    "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
+    "homepage": "https://invoiceplane.com",
     "license": "MIT",
     "type": "project",
     "require": {
