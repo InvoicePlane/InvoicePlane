@@ -1,6 +1,5 @@
-<script src='{{ asset('assets/plugins/daterangepicker/moment.js') }}'></script>
-<script src='{{ asset('assets/plugins/daterangepicker/daterangepicker.js') }}'></script>
-<link href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet" type="text/css"/>
+<script src='{{ asset('assets/dist/daterangepicker/daterangepicker.js') }}'></script>
+<link href="{{ asset('assets/dist/daterangepicker/daterangepicker.css') }}" rel="stylesheet" type="text/css"/>
 
 <script type="text/javascript">
     $(function () {

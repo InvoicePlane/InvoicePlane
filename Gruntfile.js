@@ -82,7 +82,6 @@ module.exports = function (grunt) {
         'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
         'node_modules/jquery-ui-dist/jquery-ui.js',
         'node_modules/autosize/dist/autosize.js',
-        'node_modules/chosen-js/chosen.jquery.js',
         'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
         'node_modules/moment/moment.js',
         'node_modules/bootstrap-notify/bootstrap-notify.js',
@@ -122,7 +121,7 @@ module.exports = function (grunt) {
     chosen_js: {
       expand: true,
       cwd: 'node_modules/chosen-js',
-      src: ['*.css', '*.png'],
+      src: ['chosen.css', 'chosen.jquery.js', '*.png'],
       dest: 'assets/dist/chosen-js/'
     },
     bs_datepicker: {
