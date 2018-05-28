@@ -1,21 +1,29 @@
 {
-    "private": true,
-    "scripts": {
-        "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
-    },
-    "devDependencies": {
-        "axios": "^0.17",
-        "bootstrap-sass": "^3.3.7",
-        "cross-env": "^5.1",
-        "jquery": "^3.2",
-        "laravel-mix": "^1.0",
-        "lodash": "^4.17.4",
-        "vue": "^2.5.7"
-    }
+  "name": "invoiceplane",
+  "version": "2.0.0",
+  "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
+  "homepage": "https://invoiceplane.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/InvoicePlane/InvoicePlane.git"
+  },
+  "author": "InvoicePlane Developers & Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://development.invoiceplane.com"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.5.1",
+    "bootstrap-sass": "^3.3.7",
+    "grunt": "^1.0.2",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-postcss": "^0.9.0",
+    "grunt-sass": "^2.1.0",
+    "load-grunt-tasks": "^4.0.0",
+    "postcss": "^6.0.22"
+  }
 }
