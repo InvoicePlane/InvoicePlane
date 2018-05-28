@@ -13,11 +13,13 @@ module.exports = function (grunt) {
     js: [
       'assets/dist/*.js', 'assets/dist/*.js.map' // Javascript
     ],
-    fontawesome: [
-      'assets/dist/fonts/**/*.*', '!assets/dist/fonts/.gitignore' // Admin LTE
+    fonts: [
+      'assets/dist/fonts/**/*.*', '!assets/dist/fonts/.gitignore' // Font Awesome + Ionicons
     ],
-    adminlte: [
-      'assets/dist/adminlte/**/*.*', '!assets/dist/adminlte/.gitignore' // Admin LTE
+    third_party: [
+      'assets/dist/adminlte/**/*.*', '!assets/dist/adminlte/.gitignore', // Admin LTE
+      'assets/dist/bs-datepicker/**/*.*', '!assets/dist/bs-datepicker/.gitignore', // Bootstrap Datepicker
+      'assets/dist/chosen-js/**/*.*', '!assets/dist/chosen-js/.gitignore', // Chosen JS
     ]
   });
 
@@ -78,7 +80,8 @@ module.exports = function (grunt) {
         'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
         'node_modules/jquery-ui-dist/jquery-ui.js',
         'node_modules/autosize/dist/autosize.js',
-        'node_modules/chosen-js/chosen.jquery.js'
+        'node_modules/chosen-js/chosen.jquery.js',
+        'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js'
       ],
       dest: 'assets/dist/dependencies.js'
     }
@@ -116,6 +119,12 @@ module.exports = function (grunt) {
       cwd: 'node_modules/chosen-js',
       src: ['*.css', '*.png'],
       dest: 'assets/dist/chosen-js/'
+    },
+    bs_datepicker: {
+      expand: true,
+      cwd: 'node_modules/bootstrap-datepicker/dist',
+      src: ['locales/*.js', 'css/*.css'],
+      dest: 'assets/dist/bs-datepicker/'
     }
   });
 
@@ -133,22 +142,23 @@ module.exports = function (grunt) {
   grunt.registerTask('dev-build', [
     'clean:styles',
     'clean:js',
-    'clean:fontawesome',
-    'clean:adminlte',
+    'clean:fonts',
+    'clean:third_party',
     'sass:dev',
     'postcss:dev',
     'concat:js_dependencies',
     'copy:fontawesome',
     'copy:ionicons',
     'copy:adminlte',
-    'copy:chosen_js'
+    'copy:chosen_js',
+    'copy:bs_datepicker'
   ]);
 
   grunt.registerTask('dev', [
     'clean:styles',
     'clean:js',
-    'clean:fontawesome',
-    'clean:adminlte',
+    'clean:fonts',
+    'clean:third_party',
     'sass:dev',
     'postcss:dev',
     'concat:js_dependencies',
@@ -157,14 +167,15 @@ module.exports = function (grunt) {
     'copy:ionicons',
     'copy:adminlte',
     'copy:chosen_js',
+    'copy:bs_datepicker',
     'watch'
   ]);
 
   grunt.registerTask('build', [
     'clean:styles',
     'clean:js',
-    'clean:fontawesome',
-    'clean:adminlte',
+    'clean:fonts',
+    'clean:third_party',
     'sass:build',
     'postcss:build',
     'concat:js_dependencies',
@@ -172,6 +183,7 @@ module.exports = function (grunt) {
     'copy:fontawesome',
     'copy:ionicons',
     'copy:adminlte',
-    'copy:chosen_js'
+    'copy:chosen_js',
+    'copy:bs_datepicker'
   ]);
 };
