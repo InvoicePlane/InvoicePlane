@@ -76,7 +76,8 @@ module.exports = function (grunt) {
       src: [
         'node_modules/jquery/dist/jquery.js',
         'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
-        'node_modules/jquery-ui-dist/jquery-ui.js'
+        'node_modules/jquery-ui-dist/jquery-ui.js',
+        'node_modules/autosize/dist/autosize.js'
       ],
       dest: 'assets/dist/dependencies.js'
     }
