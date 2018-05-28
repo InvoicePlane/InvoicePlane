@@ -84,7 +84,12 @@ module.exports = function (grunt) {
   });
 
   grunt.config('copy', {
-    //
+    fontawesome: {
+      expand: true,
+      flatten: true,
+      src: ['node_modules/font-awesome/fonts/*'],
+      dest: 'assets/dist/fonts/'
+    }
   });
 
   grunt.config('watch', {
@@ -104,7 +109,7 @@ module.exports = function (grunt) {
     'postcss:dev',
     'clean:js',
     'concat:js_dependencies',
-    'copy:js_dependencies'
+    'copy:fontawesome'
   ]);
 
   grunt.registerTask('dev', [
@@ -114,6 +119,7 @@ module.exports = function (grunt) {
     'clean:js',
     'concat:js_dependencies',
     'concat:js_dependencies',
+    'copy:fontawesome',
     'watch'
   ]);
 
@@ -123,6 +129,7 @@ module.exports = function (grunt) {
     'postcss:build',
     'clean:js',
     'concat:js_dependencies',
-    'uglify:js_dependencies'
+    'uglify:js_dependencies',
+    'copy:fontawesome'
   ]);
 };
