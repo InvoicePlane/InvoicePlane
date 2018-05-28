@@ -77,7 +77,8 @@ module.exports = function (grunt) {
         'node_modules/jquery/dist/jquery.js',
         'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
         'node_modules/jquery-ui-dist/jquery-ui.js',
-        'node_modules/autosize/dist/autosize.js'
+        'node_modules/autosize/dist/autosize.js',
+        'node_modules/chosen-js/chosen.jquery.js'
       ],
       dest: 'assets/dist/dependencies.js'
     }
@@ -109,6 +110,12 @@ module.exports = function (grunt) {
       cwd: 'node_modules/admin-lte/dist/',
       src: ['**'],
       dest: 'assets/dist/adminlte/'
+    },
+    chosen_js: {
+      expand: true,
+      cwd: 'node_modules/chosen-js',
+      src: ['*.css', '*.png'],
+      dest: 'assets/dist/chosen-js/'
     }
   });
 
@@ -133,7 +140,8 @@ module.exports = function (grunt) {
     'concat:js_dependencies',
     'copy:fontawesome',
     'copy:ionicons',
-    'copy:adminlte'
+    'copy:adminlte',
+    'copy:chosen_js'
   ]);
 
   grunt.registerTask('dev', [
@@ -148,6 +156,7 @@ module.exports = function (grunt) {
     'copy:fontawesome',
     'copy:ionicons',
     'copy:adminlte',
+    'copy:chosen_js',
     'watch'
   ]);
 
@@ -162,6 +171,7 @@ module.exports = function (grunt) {
     'uglify:js_dependencies',
     'copy:fontawesome',
     'copy:ionicons',
-    'copy:adminlte'
+    'copy:adminlte',
+    'copy:chosen_js'
   ]);
 };
