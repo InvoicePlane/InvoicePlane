@@ -21,6 +21,7 @@ module.exports = function (grunt) {
       'assets/dist/bs-datepicker/**/*.*', '!assets/dist/bs-datepicker/.gitignore', // Bootstrap Datepicker
       'assets/dist/chosen-js/**/*.*', '!assets/dist/chosen-js/.gitignore', // Chosen JS
       'assets/dist/daterangepicker/**/*.*', '!assets/dist/daterangepicker/.gitignore', // Chosen JS
+      'assets/dist/typeahead/**/*.*', '!assets/dist/typeahead/.gitignore', // Typeahead JS
     ]
   });
 
@@ -135,6 +136,12 @@ module.exports = function (grunt) {
       cwd: 'node_modules/daterangepicker/',
       src: ['daterangepicker.css', 'daterangepicker.js'],
       dest: 'assets/dist/daterangepicker/'
+    },
+    typeahead: {
+      expand: true,
+      cwd: 'node_modules/typeahead.js/dist/',
+      src: ['typeahead.jquery.js'],
+      dest: 'assets/dist/typeahead/'
     }
   });
 
@@ -162,7 +169,8 @@ module.exports = function (grunt) {
     'copy:adminlte',
     'copy:chosen_js',
     'copy:bs_datepicker',
-    'copy:daterangepicker'
+    'copy:daterangepicker',
+    'copy:typeahead'
   ]);
 
   grunt.registerTask('dev', [
@@ -180,6 +188,7 @@ module.exports = function (grunt) {
     'copy:chosen_js',
     'copy:bs_datepicker',
     'copy:daterangepicker',
+    'copy:typeahead',
     'watch'
   ]);
 
@@ -197,6 +206,7 @@ module.exports = function (grunt) {
     'copy:adminlte',
     'copy:chosen_js',
     'copy:bs_datepicker',
-    'copy:daterangepicker'
+    'copy:daterangepicker',
+    'copy:typeahead'
   ]);
 };
