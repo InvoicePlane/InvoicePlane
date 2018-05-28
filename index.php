@@ -1,16 +1,21 @@
 <?php
 
-if (version_compare(PHP_VERSION, '7.0.0', '<'))
-{
+/**
+ * InvoicePlane 2
+ *
+ * @package        InvoicePlane
+ * @author         InvoicePlane Developers & Contributors
+ * @copyright      Copyright (C) 2014 - 2018 InvoicePlane
+ * @license        https://invoiceplane.com/license.txt
+ * @link           https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+if (version_compare(PHP_VERSION, '7.0.0', '<')) {
     die('FusionInvoice requires PHP 7.0.0 or higher. Please upgrade your PHP version to use FusionInvoice.');
 }
 
-/**
- * Laravel - A PHP Framework For Web Artisans
- *
- * @package  Laravel
- * @author   Taylor Otwell <taylor@laravel.com>
- */
 
 define('LARAVEL_START', microtime(true));
 
