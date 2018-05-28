@@ -10,12 +10,12 @@
 	padding-bottom: 0.5rem;
 }
 
-#item_table .input-group-addon {
+#item_table .ig-addon-aligned {
 	width: 10rem;
 	text-align: right;
 }
 
-#item_table textarea {
+textarea.h135rem {
 	height: 13.5rem;
 }
 

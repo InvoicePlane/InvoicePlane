@@ -76,6 +76,10 @@ class Mdl_Items extends Response_Model
                 'label' => trans('price'),
                 'rules' => 'required',
             ],
+            'item_price_isgross' => [
+                'field' => 'item_price_isgross',
+                'label' => trans('price_type'),
+            ],
             'item_tax_rate_id' => [
                 'field' => 'item_tax_rate_id',
                 'label' => trans('item_tax_rate'),

@@ -66,6 +66,10 @@ class Mdl_Quote_Items extends Response_Model
                 'field' => 'item_price',
                 'label' => trans('price'),
             ],
+            'item_price_isgross' => [
+                'field' => 'item_price_isgross',
+                'label' => trans('price_type'),
+            ],
             'item_tax_rate_id' => [
                 'field' => 'item_tax_rate_id',
                 'label' => trans('item_tax_rate'),
