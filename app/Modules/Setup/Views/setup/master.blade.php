@@ -16,14 +16,14 @@
     @yield('javascript')
 
 </head>
-<body class="skin-fusioninvoice layout-boxed sidebar-mini">
+<body class="skin-invoiceplane layout-boxed sidebar-mini">
 
 <div class="wrapper">
 
     <header class="main-header">
 
         <a href="#" class="logo">
-            <span class="logo-lg">FusionInvoice</span>
+            <span class="logo-lg">InvoicePlane</span>
         </a>
 
         <nav class="navbar navbar-static-top" role="navigation">

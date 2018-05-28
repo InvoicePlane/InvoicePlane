@@ -23,7 +23,7 @@ class BackupController extends Controller
         $dbname   = config('database.connections.' . $default . '.database');
         $username = config('database.connections.' . $default . '.username');
         $password = config('database.connections.' . $default . '.password');
-        $filename = storage_path('FusionInvoice_' . date('Y-m-d_H-i-s') . '.sql');
+        $filename = storage_path('InvoicePlane_' . date('Y-m-d_H-i-s') . '.sql');
 
         $dump = new Mysqldump('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
         $dump->start($filename);

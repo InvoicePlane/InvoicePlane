@@ -17,7 +17,7 @@
             <ul class="nav navbar-nav">
 
                 <li>
-                    <a href="https://www.fusioninvoice.com/docs" title="{{ trans('fi.documentation') }}" target="_blank">
+                    <a href="https://wiki.invoiceplane.com/en/2.0/" title="{{ trans('fi.documentation') }}" target="_blank">
                         <i class="fa fa-question-circle"></i>
                     </a>
                 </li>
