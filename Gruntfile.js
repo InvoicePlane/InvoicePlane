@@ -12,6 +12,12 @@ module.exports = function (grunt) {
     ],
     js: [
       'assets/dist/*.js', 'assets/dist/*.js.map' // Javascript
+    ],
+    fontawesome: [
+      'assets/dist/fonts/**/*.*', '!assets/dist/fonts/.gitignore' // Admin LTE
+    ],
+    adminlte: [
+      'assets/dist/adminlte/**/*.*', '!assets/dist/adminlte/.gitignore' // Admin LTE
     ]
   });
 
@@ -89,6 +95,12 @@ module.exports = function (grunt) {
       flatten: true,
       src: ['node_modules/font-awesome/fonts/*'],
       dest: 'assets/dist/fonts/'
+    },
+    adminlte: {
+      expand: true,
+      cwd: 'node_modules/admin-lte/dist/',
+      src: ['**'],
+      dest: 'assets/dist/adminlte/'
     }
   });
 
@@ -105,31 +117,40 @@ module.exports = function (grunt) {
 
   grunt.registerTask('dev-build', [
     'clean:styles',
+    'clean:js',
+    'clean:fontawesome',
+    'clean:adminlte',
     'sass:dev',
     'postcss:dev',
-    'clean:js',
     'concat:js_dependencies',
-    'copy:fontawesome'
+    'copy:fontawesome',
+    'copy:adminlte'
   ]);
 
   grunt.registerTask('dev', [
     'clean:styles',
+    'clean:js',
+    'clean:fontawesome',
+    'clean:adminlte',
     'sass:dev',
     'postcss:dev',
-    'clean:js',
     'concat:js_dependencies',
     'concat:js_dependencies',
     'copy:fontawesome',
+    'copy:adminlte',
     'watch'
   ]);
 
   grunt.registerTask('build', [
     'clean:styles',
+    'clean:js',
+    'clean:fontawesome',
+    'clean:adminlte',
     'sass:build',
     'postcss:build',
-    'clean:js',
     'concat:js_dependencies',
     'uglify:js_dependencies',
-    'copy:fontawesome'
+    'copy:fontawesome',
+    'copy:adminlte'
   ]);
 };
