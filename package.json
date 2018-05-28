@@ -30,6 +30,7 @@
     "admin-lte": "^2.4.3",
     "font-awesome": "^4.7.0",
     "ionicons": "^4.1.2",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "jquery-ui-dist": "^1.12.1"
   }
 }
