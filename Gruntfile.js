@@ -96,6 +96,12 @@ module.exports = function (grunt) {
       src: ['node_modules/font-awesome/fonts/*'],
       dest: 'assets/dist/fonts/'
     },
+    ionicons: {
+      expand: true,
+      flatten: true,
+      src: ['node_modules/ionicons/dist/fonts/*'],
+      dest: 'assets/dist/fonts/'
+    },
     adminlte: {
       expand: true,
       cwd: 'node_modules/admin-lte/dist/',
@@ -124,6 +130,7 @@ module.exports = function (grunt) {
     'postcss:dev',
     'concat:js_dependencies',
     'copy:fontawesome',
+    'copy:ionicons',
     'copy:adminlte'
   ]);
 
@@ -137,6 +144,7 @@ module.exports = function (grunt) {
     'concat:js_dependencies',
     'concat:js_dependencies',
     'copy:fontawesome',
+    'copy:ionicons',
     'copy:adminlte',
     'watch'
   ]);
@@ -151,6 +159,7 @@ module.exports = function (grunt) {
     'concat:js_dependencies',
     'uglify:js_dependencies',
     'copy:fontawesome',
+    'copy:ionicons',
     'copy:adminlte'
   ]);
 };
