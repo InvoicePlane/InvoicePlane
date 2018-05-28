@@ -20,6 +20,7 @@ module.exports = function (grunt) {
       'assets/dist/adminlte/**/*.*', '!assets/dist/adminlte/.gitignore', // Admin LTE
       'assets/dist/bs-datepicker/**/*.*', '!assets/dist/bs-datepicker/.gitignore', // Bootstrap Datepicker
       'assets/dist/chosen-js/**/*.*', '!assets/dist/chosen-js/.gitignore', // Chosen JS
+      'assets/dist/daterangepicker/**/*.*', '!assets/dist/daterangepicker/.gitignore', // Chosen JS
     ]
   });
 
@@ -81,7 +82,8 @@ module.exports = function (grunt) {
         'node_modules/jquery-ui-dist/jquery-ui.js',
         'node_modules/autosize/dist/autosize.js',
         'node_modules/chosen-js/chosen.jquery.js',
-        'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js'
+        'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
+        'node_modules/moment/moment.js'
       ],
       dest: 'assets/dist/dependencies.js'
     }
@@ -125,6 +127,12 @@ module.exports = function (grunt) {
       cwd: 'node_modules/bootstrap-datepicker/dist',
       src: ['locales/*.js', 'css/*.css'],
       dest: 'assets/dist/bs-datepicker/'
+    },
+    daterangepicker: {
+      expand: true,
+      cwd: 'node_modules/daterangepicker/',
+      src: ['daterangepicker.css', 'daterangepicker.js'],
+      dest: 'assets/dist/daterangepicker/'
     }
   });
 
@@ -151,7 +159,8 @@ module.exports = function (grunt) {
     'copy:ionicons',
     'copy:adminlte',
     'copy:chosen_js',
-    'copy:bs_datepicker'
+    'copy:bs_datepicker',
+    'copy:daterangepicker'
   ]);
 
   grunt.registerTask('dev', [
@@ -168,6 +177,7 @@ module.exports = function (grunt) {
     'copy:adminlte',
     'copy:chosen_js',
     'copy:bs_datepicker',
+    'copy:daterangepicker',
     'watch'
   ]);
 
@@ -184,6 +194,7 @@ module.exports = function (grunt) {
     'copy:ionicons',
     'copy:adminlte',
     'copy:chosen_js',
-    'copy:bs_datepicker'
+    'copy:bs_datepicker',
+    'copy:daterangepicker'
   ]);
 };

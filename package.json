@@ -31,9 +31,11 @@
     "autosize": "^4.0.2",
     "bootstrap-datepicker": "^1.8.0",
     "chosen-js": "^1.8.5",
+    "daterangepicker": "^3.0.3",
     "font-awesome": "^4.7.0",
     "ionicons": "^4.1.2",
     "jquery": "^3.3.1",
-    "jquery-ui-dist": "^1.12.1"
+    "jquery-ui-dist": "^1.12.1",
+    "moment": "^2.22.1"
   }
 }
