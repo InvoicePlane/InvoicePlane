@@ -25,5 +25,8 @@
     "grunt-sass": "^2.1.0",
     "load-grunt-tasks": "^4.0.0",
     "postcss": "^6.0.22"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1"
   }
 }

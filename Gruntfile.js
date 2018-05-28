@@ -8,7 +8,10 @@ module.exports = function (grunt) {
 
   grunt.config('clean', {
     styles: [
-      'assets/dist/*.css', 'assets/dist/*.css.map', // CSS
+      'assets/dist/*.css', 'assets/dist/*.css.map' // CSS
+    ],
+    js: [
+      'assets/dist/*.js', 'assets/dist/*.js.map' // Javascript
     ]
   });
 
@@ -63,11 +66,21 @@ module.exports = function (grunt) {
   });
 
   grunt.config('concat', {
-    //
+    js_dependencies: {
+      src: [
+        'node_modules/jquery/dist/jquery.js',
+        'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js'
+      ],
+      dest: 'assets/dist/dependencies.js'
+    }
   });
 
   grunt.config('uglify', {
-    //
+    js_dependencies: {
+      files: {
+        'assets/dist/dependencies.js': ['assets/dist/dependencies.js']
+      }
+    }
   });
 
   grunt.config('copy', {
@@ -88,19 +101,28 @@ module.exports = function (grunt) {
   grunt.registerTask('dev-build', [
     'clean:styles',
     'sass:dev',
-    'postcss:dev'
+    'postcss:dev',
+    'clean:js',
+    'concat:js_dependencies',
+    'copy:js_dependencies'
   ]);
 
   grunt.registerTask('dev', [
     'clean:styles',
     'sass:dev',
     'postcss:dev',
+    'clean:js',
+    'concat:js_dependencies',
+    'concat:js_dependencies',
     'watch'
   ]);
 
   grunt.registerTask('build', [
     'clean:styles',
     'sass:build',
-    'postcss:build'
+    'postcss:build',
+    'clean:js',
+    'concat:js_dependencies',
+    'uglify:js_dependencies'
   ]);
 };
