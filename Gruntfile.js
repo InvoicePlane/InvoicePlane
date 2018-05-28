@@ -83,7 +83,8 @@ module.exports = function (grunt) {
         'node_modules/autosize/dist/autosize.js',
         'node_modules/chosen-js/chosen.jquery.js',
         'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
-        'node_modules/moment/moment.js'
+        'node_modules/moment/moment.js',
+        'node_modules/bootstrap-notify/bootstrap-notify.js'
       ],
       dest: 'assets/dist/dependencies.js'
     }
