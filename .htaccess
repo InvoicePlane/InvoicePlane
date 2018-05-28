@@ -1,0 +1,36 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Rewrite to prevent access...
+    RewriteRule ^app/.* index.php [L,NC]
+    RewriteRule ^bootstrap/.* index.php [L,NC]
+    RewriteRule ^config/.* index.php [L,NC]
+    RewriteRule ^database/.* index.php [L,NC]
+    RewriteRule ^resources/.* index.php [L,NC]
+    RewriteRule ^storage/.* index.php [L,NC]
+    RewriteRule ^templates/.* index.php [L,NC]
+    RewriteRule ^vendor/.* index.php [L,NC]
+    RewriteRule ^custom/addons/.* index.php [L,NC]
+    RewriteRule ^custom/overrides/.* index.php [L,NC]
+    RewriteRule ^artisan index.php [L,NC]
+    RewriteRule ^composer.json index.php [L,NC]
+    RewriteRule ^composer.lock index.php [L,NC]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>

@@ -1,8 +1,6 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
 #### _Version 2.0.0_
 
-[![Travis-CI Build Status](https://travis-ci.com/InvoicePlane/InvoicePlane.svg?branch=v2.0.0)](https://travis-ci.com/InvoicePlane/InvoicePlane) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/846787effdab46fa88dc8880dd3fce94)](https://www.codacy.com/app/InvoicePlane/InvoicePlane)
-
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
 
@@ -10,12 +8,6 @@ For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or t
 
 ### Quick Installation
 
-1. Download the latest version from the InvoicePlane website.
-2. Extract the package and copy all files to your webserver / webspace.
-3. Make a copy of the ipconfig.example file and rename this copy to ipconfig.
-4. Open the ipconfig file and set your URL like specified in the file.
-5. Point your web server to the /public folder. InvoicePlane won't work if you set it to the base folder.
-6. Open http://your-invoiceplane-domain.com/index.php/setup and follow the instructions.
 
 ---
 
