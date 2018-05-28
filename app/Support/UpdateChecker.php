@@ -17,7 +17,8 @@ class UpdateChecker
 
     public function __construct()
     {
-        $this->currentVersion = file_get_contents('https://www.fusioninvoice.com/current-version');
+        $check_url = 'https://ids.invoiceplane.com/updatecheck?cv=' . config('fi.version');
+        $this->currentVersion = file_get_contents($check_url);
     }
 
     /**
@@ -27,8 +28,7 @@ class UpdateChecker
      */
     public function updateAvailable()
     {
-        if (str_replace('-', '', $this->currentVersion) > str_replace('-', '', config('fi.version')))
-        {
+        if (str_replace('-', '', $this->currentVersion) > str_replace('-', '', config('fi.version'))) {
             return true;
         }
 
