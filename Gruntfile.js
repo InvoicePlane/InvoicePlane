@@ -84,7 +84,8 @@ module.exports = function (grunt) {
         'node_modules/chosen-js/chosen.jquery.js',
         'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
         'node_modules/moment/moment.js',
-        'node_modules/bootstrap-notify/bootstrap-notify.js'
+        'node_modules/bootstrap-notify/bootstrap-notify.js',
+        'node_modules/jquery-slimscroll/jquery.slimscroll.js'
       ],
       dest: 'assets/dist/dependencies.js'
     }
