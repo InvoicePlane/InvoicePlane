@@ -1,12 +1,15 @@
 <?php
 
 /**
- * This file is part of FusionInvoice.
+ * InvoicePlane
  *
- * (c) FusionInvoice, LLC <jessedterry@gmail.com>
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
 return [
@@ -450,7 +453,7 @@ return [
     'upcoming_payment_notice_email_subject'   => 'Upcoming Payment Notice Email Subject',
     'upcoming_payment_notice_frequency'       => 'Upcoming Payment Notice Frequency',
     'upcoming_payment_notice_frequency_help'  => 'A comma separated list of days BEFORE an invoice is due to send the reminder. Leave empty to disable upcoming payment notices. For example, a value of 1,5 would send notices 1 and 5 days before the invoice is due.',
-    'update_available'                        => 'FusionInvoice :version is available to download!',
+    'update_available'                        => 'InvoicePlane :version is available to download!',
     'update_exchange_rate'                    => 'Update Exchange Rate',
     'update_not_available'                    => 'There are currently no updates available.',
     'upload_progress'                         => 'Upload Progress',
@@ -616,5 +619,5 @@ return [
 
     // 2018-4
     'force_https'                             => 'Force HTTPS',
-    'force_https_help'                        => 'Prior to enabling this option, be sure your FusionInvoice installation is functional via https. Failure to do so may result in a non-functional (but fixable) installation.',
+    'force_https_help'                        => 'Prior to enabling this option, be sure your InvoicePlane installation is functional via https. Failure to do so may result in a non-functional (but fixable) installation.',
 ];
