@@ -28,8 +28,7 @@ class NoteController extends Controller
 
         $note = $object->notes()->create(['note' => request('note'), 'user_id' => auth()->user()->id, 'private' => request('isPrivate')]);
 
-        if (auth()->user()->client_id)
-        {
+        if (auth()->user()->client_id) {
             event(new NoteCreated($note));
         }
 

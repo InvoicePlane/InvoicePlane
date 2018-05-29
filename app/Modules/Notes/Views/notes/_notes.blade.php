@@ -1,43 +1,43 @@
 <script type="text/javascript">
-    $(function () {
-        $('#btn-create-note').click(function () {
-            if ($('#note_content').val() !== '') {
-                @if (isset($showPrivateCheckbox) and $showPrivateCheckbox == true)
-                    showPrivateCheckbox = 1;
-                if ($('#private').prop('checked')) {
-                    isPrivate = 1;
-                }
-                else {
-                    isPrivate = 0;
-                }
-                @else
-                    showPrivateCheckbox = 0;
-                isPrivate = 0;
-                @endif
-                $.post('{{ route('notes.create') }}', {
-                    model: '{{ addslashes($model) }}',
-                    model_id: {{ $object->id }},
-                    note: $('#note_content').val(),
-                    isPrivate: isPrivate,
-                    showPrivateCheckbox: showPrivateCheckbox
-                }).done(function (response) {
-                    $('#note_content').val('');
-                    $('#private').prop('checked', false);
-                    $('#notes-list').html(response);
-                });
-            }
-        });
-
-        @if (!auth()->user()->client_id)
-        $(document).on('click', '.delete-note', function () {
-            noteId = $(this).data('note-id');
-            $('#note-' + noteId).hide();
-            $.post("{{ route('notes.delete') }}", {
-                id: noteId
-            });
-        });
-        @endif
+  $(function () {
+    $('#btn-create-note').click(function () {
+      if ($('#note_content').val() !== '') {
+          @if (isset($showPrivateCheckbox) and $showPrivateCheckbox == true)
+            showPrivateCheckbox = 1;
+        if ($('#private').prop('checked')) {
+          isPrivate = 1;
+        }
+        else {
+          isPrivate = 0;
+        }
+          @else
+            showPrivateCheckbox = 0;
+        isPrivate = 0;
+          @endif
+          $.post('{{ route('notes.create') }}', {
+            model: '{{ addslashes($model) }}',
+            model_id: {{ $object->id }},
+            note: $('#note_content').val(),
+            isPrivate: isPrivate,
+            showPrivateCheckbox: showPrivateCheckbox
+          }).done(function (response) {
+            $('#note_content').val('');
+            $('#private').prop('checked', false);
+            $('#notes-list').html(response);
+          });
+      }
     });
+
+      @if (!auth()->user()->client_id)
+      $(document).on('click', '.delete-note', function () {
+        noteId = $(this).data('note-id');
+        $('#note-' + noteId).hide();
+        $.post("{{ route('notes.delete') }}", {
+          id: noteId
+        });
+      });
+      @endif
+  });
 </script>
 
 <div class="row">

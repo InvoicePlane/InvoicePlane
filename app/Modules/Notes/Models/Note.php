@@ -63,8 +63,7 @@ class Note extends Model
 
     public function scopeProtect($query, $user)
     {
-        if ($user->client_id)
-        {
+        if ($user->client_id) {
             return $query->where('private', 0);
         }
 
