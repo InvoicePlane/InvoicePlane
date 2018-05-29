@@ -21,23 +21,25 @@ use Illuminate\Support\Facades\Validator;
 
 class PaymentImporter extends AbstractImporter
 {
+    private $paymentValidator;
+
     public function getFields()
     {
         return [
-            'paid_at'           => '* ' . trans('fi.date'),
-            'invoice_id'        => '* ' . trans('fi.invoice_number'),
-            'amount'            => '* ' . trans('fi.amount'),
+            'paid_at' => '* ' . trans('fi.date'),
+            'invoice_id' => '* ' . trans('fi.invoice_number'),
+            'amount' => '* ' . trans('fi.amount'),
             'payment_method_id' => '* ' . trans('fi.payment_method'),
-            'note'              => trans('fi.note'),
+            'note' => trans('fi.note'),
         ];
     }
 
     public function getMapRules()
     {
         return [
-            'paid_at'           => 'required',
-            'invoice_id'        => 'required',
-            'amount'            => 'required',
+            'paid_at' => 'required',
+            'invoice_id' => 'required',
+            'amount' => 'required',
             'payment_method_id' => 'required',
         ];
     }
@@ -45,9 +47,9 @@ class PaymentImporter extends AbstractImporter
     public function getValidator($input)
     {
         return Validator::make($input, [
-            'paid_at'           => 'required',
-            'invoice_id'        => 'required',
-            'amount'            => 'required|numeric',
+            'paid_at' => 'required',
+            'invoice_id' => 'required',
+            'amount' => 'required|numeric',
             'payment_method_id' => 'required',
         ]);
     }
@@ -58,41 +60,32 @@ class PaymentImporter extends AbstractImporter
 
         $fields = [];
 
-        foreach ($input as $field => $key)
-        {
-            if (is_numeric($key))
-            {
+        foreach ($input as $field => $key) {
+            if (is_numeric($key)) {
                 $fields[$key] = $field;
             }
         }
 
         $handle = fopen(storage_path('payments.csv'), 'r');
 
-        if (!$handle)
-        {
+        if (!$handle) {
             $this->messages->add('error', 'Could not open the file');
 
             return false;
         }
 
-        while (($data = fgetcsv($handle, 1000, ',')) !== false)
-        {
-            if ($row !== 1)
-            {
+        while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+            if ($row !== 1) {
                 $record = [];
 
-                foreach ($fields as $key => $field)
-                {
+                foreach ($fields as $key => $field) {
                     $record[$field] = $data[$key];
                 }
 
                 // Attempt to format the date, otherwise use today
-                if (strtotime($record['paid_at']))
-                {
+                if (strtotime($record['paid_at'])) {
                     $record['paid_at'] = date('Y-m-d', strtotime($record['paid_at']));
-                }
-                else
-                {
+                } else {
                     $record['paid_at'] = date('Y-m-d');
                 }
 
@@ -100,22 +93,17 @@ class PaymentImporter extends AbstractImporter
                 $record['invoice_id'] = Invoice::where('number', $record['invoice_id'])->first()->id;
 
                 // Transform the payment method to the id
-                if ($record['payment_method_id'] <> 'NULL')
-                {
+                if ($record['payment_method_id'] <> 'NULL') {
                     $record['payment_method_id'] = PaymentMethod::firstOrCreate(['name' => $record['payment_method_id']])->id;
-                }
-                else
-                {
+                } else {
                     $record['payment_method_id'] = PaymentMethod::firstOrCreate(['name' => 'Other'])->id;
                 }
 
-                if (!isset($record['note']))
-                {
+                if (!isset($record['note'])) {
                     $record['note'] = '';
                 }
 
-                if ($this->validateRecord($record))
-                {
+                if ($this->validateRecord($record)) {
                     Payment::create($record);
                 }
             }
@@ -126,6 +114,4 @@ class PaymentImporter extends AbstractImporter
 
         return true;
     }
-
-    private $paymentValidator;
 }

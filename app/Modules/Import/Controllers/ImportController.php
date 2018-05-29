@@ -23,14 +23,14 @@ class ImportController extends Controller
     public function index()
     {
         $importTypes = [
-            'clients'      => trans('fi.clients'),
-            'quotes'       => trans('fi.quotes'),
-            'quoteItems'   => trans('fi.quote_items'),
-            'invoices'     => trans('fi.invoices'),
+            'clients' => trans('fi.clients'),
+            'quotes' => trans('fi.quotes'),
+            'quoteItems' => trans('fi.quote_items'),
+            'invoices' => trans('fi.invoices'),
             'invoiceItems' => trans('fi.invoice_items'),
-            'payments'     => trans('fi.payments'),
-            'expenses'     => trans('fi.expenses'),
-            'itemLookups'  => trans('fi.item_lookups'),
+            'payments' => trans('fi.payments'),
+            'expenses' => trans('fi.expenses'),
+            'itemLookups' => trans('fi.item_lookups'),
         ];
 
         return view('import.index')
@@ -58,15 +58,13 @@ class ImportController extends Controller
     {
         $importer = ImportFactory::create($importType);
 
-        if (!$importer->validateMap(request()->all()))
-        {
+        if (!$importer->validateMap(request()->all())) {
             return redirect()->route('import.map', [$importType])
                 ->withErrors($importer->errors())
                 ->withInput();
         }
 
-        if (!$importer->importData(request()->except('_token')))
-        {
+        if (!$importer->importData(request()->except('_token'))) {
             return redirect()->route('import.map', [$importType])
                 ->withErrors($importer->errors());
         }

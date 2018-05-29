@@ -18,8 +18,7 @@ class ImportFactory
 {
     public static function create($importType)
     {
-        switch ($importType)
-        {
+        switch ($importType) {
             case 'clients':
                 return app()->make('FI\Modules\Import\Importers\ClientImporter');
             case 'quotes':
