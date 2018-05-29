@@ -42,8 +42,7 @@ class ApiPaymentController extends ApiController
     {
         $input = $request->except('key', 'signature', 'timestamp', 'endpoint');
 
-        if (!Invoice::find($input['invoice_id']))
-        {
+        if (!Invoice::find($input['invoice_id'])) {
             return response()->json([trans('fi.record_not_found')], 400);
         }
 
@@ -56,13 +55,11 @@ class ApiPaymentController extends ApiController
     {
         $validator = $this->validator->make(request()->only(['id']), ['id' => 'required']);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json($validator->errors()->all(), 400);
         }
 
-        if (Payment::find(request('id')))
-        {
+        if (Payment::find(request('id'))) {
             Payment::destroy(request('id'));
 
             return response(200);

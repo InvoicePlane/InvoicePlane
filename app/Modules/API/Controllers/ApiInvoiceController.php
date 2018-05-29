@@ -14,8 +14,8 @@
 
 namespace FI\Modules\API\Controllers;
 
-use FI\Modules\API\Requests\APIInvoiceStoreRequest;
 use FI\Modules\API\Requests\APIInvoiceItemRequest;
+use FI\Modules\API\Requests\APIInvoiceStoreRequest;
 use FI\Modules\Clients\Models\Client;
 use FI\Modules\Invoices\Models\Invoice;
 use FI\Modules\Invoices\Models\InvoiceItem;
@@ -63,13 +63,11 @@ class ApiInvoiceController extends ApiController
     {
         $validator = $this->validator->make(['id' => request('id')], ['id' => 'required']);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json($validator->errors()->all(), 400);
         }
 
-        if (Invoice::find(request('id')))
-        {
+        if (Invoice::find(request('id'))) {
             Invoice::destroy(request('id'));
 
             return response(200);

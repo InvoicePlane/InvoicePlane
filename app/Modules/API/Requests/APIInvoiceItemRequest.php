@@ -27,9 +27,9 @@ class APIInvoiceItemRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name'     => trans('fi.name'),
+            'name' => trans('fi.name'),
             'quantity' => trans('fi.quantity'),
-            'price'    => trans('fi.price'),
+            'price' => trans('fi.price'),
         ];
     }
 
@@ -38,7 +38,7 @@ class APIInvoiceItemRequest extends FormRequest
         $request = $this->all();
 
         $request['quantity'] = NumberFormatter::unformat($request['quantity']);
-        $request['price']    = NumberFormatter::unformat($request['price']);
+        $request['price'] = NumberFormatter::unformat($request['price']);
 
         $this->replace($request);
     }
@@ -47,9 +47,9 @@ class APIInvoiceItemRequest extends FormRequest
     {
         return [
             'invoice_id' => 'required',
-            'name'       => 'required_with:price,quantity',
-            'quantity'   => 'required_with:price,name|numeric',
-            'price'      => 'required_with:name,quantity|numeric',
+            'name' => 'required_with:price,quantity',
+            'quantity' => 'required_with:price,name|numeric',
+            'price' => 'required_with:name,quantity|numeric',
         ];
     }
 }

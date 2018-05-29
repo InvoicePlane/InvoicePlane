@@ -12,15 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['prefix' => 'api', 'middleware' => 'web', 'namespace' => 'FI\Modules\API\Controllers'], function ()
-{
-    Route::group(['middleware' => 'auth.admin'], function ()
-    {
+Route::group(['prefix' => 'api', 'middleware' => 'web', 'namespace' => 'FI\Modules\API\Controllers'], function () {
+    Route::group(['middleware' => 'auth.admin'], function () {
         Route::post('generate_keys', ['uses' => 'ApiKeyController@generateKeys', 'as' => 'api.generateKeys']);
     });
 
-    Route::group(['middleware' => 'auth.api'], function ()
-    {
+    Route::group(['middleware' => 'auth.api'], function () {
         Route::post('clients/list', ['uses' => 'ApiClientController@lists']);
         Route::post('clients/show', ['uses' => 'ApiClientController@show']);
         Route::post('clients/store', ['uses' => 'ApiClientController@store']);

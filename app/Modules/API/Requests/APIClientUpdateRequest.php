@@ -21,8 +21,8 @@ class APIClientUpdateRequest extends ClientUpdateRequest
     public function rules()
     {
         return [
-            'id'          => 'required',
-            'email'       => 'email',
+            'id' => 'required',
+            'email' => 'email',
             'unique_name' => 'sometimes|unique:clients,unique_name,' . $this->input('id'),
         ];
     }

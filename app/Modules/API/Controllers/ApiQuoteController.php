@@ -14,7 +14,6 @@
 
 namespace FI\Modules\API\Controllers;
 
-use FI\Modules\API\Requests\APIInvoiceItemRequest;
 use FI\Modules\API\Requests\APIQuoteItemRequest;
 use FI\Modules\API\Requests\APIQuoteStoreRequest;
 use FI\Modules\Clients\Models\Client;
@@ -64,13 +63,11 @@ class ApiQuoteController extends ApiController
     {
         $validator = $this->validator->make(['id' => request('id')], ['id' => 'required']);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json($validator->errors()->all(), 400);
         }
 
-        if (Quote::find(request('id')))
-        {
+        if (Quote::find(request('id'))) {
             Quote::destroy(request('id'));
 
             return response(200);
