@@ -85,7 +85,6 @@ module.exports = function (grunt) {
         'node_modules/jquery-ui-dist/jquery-ui.js',
         'node_modules/admin-lte/dist/js/app.js',
         'node_modules/autosize/dist/autosize.js',
-        'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
         'node_modules/moment/moment.js',
         'node_modules/bootstrap-notify/bootstrap-notify.js',
         'node_modules/jquery-slimscroll/jquery.slimscroll.js'
@@ -130,7 +129,7 @@ module.exports = function (grunt) {
     bs_datepicker: {
       expand: true,
       cwd: 'node_modules/bootstrap-datepicker/dist',
-      src: ['locales/*.js', 'css/*.css'],
+      src: ['locales/*.js', 'js/bootstrap-datepicker.min.js', 'css/bootstrap-datepicker3.min.css'],
       dest: 'assets/dist/bs-datepicker/'
     },
     daterangepicker: {

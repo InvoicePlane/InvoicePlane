@@ -1,2 +1,2 @@
-<link href="{{ asset('assets/plugins/datepicker/datepicker3.css') }}" rel="stylesheet" type="text/css"/>
-<script src='{{ asset('assets/plugins/datepicker/bootstrap-datepicker.js') }}'></script>
+<link href="{{ asset('assets/dist/bs-datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet" type="text/css"/>
+<script src='{{ asset('assets/dist/bs-datepicker/js/bootstrap-datepicker.min.js') }}'></script>
