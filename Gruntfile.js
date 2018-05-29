@@ -32,7 +32,8 @@ module.exports = function (grunt) {
         sourceMap: true
       },
       files: {
-        'assets/dist/app.css': 'resources/assets/sass/app.scss'
+        'assets/dist/app.css': 'resources/assets/sass/app.scss',
+        'assets/dist/adminlte/css/skins/skin-invoiceplane.css': 'resources/assets/sass/skin-invoiceplane.scss'
       }
     },
     build: {
@@ -41,7 +42,8 @@ module.exports = function (grunt) {
         sourceMap: false
       },
       files: {
-        'assets/dist/app.css': 'resources/assets/sass/app.scss'
+        'assets/dist/app.css': 'resources/assets/sass/app.scss',
+        'assets/dist/adminlte/css/skins/skin-invoiceplane.css': 'resources/assets/sass/skin-invoiceplane.scss'
       }
     }
   });
@@ -81,6 +83,7 @@ module.exports = function (grunt) {
         'node_modules/jquery/dist/jquery.js',
         'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
         'node_modules/jquery-ui-dist/jquery-ui.js',
+        'node_modules/admin-lte/dist/js/app.js',
         'node_modules/autosize/dist/autosize.js',
         'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
         'node_modules/moment/moment.js',

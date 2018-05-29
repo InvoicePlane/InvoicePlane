@@ -1,0 +1,285 @@
+/*!
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on invoiceplane by Jesse Terry (invoiceplane, LLC)
+ */
+
+/*
+ * Skin: invoiceplane
+ * ----------
+ */
+.skin-invoiceplane .main-header .navbar {
+  background-color: #17abe6;
+}
+.skin-invoiceplane .main-header .navbar .nav > li > a {
+  color: #ffffff;
+}
+.skin-invoiceplane .main-header .navbar .nav > li > a:hover,
+.skin-invoiceplane .main-header .navbar .nav > li > a:active,
+.skin-invoiceplane .main-header .navbar .nav > li > a:focus,
+.skin-invoiceplane .main-header .navbar .nav .open > a,
+.skin-invoiceplane .main-header .navbar .nav .open > a:hover,
+.skin-invoiceplane .main-header .navbar .nav .open > a:focus {
+  background: rgba(0, 0, 0, 0.1);
+  color: #f6f6f6;
+}
+.skin-invoiceplane .main-header .navbar .sidebar-toggle {
+  color: #ffffff;
+}
+.skin-invoiceplane .main-header .navbar .sidebar-toggle:hover {
+  color: #f6f6f6;
+  background: rgba(0, 0, 0, 0.1);
+}
+.skin-invoiceplane .main-header .navbar .sidebar-toggle {
+  color: #fff;
+}
+.skin-invoiceplane .main-header .navbar .sidebar-toggle:hover {
+  background-color: #367fa9;
+}
+@media (max-width: 767px) {
+  .skin-invoiceplane .main-header .navbar .dropdown-menu li.divider {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+.skin-invoiceplane .main-header .logo {
+  background-color: #17abe6;
+  color: #ffffff;
+  border-bottom: 0px solid transparent;
+}
+.skin-invoiceplane .main-header .logo:hover {
+  background-color: #3b8ab8;
+}
+.skin-invoiceplane .main-header li.user-header {
+  background-color: #17abe6;
+}
+.skin-invoiceplane .content-header {
+  background: transparent;
+}
+.skin-invoiceplane .wrapper,
+.skin-invoiceplane .main-sidebar,
+.skin-invoiceplane .left-side {
+  background-color: #f9fafc;
+}
+.skin-invoiceplane .content-wrapper,
+.skin-invoiceplane .main-footer {
+  border-left: 1px solid #d2d6de;
+}
+.skin-invoiceplane .user-panel > .info,
+.skin-invoiceplane .user-panel > .info > a {
+  color: #444444;
+}
+.skin-invoiceplane .sidebar-menu > li {
+  -webkit-transition: border-left-color 0.3s ease;
+  -o-transition: border-left-color 0.3s ease;
+  transition: border-left-color 0.3s ease;
+}
+.skin-invoiceplane .sidebar-menu > li.header {
+  color: #848484;
+  background: #f9fafc;
+}
+.skin-invoiceplane .sidebar-menu > li > a {
+  border-left: 3px solid transparent;
+  font-weight: 600;
+}
+.skin-invoiceplane .sidebar-menu > li:hover > a,
+.skin-invoiceplane .sidebar-menu > li.active > a {
+  color: #000000;
+  background: #f4f4f5;
+}
+.skin-invoiceplane .sidebar-menu > li.active {
+  border-left-color: #17abe6;
+}
+.skin-invoiceplane .sidebar-menu > li.active > a {
+  font-weight: 600;
+}
+.skin-invoiceplane .sidebar-menu > li > .treeview-menu {
+  background: #f4f4f5;
+}
+.skin-invoiceplane .sidebar a {
+  color: #444444;
+}
+.skin-invoiceplane .sidebar a:hover {
+  text-decoration: none;
+}
+.skin-invoiceplane .treeview-menu > li > a {
+  color: #777777;
+}
+.skin-invoiceplane .treeview-menu > li.active > a,
+.skin-invoiceplane .treeview-menu > li > a:hover {
+  color: #000000;
+}
+.skin-invoiceplane .treeview-menu > li.active > a {
+  font-weight: 600;
+}
+.skin-invoiceplane .sidebar-form {
+  border-radius: 3px;
+  border: 1px solid #d2d6de;
+  margin: 10px 10px;
+}
+.skin-invoiceplane .sidebar-form input[type="text"],
+.skin-invoiceplane .sidebar-form .btn {
+  box-shadow: none;
+  background-color: #fff;
+  border: 1px solid transparent;
+  height: 35px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+.skin-invoiceplane .sidebar-form input[type="text"] {
+  color: #666;
+  border-top-left-radius: 2px !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 2px !important;
+}
+.skin-invoiceplane .sidebar-form input[type="text"]:focus,
+.skin-invoiceplane .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  background-color: #fff;
+  color: #666;
+}
+.skin-invoiceplane .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  border-left-color: #fff;
+}
+.skin-invoiceplane .sidebar-form .btn {
+  color: #999;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 2px !important;
+  border-bottom-right-radius: 2px !important;
+  border-bottom-left-radius: 0 !important;
+}
+@media (min-width: 768px) {
+  .skin-invoiceplane.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
+    border-left: 1px solid #d2d6de;
+  }
+}
+.skin-invoiceplane .main-footer {
+  border-top-color: #d2d6de;
+}
+.skin-blue.layout-top-nav .main-header > .logo {
+  background-color: #17abe6;
+  color: #ffffff;
+  border-bottom: 0px solid transparent;
+}
+.skin-blue.layout-top-nav .main-header > .logo:hover {
+  background-color: #3b8ab8;
+}
+
+.box.box-primary {
+  border-top-color: #17abe6;
+}
+
+a {
+  color: #17abe6;
+}
+
+.form-control:focus {
+  border-color: #17abe6 !important;
+}
+
+.progress-bar-light-blue,
+.progress-bar-primary {
+  background-color: #17abe6;
+}
+
+.box.box-solid.box-primary {
+  border: 1px solid #17abe6;
+}
+
+.box.box-solid.box-primary > .box-header {
+  color: #ffffff;
+  background: #17abe6;
+  background-color: #17abe6;
+}
+
+.box.box-solid.box-primary > .box-header {
+  color: #ffffff;
+  background: #17abe6;
+  background-color: #17abe6;
+}
+
+.todo-list > li.primary {
+  border-left-color: #17abe6;
+}
+
+.btn-primary {
+  background-color: #17abe6;
+  border-color: #17abe6;
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  border-top-color: #17abe6;
+}
+
+.nav-stacked > li.active > a,
+.nav-stacked > li.active > a:hover {
+  border-top: 0;
+  border-left-color: #17abe6;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: #17abe6;
+}
+
+.direct-chat-primary .right > .direct-chat-text {
+  background: #17abe6;
+  border-color: #17abe6;
+  color: #ffffff;
+}
+
+.direct-chat-primary .right > .direct-chat-text {
+  background: #17abe6;
+  border-color: #17abe6;
+  color: #ffffff;
+}
+
+.direct-chat-primary .right > .direct-chat-text:after,
+.direct-chat-primary .right > .direct-chat-text:before {
+  border-left-color: #17abe6;
+}
+
+.bg-light-blue,
+.label-primary,
+.modal-primary .modal-body {
+  background-color: #17abe6 !important;
+}
+
+.text-light-blue {
+  color: #17abe6 !important;
+}
+
+.bg-light-blue-gradient {
+  background: #17abe6 !important;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #17abe6), color-stop(1, #67a8ce)) !important;
+  background: -ms-linear-gradient(bottom, #17abe6, #67a8ce) !important;
+  background: -moz-linear-gradient(center bottom, #17abe6 0%, #67a8ce 100%) !important;
+  background: -o-linear-gradient(#67a8ce, #17abe6) !important;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#67a8ce', endColorstr='#17abe6', GradientType=0) !important;
+  color: #fff;
+}
+
+@media (max-width:767px) {
+  .skin-invoiceplane .main-header .logo {
+    display:none;
+  }
+  .skin-invoiceplane .main-header .navbar .sidebar-toggle{
+    background-color: rgba(23, 171, 230, 0.5);
+  }
+  .skin-invoiceplane .main-header .navbar .nav > li > a {
+    background-color: rgba(23, 171, 230, 0.5);
+  }
+  .skin-invoiceplane .main-header .navbar .nav > li > a:hover {
+    background-color: rgba(23, 171, 230, 1.0);
+  }
+  .fixed .content-wrapper, .fixed .right-side, .left-side, .main-sidebar{
+    padding-top:45px !important;
+  }
+}

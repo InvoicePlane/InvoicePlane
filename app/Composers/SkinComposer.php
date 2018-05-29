@@ -18,7 +18,7 @@ class SkinComposer
 {
     public function compose($view)
     {
-        $skin = (config('fi.skin') ?: 'skin-invoiceplane.min.css');
+        $skin = (config('fi.skin') ?: 'skin-invoiceplane.css');
         $view->with('skin', $skin);
         $view->with('skinClass', str_replace('.min.css', '', $skin));
     }
