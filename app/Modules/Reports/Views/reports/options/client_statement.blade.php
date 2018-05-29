@@ -8,37 +8,37 @@
     @include('clients._js_lookup')
 
     <script type="text/javascript">
-        $(function () {
-            $('#btn-run-report').click(function () {
+      $(function () {
+        $('#btn-run-report').click(function () {
 
-                var from_date = $('#from_date').val();
-                var to_date = $('#to_date').val();
-                var client_name = $('#client_name').val();
-                var company_profile_id = $('#company_profile_id').val();
+          var from_date = $('#from_date').val();
+          var to_date = $('#to_date').val();
+          var client_name = $('#client_name').val();
+          var company_profile_id = $('#company_profile_id').val();
 
-                $.post("{{ route('reports.clientStatement.validate') }}", {
-                    from_date: from_date,
-                    to_date: to_date,
-                    client_name: client_name,
-                    company_profile_id: company_profile_id
-                }).done(function () {
-                    clearErrors();
-                    $('#form-validation-placeholder').html('');
-                    output_type = $("input[name=output_type]:checked").val();
-                    query_string = "?from_date=" + from_date + "&to_date=" + to_date + "&client_name=" + encodeURIComponent(client_name) + "&company_profile_id=" + company_profile_id;
-                    if (output_type == 'preview') {
-                        $('#preview').show();
-                        $('#preview-results').attr('src', "{{ route('reports.clientStatement.html') }}" + query_string);
-                    }
-                    else if (output_type == 'pdf') {
-                        window.location.href = "{{ route('reports.clientStatement.pdf') }}" + query_string;
-                    }
+          $.post("{{ route('reports.clientStatement.validate') }}", {
+            from_date: from_date,
+            to_date: to_date,
+            client_name: client_name,
+            company_profile_id: company_profile_id
+          }).done(function () {
+            clearErrors();
+            $('#form-validation-placeholder').html('');
+            output_type = $('input[name=output_type]:checked').val();
+            query_string = '?from_date=' + from_date + '&to_date=' + to_date + '&client_name=' + encodeURIComponent(client_name) + '&company_profile_id=' + company_profile_id;
+            if (output_type == 'preview') {
+              $('#preview').show();
+              $('#preview-results').attr('src', "{{ route('reports.clientStatement.html') }}" + query_string);
+            }
+            else if (output_type == 'pdf') {
+              window.location.href = "{{ route('reports.clientStatement.pdf') }}" + query_string;
+            }
 
-                }).fail(function (response) {
-                    showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
-                });
-            });
+          }).fail(function (response) {
+            showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
+          });
         });
+      });
     </script>
 @stop
 

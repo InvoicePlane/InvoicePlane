@@ -26,8 +26,8 @@ class ItemSalesReport
     {
         $results = [
             'from_date' => DateFormatter::format($fromDate),
-            'to_date'   => DateFormatter::format($toDate),
-            'records'   => [],
+            'to_date' => DateFormatter::format($toDate),
+            'records' => [],
         ];
 
         $items = InvoiceItem::byDateRange($fromDate, $toDate)
@@ -41,48 +41,42 @@ class ItemSalesReport
             ->where('invoices.invoice_status_id', '<>', InvoiceStatuses::getStatusId('canceled'))
             ->orderBy('invoice_items.name');
 
-        if ($companyProfileId)
-        {
+        if ($companyProfileId) {
             $items->where('invoices.company_profile_id', $companyProfileId);
         }
 
         $items = $items->get();
 
-        foreach ($items as $item)
-        {
+        foreach ($items as $item) {
             $results['records'][$item->item_name]['items'][] = [
-                'client_name'    => $item->client_name,
+                'client_name' => $item->client_name,
                 'invoice_number' => $item->invoice_number,
-                'date'           => DateFormatter::format($item->invoice_date),
-                'price'          => CurrencyFormatter::format($item->item_price / $item->invoice_exchange_rate),
-                'quantity'       => NumberFormatter::format($item->item_quantity),
-                'subtotal'       => CurrencyFormatter::format($item->subtotal / $item->invoice_exchange_rate),
-                'tax'            => CurrencyFormatter::format($item->tax / $item->invoice_exchange_rate),
-                'total'          => CurrencyFormatter::format($item->total / $item->invoice_exchange_rate),
+                'date' => DateFormatter::format($item->invoice_date),
+                'price' => CurrencyFormatter::format($item->item_price / $item->invoice_exchange_rate),
+                'quantity' => NumberFormatter::format($item->item_quantity),
+                'subtotal' => CurrencyFormatter::format($item->subtotal / $item->invoice_exchange_rate),
+                'tax' => CurrencyFormatter::format($item->tax / $item->invoice_exchange_rate),
+                'total' => CurrencyFormatter::format($item->total / $item->invoice_exchange_rate),
             ];
 
-            if (isset($results['records'][$item->item_name]['totals']))
-            {
+            if (isset($results['records'][$item->item_name]['totals'])) {
                 $results['records'][$item->item_name]['totals']['quantity'] += $item->quantity;
                 $results['records'][$item->item_name]['totals']['subtotal'] += round($item->subtotal / $item->invoice_exchange_rate, 2);
                 $results['records'][$item->item_name]['totals']['tax'] += round($item->tax / $item->invoice_exchange_rate, 2);
                 $results['records'][$item->item_name]['totals']['total'] += round($item->total / $item->invoice_exchange_rate, 2);
-            }
-            else
-            {
+            } else {
                 $results['records'][$item->item_name]['totals']['quantity'] = $item->quantity;
                 $results['records'][$item->item_name]['totals']['subtotal'] = round($item->subtotal / $item->invoice_exchange_rate, 2);
-                $results['records'][$item->item_name]['totals']['tax']      = round($item->tax / $item->invoice_exchange_rate, 2);
-                $results['records'][$item->item_name]['totals']['total']    = round($item->total / $item->invoice_exchange_rate, 2);
+                $results['records'][$item->item_name]['totals']['tax'] = round($item->tax / $item->invoice_exchange_rate, 2);
+                $results['records'][$item->item_name]['totals']['total'] = round($item->total / $item->invoice_exchange_rate, 2);
             }
         }
 
-        foreach ($results['records'] as $key => $result)
-        {
+        foreach ($results['records'] as $key => $result) {
             $results['records'][$key]['totals']['quantity'] = NumberFormatter::format($results['records'][$key]['totals']['quantity']);
             $results['records'][$key]['totals']['subtotal'] = CurrencyFormatter::format($results['records'][$key]['totals']['subtotal']);
-            $results['records'][$key]['totals']['tax']      = CurrencyFormatter::format($results['records'][$key]['totals']['tax']);
-            $results['records'][$key]['totals']['total']    = CurrencyFormatter::format($results['records'][$key]['totals']['total']);
+            $results['records'][$key]['totals']['tax'] = CurrencyFormatter::format($results['records'][$key]['totals']['tax']);
+            $results['records'][$key]['totals']['total'] = CurrencyFormatter::format($results['records'][$key]['totals']['total']);
         }
 
         return $results;

@@ -24,9 +24,9 @@ class ExpenseListReport
     {
         $results = [
             'from_date' => DateFormatter::format($fromDate),
-            'to_date'   => DateFormatter::format($toDate),
-            'total'     => '0',
-            'expenses'  => [],
+            'to_date' => DateFormatter::format($toDate),
+            'total' => '0',
+            'expenses' => [],
         ];
 
         $expenses = Expense::defaultQuery()
@@ -35,33 +35,29 @@ class ExpenseListReport
             ->orderBy('expense_date', 'desc')
             ->orderBy('id', 'desc');
 
-        if ($companyProfileId)
-        {
+        if ($companyProfileId) {
             $expenses->where('company_profile_id', $companyProfileId);
         }
 
-        if ($categoryId)
-        {
+        if ($categoryId) {
             $expenses->where('category_id', $categoryId);
         }
 
-        if ($vendorId)
-        {
+        if ($vendorId) {
             $expenses->where('vendor_id', $vendorId);
         }
 
         $expenses = $expenses->get();
 
-        foreach ($expenses as $expense)
-        {
+        foreach ($expenses as $expense) {
             $results['expenses'][] = [
-                'date'     => $expense->formatted_expense_date,
-                'amount'   => $expense->formatted_amount,
-                'tax'      => $expense->formatted_tax,
+                'date' => $expense->formatted_expense_date,
+                'amount' => $expense->formatted_amount,
+                'tax' => $expense->formatted_tax,
                 'category' => $expense->category_name,
-                'vendor'   => $expense->vendor_name,
-                'client'   => $expense->client_name,
-                'billed'   => $expense->has_been_billed,
+                'vendor' => $expense->vendor_name,
+                'client' => $expense->client_name,
+                'billed' => $expense->has_been_billed,
             ];
 
             $results['total'] += $expense->amount;

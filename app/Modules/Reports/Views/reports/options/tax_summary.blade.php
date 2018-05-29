@@ -5,37 +5,37 @@
     @include('layouts._daterangepicker')
 
     <script type="text/javascript">
-        $(function () {
-            $('#btn-run-report').click(function () {
+      $(function () {
+        $('#btn-run-report').click(function () {
 
-                var from_date = $('#from_date').val();
-                var to_date = $('#to_date').val();
-                var company_profile_id = $('#company_profile_id').val();
-                var exclude_unpaid_invoices = $('#exclude_unpaid_invoices').val();
+          var from_date = $('#from_date').val();
+          var to_date = $('#to_date').val();
+          var company_profile_id = $('#company_profile_id').val();
+          var exclude_unpaid_invoices = $('#exclude_unpaid_invoices').val();
 
-                $.post("{{ route('reports.taxSummary.validate') }}", {
-                    from_date: from_date,
-                    to_date: to_date,
-                    company_profile_id: company_profile_id,
-                    exclude_unpaid_invoices: exclude_unpaid_invoices
-                }).done(function () {
-                    clearErrors();
-                    $('#form-validation-placeholder').html('');
-                    output_type = $("input[name=output_type]:checked").val();
-                    query_string = "?from_date=" + from_date + "&to_date=" + to_date + "&company_profile_id=" + company_profile_id + "&exclude_unpaid_invoices=" + exclude_unpaid_invoices;
-                    if (output_type == 'preview') {
-                        $('#preview').show();
-                        $('#preview-results').attr('src', "{{ route('reports.taxSummary.html') }}" + query_string);
-                    }
-                    else if (output_type == 'pdf') {
-                        window.location.href = "{{ route('reports.taxSummary.pdf') }}" + query_string;
-                    }
+          $.post("{{ route('reports.taxSummary.validate') }}", {
+            from_date: from_date,
+            to_date: to_date,
+            company_profile_id: company_profile_id,
+            exclude_unpaid_invoices: exclude_unpaid_invoices
+          }).done(function () {
+            clearErrors();
+            $('#form-validation-placeholder').html('');
+            output_type = $('input[name=output_type]:checked').val();
+            query_string = '?from_date=' + from_date + '&to_date=' + to_date + '&company_profile_id=' + company_profile_id + '&exclude_unpaid_invoices=' + exclude_unpaid_invoices;
+            if (output_type == 'preview') {
+              $('#preview').show();
+              $('#preview-results').attr('src', "{{ route('reports.taxSummary.html') }}" + query_string);
+            }
+            else if (output_type == 'pdf') {
+              window.location.href = "{{ route('reports.taxSummary.pdf') }}" + query_string;
+            }
 
-                }).fail(function (response) {
-                    showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
-                });
-            });
+          }).fail(function (response) {
+            showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
+          });
         });
+      });
     </script>
 @stop
 
@@ -98,7 +98,8 @@
                                 <div class="input-group">
                                     <label>{{ trans('fi.output_type') }}:</label><br>
                                     <label class="radio-inline">
-                                        <input type="radio" name="output_type" value="preview" checked="checked"> {{ trans('fi.preview') }}
+                                        <input type="radio" name="output_type" value="preview"
+                                               checked="checked"> {{ trans('fi.preview') }}
                                     </label>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type" value="pdf"> {{ trans('fi.pdf') }}

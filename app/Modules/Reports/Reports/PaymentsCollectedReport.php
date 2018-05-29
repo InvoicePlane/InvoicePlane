@@ -24,9 +24,9 @@ class PaymentsCollectedReport
     {
         $results = [
             'from_date' => DateFormatter::format($fromDate),
-            'to_date'   => DateFormatter::format($toDate),
-            'payments'  => [],
-            'total'     => 0,
+            'to_date' => DateFormatter::format($toDate),
+            'payments' => [],
+            'total' => 0,
         ];
 
         $payments = Payment::select('payments.*')
@@ -34,22 +34,20 @@ class PaymentsCollectedReport
             ->join('invoices', 'invoices.id', '=', 'payments.invoice_id')
             ->dateRange($fromDate, $toDate);
 
-        if ($companyProfileId)
-        {
+        if ($companyProfileId) {
             $payments->where('invoices.company_profile_id', $companyProfileId);
         }
 
         $payments = $payments->get();
 
-        foreach ($payments as $payment)
-        {
+        foreach ($payments as $payment) {
             $results['payments'][] = [
-                'client_name'    => $payment->invoice->client->name,
+                'client_name' => $payment->invoice->client->name,
                 'invoice_number' => $payment->invoice->number,
                 'payment_method' => isset($payment->paymentMethod->name) ? $payment->paymentMethod->name : '',
-                'note'           => $payment->note,
-                'date'           => $payment->formatted_paid_at,
-                'amount'         => CurrencyFormatter::format($payment->amount / $payment->invoice->exchange_rate),
+                'note' => $payment->note,
+                'date' => $payment->formatted_paid_at,
+                'amount' => CurrencyFormatter::format($payment->amount / $payment->invoice->exchange_rate),
             ];
 
             $results['total'] += $payment->amount / $payment->invoice->exchange_rate;

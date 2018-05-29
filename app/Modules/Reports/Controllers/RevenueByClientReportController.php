@@ -48,8 +48,7 @@ class RevenueByClientReportController extends Controller
 
         $months = [];
 
-        foreach (range(1, 12) as $month)
-        {
+        foreach (range(1, 12) as $month) {
             $months[$month] = DateFormatter::getMonthShortName($month);
         }
 
@@ -67,8 +66,7 @@ class RevenueByClientReportController extends Controller
 
         $months = [];
 
-        foreach (range(1, 12) as $month)
-        {
+        foreach (range(1, 12) as $month) {
             $months[$month] = DateFormatter::getMonthShortName($month);
         }
 

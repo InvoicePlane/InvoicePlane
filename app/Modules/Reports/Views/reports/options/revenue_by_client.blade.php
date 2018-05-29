@@ -3,33 +3,33 @@
 @section('javascript')
 
     <script type="text/javascript">
-        $(function () {
+      $(function () {
 
-            $('#btn-run-report').click(function () {
+        $('#btn-run-report').click(function () {
 
-                var company_profile_id = $('#company_profile_id').val();
-                var year = $('#year').val();
+          var company_profile_id = $('#company_profile_id').val();
+          var year = $('#year').val();
 
-                $.post("{{ route('reports.revenueByClient.validate') }}", {
-                    company_profile_id: company_profile_id,
-                    year: year
-                }).done(function () {
-                    clearErrors();
-                    $('#form-validation-placeholder').html('');
-                    var output_type = $("input[name=output_type]:checked").val();
-                    query_string = "?company_profile_id=" + company_profile_id + "&year=" + year;
-                    if (output_type == 'preview') {
-                        $('#preview').show();
-                        $('#preview-results').attr('src', "{{ route('reports.revenueByClient.html') }}" + query_string);
-                    }
-                    else if (output_type == 'pdf') {
-                        window.location.href = "{{ route('reports.revenueByClient.pdf') }}" + query_string;
-                    }
-                }).fail(function (response) {
-                    showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
-                });
-            });
+          $.post("{{ route('reports.revenueByClient.validate') }}", {
+            company_profile_id: company_profile_id,
+            year: year
+          }).done(function () {
+            clearErrors();
+            $('#form-validation-placeholder').html('');
+            var output_type = $('input[name=output_type]:checked').val();
+            query_string = '?company_profile_id=' + company_profile_id + '&year=' + year;
+            if (output_type == 'preview') {
+              $('#preview').show();
+              $('#preview-results').attr('src', "{{ route('reports.revenueByClient.html') }}" + query_string);
+            }
+            else if (output_type == 'pdf') {
+              window.location.href = "{{ route('reports.revenueByClient.pdf') }}" + query_string;
+            }
+          }).fail(function (response) {
+            showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
+          });
         });
+      });
     </script>
 
 @stop
@@ -72,7 +72,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>{{ trans('fi.year') }}:</label>
-                                        {!! Form::select('year', $years, date('Y'), ['id' => 'year', 'class' => 'form-control']) !!}
+                                    {!! Form::select('year', $years, date('Y'), ['id' => 'year', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                         </div>
