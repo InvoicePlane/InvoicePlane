@@ -24,12 +24,12 @@ class MailQueue
     public function create($object, $input)
     {
         return $object->mailQueue()->create([
-            'from'       => json_encode(['email' => $object->user->email, 'name' => $object->user->name]),
-            'to'         => json_encode($input['to']),
-            'cc'         => json_encode(($input['cc']) ?: []),
-            'bcc'        => json_encode(($input['bcc']) ?: []),
-            'subject'    => $input['subject'],
-            'body'       => $input['body'],
+            'from' => json_encode(['email' => $object->user->email, 'name' => $object->user->name]),
+            'to' => json_encode($input['to']),
+            'cc' => json_encode(($input['cc']) ?: []),
+            'bcc' => json_encode(($input['bcc']) ?: []),
+            'subject' => $input['subject'],
+            'body' => $input['body'],
             'attach_pdf' => $input['attach_pdf'],
         ]);
     }
@@ -47,8 +47,7 @@ class MailQueue
             $mail->body,
             $this->getAttachmentPath($mail)
         )
-        )
-        {
+        ) {
             $mail->sent = 1;
             $mail->save();
 
@@ -58,10 +57,60 @@ class MailQueue
         return false;
     }
 
+    private function sendMail($from, $to, $cc, $bcc, $subject, $body, $attachmentPath = null)
+    {
+        try {
+            $htmlTemplate = (view()->exists('email_templates.html')) ? 'email_templates.html' : 'templates.emails.html';
+
+            Mail::send([$htmlTemplate, 'templates.emails.text'], ['body' => $body], function ($message) use ($from, $to, $cc, $bcc, $subject, $attachmentPath) {
+                $from = json_decode($from, true);
+                $to = json_decode($to, true);
+                $cc = json_decode($cc, true);
+                $bcc = json_decode($bcc, true);
+
+                $message->from($from['email'], $from['name']);
+                $message->subject($subject);
+
+                foreach ($to as $toRecipient) {
+                    $message->to(trim($toRecipient));
+                }
+
+                foreach ($cc as $ccRecipient) {
+                    if ($ccRecipient !== '') {
+                        $message->cc(trim($ccRecipient));
+                    }
+                }
+
+                foreach ($bcc as $bccRecipient) {
+                    if ($bccRecipient !== '') {
+                        $message->bcc(trim($bccRecipient));
+                    }
+                }
+
+                if (config('fi.mailReplyToAddress')) {
+                    $message->replyTo(config('fi.mailReplyToAddress'));
+                }
+
+                if ($attachmentPath) {
+                    $message->attach($attachmentPath);
+                }
+            });
+
+            if ($attachmentPath and file_exists($attachmentPath)) {
+                unlink($attachmentPath);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            $this->error = $e->getMessage();
+
+            return false;
+        }
+    }
+
     private function getAttachmentPath($mail)
     {
-        if ($mail->attach_pdf)
-        {
+        if ($mail->attach_pdf) {
             $object = $mail->mailable;
 
             $pdfPath = base_path('storage/' . $object->pdf_filename);
@@ -74,69 +123,6 @@ class MailQueue
         }
 
         return null;
-    }
-
-    private function sendMail($from, $to, $cc, $bcc, $subject, $body, $attachmentPath = null)
-    {
-        try
-        {
-            $htmlTemplate = (view()->exists('email_templates.html')) ? 'email_templates.html' : 'templates.emails.html';
-
-            Mail::send([$htmlTemplate, 'templates.emails.text'], ['body' => $body], function ($message) use ($from, $to, $cc, $bcc, $subject, $attachmentPath)
-            {
-                $from = json_decode($from, true);
-                $to   = json_decode($to, true);
-                $cc   = json_decode($cc, true);
-                $bcc  = json_decode($bcc, true);
-
-                $message->from($from['email'], $from['name']);
-                $message->subject($subject);
-
-                foreach ($to as $toRecipient)
-                {
-                    $message->to(trim($toRecipient));
-                }
-
-                foreach ($cc as $ccRecipient)
-                {
-                    if ($ccRecipient !== '')
-                    {
-                        $message->cc(trim($ccRecipient));
-                    }
-                }
-
-                foreach ($bcc as $bccRecipient)
-                {
-                    if ($bccRecipient !== '')
-                    {
-                        $message->bcc(trim($bccRecipient));
-                    }
-                }
-
-                if (config('fi.mailReplyToAddress'))
-                {
-                    $message->replyTo(config('fi.mailReplyToAddress'));
-                }
-
-                if ($attachmentPath)
-                {
-                    $message->attach($attachmentPath);
-                }
-            });
-
-            if ($attachmentPath and file_exists($attachmentPath))
-            {
-                unlink($attachmentPath);
-            }
-
-            return true;
-        }
-        catch (\Exception $e)
-        {
-            $this->error = $e->getMessage();
-
-            return false;
-        }
     }
 
     public function getError()

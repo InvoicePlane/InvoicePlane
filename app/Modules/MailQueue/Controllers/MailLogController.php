@@ -37,7 +37,7 @@ class MailLogController extends Controller
             ->first();
 
         return view('mail_log._modal_content')
-        ->with('mail', $mail);
+            ->with('mail', $mail);
     }
 
     public function delete($id)

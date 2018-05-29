@@ -2,13 +2,13 @@
 
 @section('javascript')
     <script type="text/javascript">
-        $(function() {
-            $('.btn-show-content').click(function() {
-                $('#modal-placeholder').load('{{ route('mailLog.content') }}', {
-                    id: $(this).data('id')
-                });
-            });
+      $(function () {
+        $('.btn-show-content').click(function () {
+          $('#modal-placeholder').load('{{ route('mailLog.content') }}', {
+            id: $(this).data('id')
+          });
         });
+      });
     </script>
 @stop
 
@@ -52,15 +52,20 @@
                                     <td>{{ $mail->formatted_to }}</td>
                                     <td>{{ $mail->formatted_cc }}</td>
                                     <td>{{ $mail->formatted_bcc }}</td>
-                                    <td><a href="javascript:void(0)" class="btn-show-content" data-id="{{ $mail->id }}">{{ $mail->subject }}</a></td>
+                                    <td><a href="javascript:void(0)" class="btn-show-content"
+                                           data-id="{{ $mail->id }}">{{ $mail->subject }}</a></td>
                                     <td>{{ $mail->formatted_sent }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                                                    data-toggle="dropdown">
                                                 {{ trans('fi.options') }} <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                                <li><a href="{{ route('mailLog.delete', [$mail->id]) }}" onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                                <li><a href="{{ route('mailLog.delete', [$mail->id]) }}"
+                                                       onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
+                                                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>

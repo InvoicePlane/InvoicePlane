@@ -84,8 +84,7 @@ class MailQueue extends Model
 
     public function scopeKeywords($query, $keywords = null)
     {
-        if ($keywords)
-        {
+        if ($keywords) {
             $keywords = strtolower($keywords);
 
             $query->where('created_at', 'like', '%' . $keywords . '%')
