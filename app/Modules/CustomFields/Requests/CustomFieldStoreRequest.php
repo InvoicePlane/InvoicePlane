@@ -26,18 +26,18 @@ class CustomFieldStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'tbl_name'    => trans('fi.table_name'),
+            'tbl_name' => trans('fi.table_name'),
             'field_label' => trans('fi.field_label'),
-            'field_type'  => trans('fi.field_type'),
+            'field_type' => trans('fi.field_type'),
         ];
     }
 
     public function rules()
     {
         return [
-            'tbl_name'    => 'required',
+            'tbl_name' => 'required',
             'field_label' => 'required',
-            'field_type'  => 'required',
+            'field_type' => 'required',
         ];
     }
 }

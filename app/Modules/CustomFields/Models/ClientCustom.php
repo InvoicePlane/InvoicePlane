@@ -29,8 +29,7 @@ class ClientCustom extends Model
     {
         parent::boot();
 
-        static::creating(function ($clientCustom)
-        {
+        static::creating(function ($clientCustom) {
             event(new ClientCustomCreating($clientCustom));
         });
     }
