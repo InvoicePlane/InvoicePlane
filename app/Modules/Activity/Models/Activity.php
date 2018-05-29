@@ -30,14 +30,11 @@ class Activity extends Model
 
     public function getFormattedActivityAttribute()
     {
-        if ($this->audit)
-        {
-            switch ($this->audit_type)
-            {
+        if ($this->audit) {
+            switch ($this->audit_type) {
                 case 'FI\Modules\Quotes\Models\Quote':
 
-                    switch ($this->activity)
-                    {
+                    switch ($this->activity) {
                         case 'public.viewed':
                             return trans('fi.activity_quote_viewed', ['number' => $this->audit->number, 'link' => route('quotes.edit', [$this->audit->id])]);
                             break;
@@ -55,8 +52,7 @@ class Activity extends Model
 
                 case 'FI\Modules\Invoices\Models\Invoice':
 
-                    switch ($this->activity)
-                    {
+                    switch ($this->activity) {
                         case 'public.viewed':
                             return trans('fi.activity_invoice_viewed', ['number' => $this->audit->number, 'link' => route('invoices.edit', [$this->audit->id])]);
                             break;
