@@ -26,7 +26,8 @@
                                 <label>{{ trans('fi.format') }}:</label>
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
-                            <button class="btn btn-primary"><i class="fa fa-download"></i> {{ trans('fi.export_clients') }}</button>
+                            <button class="btn btn-primary"><i
+                                        class="fa fa-download"></i> {{ trans('fi.export_clients') }}</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-quotes" class="tab-pane">
@@ -35,7 +36,8 @@
                                 <label>{{ trans('fi.format') }}:</label>
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
-                            <button class="btn btn-primary"><i class="fa fa-download"></i> {{ trans('fi.export_quotes') }}</button>
+                            <button class="btn btn-primary"><i
+                                        class="fa fa-download"></i> {{ trans('fi.export_quotes') }}</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-quote-items" class="tab-pane">
@@ -44,7 +46,8 @@
                                 <label>{{ trans('fi.format') }}:</label>
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
-                            <button class="btn btn-primary"><i class="fa fa-download"></i> {{ trans('fi.export_quote_items') }}</button>
+                            <button class="btn btn-primary"><i
+                                        class="fa fa-download"></i> {{ trans('fi.export_quote_items') }}</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-invoices" class="tab-pane">
@@ -53,7 +56,8 @@
                                 <label>{{ trans('fi.format') }}:</label>
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
-                            <button class="btn btn-primary"><i class="fa fa-download"></i> {{ trans('fi.export_invoices') }}</button>
+                            <button class="btn btn-primary"><i
+                                        class="fa fa-download"></i> {{ trans('fi.export_invoices') }}</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-invoice-items" class="tab-pane">
@@ -62,7 +66,8 @@
                                 <label>{{ trans('fi.format') }}:</label>
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
-                            <button class="btn btn-primary"><i class="fa fa-download"></i> {{ trans('fi.export_invoice_items') }}</button>
+                            <button class="btn btn-primary"><i
+                                        class="fa fa-download"></i> {{ trans('fi.export_invoice_items') }}</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-payments" class="tab-pane">
@@ -71,7 +76,8 @@
                                 <label>{{ trans('fi.format') }}:</label>
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
-                            <button class="btn btn-primary"><i class="fa fa-download"></i> {{ trans('fi.export_payments') }}</button>
+                            <button class="btn btn-primary"><i
+                                        class="fa fa-download"></i> {{ trans('fi.export_payments') }}</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-expenses" class="tab-pane">
@@ -80,7 +86,8 @@
                                 <label>{{ trans('fi.format') }}:</label>
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
-                            <button class="btn btn-primary"><i class="fa fa-download"></i> {{ trans('fi.export_expenses') }}</button>
+                            <button class="btn btn-primary"><i
+                                        class="fa fa-download"></i> {{ trans('fi.export_expenses') }}</button>
                             {!! Form::close() !!}
                         </div>
                     </div>

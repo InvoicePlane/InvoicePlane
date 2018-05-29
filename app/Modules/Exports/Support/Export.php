@@ -29,21 +29,20 @@ class Export
 
     public function __construct($exportType, $writerType)
     {
-        $this->exportType  = $exportType;
+        $this->exportType = $exportType;
         $this->storagePath = storage_path('app');
-        $this->writerType  = $writerType;
+        $this->writerType = $writerType;
     }
 
     public function writeFile()
     {
         $resultsClass = 'FI\Modules\Exports\Support\Results\\' . $this->exportType;
-        $writerClass  = 'Exporter\Writer\\' . $this->writerType;
+        $writerClass = 'Exporter\Writer\\' . $this->writerType;
 
-        $fileExtension  = strtolower(str_replace('Writer', '', $this->writerType));
+        $fileExtension = strtolower(str_replace('Writer', '', $this->writerType));
         $this->fileName = $this->exportType . 'Export.' . $fileExtension;
 
-        if (file_exists($this->storagePath . '/' . $this->fileName))
-        {
+        if (file_exists($this->storagePath . '/' . $this->fileName)) {
             unlink($this->storagePath . '/' . $this->fileName);
         }
 
