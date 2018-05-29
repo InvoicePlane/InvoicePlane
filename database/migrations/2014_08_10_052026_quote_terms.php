@@ -7,8 +7,7 @@ class QuoteTerms extends Migration
 {
     public function up()
     {
-        Schema::table('quotes', function (Blueprint $table)
-        {
+        Schema::table('quotes', function (Blueprint $table) {
             $table->text('terms')->nullable();
         });
     }

@@ -8,13 +8,11 @@ class ActivitiesUpdate extends Migration
 {
     public function up()
     {
-        Schema::table('activities', function (Blueprint $table)
-        {
+        Schema::table('activities', function (Blueprint $table) {
             $table->renameColumn('object', 'audit_type');
         });
 
-        Schema::table('activities', function (Blueprint $table)
-        {
+        Schema::table('activities', function (Blueprint $table) {
             $table->renameColumn('parent_id', 'audit_id');
         });
 

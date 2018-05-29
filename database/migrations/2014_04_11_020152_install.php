@@ -21,8 +21,7 @@ class Install extends Migration
 {
     public function up()
     {
-        Schema::create('clients', function (Blueprint $table)
-        {
+        Schema::create('clients', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
@@ -39,16 +38,14 @@ class Install extends Migration
             $table->index('active');
         });
 
-        Schema::create('clients_custom', function (Blueprint $table)
-        {
+        Schema::create('clients_custom', function (Blueprint $table) {
             $table->integer('client_id');
             $table->timestamps();
 
             $table->primary('client_id');
         });
 
-        Schema::create('custom_fields', function (Blueprint $table)
-        {
+        Schema::create('custom_fields', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('table_name');
@@ -60,8 +57,7 @@ class Install extends Migration
             $table->index('table_name');
         });
 
-        Schema::create('invoices', function (Blueprint $table)
-        {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id');
@@ -80,16 +76,14 @@ class Install extends Migration
             $table->index('invoice_status_id');
         });
 
-        Schema::create('invoices_custom', function (Blueprint $table)
-        {
+        Schema::create('invoices_custom', function (Blueprint $table) {
             $table->integer('invoice_id');
             $table->timestamps();
 
             $table->primary('invoice_id');
         });
 
-        Schema::create('invoice_amounts', function (Blueprint $table)
-        {
+        Schema::create('invoice_amounts', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('invoice_id');
@@ -103,8 +97,7 @@ class Install extends Migration
             $table->index('invoice_id');
         });
 
-        Schema::create('invoice_groups', function (Blueprint $table)
-        {
+        Schema::create('invoice_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
@@ -115,8 +108,7 @@ class Install extends Migration
             $table->boolean('prefix_month')->default(0);
         });
 
-        Schema::create('invoice_items', function (Blueprint $table)
-        {
+        Schema::create('invoice_items', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('invoice_id');
@@ -132,8 +124,7 @@ class Install extends Migration
             $table->index('display_order');
         });
 
-        Schema::create('invoice_item_amounts', function (Blueprint $table)
-        {
+        Schema::create('invoice_item_amounts', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('item_id');
@@ -144,8 +135,7 @@ class Install extends Migration
             $table->index('item_id');
         });
 
-        Schema::create('invoice_tax_rates', function (Blueprint $table)
-        {
+        Schema::create('invoice_tax_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('invoice_id');
@@ -157,8 +147,7 @@ class Install extends Migration
             $table->index('tax_rate_id');
         });
 
-        Schema::create('item_lookups', function (Blueprint $table)
-        {
+        Schema::create('item_lookups', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
@@ -166,8 +155,7 @@ class Install extends Migration
             $table->decimal('price', 10, 2)->default(0.00);
         });
 
-        Schema::create('payments', function (Blueprint $table)
-        {
+        Schema::create('payments', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('invoice_id');
@@ -181,23 +169,20 @@ class Install extends Migration
             $table->index('amount');
         });
 
-        Schema::create('payments_custom', function (Blueprint $table)
-        {
+        Schema::create('payments_custom', function (Blueprint $table) {
             $table->integer('payment_id');
             $table->timestamps();
 
             $table->primary('payment_id');
         });
 
-        Schema::create('payment_methods', function (Blueprint $table)
-        {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
         });
 
-        Schema::create('quotes', function (Blueprint $table)
-        {
+        Schema::create('quotes', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('invoice_id')->default('0');
@@ -216,16 +201,14 @@ class Install extends Migration
             $table->index('number');
         });
 
-        Schema::create('quotes_custom', function (Blueprint $table)
-        {
+        Schema::create('quotes_custom', function (Blueprint $table) {
             $table->integer('quote_id');
             $table->timestamps();
 
             $table->primary('quote_id');
         });
 
-        Schema::create('quote_amounts', function (Blueprint $table)
-        {
+        Schema::create('quote_amounts', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('quote_id');
@@ -237,8 +220,7 @@ class Install extends Migration
             $table->index('quote_id');
         });
 
-        Schema::create('quote_items', function (Blueprint $table)
-        {
+        Schema::create('quote_items', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('quote_id');
@@ -254,8 +236,7 @@ class Install extends Migration
             $table->index('tax_rate_id');
         });
 
-        Schema::create('quote_item_amounts', function (Blueprint $table)
-        {
+        Schema::create('quote_item_amounts', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('item_id');
@@ -266,8 +247,7 @@ class Install extends Migration
             $table->index('item_id');
         });
 
-        Schema::create('quote_tax_rates', function (Blueprint $table)
-        {
+        Schema::create('quote_tax_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('quote_id');
@@ -279,8 +259,7 @@ class Install extends Migration
             $table->index('tax_rate_id');
         });
 
-        Schema::create('recurring_invoices', function (Blueprint $table)
-        {
+        Schema::create('recurring_invoices', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('invoice_id');
@@ -289,8 +268,7 @@ class Install extends Migration
             $table->dateTime('generate_at');
         });
 
-        Schema::create('settings', function (Blueprint $table)
-        {
+        Schema::create('settings', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('setting_key');
@@ -299,16 +277,14 @@ class Install extends Migration
             $table->index('setting_key');
         });
 
-        Schema::create('tax_rates', function (Blueprint $table)
-        {
+        Schema::create('tax_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
             $table->decimal('percent', 5, 2)->default(0.00);
         });
 
-        Schema::create('users', function (Blueprint $table)
-        {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('email');
@@ -324,44 +300,43 @@ class Install extends Migration
 
         DB::table('invoice_groups')->insert(
             [
-                'name'         => trans('fi.invoice_default'),
-                'next_id'      => 1,
-                'left_pad'     => 0,
-                'prefix'       => 'INV',
-                'prefix_year'  => 0,
+                'name' => trans('fi.invoice_default'),
+                'next_id' => 1,
+                'left_pad' => 0,
+                'prefix' => 'INV',
+                'prefix_year' => 0,
                 'prefix_month' => 0,
             ]
         );
 
         DB::table('invoice_groups')->insert(
             [
-                'name'         => trans('fi.quote_default'),
-                'next_id'      => 1,
-                'left_pad'     => 0,
-                'prefix'       => 'QUO',
-                'prefix_year'  => 0,
+                'name' => trans('fi.quote_default'),
+                'next_id' => 1,
+                'left_pad' => 0,
+                'prefix' => 'QUO',
+                'prefix_year' => 0,
                 'prefix_month' => 0,
             ]
         );
 
         $settings = [
-            'language'              => 'en',
-            'dateFormat'            => 'm/d/Y',
-            'invoiceTemplate'       => 'default.blade.php',
-            'invoicesDueAfter'      => 30,
-            'invoiceGroup'          => 1,
-            'quoteTemplate'         => 'default.blade.php',
-            'quotesExpireAfter'     => 15,
-            'quoteGroup'            => 2,
+            'language' => 'en',
+            'dateFormat' => 'm/d/Y',
+            'invoiceTemplate' => 'default.blade.php',
+            'invoicesDueAfter' => 30,
+            'invoiceGroup' => 1,
+            'quoteTemplate' => 'default.blade.php',
+            'quotesExpireAfter' => 15,
+            'quoteGroup' => 2,
             'automaticEmailOnRecur' => 1,
-            'markInvoicesSentPdf'   => 0,
-            'markQuotesSentPdf'     => 0,
-            'timezone'              => 'America/Phoenix',
-            'attachPdf'             => 1,
+            'markInvoicesSentPdf' => 0,
+            'markQuotesSentPdf' => 0,
+            'timezone' => 'America/Phoenix',
+            'attachPdf' => 1,
         ];
 
-        foreach ($settings as $key => $value)
-        {
+        foreach ($settings as $key => $value) {
             Setting::saveByKey($key, $value);
         }
     }

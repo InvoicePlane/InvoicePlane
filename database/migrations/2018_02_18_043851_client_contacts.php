@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class ClientContacts extends Migration
 {
@@ -13,8 +13,7 @@ class ClientContacts extends Migration
      */
     public function up()
     {
-        Schema::create('contacts', function(Blueprint $table)
-        {
+        Schema::create('contacts', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('client_id');

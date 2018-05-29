@@ -7,8 +7,7 @@ class Activities extends Migration
 {
     public function up()
     {
-        Schema::create('activities', function (Blueprint $table)
-        {
+        Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('object');

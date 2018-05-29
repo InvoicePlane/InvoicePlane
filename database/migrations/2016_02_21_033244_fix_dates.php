@@ -12,12 +12,10 @@ class FixDates extends Migration
     {
         $invoicesDueAfter = Setting::getByKey('invoicesDueAfter');
 
-        if (is_numeric($invoicesDueAfter))
-        {
+        if (is_numeric($invoicesDueAfter)) {
             $invoices = Invoice::where('due_at', '0000-00-00')->get();
 
-            foreach ($invoices as $invoice)
-            {
+            foreach ($invoices as $invoice) {
                 $invoice->due_at = Carbon::createFromFormat('Y-m-d H:i:s', $invoice->created_at)->addDays($invoicesDueAfter);
 
                 $invoice->save();

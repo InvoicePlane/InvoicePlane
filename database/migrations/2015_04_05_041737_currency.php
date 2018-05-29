@@ -16,16 +16,14 @@ class Currency extends Migration
 
         $invoices = Invoice::with('client')->whereNull('currency_code')->get();
 
-        foreach ($invoices as $invoice)
-        {
+        foreach ($invoices as $invoice) {
             $invoice->currency_code = $invoice->client->currency_code;
             $invoice->save();
         }
 
         $quotes = Quote::with('client')->whereNull('currency_code')->get();
 
-        foreach ($quotes as $quote)
-        {
+        foreach ($quotes as $quote) {
             $quote->currency_code = $quote->client->currency_code;
             $quote->save();
         }

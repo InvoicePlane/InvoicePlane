@@ -7,8 +7,7 @@ class AddonReports extends Migration
 {
     public function up()
     {
-        Schema::table('addons', function (Blueprint $table)
-        {
+        Schema::table('addons', function (Blueprint $table) {
             $table->longText('navigation_reports')->nullable();
         });
     }

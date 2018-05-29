@@ -8,8 +8,7 @@ class QuoteCreateDate extends Migration
 {
     public function up()
     {
-        Schema::table('quotes', function (Blueprint $table)
-        {
+        Schema::table('quotes', function (Blueprint $table) {
             $table->date('quote_date')->after('updated_at');
         });
 

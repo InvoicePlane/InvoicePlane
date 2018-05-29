@@ -14,7 +14,7 @@ class DefaultTemplates extends Migration
         Client::whereNull('quote_template')->update(['quote_template' => Setting::getByKey('quoteTemplate')]);
 
         $invoiceSubquery = '(' . DB::table('clients')->select('invoice_template')->where('clients.id', DB::raw(DB::getTablePrefix() . 'invoices.id'))->toSql() . ')';
-        $quoteSubquery   = '(' . DB::table('clients')->select('quote_template')->where('clients.id', DB::raw(DB::getTablePrefix() . 'quotes.id'))->toSql() . ')';
+        $quoteSubquery = '(' . DB::table('clients')->select('quote_template')->where('clients.id', DB::raw(DB::getTablePrefix() . 'quotes.id'))->toSql() . ')';
 
         Invoice::whereNull('template')->update(['template' => DB::raw($invoiceSubquery)]);
         Quote::whereNull('template')->update(['template' => DB::raw($quoteSubquery)]);

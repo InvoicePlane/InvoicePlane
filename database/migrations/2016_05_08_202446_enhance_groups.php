@@ -8,16 +8,14 @@ class EnhanceGroups extends Migration
 {
     public function up()
     {
-        Schema::table('groups', function (Blueprint $table)
-        {
+        Schema::table('groups', function (Blueprint $table) {
             $table->string('format');
             $table->integer('reset_number');
         });
 
         $groups = Group::all();
 
-        foreach ($groups as $group)
-        {
+        foreach ($groups as $group) {
             $format = '';
 
             if ($group->prefix) $format .= $group->prefix;
@@ -31,8 +29,7 @@ class EnhanceGroups extends Migration
             $group->save();
         }
 
-        Schema::table('groups', function (Blueprint $table)
-        {
+        Schema::table('groups', function (Blueprint $table) {
             $table->dropColumn(['prefix', 'prefix_year', 'prefix_month']);
         });
     }

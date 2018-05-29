@@ -7,8 +7,7 @@ class Expenses extends Migration
 {
     public function up()
     {
-        Schema::create('expenses', function (Blueprint $table)
-        {
+        Schema::create('expenses', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->date('expense_date');
@@ -26,15 +25,13 @@ class Expenses extends Migration
             $table->index('invoice_id');
         });
 
-        Schema::create('expense_vendors', function (Blueprint $table)
-        {
+        Schema::create('expense_vendors', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('name');
         });
 
-        Schema::create('expense_categories', function (Blueprint $table)
-        {
+        Schema::create('expense_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('name');

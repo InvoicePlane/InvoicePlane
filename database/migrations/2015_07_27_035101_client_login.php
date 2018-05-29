@@ -7,13 +7,11 @@ class ClientLogin extends Migration
 {
     public function up()
     {
-        Schema::table('clients', function (Blueprint $table)
-        {
+        Schema::table('clients', function (Blueprint $table) {
             $table->boolean('allow_login')->default(0);
         });
 
-        Schema::table('users', function (Blueprint $table)
-        {
+        Schema::table('users', function (Blueprint $table) {
             $table->integer('client_id');
 
             $table->index('client_id');

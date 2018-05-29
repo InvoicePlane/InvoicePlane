@@ -7,8 +7,7 @@ class UserUpdate extends Migration
 {
     public function up()
     {
-        Schema::table('users', function (Blueprint $table)
-        {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('remember_token', 100)->nullable();
         });
     }

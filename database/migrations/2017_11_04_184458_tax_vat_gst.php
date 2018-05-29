@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class TaxVatGst extends Migration
 {
@@ -12,8 +12,7 @@ class TaxVatGst extends Migration
      */
     public function up()
     {
-        Schema::table('tax_rates', function(Blueprint $table)
-        {
+        Schema::table('tax_rates', function (Blueprint $table) {
             $table->boolean('calculate_vat');
         });
     }
@@ -25,8 +24,7 @@ class TaxVatGst extends Migration
      */
     public function down()
     {
-        Schema::table('tax_rates', function(Blueprint $table)
-        {
+        Schema::table('tax_rates', function (Blueprint $table) {
             $table->dropColumn('calculate_vat');
         });
     }

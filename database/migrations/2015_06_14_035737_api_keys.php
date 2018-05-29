@@ -7,8 +7,7 @@ class ApiKeys extends Migration
 {
     public function up()
     {
-        Schema::table('users', function (Blueprint $table)
-        {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('api_public_key')->nullable();
             $table->string('api_secret_key')->nullable();
         });

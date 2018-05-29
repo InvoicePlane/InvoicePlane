@@ -7,8 +7,7 @@ class Notes extends Migration
 {
     public function up()
     {
-        Schema::create('notes', function (Blueprint $table)
-        {
+        Schema::create('notes', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id');

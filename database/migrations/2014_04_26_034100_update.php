@@ -8,13 +8,11 @@ class Update extends Migration
 {
     public function up()
     {
-        Invoice::whereNotIn('id', function ($query)
-        {
+        Invoice::whereNotIn('id', function ($query) {
             $query->select('invoice_id')->from('invoice_amounts');
         })->delete();
 
-        Quote::whereNotIn('id', function ($query)
-        {
+        Quote::whereNotIn('id', function ($query) {
             $query->select('invoice_id')->from('quote_amounts');
         })->delete();
     }

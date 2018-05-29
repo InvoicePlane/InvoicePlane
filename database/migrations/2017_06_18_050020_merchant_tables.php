@@ -13,8 +13,7 @@ class MerchantTables extends Migration
      */
     public function up()
     {
-        Schema::create('merchant_clients', function (Blueprint $table)
-        {
+        Schema::create('merchant_clients', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('driver');
@@ -27,8 +26,7 @@ class MerchantTables extends Migration
             $table->index('merchant_key');
         });
 
-        Schema::create('merchant_payments', function (Blueprint $table)
-        {
+        Schema::create('merchant_payments', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('driver');

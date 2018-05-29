@@ -9,8 +9,7 @@ class Currencies extends Migration
 {
     public function up()
     {
-        Schema::create('currencies', function (Blueprint $table)
-        {
+        Schema::create('currencies', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->string('code');
@@ -23,19 +22,16 @@ class Currencies extends Migration
             $table->index('name');
         });
 
-        Schema::table('clients', function (Blueprint $table)
-        {
+        Schema::table('clients', function (Blueprint $table) {
             $table->string('currency_code')->nullable();
         });
 
-        Schema::table('invoices', function (Blueprint $table)
-        {
+        Schema::table('invoices', function (Blueprint $table) {
             $table->string('currency_code')->nullable();
             $table->decimal('exchange_rate', 10, 7)->default('1');
         });
 
-        Schema::table('quotes', function (Blueprint $table)
-        {
+        Schema::table('quotes', function (Blueprint $table) {
             $table->string('currency_code')->nullable();
             $table->decimal('exchange_rate', 10, 7)->default('1');
         });

@@ -10,15 +10,13 @@ class Version223 extends Migration
     {
         // Delete invalid quote activity records if they exist
         Activity::where('audit_type', 'FI\Modules\Quotes\Models\Quote')
-            ->whereNotIn('audit_id', function ($query)
-            {
+            ->whereNotIn('audit_id', function ($query) {
                 $query->select('id')->from('quotes');
             })->delete();
 
         // Delete invalid invoice activity records if they exist
         Activity::where('audit_type', 'FI\Modules\Invoices\Models\Invoice')
-            ->whereNotIn('audit_id', function ($query)
-            {
+            ->whereNotIn('audit_id', function ($query) {
                 $query->select('id')->from('invoices');
             })->delete();
 

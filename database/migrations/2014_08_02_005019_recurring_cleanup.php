@@ -12,8 +12,7 @@ class RecurringCleanup extends Migration
         // invoice, but we need to clean up any orphaned records still in the
         // system from before the bug was fixed.
 
-        DB::table('recurring_invoices')->whereNotIn('invoice_id', function ($query)
-        {
+        DB::table('recurring_invoices')->whereNotIn('invoice_id', function ($query) {
             $query->select('id')->from('invoices');
         })->delete();
     }

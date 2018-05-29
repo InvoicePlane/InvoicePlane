@@ -7,13 +7,11 @@ class Discount extends Migration
 {
     public function up()
     {
-        Schema::table('invoices', function (Blueprint $table)
-        {
+        Schema::table('invoices', function (Blueprint $table) {
             $table->decimal('discount', 15, 2)->default(0.00);
         });
 
-        Schema::table('quotes', function (Blueprint $table)
-        {
+        Schema::table('quotes', function (Blueprint $table) {
             $table->decimal('discount', 15, 2)->default(0.00);
         });
     }

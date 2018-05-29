@@ -7,8 +7,7 @@ class MailQueue extends Migration
 {
     public function up()
     {
-        Schema::create('mail_queue', function (Blueprint $table)
-        {
+        Schema::create('mail_queue', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('mailable_id');

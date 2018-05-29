@@ -9,8 +9,8 @@ class MerchantSettings extends Migration
     {
         Setting::saveByKey('merchant', json_encode([
             'PayPalExpress' => ['enabled' => 0, 'username' => '', 'password' => '', 'signature' => ''],
-            'Stripe'        => ['enabled' => 0, 'secretKey' => '', 'publishableKey' => ''],
-            'Mollie'        => ['enabled' => 0, 'apiKey' => ''],
+            'Stripe' => ['enabled' => 0, 'secretKey' => '', 'publishableKey' => ''],
+            'Mollie' => ['enabled' => 0, 'apiKey' => ''],
         ]));
     }
 

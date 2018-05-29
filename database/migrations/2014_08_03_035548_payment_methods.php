@@ -10,8 +10,7 @@ class PaymentMethods extends Migration
         // If this is a new install, no payment methods will exist, so let's
         // create some.
 
-        if (PaymentMethod::count() == 0)
-        {
+        if (PaymentMethod::count() == 0) {
             PaymentMethod::create(['name' => trans('fi.cash')]);
             PaymentMethod::create(['name' => trans('fi.credit_card')]);
             PaymentMethod::create(['name' => trans('fi.online_payment')]);

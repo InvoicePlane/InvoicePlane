@@ -7,8 +7,7 @@ class UserAddress extends Migration
 {
     public function up()
     {
-        Schema::table('users', function (Blueprint $table)
-        {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('city')->nullable()->after('address');
             $table->string('state')->nullable()->after('city');
             $table->string('zip')->nullable()->after('state');
