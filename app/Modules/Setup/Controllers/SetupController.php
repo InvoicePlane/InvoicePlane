@@ -43,23 +43,20 @@ class SetupController extends Controller
 
     public function prerequisites()
     {
-        $errors          = [];
+        $errors = [];
         $versionRequired = '5.5.9';
-        $dbDriver        = config('database.default');
-        $dbConfig        = config('database.connections.' . $dbDriver);
+        $dbDriver = config('database.default');
+        $dbConfig = config('database.connections.' . $dbDriver);
 
-        if (version_compare(phpversion(), $versionRequired, '<'))
-        {
+        if (version_compare(phpversion(), $versionRequired, '<')) {
             $errors[] = sprintf(trans('fi.php_version_error'), $versionRequired);
         }
 
-        if (!$dbConfig['host'] or !$dbConfig['database'] or !$dbConfig['username'] or !$dbConfig['password'])
-        {
+        if (!$dbConfig['host'] or !$dbConfig['database'] or !$dbConfig['username'] or !$dbConfig['password']) {
             $errors[] = trans('fi.database_not_configured');
         }
 
-        if (!$errors)
-        {
+        if (!$errors) {
             return redirect()->route('setup.migration');
         }
 
@@ -74,8 +71,7 @@ class SetupController extends Controller
 
     public function postMigration()
     {
-        if ($this->migrations->runMigrations(database_path('migrations')))
-        {
+        if ($this->migrations->runMigrations(database_path('migrations'))) {
             return response()->json([], 200);
         }
 
@@ -84,8 +80,7 @@ class SetupController extends Controller
 
     public function account()
     {
-        if (!User::count())
-        {
+        if (!User::count()) {
             return view('setup.account');
         }
 
@@ -94,8 +89,7 @@ class SetupController extends Controller
 
     public function postAccount(ProfileRequest $request)
     {
-        if (!User::count())
-        {
+        if (!User::count()) {
             $input = request()->all();
 
             unset($input['user']['password_confirmation']);

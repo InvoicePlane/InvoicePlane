@@ -12,8 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => 'web', 'namespace' => 'FI\Modules\Setup\Controllers'], function ()
-{
+Route::group(['middleware' => 'web', 'namespace' => 'FI\Modules\Setup\Controllers'], function () {
     Route::get('setup', ['uses' => 'SetupController@index', 'as' => 'setup.index']);
     Route::post('setup', ['uses' => 'SetupController@postIndex', 'as' => 'setup.postIndex']);
 

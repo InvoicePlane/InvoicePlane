@@ -24,7 +24,8 @@
                             @endforeach
                         </ul>
 
-                        <a href="{{ route('setup.prerequisites') }}" class="btn btn-primary">{{ trans('fi.try_again') }}</a>
+                        <a href="{{ route('setup.prerequisites') }}"
+                           class="btn btn-primary">{{ trans('fi.try_again') }}</a>
 
                     </div>
 
