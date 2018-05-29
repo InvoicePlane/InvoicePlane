@@ -1,1 +1,1 @@
-<script src="{{ asset('assets/dist/typeahead/typeahead.jquery.js') }}"></script>
+<script src="{{ asset('assets/dist/typeahead/typeahead.bundle.min.js') }}"></script>

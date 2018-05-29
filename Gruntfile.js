@@ -141,7 +141,7 @@ module.exports = function (grunt) {
     typeahead: {
       expand: true,
       cwd: 'node_modules/typeahead.js/dist/',
-      src: ['typeahead.jquery.js'],
+      src: ['typeahead.bundle.min.js'],
       dest: 'assets/dist/typeahead/'
     }
   });
