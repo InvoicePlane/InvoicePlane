@@ -24,7 +24,9 @@
                     if (!items[key].tax_rate_id) items[key].tax_rate_id = '<?php echo $default_item_tax_rate; ?>';
 
                     if ($('#item_table .item:last input[name=item_name]').val() !== '') {
-                        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+                        var uid = Math.floor(Math.random() * 10000);
+                        $('#new_row').clone().appendTo('#item_table').removeAttr('id').attr('id', 'n' + uid).addClass('item').show();
+                        $("#n" + uid).html( $("#n" + uid).html().replace( /UNDEF/g, uid ) );
                     }
 
                     var last_item_row = $('#item_table .item:last');

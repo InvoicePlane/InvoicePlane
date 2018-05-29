@@ -44,7 +44,9 @@
                     if (!items[key].tax_rate_id) items[key].tax_rate_id = 0;
 
                     if ($('#item_table tbody:last input[name=item_name]').val() !== '') {
-                        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+                        var uid = Math.floor(Math.random() * 10000);
+                        $('#new_row').clone().appendTo('#item_table').removeAttr('id').attr('id', 'n' + uid).addClass('item').show();
+                        $("#n" + uid).html( $("#n" + uid).html().replace( /UNDEF/g, uid ) );
                     }
                     $('#item_table tbody:last input[name=item_task_id]').val(items[key].task_id);
                     $('#item_table tbody:last input[name=item_name]').val(items[key].task_name);

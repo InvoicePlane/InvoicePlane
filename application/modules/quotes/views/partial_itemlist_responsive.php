@@ -49,13 +49,13 @@
                                 </select>
                             </div>
                             <div class="row">
-                                <div class="col-xs-9">
+                                <div class="col-xs-8">
                                     <div class="input-group">
                                         <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
                                         <input type="text" name="item_price" class="input-sm form-control" value="">
                                     </div>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-4">
                                     <div class="input-group">
                                         <select name="item_price_isgross" aria-label="<?php _trans('price_type'); ?>" class="input-sm form-control">
                                              <option value="0"><?php _trans('price_is_net'); ?></option>
@@ -177,13 +177,13 @@
                                         </select>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-9">
+                                    <div class="col-xs-8">
                                         <div class="input-group">
                                             <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
                                             <input type="text" name="item_price" class="input-sm form-control" value="<?php echo format_amount($item->item_price); ?>">
                                         </div>
                                     </div>
-                                    <div class="col-xs-3">
+                                    <div class="col-xs-4">
                                         <div class="input-group">
                                             <select name="item_price_isgross" aria-label="<?php _trans('price_type'); ?>" class="input-sm form-control">
                                                  <option value="0"><?php _trans('price_is_net'); ?></option>
