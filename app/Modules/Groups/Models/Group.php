@@ -33,8 +33,7 @@ class Group extends Model
 
     public static function findIdByName($name)
     {
-        if ($group = self::where('name', $name)->first())
-        {
+        if ($group = self::where('name', $name)->first()) {
             return $group->id;
         }
 
@@ -46,31 +45,22 @@ class Group extends Model
         $group = self::find($id);
 
         // Only check for resets if this group has been used.
-        if ($group->last_id <> 0)
-        {
+        if ($group->last_id <> 0) {
             // Check for yearly reset.
-            if ($group->reset_number == 1)
-            {
-                if ($group->last_year <> date('Y'))
-                {
+            if ($group->reset_number == 1) {
+                if ($group->last_year <> date('Y')) {
                     $group->next_id = 1;
                     $group->save();
                 }
-            }
-            // Check for monthly reset.
-            elseif ($group->reset_number == 2)
-            {
-                if ($group->last_month <> date('m') or $group->last_year <> date('Y'))
-                {
+            } // Check for monthly reset.
+            elseif ($group->reset_number == 2) {
+                if ($group->last_month <> date('m') or $group->last_year <> date('Y')) {
                     $group->next_id = 1;
                     $group->save();
                 }
-            }
-            // Check for weekly reset.
-            elseif ($group->reset_number == 3)
-            {
-                if ($group->last_week <> date('W') or $group->last_month <> date('m') or $group->last_year <> date('Y'))
-                {
+            } // Check for weekly reset.
+            elseif ($group->reset_number == 3) {
+                if ($group->last_week <> date('W') or $group->last_month <> date('m') or $group->last_year <> date('Y')) {
                     $group->next_id = 1;
                     $group->save();
                 }
@@ -85,10 +75,10 @@ class Group extends Model
         $number = str_replace('{WEEK}', date('W'), $number);
         $number = str_replace('{MONTHSHORTNAME}', date('M'), $number);
 
-        $group->last_id    = $group->next_id;
-        $group->last_week  = date('W');
+        $group->last_id = $group->next_id;
+        $group->last_week = date('W');
         $group->last_month = date('m');
-        $group->last_year  = date('Y');
+        $group->last_year = date('Y');
         $group->save();
 
         return $number;
@@ -101,8 +91,8 @@ class Group extends Model
 
     public static function incrementNextId($document)
     {
-        $group              = self::find($document->group_id);
-        $group->next_id     = $group->next_id + 1;
+        $group = self::find($document->group_id);
+        $group->next_id = $group->next_id + 1;
         $group->last_number = $document->number;
         $group->save();
     }
