@@ -54,8 +54,7 @@ class PaymentMailController extends Controller
 
         $mail = $this->mailQueue->create($payment, $request->except('payment_id'));
 
-        if (!$this->mailQueue->send($mail->id))
-        {
+        if (!$this->mailQueue->send($mail->id)) {
             return response()->json(['errors' => [[$this->mailQueue->getError()]]], 400);
         }
     }

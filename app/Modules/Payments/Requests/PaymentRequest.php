@@ -27,9 +27,9 @@ class PaymentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'paid_at'           => trans('fi.payment_date'),
-            'invoice_id'        => trans('fi.invoice'),
-            'amount'            => trans('fi.amount'),
+            'paid_at' => trans('fi.payment_date'),
+            'invoice_id' => trans('fi.invoice'),
+            'amount' => trans('fi.amount'),
             'payment_method_id' => trans('fi.payment_method'),
         ];
     }
@@ -46,9 +46,9 @@ class PaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'paid_at'           => 'required',
-            'invoice_id'        => 'required',
-            'amount'            => 'required|numeric',
+            'paid_at' => 'required',
+            'invoice_id' => 'required',
+            'amount' => 'required|numeric',
             'payment_method_id' => 'required',
         ];
     }

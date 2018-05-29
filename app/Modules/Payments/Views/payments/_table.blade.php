@@ -2,7 +2,9 @@
 
     <thead>
     <tr>
-        <th><div class="btn-group"><input type="checkbox" id="bulk-select-all"></div></th>
+        <th>
+            <div class="btn-group"><input type="checkbox" id="bulk-select-all"></div>
+        </th>
         <th>{!! Sortable::link('paid_at', trans('fi.payment_date'), 'payments') !!}</th>
         <th>{!! Sortable::link('invoices.number', trans('fi.invoice'), 'payments') !!}</th>
         <th>{!! Sortable::link('invoices.invoice_date', trans('fi.date'), 'payments') !!}</th>
@@ -22,7 +24,9 @@
             <td>{{ $payment->formatted_paid_at }}</td>
             <td><a href="{{ route('invoices.edit', [$payment->invoice_id]) }}">{{ $payment->invoice->number }}</a></td>
             <td>{{ $payment->invoice->formatted_created_at }}</td>
-            <td><a href="{{ route('clients.show', [$payment->invoice->client_id]) }}">{{ $payment->invoice->client->name }}</a></td>
+            <td>
+                <a href="{{ route('clients.show', [$payment->invoice->client_id]) }}">{{ $payment->invoice->client->name }}</a>
+            </td>
             <td>{{ $payment->invoice->summary }}</td>
             <td>{{ $payment->formatted_amount }}</td>
             <td>@if ($payment->paymentMethod) {{ $payment->paymentMethod->name }} @endif</td>
@@ -33,12 +37,18 @@
                         {{ trans('fi.options') }} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="{{ route('payments.edit', [$payment->id]) }}"><i class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
-                        <li><a href="{{ route('invoices.pdf', [$payment->invoice->id]) }}" target="_blank" id="btn-pdf-invoice"><i class="fa fa-print"></i> {{ trans('fi.invoice') }}</a></li>
+                        <li><a href="{{ route('payments.edit', [$payment->id]) }}"><i
+                                        class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                        <li><a href="{{ route('invoices.pdf', [$payment->invoice->id]) }}" target="_blank"
+                               id="btn-pdf-invoice"><i class="fa fa-print"></i> {{ trans('fi.invoice') }}</a></li>
                         @if (config('fi.mailConfigured'))
-                            <li><a href="javascript:void(0)" class="email-payment-receipt" data-payment-id="{{ $payment->id }}" data-redirect-to="{{ request()->fullUrl() }}"><i class="fa fa-envelope"></i> {{ trans('fi.email_payment_receipt') }}</a></li>
+                            <li><a href="javascript:void(0)" class="email-payment-receipt"
+                                   data-payment-id="{{ $payment->id }}" data-redirect-to="{{ request()->fullUrl() }}"><i
+                                            class="fa fa-envelope"></i> {{ trans('fi.email_payment_receipt') }}</a></li>
                         @endif
-                        <li><a href="{{ route('payments.delete', [$payment->id]) }}" onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                        <li><a href="{{ route('payments.delete', [$payment->id]) }}"
+                               onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
+                                        class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
                     </ul>
                 </div>
             </td>

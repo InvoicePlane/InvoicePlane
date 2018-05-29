@@ -12,8 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Payments\Controllers'], function ()
-{
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Payments\Controllers'], function () {
     Route::get('payments', ['uses' => 'PaymentController@index', 'as' => 'payments.index']);
     Route::post('payments/create', ['uses' => 'PaymentController@create', 'as' => 'payments.create']);
     Route::post('payments/store', ['uses' => 'PaymentController@store', 'as' => 'payments.store']);
@@ -24,8 +23,7 @@ Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\
 
     Route::post('bulk/delete', ['uses' => 'PaymentController@bulkDelete', 'as' => 'payments.bulk.delete']);
 
-    Route::group(['prefix' => 'payment_mail'], function ()
-    {
+    Route::group(['prefix' => 'payment_mail'], function () {
         Route::post('create', ['uses' => 'PaymentMailController@create', 'as' => 'paymentMail.create']);
         Route::post('store', ['uses' => 'PaymentMailController@store', 'as' => 'paymentMail.store']);
     });
