@@ -12,7 +12,7 @@
             </div>
         </div>
     @endif
-    
+
     <ul class="sidebar-menu">
         <li>
             <a href="{{ route('clientCenter.dashboard') }}">

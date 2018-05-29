@@ -5,31 +5,31 @@
     <script type="text/javascript" src="https://checkout.stripe.com/checkout.js"></script>
 
     <script type="text/javascript">
-        $(function () {
-            $('#view-notes').hide();
-            $('.btn-notes').click(function () {
-                $('#view-doc').toggle();
-                $('#view-notes').toggle();
-                $('#' + $(this).data('button-toggle')).show();
-                $(this).hide();
-            });
-
-            $('.btn-pay').click(function () {
-                var $btn = $(this).button('loading');
-                
-                $.post("{{ route('merchant.pay') }}", {
-                    driver: $(this).data('driver'),
-                    urlKey: '{{ $invoice->url_key }}'
-                }).done(function (response) {
-                    if (response.redirect == 1) {
-                        window.location = response.url;
-                    }
-                    else {
-                        $('#modal-placeholder').html(response.modalContent);
-                    }
-                });
-            });
+      $(function () {
+        $('#view-notes').hide();
+        $('.btn-notes').click(function () {
+          $('#view-doc').toggle();
+          $('#view-notes').toggle();
+          $('#' + $(this).data('button-toggle')).show();
+          $(this).hide();
         });
+
+        $('.btn-pay').click(function () {
+          var $btn = $(this).button('loading');
+
+          $.post("{{ route('merchant.pay') }}", {
+            driver: $(this).data('driver'),
+            urlKey: '{{ $invoice->url_key }}'
+          }).done(function (response) {
+            if (response.redirect == 1) {
+              window.location = response.url;
+            }
+            else {
+              $('#modal-placeholder').html(response.modalContent);
+            }
+          });
+        });
+      });
     </script>
 @stop
 
@@ -48,10 +48,12 @@
                 </a>
 
                 @if (auth()->check())
-                    <a href="javascript:void(0)" id="btn-notes" data-button-toggle="btn-notes-back" class="btn btn-primary btn-notes">
+                    <a href="javascript:void(0)" id="btn-notes" data-button-toggle="btn-notes-back"
+                       class="btn btn-primary btn-notes">
                         <i class="fa fa-comments"></i> {{ trans('fi.notes') }}
                     </a>
-                    <a href="javascript:void(0)" id="btn-notes-back" data-button-toggle="btn-notes" class="btn btn-primary btn-notes" style="display: none;">
+                    <a href="javascript:void(0)" id="btn-notes-back" data-button-toggle="btn-notes"
+                       class="btn btn-primary btn-notes" style="display: none;">
                         <i class="fa fa-backward"></i> {{ trans('fi.back_to_invoice') }}
                     </a>
                 @endif
@@ -71,7 +73,9 @@
 
                 @if ($invoice->isPayable)
                     @foreach ($merchantDrivers as $driver)
-                        <a href="javascript:void(0)" class="btn btn-primary btn-pay" data-driver="{{ $driver->getName() }}" data-loading-text="{{ trans('fi.please_wait') }}"><i class="fa fa-credit-card"></i> {{ $driver->getSetting('paymentButtonText') }}</a>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-pay"
+                           data-driver="{{ $driver->getName() }}" data-loading-text="{{ trans('fi.please_wait') }}"><i
+                                    class="fa fa-credit-card"></i> {{ $driver->getSetting('paymentButtonText') }}</a>
                     @endforeach
                 @endif
             </div>

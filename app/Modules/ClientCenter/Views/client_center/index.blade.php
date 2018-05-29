@@ -17,7 +17,8 @@
                     @if (count($quotes))
                         <div class="box-body no-padding">
                             @include('client_center.quotes._table')
-                            <p style="text-align: center;"><a href="{{ route('clientCenter.quotes') }}" class="btn btn-default">{{ trans('fi.view_all') }}</a></p>
+                            <p style="text-align: center;"><a href="{{ route('clientCenter.quotes') }}"
+                                                              class="btn btn-default">{{ trans('fi.view_all') }}</a></p>
                         </div>
                     @else
                         <div class="box-body">
@@ -36,7 +37,8 @@
                     @if (count($invoices))
                         <div class="box-body no-padding">
                             @include('client_center.invoices._table')
-                            <p style="text-align: center;"><a href="{{ route('clientCenter.invoices') }}" class="btn btn-default">{{ trans('fi.view_all') }}</a></p>
+                            <p style="text-align: center;"><a href="{{ route('clientCenter.invoices') }}"
+                                                              class="btn btn-default">{{ trans('fi.view_all') }}</a></p>
                         </div>
                     @else
                         <div class="box-body">
@@ -55,7 +57,8 @@
                     @if (count($payments))
                         <div class="box-body no-padding">
                             @include('client_center.payments._table')
-                            <p style="text-align: center;"><a href="{{ route('clientCenter.payments') }}" class="btn btn-default">{{ trans('fi.view_all') }}</a></p>
+                            <p style="text-align: center;"><a href="{{ route('clientCenter.payments') }}"
+                                                              class="btn btn-default">{{ trans('fi.view_all') }}</a></p>
                         </div>
                     @else
                         <div class="box-body">

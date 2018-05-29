@@ -32,8 +32,10 @@
                         {{ trans('fi.options') }} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="{{ route('clientCenter.public.quote.pdf', [$quote->url_key]) }}" target="_blank"><i class="fa fa-print"></i> {{ trans('fi.pdf') }}</a></li>
-                        <li><a href="{{ route('clientCenter.public.quote.show', [$quote->url_key]) }}" target="_blank"><i class="fa fa-search"></i> {{ trans('fi.view') }}</a></li>
+                        <li><a href="{{ route('clientCenter.public.quote.pdf', [$quote->url_key]) }}" target="_blank"><i
+                                        class="fa fa-print"></i> {{ trans('fi.pdf') }}</a></li>
+                        <li><a href="{{ route('clientCenter.public.quote.show', [$quote->url_key]) }}"
+                               target="_blank"><i class="fa fa-search"></i> {{ trans('fi.view') }}</a></li>
                     </ul>
                 </div>
             </td>
