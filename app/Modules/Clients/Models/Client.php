@@ -38,23 +38,19 @@ class Client extends Model
     {
         parent::boot();
 
-        static::creating(function ($client)
-        {
+        static::creating(function ($client) {
             event(new ClientCreating($client));
         });
 
-        static::created(function ($client)
-        {
+        static::created(function ($client) {
             event(new ClientCreated($client));
         });
 
-        static::saving(function ($client)
-        {
+        static::saving(function ($client) {
             event(new ClientSaving($client));
         });
 
-        static::deleted(function ($client)
-        {
+        static::deleted(function ($client) {
             event(new ClientDeleted($client));
         });
     }
@@ -71,8 +67,7 @@ class Client extends Model
             'unique_name' => $uniqueName,
         ]);
 
-        if (!$client->id)
-        {
+        if (!$client->id) {
             $client->name = $uniqueName;
             $client->save();
             return self::find($client->id);
@@ -198,50 +193,9 @@ class Client extends Model
         );
     }
 
-    public function scopeStatus($query, $status)
-    {
-        if ($status == 'active')
-        {
-            $query->where('active', 1);
-        }
-        elseif ($status == 'inactive')
-        {
-            $query->where('active', 0);
-        }
-
-        return $query;
-    }
-
-    public function scopeKeywords($query, $keywords)
-    {
-        if ($keywords)
-        {
-            $keywords = explode(' ', $keywords);
-
-            foreach ($keywords as $keyword)
-            {
-                if ($keyword)
-                {
-                    $keyword = strtolower($keyword);
-
-                    $query->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name),LOWER(email),phone,fax,mobile)"), 'LIKE', "%$keyword%");
-                }
-            }
-        }
-
-        return $query;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Subqueries
-    |--------------------------------------------------------------------------
-    */
-
     private function getBalanceSql()
     {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(balance)'))->whereIn('invoice_id', function ($q)
-        {
+        return DB::table('invoice_amounts')->select(DB::raw('sum(balance)'))->whereIn('invoice_id', function ($q) {
             $q->select('id')
                 ->from('invoices')
                 ->where('invoices.client_id', '=', DB::raw(DB::getTablePrefix() . 'clients.id'))
@@ -251,17 +205,49 @@ class Client extends Model
 
     private function getPaidSql()
     {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(paid)'))->whereIn('invoice_id', function ($q)
-        {
+        return DB::table('invoice_amounts')->select(DB::raw('sum(paid)'))->whereIn('invoice_id', function ($q) {
             $q->select('id')->from('invoices')->where('invoices.client_id', '=', DB::raw(DB::getTablePrefix() . 'clients.id'));
         })->toSql();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Subqueries
+    |--------------------------------------------------------------------------
+    */
+
     private function getTotalSql()
     {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(total)'))->whereIn('invoice_id', function ($q)
-        {
+        return DB::table('invoice_amounts')->select(DB::raw('sum(total)'))->whereIn('invoice_id', function ($q) {
             $q->select('id')->from('invoices')->where('invoices.client_id', '=', DB::raw(DB::getTablePrefix() . 'clients.id'));
         })->toSql();
+    }
+
+    public function scopeStatus($query, $status)
+    {
+        if ($status == 'active') {
+            $query->where('active', 1);
+        } elseif ($status == 'inactive') {
+            $query->where('active', 0);
+        }
+
+        return $query;
+    }
+
+    public function scopeKeywords($query, $keywords)
+    {
+        if ($keywords) {
+            $keywords = explode(' ', $keywords);
+
+            foreach ($keywords as $keyword) {
+                if ($keyword) {
+                    $keyword = strtolower($keyword);
+
+                    $query->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name),LOWER(email),phone,fax,mobile)"), 'LIKE', "%$keyword%");
+                }
+            }
+        }
+
+        return $query;
     }
 }

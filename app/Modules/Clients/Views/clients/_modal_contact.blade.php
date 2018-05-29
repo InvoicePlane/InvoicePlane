@@ -1,22 +1,22 @@
 <script type="text/javascript">
-    $(function () {
-        var modalContact = $('#modal-contact');
+  $(function () {
+    var modalContact = $('#modal-contact');
 
-        modalContact.modal();
+    modalContact.modal();
 
-        $('#btn-contact-submit').click(function () {
-            $.post("{{ $submitRoute }}", {
-                client_id: {{ $clientId }},
-                name: $('#contact_name').val(),
-                email: $('#contact_email').val()
-            }).fail(function (response) {
-                showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
-            }).done(function (response) {
-                modalContact.modal('hide');
-                $('#tab-contacts').html(response);
-            });
-        });
+    $('#btn-contact-submit').click(function () {
+      $.post("{{ $submitRoute }}", {
+        client_id: {{ $clientId }},
+        name: $('#contact_name').val(),
+        email: $('#contact_email').val()
+      }).fail(function (response) {
+        showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
+      }).done(function (response) {
+        modalContact.modal('hide');
+        $('#tab-contacts').html(response);
+      });
     });
+  });
 </script>
 
 <div class="modal" id="modal-contact">

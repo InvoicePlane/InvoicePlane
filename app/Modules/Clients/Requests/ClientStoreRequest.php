@@ -26,9 +26,9 @@ class ClientStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name'        => trans('fi.name'),
+            'name' => trans('fi.name'),
             'unique_name' => trans('fi.unique_name'),
-            'email'       => trans('fi.email'),
+            'email' => trans('fi.email'),
         ];
     }
 
@@ -46,9 +46,9 @@ class ClientStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'        => 'required',
+            'name' => 'required',
             'unique_name' => 'required_with:name|unique:clients',
-            'email'       => 'email',
+            'email' => 'email',
         ];
     }
 }

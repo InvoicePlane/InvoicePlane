@@ -13,7 +13,8 @@
 
         <div class="pull-right">
             @if ($editMode)
-                <a href="{{ $returnUrl }}" class="btn btn-default"><i class="fa fa-backward"></i> {{ trans('fi.back') }}</a>
+                <a href="{{ $returnUrl }}" class="btn btn-default"><i class="fa fa-backward"></i> {{ trans('fi.back') }}
+                </a>
             @endif
             <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('fi.save') }}</button>
         </div>

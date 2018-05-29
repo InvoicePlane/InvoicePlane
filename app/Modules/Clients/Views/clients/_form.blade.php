@@ -1,9 +1,9 @@
 @include('clients._js_unique_name')
 
 <script type="text/javascript">
-    $(function() {
-        $('#name').focus();
-    });
+  $(function () {
+    $('#name').focus();
+  });
 </script>
 
 <div class="row">

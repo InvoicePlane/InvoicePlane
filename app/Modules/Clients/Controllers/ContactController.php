@@ -35,6 +35,13 @@ class ContactController extends Controller
         return $this->loadContacts($clientId);
     }
 
+    private function loadContacts($clientId)
+    {
+        return view('clients._contacts')
+            ->with('clientId', $clientId)
+            ->with('contacts', Contact::where('client_id', $clientId)->orderBy('name')->get());
+    }
+
     public function edit($clientId, $id)
     {
         return view('clients._modal_contact')
@@ -66,26 +73,25 @@ class ContactController extends Controller
     {
         $contact = Contact::find(request('id'));
 
-        switch (request('default'))
-        {
+        switch (request('default')) {
             case 'to':
                 $data = [
-                    'default_to'  => ($contact->default_to) ? 0 : 1,
-                    'default_cc'  => 0,
+                    'default_to' => ($contact->default_to) ? 0 : 1,
+                    'default_cc' => 0,
                     'default_bcc' => 0,
                 ];
                 break;
             case 'cc':
                 $data = [
-                    'default_to'  => 0,
-                    'default_cc'  => ($contact->default_cc) ? 0 : 1,
+                    'default_to' => 0,
+                    'default_cc' => ($contact->default_cc) ? 0 : 1,
                     'default_bcc' => 0,
                 ];
                 break;
             case 'bcc':
                 $data = [
-                    'default_to'  => 0,
-                    'default_cc'  => 0,
+                    'default_to' => 0,
+                    'default_cc' => 0,
                     'default_bcc' => ($contact->default_bcc) ? 0 : 1,
                 ];
                 break;
@@ -95,12 +101,5 @@ class ContactController extends Controller
         $contact->save();
 
         return $this->loadContacts($clientId);
-    }
-
-    private function loadContacts($clientId)
-    {
-        return view('clients._contacts')
-            ->with('clientId', $clientId)
-            ->with('contacts', Contact::where('client_id', $clientId)->orderBy('name')->get());
     }
 }
