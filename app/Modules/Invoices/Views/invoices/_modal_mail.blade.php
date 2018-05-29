@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="{{ asset('assets/plugins/chosen/chosen.min.css') }}">
-<script src="{{ asset('assets/plugins/chosen/chosen.jquery.min.js') }}" type="text/javascript"></script>
+<link rel="stylesheet" href="{{ asset('assets/dist/chosen-js/chosen.css') }}">
+<script src="{{ asset('assets/dist/chosen-js/chosen.jquery.js') }}"></script>
 
 @include('invoices._js_mail')
 
