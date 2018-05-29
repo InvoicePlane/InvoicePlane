@@ -19,39 +19,29 @@ class ExpenseSavingListener
     {
         $expense = $event->expense;
 
-        if (!$expense->id)
-        {
+        if (!$expense->id) {
             $expense->user_id = auth()->user()->id;
         }
 
-        if ($expense->category_name)
-        {
+        if ($expense->category_name) {
             $expense->category_id = ExpenseCategory::firstOrCreate(['name' => $expense->category_name])->id;
         }
 
-        if (isset($expense->vendor_name) and $expense->vendor_name)
-        {
+        if (isset($expense->vendor_name) and $expense->vendor_name) {
             $expense->vendor_id = ExpenseVendor::firstOrCreate(['name' => $expense->vendor_name])->id;
-        }
-        elseif (isset($expense->vendor_name))
-        {
+        } elseif (isset($expense->vendor_name)) {
             $expense->vendor_id = 0;
         }
 
-        if ($expense->company_profile)
-        {
-            if (!CompanyProfile::where('company', $expense->company_profile)->count())
-            {
+        if ($expense->company_profile) {
+            if (!CompanyProfile::where('company', $expense->company_profile)->count()) {
                 $expense->company_profile_id = config('fi.defaultCompanyProfile');
             }
         }
 
-        if (isset($expense->client_name) and $expense->client_name)
-        {
+        if (isset($expense->client_name) and $expense->client_name) {
             $expense->client_id = Client::firstOrCreateByUniqueName($expense->client_name)->id;
-        }
-        elseif (isset($expense->client_name))
-        {
+        } elseif (isset($expense->client_name)) {
             $expense->client_id = 0;
         }
 

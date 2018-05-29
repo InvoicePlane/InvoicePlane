@@ -26,8 +26,7 @@ class InvoiceEmailedListener
     public function handle(InvoiceEmailed $event)
     {
         // Change the status to sent if the status is currently draft
-        if ($event->invoice->invoice_status_id == InvoiceStatuses::getStatusId('draft'))
-        {
+        if ($event->invoice->invoice_status_id == InvoiceStatuses::getStatusId('draft')) {
             $event->invoice->invoice_status_id = InvoiceStatuses::getStatusId('sent');
             $event->invoice->save();
         }

@@ -13,7 +13,7 @@ class OverdueNoticeEmailed extends Event
     public function __construct(Invoice $invoice, MailQueue $mail)
     {
         $this->invoice = $invoice;
-        $this->mail    = $mail;
+        $this->mail = $mail;
     }
 
     public function broadcastOn()

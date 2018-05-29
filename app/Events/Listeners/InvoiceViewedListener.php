@@ -24,10 +24,8 @@ class InvoiceViewedListener
      */
     public function handle(InvoiceViewed $event)
     {
-        if (request('disableFlag') != 1)
-        {
-            if (auth()->guest() or auth()->user()->user_type == 'client')
-            {
+        if (request('disableFlag') != 1) {
+            if (auth()->guest() or auth()->user()->user_type == 'client') {
                 $event->invoice->activities()->create(['activity' => 'public.viewed']);
                 $event->invoice->viewed = 1;
                 $event->invoice->save();

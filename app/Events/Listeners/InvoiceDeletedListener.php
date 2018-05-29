@@ -5,7 +5,6 @@ namespace FI\Events\Listeners;
 use FI\Events\InvoiceDeleted;
 use FI\Modules\Expenses\Models\Expense;
 use FI\Modules\Groups\Models\Group;
-use FI\Modules\Invoices\Models\Invoice;
 use FI\Modules\Quotes\Models\Quote;
 
 class InvoiceDeletedListener
@@ -17,28 +16,23 @@ class InvoiceDeletedListener
 
     public function handle(InvoiceDeleted $event)
     {
-        foreach ($event->invoice->items as $item)
-        {
+        foreach ($event->invoice->items as $item) {
             $item->delete();
         }
 
-        foreach ($event->invoice->payments as $payment)
-        {
+        foreach ($event->invoice->payments as $payment) {
             $payment->delete();
         }
 
-        foreach ($event->invoice->activities as $activity)
-        {
+        foreach ($event->invoice->activities as $activity) {
             $activity->delete();
         }
 
-        foreach ($event->invoice->mailQueue as $mailQueue)
-        {
+        foreach ($event->invoice->mailQueue as $mailQueue) {
             $mailQueue->delete();
         }
 
-        foreach ($event->invoice->notes as $note)
-        {
+        foreach ($event->invoice->notes as $note) {
             $note->delete();
         }
 
@@ -53,8 +47,7 @@ class InvoiceDeletedListener
             ->where('last_number', $event->invoice->number)
             ->first();
 
-        if ($group)
-        {
+        if ($group) {
             $group->next_id = $group->next_id - 1;
             $group->save();
         }

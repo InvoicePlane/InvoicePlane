@@ -15,8 +15,7 @@ class AttachmentDeletedListener
     {
         $filePath = $event->attachment->attachable->attachment_path . '/' . $event->attachment->filename;
 
-        if (file_exists($filePath))
-        {
+        if (file_exists($filePath)) {
             unlink($filePath);
         }
     }

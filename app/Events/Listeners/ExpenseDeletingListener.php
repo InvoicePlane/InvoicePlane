@@ -13,13 +13,11 @@ class ExpenseDeletingListener
 
     public function handle(ExpenseDeleting $event)
     {
-        foreach ($event->expense->attachments as $attachment)
-        {
+        foreach ($event->expense->attachments as $attachment) {
             $attachment->delete();
         }
 
-        if ($event->expense->custom)
-        {
+        if ($event->expense->custom) {
             $event->expense->custom->delete();
         }
     }

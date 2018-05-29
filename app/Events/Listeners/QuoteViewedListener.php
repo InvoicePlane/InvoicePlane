@@ -24,10 +24,8 @@ class QuoteViewedListener
      */
     public function handle(QuoteViewed $event)
     {
-        if (request('disableFlag') != 1)
-        {
-            if (auth()->guest() or auth()->user()->user_type == 'client')
-            {
+        if (request('disableFlag') != 1) {
+            if (auth()->guest() or auth()->user()->user_type == 'client') {
                 $event->quote->activities()->create(['activity' => 'public.viewed']);
                 $event->quote->viewed = 1;
                 $event->quote->save();

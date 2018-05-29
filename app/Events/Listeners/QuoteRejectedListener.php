@@ -20,11 +20,11 @@ class QuoteRejectedListener
         $parser = new Parser($event->quote);
 
         $mail = $this->mailQueue->create($event->quote, [
-            'to'         => [$event->quote->user->email],
-            'cc'         => [config('fi.mailDefaultCc')],
-            'bcc'        => [config('fi.mailDefaultBcc')],
-            'subject'    => trans('fi.quote_status_change_notification'),
-            'body'       => $parser->parse('quoteRejectedEmailBody'),
+            'to' => [$event->quote->user->email],
+            'cc' => [config('fi.mailDefaultCc')],
+            'bcc' => [config('fi.mailDefaultBcc')],
+            'subject' => trans('fi.quote_status_change_notification'),
+            'body' => $parser->parse('quoteRejectedEmailBody'),
             'attach_pdf' => config('fi.attachPdf'),
         ]);
 

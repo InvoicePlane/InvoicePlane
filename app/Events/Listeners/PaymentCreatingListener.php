@@ -10,8 +10,7 @@ class PaymentCreatingListener
     {
         $payment = $event->payment;
 
-        if (!$payment->paid_at)
-        {
+        if (!$payment->paid_at) {
             $payment->paid_at = date('Y-m-d');
         }
     }

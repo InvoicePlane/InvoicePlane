@@ -14,73 +14,58 @@ class QuoteCreatingListener
     {
         $quote = $event->quote;
 
-        if (!$quote->client_id)
-        {
+        if (!$quote->client_id) {
             // This needs to throw an exception since this is required.
         }
 
-        if (!$quote->user_id)
-        {
+        if (!$quote->user_id) {
             $quote->user_id = auth()->user()->id;
         }
 
-        if (!$quote->quote_date)
-        {
+        if (!$quote->quote_date) {
             $quote->quote_date = date('Y-m-d');
         }
 
-        if (!$quote->expires_at)
-        {
+        if (!$quote->expires_at) {
             $quote->expires_at = DateFormatter::incrementDateByDays($quote->quote_date->format('Y-m-d'), config('fi.quotesExpireAfter'));
         }
 
-        if (!$quote->company_profile_id)
-        {
+        if (!$quote->company_profile_id) {
             $quote->company_profile_id = config('fi.defaultCompanyProfile');
         }
 
-        if (!$quote->group_id)
-        {
+        if (!$quote->group_id) {
             $quote->group_id = config('fi.quoteGroup');
         }
 
-        if (!$quote->number)
-        {
+        if (!$quote->number) {
             $quote->number = Group::generateNumber($quote->group_id);
         }
 
-        if (!isset($quote->terms))
-        {
+        if (!isset($quote->terms)) {
             $quote->terms = config('fi.quoteTerms');
         }
 
-        if (!isset($quote->footer))
-        {
+        if (!isset($quote->footer)) {
             $quote->footer = config('fi.quoteFooter');
         }
 
-        if (!$quote->quote_status_id)
-        {
+        if (!$quote->quote_status_id) {
             $quote->quote_status_id = QuoteStatuses::getStatusId('draft');
         }
 
-        if (!$quote->currency_code)
-        {
+        if (!$quote->currency_code) {
             $quote->currency_code = $quote->client->currency_code;
         }
 
-        if (!$quote->template)
-        {
+        if (!$quote->template) {
             $quote->template = $quote->companyProfile->quote_template;
         }
 
-        if ($quote->currency_code == config('fi.baseCurrency'))
-        {
+        if ($quote->currency_code == config('fi.baseCurrency')) {
             $quote->exchange_rate = 1;
-        }
-        elseif (!$quote->exchange_rate)
-        {
-            $currencyConverter    = CurrencyConverterFactory::create();
+        } elseif (!$quote->exchange_rate) {
+            $currencyConverter = CurrencyConverterFactory::create();
             $quote->exchange_rate = $currencyConverter->convert(config('fi.baseCurrency'), $quote->currency_code);
         }
 

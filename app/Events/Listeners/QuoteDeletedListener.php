@@ -14,23 +14,19 @@ class QuoteDeletedListener
 
     public function handle(QuoteDeleted $event)
     {
-        foreach ($event->quote->items as $item)
-        {
+        foreach ($event->quote->items as $item) {
             $item->delete();
         }
 
-        foreach ($event->quote->activities as $activity)
-        {
+        foreach ($event->quote->activities as $activity) {
             $activity->delete();
         }
 
-        foreach ($event->quote->mailQueue as $mailQueue)
-        {
+        foreach ($event->quote->mailQueue as $mailQueue) {
             $mailQueue->delete();
         }
 
-        foreach ($event->quote->notes as $note)
-        {
+        foreach ($event->quote->notes as $note) {
             $note->delete();
         }
 
@@ -41,8 +37,7 @@ class QuoteDeletedListener
             ->where('last_number', $event->quote->number)
             ->first();
 
-        if ($group)
-        {
+        if ($group) {
             $group->next_id = $group->next_id - 1;
             $group->save();
         }

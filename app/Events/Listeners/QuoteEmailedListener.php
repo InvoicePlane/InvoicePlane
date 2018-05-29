@@ -26,8 +26,7 @@ class QuoteEmailedListener
     public function handle(QuoteEmailed $event)
     {
         // Change the status to sent if the status is currently draft
-        if ($event->quote->quote_status_id == QuoteStatuses::getStatusId('draft'))
-        {
+        if ($event->quote->quote_status_id == QuoteStatuses::getStatusId('draft')) {
             $event->quote->quote_status_id = QuoteStatuses::getStatusId('sent');
             $event->quote->save();
         }

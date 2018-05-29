@@ -13,8 +13,7 @@ class RecurringInvoiceDeletedListener
 
     public function handle(RecurringInvoiceDeleted $event)
     {
-        foreach ($event->recurringInvoice->items as $item)
-        {
+        foreach ($event->recurringInvoice->items as $item) {
             $item->delete();
         }
 

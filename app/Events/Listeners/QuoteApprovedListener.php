@@ -12,7 +12,7 @@ class QuoteApprovedListener
 {
     public function __construct(MailQueue $mailQueue, QuoteToInvoice $quoteToInvoice)
     {
-        $this->mailQueue      = $mailQueue;
+        $this->mailQueue = $mailQueue;
         $this->quoteToInvoice = $quoteToInvoice;
     }
 
@@ -22,8 +22,7 @@ class QuoteApprovedListener
         $event->quote->activities()->create(['activity' => 'public.approved']);
 
         // If applicable, convert the quote to an invoice when quote is approved
-        if (config('fi.convertQuoteWhenApproved'))
-        {
+        if (config('fi.convertQuoteWhenApproved')) {
             $this->quoteToInvoice->convert(
                 $event->quote,
                 date('Y-m-d'),
@@ -35,11 +34,11 @@ class QuoteApprovedListener
         $parser = new Parser($event->quote);
 
         $mail = $this->mailQueue->create($event->quote, [
-            'to'         => [$event->quote->user->email],
-            'cc'         => [config('fi.mailDefaultCc')],
-            'bcc'        => [config('fi.mailDefaultBcc')],
-            'subject'    => trans('fi.quote_status_change_notification'),
-            'body'       => $parser->parse('quoteApprovedEmailBody'),
+            'to' => [$event->quote->user->email],
+            'cc' => [config('fi.mailDefaultCc')],
+            'bcc' => [config('fi.mailDefaultBcc')],
+            'subject' => trans('fi.quote_status_change_notification'),
+            'body' => $parser->parse('quoteApprovedEmailBody'),
             'attach_pdf' => config('fi.attachPdf'),
         ]);
 
