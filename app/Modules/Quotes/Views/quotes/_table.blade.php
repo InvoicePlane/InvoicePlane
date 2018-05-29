@@ -2,7 +2,9 @@
 
     <thead>
     <tr>
-        <th><div class="btn-group"><input type="checkbox" id="bulk-select-all"></div></th>
+        <th>
+            <div class="btn-group"><input type="checkbox" id="bulk-select-all"></div>
+        </th>
         <th class="hidden-sm hidden-xs">{{ trans('fi.status') }}</th>
         <th>{!! Sortable::link('number', trans('fi.quote'), 'quotes') !!}</th>
         <th class="hidden-xs">{!! Sortable::link('quote_date', trans('fi.date'), 'quotes') !!}</th>
@@ -49,17 +51,17 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('quotes.edit', [$quote->id]) }}"><i
-                                    class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                                        class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
                         <li><a href="{{ route('quotes.pdf', [$quote->id]) }}" target="_blank" id="btn-pdf-quote"><i
-                                    class="fa fa-print"></i> {{ trans('fi.pdf') }}</a></li>
+                                        class="fa fa-print"></i> {{ trans('fi.pdf') }}</a></li>
                         <li><a href="javascript:void(0)" class="email-quote" data-quote-id="{{ $quote->id }}"
                                data-redirect-to="{{ request()->fullUrl() }}"><i
-                                    class="fa fa-envelope"></i> {{ trans('fi.email') }}</a></li>
+                                        class="fa fa-envelope"></i> {{ trans('fi.email') }}</a></li>
                         <li><a href="{{ route('clientCenter.public.quote.show', [$quote->url_key]) }}" target="_blank"
                                id="btn-public-quote"><i class="fa fa-globe"></i> {{ trans('fi.public') }}</a></li>
                         <li><a href="{{ route('quotes.delete', [$quote->id]) }}"
                                onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
-                                    class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                        class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
                     </ul>
                 </div>
             </td>

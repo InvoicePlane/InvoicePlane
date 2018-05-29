@@ -28,26 +28,21 @@ class QuoteItem extends Model
     {
         parent::boot();
 
-        static::deleting(function ($quoteItem)
-        {
+        static::deleting(function ($quoteItem) {
             $quoteItem->amount()->delete();
         });
 
-        static::deleted(function($quoteItem)
-        {
-            if ($quoteItem->quote)
-            {
+        static::deleted(function ($quoteItem) {
+            if ($quoteItem->quote) {
                 event(new QuoteModified($quoteItem->quote));
             }
         });
 
-        static::saving(function($quoteItem)
-        {
+        static::saving(function ($quoteItem) {
             event(new QuoteItemSaving($quoteItem));
         });
 
-        static::saved(function($quoteItem)
-        {
+        static::saved(function ($quoteItem) {
             event(new QuoteModified($quoteItem->quote));
         });
     }

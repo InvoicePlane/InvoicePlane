@@ -21,6 +21,13 @@ use FI\Modules\Quotes\Models\QuoteItemAmount;
 
 class QuoteCalculate
 {
+    public function calculateAll()
+    {
+        foreach (Quote::get() as $quote) {
+            $this->calculate($quote);
+        }
+    }
+
     public function calculate($quote)
     {
         $quoteItems = QuoteItem::select('quote_items.*',
@@ -37,11 +44,10 @@ class QuoteCalculate
         $calculator->setId($quote->id);
         $calculator->setDiscount($quote->discount);
 
-        foreach ($quoteItems as $quoteItem)
-        {
-            $taxRatePercent       = ($quoteItem->tax_rate_id) ? $quoteItem->tax_rate_1_percent : 0;
-            $taxRate2Percent      = ($quoteItem->tax_rate_2_id) ? $quoteItem->tax_rate_2_percent : 0;
-            $taxRate2IsCompound   = ($quoteItem->tax_rate_2_is_compound) ? 1 : 0;
+        foreach ($quoteItems as $quoteItem) {
+            $taxRatePercent = ($quoteItem->tax_rate_id) ? $quoteItem->tax_rate_1_percent : 0;
+            $taxRate2Percent = ($quoteItem->tax_rate_2_id) ? $quoteItem->tax_rate_2_percent : 0;
+            $taxRate2IsCompound = ($quoteItem->tax_rate_2_is_compound) ? 1 : 0;
             $taxRate1CalculateVat = ($quoteItem->tax_rate_1_calculate_vat) ? 1 : 0;
 
             $calculator->addItem($quoteItem->id, $quoteItem->quantity, $quoteItem->price, $taxRatePercent, $taxRate2Percent, $taxRate2IsCompound, $taxRate1CalculateVat);
@@ -51,11 +57,10 @@ class QuoteCalculate
 
         // Get the calculated values
         $calculatedItemAmounts = $calculator->getCalculatedItemAmounts();
-        $calculatedAmount      = $calculator->getCalculatedAmount();
+        $calculatedAmount = $calculator->getCalculatedAmount();
 
         // Update the item amount records
-        foreach ($calculatedItemAmounts as $calculatedItemAmount)
-        {
+        foreach ($calculatedItemAmounts as $calculatedItemAmount) {
             $quoteItemAmount = QuoteItemAmount::firstOrNew(['item_id' => $calculatedItemAmount['item_id']]);
             $quoteItemAmount->fill($calculatedItemAmount);
             $quoteItemAmount->save();
@@ -65,13 +70,5 @@ class QuoteCalculate
         $quoteAmount = QuoteAmount::firstOrNew(['quote_id' => $quote->id]);
         $quoteAmount->fill($calculatedAmount);
         $quoteAmount->save();
-    }
-
-    public function calculateAll()
-    {
-        foreach (Quote::get() as $quote)
-        {
-            $this->calculate($quote);
-        }
     }
 }

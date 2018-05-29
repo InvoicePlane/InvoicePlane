@@ -17,8 +17,8 @@ namespace FI\Modules\Quotes\Controllers;
 use FI\Http\Controllers\Controller;
 use FI\Modules\Groups\Models\Group;
 use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Quotes\Support\QuoteToInvoice;
 use FI\Modules\Quotes\Requests\QuoteToInvoiceRequest;
+use FI\Modules\Quotes\Support\QuoteToInvoice;
 use FI\Support\DateFormatter;
 
 class QuoteToInvoiceController extends Controller

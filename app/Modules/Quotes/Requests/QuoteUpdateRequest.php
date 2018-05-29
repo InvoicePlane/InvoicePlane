@@ -22,12 +22,10 @@ class QuoteUpdateRequest extends QuoteStoreRequest
     {
         $request = $this->all();
 
-        if (isset($request['items']))
-        {
-            foreach ($request['items'] as $key => $item)
-            {
+        if (isset($request['items'])) {
+            foreach ($request['items'] as $key => $item) {
                 $request['items'][$key]['quantity'] = NumberFormatter::unformat($item['quantity']);
-                $request['items'][$key]['price']    = NumberFormatter::unformat($item['price']);
+                $request['items'][$key]['price'] = NumberFormatter::unformat($item['price']);
             }
         }
 
@@ -37,15 +35,15 @@ class QuoteUpdateRequest extends QuoteStoreRequest
     public function rules()
     {
         return [
-            'summary'          => 'max:255',
-            'quote_date'       => 'required',
-            'number'           => 'required',
-            'quote_status_id'  => 'required',
-            'exchange_rate'    => 'required|numeric',
-            'template'         => 'required',
-            'items.*.name'     => 'required_with:items.*.price,items.*.quantity',
+            'summary' => 'max:255',
+            'quote_date' => 'required',
+            'number' => 'required',
+            'quote_status_id' => 'required',
+            'exchange_rate' => 'required|numeric',
+            'template' => 'required',
+            'items.*.name' => 'required_with:items.*.price,items.*.quantity',
             'items.*.quantity' => 'required_with:items.*.price,items.*.name|numeric',
-            'items.*.price'    => 'required_with:items.*.name,items.*.quantity|numeric',
+            'items.*.price' => 'required_with:items.*.name,items.*.quantity|numeric',
         ];
     }
 }

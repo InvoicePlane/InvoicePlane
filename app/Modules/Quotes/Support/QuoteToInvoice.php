@@ -27,19 +27,19 @@ class QuoteToInvoice
     public function convert($quote, $invoiceDate, $dueAt, $groupId)
     {
         $record = [
-            'client_id'          => $quote->client_id,
-            'invoice_date'       => $invoiceDate,
-            'due_at'             => $dueAt,
-            'group_id'           => $groupId,
-            'number'             => Group::generateNumber($groupId),
-            'user_id'            => $quote->user_id,
-            'invoice_status_id'  => InvoiceStatuses::getStatusId('draft'),
-            'terms'              => ((config('fi.convertQuoteTerms') == 'quote') ? $quote->terms : config('fi.invoiceTerms')),
-            'footer'             => $quote->footer,
-            'currency_code'      => $quote->currency_code,
-            'exchange_rate'      => $quote->exchange_rate,
-            'summary'            => $quote->summary,
-            'discount'           => $quote->discount,
+            'client_id' => $quote->client_id,
+            'invoice_date' => $invoiceDate,
+            'due_at' => $dueAt,
+            'group_id' => $groupId,
+            'number' => Group::generateNumber($groupId),
+            'user_id' => $quote->user_id,
+            'invoice_status_id' => InvoiceStatuses::getStatusId('draft'),
+            'terms' => ((config('fi.convertQuoteTerms') == 'quote') ? $quote->terms : config('fi.invoiceTerms')),
+            'footer' => $quote->footer,
+            'currency_code' => $quote->currency_code,
+            'exchange_rate' => $quote->exchange_rate,
+            'summary' => $quote->summary,
+            'discount' => $quote->discount,
             'company_profile_id' => $quote->company_profile_id,
         ];
 
@@ -47,19 +47,18 @@ class QuoteToInvoice
 
         CustomField::copyCustomFieldValues($quote, $toInvoice);
 
-        $quote->invoice_id      = $toInvoice->id;
+        $quote->invoice_id = $toInvoice->id;
         $quote->quote_status_id = QuoteStatuses::getStatusId('approved');
         $quote->save();
 
-        foreach ($quote->quoteItems as $item)
-        {
+        foreach ($quote->quoteItems as $item) {
             $itemRecord = [
-                'invoice_id'    => $toInvoice->id,
-                'name'          => $item->name,
-                'description'   => $item->description,
-                'quantity'      => $item->quantity,
-                'price'         => $item->price,
-                'tax_rate_id'   => $item->tax_rate_id,
+                'invoice_id' => $toInvoice->id,
+                'name' => $item->name,
+                'description' => $item->description,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'tax_rate_id' => $item->tax_rate_id,
                 'tax_rate_2_id' => $item->tax_rate_2_id,
                 'display_order' => $item->display_order,
             ];

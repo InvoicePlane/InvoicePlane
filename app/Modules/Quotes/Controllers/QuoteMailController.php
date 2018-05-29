@@ -58,12 +58,9 @@ class QuoteMailController extends Controller
 
         $mail = $this->mailQueue->create($quote, $request->except('quote_id'));
 
-        if ($this->mailQueue->send($mail->id))
-        {
+        if ($this->mailQueue->send($mail->id)) {
             event(new QuoteEmailed($quote));
-        }
-        else
-        {
+        } else {
             return response()->json(['errors' => [[$this->mailQueue->getError()]]], 400);
         }
     }

@@ -20,11 +20,10 @@ use FI\Modules\CustomFields\Models\CustomField;
 use FI\Modules\ItemLookups\Models\ItemLookup;
 use FI\Modules\Quotes\Models\Quote;
 use FI\Modules\Quotes\Models\QuoteItem;
-use FI\Modules\Quotes\Support\QuoteTemplates;
 use FI\Modules\Quotes\Requests\QuoteUpdateRequest;
+use FI\Modules\Quotes\Support\QuoteTemplates;
 use FI\Modules\TaxRates\Models\TaxRate;
 use FI\Support\DateFormatter;
-use FI\Support\NumberFormatter;
 use FI\Support\Statuses\QuoteStatuses;
 use FI\Traits\ReturnUrl;
 
@@ -50,7 +49,7 @@ class QuoteEditController extends Controller
     public function update(QuoteUpdateRequest $request, $id)
     {
         // Unformat the quote dates.
-        $input               = $request->except(['items', 'custom', 'apply_exchange_rate']);
+        $input = $request->except(['items', 'custom', 'apply_exchange_rate']);
         $input['quote_date'] = DateFormatter::unformat($input['quote_date']);
         $input['expires_at'] = DateFormatter::unformat($input['expires_at']);
 
@@ -60,33 +59,28 @@ class QuoteEditController extends Controller
         $quote->save();
 
         // Save the custom fields.
-            $quote->custom->update($request->input('custom', []));
+        $quote->custom->update($request->input('custom', []));
 
         // Save the items.
-        foreach ($request->input('items') as $item)
-        {
+        foreach ($request->input('items') as $item) {
             $item['apply_exchange_rate'] = $request->input('apply_exchange_rate');
 
-            if (!isset($item['id']) or (!$item['id']))
-            {
+            if (!isset($item['id']) or (!$item['id'])) {
                 $saveItemAsLookup = $item['save_item_as_lookup'];
                 unset($item['save_item_as_lookup']);
 
                 QuoteItem::create($item);
 
-                if ($saveItemAsLookup)
-                {
+                if ($saveItemAsLookup) {
                     ItemLookup::create([
-                        'name'          => $item['name'],
-                        'description'   => $item['description'],
-                        'price'         => $item['price'],
-                        'tax_rate_id'   => $item['tax_rate_id'],
+                        'name' => $item['name'],
+                        'description' => $item['description'],
+                        'price' => $item['price'],
+                        'tax_rate_id' => $item['tax_rate_id'],
                         'tax_rate_2_id' => $item['tax_rate_2_id'],
                     ]);
                 }
-            }
-            else
-            {
+            } else {
                 $quoteItem = QuoteItem::find($item['id']);
                 $quoteItem->fill($item);
                 $quoteItem->save();

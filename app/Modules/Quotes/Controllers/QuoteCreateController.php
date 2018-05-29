@@ -35,7 +35,7 @@ class QuoteCreateController extends Controller
     {
         $input = $request->except('client_name');
 
-        $input['client_id']  = Client::firstOrCreateByUniqueName($request->input('client_name'))->id;
+        $input['client_id'] = Client::firstOrCreateByUniqueName($request->input('client_name'))->id;
         $input['quote_date'] = DateFormatter::unformat($input['quote_date']);
 
         $quote = Quote::create($input);

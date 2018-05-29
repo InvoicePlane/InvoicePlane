@@ -19,9 +19,9 @@ class QuoteToInvoiceRequest extends QuoteStoreRequest
     public function rules()
     {
         return [
-            'client_id'    => 'required',
+            'client_id' => 'required',
             'invoice_date' => 'required',
-            'group_id'     => 'required',
+            'group_id' => 'required',
         ];
     }
 }
