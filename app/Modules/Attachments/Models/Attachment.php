@@ -29,13 +29,11 @@ class Attachment extends Model
     {
         parent::boot();
 
-        static::creating(function ($attachment)
-        {
+        static::creating(function ($attachment) {
             event(new AttachmentCreating($attachment));
         });
 
-        static::deleted(function ($attachment)
-        {
+        static::deleted(function ($attachment) {
             event(new AttachmentDeleted($attachment));
         });
     }
