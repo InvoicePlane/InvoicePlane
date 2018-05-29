@@ -1,40 +1,41 @@
 <script type="text/javascript">
-    $(function () {
-        $('.btn-delete-attachment').click(function () {
-            if (confirm('{{ trans('fi.delete_record_warning') }}')) {
-                $.post("{{ route('attachments.ajax.delete') }}", {
-                    model: '{{ addslashes($model) }}',
-                    model_id: '{{ $object->id }}',
-                    attachment_id: $(this).data('attachment-id')
-                }, function () {
-                    $('#attachments-list').load("{{ route('attachments.ajax.list') }}", {
-                        model: '{{ addslashes($model) }}',
-                        model_id: '{{ $object->id }}'
-                    });
-                });
-            }
+  $(function () {
+    $('.btn-delete-attachment').click(function () {
+      if (confirm('{{ trans('fi.delete_record_warning') }}')) {
+        $.post("{{ route('attachments.ajax.delete') }}", {
+          model: '{{ addslashes($model) }}',
+          model_id: '{{ $object->id }}',
+          attachment_id: $(this).data('attachment-id')
+        }, function () {
+          $('#attachments-list').load("{{ route('attachments.ajax.list') }}", {
+            model: '{{ addslashes($model) }}',
+            model_id: '{{ $object->id }}'
+          });
         });
-
-        $('.client-visibility').change(function () {
-            $.post('{{ route('attachments.ajax.access.update') }}', {
-                client_visibility: $(this).val(),
-                attachment_id: $(this).data('attachment-id')
-            });
-        });
-
-        $('#btn-attach-files').click(function () {
-            $('#modal-placeholder').load('{{ route('attachments.ajax.modal') }}', {
-                model: '{{ addslashes($model) }}',
-                model_id: '{{ $object->id }}'
-            });
-        });
+      }
     });
+
+    $('.client-visibility').change(function () {
+      $.post('{{ route('attachments.ajax.access.update') }}', {
+        client_visibility: $(this).val(),
+        attachment_id: $(this).data('attachment-id')
+      });
+    });
+
+    $('#btn-attach-files').click(function () {
+      $('#modal-placeholder').load('{{ route('attachments.ajax.modal') }}', {
+        model: '{{ addslashes($model) }}',
+        model_id: '{{ $object->id }}'
+      });
+    });
+  });
 </script>
 
 <div id="attachments-list">
 
     @if (!config('app.demo'))
-        <a href="javascript:void(0)" class="btn btn-primary btn-sm" id="btn-attach-files">{{ trans('fi.attach_files') }}</a>
+        <a href="javascript:void(0)" class="btn btn-primary btn-sm"
+           id="btn-attach-files">{{ trans('fi.attach_files') }}</a>
     @else
         <a href="javascript:void(0)" class="btn btn-primary btn-sm">File attachments are disabled in the demo</a>
     @endif
