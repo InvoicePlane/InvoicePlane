@@ -27,7 +27,7 @@ class Frequency
             '1' => trans('fi.days'),
             '2' => trans('fi.weeks'),
             '3' => trans('fi.months'),
-            '4' => trans('fi.years')
+            '4' => trans('fi.years'),
         ];
     }
 }

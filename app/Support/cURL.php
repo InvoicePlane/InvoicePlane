@@ -20,13 +20,11 @@ class cURL
     {
         $urlString = '';
 
-        foreach ($postVars as $key => $var)
-        {
+        foreach ($postVars as $key => $var) {
             $postVars[$key] = urlencode($var);
         }
 
-        foreach ($postVars as $key => $value)
-        {
+        foreach ($postVars as $key => $value) {
             $urlString .= $key . '=' . $value . '&';
         }
 

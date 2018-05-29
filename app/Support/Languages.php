@@ -27,8 +27,7 @@ class Languages
 
         $languages = [];
 
-        foreach ($directories as $directory)
-        {
+        foreach ($directories as $directory) {
             $languages[$directory] = $directory;
         }
 

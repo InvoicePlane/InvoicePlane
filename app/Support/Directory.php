@@ -17,17 +17,6 @@ namespace FI\Support;
 class Directory
 {
     /**
-     * Provide a list of directory contents minus the top directory.
-     *
-     * @param  string $path
-     * @return array
-     */
-    public static function listContents($path)
-    {
-        return array_diff(scandir($path), ['.', '..']);
-    }
-
-    /**
      * Provide an associative array of directory contents ['dir' => 'dir'].
      *
      * @param  string $path
@@ -41,6 +30,17 @@ class Directory
     }
 
     /**
+     * Provide a list of directory contents minus the top directory.
+     *
+     * @param  string $path
+     * @return array
+     */
+    public static function listContents($path)
+    {
+        return array_diff(scandir($path), ['.', '..']);
+    }
+
+    /**
      * Provide a list of only directories.
      *
      * @param  string $path
@@ -50,10 +50,8 @@ class Directory
     {
         $directories = self::listContents($path);
 
-        foreach ($directories as $key => $directory)
-        {
-            if (!is_dir($path . '/' . $directory))
-            {
+        foreach ($directories as $key => $directory) {
+            if (!is_dir($path . '/' . $directory)) {
                 unset($directories[$key]);
             }
         }

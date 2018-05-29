@@ -21,6 +21,6 @@ class InvoiceStatuses extends AbstractStatuses
         '1' => 'draft',
         '2' => 'sent',
         '3' => 'paid',
-        '4' => 'canceled'
+        '4' => 'canceled',
     ];
 }

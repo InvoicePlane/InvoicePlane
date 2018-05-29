@@ -12,21 +12,17 @@ class Migrations
     {
         $migrationRepository = app('migration.repository');
 
-        if (!$migrationRepository->repositoryExists())
-        {
+        if (!$migrationRepository->repositoryExists()) {
             $migrationRepository->createRepository();
         }
 
         $this->migrator = app('migrator');
 
-        try
-        {
+        try {
             $this->migrator->run($path);
 
             return true;
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->exception = $e;
 
             return false;
@@ -36,8 +32,8 @@ class Migrations
 
     public function getPendingMigrations($path)
     {
-        $migrationFiles    = $this->getMigrationFiles($path);
-        $ranMigrations     = $this->getRanMigrations();
+        $migrationFiles = $this->getMigrationFiles($path);
+        $ranMigrations = $this->getRanMigrations();
 
         $pendingMigrations = array_diff($migrationFiles, $ranMigrations);
 
@@ -50,8 +46,7 @@ class Migrations
 
         if ($files === false) return [];
 
-        $files = array_map(function ($file)
-        {
+        $files = array_map(function ($file) {
             return str_replace('.php', '', basename($file));
         }, $files);
 

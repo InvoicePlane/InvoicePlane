@@ -16,21 +16,14 @@ namespace FI\Support;
 
 class DashboardWidgets
 {
-    public static function lists()
-    {
-        return Directory::listContents(__DIR__ . '/../Widgets/Dashboard');
-    }
-
     public static function listsByOrder()
     {
-        $widgets    = self::lists();
-        $return     = [];
+        $widgets = self::lists();
+        $return = [];
         $unassigned = 100;
 
-        foreach ($widgets as $widget)
-        {
-            if (!$displayOrder = config('fi.widgetDisplayOrder' . $widget))
-            {
+        foreach ($widgets as $widget) {
+            if (!$displayOrder = config('fi.widgetDisplayOrder' . $widget)) {
                 $displayOrder = $unassigned;
                 $unassigned++;
             }
@@ -41,5 +34,10 @@ class DashboardWidgets
         ksort($return);
 
         return $return;
+    }
+
+    public static function lists()
+    {
+        return Directory::listContents(__DIR__ . '/../Widgets/Dashboard');
     }
 }

@@ -23,16 +23,6 @@ class wkhtmltopdf extends PDFAbstract
 
     protected $paperOrientation;
 
-    private function getPdf()
-    {
-        $pdf = new Pdf(config('fi.pdfBinaryPath'));
-        $pdf->setOption('orientation', $this->paperOrientation);
-        $pdf->setOption('page-size', $this->paperSize);
-        $pdf->setOption('viewport-size', '1024x768');
-
-        return $pdf;
-    }
-
     public function download($html, $filename)
     {
         header('Content-Type: application/pdf');
@@ -46,6 +36,16 @@ class wkhtmltopdf extends PDFAbstract
         $pdf = $this->getPdf();
 
         return $pdf->getOutputFromHtml($html);
+    }
+
+    private function getPdf()
+    {
+        $pdf = new Pdf(config('fi.pdfBinaryPath'));
+        $pdf->setOption('orientation', $this->paperOrientation);
+        $pdf->setOption('page-size', $this->paperSize);
+        $pdf->setOption('viewport-size', '1024x768');
+
+        return $pdf;
     }
 
     public function save($html, $filename)

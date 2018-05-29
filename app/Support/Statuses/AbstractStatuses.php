@@ -32,8 +32,7 @@ abstract class AbstractStatuses
 
         unset($statuses[0]);
 
-        foreach ($statuses as $key => $status)
-        {
+        foreach ($statuses as $key => $status) {
             $statuses[$key] = trans('fi.' . $status);
         }
 
@@ -44,8 +43,7 @@ abstract class AbstractStatuses
     {
         $statuses = [];
 
-        foreach (static::$statuses as $status)
-        {
+        foreach (static::$statuses as $status) {
             $statuses[$status] = trans('fi.' . $status);
         }
 

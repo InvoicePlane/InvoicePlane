@@ -19,14 +19,14 @@ class NumberFormatter
     /**
      * Formats a number accordingly.
      *
-     * @param  float $number
-     * @param  object $currency
+     * @param  float   $number
+     * @param  object  $currency
      * @param  integer $decimalPlaces
      * @return float
      */
     public static function format($number, $currency = null, $decimalPlaces = null)
     {
-        $currency      = ($currency) ?: config('fi.currency');
+        $currency = ($currency) ?: config('fi.currency');
         $decimalPlaces = ($decimalPlaces) ?: config('fi.amountDecimals');
 
         return number_format($number, $decimalPlaces, $currency->decimal, $currency->thousands);
@@ -35,7 +35,7 @@ class NumberFormatter
     /**
      * Unformats a formatted number.
      *
-     * @param  float $number
+     * @param  float  $number
      * @param  object $currency
      * @return float
      */

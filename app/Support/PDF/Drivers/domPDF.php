@@ -14,12 +14,24 @@
 
 namespace FI\Support\PDF\Drivers;
 
-use FI\Support\PDF\PDFAbstract;
 use Dompdf\Dompdf as PDF;
 use Dompdf\Options;
+use FI\Support\PDF\PDFAbstract;
 
 class domPDF extends PDFAbstract
 {
+    public function save($html, $filename)
+    {
+        file_put_contents($filename, $this->getOutput($html));
+    }
+
+    public function getOutput($html)
+    {
+        $pdf = $this->getPdf($html);
+
+        return $pdf->output();
+    }
+
     private function getPdf($html)
     {
         $options = new Options();
@@ -40,18 +52,6 @@ class domPDF extends PDFAbstract
         $pdf->render();
 
         return $pdf;
-    }
-
-    public function getOutput($html)
-    {
-        $pdf = $this->getPdf($html);
-
-        return $pdf->output();
-    }
-
-    public function save($html, $filename)
-    {
-        file_put_contents($filename, $this->getOutput($html));
     }
 
     public function download($html, $filename)

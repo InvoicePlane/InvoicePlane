@@ -29,12 +29,9 @@ class HTML
 
         $template = str_replace('.blade.php', '', $invoice->template);
 
-        if (view()->exists('invoice_templates.' . $template))
-        {
+        if (view()->exists('invoice_templates.' . $template)) {
             $template = 'invoice_templates.' . $template;
-        }
-        else
-        {
+        } else {
             $template = 'templates.invoices.default';
         }
 
@@ -53,12 +50,9 @@ class HTML
 
         $template = str_replace('.blade.php', '', $quote->template);
 
-        if (view()->exists('quote_templates.' . $template))
-        {
+        if (view()->exists('quote_templates.' . $template)) {
             $template = 'quote_templates.' . $template;
-        }
-        else
-        {
+        } else {
             $template = 'templates.quotes.default';
         }
 
