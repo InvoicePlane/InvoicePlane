@@ -16,8 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (config('proxies.trust_all'))
-        {
+        if (config('proxies.trust_all')) {
             request()->setTrustedProxies([request()->getClientIp()]);
         }
 
@@ -25,24 +24,20 @@ class AppServiceProvider extends ServiceProvider
 
         $modules = Directory::listDirectories(app_path('Modules'));
 
-        foreach ($modules as $module)
-        {
+        foreach ($modules as $module) {
             $routesPath = app_path('Modules/' . $module . '/routes.php');
-            $viewsPath  = app_path('Modules/' . $module . '/Views');
+            $viewsPath = app_path('Modules/' . $module . '/Views');
 
-            if (file_exists($routesPath))
-            {
+            if (file_exists($routesPath)) {
                 require $routesPath;
             }
 
-            if (file_exists($viewsPath))
-            {
+            if (file_exists($viewsPath)) {
                 $this->app->view->addLocation($viewsPath);
             }
         }
 
-        foreach (File::files(app_path('Helpers')) as $helper)
-        {
+        foreach (File::files(app_path('Helpers')) as $helper) {
             require_once $helper;
         }
 
@@ -64,10 +59,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->booting(function()
-        {
-           $loader = AliasLoader::getInstance();
-           $loader->alias('Sortable', 'FI\Traits\Sortable');
+        $this->app->booting(function () {
+            $loader = AliasLoader::getInstance();
+            $loader->alias('Sortable', 'FI\Traits\Sortable');
         });
     }
 }
