@@ -12,8 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Dashboard\Controllers'], function ()
-{
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Dashboard\Controllers'], function () {
     Route::get('/', 'DashboardController@index');
     Route::get('dashboard', ['uses' => 'DashboardController@index', 'as' => 'dashboard.index']);
 });
