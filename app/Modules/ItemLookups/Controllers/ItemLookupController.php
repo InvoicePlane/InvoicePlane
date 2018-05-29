@@ -82,13 +82,12 @@ class ItemLookupController extends Controller
 
         $list = [];
 
-        foreach ($items as $item)
-        {
+        foreach ($items as $item) {
             $list[] = [
-                'name'          => $item->name,
-                'description'   => $item->description,
-                'price'         => NumberFormatter::format($item->price),
-                'tax_rate_id'   => $item->tax_rate_id,
+                'name' => $item->name,
+                'description' => $item->description,
+                'price' => NumberFormatter::format($item->price),
+                'tax_rate_id' => $item->tax_rate_id,
                 'tax_rate_2_id' => $item->tax_rate_2_id,
             ];
         }

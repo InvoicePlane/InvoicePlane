@@ -72,14 +72,11 @@ class ItemLookup extends Model
 
     public function scopeKeywords($query, $keywords)
     {
-        if ($keywords)
-        {
+        if ($keywords) {
             $keywords = explode(' ', $keywords);
 
-            foreach ($keywords as $keyword)
-            {
-                if ($keyword)
-                {
+            foreach ($keywords as $keyword) {
+                if ($keyword) {
                     $keyword = strtolower($keyword);
 
                     $query->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(description),price)"), 'LIKE', "%$keyword%");
