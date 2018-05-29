@@ -3,41 +3,41 @@
 @section('javascript')
     @parent
     <script type="text/javascript">
-        $(function () {
-            $('#btn-submit').click(function () {
-                $('#form-settings').submit();
-            });
-
-            $('#btn-recalculate-invoices').click(function () {
-                var $btn = $(this).button('loading');
-                $.post("{{ route('invoices.recalculate') }}").done(function (response) {
-                    alert(response.message);
-                }).fail(function (response) {
-                    alert('{{ trans('fi.error') }}: ' + $.parseJSON(response.responseText).message);
-                }).always(function () {
-                    $btn.button('reset');
-                });
-            });
-
-            $('#btn-recalculate-quotes').click(function () {
-                var $btn = $(this).button('loading');
-                $.post("{{ route('quotes.recalculate') }}").done(function (response) {
-                    alert(response.message);
-                }).fail(function (response) {
-                    alert('{{ trans('fi.error') }}: ' + $.parseJSON(response.responseText).message);
-                }).always(function () {
-                    $btn.button('reset');
-                });
-            });
-
-            $('#setting-tabs a').click(function (e) {
-                var tabId = $(e.target).attr("href").substr(1);
-                $.post("{{ route('settings.saveTab') }}", {settingTabId: tabId});
-            });
-
-            $('#setting-tabs a[href="#{{ session('settingTabId') }}"]').tab('show');
-
+      $(function () {
+        $('#btn-submit').click(function () {
+          $('#form-settings').submit();
         });
+
+        $('#btn-recalculate-invoices').click(function () {
+          var $btn = $(this).button('loading');
+          $.post("{{ route('invoices.recalculate') }}").done(function (response) {
+            alert(response.message);
+          }).fail(function (response) {
+            alert('{{ trans('fi.error') }}: ' + $.parseJSON(response.responseText).message);
+          }).always(function () {
+            $btn.button('reset');
+          });
+        });
+
+        $('#btn-recalculate-quotes').click(function () {
+          var $btn = $(this).button('loading');
+          $.post("{{ route('quotes.recalculate') }}").done(function (response) {
+            alert(response.message);
+          }).fail(function (response) {
+            alert('{{ trans('fi.error') }}: ' + $.parseJSON(response.responseText).message);
+          }).always(function () {
+            $btn.button('reset');
+          });
+        });
+
+        $('#setting-tabs a').click(function (e) {
+          var tabId = $(e.target).attr('href').substr(1);
+          $.post("{{ route('settings.saveTab') }}", {settingTabId: tabId});
+        });
+
+        $('#setting-tabs a[href="#{{ session('settingTabId') }}"]').tab('show');
+
+      });
     </script>
 @stop
 

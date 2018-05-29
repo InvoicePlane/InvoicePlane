@@ -1,26 +1,26 @@
 @section('javascript')
     @parent
     <script type="text/javascript">
-        $(function () {
+      $(function () {
 
-            updatePDFOptions();
+        updatePDFOptions();
 
-            $('#pdfDriver').change(function () {
-                updatePDFOptions();
-            });
-
-            function updatePDFOptions() {
-
-                $('.wkhtmltopdf-option').hide();
-
-                pdfDriver = $('#pdfDriver').val();
-
-                if (pdfDriver == 'wkhtmltopdf') {
-                    $('.wkhtmltopdf-option').show();
-                }
-            }
-
+        $('#pdfDriver').change(function () {
+          updatePDFOptions();
         });
+
+        function updatePDFOptions () {
+
+          $('.wkhtmltopdf-option').hide();
+
+          pdfDriver = $('#pdfDriver').val();
+
+          if (pdfDriver == 'wkhtmltopdf') {
+            $('.wkhtmltopdf-option').show();
+          }
+        }
+
+      });
     </script>
 @stop
 

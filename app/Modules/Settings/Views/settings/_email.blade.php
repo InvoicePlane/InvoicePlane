@@ -1,34 +1,34 @@
 @section('javascript')
     @parent
     <script type="text/javascript">
-        $(function () {
+      $(function () {
 
-            $('#mailPassword').val('');
+        $('#mailPassword').val('');
 
-            updateEmailOptions();
+        updateEmailOptions();
 
-            $('#mailDriver').change(function () {
-                updateEmailOptions();
-            });
-
-            function updateEmailOptions() {
-
-                $('.email-option').hide();
-
-                mailDriver = $('#mailDriver').val();
-
-                if (mailDriver == 'smtp') {
-                    $('.smtp-option').show();
-                }
-                else if (mailDriver == 'sendmail') {
-                    $('.sendmail-option').show();
-                }
-                else if (mailDriver == 'mail') {
-                    $('.phpmail-option').show();
-                }
-            }
-
+        $('#mailDriver').change(function () {
+          updateEmailOptions();
         });
+
+        function updateEmailOptions () {
+
+          $('.email-option').hide();
+
+          mailDriver = $('#mailDriver').val();
+
+          if (mailDriver == 'smtp') {
+            $('.smtp-option').show();
+          }
+          else if (mailDriver == 'sendmail') {
+            $('.sendmail-option').show();
+          }
+          else if (mailDriver == 'mail') {
+            $('.phpmail-option').show();
+          }
+        }
+
+      });
     </script>
 @stop
 
@@ -117,14 +117,18 @@
         <div class="form-group">
             <label>{{ trans('fi.quote_email_subject') }}: </label>
             {!! Form::text('setting[quoteEmailSubject]', config('fi.quoteEmailSubject'), ['class' => 'form-control']) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>{{ trans('fi.invoice_email_subject') }}: </label>
             {!! Form::text('setting[invoiceEmailSubject]', config('fi.invoiceEmailSubject'), ['class' => 'form-control']) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
 </div>
@@ -134,14 +138,18 @@
         <div class="form-group">
             <label>{{ trans('fi.default_quote_email_body') }}: </label>
             {!! Form::textarea('setting[quoteEmailBody]', config('fi.quoteEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>{{ trans('fi.default_invoice_email_body') }}: </label>
             {!! Form::textarea('setting[invoiceEmailBody]', config('fi.invoiceEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
 </div>
@@ -151,14 +159,18 @@
         <div class="form-group">
             <label>{{ trans('fi.overdue_email_subject') }}: </label>
             {!! Form::text('setting[overdueInvoiceEmailSubject]', config('fi.overdueInvoiceEmailSubject'), ['class' => 'form-control']) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>{{ trans('fi.upcoming_payment_notice_email_subject') }}: </label>
             {!! Form::text('setting[upcomingPaymentNoticeEmailSubject]', config('fi.upcomingPaymentNoticeEmailSubject'), ['class' => 'form-control']) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
 </div>
@@ -168,14 +180,18 @@
         <div class="form-group">
             <label>{{ trans('fi.default_overdue_invoice_email_body') }}: </label>
             {!! Form::textarea('setting[overdueInvoiceEmailBody]', config('fi.overdueInvoiceEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>{{ trans('fi.upcoming_payment_notice_email_body') }}: </label>
             {!! Form::textarea('setting[upcomingPaymentNoticeEmailBody]', config('fi.upcomingPaymentNoticeEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
 </div>
@@ -202,14 +218,18 @@
         <div class="form-group">
             <label>{{ trans('fi.quote_approved_email_body') }}: </label>
             {!! Form::textarea('setting[quoteApprovedEmailBody]', config('fi.quoteApprovedEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>{{ trans('fi.quote_rejected_email_body') }}: </label>
             {!! Form::textarea('setting[quoteRejectedEmailBody]', config('fi.quoteRejectedEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
-            <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+            <span class="help-block"><a
+                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                        target="_blank">{{ trans('fi.available_fields') }}</a></span>
         </div>
     </div>
 </div>
@@ -217,11 +237,15 @@
 <div class="form-group">
     <label>{{ trans('fi.payment_receipt_email_subject') }}: </label>
     {!! Form::text('setting[paymentReceiptEmailSubject]', config('fi.paymentReceiptEmailSubject'), ['class' => 'form-control']) !!}
-    <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+    <span class="help-block"><a
+                href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template"
+                target="_blank">{{ trans('fi.available_fields') }}</a></span>
 </div>
 
 <div class="form-group">
     <label>{{ trans('fi.default_payment_receipt_body') }}: </label>
     {!! Form::textarea('setting[paymentReceiptBody]', config('fi.paymentReceiptBody'), ['class' => 'form-control', 'rows' => 5]) !!}
-    <span class="help-block"><a href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template" target="_blank">{{ trans('fi.available_fields') }}</a></span>
+    <span class="help-block"><a
+                href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template"
+                target="_blank">{{ trans('fi.available_fields') }}</a></span>
 </div>

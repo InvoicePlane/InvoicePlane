@@ -1,17 +1,17 @@
 @section('javascript')
     @parent
     <script type="text/javascript">
-        $().ready(function () {
-            $('#btn-check-update').click(function () {
-                $.get("{{ route('settings.updateCheck') }}")
-                    .done(function (response) {
-                        alert(response.message);
-                    })
-                    .fail(function (response) {
-                        alert("{{ trans('fi.unknown_error') }}");
-                    });
+      $().ready(function () {
+        $('#btn-check-update').click(function () {
+          $.get("{{ route('settings.updateCheck') }}")
+            .done(function (response) {
+              alert(response.message);
+            })
+            .fail(function (response) {
+              alert("{{ trans('fi.unknown_error') }}");
             });
         });
+      });
     </script>
 @stop
 
