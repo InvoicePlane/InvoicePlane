@@ -17,7 +17,8 @@
             <ul class="nav navbar-nav">
 
                 <li>
-                    <a href="https://wiki.invoiceplane.com/en/2.0/" title="{{ trans('fi.documentation') }}" target="_blank">
+                    <a href="https://wiki.invoiceplane.com/en/2.0/" title="{{ trans('fi.documentation') }}"
+                       target="_blank">
                         <i class="fa fa-question-circle"></i>
                     </a>
                 </li>
@@ -49,7 +50,8 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('session.logout') }}" title="{{ trans('fi.sign_out') }}"><i class="fa fa-power-off"></i></a>
+                    <a href="{{ route('session.logout') }}" title="{{ trans('fi.sign_out') }}"><i
+                                class="fa fa-power-off"></i></a>
                 </li>
 
             </ul>

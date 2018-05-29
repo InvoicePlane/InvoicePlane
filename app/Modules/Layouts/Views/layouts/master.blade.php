@@ -41,7 +41,8 @@
                 <form action="{{ request()->fullUrl() }}" method="get" class="sidebar-form">
                     <input type="hidden" name="status" value="{{ request('status') }}"/>
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="{{ trans('fi.search') }}..."/>
+                        <input type="text" name="search" class="form-control"
+                               placeholder="{{ trans('fi.search') }}..."/>
                         <span class="input-group-btn">
                 <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
               </span>
@@ -93,13 +94,20 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ route('reports.clientStatement') }}"><i class="fa fa-caret-right"></i> {{ trans('fi.client_statement') }}</a></li>
-                        <li><a href="{{ route('reports.expenseList') }}"><i class="fa fa-caret-right"></i> {{ trans('fi.expense_list') }}</a></li>
-                        <li><a href="{{ route('reports.itemSales') }}"><i class="fa fa-caret-right"></i> {{ trans('fi.item_sales') }}</a></li>
-                        <li><a href="{{ route('reports.paymentsCollected') }}"><i class="fa fa-caret-right"></i> {{ trans('fi.payments_collected') }}</a></li>
-                        <li><a href="{{ route('reports.profitLoss') }}"><i class="fa fa-caret-right"></i> {{ trans('fi.profit_and_loss') }}</a></li>
-                        <li><a href="{{ route('reports.revenueByClient') }}"><i class="fa fa-caret-right"></i> {{ trans('fi.revenue_by_client') }}</a></li>
-                        <li><a href="{{ route('reports.taxSummary') }}"><i class="fa fa-caret-right"></i> {{ trans('fi.tax_summary') }}</a></li>
+                        <li><a href="{{ route('reports.clientStatement') }}"><i
+                                        class="fa fa-caret-right"></i> {{ trans('fi.client_statement') }}</a></li>
+                        <li><a href="{{ route('reports.expenseList') }}"><i
+                                        class="fa fa-caret-right"></i> {{ trans('fi.expense_list') }}</a></li>
+                        <li><a href="{{ route('reports.itemSales') }}"><i
+                                        class="fa fa-caret-right"></i> {{ trans('fi.item_sales') }}</a></li>
+                        <li><a href="{{ route('reports.paymentsCollected') }}"><i
+                                        class="fa fa-caret-right"></i> {{ trans('fi.payments_collected') }}</a></li>
+                        <li><a href="{{ route('reports.profitLoss') }}"><i
+                                        class="fa fa-caret-right"></i> {{ trans('fi.profit_and_loss') }}</a></li>
+                        <li><a href="{{ route('reports.revenueByClient') }}"><i
+                                        class="fa fa-caret-right"></i> {{ trans('fi.revenue_by_client') }}</a></li>
+                        <li><a href="{{ route('reports.taxSummary') }}"><i
+                                        class="fa fa-caret-right"></i> {{ trans('fi.tax_summary') }}</a></li>
 
                         @foreach (config('fi.menus.reports') as $report)
                             @if (view()->exists($report))
