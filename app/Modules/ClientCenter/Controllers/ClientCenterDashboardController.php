@@ -32,7 +32,7 @@ class ClientCenterDashboardController extends Controller
         QuoteStatuses $quoteStatuses)
     {
         $this->invoiceStatuses = $invoiceStatuses;
-        $this->quoteStatuses   = $quoteStatuses;
+        $this->quoteStatuses = $quoteStatuses;
     }
 
     public function index()
@@ -54,8 +54,7 @@ class ClientCenterDashboardController extends Controller
             ->limit(5)->get();
 
         $payments = Payment::with('invoice.amount.invoice.currency', 'invoice.client')
-            ->whereHas('invoice', function ($invoice) use ($clientId)
-            {
+            ->whereHas('invoice', function ($invoice) use ($clientId) {
                 $invoice->where('client_id', $clientId);
             })->orderBy('created_at', 'desc')
             ->limit(5)->get();

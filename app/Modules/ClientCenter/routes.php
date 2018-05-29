@@ -12,8 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['prefix' => 'client_center', 'middleware' => 'web', 'namespace' => 'FI\Modules\ClientCenter\Controllers'], function ()
-{
+Route::group(['prefix' => 'client_center', 'middleware' => 'web', 'namespace' => 'FI\Modules\ClientCenter\Controllers'], function () {
     Route::get('/', ['uses' => 'ClientCenterDashboardController@redirectToLogin']);
     Route::get('invoice/{invoiceKey}', ['uses' => 'ClientCenterPublicInvoiceController@show', 'as' => 'clientCenter.public.invoice.show']);
     Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'ClientCenterPublicInvoiceController@pdf', 'as' => 'clientCenter.public.invoice.pdf']);
@@ -24,8 +23,7 @@ Route::group(['prefix' => 'client_center', 'middleware' => 'web', 'namespace' =>
     Route::get('quote/{quoteKey}/approve', ['uses' => 'ClientCenterPublicQuoteController@approve', 'as' => 'clientCenter.public.quote.approve']);
     Route::get('quote/{quoteKey}/reject', ['uses' => 'ClientCenterPublicQuoteController@reject', 'as' => 'clientCenter.public.quote.reject']);
 
-    Route::group(['middleware' => 'auth.clientCenter'], function ()
-    {
+    Route::group(['middleware' => 'auth.clientCenter'], function () {
         Route::get('dashboard', ['uses' => 'ClientCenterDashboardController@index', 'as' => 'clientCenter.dashboard']);
         Route::get('invoices', ['uses' => 'ClientCenterInvoiceController@index', 'as' => 'clientCenter.invoices']);
         Route::get('quotes', ['uses' => 'ClientCenterQuoteController@index', 'as' => 'clientCenter.quotes']);
