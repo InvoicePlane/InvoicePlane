@@ -16,7 +16,7 @@ class VersionIP2 extends Migration
         deleteViewCache();
 
         Setting::saveByKey('headerTitleText', 'InvoicePlane');
-        Setting::saveByKey('skin', 'skin-invoiceplane.css');
+        Setting::saveByKey('skin', 'skin-invoiceplane.min.css');
         Setting::saveByKey('version', '2.0.0-alpha1');
     }
 
