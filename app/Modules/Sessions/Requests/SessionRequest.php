@@ -26,7 +26,7 @@ class SessionRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email'    => trans('fi.email'),
+            'email' => trans('fi.email'),
             'password' => trans('fi.password'),
         ];
     }
@@ -34,7 +34,7 @@ class SessionRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required',
         ];
     }
