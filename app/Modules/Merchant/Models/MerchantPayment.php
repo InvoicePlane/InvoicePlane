@@ -17,8 +17,7 @@ class MerchantPayment extends Model
             ->where('merchant_key', $key)
             ->first();
 
-        if ($setting)
-        {
+        if ($setting) {
             return $setting->merchant_value;
         }
 
@@ -28,8 +27,8 @@ class MerchantPayment extends Model
     public static function saveByKey($driver, $paymentId, $key, $value)
     {
         $setting = self::firstOrNew([
-            'driver'       => $driver,
-            'payment_id'    => $paymentId,
+            'driver' => $driver,
+            'payment_id' => $paymentId,
             'merchant_key' => $key,
 
         ]);

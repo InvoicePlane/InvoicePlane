@@ -25,49 +25,39 @@ class Stripe extends MerchantDriver
 
         $clientMerchantId = MerchantClient::getByKey($this->getName(), $invoice->client_id, 'id');
 
-        if ($clientMerchantId)
-        {
-            try
-            {
+        if ($clientMerchantId) {
+            try {
                 $customer = Customer::retrieve($clientMerchantId);
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 // Don't need to do anything here.
             }
         }
 
-        if (!isset($customer) or $customer->deleted)
-        {
+        if (!isset($customer) or $customer->deleted) {
             $customer = $this->createCustomer($invoice, request('token'));
-        }
-        else
-        {
+        } else {
             $customer->source = request('token');
             $customer->save();
         }
 
-        try
-        {
+        try {
             $charge = Charge::create([
-                'customer'    => $customer->id,
-                'amount'      => $invoice->amount->balance * 100,
-                'currency'    => $invoice->currency_code,
+                'customer' => $customer->id,
+                'amount' => $invoice->amount->balance * 100,
+                'currency' => $invoice->currency_code,
                 'description' => trans('fi.invoice') . ' #' . $invoice->number,
             ]);
 
             $payment = Payment::create([
-                'invoice_id'        => $invoice->id,
-                'amount'            => $charge->amount / 100,
+                'invoice_id' => $invoice->id,
+                'amount' => $charge->amount / 100,
                 'payment_method_id' => config('fi.onlinePaymentMethod'),
             ]);
 
             MerchantPayment::saveByKey($this->getName(), $payment->id, 'id', $charge->id);
 
             return true;
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -76,8 +66,8 @@ class Stripe extends MerchantDriver
     {
         $customer = Customer::create([
             'description' => $invoice->client->name,
-            'email'       => $invoice->client->email,
-            'source'      => $source,
+            'email' => $invoice->client->email,
+            'source' => $source,
         ]);
 
         MerchantClient::saveByKey($this->getName(), $invoice->client_id, 'id', $customer->id);

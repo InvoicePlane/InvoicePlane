@@ -64,58 +64,13 @@ class PayPal extends MerchantDriverPayable
             ->setRedirectUrls($redirectUrls)
             ->setTransactions([$transaction]);
 
-        try
-        {
+        try {
             $payment->create($apiContext);
 
             return $payment->getApprovalLink();
-        }
-        catch (PayPalConnectionException $ex)
-        {
+        } catch (PayPalConnectionException $ex) {
             \Log::info($ex->getData());
         }
-    }
-
-    public function verify(Invoice $invoice)
-    {
-        $paymentId  = request('paymentId');
-        $apiContext = $this->getApiContext();
-        $payment    = Payment::get($paymentId, $apiContext);
-
-        $execution = new PaymentExecution();
-        $execution->setPayerId(request('PayerID'));
-
-        $transaction = new Transaction();
-        $amount      = new Amount();
-
-        $amount->setCurrency($invoice->currency_code)
-            ->setTotal($invoice->amount->balance + 0);
-
-        $transaction->setAmount($amount);
-
-        $execution->addTransaction($transaction);
-
-        $payment->execute($execution, $apiContext);
-
-        $payment = Payment::get($paymentId, $apiContext);
-
-        if ($payment->getState() == 'approved')
-        {
-            foreach ($payment->getTransactions() as $transaction)
-            {
-                $fiPayment = FIPayment::create([
-                    'invoice_id'        => $invoice->id,
-                    'amount'            => $transaction->getAmount()->getTotal(),
-                    'payment_method_id' => config('fi.onlinePaymentMethod'),
-                ]);
-
-                MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     private function getApiContext()
@@ -130,5 +85,45 @@ class PayPal extends MerchantDriverPayable
         $apiContext->setConfig(['mode' => $this->getSetting('mode')]);
 
         return $apiContext;
+    }
+
+    public function verify(Invoice $invoice)
+    {
+        $paymentId = request('paymentId');
+        $apiContext = $this->getApiContext();
+        $payment = Payment::get($paymentId, $apiContext);
+
+        $execution = new PaymentExecution();
+        $execution->setPayerId(request('PayerID'));
+
+        $transaction = new Transaction();
+        $amount = new Amount();
+
+        $amount->setCurrency($invoice->currency_code)
+            ->setTotal($invoice->amount->balance + 0);
+
+        $transaction->setAmount($amount);
+
+        $execution->addTransaction($transaction);
+
+        $payment->execute($execution, $apiContext);
+
+        $payment = Payment::get($paymentId, $apiContext);
+
+        if ($payment->getState() == 'approved') {
+            foreach ($payment->getTransactions() as $transaction) {
+                $fiPayment = FIPayment::create([
+                    'invoice_id' => $invoice->id,
+                    'amount' => $transaction->getAmount()->getTotal(),
+                    'payment_method_id' => config('fi.onlinePaymentMethod'),
+                ]);
+
+                MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
