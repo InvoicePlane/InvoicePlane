@@ -40,13 +40,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         parent::boot();
 
-        static::created(function ($user)
-        {
+        static::created(function ($user) {
             event(new UserCreated($user));
         });
 
-        static::deleted(function ($user)
-        {
+        static::deleted(function ($user) {
             event(new UserDeleted($user));
         });
     }
@@ -112,12 +110,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function scopeUserType($query, $userType)
     {
-        if ($userType == 'client')
-        {
+        if ($userType == 'client') {
             $query->where('client_id', '<>', 0);
-        }
-        elseif ($userType == 'admin')
-        {
+        } elseif ($userType == 'admin') {
             $query->where('client_id', 0);
         }
 

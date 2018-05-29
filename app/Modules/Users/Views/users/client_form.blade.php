@@ -3,18 +3,18 @@
 @section('content')
 
     <script type="text/javascript">
-        $(function () {
+      $(function () {
 
-            $('#client_id').change(function() {
-                $.post('{{ route('users.clientInfo') }}', {
-                    id: $('#client_id').val()
-                }).done(function(response) {
-                    $('#name').val(response.unique_name);
-                    $('#email').val(response.email);
-                });
-            });
-
+        $('#client_id').change(function () {
+          $.post('{{ route('users.clientInfo') }}', {
+            id: $('#client_id').val()
+          }).done(function (response) {
+            $('#name').val(response.unique_name);
+            $('#email').val(response.email);
+          });
         });
+
+      });
     </script>
 
     @if ($editMode == true)
@@ -46,10 +46,10 @@
                     <div class="box-body">
 
                         @if (!$editMode)
-                        <div class="form-group">
-                            <label>{{ trans('fi.client') }}:</label>
-                            {!! Form::select('client_id', ['' => ''] + $clients, null, ['class' => 'form-control', 'id' => 'client_id']) !!}
-                        </div>
+                            <div class="form-group">
+                                <label>{{ trans('fi.client') }}:</label>
+                                {!! Form::select('client_id', ['' => ''] + $clients, null, ['class' => 'form-control', 'id' => 'client_id']) !!}
+                            </div>
                         @endif
 
                         <div class="row">

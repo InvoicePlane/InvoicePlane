@@ -2,11 +2,11 @@
 
 @section('javascript')
     <script type="text/javascript">
-        $(function() {
-            $('.user_filter_options').change(function () {
-                $('form#filter').submit();
-            });
+      $(function () {
+        $('.user_filter_options').change(function () {
+          $('form#filter').submit();
         });
+      });
     </script>
 @stop
 
@@ -25,7 +25,8 @@
             </div>
 
             <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="false">
                     {{ trans('fi.new') }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
@@ -62,18 +63,28 @@
                             <tbody>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td><a href="{{ route('users.edit', [$user->id, $user->user_type]) }}">{{ $user->name }}</a></td>
+                                    <td>
+                                        <a href="{{ route('users.edit', [$user->id, $user->user_type]) }}">{{ $user->name }}</a>
+                                    </td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ trans('fi.' . $user->user_type) }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                                                    data-toggle="dropdown">
                                                 {{ trans('fi.options') }} <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                                <li><a href="{{ route('users.edit', [$user->id, $user->user_type]) }}"><i class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
-                                                <li><a href="{{ route('users.password.edit', [$user->id]) }}"><i class="fa fa-lock"></i> {{ trans('fi.reset_password') }}</a></li>
-                                                <li><a href="{{ route('users.delete', [$user->id]) }}" onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                                <li>
+                                                    <a href="{{ route('users.edit', [$user->id, $user->user_type]) }}"><i
+                                                                class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                                                <li><a href="{{ route('users.password.edit', [$user->id]) }}"><i
+                                                                class="fa fa-lock"></i> {{ trans('fi.reset_password') }}
+                                                    </a></li>
+                                                <li><a href="{{ route('users.delete', [$user->id]) }}"
+                                                       onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
+                                                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>

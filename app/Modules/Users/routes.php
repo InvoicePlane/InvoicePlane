@@ -12,8 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Users\Controllers'], function ()
-{
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Users\Controllers'], function () {
     Route::get('users', ['uses' => 'UserController@index', 'as' => 'users.index']);
 
     Route::get('users/create/{userType}', ['uses' => 'UserController@create', 'as' => 'users.create']);

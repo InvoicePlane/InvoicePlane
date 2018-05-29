@@ -20,7 +20,7 @@ class UserUpdateRequest extends UserStoreRequest
     {
         return [
             'email' => 'required|email|unique:users,email,' . $this->route('id'),
-            'name'  => 'required',
+            'name' => 'required',
         ];
     }
 }

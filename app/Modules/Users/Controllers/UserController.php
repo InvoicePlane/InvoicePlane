@@ -43,8 +43,7 @@ class UserController extends Controller
             ->with('editMode', false)
             ->with('customFields', CustomField::forTable('users')->get());
 
-        if ($userType == 'client')
-        {
+        if ($userType == 'client') {
             $view->with('clients', Client::whereDoesntHave('user')
                 ->where('email', '<>', '')
                 ->whereNotNull('email')

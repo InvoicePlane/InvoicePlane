@@ -26,18 +26,18 @@ class UserStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email'    => trans('fi.email'),
+            'email' => trans('fi.email'),
             'password' => trans('fi.password'),
-            'name'     => trans('fi.name'),
+            'name' => trans('fi.name'),
         ];
     }
 
     public function rules()
     {
         return [
-            'email'    => 'required|email|unique:users',
+            'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:6',
-            'name'     => 'required',
+            'name' => 'required',
         ];
     }
 }

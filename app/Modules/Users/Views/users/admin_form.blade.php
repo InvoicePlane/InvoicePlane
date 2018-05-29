@@ -3,21 +3,21 @@
 @section('content')
 
     <script type="text/javascript">
-        $(function () {
-            $('#name').focus();
+      $(function () {
+        $('#name').focus();
 
-            $('#btn-generate-api-keys').click(function () {
-                $.post("{{ route('api.generateKeys') }}", function (response) {
-                    $('#api_public_key').val(response.api_public_key);
-                    $('#api_secret_key').val(response.api_secret_key);
-                });
-            });
-
-            $('#btn-clear-api-keys').click(function () {
-                $('#api_public_key').val('');
-                $('#api_secret_key').val('');
-            })
+        $('#btn-generate-api-keys').click(function () {
+          $.post("{{ route('api.generateKeys') }}", function (response) {
+            $('#api_public_key').val(response.api_public_key);
+            $('#api_secret_key').val(response.api_secret_key);
+          });
         });
+
+        $('#btn-clear-api-keys').click(function () {
+          $('#api_public_key').val('');
+          $('#api_secret_key').val('');
+        });
+      });
     </script>
 
     @if ($editMode == true)
@@ -91,7 +91,8 @@
                             </div>
                         </div>
 
-                        <a href="#" class="btn btn-default" id="btn-generate-api-keys">{{ trans('fi.generate_keys') }}</a>
+                        <a href="#" class="btn btn-default"
+                           id="btn-generate-api-keys">{{ trans('fi.generate_keys') }}</a>
                         <a href="#" class="btn btn-default" id="btn-clear-api-keys">{{ trans('fi.clear_keys') }}</a>
 
                     </div>
