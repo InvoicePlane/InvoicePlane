@@ -2,29 +2,29 @@
 
 <div id="invoice-dashboard-totals-widget">
     <script type="text/javascript">
-        $(function () {
-            $('.invoice-dashboard-total-change-option').click(function () {
-                var option = $(this).data('id');
+      $(function () {
+        $('.invoice-dashboard-total-change-option').click(function () {
+          var option = $(this).data('id');
 
-                $.post("{{ route('widgets.dashboard.invoiceSummary.renderPartial') }}", {
-                    widgetInvoiceSummaryDashboardTotals: option,
-                    widgetInvoiceSummaryDashboardTotalsFromDate: $('#invoice-dashboard-total-setting-from-date').val(),
-                    widgetInvoiceSummaryDashboardTotalsToDate: $('#invoice-dashboard-total-setting-to-date').val()
-                }, function (data) {
-                    $('#invoice-dashboard-totals-widget').html(data);
-                });
+          $.post("{{ route('widgets.dashboard.invoiceSummary.renderPartial') }}", {
+            widgetInvoiceSummaryDashboardTotals: option,
+            widgetInvoiceSummaryDashboardTotalsFromDate: $('#invoice-dashboard-total-setting-from-date').val(),
+            widgetInvoiceSummaryDashboardTotalsToDate: $('#invoice-dashboard-total-setting-to-date').val()
+          }, function (data) {
+            $('#invoice-dashboard-totals-widget').html(data);
+          });
 
-            });
-
-            $('#invoice-dashboard-total-setting-from-date').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true
-            });
-            $('#invoice-dashboard-total-setting-to-date').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true
-            });
         });
+
+        $('#invoice-dashboard-total-setting-from-date').datepicker({
+          format: 'yyyy-mm-dd',
+          autoclose: true
+        });
+        $('#invoice-dashboard-total-setting-to-date').datepicker({
+          format: 'yyyy-mm-dd',
+          autoclose: true
+        });
+      });
     </script>
 
     <section class="content">
@@ -41,15 +41,19 @@
                             @foreach ($invoiceDashboardTotalOptions as $key => $option)
                                 <li>
                                     @if ($key != 'custom_date_range')
-                                        <a href="#" onclick="return false;" class="invoice-dashboard-total-change-option" data-id="{{ $key }}">{{ $option }}</a>
+                                        <a href="#" onclick="return false;"
+                                           class="invoice-dashboard-total-change-option"
+                                           data-id="{{ $key }}">{{ $option }}</a>
                                     @else
-                                        <a href="#" onclick="return false;" data-toggle="modal" data-target="#invoice-summary-widget-modal">{{ $option }}</a>
+                                        <a href="#" onclick="return false;" data-toggle="modal"
+                                           data-target="#invoice-summary-widget-modal">{{ $option }}</a>
                                     @endif
                                 </li>
                             @endforeach
                         </ul>
                     </div>
-                    <button class="btn btn-box-tool create-invoice"><i class="fa fa-plus"></i> {{ trans('fi.create_invoice') }}</button>
+                    <button class="btn btn-box-tool create-invoice"><i
+                                class="fa fa-plus"></i> {{ trans('fi.create_invoice') }}</button>
                 </div>
             </div>
             <div class="box-body">
@@ -139,7 +143,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('fi.cancel') }}</button>
-                    <button type="button" class="btn btn-primary invoice-dashboard-total-change-option" data-id="custom_date_range" data-dismiss="modal">{{ trans('fi.save') }}</button>
+                    <button type="button" class="btn btn-primary invoice-dashboard-total-change-option"
+                            data-id="custom_date_range" data-dismiss="modal">{{ trans('fi.save') }}</button>
                 </div>
             </div>
         </div>

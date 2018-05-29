@@ -2,29 +2,29 @@
 
 <div id="quote-dashboard-totals-widget">
     <script type="text/javascript">
-        $(function () {
-            $('.quote-dashboard-total-change-option').click(function () {
-                var option = $(this).data('id');
+      $(function () {
+        $('.quote-dashboard-total-change-option').click(function () {
+          var option = $(this).data('id');
 
-                $.post("{{ route('widgets.dashboard.quoteSummary.renderPartial') }}", {
-                    widgetQuoteSummaryDashboardTotals: option,
-                    widgetQuoteSummaryDashboardTotalsFromDate: $('#quote-dashboard-total-setting-from-date').val(),
-                    widgetQuoteSummaryDashboardTotalsToDate: $('#quote-dashboard-total-setting-to-date').val()
-                }, function (data) {
-                    $('#quote-dashboard-totals-widget').html(data);
-                });
+          $.post("{{ route('widgets.dashboard.quoteSummary.renderPartial') }}", {
+            widgetQuoteSummaryDashboardTotals: option,
+            widgetQuoteSummaryDashboardTotalsFromDate: $('#quote-dashboard-total-setting-from-date').val(),
+            widgetQuoteSummaryDashboardTotalsToDate: $('#quote-dashboard-total-setting-to-date').val()
+          }, function (data) {
+            $('#quote-dashboard-totals-widget').html(data);
+          });
 
-            });
-
-            $('#quote-dashboard-total-setting-from-date').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true
-            });
-            $('#quote-dashboard-total-setting-to-date').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true
-            });
         });
+
+        $('#quote-dashboard-total-setting-from-date').datepicker({
+          format: 'yyyy-mm-dd',
+          autoclose: true
+        });
+        $('#quote-dashboard-total-setting-to-date').datepicker({
+          format: 'yyyy-mm-dd',
+          autoclose: true
+        });
+      });
     </script>
 
     <section class="content">
@@ -41,15 +41,18 @@
                             @foreach ($quoteDashboardTotalOptions as $key => $option)
                                 <li>
                                     @if ($key != 'custom_date_range')
-                                        <a href="#" onclick="return false;" class="quote-dashboard-total-change-option" data-id="{{ $key }}">{{ $option }}</a>
+                                        <a href="#" onclick="return false;" class="quote-dashboard-total-change-option"
+                                           data-id="{{ $key }}">{{ $option }}</a>
                                     @else
-                                        <a href="#" onclick="return false;" data-toggle="modal" data-target="#quote-summary-widget-modal">{{ $option }}</a>
+                                        <a href="#" onclick="return false;" data-toggle="modal"
+                                           data-target="#quote-summary-widget-modal">{{ $option }}</a>
                                     @endif
                                 </li>
                             @endforeach
                         </ul>
                     </div>
-                    <button class="btn btn-box-tool create-quote"><i class="fa fa-plus"></i> {{ trans('fi.create_quote') }}</button>
+                    <button class="btn btn-box-tool create-quote"><i
+                                class="fa fa-plus"></i> {{ trans('fi.create_quote') }}</button>
                 </div>
             </div>
             <div class="box-body">
@@ -137,7 +140,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('fi.cancel') }}</button>
-                    <button type="button" class="btn btn-primary quote-dashboard-total-change-option" data-id="custom_date_range" data-dismiss="modal">{{ trans('fi.save') }}</button>
+                    <button type="button" class="btn btn-primary quote-dashboard-total-change-option"
+                            data-id="custom_date_range" data-dismiss="modal">{{ trans('fi.save') }}</button>
                 </div>
             </div>
         </div>

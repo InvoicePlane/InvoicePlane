@@ -19,8 +19,7 @@ class WidgetServiceProvider extends ServiceProvider
         view()->composer('InvoiceSummaryWidgetSettings', 'FI\Widgets\Dashboard\InvoiceSummary\Composers\InvoiceSummarySettingComposer');
 
         // Widgets don't have route files so we'll place this here.
-        Route::group(['middleware' => ['web','auth.admin'], 'namespace' => 'FI\Widgets\Dashboard\InvoiceSummary\Controllers'], function ()
-        {
+        Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Widgets\Dashboard\InvoiceSummary\Controllers'], function () {
             Route::post('widgets/dashboard/invoice_summary/render_partial', ['uses' => 'WidgetController@renderPartial', 'as' => 'widgets.dashboard.invoiceSummary.renderPartial']);
         });
     }

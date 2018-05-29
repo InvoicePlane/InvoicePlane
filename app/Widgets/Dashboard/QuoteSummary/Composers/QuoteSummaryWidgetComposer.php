@@ -20,12 +20,10 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalDraft()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q)
-            {
+            ->whereHas('quote', function ($q) {
                 $q->draft();
                 $q->where('invoice_id', 0);
-                switch (config('fi.widgetQuoteSummaryDashboardTotals'))
-                {
+                switch (config('fi.widgetQuoteSummaryDashboardTotals')) {
                     case 'year_to_date':
                         $q->yearToDate();
                         break;
@@ -42,12 +40,10 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalSent()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q)
-            {
+            ->whereHas('quote', function ($q) {
                 $q->sent();
                 $q->where('invoice_id', 0);
-                switch (config('fi.widgetQuoteSummaryDashboardTotals'))
-                {
+                switch (config('fi.widgetQuoteSummaryDashboardTotals')) {
                     case 'year_to_date':
                         $q->yearToDate();
                         break;
@@ -64,12 +60,10 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalApproved()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q)
-            {
+            ->whereHas('quote', function ($q) {
                 $q->approved();
                 $q->where('invoice_id', 0);
-                switch (config('fi.widgetQuoteSummaryDashboardTotals'))
-                {
+                switch (config('fi.widgetQuoteSummaryDashboardTotals')) {
                     case 'year_to_date':
                         $q->yearToDate();
                         break;
@@ -86,12 +80,10 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalRejected()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q)
-            {
+            ->whereHas('quote', function ($q) {
                 $q->rejected();
                 $q->where('invoice_id', 0);
-                switch (config('fi.widgetQuoteSummaryDashboardTotals'))
-                {
+                switch (config('fi.widgetQuoteSummaryDashboardTotals')) {
                     case 'year_to_date':
                         $q->yearToDate();
                         break;

@@ -19,8 +19,7 @@ class WidgetServiceProvider extends ServiceProvider
         view()->composer('QuoteSummaryWidgetSettings', 'FI\Widgets\Dashboard\QuoteSummary\Composers\QuoteSummarySettingComposer');
 
         // Widgets don't have route files so we'll place this here.
-        Route::group(['middleware' => ['web','auth.admin'], 'namespace' => 'FI\Widgets\Dashboard\QuoteSummary\Controllers'], function ()
-        {
+        Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Widgets\Dashboard\QuoteSummary\Controllers'], function () {
             Route::post('widgets/dashboard/quote_summary/render_partial', ['uses' => 'WidgetController@renderPartial', 'as' => 'widgets.dashboard.quoteSummary.renderPartial']);
         });
     }
