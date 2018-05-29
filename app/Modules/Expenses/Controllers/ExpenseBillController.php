@@ -32,8 +32,7 @@ class ExpenseBillController extends Controller
 
         $invoices = [];
 
-        foreach ($clientInvoices as $invoice)
-        {
+        foreach ($clientInvoices as $invoice) {
             $invoices[$invoice->id] = $invoice->formatted_created_at . ' - ' . $invoice->number . ' ' . $invoice->summary;
         }
 
@@ -51,14 +50,13 @@ class ExpenseBillController extends Controller
 
         $expense->save();
 
-        if (request('add_line_item'))
-        {
+        if (request('add_line_item')) {
             $item = [
-                'invoice_id'  => request('invoice_id'),
-                'name'        => request('item_name'),
+                'invoice_id' => request('invoice_id'),
+                'name' => request('item_name'),
                 'description' => request('item_description'),
-                'quantity'    => 1,
-                'price'       => $expense->amount,
+                'quantity' => 1,
+                'price' => $expense->amount,
             ];
 
             InvoiceItem::create($item);

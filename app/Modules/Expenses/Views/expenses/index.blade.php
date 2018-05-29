@@ -2,36 +2,36 @@
 
 @section('javascript')
     <script type="text/javascript">
-        $(function () {
-            $('.btn-bill-expense').click(function () {
-                $('#modal-placeholder').load("{{ route('expenseBill.create') }}", {
-                    id: $(this).data('expense-id'),
-                    redirectTo: '{{ request()->fullUrl() }}'
-                });
-            });
-
-            $('.expense_filter_options').change(function () {
-                $('form#filter').submit();
-            });
-
-            $('#btn-bulk-delete').click(function () {
-
-                var ids = [];
-
-                $('.bulk-record:checked').each(function () {
-                    ids.push($(this).data('id'));
-                });
-
-                if (ids.length > 0) {
-                    if (!confirm('{!! trans('fi.bulk_delete_record_warning') !!}')) return false;
-                    $.post("{{ route('expenses.bulk.delete') }}", {
-                        ids: ids
-                    }).done(function() {
-                        window.location = decodeURIComponent("{{ urlencode(request()->fullUrl()) }}");
-                    });
-                }
-            });
+      $(function () {
+        $('.btn-bill-expense').click(function () {
+          $('#modal-placeholder').load("{{ route('expenseBill.create') }}", {
+            id: $(this).data('expense-id'),
+            redirectTo: '{{ request()->fullUrl() }}'
+          });
         });
+
+        $('.expense_filter_options').change(function () {
+          $('form#filter').submit();
+        });
+
+        $('#btn-bulk-delete').click(function () {
+
+          var ids = [];
+
+          $('.bulk-record:checked').each(function () {
+            ids.push($(this).data('id'));
+          });
+
+          if (ids.length > 0) {
+            if (!confirm('{!! trans('fi.bulk_delete_record_warning') !!}')) return false;
+            $.post("{{ route('expenses.bulk.delete') }}", {
+              ids: ids
+            }).done(function () {
+              window.location = decodeURIComponent("{{ urlencode(request()->fullUrl()) }}");
+            });
+          }
+        });
+      });
     </script>
 @stop
 
@@ -44,7 +44,8 @@
 
         <div class="pull-right">
 
-            <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i class="fa fa-trash"></i> {{ trans('fi.delete') }}</a>
+            <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i
+                        class="fa fa-trash"></i> {{ trans('fi.delete') }}</a>
 
             <div class="btn-group">
                 {!! Form::open(['method' => 'GET', 'id' => 'filter']) !!}
@@ -54,7 +55,8 @@
                 {!! Form::select('vendor', $vendors, request('vendor'), ['class' => 'expense_filter_options form-control inline']) !!}
                 {!! Form::close() !!}
             </div>
-            <a href="{{ route('expenses.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
+            <a href="{{ route('expenses.create') }}" class="btn btn-primary"><i
+                        class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
         </div>
 
         <div class="clearfix"></div>
@@ -75,7 +77,9 @@
 
                             <thead>
                             <tr>
-                                <th><div class="btn-group"><input type="checkbox" id="bulk-select-all"></div></th>
+                                <th>
+                                    <div class="btn-group"><input type="checkbox" id="bulk-select-all"></div>
+                                </th>
                                 <th class="col-md-2">{!! Sortable::link('expense_date', trans('fi.date')) !!}</th>
                                 <th class="col-md-2">{!! Sortable::link('expense_categories.name', trans('fi.category')) !!}</th>
                                 <th class="col-md-3">{!! Sortable::link('description', trans('fi.description')) !!}</th>
@@ -101,7 +105,8 @@
                                         {{ $expense->formatted_amount }}
                                         @if ($expense->is_billable)
                                             @if ($expense->has_been_billed)
-                                                <br><a href="{{ route('invoices.edit', [$expense->invoice_id]) }}"><span class="label label-success">{{ trans('fi.billed') }}</span></a>
+                                                <br><a href="{{ route('invoices.edit', [$expense->invoice_id]) }}"><span
+                                                            class="label label-success">{{ trans('fi.billed') }}</span></a>
                                             @else
                                                 <br><span class="label label-danger">{{ trans('fi.not_billed') }}</span>
                                             @endif
@@ -111,20 +116,29 @@
                                     </td>
                                     <td>
                                         @foreach ($expense->attachments as $attachment)
-                                            <a href="{{ $attachment->download_url }}"><i class="fa fa-file-o"></i> {{ $attachment->filename }}</a><br>
+                                            <a href="{{ $attachment->download_url }}"><i
+                                                        class="fa fa-file-o"></i> {{ $attachment->filename }}</a><br>
                                         @endforeach
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                                                    data-toggle="dropdown">
                                                 {{ trans('fi.options') }} <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 @if ($expense->is_billable and !$expense->has_been_billed)
-                                                    <li><a href="javascript:void(0)" class="btn-bill-expense" data-expense-id="{{ $expense->id }}"><i class="fa fa-money"></i> {{ trans('fi.bill_this_expense') }}</a></li>
+                                                    <li><a href="javascript:void(0)" class="btn-bill-expense"
+                                                           data-expense-id="{{ $expense->id }}"><i
+                                                                    class="fa fa-money"></i> {{ trans('fi.bill_this_expense') }}
+                                                        </a></li>
                                                 @endif
-                                                <li><a href="{{ route('expenses.edit', [$expense->id]) }}"><i class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
-                                                <li><a href="{{ route('expenses.delete', [$expense->id]) }}" onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                                <li><a href="{{ route('expenses.edit', [$expense->id]) }}"><i
+                                                                class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                                                <li><a href="{{ route('expenses.delete', [$expense->id]) }}"
+                                                       onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
+                                                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>

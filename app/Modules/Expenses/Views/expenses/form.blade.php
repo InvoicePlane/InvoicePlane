@@ -10,9 +10,9 @@
 
 @section('javascript')
     <script type="text/javascript">
-        $(function () {
-            $('#expense_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
-        });
+      $(function () {
+        $('#expense_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+      });
     </script>
 @stop
 

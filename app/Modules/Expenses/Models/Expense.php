@@ -38,23 +38,19 @@ class Expense extends Model
     {
         parent::boot();
 
-        static::created(function ($expense)
-        {
+        static::created(function ($expense) {
             event(new ExpenseCreated($expense));
         });
 
-        static::saved(function ($expense)
-        {
+        static::saved(function ($expense) {
             event(new CheckAttachment($expense));
         });
 
-        static::saving(function ($expense)
-        {
+        static::saving(function ($expense) {
             event(new ExpenseSaving($expense));
         });
 
-        static::deleting(function ($expense)
-        {
+        static::deleting(function ($expense) {
             event(new ExpenseDeleting($expense));
         });
     }
@@ -151,8 +147,7 @@ class Expense extends Model
 
     public function getHasBeenBilledAttribute()
     {
-        if ($this->invoice_id)
-        {
+        if ($this->invoice_id) {
             return true;
         }
 
@@ -161,8 +156,7 @@ class Expense extends Model
 
     public function getIsBillableAttribute()
     {
-        if ($this->client_id)
-        {
+        if ($this->client_id) {
             return true;
         }
 
@@ -177,8 +171,7 @@ class Expense extends Model
 
     public function scopeCategoryId($query, $categoryId = null)
     {
-        if ($categoryId)
-        {
+        if ($categoryId) {
             $query->where('category_id', $categoryId);
         }
 
@@ -187,8 +180,7 @@ class Expense extends Model
 
     public function scopeCompanyProfileId($query, $companyProfileId = null)
     {
-        if ($companyProfileId)
-        {
+        if ($companyProfileId) {
             $query->where('company_profile_id', $companyProfileId);
         }
 
@@ -206,8 +198,7 @@ class Expense extends Model
 
     public function scopeKeywords($query, $keywords = null)
     {
-        if ($keywords)
-        {
+        if ($keywords) {
             $keywords = strtolower($keywords);
 
             $query->where('expenses.expense_date', 'like', '%' . $keywords . '%')
@@ -222,10 +213,8 @@ class Expense extends Model
 
     public function scopeStatus($query, $status = null)
     {
-        if ($status)
-        {
-            switch ($status)
-            {
+        if ($status) {
+            switch ($status) {
                 case 'billed':
                     $query->where('invoice_id', '<>', 0);
                     break;
@@ -243,8 +232,7 @@ class Expense extends Model
 
     public function scopeVendorId($query, $vendorId = null)
     {
-        if ($vendorId)
-        {
+        if ($vendorId) {
             $query->where('vendor_id', $vendorId);
         }
 

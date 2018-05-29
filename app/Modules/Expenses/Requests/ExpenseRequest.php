@@ -27,12 +27,12 @@ class ExpenseRequest extends FormRequest
     public function attributes()
     {
         return [
-            'user_id'            => trans('fi.user'),
+            'user_id' => trans('fi.user'),
             'company_profile_id' => trans('fi.company_profile'),
-            'expense_date'       => trans('fi.date'),
-            'category_name'      => trans('fi.category'),
-            'description'        => trans('fi.description'),
-            'amount'             => trans('fi.amount'),
+            'expense_date' => trans('fi.date'),
+            'category_name' => trans('fi.category'),
+            'description' => trans('fi.description'),
+            'amount' => trans('fi.amount'),
         ];
     }
 
@@ -40,8 +40,7 @@ class ExpenseRequest extends FormRequest
     {
         $request = $this->all();
 
-        if (isset($request['amount']))
-        {
+        if (isset($request['amount'])) {
             $request['amount'] = NumberFormatter::unformat($request['amount']);
         }
 
@@ -51,12 +50,12 @@ class ExpenseRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'            => 'required',
+            'user_id' => 'required',
             'company_profile_id' => 'required',
-            'expense_date'       => 'required',
-            'category_name'      => 'required',
-            'description'        => 'max:255',
-            'amount'             => 'required|numeric',
+            'expense_date' => 'required',
+            'category_name' => 'required',
+            'description' => 'max:255',
+            'amount' => 'required|numeric',
         ];
     }
 }

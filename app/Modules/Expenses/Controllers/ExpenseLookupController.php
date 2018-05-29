@@ -29,8 +29,7 @@ class ExpenseLookupController extends Controller
 
         $list = [];
 
-        foreach ($expenses as $expense)
-        {
+        foreach ($expenses as $expense) {
             $list[]['value'] = $expense->name;
         }
 
@@ -46,8 +45,7 @@ class ExpenseLookupController extends Controller
 
         $list = [];
 
-        foreach ($expenses as $expense)
-        {
+        foreach ($expenses as $expense) {
             $list[]['value'] = $expense->name;
         }
 

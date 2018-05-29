@@ -27,7 +27,7 @@ class ExpenseBillRequest extends FormRequest
     {
         return [
             'invoice_id' => trans('fi.invoice'),
-            'item_name'  => trans('fi.item'),
+            'item_name' => trans('fi.item'),
         ];
     }
 
@@ -35,7 +35,7 @@ class ExpenseBillRequest extends FormRequest
     {
         return [
             'invoice_id' => 'required',
-            'item_name'  => 'required',
+            'item_name' => 'required',
         ];
     }
 }

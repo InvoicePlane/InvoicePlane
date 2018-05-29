@@ -30,8 +30,7 @@ class ExpenseVendor extends Model
 
     public static function getList()
     {
-        return self::whereIn('id', function ($query)
-        {
+        return self::whereIn('id', function ($query) {
             $query->select('vendor_id')->distinct()->from('expenses');
         })->orderBy('name')
             ->pluck('name', 'id')

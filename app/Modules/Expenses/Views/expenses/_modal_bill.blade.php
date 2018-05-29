@@ -1,31 +1,31 @@
 <script type="text/javascript">
 
-    $(function () {
-        $('#create-expense-bill').modal();
+  $(function () {
+    $('#create-expense-bill').modal();
 
-        $('.add-line-item').change(function () {
-            if ($('input[name=add_line_item]:checked').val() == 1) {
-                $('#line-item-options').show();
-            }
-            else {
-                $('#line-item-options').hide();
-            }
-        });
-
-        $('#btn-create-expense-bill-confirm').click(function () {
-            $.post("{{ route('expenseBill.store') }}", {
-                id: {{ $expense->id }},
-                invoice_id: $('#invoice_id').val(),
-                item_name: $('#item_name').val(),
-                item_description: $('#item_description').val(),
-                add_line_item: $('input[name=add_line_item]:checked').val()
-            }).done(function () {
-                window.location = '{{ $redirectTo }}';
-            }).fail(function (response) {
-                showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
-            });
-        });
+    $('.add-line-item').change(function () {
+      if ($('input[name=add_line_item]:checked').val() == 1) {
+        $('#line-item-options').show();
+      }
+      else {
+        $('#line-item-options').hide();
+      }
     });
+
+    $('#btn-create-expense-bill-confirm').click(function () {
+      $.post("{{ route('expenseBill.store') }}", {
+        id: {{ $expense->id }},
+        invoice_id: $('#invoice_id').val(),
+        item_name: $('#item_name').val(),
+        item_description: $('#item_description').val(),
+        add_line_item: $('input[name=add_line_item]:checked').val()
+      }).done(function () {
+        window.location = '{{ $redirectTo }}';
+      }).fail(function (response) {
+        showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
+      });
+    });
+  });
 </script>
 
 <div class="modal fade" id="create-expense-bill">
@@ -75,7 +75,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('fi.cancel') }}</button>
                 @if ($invoices)
-                    <button type="button" id="btn-create-expense-bill-confirm" class="btn btn-primary">{{ trans('fi.submit') }}</button>
+                    <button type="button" id="btn-create-expense-bill-confirm"
+                            class="btn btn-primary">{{ trans('fi.submit') }}</button>
                 @endif
             </div>
         </div>

@@ -30,8 +30,7 @@ class ExpenseCategory extends Model
 
     public static function getList()
     {
-        return self::whereIn('id', function ($query)
-        {
+        return self::whereIn('id', function ($query) {
             $query->select('category_id')->distinct()->from('expenses');
         })->orderBy('name')
             ->pluck('name', 'id')
