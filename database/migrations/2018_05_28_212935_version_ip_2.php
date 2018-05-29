@@ -3,7 +3,7 @@
 use FI\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 
-class Version200 extends Migration
+class VersionIP2 extends Migration
 {
     /**
      * Run the migrations.
@@ -15,6 +15,8 @@ class Version200 extends Migration
         deleteTempFiles();
         deleteViewCache();
 
+        Setting::saveByKey('headerTitleText', 'InvoicePlane');
+        Setting::saveByKey('skin', 'skin-invoiceplane.css');
         Setting::saveByKey('version', '2.0.0-alpha1');
     }
 
