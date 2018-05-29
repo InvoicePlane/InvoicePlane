@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('fi.license_agreement') }}</h1>
+        <h1>{{ trans('fi.setup') }}</h1>
     </section>
 
     <section class="content">
@@ -18,15 +18,9 @@
 
                     <div class="box-body">
 
-                        <div class="form-group">
-                            {!! Form::textarea('', $license, ['id' => 'license', 'class' => 'form-control', 'readonly' => 'readonly']) !!}
-                        </div>
+                        <p>Welcome to the InvoicePlane Setup.</p>
 
-                        <div class="form-group">
-                            {!! Form::checkbox('accept', 1) !!} {{ trans('fi.license_agreement_accept') }}
-                        </div>
-
-                        {!! Form::submit(trans('fi.i_accept'), ['class' => 'btn btn-primary']) !!}
+                        {!! Form::submit(trans('fi.continue'), ['class' => 'btn btn-primary']) !!}
 
                     </div>
 

@@ -33,11 +33,10 @@ class SetupController extends Controller
 
     public function index()
     {
-        return view('setup.index')
-            ->with('license', file_get_contents(public_path('LICENSE')));
+        return view('setup.index');
     }
 
-    public function postIndex(LicenseRequest $request)
+    public function postIndex()
     {
         return redirect()->route('setup.prerequisites');
     }

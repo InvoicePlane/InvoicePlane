@@ -21,11 +21,6 @@ class AppServiceProvider extends ServiceProvider
             request()->setTrustedProxies([request()->getClientIp()]);
         }
 
-        if (!$this->app->environment('testing') and $this->app->config->get('app.key') == 'ReplaceThisWithYourOwnLicenseKey')
-        {
-            session()->flash('error', '<strong>' . trans('fi.error') . '</strong> - ' . 'Please enter your license key in config/app.php.');
-        }
-
         $this->app->view->addLocation(base_path('custom/overrides'));
 
         $modules = Directory::listDirectories(app_path('Modules'));

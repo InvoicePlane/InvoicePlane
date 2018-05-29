@@ -251,8 +251,6 @@ return [
     'left_pad_description'                    => 'The number of zeroes to optionally left pad the next number with.',
     'legal'                                   => 'Legal',
     'letter'                                  => 'Letter',
-    'license_agreement'                       => 'License Agreement',
-    'license_agreement_accept'                => 'I accept the terms of the license agreement',
     'logo'                                    => 'Logo',
     'mail_hash_error'                         => 'It appears your secret key has been changed since the last time you saved your email password. To fix this error, go to System Settings -> Email tab, re-enter your email password and press Save. Note that no mail will be delivered until this has been done.',
     'manual'                                  => 'Manual',

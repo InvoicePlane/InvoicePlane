@@ -2,6 +2,8 @@
 
 return [
 
+    'key' => env('APP_KEY', 'SomeRandomStringWith32Characters'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
