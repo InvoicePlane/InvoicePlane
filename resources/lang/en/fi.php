@@ -394,6 +394,7 @@ return [
     'settings'                                => 'Settings',
     'settings_successfully_saved'             => 'Settings successfully saved',
     'setup'                                   => 'Setup',
+    'setup_welcome'                           => 'Welcome to the InvoicePlane Setup!',
     'sign_in'                                 => 'Sign In',
     'sign_out'                                => 'Sign Out',
     'skin'                                    => 'Skin',

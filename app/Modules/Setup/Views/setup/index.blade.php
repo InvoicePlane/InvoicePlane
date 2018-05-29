@@ -11,23 +11,19 @@
         {!! Form::open() !!}
 
         <div class="row">
-
             <div class="col-md-12">
 
                 <div class="box box-primary">
-
                     <div class="box-body">
 
-                        <p>Welcome to the InvoicePlane Setup.</p>
+                        <p>@lang('fi.setup_welcome')</p>
 
                         {!! Form::submit(trans('fi.continue'), ['class' => 'btn btn-primary']) !!}
 
                     </div>
-
                 </div>
 
             </div>
-
         </div>
 
         {!! Form::close() !!}
