@@ -12,7 +12,7 @@
         body {
             color: #001028;
             background: #FFFFFF;
-            font-family : DejaVu Sans, Helvetica, sans-serif;
+            font-family: DejaVu Sans, Helvetica, sans-serif;
             font-size: 12px;
             margin-bottom: 50px;
         }
@@ -94,7 +94,8 @@
             {{ $invoice->companyProfile->company }}<br>
             {!! $invoice->companyProfile->formatted_address !!}<br>
             @if ($invoice->companyProfile->phone) {{ $invoice->companyProfile->phone }}<br>@endif
-            @if ($invoice->user->email) <a href="mailto:{{ $invoice->user->email }}">{{ $invoice->user->email }}</a>@endif
+            @if ($invoice->user->email) <a
+                    href="mailto:{{ $invoice->user->email }}">{{ $invoice->user->email }}</a>@endif
         </td>
     </tr>
 </table>

@@ -12,7 +12,7 @@
         body {
             color: #001028;
             background: #FFFFFF;
-            font-family : DejaVu Sans, Helvetica, sans-serif;
+            font-family: DejaVu Sans, Helvetica, sans-serif;
             font-size: 12px;
             margin-bottom: 50px;
         }
@@ -85,7 +85,8 @@
             <h1>{{ mb_strtoupper(trans('fi.quote')) }}</h1>
             <span class="info">{{ mb_strtoupper(trans('fi.quote')) }} #</span>{{ $quote->number }}<br>
             <span class="info">{{ mb_strtoupper(trans('fi.issued')) }}</span> {{ $quote->formatted_created_at }}<br>
-            <span class="info">{{ mb_strtoupper(trans('fi.expires')) }}</span> {{ $quote->formatted_expires_at }}<br><br>
+            <span class="info">{{ mb_strtoupper(trans('fi.expires')) }}</span> {{ $quote->formatted_expires_at }}
+            <br><br>
             <span class="info">{{ mb_strtoupper(trans('fi.bill_to')) }}</span><br>{{ $quote->client->name }}<br>
             @if ($quote->client->address) {!! $quote->client->formatted_address !!}<br>@endif
         </td>
