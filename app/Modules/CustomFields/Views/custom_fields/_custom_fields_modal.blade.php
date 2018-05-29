@@ -1,6 +1,6 @@
 <script type="text/javascript">
     $(function () {
-        $('textarea.custom-form-field').autosize();
+        autosize($('textarea.custom-form-field'));
     });
 </script>
 

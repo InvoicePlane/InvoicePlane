@@ -33,7 +33,7 @@
             row.removeAttr('id').addClass('item').show();
             row.find('input[name="name"]').addClass('item-lookup').typeahead(null, settings);
             typeaheadTrigger();
-            $('textarea').autosize();
+            autosize($('textarea'));
         }
 
         // Sets up .item-lookup to populate proper fields when item is selected

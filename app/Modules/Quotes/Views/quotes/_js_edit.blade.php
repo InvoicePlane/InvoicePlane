@@ -4,7 +4,7 @@
 
         $("#quote_date").datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
         $("#expires_at").datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
-        $('textarea').autosize();
+        autosize($('textarea'));
 
         $('#btn-copy-quote').click(function () {
             $('#modal-placeholder').load('{{ route('quoteCopy.create') }}', {

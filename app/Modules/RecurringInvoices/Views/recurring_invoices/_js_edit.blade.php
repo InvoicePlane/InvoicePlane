@@ -4,7 +4,7 @@
 
         $("#next_date").datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
         $("#stop_date").datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
-        $('textarea').autosize();
+        autosize($('textarea'));
 
         $('#btn-copy-recurring-invoice').click(function () {
             $('#modal-placeholder').load('{{ route('recurringInvoiceCopy.create') }}', {
