@@ -67,23 +67,19 @@ class TaxRate extends Model
 
     public function getInUseAttribute()
     {
-        if (InvoiceItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count())
-        {
+        if (InvoiceItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count()) {
             return true;
         }
 
-        if (RecurringInvoiceItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count())
-        {
+        if (RecurringInvoiceItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count()) {
             return true;
         }
 
-        if (QuoteItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count())
-        {
+        if (QuoteItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count()) {
             return true;
         }
 
-        if (config('fi.itemTaxRate') == $this->id or config('fi.itemTax2Rate') == $this->id)
-        {
+        if (config('fi.itemTaxRate') == $this->id or config('fi.itemTax2Rate') == $this->id) {
             return true;
         }
 

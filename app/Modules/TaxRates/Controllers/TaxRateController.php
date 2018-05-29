@@ -72,12 +72,9 @@ class TaxRateController extends Controller
     {
         $taxRate = TaxRate::find($id);
 
-        if ($taxRate->in_use)
-        {
+        if ($taxRate->in_use) {
             $alert = trans('fi.cannot_delete_record_in_use');
-        }
-        else
-        {
+        } else {
             $taxRate->delete();
 
             $alert = trans('fi.record_successfully_deleted');

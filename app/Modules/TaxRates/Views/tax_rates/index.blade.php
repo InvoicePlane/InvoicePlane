@@ -8,7 +8,8 @@
         </h1>
 
         <div class="pull-right">
-            <a href="{{ route('taxRates.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
+            <a href="{{ route('taxRates.create') }}" class="btn btn-primary"><i
+                        class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -43,12 +44,17 @@
                                     <td>{{ $taxRate->formatted_is_compound }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                                                    data-toggle="dropdown">
                                                 {{ trans('fi.options') }} <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                                <li><a href="{{ route('taxRates.edit', [$taxRate->id]) }}"><i class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
-                                                <li><a href="{{ route('taxRates.delete', [$taxRate->id]) }}" onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                                <li><a href="{{ route('taxRates.edit', [$taxRate->id]) }}"><i
+                                                                class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                                                <li><a href="{{ route('taxRates.delete', [$taxRate->id]) }}"
+                                                       onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
+                                                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>
