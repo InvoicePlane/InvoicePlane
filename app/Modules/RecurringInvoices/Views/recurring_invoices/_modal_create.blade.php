@@ -76,7 +76,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('fi.cancel') }}</button>
-                <button type="button" id="recurring-invoice-create-confirm" class="btn btn-primary">{{ trans('fi.submit') }}
+                <button type="button" id="recurring-invoice-create-confirm"
+                        class="btn btn-primary">{{ trans('fi.submit') }}
                 </button>
             </div>
         </div>

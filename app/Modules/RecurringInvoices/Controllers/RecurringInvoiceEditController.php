@@ -17,7 +17,6 @@ namespace FI\Modules\RecurringInvoices\Controllers;
 use FI\Http\Controllers\Controller;
 use FI\Modules\Currencies\Models\Currency;
 use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\CustomFields\Models\RecurringInvoiceCustom;
 use FI\Modules\Groups\Models\Group;
 use FI\Modules\Invoices\Support\InvoiceTemplates;
 use FI\Modules\ItemLookups\Models\ItemLookup;
@@ -27,7 +26,6 @@ use FI\Modules\RecurringInvoices\Requests\RecurringInvoiceUpdateRequest;
 use FI\Modules\TaxRates\Models\TaxRate;
 use FI\Support\DateFormatter;
 use FI\Support\Frequency;
-use FI\Support\NumberFormatter;
 use FI\Traits\ReturnUrl;
 
 class RecurringInvoiceEditController extends Controller
@@ -52,7 +50,7 @@ class RecurringInvoiceEditController extends Controller
 
     public function update(RecurringInvoiceUpdateRequest $request, $id)
     {
-        $input              = $request->except(['items', 'custom', 'apply_exchange_rate']);
+        $input = $request->except(['items', 'custom', 'apply_exchange_rate']);
         $input['next_date'] = DateFormatter::unformat($input['next_date']);
         $input['stop_date'] = DateFormatter::unformat($input['stop_date']);
 
@@ -65,30 +63,25 @@ class RecurringInvoiceEditController extends Controller
         $recurringInvoice->custom->update($request->input('custom', []));
 
         // Save the items.
-        foreach ($request->input('items') as $item)
-        {
+        foreach ($request->input('items') as $item) {
             $item['apply_exchange_rate'] = request('apply_exchange_rate');
 
-            if (!isset($item['id']) or (!$item['id']))
-            {
+            if (!isset($item['id']) or (!$item['id'])) {
                 $saveItemAsLookup = $item['save_item_as_lookup'];
                 unset($item['save_item_as_lookup']);
 
                 RecurringInvoiceItem::create($item);
 
-                if ($saveItemAsLookup)
-                {
+                if ($saveItemAsLookup) {
                     ItemLookup::create([
-                        'name'          => $item['name'],
-                        'description'   => $item['description'],
-                        'price'         => $item['price'],
-                        'tax_rate_id'   => $item['tax_rate_id'],
+                        'name' => $item['name'],
+                        'description' => $item['description'],
+                        'price' => $item['price'],
+                        'tax_rate_id' => $item['tax_rate_id'],
                         'tax_rate_2_id' => $item['tax_rate_2_id'],
                     ]);
                 }
-            }
-            else
-            {
+            } else {
                 $recurringInvoiceItem = RecurringInvoiceItem::find($item['id']);
                 $recurringInvoiceItem->fill($item);
                 $recurringInvoiceItem->save();

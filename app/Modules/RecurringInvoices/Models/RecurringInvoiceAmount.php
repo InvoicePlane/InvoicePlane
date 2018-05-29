@@ -15,7 +15,6 @@
 namespace FI\Modules\RecurringInvoices\Models;
 
 use FI\Support\CurrencyFormatter;
-use FI\Support\NumberFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class RecurringInvoiceAmount extends Model

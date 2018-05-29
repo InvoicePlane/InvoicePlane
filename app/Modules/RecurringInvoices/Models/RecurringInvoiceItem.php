@@ -32,25 +32,20 @@ class RecurringInvoiceItem extends Model
     {
         parent::boot();
 
-        static::saving(function($recurringInvoiceItem)
-        {
+        static::saving(function ($recurringInvoiceItem) {
             event(new RecurringInvoiceItemSaving($recurringInvoiceItem));
         });
 
-        static::saved(function($recurringInvoiceItem)
-        {
+        static::saved(function ($recurringInvoiceItem) {
             event(new RecurringInvoiceModified($recurringInvoiceItem->recurringInvoice));
         });
 
-        static::deleting(function ($recurringInvoiceItem)
-        {
+        static::deleting(function ($recurringInvoiceItem) {
             $recurringInvoiceItem->amount()->delete();
         });
 
-        static::deleted(function($recurringInvoiceItem)
-        {
-            if ($recurringInvoiceItem->recurringInvoice)
-            {
+        static::deleted(function ($recurringInvoiceItem) {
+            if ($recurringInvoiceItem->recurringInvoice) {
                 event(new RecurringInvoiceModified($recurringInvoiceItem->recurringInvoice));
             }
         });

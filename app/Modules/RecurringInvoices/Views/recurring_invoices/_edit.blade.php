@@ -11,24 +11,24 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li><a href="javascript:void(0)" id="btn-copy-recurring-invoice"><i
-                            class="fa fa-copy"></i> {{ trans('fi.copy') }}</a></li>
+                                class="fa fa-copy"></i> {{ trans('fi.copy') }}</a></li>
                 <li class="divider"></li>
                 <li><a href="{{ route('recurringInvoices.delete', [$recurringInvoice->id]) }}"
                        onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
-                            class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
             </ul>
         </div>
 
         <div class="btn-group">
             @if ($returnUrl)
                 <a href="{{ $returnUrl }}" class="btn btn-default"><i
-                        class="fa fa-backward"></i> {{ trans('fi.back') }}</a>
+                            class="fa fa-backward"></i> {{ trans('fi.back') }}</a>
             @endif
         </div>
 
         <div class="btn-group">
             <button type="button" class="btn btn-primary btn-save-recurring-invoice"><i
-                    class="fa fa-save"></i> {{ trans('fi.save') }}</button>
+                        class="fa fa-save"></i> {{ trans('fi.save') }}</button>
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
@@ -89,7 +89,7 @@
 
                             <div class="box-tools pull-right">
                                 <button class="btn btn-primary btn-sm" id="btn-add-item"><i
-                                        class="fa fa-plus"></i> {{ trans('fi.add_item') }}</button>
+                                            class="fa fa-plus"></i> {{ trans('fi.add_item') }}</button>
                             </div>
                         </div>
 
@@ -113,7 +113,8 @@
                                         {!! Form::hidden('recurring_invoice_id', $recurringInvoice->id) !!}
                                         {!! Form::hidden('id', '') !!}
                                         {!! Form::text('name', null, ['class' => 'form-control']) !!}<br>
-                                        <label><input type="checkbox" name="save_item_as_lookup" tabindex="999"> {{ trans('fi.save_item_as_lookup') }}</label>
+                                        <label><input type="checkbox" name="save_item_as_lookup"
+                                                      tabindex="999"> {{ trans('fi.save_item_as_lookup') }}</label>
                                     </td>
                                     <td>{!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 1]) !!}</td>
                                     <td>{!! Form::text('quantity', null, ['class' => 'form-control']) !!}</td>
@@ -137,7 +138,8 @@
                                         <td>{!! Form::select('tax_rate_2_id', $taxRates, $item->tax_rate_2_id, ['class' => 'form-control']) !!}</td>
                                         <td style="text-align: right; padding-right: 25px;">{{ $item->amount->formatted_subtotal }}</td>
                                         <td>
-                                            <a class="btn btn-xs btn-default btn-delete-recurring-invoice-item" href="javascript:void(0);"
+                                            <a class="btn btn-xs btn-default btn-delete-recurring-invoice-item"
+                                               href="javascript:void(0);"
                                                title="{{ trans('fi.delete') }}" data-item-id="{{ $item->id }}">
                                                 <i class="fa fa-times"></i>
                                             </a>
@@ -158,7 +160,8 @@
                 <div class="col-lg-12">
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab-additional" data-toggle="tab">{{ trans('fi.additional') }}</a></li>
+                            <li class="active"><a href="#tab-additional"
+                                                  data-toggle="tab">{{ trans('fi.additional') }}</a></li>
                         </ul>
                         <div class="tab-content">
 
@@ -251,7 +254,8 @@
                             {!! Form::text('exchange_rate', $recurringInvoice->exchange_rate, ['id' => 'exchange_rate', 'class' => 'form-control input-sm']) !!}
                             <span class="input-group-btn">
                                 <button class="btn btn-default btn-sm" id="btn-update-exchange-rate" type="button"
-                                        data-toggle="tooltip" data-placement="left" title="{{ trans('fi.update_exchange_rate') }}">
+                                        data-toggle="tooltip" data-placement="left"
+                                        title="{{ trans('fi.update_exchange_rate') }}">
                                     <i class="fa fa-refresh"></i>
                                 </button>
                             </span>

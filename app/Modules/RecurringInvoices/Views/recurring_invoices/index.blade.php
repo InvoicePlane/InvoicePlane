@@ -18,7 +18,8 @@
                 {!! Form::select('status', $statuses, request('status'), ['class' => 'recurring_invoice_filter_options form-control inline']) !!}
                 {!! Form::close() !!}
             </div>
-            <a href="javascript:void(0)" class="btn btn-primary create-recurring-invoice"><i class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
+            <a href="javascript:void(0)" class="btn btn-primary create-recurring-invoice"><i
+                        class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
         </div>
 
         <div class="clearfix"></div>

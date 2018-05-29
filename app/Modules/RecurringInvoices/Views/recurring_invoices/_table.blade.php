@@ -17,10 +17,12 @@
     @foreach ($recurringInvoices as $recurringInvoice)
         <tr>
             <td>
-                <a href="{{ route('recurringInvoices.edit', [$recurringInvoice->id]) }}" title="{{ trans('fi.edit') }}">{{ $recurringInvoice->id }}</a>
+                <a href="{{ route('recurringInvoices.edit', [$recurringInvoice->id]) }}"
+                   title="{{ trans('fi.edit') }}">{{ $recurringInvoice->id }}</a>
             </td>
             <td>
-                <a href="{{ route('clients.show', [$recurringInvoice->client->id]) }}" title="{{ trans('fi.view_client') }}">{{ $recurringInvoice->client->unique_name }}</a>
+                <a href="{{ route('clients.show', [$recurringInvoice->client->id]) }}"
+                   title="{{ trans('fi.view_client') }}">{{ $recurringInvoice->client->unique_name }}</a>
             </td>
             <td class="hidden-sm hidden-xs">{{ $recurringInvoice->summary }}</td>
             <td>{{ $recurringInvoice->formatted_next_date }}</td>
@@ -34,10 +36,10 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('recurringInvoices.edit', [$recurringInvoice->id]) }}"><i
-                                    class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                                        class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
                         <li><a href="{{ route('recurringInvoices.delete', [$recurringInvoice->id]) }}"
                                onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
-                                    class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                        class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
                     </ul>
                 </div>
             </td>
