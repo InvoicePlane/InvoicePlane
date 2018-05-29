@@ -30,26 +30,22 @@ class AuthenticateClientCenter
      */
     public function __construct(Guard $auth, Store $session)
     {
-        $this->auth    = $auth;
+        $this->auth = $auth;
     }
 
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
+     * @param  \Closure                 $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if ($this->auth->guest() or ($this->auth->check() and $this->auth->user()->client_id == 0))
-        {
-            if ($request->ajax())
-            {
+        if ($this->auth->guest() or ($this->auth->check() and $this->auth->user()->client_id == 0)) {
+            if ($request->ajax()) {
                 return response('Unauthorized.', 401);
-            }
-            else
-            {
+            } else {
                 return redirect()->route('session.login');
             }
         }

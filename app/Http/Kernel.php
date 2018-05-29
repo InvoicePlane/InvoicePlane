@@ -53,14 +53,14 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'              => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.admin'        => \FI\Http\Middleware\AuthenticateAdmin::class,
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.admin' => \FI\Http\Middleware\AuthenticateAdmin::class,
         'auth.clientCenter' => \FI\Http\Middleware\AuthenticateClientCenter::class,
-        'auth.basic'        => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.api'          => \FI\Http\Middleware\AuthenticateAPI::class,
-        'bindings'          => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can'               => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'             => \FI\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle'          => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.api' => \FI\Http\Middleware\AuthenticateAPI::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \FI\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }

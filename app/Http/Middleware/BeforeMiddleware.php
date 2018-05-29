@@ -15,21 +15,18 @@ class BeforeMiddleware
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
+     * @param  \Closure                 $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if (config('app.debug'))
-        {
+        if (config('app.debug')) {
             DB::enableQueryLog();
         }
 
         // Set the application specific settings under fi. prefix (fi.settingName)
-        if (Setting::setAll())
-        {
-            if (config('fi.forceHttps') and !$request->secure())
-            {
+        if (Setting::setAll()) {
+            if (config('fi.forceHttps') and !$request->secure()) {
                 return redirect()->secure($request->getRequestUri());
             }
 
@@ -42,14 +39,10 @@ class BeforeMiddleware
 
             $mailPassword = '';
 
-            try
-            {
+            try {
                 $mailPassword = (config('fi.mailPassword')) ? Crypt::decrypt(config('fi.mailPassword')) : '';
-            }
-            catch (\Exception $e)
-            {
-                if (config('fi.mailDriver') == 'smtp')
-                {
+            } catch (\Exception $e) {
+                if (config('fi.mailDriver') == 'smtp') {
                     session()->flash('error', '<strong>' . trans('fi.error') . '</strong> - ' . trans('fi.mail_hash_error'));
                 }
             }
@@ -63,13 +56,12 @@ class BeforeMiddleware
             config(['mail.password' => $mailPassword]);
             config(['mail.sendmail' => config('fi.mailSendmail')]);
 
-            if (config('fi.mailAllowSelfSignedCertificate'))
-            {
+            if (config('fi.mailAllowSelfSignedCertificate')) {
                 config([
                     'mail.stream.ssl' => [
                         'allow_self_signed' => true,
-                        'verify_peer'       => false,
-                        'verify_peer_name'  => false,
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
                     ],
                 ]);
             }
@@ -83,12 +75,9 @@ class BeforeMiddleware
 
         config(['fi.clientCenterRequest' => (($request->segment(1) == 'client_center') ? true : false)]);
 
-        if (!config('fi.clientCenterRequest'))
-        {
+        if (!config('fi.clientCenterRequest')) {
             app()->setLocale((config('fi.language')) ?: 'en');
-        }
-        elseif (config('fi.clientCenterRequest') and auth()->check() and auth()->user()->client_id)
-        {
+        } elseif (config('fi.clientCenterRequest') and auth()->check() and auth()->user()->client_id) {
             app()->setLocale(auth()->user()->client->language);
         }
 

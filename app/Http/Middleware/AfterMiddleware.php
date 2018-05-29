@@ -12,8 +12,7 @@ class AfterMiddleware
     {
         $response = $next($request);
 
-        if (config('app.debug'))
-        {
+        if (config('app.debug')) {
             $queries = DB::getQueryLog();
 
             $logContent = "\r\nREQUEST URL: " . $request->fullUrl() . "\r\n";
@@ -21,18 +20,12 @@ class AfterMiddleware
 
             $queryNum = 1;
 
-            foreach ($queries as $query)
-            {
-                foreach ($query['bindings'] as $i => $binding)
-                {
-                    if ($binding instanceof \DateTime)
-                    {
+            foreach ($queries as $query) {
+                foreach ($query['bindings'] as $i => $binding) {
+                    if ($binding instanceof \DateTime) {
                         $query['bindings'][$i] = $binding->format('Y-m-d H:i:s');
-                    }
-                    else
-                    {
-                        if (is_string($binding))
-                        {
+                    } else {
+                        if (is_string($binding)) {
                             $query['bindings'][$i] = "'$binding'";
                         }
                     }
