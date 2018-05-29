@@ -1,13 +1,26 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 2.0.0_
+#### _Version 2.0.0 Alpha 1_
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
 
 ---
 
+:warning: **Notice about this version**
+
+This version is the official successor of FusionInvoice and based on the latest version 2018-8. However, it
+is marked as an alpha version because we plan to restructure and update the application and add new features.  
+You can use this application but expect breaking changes until we announce InvoicePlane 2 as a stable version.
+
+---
+
 ### Quick Installation
 
+1. Download the latest version from the InvoicePlane website.
+2. Extract the package and copy all files to your webserver / webspace.
+3. Open the file config/database.php and set your database credentials in that file.
+4. Make sure that the storage folder and all containing folders are writable.
+5. Open http://your-invoiceplane-domain.com/index.php/setup and follow the instructions.
 
 ---
 
