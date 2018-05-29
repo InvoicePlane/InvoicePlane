@@ -21,18 +21,15 @@ class FixerIOCurrencyConverter
      *
      * @param  string $from
      * @param  string $to
-     * @return decimal
+     * @return float
      */
     public function convert($from, $to)
     {
-        try
-        {
+        try {
             $result = json_decode(file_get_contents('https://api.fixer.io/latest?base=' . $from . '&symbols=' . $to), true);
 
             return $result['rates'][strtoupper($to)];
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return '1.0000000';
         }
 

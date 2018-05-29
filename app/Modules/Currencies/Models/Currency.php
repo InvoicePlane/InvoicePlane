@@ -41,23 +41,19 @@ class Currency extends Model
 
     public function getInUseAttribute()
     {
-        if ($this->code == config('fi.baseCurrency'))
-        {
+        if ($this->code == config('fi.baseCurrency')) {
             return true;
         }
 
-        if (Client::where('currency_code', '=', $this->code)->count())
-        {
+        if (Client::where('currency_code', '=', $this->code)->count()) {
             return true;
         }
 
-        if (Quote::where('currency_code', '=', $this->code)->count())
-        {
+        if (Quote::where('currency_code', '=', $this->code)->count()) {
             return true;
         }
 
-        if (Invoice::where('currency_code', '=', $this->code)->count())
-        {
+        if (Invoice::where('currency_code', '=', $this->code)->count()) {
             return true;
         }
 

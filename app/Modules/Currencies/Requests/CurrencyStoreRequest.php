@@ -26,9 +26,9 @@ class CurrencyStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name'      => trans('fi.name'),
-            'code'      => trans('fi.code'),
-            'symbol'    => trans('fi.symbol'),
+            'name' => trans('fi.name'),
+            'code' => trans('fi.code'),
+            'symbol' => trans('fi.symbol'),
             'placement' => trans('fi.symbol_placement'),
         ];
     }
@@ -36,9 +36,9 @@ class CurrencyStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'      => 'required',
-            'code'      => 'required|unique:currencies',
-            'symbol'    => 'required',
+            'name' => 'required',
+            'code' => 'required|unique:currencies',
+            'symbol' => 'required',
             'placement' => 'required',
         ];
     }

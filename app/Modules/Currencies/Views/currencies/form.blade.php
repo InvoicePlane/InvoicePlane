@@ -3,9 +3,9 @@
 @section('content')
 
     <script type="text/javascript">
-        $(function () {
-            $('#name').focus();
-        });
+      $(function () {
+        $('#name').focus();
+      });
     </script>
 
     @if ($editMode == true)
