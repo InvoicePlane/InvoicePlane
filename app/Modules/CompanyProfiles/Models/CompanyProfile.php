@@ -31,23 +31,19 @@ class CompanyProfile extends Model
     {
         parent::boot();
 
-        static::saving(function ($companyProfile)
-        {
+        static::saving(function ($companyProfile) {
             event(new CompanyProfileSaving($companyProfile));
         });
 
-        static::creating(function ($companyProfile)
-        {
+        static::creating(function ($companyProfile) {
             event(new CompanyProfileCreating($companyProfile));
         });
 
-        static::created(function ($companyProfile)
-        {
+        static::created(function ($companyProfile) {
             event(new CompanyProfileCreated($companyProfile));
         });
 
-        static::deleted(function ($companyProfile)
-        {
+        static::deleted(function ($companyProfile) {
             event(new CompanyProfileDeleted($companyProfile));
         });
     }
@@ -59,23 +55,19 @@ class CompanyProfile extends Model
 
     public static function inUse($id)
     {
-        if (Invoice::where('company_profile_id', $id)->count())
-        {
+        if (Invoice::where('company_profile_id', $id)->count()) {
             return true;
         }
 
-        if (Quote::where('company_profile_id', $id)->count())
-        {
+        if (Quote::where('company_profile_id', $id)->count()) {
             return true;
         }
 
-        if (Expense::where('company_profile_id', $id)->count())
-        {
+        if (Expense::where('company_profile_id', $id)->count()) {
             return true;
         }
 
-        if (config('fi.defaultCompanyProfile') == $id)
-        {
+        if (config('fi.defaultCompanyProfile') == $id) {
             return true;
         }
 
@@ -106,26 +98,21 @@ class CompanyProfile extends Model
 
     public function getLogoUrlAttribute()
     {
-        if ($this->logo)
-        {
+        if ($this->logo) {
             return route('companyProfiles.logo', [$this->id]);
         }
     }
 
     public function logo($width = null, $height = null)
     {
-        if ($this->logo and file_exists(storage_path($this->logo)))
-        {
+        if ($this->logo and file_exists(storage_path($this->logo))) {
             $logo = base64_encode(file_get_contents(storage_path($this->logo)));
 
             $style = '';
 
-            if ($width and !$height)
-            {
+            if ($width and !$height) {
                 $style = 'width: ' . $width . 'px;';
-            }
-            elseif ($width and $height)
-            {
+            } elseif ($width and $height) {
                 $style = 'width: ' . $width . 'px; height: ' . $height . 'px;';
             }
 

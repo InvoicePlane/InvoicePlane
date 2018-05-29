@@ -48,8 +48,7 @@ class CompanyProfileController extends Controller
     {
         $input = $request->except('custom');
 
-        if ($request->hasFile('logo'))
-        {
+        if ($request->hasFile('logo')) {
             $logoFileName = $request->file('logo')->getClientOriginalName();
             $request->file('logo')->move(storage_path(), $logoFileName);
 
@@ -81,8 +80,7 @@ class CompanyProfileController extends Controller
     {
         $input = $request->except('custom');
 
-        if ($request->hasFile('logo'))
-        {
+        if ($request->hasFile('logo')) {
             $logoFileName = $request->file('logo')->getClientOriginalName();
             $request->file('logo')->move(storage_path(), $logoFileName);
 
@@ -101,12 +99,9 @@ class CompanyProfileController extends Controller
 
     public function delete($id)
     {
-        if (CompanyProfile::inUse($id))
-        {
+        if (CompanyProfile::inUse($id)) {
             $alert = trans('fi.cannot_delete_record_in_use');
-        }
-        else
-        {
+        } else {
             CompanyProfile::destroy($id);
 
             $alert = trans('fi.record_successfully_deleted');
@@ -133,14 +128,10 @@ class CompanyProfileController extends Controller
 
         $companyProfile->save();
 
-        if (file_exists(storage_path($companyProfile->logo)))
-        {
-            try
-            {
+        if (file_exists(storage_path($companyProfile->logo))) {
+            try {
                 unlink(storage_path($companyProfile->logo));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
 
             }
         }

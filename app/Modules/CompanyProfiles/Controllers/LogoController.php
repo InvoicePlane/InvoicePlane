@@ -23,8 +23,7 @@ class LogoController extends Controller
     {
         $companyProfile = CompanyProfile::find($id);
 
-        if ($companyProfile->logo)
-        {
+        if ($companyProfile->logo) {
             return response(file_get_contents(storage_path($companyProfile->logo)), 200)->header('Content-Type', 'image/jpeg');
         }
 
