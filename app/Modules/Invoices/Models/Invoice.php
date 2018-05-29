@@ -43,7 +43,7 @@ class Invoice extends Model
         'invoice_amounts.total',
         'invoice_amounts.balance',
         'invoice_amounts.tax',
-        'invoice_amounts.subtotal'
+        'invoice_amounts.subtotal',
     ];
 
     protected $dates = ['due_at', 'invoice_date'];
@@ -52,18 +52,15 @@ class Invoice extends Model
     {
         parent::boot();
 
-        static::creating(function ($invoice)
-        {
+        static::creating(function ($invoice) {
             event(new InvoiceCreating($invoice));
         });
 
-        static::created(function ($invoice)
-        {
+        static::created(function ($invoice) {
             event(new InvoiceCreated($invoice));
         });
 
-        static::deleted(function ($invoice)
-        {
+        static::deleted(function ($invoice) {
             event(new InvoiceDeleted($invoice));
         });
     }
@@ -98,12 +95,9 @@ class Invoice extends Model
     {
         $relationship = $this->morphMany('FI\Modules\Attachments\Models\Attachment', 'attachable');
 
-        if ($this->status_text == 'paid')
-        {
+        if ($this->status_text == 'paid') {
             $relationship->whereIn('client_visibility', [1, 2]);
-        }
-        else
-        {
+        } else {
             $relationship->where('client_visibility', 1);
         }
 
@@ -247,8 +241,7 @@ class Invoice extends Model
 
     public function getIsForeignCurrencyAttribute()
     {
-        if ($this->attributes['currency_code'] == config('fi.baseCurrency'))
-        {
+        if ($this->attributes['currency_code'] == config('fi.baseCurrency')) {
             return false;
         }
 
@@ -284,47 +277,37 @@ class Invoice extends Model
     {
         $taxes = [];
 
-        foreach ($this->items as $item)
-        {
-            if ($item->taxRate)
-            {
+        foreach ($this->items as $item) {
+            if ($item->taxRate) {
                 $key = $item->taxRate->name;
 
-                if (!isset($taxes[$key]))
-                {
-                    $taxes[$key]              = new \stdClass();
-                    $taxes[$key]->name        = $item->taxRate->name;
-                    $taxes[$key]->percent     = $item->taxRate->formatted_percent;
-                    $taxes[$key]->total       = $item->amount->tax_1;
+                if (!isset($taxes[$key])) {
+                    $taxes[$key] = new \stdClass();
+                    $taxes[$key]->name = $item->taxRate->name;
+                    $taxes[$key]->percent = $item->taxRate->formatted_percent;
+                    $taxes[$key]->total = $item->amount->tax_1;
                     $taxes[$key]->raw_percent = $item->taxRate->percent;
-                }
-                else
-                {
+                } else {
                     $taxes[$key]->total += $item->amount->tax_1;
                 }
             }
 
-            if ($item->taxRate2)
-            {
+            if ($item->taxRate2) {
                 $key = $item->taxRate2->name;
 
-                if (!isset($taxes[$key]))
-                {
-                    $taxes[$key]              = new \stdClass();
-                    $taxes[$key]->name        = $item->taxRate2->name;
-                    $taxes[$key]->percent     = $item->taxRate2->formatted_percent;
-                    $taxes[$key]->total       = $item->amount->tax_2;
+                if (!isset($taxes[$key])) {
+                    $taxes[$key] = new \stdClass();
+                    $taxes[$key]->name = $item->taxRate2->name;
+                    $taxes[$key]->percent = $item->taxRate2->formatted_percent;
+                    $taxes[$key]->total = $item->amount->tax_2;
                     $taxes[$key]->raw_percent = $item->taxRate2->percent;
-                }
-                else
-                {
+                } else {
                     $taxes[$key]->total += $item->amount->tax_2;
                 }
             }
         }
 
-        foreach ($taxes as $key => $tax)
-        {
+        foreach ($taxes as $key => $tax) {
             $taxes[$key]->total = CurrencyFormatter::format($tax->total, $this->currency);
         }
 
@@ -339,8 +322,7 @@ class Invoice extends Model
 
     public function scopeClientId($query, $clientId = null)
     {
-        if ($clientId)
-        {
+        if ($clientId) {
             $query->where('client_id', $clientId);
         }
 
@@ -369,8 +351,7 @@ class Invoice extends Model
 
     public function scopeCompanyProfileId($query, $companyProfileId)
     {
-        if ($companyProfileId)
-        {
+        if ($companyProfileId) {
             $query->where('company_profile_id', $companyProfileId);
         }
 
@@ -386,8 +367,7 @@ class Invoice extends Model
     {
         $statusCodes = [];
 
-        foreach ($statuses as $status)
-        {
+        foreach ($statuses as $status) {
             $statusCodes[] = InvoiceStatuses::getStatusId($status);
         }
 
@@ -396,8 +376,7 @@ class Invoice extends Model
 
     public function scopeStatus($query, $status = null)
     {
-        switch ($status)
-        {
+        switch ($status) {
             case 'draft':
                 $query->draft();
                 break;
@@ -449,16 +428,14 @@ class Invoice extends Model
 
     public function scopeKeywords($query, $keywords = null)
     {
-        if ($keywords)
-        {
+        if ($keywords) {
             $keywords = strtolower($keywords);
 
             $query->where(DB::raw('lower(number)'), 'like', '%' . $keywords . '%')
                 ->orWhere('invoices.invoice_date', 'like', '%' . $keywords . '%')
                 ->orWhere('due_at', 'like', '%' . $keywords . '%')
                 ->orWhere('summary', 'like', '%' . $keywords . '%')
-                ->orWhereIn('client_id', function ($query) use ($keywords)
-                {
+                ->orWhereIn('client_id', function ($query) use ($keywords) {
                     $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
                 });
         }

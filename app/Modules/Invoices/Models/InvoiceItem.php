@@ -28,25 +28,20 @@ class InvoiceItem extends Model
     {
         parent::boot();
 
-        static::saving(function($invoiceItem)
-        {
+        static::saving(function ($invoiceItem) {
             event(new InvoiceItemSaving($invoiceItem));
         });
 
-        static::saved(function($invoiceItem)
-        {
+        static::saved(function ($invoiceItem) {
             event(new InvoiceModified($invoiceItem->invoice));
         });
 
-        static::deleting(function ($invoiceItem)
-        {
+        static::deleting(function ($invoiceItem) {
             $invoiceItem->amount()->delete();
         });
 
-        static::deleted(function($invoiceItem)
-        {
-            if ($invoiceItem->invoice)
-            {
+        static::deleted(function ($invoiceItem) {
+            if ($invoiceItem->invoice) {
                 event(new InvoiceModified($invoiceItem->invoice));
             }
         });
@@ -112,8 +107,7 @@ class InvoiceItem extends Model
 
     public function scopeByDateRange($query, $from, $to)
     {
-        return $query->whereIn('invoice_id', function ($query) use ($from, $to)
-        {
+        return $query->whereIn('invoice_id', function ($query) use ($from, $to) {
             $query->select('id')
                 ->from('invoices')
                 ->where('invoice_date', '>=', $from)

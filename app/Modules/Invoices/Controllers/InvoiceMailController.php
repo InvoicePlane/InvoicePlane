@@ -40,15 +40,12 @@ class InvoiceMailController extends Controller
 
         $parser = new Parser($invoice);
 
-        if (!$invoice->is_overdue)
-        {
+        if (!$invoice->is_overdue) {
             $subject = $parser->parse('invoiceEmailSubject');
-            $body    = $parser->parse('invoiceEmailBody');
-        }
-        else
-        {
+            $body = $parser->parse('invoiceEmailBody');
+        } else {
             $subject = $parser->parse('overdueInvoiceEmailSubject');
-            $body    = $parser->parse('overdueInvoiceEmailBody');
+            $body = $parser->parse('overdueInvoiceEmailBody');
         }
 
         return view('invoices._modal_mail')
@@ -69,12 +66,9 @@ class InvoiceMailController extends Controller
 
         $mail = $this->mailQueue->create($invoice, $request->except('invoice_id'));
 
-        if ($this->mailQueue->send($mail->id))
-        {
+        if ($this->mailQueue->send($mail->id)) {
             event(new InvoiceEmailed($invoice));
-        }
-        else
-        {
+        } else {
             return response()->json(['errors' => [[$this->mailQueue->getError()]]], 400);
         }
     }

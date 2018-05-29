@@ -23,6 +23,13 @@ use FI\Support\Statuses\InvoiceStatuses;
 
 class InvoiceCalculate
 {
+    public function calculateAll()
+    {
+        foreach (Invoice::get() as $invoice) {
+            $this->calculate($invoice);
+        }
+    }
+
     public function calculate($invoice)
     {
         $invoiceItems = InvoiceItem::select('invoice_items.*',
@@ -42,16 +49,14 @@ class InvoiceCalculate
         $calculator->setTotalPaid($totalPaid);
         $calculator->setDiscount($invoice->discount);
 
-        if ($invoice->status_text == 'canceled')
-        {
+        if ($invoice->status_text == 'canceled') {
             $calculator->setIsCanceled(true);
         }
 
-        foreach ($invoiceItems as $invoiceItem)
-        {
-            $taxRatePercent       = ($invoiceItem->tax_rate_id) ? $invoiceItem->tax_rate_1_percent : 0;
-            $taxRate2Percent      = ($invoiceItem->tax_rate_2_id) ? $invoiceItem->tax_rate_2_percent : 0;
-            $taxRate2IsCompound   = ($invoiceItem->tax_rate_2_is_compound) ? 1 : 0;
+        foreach ($invoiceItems as $invoiceItem) {
+            $taxRatePercent = ($invoiceItem->tax_rate_id) ? $invoiceItem->tax_rate_1_percent : 0;
+            $taxRate2Percent = ($invoiceItem->tax_rate_2_id) ? $invoiceItem->tax_rate_2_percent : 0;
+            $taxRate2IsCompound = ($invoiceItem->tax_rate_2_is_compound) ? 1 : 0;
             $taxRate1CalculateVat = ($invoiceItem->tax_rate_1_calculate_vat) ? 1 : 0;
 
             $calculator->addItem($invoiceItem->id, $invoiceItem->quantity, $invoiceItem->price, $taxRatePercent, $taxRate2Percent, $taxRate2IsCompound, $taxRate1CalculateVat);
@@ -61,11 +66,10 @@ class InvoiceCalculate
 
         // Get the calculated values
         $calculatedItemAmounts = $calculator->getCalculatedItemAmounts();
-        $calculatedAmount      = $calculator->getCalculatedAmount();
+        $calculatedAmount = $calculator->getCalculatedAmount();
 
         // Update the item amount records.
-        foreach ($calculatedItemAmounts as $calculatedItemAmount)
-        {
+        foreach ($calculatedItemAmounts as $calculatedItemAmount) {
             $invoiceItemAmount = InvoiceItemAmount::firstOrNew(['item_id' => $calculatedItemAmount['item_id']]);
             $invoiceItemAmount->fill($calculatedItemAmount);
             $invoiceItemAmount->save();
@@ -77,25 +81,15 @@ class InvoiceCalculate
         $invoiceAmount->save();
 
         // Check to see if the invoice should be marked as paid.
-        if ($calculatedAmount['total'] > 0 and $calculatedAmount['balance'] <= 0 and $invoice->status_text != 'canceled')
-        {
+        if ($calculatedAmount['total'] > 0 and $calculatedAmount['balance'] <= 0 and $invoice->status_text != 'canceled') {
             $invoice->invoice_status_id = InvoiceStatuses::getStatusId('paid');
             $invoice->save();
         }
 
         // Check to see if the invoice was marked as paid but should no longer be.
-        if ($calculatedAmount['total'] > 0 and $calculatedAmount['balance'] > 0 and $invoice->invoice_status_id == InvoiceStatuses::getStatusId('paid'))
-        {
+        if ($calculatedAmount['total'] > 0 and $calculatedAmount['balance'] > 0 and $invoice->invoice_status_id == InvoiceStatuses::getStatusId('paid')) {
             $invoice->invoice_status_id = InvoiceStatuses::getStatusId('sent');
             $invoice->save();
-        }
-    }
-
-    public function calculateAll()
-    {
-        foreach (Invoice::get() as $invoice)
-        {
-            $this->calculate($invoice);
         }
     }
 }

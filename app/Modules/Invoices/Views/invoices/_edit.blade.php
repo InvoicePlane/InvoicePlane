@@ -10,7 +10,8 @@
     @endif
 
     @if ($invoice->quote()->count())
-        <span class="label label-info"><a href="{{ route('quotes.edit', [$invoice->quote->id]) }}" style="color: inherit;">{{ trans('fi.converted_from_quote') }} {{ $invoice->quote->number }}</a></span>
+        <span class="label label-info"><a href="{{ route('quotes.edit', [$invoice->quote->id]) }}"
+                                          style="color: inherit;">{{ trans('fi.converted_from_quote') }} {{ $invoice->quote->number }}</a></span>
     @endif
 
     <div class="pull-right">
@@ -20,7 +21,7 @@
         @if (config('fi.mailConfigured'))
             <a href="javascript:void(0)" id="btn-email-invoice" class="btn btn-default email-invoice"
                data-invoice-id="{{ $invoice->id }}" data-redirect-to="{{ route('invoices.edit', [$invoice->id]) }}"><i
-                    class="fa fa-envelope"></i> {{ trans('fi.email') }}</a>
+                        class="fa fa-envelope"></i> {{ trans('fi.email') }}</a>
         @endif
 
         <div class="btn-group">
@@ -33,29 +34,29 @@
                            data-invoice-id="{{ $invoice->id }}"
                            data-invoice-balance="{{ $invoice->amount->formatted_numeric_balance }}"
                            data-redirect-to="{{ route('invoices.edit', [$invoice->id]) }}"><i
-                                class="fa fa-credit-card"></i> {{ trans('fi.enter_payment') }}</a></li>
+                                    class="fa fa-credit-card"></i> {{ trans('fi.enter_payment') }}</a></li>
                 @endif
                 <li><a href="javascript:void(0)" id="btn-copy-invoice"><i
-                            class="fa fa-copy"></i> {{ trans('fi.copy') }}</a></li>
+                                class="fa fa-copy"></i> {{ trans('fi.copy') }}</a></li>
                 <li><a href="{{ route('clientCenter.public.invoice.show', [$invoice->url_key]) }}" target="_blank"><i
-                            class="fa fa-globe"></i> {{ trans('fi.public') }}</a></li>
+                                class="fa fa-globe"></i> {{ trans('fi.public') }}</a></li>
                 <li class="divider"></li>
                 <li><a href="{{ route('invoices.delete', [$invoice->id]) }}"
                        onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
-                            class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
+                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a></li>
             </ul>
         </div>
 
         <div class="btn-group">
             @if ($returnUrl)
                 <a href="{{ $returnUrl }}" class="btn btn-default"><i
-                        class="fa fa-backward"></i> {{ trans('fi.back') }}</a>
+                            class="fa fa-backward"></i> {{ trans('fi.back') }}</a>
             @endif
         </div>
 
         <div class="btn-group">
             <button type="button" class="btn btn-primary btn-save-invoice"><i
-                    class="fa fa-save"></i> {{ trans('fi.save') }}</button>
+                        class="fa fa-save"></i> {{ trans('fi.save') }}</button>
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
@@ -116,7 +117,7 @@
 
                             <div class="box-tools pull-right">
                                 <button class="btn btn-primary btn-sm" id="btn-add-item"><i
-                                        class="fa fa-plus"></i> {{ trans('fi.add_item') }}</button>
+                                            class="fa fa-plus"></i> {{ trans('fi.add_item') }}</button>
                             </div>
                         </div>
 
@@ -140,7 +141,8 @@
                                         {!! Form::hidden('invoice_id', $invoice->id) !!}
                                         {!! Form::hidden('id', '') !!}
                                         {!! Form::text('name', null, ['class' => 'form-control']) !!}<br>
-                                        <label><input type="checkbox" name="save_item_as_lookup" tabindex="999"> {{ trans('fi.save_item_as_lookup') }}</label>
+                                        <label><input type="checkbox" name="save_item_as_lookup"
+                                                      tabindex="999"> {{ trans('fi.save_item_as_lookup') }}</label>
                                     </td>
                                     <td>{!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 1]) !!}</td>
                                     <td>{!! Form::text('quantity', null, ['class' => 'form-control']) !!}</td>
@@ -164,7 +166,8 @@
                                         <td>{!! Form::select('tax_rate_2_id', $taxRates, $item->tax_rate_2_id, ['class' => 'form-control']) !!}</td>
                                         <td style="text-align: right; padding-right: 25px;">{{ $item->amount->formatted_subtotal }}</td>
                                         <td>
-                                            <a class="btn btn-xs btn-default btn-delete-invoice-item" href="javascript:void(0);"
+                                            <a class="btn btn-xs btn-default btn-delete-invoice-item"
+                                               href="javascript:void(0);"
                                                title="{{ trans('fi.delete') }}" data-item-id="{{ $item->id }}">
                                                 <i class="fa fa-times"></i>
                                             </a>
@@ -185,7 +188,8 @@
                 <div class="col-lg-12">
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab-additional" data-toggle="tab">{{ trans('fi.additional') }}</a></li>
+                            <li class="active"><a href="#tab-additional"
+                                                  data-toggle="tab">{{ trans('fi.additional') }}</a></li>
                             <li><a href="#tab-notes" data-toggle="tab">{{ trans('fi.notes') }}</a></li>
                             <li><a href="#tab-attachments" data-toggle="tab">{{ trans('fi.attachments') }}</a></li>
                             <li><a href="#tab-payments" data-toggle="tab">{{ trans('fi.payments') }}</a></li>

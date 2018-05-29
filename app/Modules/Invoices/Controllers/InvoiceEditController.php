@@ -19,8 +19,8 @@ use FI\Modules\Currencies\Models\Currency;
 use FI\Modules\CustomFields\Models\CustomField;
 use FI\Modules\Invoices\Models\Invoice;
 use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Modules\Invoices\Support\InvoiceTemplates;
 use FI\Modules\Invoices\Requests\InvoiceUpdateRequest;
+use FI\Modules\Invoices\Support\InvoiceTemplates;
 use FI\Modules\ItemLookups\Models\ItemLookup;
 use FI\Modules\TaxRates\Models\TaxRate;
 use FI\Support\DateFormatter;
@@ -49,9 +49,9 @@ class InvoiceEditController extends Controller
     public function update(InvoiceUpdateRequest $request, $id)
     {
         // Unformat the invoice dates.
-        $invoiceInput                 = $request->except(['items', 'custom', 'apply_exchange_rate']);
+        $invoiceInput = $request->except(['items', 'custom', 'apply_exchange_rate']);
         $invoiceInput['invoice_date'] = DateFormatter::unformat($invoiceInput['invoice_date']);
-        $invoiceInput['due_at']       = DateFormatter::unformat($invoiceInput['due_at']);
+        $invoiceInput['due_at'] = DateFormatter::unformat($invoiceInput['due_at']);
 
         // Save the invoice.
         $invoice = Invoice::find($id);
@@ -62,30 +62,25 @@ class InvoiceEditController extends Controller
         $invoice->custom->update(request('custom', []));
 
         // Save the items.
-        foreach ($request->input('items') as $item)
-        {
+        foreach ($request->input('items') as $item) {
             $item['apply_exchange_rate'] = request('apply_exchange_rate');
 
-            if (!isset($item['id']) or (!$item['id']))
-            {
+            if (!isset($item['id']) or (!$item['id'])) {
                 $saveItemAsLookup = $item['save_item_as_lookup'];
                 unset($item['save_item_as_lookup']);
 
                 InvoiceItem::create($item);
 
-                if ($saveItemAsLookup)
-                {
+                if ($saveItemAsLookup) {
                     ItemLookup::create([
-                        'name'          => $item['name'],
-                        'description'   => $item['description'],
-                        'price'         => $item['price'],
-                        'tax_rate_id'   => $item['tax_rate_id'],
+                        'name' => $item['name'],
+                        'description' => $item['description'],
+                        'price' => $item['price'],
+                        'tax_rate_id' => $item['tax_rate_id'],
                         'tax_rate_2_id' => $item['tax_rate_2_id'],
                     ]);
                 }
-            }
-            else
-            {
+            } else {
                 $invoiceItem = InvoiceItem::find($item['id']);
                 $invoiceItem->fill($item);
                 $invoiceItem->save();

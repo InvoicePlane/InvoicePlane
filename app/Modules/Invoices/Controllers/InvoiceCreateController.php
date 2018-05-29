@@ -35,7 +35,7 @@ class InvoiceCreateController extends Controller
     {
         $input = $request->except('client_name');
 
-        $input['client_id']    = Client::firstOrCreateByUniqueName($request->input('client_name'))->id;
+        $input['client_id'] = Client::firstOrCreateByUniqueName($request->input('client_name'))->id;
         $input['invoice_date'] = DateFormatter::unformat($input['invoice_date']);
 
         $invoice = Invoice::create($input);

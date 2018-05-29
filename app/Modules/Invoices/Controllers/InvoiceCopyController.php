@@ -44,28 +44,27 @@ class InvoiceCopyController extends Controller
         $fromInvoice = Invoice::find($request->input('invoice_id'));
 
         $toInvoice = Invoice::create([
-            'client_id'          => $client->id,
+            'client_id' => $client->id,
             'company_profile_id' => $request->input('company_profile_id'),
-            'invoice_date'       => DateFormatter::unformat(request('invoice_date')),
-            'group_id'           => $request->input('group_id'),
-            'currency_code'      => $fromInvoice->currency_code,
-            'exchange_rate'      => $fromInvoice->exchange_rate,
-            'terms'              => $fromInvoice->terms,
-            'footer'             => $fromInvoice->footer,
-            'template'           => $fromInvoice->template,
-            'summary'            => $fromInvoice->summary,
-            'discount'           => $fromInvoice->discount,
+            'invoice_date' => DateFormatter::unformat(request('invoice_date')),
+            'group_id' => $request->input('group_id'),
+            'currency_code' => $fromInvoice->currency_code,
+            'exchange_rate' => $fromInvoice->exchange_rate,
+            'terms' => $fromInvoice->terms,
+            'footer' => $fromInvoice->footer,
+            'template' => $fromInvoice->template,
+            'summary' => $fromInvoice->summary,
+            'discount' => $fromInvoice->discount,
         ]);
 
-        foreach ($fromInvoice->items as $item)
-        {
+        foreach ($fromInvoice->items as $item) {
             InvoiceItem::create([
-                'invoice_id'    => $toInvoice->id,
-                'name'          => $item->name,
-                'description'   => $item->description,
-                'quantity'      => $item->quantity,
-                'price'         => $item->price,
-                'tax_rate_id'   => $item->tax_rate_id,
+                'invoice_id' => $toInvoice->id,
+                'name' => $item->name,
+                'description' => $item->description,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'tax_rate_id' => $item->tax_rate_id,
                 'tax_rate_2_id' => $item->tax_rate_2_id,
                 'display_order' => $item->display_order,
             ]);

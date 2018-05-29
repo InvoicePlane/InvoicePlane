@@ -29,36 +29,30 @@ class InvoiceCalculator extends Calculator implements PayableInterface
     }
 
     /**
-     * Set the total paid amount.
-     *
-     * @param float $totalPaid
-     */
-    public function setTotalPaid($totalPaid)
-    {
-        if ($totalPaid)
-        {
-            $this->calculatedAmount['paid'] = $totalPaid;
-        }
-        else
-        {
-            $this->calculatedAmount['paid'] = 0;
-        }
-    }
-
-    /**
      * Calculate additional properties.
      *
      * @return void
      */
     public function calculatePayments()
     {
-        if (!$this->isCanceled)
-        {
+        if (!$this->isCanceled) {
             $this->calculatedAmount['balance'] = round($this->calculatedAmount['total'], 2) - $this->calculatedAmount['paid'];
-        }
-        else
-        {
+        } else {
             $this->calculatedAmount['balance'] = 0;
+        }
+    }
+
+    /**
+     * Set the total paid amount.
+     *
+     * @param float $totalPaid
+     */
+    public function setTotalPaid($totalPaid)
+    {
+        if ($totalPaid) {
+            $this->calculatedAmount['paid'] = $totalPaid;
+        } else {
+            $this->calculatedAmount['paid'] = 0;
         }
     }
 }

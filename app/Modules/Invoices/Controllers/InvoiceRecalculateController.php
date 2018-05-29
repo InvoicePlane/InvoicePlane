@@ -28,12 +28,9 @@ class InvoiceRecalculateController extends Controller
 
     public function recalculate()
     {
-        try
-        {
+        try {
             $this->invoiceCalculate->calculateAll();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
 
