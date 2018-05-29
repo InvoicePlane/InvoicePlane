@@ -27,8 +27,7 @@ class Addon extends Model
     {
         $migrations = new Migrations();
 
-        if ($migrations->getPendingMigrations(addon_path($this->path . '/Migrations')))
-        {
+        if ($migrations->getPendingMigrations(addon_path($this->path . '/Migrations'))) {
             return true;
         }
 

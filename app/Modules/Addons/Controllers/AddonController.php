@@ -36,6 +36,25 @@ class AddonController extends Controller
             ->with('addons', Addon::orderBy('name')->get());
     }
 
+    private function refreshList()
+    {
+        $addons = Directory::listDirectories(addon_path());
+
+        foreach ($addons as $addon) {
+            $setupClass = 'Addons\\' . $addon . '\Setup';
+
+            $setupClass = new $setupClass;
+
+            $addonRecord = $setupClass->properties;
+
+            if (!Addon::where('name', $addonRecord['name'])->count()) {
+                $addonRecord['path'] = $addon;
+
+                Addon::create($addonRecord);
+            }
+        }
+    }
+
     public function install($id)
     {
         $addon = Addon::find($id);
@@ -65,26 +84,5 @@ class AddonController extends Controller
         Addon::destroy($id);
 
         return redirect()->route('addons.index');
-    }
-
-    private function refreshList()
-    {
-        $addons = Directory::listDirectories(addon_path());
-
-        foreach ($addons as $addon)
-        {
-            $setupClass = 'Addons\\' . $addon . '\Setup';
-
-            $setupClass = new $setupClass;
-
-            $addonRecord = $setupClass->properties;
-
-            if (!Addon::where('name', $addonRecord['name'])->count())
-            {
-                $addonRecord['path'] = $addon;
-
-                Addon::create($addonRecord);
-            }
-        }
     }
 }
