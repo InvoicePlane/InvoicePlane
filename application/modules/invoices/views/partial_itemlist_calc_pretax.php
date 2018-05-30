@@ -64,7 +64,7 @@
         return n;
     }
 
-    function calcItem(id)
+    function calc_item(id)
     {
         var quantity = toNum(document.getElementById("quantity_" + id).value);
         var price = toNum(document.getElementById("price_" + id).value);

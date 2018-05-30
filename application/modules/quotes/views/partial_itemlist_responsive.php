@@ -294,10 +294,10 @@
 <div class="row">
     <div class="col-xs-12 col-md-4">
         <div class="btn-group">
-            <a href="#" class="btn_add_row btn btn-sm btn-default">
+            <a href="javascript:void();" class="btn_add_row btn btn-sm btn-default">
               <i class="fa fa-plus"></i><?php _trans('add_new_row'); ?>
             </a>
-            <a href="#" class="btn_add_product btn btn-sm btn-default">
+            <a href="javascript:void();" class="btn_add_product btn btn-sm btn-default">
               <i class="fa fa-database"></i><?php _trans('add_product'); ?>
             </a>
         </div>

@@ -3,6 +3,12 @@ $cv = $this->controller->view_data["custom_values"];
 ?>
 
 <script>
+    function add_item() {
+        var uid = Math.floor(Math.random() * 10000);
+        $('#new_row').clone().appendTo('#item_table').removeAttr('id').attr('id', 'n' + uid).addClass('item');
+        $("#n" + uid).html($("#n" + uid).html().replace(/UNDEF/g, uid)).show();
+    }
+
     $(function () {
         $('.item-task-id').each(function () {
             // Disable client chaning if at least one item already has a task id assigned
@@ -26,13 +32,11 @@ $cv = $this->controller->view_data["custom_values"];
         });
 
         $('.btn_add_row').click(function () {
-            var uid = Math.floor(Math.random() * 10000);
-            $('#new_row').clone().appendTo('#item_table').removeAttr('id').attr('id', 'n' + uid).addClass('item').show();
-            $("#n" + uid).html( $("#n" + uid).html().replace( /UNDEF/g, uid ) );
+            add_item();
         });
 
         <?php if (!$items) { ?>
-        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            add_item();
         <?php } ?>
 
         $('#btn_create_recurring').click(function () {

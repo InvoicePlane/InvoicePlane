@@ -43,17 +43,15 @@
                     // Set default tax rate id if empty
                     if (!items[key].tax_rate_id) items[key].tax_rate_id = 0;
 
-                    if ($('#item_table tbody:last input[name=item_name]').val() !== '') {
-                        var uid = Math.floor(Math.random() * 10000);
-                        $('#new_row').clone().appendTo('#item_table').removeAttr('id').attr('id', 'n' + uid).addClass('item').show();
-                        $("#n" + uid).html( $("#n" + uid).html().replace( /UNDEF/g, uid ) );
+                    if ($('#item_table .item:last input[name=item_name]').val() !== '') {
+                        add_item();
                     }
-                    $('#item_table tbody:last input[name=item_task_id]').val(items[key].task_id);
-                    $('#item_table tbody:last input[name=item_name]').val(items[key].task_name);
-                    $('#item_table tbody:last textarea[name=item_description]').val(items[key].task_description);
-                    $('#item_table tbody:last input[name=item_price]').val(items[key].task_price);
-                    $('#item_table tbody:last input[name=item_quantity]').val('1');
-                    $('#item_table tbody:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
+                    $('#item_table .item:last input[name=item_task_id]').val(items[key].task_id);
+                    $('#item_table .item:last input[name=item_name]').val(items[key].task_name);
+                    $('#item_table .item:last textarea[name=item_description]').val(items[key].task_description);
+                    $('#item_table .item:last input[name=item_price]').val(items[key].task_price);
+                    $('#item_table .item:last input[name=item_quantity]').val('1');
+                    $('#item_table .item:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
 
                     $('#modal-choose-items').modal('hide');
                     $('#invoice_change_client').hide();

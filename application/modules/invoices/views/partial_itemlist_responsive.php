@@ -5,7 +5,7 @@
 
 <div class="row">
     <div id="item_table" class="items table col-xs-12">
-        <div id="new_row" class="form-group details-box" style="display: none;">
+        <div id="new_row" class="form-group details-box" onshow="calc_item(UNDEF)" style="display: none;">
             <div class="row">
                 <div class="col-xs-12 col-sm-7 col-md-6 col-lg-5">
                     <div class="row">
@@ -50,11 +50,14 @@
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
                             <div class="input-group">
-                                <label for="item_quantity" class="input-group-addon ig-addon-aligned"><?php _trans('quantity'); ?></label>
-                                <input id="quantity_UNDEF" type="text" name="item_quantity" class="input-sm form-control" onchange="calcItem(UNDEF)" value="">
+                                <label for="item_quantity" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('quantity'); ?></label>
+                                <input  id="quantity_UNDEF" type="text" name="item_quantity"
+                                        class="input-sm form-control" onchange="calc_item(UNDEF)" value="">
                             </div>
                             <div class="input-group">
-                                <label for="item_product_unit_id" class="input-group-addon ig-addon-aligned"><?php _trans('product_unit'); ?></label>
+                                <label for="item_product_unit_id" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('product_unit'); ?></label>
                                 <select name="item_product_unit_id" class="form-control input-sm">
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($units as $unit) { ?>
@@ -67,28 +70,43 @@
                             <div class="row">
                                 <div class="col-xs-9">
                                     <div class="input-group">
-                                        <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
-                                        <input id="price_UNDEF" type="text" name="item_price" class="input-sm form-control" onchange="calcItem(UNDEF)" value="">
+                                        <label for="item_price" class="input-group-addon ig-addon-aligned">
+                                            <?php _trans('price'); ?></label>
+                                        <input  id="price_UNDEF" type="text" name="item_price"
+                                                class="input-sm form-control" onchange="calc_item(UNDEF)" value="">
+                                        <div class="input-group-addon">
+                                            <?php echo get_setting('currency_symbol'); ?>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
                                     <div class="input-group">
-                                        <select id="price_type_UNDEF" name="item_price_isgross" aria-label="<?php _trans('price_type'); ?>" class="input-sm form-control" onchange="calcItem(UNDEF)">
+                                        <select id="price_type_UNDEF" name="item_price_isgross"
+                                                aria-label="<?php _trans('price_type'); ?>"
+                                                class="input-sm form-control" onchange="calc_item(UNDEF)">
                                              <option value="0"><?php _trans('price_is_net'); ?></option>
-                                             <option value="1" <?php check_select(get_setting('default_item_price_type'), 1); ?>><?php _trans('price_is_gross'); ?></option>
+                                             <option value="1" <?php check_select(get_setting('default_item_price_type'), 1); ?>>
+                                                 <?php _trans('price_is_gross'); ?></option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-group">
-                                <label for="item_discount_amount" class="input-group-addon ig-addon-aligned"><?php _trans('item_discount'); ?></label>
-                                <input id="discount_UNDEF" type="text" name="item_discount_amount" class="input-sm form-control" onchange="calcItem(UNDEF)"
-                                       value="" data-toggle="tooltip" data-placement="bottom"
-                                       title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
+                                <label for="item_discount_amount" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('item_discount'); ?></label>
+                                <input  id="discount_UNDEF" type="text" name="item_discount_amount"
+                                        class="input-sm form-control" onchange="calc_item(UNDEF)"
+                                        value="" data-toggle="tooltip" data-placement="bottom"
+                                        title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
+                                <div class="input-group-addon">
+                                    <?php echo get_setting('currency_symbol'); ?>
+                                </div>
                             </div>
                             <div class="input-group">
-                                <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
-                                <select id="tax_rate_UNDEF" name="item_tax_rate_id" class="form-control input-sm" onchange="calcItem(UNDEF)">
+                                <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('tax_rate'); ?></label>
+                                <select id="tax_rate_UNDEF" name="item_tax_rate_id"
+                                        class="form-control input-sm" onchange="calc_item(UNDEF)">
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($tax_rates as $tax_rate) { ?>
                                         <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -100,10 +118,10 @@
                             </div>
                         </div>
 
-                    <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
-                    <input type="hidden" name="item_id" value="">
-                    <input type="hidden" name="item_product_id" value="">
-                    <input type="hidden" name="item_task_id" class="item-task-id" value="">
+                        <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
+                        <input type="hidden" name="item_id" value="">
+                        <input type="hidden" name="item_product_id" value="">
+                        <input type="hidden" name="item_task_id" class="item-task-id" value="">
 
                         <div class="col-xs-12 col-md-6 text-right">
                             <div class="row mb-1">
@@ -167,14 +185,14 @@
                             <?php } ?>
 
                             <div class="row mb-1">
-                                <b>
+                                <strong>
                                     <div class="col-xs-9 col-sm-8">
                                         <?php _trans('total'); ?>:
                                     </div>
                                     <div id="total_UNDEF" class="col-xs-3 col-sm-4">
                                         <span name="item_total"></span>
                                     </div>
-                                </b>
+                                </strong>
                             </div>
 
                         </div>
@@ -189,10 +207,12 @@
                 <div class="col-xs-12 col-sm-7 col-md-6 col-lg-5">
                     <div class="row">
                         <div class="col-xs-12 col-sm-1">
-                            <button type="button" class="btn btn-link up" title="<?php _trans('move_up'); ?>"<?=$invoice_disabled;?>>
+                            <button type="button" class="btn btn-link up"
+                                    title="<?php _trans('move_up'); ?>"<?=$invoice_disabled;?>>
                                 <i class="fa fa-chevron-up"></i>
                             </button>
-                            <button type="button" class="btn btn-link down" title="<?php _trans('move_down'); ?>"<?=$invoice_disabled;?>>
+                            <button type="button" class="btn btn-link down"
+                                    title="<?php _trans('move_down'); ?>"<?=$invoice_disabled;?>>
                                 <i class="fa fa-chevron-down"></i>
                             </button>
                             <?php if ($invoice->invoice_is_recurring) :
@@ -210,7 +230,8 @@
                                 <input type="hidden" name="item_is_recurring" value="<?php echo $item_recurrence_state ?>"/>
                             <?php endif; ?>
                             <?php if ($invoice->is_read_only != 1): ?>
-                                <button type="button" class="btn_delete_item btn btn-link" title="<?php _trans('delete'); ?>" data-item-id="<?php echo $item->item_id; ?>">
+                                <button type="button" class="btn_delete_item btn btn-link"
+                                        title="<?php _trans('delete'); ?>" data-item-id="<?php echo $item->item_id; ?>">
                                     <i class="fa fa-trash-o text-danger"></i>
                                 </button>
                             <?php endif; ?>
@@ -219,22 +240,29 @@
                         <div class="col-xs-12 col-sm-11">
                             <input type="hidden" name="invoice_id" value="<?=$invoice_id;?>">
                             <input type="hidden" name="item_id" value="<?=$item->item_id;?>"<?=$invoice_disabled;?>>
-                            <input type="hidden" name="item_task_id" class="item-task-id" value="<?php if ($item->item_task_id) echo $item->item_task_id; ?>">
+                            <input type="hidden" name="item_task_id" class="item-task-id"
+                                    value="<?php if ($item->item_task_id) echo $item->item_task_id; ?>">
                             <input type="hidden" name="item_product_id" value="<?=$item->item_product_id;?>">
 
                             <div class="input-group">
-                                <label for="item_name" class="input-group-addon ig-addon-aligned"><?php _trans('item'); ?></label>
-                                <input type="text" name="item_name" class="input-sm form-control" value="<?=_htmlsc($item->item_name);?>"<?=$invoice_disabled;?>>
+                                <label for="item_name" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('item'); ?></label>
+                                <input type="text" name="item_name" class="input-sm form-control"
+                                        value="<?=_htmlsc($item->item_name);?>"<?=$invoice_disabled;?>>
                             </div>
                             <?php if ($invoice->sumex_id == "") : ?>
                                 <div class="input-group">
-                                    <label for="item_description" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
-                                    <textarea name="item_description" class="input-sm form-control h135rem"<?=$invoice_disabled;?>><?=htmlsc($item->item_description);?></textarea>
+                                    <label for="item_description" class="input-group-addon ig-addon-aligned">
+                                        <?php _trans('description'); ?></label>
+                                    <textarea name="item_description" class="input-sm form-control h135rem"<?=$invoice_disabled;?>>
+                                        <?=htmlsc($item->item_description);?></textarea>
                                 </div>
                             <?php else: ?>
                                 <div class="input-group">
-                                    <label for="item_date" class="input-group-addon ig-addon-aligned"><?php _trans('date'); ?></label>
-                                    <input type="text" name="item_date" class="input-sm form-control datepicker" value="<?php echo format_date($item->item_date);?>"<?=$invoice_disabled;?>>
+                                    <label for="item_date" class="input-group-addon ig-addon-aligned">
+                                        <?php _trans('date'); ?></label>
+                                    <input type="text" name="item_date" class="input-sm form-control datepicker"
+                                            value="<?php echo format_date($item->item_date);?>"<?=$invoice_disabled;?>>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -245,11 +273,15 @@
                     <div class="row">
                         <div class="col-xs-12 col-lg-6">
                             <div class="input-group">
-                                <label for="item_quantity" class="input-group-addon ig-addon-aligned"><?php _trans('quantity'); ?></label>
-                                <input type="text" id="quantity_<?=$item->item_id?>" name="item_quantity" class="input-sm form-control" onchange="calcItem(<?=$item->item_id?>)" value="<?=format_amount($item->item_quantity);?>"<?=$invoice_disabled;?>>
+                                <label for="item_quantity" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('quantity'); ?></label>
+                                <input type="text" id="quantity_<?=$item->item_id?>" name="item_quantity"
+                                        class="input-sm form-control" onchange="calc_item(<?=$item->item_id?>)"
+                                        value="<?=format_amount($item->item_quantity);?>"<?=$invoice_disabled;?>>
                             </div>
                             <div class="input-group">
-                                <label for="item_product_unit_id" class="input-group-addon ig-addon-aligned"><?php _trans('product_unit'); ?></label>
+                                <label for="item_product_unit_id" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('product_unit'); ?></label>
                                 <select name="item_product_unit_id" class="form-control input-sm"<?=$invoice_disabled;?>>
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($units as $unit) { ?>
@@ -263,30 +295,43 @@
                             <div class="row">
                                 <div class="col-xs-8">
                                     <div class="input-group">
-                                        <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
-                                        <input type="text" id="price_<?=$item->item_id?>" name="item_price" class="input-sm form-control" onchange="calcItem(<?=$item->item_id?>)" value="<?php echo format_amount($item->item_price); ?>"<?=$invoice_disabled;?>>
+                                        <label for="item_price" class="input-group-addon ig-addon-aligned">
+                                            <?php _trans('price'); ?></label>
+                                        <input type="text" id="price_<?=$item->item_id?>" name="item_price"
+                                                class="input-sm form-control" onchange="calc_item(<?=$item->item_id?>)"
+                                                value="<?php echo format_amount($item->item_price); ?>"<?=$invoice_disabled;?>>
+                                        <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                                     </div>
                                 </div>
                                 <div class="col-xs-4">
                                     <div class="input-group">
-                                        <select id="price_type_<?=$item->item_id?>" name="item_price_isgross" onchange="calcItem(<?=$item->item_id?>)" aria-label="<?php _trans('price_type'); ?>" class="input-sm form-control"<?=$invoice_disabled;?>>
+                                        <select id="price_type_<?=$item->item_id?>" name="item_price_isgross"
+                                                onchange="calc_item(<?=$item->item_id?>)" aria-label="<?php _trans('price_type'); ?>"
+                                                class="input-sm form-control"<?=$invoice_disabled;?>>
                                              <option value="0"><?php _trans('price_is_net'); ?></option>
-                                             <option value="1" <?php check_select($item->item_price_isgross, 1); ?>><?php _trans('price_is_gross'); ?></option>
+                                             <option value="1" <?php check_select($item->item_price_isgross, 1); ?>>
+                                                 <?php _trans('price_is_gross'); ?></option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-group">
-                                <label for="item_discount_amount" class="input-group-addon ig-addon-aligned"><?php _trans('item_discount'); ?></label>
-                                <input type="text" id="discount_<?=$item->item_id?>" name="item_discount_amount" class="input-sm form-control"
+                                <label for="item_discount_amount" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('item_discount'); ?></label>
+                                <input type="text" id="discount_<?=$item->item_id?>" name="item_discount_amount"
+                                       class="input-sm form-control"
                                        value="<?php echo format_amount($item->item_discount_amount); ?>"
-                                       data-toggle="tooltip" data-placement="bottom" onchange="calcItem(<?=$item->item_id?>)"
+                                       data-toggle="tooltip" data-placement="bottom" onchange="calc_item(<?=$item->item_id?>)"
                                        title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>"<?=$invoice_disabled;?>>
-                                <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                <div class="input-group-addon">
+                                    <?php echo get_setting('currency_symbol'); ?>
+                                </div>
                             </div>
                             <div class="input-group">
-                                <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
-                                <select id="tax_rate_<?=$item->item_id?>" name="item_tax_rate_id" class="form-control input-sm" onchange="calcItem(<?=$item->item_id?>)"<?=$invoice_disabled;?>>
+                                <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned">
+                                    <?php _trans('tax_rate'); ?></label>
+                                <select id="tax_rate_<?=$item->item_id?>" name="item_tax_rate_id"
+                                        class="form-control input-sm" onchange="calc_item(<?=$item->item_id?>)"<?=$invoice_disabled;?>>
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($tax_rates as $tax_rate) { ?>
                                         <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -319,14 +364,14 @@
     <div class="col-xs-12 col-md-4">
         <div class="btn-group">
             <?php if ($invoice->is_read_only != 1) { ?>
-                <a href="#" class="btn_add_row btn btn-sm btn-default">
+                <a href="javascript:void(0);" class="btn_add_row btn btn-sm btn-default">
                     <i class="fa fa-plus"></i> <?php _trans('add_new_row'); ?>
                 </a>
-                <a href="#" class="btn_add_product btn btn-sm btn-default">
+                <a href="javascript:void(0);" class="btn_add_product btn btn-sm btn-default">
                     <i class="fa fa-database"></i>
                     <?php _trans('add_product'); ?>
                 </a>
-                <a href="#" class="btn_add_task btn btn-sm btn-default">
+                <a href="javascript:void(0);" class="btn_add_task btn btn-sm btn-default">
                     <i class="fa fa-database"></i> <?php _trans('add_task'); ?>
                 </a>
             <?php } ?>

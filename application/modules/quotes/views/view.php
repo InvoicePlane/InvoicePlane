@@ -2,6 +2,11 @@
 $cv = $this->controller->view_data["custom_values"];
 ?>
 <script>
+    function add_item() {
+       var uid = Math.floor(Math.random() * 10000);
+       $('#new_row').clone().appendTo('#item_table').removeAttr('id').attr('id', 'n' + uid).addClass('item');
+       $("#n" + uid).html($("#n" + uid).html().replace(/UNDEF/g, uid)).show();
+   }
 
     $(function () {
         $('.btn_add_product').click(function () {
@@ -12,7 +17,7 @@ $cv = $this->controller->view_data["custom_values"];
         });
 
         $('.btn_add_row').click(function () {
-            $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            add_item();
         });
 
         $('#quote_change_client').click(function () {
@@ -23,7 +28,7 @@ $cv = $this->controller->view_data["custom_values"];
         });
 
         <?php if (!$items) { ?>
-        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            add_item();
         <?php } ?>
 
         $('#btn_save_quote').click(function () {
