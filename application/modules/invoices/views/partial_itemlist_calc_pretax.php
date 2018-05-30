@@ -60,7 +60,7 @@
 
     function toStr(n) {
         'use strict';
-        n = n.toFixed(2).toString().replace(/\./g, '<?=get_setting('decimal_point')?>');
+        n = n.toFixed(2).toString().replace(/\./g, '<?=get_setting('decimal_point')?>') + "<?=get_setting('currency_symbol')?>";
         return n;
     }
 
@@ -70,7 +70,13 @@
         var price = toNum(document.getElementById("price_" + id).value);
         var pricetype = document.getElementById("price_type_" + id).value;
         var discount = toNum(document.getElementById("discount_" + id).value);
-        var taxrate = tax_rates[document.getElementById("tax_rate_" + id).value] / 100;
+
+        var tid = document.getElementById("tax_rate_" + id).value;
+        if (typeof tax_rates[tid] !== 'undefined' && tax_rates[tid] !== null) {
+            var taxrate = tax_rates[tid] / 100
+        } else {
+            var taxrate = 0;
+        }
 
         if (pricetype == "1") {
             var subtotal = price * quantity / (1 + taxrate);

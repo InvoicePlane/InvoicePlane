@@ -60,7 +60,7 @@
 
     function toStr(n) {
         'use strict';
-        n = n.toFixed(2).toString().replace(/\./g, '<?=get_setting('decimal_point')?>');
+        n = n.toFixed(2).toString().replace(/\./g, '<?=get_setting('decimal_point')?>') + "<?=get_setting('currency_symbol')?>";
         return n;
     }
 
