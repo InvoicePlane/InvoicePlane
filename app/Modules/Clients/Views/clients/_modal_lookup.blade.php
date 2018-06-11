@@ -8,7 +8,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">{{ trans('ip.change_client') }}</h4>
+                <h4 class="modal-title">@lang('ip.change_client')</h4>
             </div>
             <div class="modal-body">
 
@@ -17,7 +17,7 @@
                 <form class="form-horizontal">
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('ip.client') }}</label>
+                        <label class="col-sm-3 control-label">@lang('ip.client')</label>
 
                         <div class="col-sm-9">
                             {!! Form::text('client_name', null, ['id' => 'change_client_name', 'class' =>
@@ -29,8 +29,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.cancel') }}</button>
-                <button type="button" id="btn-submit-change-client" class="btn btn-primary">{{ trans('ip.save') }}
+                <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
+                <button type="button" id="btn-submit-change-client" class="btn btn-primary">@lang('ip.save')
                 </button>
             </div>
         </div>

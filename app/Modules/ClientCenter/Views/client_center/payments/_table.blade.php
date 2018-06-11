@@ -1,11 +1,11 @@
 <table class="table table-hover">
     <thead>
     <tr>
-        <th>{{ trans('ip.date') }}</th>
-        <th>{{ trans('ip.invoice') }}</th>
-        <th>{{ trans('ip.summary') }}</th>
-        <th>{{ trans('ip.amount') }}</th>
-        <th>{{ trans('ip.payment_method') }}</th>
+        <th>@lang('ip.date')</th>
+        <th>@lang('ip.invoice')</th>
+        <th>@lang('ip.summary')</th>
+        <th>@lang('ip.amount')</th>
+        <th>@lang('ip.payment_method')</th>
     </tr>
     </thead>
     <tbody>

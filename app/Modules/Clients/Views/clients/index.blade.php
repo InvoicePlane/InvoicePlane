@@ -27,24 +27,24 @@
 @section('content')
 
     <section class="content-header">
-        <h1 class="pull-left">{{ trans('ip.clients') }}</h1>
+        <h1 class="pull-left">@lang('ip.clients')</h1>
 
         <div class="pull-right">
 
             <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i
-                        class="fa fa-trash"></i> {{ trans('ip.delete') }}</a>
+                        class="fa fa-trash"></i> @lang('ip.delete')</a>
 
             <div class="btn-group">
                 <a href="{{ route('clients.index', ['status' => 'active']) }}"
-                   class="btn btn-default @if ($status == 'active') active @endif">{{ trans('ip.active') }}</a>
+                   class="btn btn-default @if ($status == 'active') active @endif">@lang('ip.active')</a>
                 <a href="{{ route('clients.index', ['status' => 'inactive']) }}"
-                   class="btn btn-default @if ($status == 'inactive') active @endif">{{ trans('ip.inactive') }}</a>
+                   class="btn btn-default @if ($status == 'inactive') active @endif">@lang('ip.inactive')</a>
                 <a href="{{ route('clients.index') }}"
-                   class="btn btn-default @if ($status == 'all') active @endif">{{ trans('ip.all') }}</a>
+                   class="btn btn-default @if ($status == 'all') active @endif">@lang('ip.all')</a>
             </div>
 
             <a href="{{ route('clients.create') }}" class="btn btn-primary btn-margin-left"><i
-                        class="fa fa-plus"></i> {{ trans('ip.new') }}</a>
+                        class="fa fa-plus"></i> @lang('ip.new')</a>
         </div>
 
         <div class="clearfix"></div>
@@ -73,7 +73,7 @@
                                 <th>{!! Sortable::link('phone', trans('ip.phone_number')) !!}</th>
                                 <th style="text-align: right;">{!! Sortable::link('balance', trans('ip.balance')) !!}</th>
                                 <th>{!! Sortable::link('active', trans('ip.active')) !!}</th>
-                                <th>{{ trans('ip.options') }}</th>
+                                <th>@lang('ip.options')</th>
                             </tr>
                             </thead>
 
@@ -92,28 +92,28 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
                                                     data-toggle="dropdown">
-                                                {{ trans('ip.options') }} <span class="caret"></span>
+                                                @lang('ip.options') <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li><a href="{{ route('clients.show', [$client->id]) }}"
                                                        id="view-client-{{ $client->id }}"><i
-                                                                class="fa fa-search"></i> {{ trans('ip.view') }}</a>
+                                                                class="fa fa-search"></i> @lang('ip.view')</a>
                                                 </li>
                                                 <li><a href="{{ route('clients.edit', [$client->id]) }}"
                                                        id="edit-client-{{ $client->id }}"><i
-                                                                class="fa fa-edit"></i> {{ trans('ip.edit') }}</a></li>
+                                                                class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                                                 <li><a href="javascript:void(0)" class="create-quote"
                                                        data-unique-name="{{ $client->unique_name }}"><i
-                                                                class="fa fa-file-text-o"></i> {{ trans('ip.create_quote') }}
+                                                                class="fa fa-file-text-o"></i> @lang('ip.create_quote')
                                                     </a></li>
                                                 <li><a href="javascript:void(0)" class="create-invoice"
                                                        data-unique-name="{{ $client->unique_name }}"><i
-                                                                class="fa fa-file-text"></i> {{ trans('ip.create_invoice') }}
+                                                                class="fa fa-file-text"></i> @lang('ip.create_invoice')
                                                     </a></li>
                                                 <li><a href="{{ route('clients.delete', [$client->id]) }}"
                                                        id="delete-client-{{ $client->id }}"
-                                                       onclick="return confirm('{{ trans('ip.delete_client_warning') }}');"><i
-                                                                class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a>
+                                                       onclick="return confirm('@lang('ip.delete_client_warning')');"><i
+                                                                class="fa fa-trash-o"></i> @lang('ip.delete')</a>
                                                 </li>
                                             </ul>
                                         </div>

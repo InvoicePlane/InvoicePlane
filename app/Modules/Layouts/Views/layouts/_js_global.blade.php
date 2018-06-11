@@ -62,7 +62,7 @@
         redirectTo: $(this).data('redirect-to')
       }, function (response, status, xhr) {
         if (status == 'error') {
-          alert('{{ trans('ip.problem_with_email_template') }}');
+          alert('@lang('ip.problem_with_email_template')');
         }
       });
     });
@@ -73,7 +73,7 @@
         redirectTo: $(this).data('redirect-to')
       }, function (response, status, xhr) {
         if (status == 'error') {
-          alert('{{ trans('ip.problem_with_email_template') }}');
+          alert('@lang('ip.problem_with_email_template')');
         }
       });
     });

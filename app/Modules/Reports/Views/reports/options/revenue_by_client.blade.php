@@ -37,10 +37,10 @@
 @section('content')
 
     <section class="content-header">
-        <h1 class="pull-left">{{ trans('ip.revenue_by_client') }}</h1>
+        <h1 class="pull-left">@lang('ip.revenue_by_client')</h1>
 
         <div class="pull-right">
-            <button class="btn btn-primary" id="btn-run-report">{{ trans('ip.run_report') }}</button>
+            <button class="btn btn-primary" id="btn-run-report">@lang('ip.run_report')</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -55,14 +55,14 @@
 
                 <div class="box box-primary">
                     <div class="box-header">
-                        <h3 class="box-title">{{ trans('ip.options') }}</h3>
+                        <h3 class="box-title">@lang('ip.options')</h3>
                     </div>
                     <div class="box-body">
 
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.company_profile') }}:</label>
+                                    <label>@lang('ip.company_profile'):</label>
                                     {!! Form::select('company_profile_id', $companyProfiles, null, ['id' => 'company_profile_id', 'class' => 'form-control'])  !!}
                                 </div>
                             </div>
@@ -71,7 +71,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.year') }}:</label>
+                                    <label>@lang('ip.year'):</label>
                                     {!! Form::select('year', $years, date('Y'), ['id' => 'year', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
@@ -80,14 +80,14 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="input-group">
-                                    <label>{{ trans('ip.output_type') }}:</label><br>
+                                    <label>@lang('ip.output_type'):</label><br>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type" value="preview"
-                                               checked="checked"> {{ trans('ip.preview') }}
+                                               checked="checked"> @lang('ip.preview')
                                     </label>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type"
-                                               value="pdf"> {{ trans('ip.pdf') }}
+                                               value="pdf"> @lang('ip.pdf')
                                     </label>
                                 </div>
                             </div>

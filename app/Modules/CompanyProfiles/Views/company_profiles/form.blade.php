@@ -24,7 +24,7 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.company_profile_form') }}
+            @lang('ip.company_profile_form')
         </h1>
         <div class="pull-right">
             {!! Form::submit(trans('ip.save'), ['class' => 'btn btn-primary']) !!}
@@ -45,37 +45,37 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label>{{ trans('ip.company') }}: </label>
+                            <label>@lang('ip.company'): </label>
                             {!! Form::text('company', null, ['id' => 'company', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('ip.address') }}: </label>
+                            <label>@lang('ip.address'): </label>
                             {!! Form::textarea('address', null, ['id' => 'address', 'class' => 'form-control', 'rows' => 4]) !!}
                         </div>
 
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.city') }}: </label>
+                                    <label>@lang('ip.city'): </label>
                                     {!! Form::text('city', null, ['id' => 'city', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.state') }}: </label>
+                                    <label>@lang('ip.state'): </label>
                                     {!! Form::text('state', null, ['id' => 'state', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.postal_code') }}: </label>
+                                    <label>@lang('ip.postal_code'): </label>
                                     {!! Form::text('zip', null, ['id' => 'zip', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.country') }}: </label>
+                                    <label>@lang('ip.country'): </label>
                                     {!! Form::text('country', null, ['id' => 'country', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
@@ -84,25 +84,25 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.phone') }}: </label>
+                                    <label>@lang('ip.phone'): </label>
                                     {!! Form::text('phone', null, ['id' => 'phone', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.fax') }}: </label>
+                                    <label>@lang('ip.fax'): </label>
                                     {!! Form::text('fax', null, ['id' => 'fax', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.mobile') }}: </label>
+                                    <label>@lang('ip.mobile'): </label>
                                     {!! Form::text('mobile', null, ['id' => 'mobile', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.web') }}: </label>
+                                    <label>@lang('ip.web'): </label>
                                     {!! Form::text('web', null, ['id' => 'web', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
@@ -111,13 +111,13 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.logo') }}: </label>
+                                    <label>@lang('ip.logo'): </label>
                                     @if (!config('app.demo'))
                                         <div id="div-logo">
                                             @if ($editMode and $companyProfile->logo)
                                                 <p>{!! $companyProfile->logo(100) !!}</p>
                                                 <a href="javascript:void(0)"
-                                                   id="btn-delete-logo">{{ trans('ip.remove_logo') }}</a>
+                                                   id="btn-delete-logo">@lang('ip.remove_logo')</a>
                                             @endif
                                         </div>
                                         {!! Form::file('logo') !!}
@@ -128,13 +128,13 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.default_invoice_template') }}:</label>
+                                    <label>@lang('ip.default_invoice_template'):</label>
                                     {!! Form::select('invoice_template', $invoiceTemplates, ((isset($companyProfile)) ? $companyProfile->invoice_template : config('fi.invoiceTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.default_quote_template') }}:</label>
+                                    <label>@lang('ip.default_quote_template'):</label>
                                     {!! Form::select('quote_template', $quoteTemplates, ((isset($companyProfile)) ? $companyProfile->quote_template : config('fi.quoteTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
                                 </div>
                             </div>

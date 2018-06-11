@@ -2,7 +2,7 @@
 
     <div class="col-md-12">
         <div class="form-group">
-            <label>{{ trans('ip.display_profile_image') }}: </label>
+            <label>@lang('ip.display_profile_image'): </label>
             {!! Form::select('setting[displayProfileImage]', $yesNoArray, config('fi.displayProfileImage'), ['class' => 'form-control']) !!}
         </div>
     </div>
@@ -16,14 +16,14 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label>{{ trans('ip.enabled') }}: </label>
+                <label>@lang('ip.enabled'): </label>
                 {!! Form::select('setting[widgetEnabled' . $widget . ']', $yesNoArray, config('fi.widgetEnabled' .
                 $widget), ['id' => 'widgetEnabled' . $widget, 'class' => 'form-control']) !!}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label>{{ trans('ip.display_order') }}: </label>
+                <label>@lang('ip.display_order'): </label>
                 {!! Form::select('setting[widgetDisplayOrder' . $widget . ']', $displayOrderArray,
                 config('fi.widgetDisplayOrder' . $widget),
                 ['id' => 'widgetDisplayOrder' . $widget, 'class' => 'form-control']) !!}
@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label>{{ trans('ip.column_width') }}: </label>
+                <label>@lang('ip.column_width'): </label>
                 {!! Form::select('setting[widgetColumnWidth' . $widget . ']', $colWidthArray,
                 config('fi.widgetColumnWidth' . $widget), ['id' => 'widgetColumnWidth' . $widget, 'class' =>
                 'form-control']) !!}

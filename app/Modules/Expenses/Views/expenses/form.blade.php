@@ -28,10 +28,10 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.expense_form') }}
+            @lang('ip.expense_form')
         </h1>
         <div class="pull-right">
-            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
+            <button class="btn btn-primary"><i class="fa fa-save"></i> @lang('ip.save')</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -52,21 +52,21 @@
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>* {{ trans('ip.company_profile') }}: </label>
+                                    <label>* @lang('ip.company_profile'): </label>
                                     {!! Form::select('company_profile_id', $companyProfiles, (($editMode) ? $expense->company_profile_id : config('fi.defaultCompanyProfile')), ['id' => 'company_profile_id', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>* {{ trans('ip.date') }}: </label>
+                                    <label>* @lang('ip.date'): </label>
                                     {!! Form::text('expense_date', (($editMode) ? $expense->formatted_expense_date : $currentDate), ['id' => 'expense_date', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>* {{ trans('ip.category') }}: </label>
+                                    <label>* @lang('ip.category'): </label>
                                     {!! Form::text('category_name', null, ['id' => 'category_name', 'class' => 'form-control category-lookup']) !!}
                                 </div>
                             </div>
@@ -77,28 +77,28 @@
 
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label>* {{ trans('ip.amount') }}: </label>
+                                    <label>* @lang('ip.amount'): </label>
                                     {!! Form::text('amount', (($editMode) ? $expense->formatted_numeric_amount : null), ['id' => 'amount', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.tax') }}: </label>
+                                    <label>@lang('ip.tax'): </label>
                                     {!! Form::text('tax', (($editMode) ? $expense->formatted_numeric_tax : null), ['id' => 'amount', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.vendor') }}: </label>
+                                    <label>@lang('ip.vendor'): </label>
                                     {!! Form::text('vendor_name', null, ['id' => 'vendor_name', 'class' => 'form-control vendor-lookup']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('ip.client') }}: </label>
+                                    <label>@lang('ip.client'): </label>
                                     {!! Form::text('client_name', null, ['id' => 'client_name', 'class' => 'form-control client-lookup']) !!}
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('ip.description') }}: </label>
+                            <label>@lang('ip.description'): </label>
                             {!! Form::textarea('description', null, ['id' => 'description', 'class' => 'form-control']) !!}
                         </div>
 
@@ -117,7 +117,7 @@
                         @if (!$editMode)
                             @if (!config('app.demo'))
                                 <div class="form-group">
-                                    <label>{{ trans('ip.attach_files') }}: </label>
+                                    <label>@lang('ip.attach_files'): </label>
                                     {!! Form::file('attachments[]', ['id' => 'attachments', 'class' => 'form-control', 'multiple' => 'multiple']) !!}
                                 </div>
                             @endif

@@ -38,12 +38,12 @@
 @section('content')
 
     <section class="content-header">
-        <h1 class="pull-left">{{ trans('ip.payments') }}</h1>
+        <h1 class="pull-left">@lang('ip.payments')</h1>
 
         <div class="pull-right">
 
             <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i
-                        class="fa fa-trash"></i> {{ trans('ip.delete') }}</a>
+                        class="fa fa-trash"></i> @lang('ip.delete')</a>
 
         </div>
 

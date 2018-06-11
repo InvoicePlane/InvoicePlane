@@ -42,7 +42,7 @@
                     <input type="hidden" name="status" value="{{ request('status') }}"/>
                     <div class="input-group">
                         <input type="text" name="search" class="form-control"
-                               placeholder="{{ trans('ip.search') }}..."/>
+                               placeholder="@lang('ip.search')..."/>
                         <span class="input-group-btn">
                 <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
               </span>
@@ -53,61 +53,61 @@
             <ul class="sidebar-menu">
                 <li>
                     <a href="{{ route('dashboard.index') }}">
-                        <i class="fa fa-dashboard"></i> <span>{{ trans('ip.dashboard') }}</span>
+                        <i class="fa fa-dashboard"></i> <span>@lang('ip.dashboard')</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('clients.index', ['status' => 'active']) }}">
-                        <i class="fa fa-users"></i> <span>{{ trans('ip.clients') }}</span>
+                        <i class="fa fa-users"></i> <span>@lang('ip.clients')</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('quotes.index', ['status' => config('fi.quoteStatusFilter')]) }}">
-                        <i class="fa fa-file-text-o"></i> <span>{{ trans('ip.quotes') }}</span>
+                        <i class="fa fa-file-text-o"></i> <span>@lang('ip.quotes')</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('invoices.index', ['status' => config('fi.invoiceStatusFilter')]) }}">
-                        <i class="fa fa-file-text"></i> <span>{{ trans('ip.invoices') }}</span>
+                        <i class="fa fa-file-text"></i> <span>@lang('ip.invoices')</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('recurringInvoices.index') }}">
-                        <i class="fa fa-refresh"></i> <span>{{ trans('ip.recurring_invoices') }}</span>
+                        <i class="fa fa-refresh"></i> <span>@lang('ip.recurring_invoices')</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('payments.index') }}">
-                        <i class="fa fa-credit-card"></i> <span>{{ trans('ip.payments') }}</span>
+                        <i class="fa fa-credit-card"></i> <span>@lang('ip.payments')</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('expenses.index') }}">
-                        <i class="fa fa-bank"></i> <span>{{ trans('ip.expenses') }}</span>
+                        <i class="fa fa-bank"></i> <span>@lang('ip.expenses')</span>
                     </a>
                 </li>
 
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-bar-chart-o"></i>
-                        <span>{{ trans('ip.reports') }}</span>
+                        <span>@lang('ip.reports')</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="{{ route('reports.clientStatement') }}"><i
-                                        class="fa fa-caret-right"></i> {{ trans('ip.client_statement') }}</a></li>
+                                        class="fa fa-caret-right"></i> @lang('ip.client_statement')</a></li>
                         <li><a href="{{ route('reports.expenseList') }}"><i
-                                        class="fa fa-caret-right"></i> {{ trans('ip.expense_list') }}</a></li>
+                                        class="fa fa-caret-right"></i> @lang('ip.expense_list')</a></li>
                         <li><a href="{{ route('reports.itemSales') }}"><i
-                                        class="fa fa-caret-right"></i> {{ trans('ip.item_sales') }}</a></li>
+                                        class="fa fa-caret-right"></i> @lang('ip.item_sales')</a></li>
                         <li><a href="{{ route('reports.paymentsCollected') }}"><i
-                                        class="fa fa-caret-right"></i> {{ trans('ip.payments_collected') }}</a></li>
+                                        class="fa fa-caret-right"></i> @lang('ip.payments_collected')</a></li>
                         <li><a href="{{ route('reports.profitLoss') }}"><i
-                                        class="fa fa-caret-right"></i> {{ trans('ip.profit_and_loss') }}</a></li>
+                                        class="fa fa-caret-right"></i> @lang('ip.profit_and_loss')</a></li>
                         <li><a href="{{ route('reports.revenueByClient') }}"><i
-                                        class="fa fa-caret-right"></i> {{ trans('ip.revenue_by_client') }}</a></li>
+                                        class="fa fa-caret-right"></i> @lang('ip.revenue_by_client')</a></li>
                         <li><a href="{{ route('reports.taxSummary') }}"><i
-                                        class="fa fa-caret-right"></i> {{ trans('ip.tax_summary') }}</a></li>
+                                        class="fa fa-caret-right"></i> @lang('ip.tax_summary')</a></li>
 
                         @foreach (config('fi.menus.reports') as $report)
                             @if (view()->exists($report))

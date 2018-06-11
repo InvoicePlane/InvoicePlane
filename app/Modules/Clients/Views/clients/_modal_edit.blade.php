@@ -6,7 +6,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">{{ trans('ip.edit_client') }}</h4>
+                <h4 class="modal-title">@lang('ip.edit_client')</h4>
             </div>
             <div class="modal-body">
 
@@ -16,8 +16,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.cancel') }}</button>
-                <input type="submit" id="btn-edit-client-submit" class="btn btn-primary" value="{{ trans('ip.save') }}">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
+                <input type="submit" id="btn-edit-client-submit" class="btn btn-primary" value="@lang('ip.save')">
             </div>
         </div>
     </div>

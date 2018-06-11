@@ -31,7 +31,7 @@
 
         <div class="box box-solid">
             <div class="box-header">
-                <h3 class="box-title">{{ trans('ip.quote_summary') }}</h3>
+                <h3 class="box-title">@lang('ip.quote_summary')</h3>
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
@@ -52,7 +52,7 @@
                         </ul>
                     </div>
                     <button class="btn btn-box-tool create-quote"><i
-                                class="fa fa-plus"></i> {{ trans('ip.create_quote') }}</button>
+                                class="fa fa-plus"></i> @lang('ip.create_quote')</button>
                 </div>
             </div>
             <div class="box-body">
@@ -63,11 +63,11 @@
                             <div class="inner">
                                 <h3>{{ $quotesTotalDraft }}</h3>
 
-                                <p>{{ trans('ip.draft_quotes') }}</p>
+                                <p>@lang('ip.draft_quotes')</p>
                             </div>
                             <div class="icon"><i class="ion ion-edit"></i></div>
                             <a class="small-box-footer" href="{{ route('quotes.index') }}?status=draft">
-                                {{ trans('ip.view_draft_quotes') }} <i class="fa fa-arrow-circle-right"></i>
+                                @lang('ip.view_draft_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -76,11 +76,11 @@
                             <div class="inner">
                                 <h3>{{ $quotesTotalSent }}</h3>
 
-                                <p>{{ trans('ip.sent_quotes') }}</p>
+                                <p>@lang('ip.sent_quotes')</p>
                             </div>
                             <div class="icon"><i class="ion ion-share"></i></div>
                             <a class="small-box-footer" href="{{ route('quotes.index') }}?status=sent">
-                                {{ trans('ip.view_sent_quotes') }} <i class="fa fa-arrow-circle-right"></i>
+                                @lang('ip.view_sent_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -90,11 +90,11 @@
                             <div class="inner">
                                 <h3>{{ $quotesTotalRejected }}</h3>
 
-                                <p>{{ trans('ip.rejected_quotes') }}</p>
+                                <p>@lang('ip.rejected_quotes')</p>
                             </div>
                             <div class="icon"><i class="ion ion-thumbsdown"></i></div>
                             <a class="small-box-footer" href="{{ route('quotes.index') }}?status=rejected">
-                                {{ trans('ip.view_rejected_quotes') }} <i class="fa fa-arrow-circle-right"></i>
+                                @lang('ip.view_rejected_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -103,11 +103,11 @@
                             <div class="inner">
                                 <h3>{{ $quotesTotalApproved }}</h3>
 
-                                <p>{{ trans('ip.approved_quotes') }}</p>
+                                <p>@lang('ip.approved_quotes')</p>
                             </div>
                             <div class="icon"><i class="ion ion-thumbsup"></i></div>
                             <a class="small-box-footer" href="{{ route('quotes.index') }}?status=approved">
-                                {{ trans('ip.view_approved_quotes') }} <i class="fa fa-arrow-circle-right"></i>
+                                @lang('ip.view_approved_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -123,25 +123,25 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">{{ trans('ip.custom_date_range') }}</h4>
+                    <h4 class="modal-title" id="myModalLabel">@lang('ip.custom_date_range')</h4>
                 </div>
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label>{{ trans('ip.from_date') }} (yyyy-mm-dd):</label>
+                        <label>@lang('ip.from_date') (yyyy-mm-dd):</label>
                         {!! Form::text('setting_widgetQuoteSummaryDashboardTotalsFromDate', config('fi.widgetQuoteSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-from-date']) !!}
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.to_date') }} (yyyy-mm-dd):</label>
+                        <label>@lang('ip.to_date') (yyyy-mm-dd):</label>
                         {!! Form::text('setting_widgetQuoteSummaryDashboardTotalsToDate', config('fi.widgetQuoteSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-to-date']) !!}
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
                     <button type="button" class="btn btn-primary quote-dashboard-total-change-option"
-                            data-id="custom_date_range" data-dismiss="modal">{{ trans('ip.save') }}</button>
+                            data-id="custom_date_range" data-dismiss="modal">@lang('ip.save')</button>
                 </div>
             </div>
         </div>

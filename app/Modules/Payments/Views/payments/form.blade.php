@@ -19,7 +19,7 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.payment_form') }}
+            @lang('ip.payment_form')
         </h1>
 
         <div class="pull-right">
@@ -42,25 +42,25 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label>{{ trans('ip.amount') }}: </label>
+                            <label>@lang('ip.amount'): </label>
                             {!! Form::text('amount', $payment->formatted_numeric_amount, ['id' => 'amount',
                             'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('ip.payment_date') }}: </label>
+                            <label>@lang('ip.payment_date'): </label>
                             {!! Form::text('paid_at', $payment->formatted_paid_at, ['id' => 'paid_at', 'class'
                             => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('ip.payment_method') }}</label>
+                            <label>@lang('ip.payment_method')</label>
                             {!! Form::select('payment_method_id', $paymentMethods, null, ['id' =>
                             'payment_method_id', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('ip.note') }}</label>
+                            <label>@lang('ip.note')</label>
                             {!! Form::textarea('note', null, ['id' => 'note', 'class' => 'form-control']) !!}
                         </div>
 

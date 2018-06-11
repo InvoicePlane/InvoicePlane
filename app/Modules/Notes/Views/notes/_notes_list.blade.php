@@ -5,15 +5,15 @@
             <span class="direct-chat-scope pull-right">
                 @if (!auth()->user()->client_id)
                     <a href="javascript:void(0)" class="delete-note"
-                       data-note-id="{{ $note->id }}">{{ trans('ip.delete') }}</a>
+                       data-note-id="{{ $note->id }}">@lang('ip.delete')</a>
                 @endif
             </span>
             @if (isset($showPrivateCheckbox) and $showPrivateCheckbox == true)
                 <span class="direct-chat-scope pull-right">
                 @if ($note->private)
-                        <span class="label label-danger">{{ trans('ip.private') }}</span>
+                        <span class="label label-danger">@lang('ip.private')</span>
                     @else
-                        <span class="label label-success">{{ trans('ip.public') }}</span>
+                        <span class="label label-success">@lang('ip.public')</span>
                     @endif
             </span>
             @endif

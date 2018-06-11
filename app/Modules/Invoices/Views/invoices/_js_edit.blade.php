@@ -93,7 +93,7 @@
         discount: $('#discount').val()
       }).done(function () {
         $('#div-invoice-edit').load('{{ route('invoiceEdit.refreshEdit', [$invoice->id]) }}', function () {
-          notify('{{ trans('ip.record_successfully_updated') }}', 'success');
+          notify('@lang('ip.record_successfully_updated')', 'success');
         });
       }).fail(function (response) {
         $.each($.parseJSON(response.responseText).errors, function (id, message) {

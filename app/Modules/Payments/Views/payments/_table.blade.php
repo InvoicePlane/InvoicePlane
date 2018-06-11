@@ -13,7 +13,7 @@
         <th>{!! Sortable::link('amount', trans('ip.amount'), 'payments') !!}</th>
         <th>{!! Sortable::link('payment_methods.name', trans('ip.payment_method'), 'payments') !!}</th>
         <th>{!! Sortable::link('note', trans('ip.note'), 'payments') !!}</th>
-        <th>{{ trans('ip.options') }}</th>
+        <th>@lang('ip.options')</th>
     </tr>
     </thead>
 
@@ -34,21 +34,21 @@
             <td>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                        {{ trans('ip.options') }} <span class="caret"></span>
+                        @lang('ip.options') <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('payments.edit', [$payment->id]) }}"><i
-                                        class="fa fa-edit"></i> {{ trans('ip.edit') }}</a></li>
+                                        class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                         <li><a href="{{ route('invoices.pdf', [$payment->invoice->id]) }}" target="_blank"
-                               id="btn-pdf-invoice"><i class="fa fa-print"></i> {{ trans('ip.invoice') }}</a></li>
+                               id="btn-pdf-invoice"><i class="fa fa-print"></i> @lang('ip.invoice')</a></li>
                         @if (config('fi.mailConfigured'))
                             <li><a href="javascript:void(0)" class="email-payment-receipt"
                                    data-payment-id="{{ $payment->id }}" data-redirect-to="{{ request()->fullUrl() }}"><i
-                                            class="fa fa-envelope"></i> {{ trans('ip.email_payment_receipt') }}</a></li>
+                                            class="fa fa-envelope"></i> @lang('ip.email_payment_receipt')</a></li>
                         @endif
                         <li><a href="{{ route('payments.delete', [$payment->id]) }}"
-                               onclick="return confirm('{{ trans('ip.delete_record_warning') }}');"><i
-                                        class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a></li>
+                               onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                        class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
                     </ul>
                 </div>
             </td>

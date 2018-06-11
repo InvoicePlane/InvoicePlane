@@ -12,7 +12,7 @@
 
   handler.open({
     name: '{!! $invoice->companyProfile->company !!}',
-    description: '{{ trans('ip.invoice') }} #{{ $invoice->number }}',
+    description: '@lang('ip.invoice') #{{ $invoice->number }}',
     email: '{{ $invoice->client->email }}',
     billingAddress: true,
     zipCode: true,

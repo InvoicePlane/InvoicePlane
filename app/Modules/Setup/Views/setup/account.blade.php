@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('ip.account_setup') }}</h1>
+        <h1>@lang('ip.account_setup')</h1>
     </section>
 
     <section class="content">
@@ -20,7 +20,7 @@
 
                         @include('layouts._alerts')
 
-                        <h4>{{ trans('ip.user_account') }}</h4>
+                        <h4>@lang('ip.user_account')</h4>
 
                         <div class="row">
 
@@ -42,7 +42,7 @@
 
                         </div>
 
-                        <h4>{{ trans('ip.company_profile') }}</h4>
+                        <h4>@lang('ip.company_profile')</h4>
 
                         <div class="row">
                             <div class="col-md-12 form-group">
@@ -99,7 +99,7 @@
 
                         </div>
 
-                        <button class="btn btn-primary" type="submit">{{ trans('ip.continue') }}</button>
+                        <button class="btn btn-primary" type="submit">@lang('ip.continue')</button>
 
                     </div>
 

@@ -2,22 +2,22 @@
 
 @section('content')
 
-    <h1 style="margin-bottom: 0;">{{ trans('ip.client_statement') }}</h1>
+    <h1 style="margin-bottom: 0;">@lang('ip.client_statement')</h1>
     <h3 style="margin-top: 0; margin-bottom: 0;">{{ $results['client_name'] }}</h3>
     <h3 style="margin-top: 0;">{{ $results['from_date'] }} - {{ $results['to_date'] }}</h3>
     <br>
     <table class="alternate">
         <thead>
         <tr>
-            <th>{{ trans('ip.date') }}</th>
-            <th>{{ trans('ip.invoice') }}</th>
-            <th>{{ trans('ip.summary') }}</th>
-            <th class="amount">{{ trans('ip.subtotal') }}</th>
-            <th class="amount">{{ trans('ip.discount') }}</th>
-            <th class="amount">{{ trans('ip.tax') }}</th>
-            <th class="amount">{{ trans('ip.total') }}</th>
-            <th class="amount">{{ trans('ip.paid') }}</th>
-            <th class="amount">{{ trans('ip.balance') }}</th>
+            <th>@lang('ip.date')</th>
+            <th>@lang('ip.invoice')</th>
+            <th>@lang('ip.summary')</th>
+            <th class="amount">@lang('ip.subtotal')</th>
+            <th class="amount">@lang('ip.discount')</th>
+            <th class="amount">@lang('ip.tax')</th>
+            <th class="amount">@lang('ip.total')</th>
+            <th class="amount">@lang('ip.paid')</th>
+            <th class="amount">@lang('ip.balance')</th>
         </tr>
         </thead>
         <tbody>

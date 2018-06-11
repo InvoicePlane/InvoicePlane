@@ -9,7 +9,7 @@
     });
 
     $('.btn-delete-contact').click(function () {
-      if (confirm('{{ trans('ip.delete_record_warning') }}')) {
+      if (confirm('@lang('ip.delete_record_warning')')) {
         $.post('{{ route('clients.contacts.delete', [$clientId]) }}', {
           id: $(this).data('contact-id')
         }).done(function (response) {
@@ -33,17 +33,17 @@
     <div class="col-lg-12">
         <div class="pull-right">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" id="btn-add-contact"><i
-                        class="fa fa-plus"></i> {{ trans('ip.add_contact') }}</a>
+                        class="fa fa-plus"></i> @lang('ip.add_contact')</a>
         </div>
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>{{ trans('ip.name') }}</th>
-                <th>{{ trans('ip.email') }}</th>
-                <th>{{ trans('ip.default_to') }}</th>
-                <th>{{ trans('ip.default_cc') }}</th>
-                <th>{{ trans('ip.default_bcc') }}</th>
-                <th>{{ trans('ip.options') }}</th>
+                <th>@lang('ip.name')</th>
+                <th>@lang('ip.email')</th>
+                <th>@lang('ip.default_to')</th>
+                <th>@lang('ip.default_cc')</th>
+                <th>@lang('ip.default_bcc')</th>
+                <th>@lang('ip.options')</th>
             </tr>
             </thead>
             <tbody>
@@ -60,15 +60,15 @@
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                            {{ trans('ip.options') }} <span class="caret"></span>
+                            @lang('ip.options') <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li><a href="javascript:void(0)" class="btn-edit-contact"
                                    data-url="{{ route('clients.contacts.edit', [$clientId, $contact->id]) }}"><i
-                                            class="fa fa-edit"></i> {{ trans('ip.edit') }}</a></li>
+                                            class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                             <li><a href="javascript:void(0)" class="btn-delete-contact"
                                    data-contact-id={{ $contact->id }}><i
-                                            class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a></li>
+                                            class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
                         </ul>
                     </div>
                 </td>

@@ -13,7 +13,7 @@
           $.post("{{ route('invoices.recalculate') }}").done(function (response) {
             alert(response.message);
           }).fail(function (response) {
-            alert('{{ trans('ip.error') }}: ' + $.parseJSON(response.responseText).message);
+            alert('@lang('ip.error'): ' + $.parseJSON(response.responseText).message);
           }).always(function () {
             $btn.button('reset');
           });
@@ -24,7 +24,7 @@
           $.post("{{ route('quotes.recalculate') }}").done(function (response) {
             alert(response.message);
           }).fail(function (response) {
-            alert('{{ trans('ip.error') }}: ' + $.parseJSON(response.responseText).message);
+            alert('@lang('ip.error'): ' + $.parseJSON(response.responseText).message);
           }).always(function () {
             $btn.button('reset');
           });
@@ -45,11 +45,11 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.system_settings') }}
+            @lang('ip.system_settings')
         </h1>
 
         <div class="pull-right">
-            <button class="btn btn-primary" id="btn-submit"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
+            <button class="btn btn-primary" id="btn-submit"><i class="fa fa-save"></i> @lang('ip.save')</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -65,15 +65,15 @@
 
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs" id="setting-tabs">
-                        <li class="active"><a data-toggle="tab" href="#tab-general">{{ trans('ip.general') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-dashboard">{{ trans('ip.dashboard') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-invoices">{{ trans('ip.invoices') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-quotes">{{ trans('ip.quotes') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-taxes">{{ trans('ip.taxes') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-email">{{ trans('ip.email') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-pdf">{{ trans('ip.pdf') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-online-payments">{{ trans('ip.online_payments') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-backup">{{ trans('ip.backup') }}</a></li>
+                        <li class="active"><a data-toggle="tab" href="#tab-general">@lang('ip.general')</a></li>
+                        <li><a data-toggle="tab" href="#tab-dashboard">@lang('ip.dashboard')</a></li>
+                        <li><a data-toggle="tab" href="#tab-invoices">@lang('ip.invoices')</a></li>
+                        <li><a data-toggle="tab" href="#tab-quotes">@lang('ip.quotes')</a></li>
+                        <li><a data-toggle="tab" href="#tab-taxes">@lang('ip.taxes')</a></li>
+                        <li><a data-toggle="tab" href="#tab-email">@lang('ip.email')</a></li>
+                        <li><a data-toggle="tab" href="#tab-pdf">@lang('ip.pdf')</a></li>
+                        <li><a data-toggle="tab" href="#tab-online-payments">@lang('ip.online_payments')</a></li>
+                        <li><a data-toggle="tab" href="#tab-backup">@lang('ip.backup')</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="tab-general" class="tab-pane active">

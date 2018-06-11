@@ -2,16 +2,16 @@
 
 @section('content')
 
-    <h1 style="text-align: center;">{{ trans('ip.revenue_by_client') }}</h1>
+    <h1 style="text-align: center;">@lang('ip.revenue_by_client')</h1>
 
     <table class="alternate">
         <thead>
         <tr>
-            <th>{{ trans('ip.client') }}</th>
+            <th>@lang('ip.client')</th>
             @foreach ($months as $month)
                 <th class="amount">{{ $month }}</th>
             @endforeach
-            <th class="amount">{{ trans('ip.total') }}</th>
+            <th class="amount">@lang('ip.total')</th>
         </tr>
         </thead>
         <tbody>

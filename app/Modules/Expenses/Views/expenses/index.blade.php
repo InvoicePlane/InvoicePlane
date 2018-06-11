@@ -39,13 +39,13 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.expenses') }}
+            @lang('ip.expenses')
         </h1>
 
         <div class="pull-right">
 
             <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i
-                        class="fa fa-trash"></i> {{ trans('ip.delete') }}</a>
+                        class="fa fa-trash"></i> @lang('ip.delete')</a>
 
             <div class="btn-group">
                 {!! Form::open(['method' => 'GET', 'id' => 'filter']) !!}
@@ -56,7 +56,7 @@
                 {!! Form::close() !!}
             </div>
             <a href="{{ route('expenses.create') }}" class="btn btn-primary"><i
-                        class="fa fa-plus"></i> {{ trans('ip.new') }}</a>
+                        class="fa fa-plus"></i> @lang('ip.new')</a>
         </div>
 
         <div class="clearfix"></div>
@@ -84,8 +84,8 @@
                                 <th class="col-md-2">{!! Sortable::link('expense_categories.name', trans('ip.category')) !!}</th>
                                 <th class="col-md-3">{!! Sortable::link('description', trans('ip.description')) !!}</th>
                                 <th class="col-md-2">{!! Sortable::link('amount', trans('ip.amount')) !!}</th>
-                                <th class="col-md-2">{{ trans('ip.attachments') }}</th>
-                                <th class="col-md-1">{{ trans('ip.options') }}</th>
+                                <th class="col-md-2">@lang('ip.attachments')</th>
+                                <th class="col-md-1">@lang('ip.options')</th>
                             </tr>
                             </thead>
 
@@ -106,12 +106,12 @@
                                         @if ($expense->is_billable)
                                             @if ($expense->has_been_billed)
                                                 <br><a href="{{ route('invoices.edit', [$expense->invoice_id]) }}"><span
-                                                            class="label label-success">{{ trans('ip.billed') }}</span></a>
+                                                            class="label label-success">@lang('ip.billed')</span></a>
                                             @else
-                                                <br><span class="label label-danger">{{ trans('ip.not_billed') }}</span>
+                                                <br><span class="label label-danger">@lang('ip.not_billed')</span>
                                             @endif
                                         @else
-                                            <br><span class="label label-default">{{ trans('ip.not_billable') }}</span>
+                                            <br><span class="label label-default">@lang('ip.not_billable')</span>
                                         @endif
                                     </td>
                                     <td>
@@ -124,20 +124,20 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
                                                     data-toggle="dropdown">
-                                                {{ trans('ip.options') }} <span class="caret"></span>
+                                                @lang('ip.options') <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 @if ($expense->is_billable and !$expense->has_been_billed)
                                                     <li><a href="javascript:void(0)" class="btn-bill-expense"
                                                            data-expense-id="{{ $expense->id }}"><i
-                                                                    class="fa fa-money"></i> {{ trans('ip.bill_this_expense') }}
+                                                                    class="fa fa-money"></i> @lang('ip.bill_this_expense')
                                                         </a></li>
                                                 @endif
                                                 <li><a href="{{ route('expenses.edit', [$expense->id]) }}"><i
-                                                                class="fa fa-edit"></i> {{ trans('ip.edit') }}</a></li>
+                                                                class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                                                 <li><a href="{{ route('expenses.delete', [$expense->id]) }}"
-                                                       onclick="return confirm('{{ trans('ip.delete_record_warning') }}');"><i
-                                                                class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a>
+                                                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                                                class="fa fa-trash-o"></i> @lang('ip.delete')</a>
                                                 </li>
                                             </ul>
                                         </div>

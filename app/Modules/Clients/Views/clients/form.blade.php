@@ -9,14 +9,14 @@
     @endif
 
     <section class="content-header">
-        <h1 class="pull-left">{{ trans('ip.client_form') }}</h1>
+        <h1 class="pull-left">@lang('ip.client_form')</h1>
 
         <div class="pull-right">
             @if ($editMode)
-                <a href="{{ $returnUrl }}" class="btn btn-default"><i class="fa fa-backward"></i> {{ trans('ip.back') }}
+                <a href="{{ $returnUrl }}" class="btn btn-default"><i class="fa fa-backward"></i> @lang('ip.back')
                 </a>
             @endif
-            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
+            <button class="btn btn-primary"><i class="fa fa-save"></i> @lang('ip.save')</button>
         </div>
 
         <div class="clearfix"></div>
@@ -32,11 +32,11 @@
 
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab-general" data-toggle="tab">{{ trans('ip.general') }}</a></li>
+                        <li class="active"><a href="#tab-general" data-toggle="tab">@lang('ip.general')</a></li>
                         @if ($editMode)
-                            <li><a href="#tab-contacts" data-toggle="tab">{{ trans('ip.contacts') }}</a></li>
-                            <li><a href="#tab-attachments" data-toggle="tab">{{ trans('ip.attachments') }}</a></li>
-                            <li><a href="#tab-notes" data-toggle="tab">{{ trans('ip.notes') }}</a></li>
+                            <li><a href="#tab-contacts" data-toggle="tab">@lang('ip.contacts')</a></li>
+                            <li><a href="#tab-attachments" data-toggle="tab">@lang('ip.attachments')</a></li>
+                            <li><a href="#tab-notes" data-toggle="tab">@lang('ip.notes')</a></li>
                         @endif
                     </ul>
                     <div class="tab-content">

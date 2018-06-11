@@ -94,7 +94,7 @@
         group_id: $('#group_id').val()
       }).done(function () {
         $('#div-recurring-invoice-edit').load('{{ route('recurringInvoiceEdit.refreshEdit', [$recurringInvoice->id]) }}', function () {
-          notify('{{ trans('ip.record_successfully_updated') }}', 'success');
+          notify('@lang('ip.record_successfully_updated')', 'success');
         });
       }).fail(function (response) {
         $.each($.parseJSON(response.responseText).errors, function (id, message) {

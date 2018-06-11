@@ -15,7 +15,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('ip.mail_log') }}</h1>
+        <h1>@lang('ip.mail_log')</h1>
     </section>
 
     <section class="content">
@@ -40,7 +40,7 @@
                                 <th>{!! Sortable::link('bcc', trans('ip.bcc')) !!}</th>
                                 <th>{!! Sortable::link('subject', trans('ip.subject')) !!}</th>
                                 <th>{!! Sortable::link('sent', trans('ip.sent')) !!}</th>
-                                <th>{{ trans('ip.options') }}</th>
+                                <th>@lang('ip.options')</th>
                             </tr>
                             </thead>
 
@@ -59,12 +59,12 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
                                                     data-toggle="dropdown">
-                                                {{ trans('ip.options') }} <span class="caret"></span>
+                                                @lang('ip.options') <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li><a href="{{ route('mailLog.delete', [$mail->id]) }}"
-                                                       onclick="return confirm('{{ trans('ip.delete_record_warning') }}');"><i
-                                                                class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a>
+                                                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                                                class="fa fa-trash-o"></i> @lang('ip.delete')</a>
                                                 </li>
                                             </ul>
                                         </div>

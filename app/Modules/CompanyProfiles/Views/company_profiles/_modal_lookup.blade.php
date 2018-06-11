@@ -5,7 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">{{ trans('ip.change_company_profile') }}</h4>
+                <h4 class="modal-title">@lang('ip.change_company_profile')</h4>
             </div>
             <div class="modal-body">
 
@@ -14,7 +14,7 @@
                 <form class="form-horizontal">
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('ip.company_profile') }}</label>
+                        <label class="col-sm-3 control-label">@lang('ip.company_profile')</label>
                         <div class="col-sm-9">
                             {!! Form::select('change_company_profile_id', $companyProfiles, null, ['id' => 'change_company_profile_id', 'class' => 'form-control']) !!}
                         </div>
@@ -24,9 +24,9 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.cancel') }}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
                 <button type="button" id="btn-submit-change-company-profile"
-                        class="btn btn-primary">{{ trans('ip.save') }}
+                        class="btn btn-primary">@lang('ip.save')
                 </button>
             </div>
         </div>

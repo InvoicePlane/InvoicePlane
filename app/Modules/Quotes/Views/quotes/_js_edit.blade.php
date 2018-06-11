@@ -100,7 +100,7 @@
         discount: $('#discount').val()
       }).done(function () {
         $('#div-quote-edit').load('{{ route('quoteEdit.refreshEdit', [$quote->id]) }}', function () {
-          notify('{{ trans('ip.record_successfully_updated') }}', 'success');
+          notify('@lang('ip.record_successfully_updated')', 'success');
         });
       }).fail(function (response) {
         $.each($.parseJSON(response.responseText).errors, function (id, message) {

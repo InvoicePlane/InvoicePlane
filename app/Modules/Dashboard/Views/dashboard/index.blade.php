@@ -5,7 +5,7 @@
     @include('layouts._alerts')
 
     <section class="content-header">
-        <h1>{{ trans('ip.dashboard') }}</h1>
+        <h1>@lang('ip.dashboard')</h1>
     </section>
 
     @foreach ($widgets as $widget)

@@ -27,7 +27,7 @@
         body: $('#body').val(),
         attach_pdf: attachPdf
       }).done(function (response) {
-        $('#modal-status-placeholder').html('<div class="alert alert-success">' + '{{ trans('ip.sent') }}' + '</div>');
+        $('#modal-status-placeholder').html('<div class="alert alert-success">' + '@lang('ip.sent')' + '</div>');
         setTimeout('window.location=\'' + decodeURIComponent('{{ $redirectTo }}') + '\'', 1000);
       }).fail(function (response) {
         $btn.button('reset');

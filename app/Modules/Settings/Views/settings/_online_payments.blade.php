@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-2">
             <div class="form-group">
-                <label>{{ trans('ip.enabled') }}</label>
+                <label>@lang('ip.enabled')</label>
                 {!! Form::select('setting[' . $driver->getSettingKey('enabled') . ']', [0=>trans('ip.no'),1=>trans('ip.yes')], $driver->getSetting('enabled'), ['class' => 'form-control']) !!}
             </div>
         </div>
@@ -22,7 +22,7 @@
         @endforeach
         <div class="col-md-2">
             <div class="form-group">
-                <label>{{ trans('ip.payment_button_text') }}</label>
+                <label>@lang('ip.payment_button_text')</label>
                 {!! Form::text('setting[' . $driver->getSettingKey('paymentButtonText') . ']', $driver->getSetting('paymentButtonText'), ['class' => 'form-control']) !!}
             </div>
         </div>

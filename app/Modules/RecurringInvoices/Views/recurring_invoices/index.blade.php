@@ -8,7 +8,7 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.recurring_invoices') }}
+            @lang('ip.recurring_invoices')
         </h1>
 
         <div class="pull-right">
@@ -19,7 +19,7 @@
                 {!! Form::close() !!}
             </div>
             <a href="javascript:void(0)" class="btn btn-primary create-recurring-invoice"><i
-                        class="fa fa-plus"></i> {{ trans('ip.new') }}</a>
+                        class="fa fa-plus"></i> @lang('ip.new')</a>
         </div>
 
         <div class="clearfix"></div>

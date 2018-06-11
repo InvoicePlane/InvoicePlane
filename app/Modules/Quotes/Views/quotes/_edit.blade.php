@@ -1,63 +1,63 @@
 @include('quotes._js_edit')
 
 <section class="content-header">
-    <h1 class="pull-left">{{ trans('ip.quote') }} #{{ $quote->number }}</h1>
+    <h1 class="pull-left">@lang('ip.quote') #{{ $quote->number }}</h1>
 
     @if ($quote->viewed)
-        <span style="margin-left: 10px;" class="label label-success">{{ trans('ip.viewed') }}</span>
+        <span style="margin-left: 10px;" class="label label-success">@lang('ip.viewed')</span>
     @else
-        <span style="margin-left: 10px;" class="label label-default">{{ trans('ip.not_viewed') }}</span>
+        <span style="margin-left: 10px;" class="label label-default">@lang('ip.not_viewed')</span>
     @endif
 
     @if ($quote->invoice)
         <span class="label label-info"><a href="{{ route('invoices.edit', [$quote->invoice_id]) }}"
-                                          style="color: inherit;">{{ trans('ip.converted_to_invoice') }} {{ $quote->invoice->number }}</a></span>
+                                          style="color: inherit;">@lang('ip.converted_to_invoice') {{ $quote->invoice->number }}</a></span>
     @endif
 
     <div class="pull-right">
 
         <a href="{{ route('quotes.pdf', [$quote->id]) }}" target="_blank" id="btn-pdf-quote"
-           class="btn btn-default"><i class="fa fa-print"></i> {{ trans('ip.pdf') }}</a>
+           class="btn btn-default"><i class="fa fa-print"></i> @lang('ip.pdf')</a>
         @if (config('fi.mailConfigured'))
             <a href="javascript:void(0)" id="btn-email-quote" class="btn btn-default email-quote"
                data-quote-id="{{ $quote->id }}" data-redirect-to="{{ route('quotes.edit', [$quote->id]) }}"><i
-                        class="fa fa-envelope"></i> {{ trans('ip.email') }}</a>
+                        class="fa fa-envelope"></i> @lang('ip.email')</a>
         @endif
 
         <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                {{ trans('ip.other') }} <span class="caret"></span>
+                @lang('ip.other') <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li><a href="javascript:void(0)" id="btn-copy-quote"><i
-                                class="fa fa-copy"></i> {{ trans('ip.copy') }}</a></li>
+                                class="fa fa-copy"></i> @lang('ip.copy')</a></li>
                 <li><a href="javascript:void(0)" id="btn-quote-to-invoice"><i
-                                class="fa fa-check"></i> {{ trans('ip.quote_to_invoice') }}</a></li>
+                                class="fa fa-check"></i> @lang('ip.quote_to_invoice')</a></li>
                 <li><a href="{{ route('clientCenter.public.quote.show', [$quote->url_key]) }}" target="_blank"><i
-                                class="fa fa-globe"></i> {{ trans('ip.public') }}</a></li>
+                                class="fa fa-globe"></i> @lang('ip.public')</a></li>
                 <li class="divider"></li>
                 <li><a href="{{ route('quotes.delete', [$quote->id]) }}"
-                       onclick="return confirm('{{ trans('ip.delete_record_warning') }}');"><i
-                                class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a></li>
+                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
             </ul>
         </div>
 
         <div class="btn-group">
             @if ($returnUrl)
                 <a href="{{ $returnUrl }}" class="btn btn-default"><i
-                            class="fa fa-backward"></i> {{ trans('ip.back') }}</a>
+                            class="fa fa-backward"></i> @lang('ip.back')</a>
             @endif
         </div>
 
         <div class="btn-group">
             <button type="button" class="btn btn-primary btn-save-quote"><i
-                        class="fa fa-save"></i> {{ trans('ip.save') }}</button>
+                        class="fa fa-save"></i> @lang('ip.save')</button>
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li><a href="#" class="btn-save-quote"
-                       data-apply-exchange-rate="1">{{ trans('ip.save_and_apply_exchange_rate') }}</a></li>
+                       data-apply-exchange-rate="1">@lang('ip.save_and_apply_exchange_rate')</a></li>
             </ul>
         </div>
 
@@ -80,7 +80,7 @@
                 <div class="col-md-12">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <h3 class="box-title">{{ trans('ip.summary') }}</h3>
+                            <h3 class="box-title">@lang('ip.summary')</h3>
                         </div>
                         <div class="box-body">
                             {!! Form::text('summary', $quote->summary, ['id' => 'summary', 'class' => 'form-control']) !!}
@@ -110,11 +110,11 @@
                 <div class="col-sm-12 table-responsive" style="overflow-x: visible;">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <h3 class="box-title">{{ trans('ip.items') }}</h3>
+                            <h3 class="box-title">@lang('ip.items')</h3>
 
                             <div class="box-tools pull-right">
                                 <button class="btn btn-primary btn-sm" id="btn-add-item"><i
-                                            class="fa fa-plus"></i> {{ trans('ip.add_item') }}</button>
+                                            class="fa fa-plus"></i> @lang('ip.add_item')</button>
                             </div>
                         </div>
 
@@ -122,13 +122,13 @@
                             <table id="item-table" class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th style="width: 20%;">{{ trans('ip.product') }}</th>
-                                    <th style="width: 25%;">{{ trans('ip.description') }}</th>
-                                    <th style="width: 10%;">{{ trans('ip.qty') }}</th>
-                                    <th style="width: 10%;">{{ trans('ip.price') }}</th>
+                                    <th style="width: 20%;">@lang('ip.product')</th>
+                                    <th style="width: 25%;">@lang('ip.description')</th>
+                                    <th style="width: 10%;">@lang('ip.qty')</th>
+                                    <th style="width: 10%;">@lang('ip.price')</th>
                                     <th style="width: 10%;">{{ trans('ip.tax_1') }}</th>
                                     <th style="width: 10%;">{{ trans('ip.tax_2') }}</th>
-                                    <th style="width: 10%; text-align: right; padding-right: 25px;">{{ trans('ip.total') }}</th>
+                                    <th style="width: 10%; text-align: right; padding-right: 25px;">@lang('ip.total')</th>
                                     <th style="width: 5%;"></th>
                                 </tr>
                                 </thead>
@@ -139,7 +139,7 @@
                                         {!! Form::hidden('id', '') !!}
                                         {!! Form::text('name', null, ['class' => 'form-control']) !!}<br>
                                         <label><input type="checkbox" name="save_item_as_lookup"
-                                                      tabindex="999"> {{ trans('ip.save_item_as_lookup') }}</label>
+                                                      tabindex="999"> @lang('ip.save_item_as_lookup')</label>
                                     </td>
                                     <td>{!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 1]) !!}</td>
                                     <td>{!! Form::text('quantity', null, ['class' => 'form-control']) !!}</td>
@@ -165,7 +165,7 @@
                                         <td>
                                             <a class="btn btn-xs btn-default btn-delete-quote-item"
                                                href="javascript:void(0);"
-                                               title="{{ trans('ip.delete') }}" data-item-id="{{ $item->id }}">
+                                               title="@lang('ip.delete')" data-item-id="{{ $item->id }}">
                                                 <i class="fa fa-times"></i>
                                             </a>
                                         </td>
@@ -186,23 +186,23 @@
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab-additional"
-                                                  data-toggle="tab">{{ trans('ip.additional') }}</a></li>
-                            <li><a href="#tab-notes" data-toggle="tab">{{ trans('ip.notes') }}</a></li>
-                            <li><a href="#tab-attachments" data-toggle="tab">{{ trans('ip.attachments') }}</a></li>
+                                                  data-toggle="tab">@lang('ip.additional')</a></li>
+                            <li><a href="#tab-notes" data-toggle="tab">@lang('ip.notes')</a></li>
+                            <li><a href="#tab-attachments" data-toggle="tab">@lang('ip.attachments')</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab-additional">
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>{{ trans('ip.terms_and_conditions') }}</label>
+                                            <label>@lang('ip.terms_and_conditions')</label>
                                             {!! Form::textarea('terms', $quote->terms, ['id' => 'terms', 'class' => 'form-control', 'rows' => 5]) !!}
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>{{ trans('ip.footer') }}</label>
+                                            <label>@lang('ip.footer')</label>
                                             {!! Form::textarea('footer', $quote->footer, ['id' => 'footer', 'class' => 'form-control', 'rows' => 5]) !!}
                                         </div>
                                     </div>
@@ -247,32 +247,32 @@
             <div class="box box-primary">
 
                 <div class="box-header">
-                    <h3 class="box-title">{{ trans('ip.options') }}</h3>
+                    <h3 class="box-title">@lang('ip.options')</h3>
                 </div>
 
                 <div class="box-body">
 
                     <div class="form-group">
-                        <label>{{ trans('ip.quote') }} #</label>
+                        <label>@lang('ip.quote') #</label>
                         {!! Form::text('number', $quote->number, ['id' => 'number', 'class' =>
                         'form-control
                         input-sm']) !!}
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.date') }}</label>
+                        <label>@lang('ip.date')</label>
                         {!! Form::text('quote_date', $quote->formatted_quote_date, ['id' =>
                         'quote_date', 'class' => 'form-control input-sm']) !!}
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.expires') }}</label>
+                        <label>@lang('ip.expires')</label>
                         {!! Form::text('expires_at', $quote->formatted_expires_at, ['id' => 'expires_at', 'class'
                         => 'form-control input-sm']) !!}
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.discount') }}</label>
+                        <label>@lang('ip.discount')</label>
                         <div class="input-group">
                             {!! Form::text('discount', $quote->formatted_numeric_discount, ['id' =>
                             'discount', 'class' => 'form-control input-sm']) !!}
@@ -281,33 +281,33 @@
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.currency') }}</label>
+                        <label>@lang('ip.currency')</label>
                         {!! Form::select('currency_code', $currencies, $quote->currency_code, ['id' =>
                         'currency_code', 'class' => 'form-control input-sm']) !!}
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.exchange_rate') }}</label>
+                        <label>@lang('ip.exchange_rate')</label>
                         <div class="input-group">
                             {!! Form::text('exchange_rate', $quote->exchange_rate, ['id' =>
                             'exchange_rate', 'class' => 'form-control input-sm']) !!}
                             <span class="input-group-btn">
                                 <button class="btn btn-default btn-sm" id="btn-update-exchange-rate" type="button"
                                         data-toggle="tooltip" data-placement="left"
-                                        title="{{ trans('ip.update_exchange_rate') }}"><i class="fa fa-refresh"></i>
+                                        title="@lang('ip.update_exchange_rate')"><i class="fa fa-refresh"></i>
                                 </button>
                             </span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.status') }}</label>
+                        <label>@lang('ip.status')</label>
                         {!! Form::select('quote_status_id', $statuses, $quote->quote_status_id,
                         ['id' => 'quote_status_id', 'class' => 'form-control input-sm']) !!}
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('ip.template') }}</label>
+                        <label>@lang('ip.template')</label>
                         {!! Form::select('template', $templates, $quote->template,
                         ['id' => 'template', 'class' => 'form-control input-sm']) !!}
                     </div>

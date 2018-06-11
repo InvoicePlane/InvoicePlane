@@ -17,7 +17,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.close') }}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.close')</button>
             </div>
         </div>
     </div>

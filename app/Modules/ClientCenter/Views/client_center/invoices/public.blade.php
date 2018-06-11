@@ -44,24 +44,24 @@
             <div style="margin-bottom: 15px;">
 
                 <a href="{{ route('clientCenter.public.invoice.pdf', [$invoice->url_key]) }}" target="_blank"
-                   class="btn btn-primary"><i class="fa fa-print"></i> <span>{{ trans('ip.pdf') }}</span>
+                   class="btn btn-primary"><i class="fa fa-print"></i> <span>@lang('ip.pdf')</span>
                 </a>
 
                 @if (auth()->check())
                     <a href="javascript:void(0)" id="btn-notes" data-button-toggle="btn-notes-back"
                        class="btn btn-primary btn-notes">
-                        <i class="fa fa-comments"></i> {{ trans('ip.notes') }}
+                        <i class="fa fa-comments"></i> @lang('ip.notes')
                     </a>
                     <a href="javascript:void(0)" id="btn-notes-back" data-button-toggle="btn-notes"
                        class="btn btn-primary btn-notes" style="display: none;">
-                        <i class="fa fa-backward"></i> {{ trans('ip.back_to_invoice') }}
+                        <i class="fa fa-backward"></i> @lang('ip.back_to_invoice')
                     </a>
                 @endif
 
                 @if (count($attachments))
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-files-o"></i> {{ trans('ip.attachments') }} <span class="caret"></span>
+                            <i class="fa fa-files-o"></i> @lang('ip.attachments') <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
                             @foreach ($attachments as $attachment)
@@ -74,7 +74,7 @@
                 @if ($invoice->isPayable)
                     @foreach ($merchantDrivers as $driver)
                         <a href="javascript:void(0)" class="btn btn-primary btn-pay"
-                           data-driver="{{ $driver->getName() }}" data-loading-text="{{ trans('ip.please_wait') }}"><i
+                           data-driver="{{ $driver->getName() }}" data-loading-text="@lang('ip.please_wait')"><i
                                     class="fa fa-credit-card"></i> {{ $driver->getSetting('paymentButtonText') }}</a>
                     @endforeach
                 @endif

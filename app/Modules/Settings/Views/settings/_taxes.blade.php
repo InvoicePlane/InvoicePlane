@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label>{{ trans('ip.default_item_tax_rate') }}: </label>
+    <label>@lang('ip.default_item_tax_rate'): </label>
     {!! Form::select('setting[itemTaxRate]', $taxRates, config('fi.itemTaxRate'), ['class' => 'form-control']) !!}
 </div>
 

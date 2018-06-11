@@ -8,18 +8,18 @@
         }
     </style>
 
-    <h1 style="margin-bottom: 0;">{{ trans('ip.payments_collected') }}</h1>
+    <h1 style="margin-bottom: 0;">@lang('ip.payments_collected')</h1>
     <h3 style="margin-top: 0;">{{ $results['from_date'] }} - {{ $results['to_date'] }}</h3>
 
     <table class="alternate">
         <thead>
         <tr>
-            <th>{{ trans('ip.date') }}</th>
-            <th>{{ trans('ip.invoice') }}</th>
-            <th>{{ trans('ip.client') }}</th>
-            <th>{{ trans('ip.payment_method') }}</th>
-            <th>{{ trans('ip.note') }}</th>
-            <th class="amount">{{ trans('ip.amount') }}</th>
+            <th>@lang('ip.date')</th>
+            <th>@lang('ip.invoice')</th>
+            <th>@lang('ip.client')</th>
+            <th>@lang('ip.payment_method')</th>
+            <th>@lang('ip.note')</th>
+            <th class="amount">@lang('ip.amount')</th>
         </tr>
         </thead>
         <tbody>
@@ -38,7 +38,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td class="amount"><strong>{{ trans('ip.total') }}</strong></td>
+            <td class="amount"><strong>@lang('ip.total')</strong></td>
             <td class="amount"><strong>{{ $results['total'] }}</strong></td>
         </tr>
         </tbody>

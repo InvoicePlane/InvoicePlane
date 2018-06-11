@@ -45,7 +45,7 @@
         <div class="box box-solid direct-chat direct-chat-warning">
             @if (!isset($hideHeader))
                 <div class="box-header">
-                    <h3 class="box-title">{{ trans('ip.notes') }}</h3>
+                    <h3 class="box-title">@lang('ip.notes')</h3>
                 </div>
             @endif
             <div class="box-body">
@@ -58,10 +58,10 @@
                     <div class="col-sm-12">
                         @if (isset($showPrivateCheckbox) and $showPrivateCheckbox == true)
                             <label>
-                                <input type="checkbox" name="private" id="private"> {{ trans('ip.private') }}
+                                <input type="checkbox" name="private" id="private"> @lang('ip.private')
                             </label>
                         @endif
-                        <textarea placeholder="{{ trans('ip.placeholder_type_message') }}"
+                        <textarea placeholder="@lang('ip.placeholder_type_message')"
                                   class="form-control"
                                   id="note_content"></textarea>
                     </div>
@@ -69,7 +69,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <button type="button" class="btn btn-primary btn-flat btn-block"
-                                id="btn-create-note">{{ trans('ip.add_note') }}</button>
+                                id="btn-create-note">@lang('ip.add_note')</button>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>{{ trans('ip.invoice') }} #{{ $invoice->number }}</title>
+    <title>@lang('ip.invoice') #{{ $invoice->number }}</title>
 
     <style>
         @page {

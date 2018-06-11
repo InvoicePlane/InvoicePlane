@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('ip.prerequisites') }}</h1>
+        <h1>@lang('ip.prerequisites')</h1>
     </section>
 
     <section class="content">
@@ -16,7 +16,7 @@
 
                     <div class="box-body">
 
-                        <p>{{ trans('ip.step_prerequisites') }}</p>
+                        <p>@lang('ip.step_prerequisites')</p>
 
                         <ul>
                             @foreach ($errors as $error)
@@ -25,7 +25,7 @@
                         </ul>
 
                         <a href="{{ route('setup.prerequisites') }}"
-                           class="btn btn-primary">{{ trans('ip.try_again') }}</a>
+                           class="btn btn-primary">@lang('ip.try_again')</a>
 
                     </div>
 

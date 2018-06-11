@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('ip.addons') }}</h1>
+        <h1>@lang('ip.addons')</h1>
         <div class="clearfix"></div>
     </section>
 
@@ -21,11 +21,11 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>{{ trans('ip.name') }}</th>
-                                <th>{{ trans('ip.author') }}</th>
-                                <th>{{ trans('ip.web_address') }}</th>
-                                <th>{{ trans('ip.status') }}</th>
-                                <th>{{ trans('ip.options') }}</th>
+                                <th>@lang('ip.name')</th>
+                                <th>@lang('ip.author')</th>
+                                <th>@lang('ip.web_address')</th>
+                                <th>@lang('ip.status')</th>
+                                <th>@lang('ip.options')</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -36,23 +36,23 @@
                                     <td>{{ $addon->author_url }}</td>
                                     <td>
                                         @if ($addon->enabled)
-                                            <span class="label label-success">{{ trans('ip.enabled') }}</span>
+                                            <span class="label label-success">@lang('ip.enabled')</span>
                                         @else
-                                            <span class="label label-danger">{{ trans('ip.disabled') }}</span>
+                                            <span class="label label-danger">@lang('ip.disabled')</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($addon->enabled)
                                             <a href="{{ route('addons.uninstall', [$addon->id]) }}"
                                                class="btn btn-sm btn-default"
-                                               onclick="return confirm('{{ trans('ip.uninstall_addon_warning') }}');">{{ trans('ip.disable') }}</a>
+                                               onclick="return confirm('@lang('ip.uninstall_addon_warning')');">@lang('ip.disable')</a>
                                             @if ($addon->has_pending_migrations)
                                                 <a href="{{ route('addons.upgrade', [$addon->id]) }}"
-                                                   class="btn btn-sm btn-info">{{ trans('ip.complete_upgrade') }}</a>
+                                                   class="btn btn-sm btn-info">@lang('ip.complete_upgrade')</a>
                                             @endif
                                         @else
                                             <a href="{{ route('addons.install', [$addon->id]) }}"
-                                               class="btn btn-sm btn-default">{{ trans('ip.install') }}</a>
+                                               class="btn btn-sm btn-default">@lang('ip.install')</a>
                                         @endif
                                     </td>
                                 </tr>

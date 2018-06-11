@@ -6,7 +6,7 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.map_fields_to_import') }}
+            @lang('ip.map_fields_to_import')
         </h1>
 
         <div class="pull-right">

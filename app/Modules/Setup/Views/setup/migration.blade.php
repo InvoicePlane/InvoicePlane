@@ -27,7 +27,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('ip.database_setup') }}</h1>
+        <h1>@lang('ip.database_setup')</h1>
     </section>
 
     <section class="content">
@@ -42,15 +42,15 @@
 
                         <div class="alert alert-error" id="div-exception" style="display: none;"></div>
 
-                        <p>{{ trans('ip.step_database_setup') }}</p>
+                        <p>@lang('ip.step_database_setup')</p>
 
-                        <a class="btn btn-primary" id="btn-run-migration">{{ trans('ip.continue') }}</a>
+                        <a class="btn btn-primary" id="btn-run-migration">@lang('ip.continue')</a>
 
                         <a class="btn btn-default" id="btn-running-migration" style="display: none;"
-                           disabled="disabled">{{ trans('ip.installing_please_wait') }}</a>
+                           disabled="disabled">@lang('ip.installing_please_wait')</a>
 
                         <a href="{{ route('setup.account') }}" class="btn btn-success" id="btn-migration-complete"
-                           style="display: none;">{{ trans('ip.continue') }}</a>
+                           style="display: none;">@lang('ip.continue')</a>
 
                     </div>
 

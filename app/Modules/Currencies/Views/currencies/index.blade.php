@@ -4,12 +4,12 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('ip.currencies') }}
+            @lang('ip.currencies')
         </h1>
 
         <div class="pull-right">
             <a href="{{ route('currencies.create') }}" class="btn btn-primary"><i
-                        class="fa fa-plus"></i> {{ trans('ip.new') }}</a>
+                        class="fa fa-plus"></i> @lang('ip.new')</a>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -35,7 +35,7 @@
                                 <th>{!! Sortable::link('placement', trans('ip.symbol_placement')) !!}</th>
                                 <th>{!! Sortable::link('decimal', trans('ip.decimal_point')) !!}</th>
                                 <th>{!! Sortable::link('thousands', trans('ip.thousands_separator')) !!}</th>
-                                <th>{{ trans('ip.options') }}</th>
+                                <th>@lang('ip.options')</th>
                             </tr>
                             </thead>
 
@@ -52,14 +52,14 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
                                                     data-toggle="dropdown">
-                                                {{ trans('ip.options') }} <span class="caret"></span>
+                                                @lang('ip.options') <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li><a href="{{ route('currencies.edit', [$currency->id]) }}"><i
-                                                                class="fa fa-edit"></i> {{ trans('ip.edit') }}</a></li>
+                                                                class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                                                 <li><a href="{{ route('currencies.delete', [$currency->id]) }}"
-                                                       onclick="return confirm('{{ trans('ip.delete_record_warning') }}');"><i
-                                                                class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a>
+                                                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                                                class="fa fa-trash-o"></i> @lang('ip.delete')</a>
                                                 </li>
                                             </ul>
                                         </div>

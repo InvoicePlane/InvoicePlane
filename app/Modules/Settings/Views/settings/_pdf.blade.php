@@ -28,14 +28,14 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label>{{ trans('ip.paper_size') }}: </label>
+            <label>@lang('ip.paper_size'): </label>
             {!! Form::select('setting[paperSize]', $paperSizes, config('fi.paperSize'), ['class' => 'form-control']) !!}
         </div>
     </div>
 
     <div class="col-md-6">
         <div class="form-group">
-            <label>{{ trans('ip.paper_orientation') }}: </label>
+            <label>@lang('ip.paper_orientation'): </label>
             {!! Form::select('setting[paperOrientation]', $paperOrientations, config('fi.paperOrientation'), ['class' => 'form-control']) !!}
         </div>
     </div>
@@ -43,11 +43,11 @@
 </div>
 
 <div class="form-group">
-    <label>{{ trans('ip.pdf_driver') }}: </label>
+    <label>@lang('ip.pdf_driver'): </label>
     {!! Form::select('setting[pdfDriver]', $pdfDrivers, config('fi.pdfDriver'), ['id' => 'pdfDriver', 'class' => 'form-control']) !!}
 </div>
 
 <div class="form-group wkhtmltopdf-option">
-    <label>{{ trans('ip.binary_path') }}: </label>
+    <label>@lang('ip.binary_path'): </label>
     {!! Form::text('setting[pdfBinaryPath]', config('fi.pdfBinaryPath'), ['class' => 'form-control']) !!}
 </div>

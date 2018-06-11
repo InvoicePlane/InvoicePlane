@@ -21,29 +21,29 @@
                     @else
                     format: "{{ strtoupper(config('fi.datepickerFormat')) }} h:mm A",
                     @endif
-                    customRangeLabel: "{{ trans('ip.custom') }}",
+                    customRangeLabel: "@lang('ip.custom')",
                   daysOfWeek: [
-                    "{{ trans('ip.day_short_sunday') }}",
-                    "{{ trans('ip.day_short_monday') }}",
-                    "{{ trans('ip.day_short_tuesday') }}",
-                    "{{ trans('ip.day_short_wednesday') }}",
-                    "{{ trans('ip.day_short_thursday') }}",
-                    "{{ trans('ip.day_short_friday') }}",
-                    "{{ trans('ip.day_short_saturday') }}"
+                    "@lang('ip.day_short_sunday')",
+                    "@lang('ip.day_short_monday')",
+                    "@lang('ip.day_short_tuesday')",
+                    "@lang('ip.day_short_wednesday')",
+                    "@lang('ip.day_short_thursday')",
+                    "@lang('ip.day_short_friday')",
+                    "@lang('ip.day_short_saturday')"
                   ],
                   monthNames: [
-                    "{{ trans('ip.month_january') }}",
-                    "{{ trans('ip.month_february') }}",
-                    "{{ trans('ip.month_march') }}",
-                    "{{ trans('ip.month_april') }}",
-                    "{{ trans('ip.month_may') }}",
-                    "{{ trans('ip.month_june') }}",
-                    "{{ trans('ip.month_july') }}",
-                    "{{ trans('ip.month_august') }}",
-                    "{{ trans('ip.month_september') }}",
-                    "{{ trans('ip.month_october') }}",
-                    "{{ trans('ip.month_november') }}",
-                    "{{ trans('ip.month_december') }}"
+                    "@lang('ip.month_january')",
+                    "@lang('ip.month_february')",
+                    "@lang('ip.month_march')",
+                    "@lang('ip.month_april')",
+                    "@lang('ip.month_may')",
+                    "@lang('ip.month_june')",
+                    "@lang('ip.month_july')",
+                    "@lang('ip.month_august')",
+                    "@lang('ip.month_september')",
+                    "@lang('ip.month_october')",
+                    "@lang('ip.month_november')",
+                    "@lang('ip.month_december')"
                   ],
                   firstDay: 1
                 }
