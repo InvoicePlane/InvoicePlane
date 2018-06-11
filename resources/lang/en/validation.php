@@ -99,11 +99,11 @@ return [
     |
     */
 
-    'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
-    ],
+    //'custom' => [
+    //    'attribute-name' => [
+    //        'rule-name' => 'custom-message',
+    //    ],
+    //],
 
     /*
     |--------------------------------------------------------------------------
