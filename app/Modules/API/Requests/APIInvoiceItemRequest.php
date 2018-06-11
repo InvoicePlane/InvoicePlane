@@ -27,9 +27,9 @@ class APIInvoiceItemRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => trans('fi.name'),
-            'quantity' => trans('fi.quantity'),
-            'price' => trans('fi.price'),
+            'name' => trans('ip.name'),
+            'quantity' => trans('ip.quantity'),
+            'price' => trans('ip.price'),
         ];
     }
 

@@ -26,9 +26,9 @@ class ClientStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => trans('fi.name'),
-            'unique_name' => trans('fi.unique_name'),
-            'email' => trans('fi.email'),
+            'name' => trans('ip.name'),
+            'unique_name' => trans('ip.unique_name'),
+            'email' => trans('ip.email'),
         ];
     }
 

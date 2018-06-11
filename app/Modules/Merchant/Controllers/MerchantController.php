@@ -50,10 +50,10 @@ class MerchantController extends Controller
 
         if ($merchant->verify($invoice)) {
             $messageStatus = 'alertSuccess';
-            $messageContent = trans('fi.payment_applied');
+            $messageContent = trans('ip.payment_applied');
         } else {
             $messageStatus = 'error';
-            $messageContent = trans('fi.error_applying_payment');
+            $messageContent = trans('ip.error_applying_payment');
         }
 
         return redirect()->route('clientCenter.public.invoice.show', [$urlKey])

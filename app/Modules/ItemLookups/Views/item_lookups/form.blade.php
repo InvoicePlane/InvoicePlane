@@ -16,10 +16,10 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.item_lookup_form') }}
+            {{ trans('ip.item_lookup_form') }}
         </h1>
         <div class="pull-right">
-            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('fi.save') }}</button>
+            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -37,27 +37,27 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label class="">{{ trans('fi.name') }}: </label>
+                            <label class="">{{ trans('ip.name') }}: </label>
                             {!! Form::text('name', null, ['id' => 'name', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label class="">{{ trans('fi.description') }}: </label>
+                            <label class="">{{ trans('ip.description') }}: </label>
                             {!! Form::textarea('description', null, ['id' => 'description', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label class="">{{ trans('fi.price') }}: </label>
+                            <label class="">{{ trans('ip.price') }}: </label>
                             {!! Form::text('price', (($editMode) ? $itemLookup->formatted_numeric_price: null), ['id' => 'price', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label class="">{{ trans('fi.tax_1') }}: </label>
+                            <label class="">{{ trans('ip.tax_1') }}: </label>
                             {!! Form::select('tax_rate_id', $taxRates, null, ['class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label class="">{{ trans('fi.tax_2') }}: </label>
+                            <label class="">{{ trans('ip.tax_2') }}: </label>
                             {!! Form::select('tax_rate_2_id', $taxRates, null, ['class' => 'form-control']) !!}
                         </div>
 

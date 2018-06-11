@@ -53,6 +53,6 @@ class ExpenseEditController extends Controller
         $expense->custom->update(request('custom', []));
 
         return redirect($this->getReturnUrl())
-            ->with('alertSuccess', trans('fi.record_successfully_updated'));
+            ->with('alertSuccess', trans('ip.record_successfully_updated'));
     }
 }

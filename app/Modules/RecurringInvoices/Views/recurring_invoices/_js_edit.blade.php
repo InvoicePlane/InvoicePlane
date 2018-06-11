@@ -29,7 +29,7 @@
     }
 
     $('.btn-delete-recurring-invoice-item').click(function () {
-      if (!confirm('{!! trans('fi.delete_record_warning') !!}')) return false;
+      if (!confirm('{!! trans('ip.delete_record_warning') !!}')) return false;
       var id = $(this).data('item-id');
       $.post('{{ route('recurringInvoiceItem.delete') }}', {
         id: id
@@ -94,7 +94,7 @@
         group_id: $('#group_id').val()
       }).done(function () {
         $('#div-recurring-invoice-edit').load('{{ route('recurringInvoiceEdit.refreshEdit', [$recurringInvoice->id]) }}', function () {
-          notify('{{ trans('fi.record_successfully_updated') }}', 'success');
+          notify('{{ trans('ip.record_successfully_updated') }}', 'success');
         });
       }).fail(function (response) {
         $.each($.parseJSON(response.responseText).errors, function (id, message) {

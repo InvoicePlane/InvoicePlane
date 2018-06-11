@@ -34,7 +34,7 @@ class UserController extends Controller
 
         return view('users.index')
             ->with('users', $users)
-            ->with('userTypes', ['' => trans('fi.all_accounts'), 'admin' => trans('fi.admin_accounts'), 'client' => trans('fi.client_accounts')]);
+            ->with('userTypes', ['' => trans('ip.all_accounts'), 'admin' => trans('ip.admin_accounts'), 'client' => trans('ip.client_accounts')]);
     }
 
     public function create($userType)
@@ -68,7 +68,7 @@ class UserController extends Controller
         $user->custom->update($request->input('custom', []));
 
         return redirect($this->getReturnUrl())
-            ->with('alertSuccess', trans('fi.record_successfully_created'));
+            ->with('alertSuccess', trans('ip.record_successfully_created'));
     }
 
     public function edit($id, $userType)
@@ -91,7 +91,7 @@ class UserController extends Controller
         $user->custom->update($request->input('custom', []));
 
         return redirect($this->getReturnUrl())
-            ->with('alertInfo', trans('fi.record_successfully_updated'));
+            ->with('alertInfo', trans('ip.record_successfully_updated'));
     }
 
     public function delete($id)
@@ -99,7 +99,7 @@ class UserController extends Controller
         User::destroy($id);
 
         return redirect()->route('users.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 
     public function getClientInfo()

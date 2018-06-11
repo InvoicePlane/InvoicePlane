@@ -45,6 +45,6 @@ class MailLogController extends Controller
         MailQueue::destroy($id);
 
         return redirect()->route('mailLog.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 }

@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1 style="margin-bottom: 0;">{{ trans('fi.item_sales') }}</h1>
+    <h1 style="margin-bottom: 0;">{{ trans('ip.item_sales') }}</h1>
     <h3 style="margin-top: 0;">{{ $results['from_date'] }} - {{ $results['to_date'] }}</h3>
 
     @foreach ($results['records'] as $key=>$items)
@@ -10,14 +10,14 @@
         <table class="alternate">
             <thead>
             <tr>
-                <th style="width: 10%; text-align: left;">{{ trans('fi.date') }}</th>
-                <th style="width: 10%; text-align: left;">{{ trans('fi.invoice') }}</th>
-                <th style="width: 30%; text-align: left;">{{ trans('fi.client') }}</th>
-                <th class="amount" style="width: 10%;">{{ trans('fi.price') }}</th>
-                <th class="amount" style="width: 10%;">{{ trans('fi.quantity') }}</th>
-                <th class="amount" style="width: 10%;">{{ trans('fi.subtotal') }}</th>
-                <th class="amount" style="width: 10%;">{{ trans('fi.tax') }}</th>
-                <th class="amount" style="width: 10%;">{{ trans('fi.total') }}</th>
+                <th style="width: 10%; text-align: left;">{{ trans('ip.date') }}</th>
+                <th style="width: 10%; text-align: left;">{{ trans('ip.invoice') }}</th>
+                <th style="width: 30%; text-align: left;">{{ trans('ip.client') }}</th>
+                <th class="amount" style="width: 10%;">{{ trans('ip.price') }}</th>
+                <th class="amount" style="width: 10%;">{{ trans('ip.quantity') }}</th>
+                <th class="amount" style="width: 10%;">{{ trans('ip.subtotal') }}</th>
+                <th class="amount" style="width: 10%;">{{ trans('ip.tax') }}</th>
+                <th class="amount" style="width: 10%;">{{ trans('ip.total') }}</th>
             </tr>
             </thead>
 
@@ -38,7 +38,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="amount"><strong>{{ trans('fi.total') }}</strong></td>
+                <td class="amount"><strong>{{ trans('ip.total') }}</strong></td>
                 <td class="amount"><strong>{{ $items['totals']['quantity'] }}</strong></td>
                 <td class="amount"><strong>{{ $items['totals']['subtotal'] }}</strong></td>
                 <td class="amount"><strong>{{ $items['totals']['tax'] }}</strong></td>

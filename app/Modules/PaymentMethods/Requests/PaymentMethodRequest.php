@@ -26,7 +26,7 @@ class PaymentMethodRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => trans('fi.payment_method'),
+            'name' => trans('ip.payment_method'),
         ];
     }
 

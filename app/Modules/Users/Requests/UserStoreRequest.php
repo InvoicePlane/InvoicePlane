@@ -26,9 +26,9 @@ class UserStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email' => trans('fi.email'),
-            'password' => trans('fi.password'),
-            'name' => trans('fi.name'),
+            'email' => trans('ip.email'),
+            'password' => trans('ip.password'),
+            'name' => trans('ip.name'),
         ];
     }
 

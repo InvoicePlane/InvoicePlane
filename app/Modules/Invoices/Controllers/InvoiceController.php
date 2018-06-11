@@ -46,9 +46,9 @@ class InvoiceController extends Controller
         return view('invoices.index')
             ->with('invoices', $invoices)
             ->with('status', $status)
-            ->with('statuses', InvoiceStatuses::listsAllFlat() + ['overdue' => trans('fi.overdue')])
+            ->with('statuses', InvoiceStatuses::listsAllFlat() + ['overdue' => trans('ip.overdue')])
             ->with('keyedStatuses', collect(InvoiceStatuses::lists())->except(3))
-            ->with('companyProfiles', ['' => trans('fi.all_company_profiles')] + CompanyProfile::getList())
+            ->with('companyProfiles', ['' => trans('ip.all_company_profiles')] + CompanyProfile::getList())
             ->with('displaySearch', true);
     }
 
@@ -57,7 +57,7 @@ class InvoiceController extends Controller
         Invoice::destroy($id);
 
         return redirect()->route('invoices.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 
     public function bulkDelete()

@@ -1,11 +1,11 @@
 <table class="table table-hover">
     <thead>
     <tr>
-        <th>{{ trans('fi.date') }}</th>
-        <th>{{ trans('fi.invoice') }}</th>
-        <th>{{ trans('fi.summary') }}</th>
-        <th>{{ trans('fi.amount') }}</th>
-        <th>{{ trans('fi.payment_method') }}</th>
+        <th>{{ trans('ip.date') }}</th>
+        <th>{{ trans('ip.invoice') }}</th>
+        <th>{{ trans('ip.summary') }}</th>
+        <th>{{ trans('ip.amount') }}</th>
+        <th>{{ trans('ip.payment_method') }}</th>
     </tr>
     </thead>
     <tbody>

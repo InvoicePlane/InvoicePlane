@@ -96,7 +96,7 @@ class PaymentController extends Controller
         $payment->custom->update($request->input('custom', []));
 
         return redirect()->route('payments.index')
-            ->with('alertInfo', trans('fi.record_successfully_updated'));
+            ->with('alertInfo', trans('ip.record_successfully_updated'));
     }
 
     public function delete($id)
@@ -104,7 +104,7 @@ class PaymentController extends Controller
         Payment::destroy($id);
 
         return redirect()->route('payments.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 
     public function bulkDelete()

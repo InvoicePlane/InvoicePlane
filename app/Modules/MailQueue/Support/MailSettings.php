@@ -25,9 +25,9 @@ class MailSettings
     {
         return [
             '' => '',
-            'smtp' => trans('fi.email_send_method_smtp'),
-            'mail' => trans('fi.email_send_method_phpmail'),
-            'sendmail' => trans('fi.email_send_method_sendmail'),
+            'smtp' => trans('ip.email_send_method_smtp'),
+            'mail' => trans('ip.email_send_method_phpmail'),
+            'sendmail' => trans('ip.email_send_method_sendmail'),
         ];
     }
 
@@ -39,7 +39,7 @@ class MailSettings
     static function listEncryptions()
     {
         return [
-            '0' => trans('fi.none'),
+            '0' => trans('ip.none'),
             'ssl' => 'SSL',
             'tls' => 'TLS',
         ];

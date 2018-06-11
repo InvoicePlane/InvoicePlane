@@ -24,10 +24,10 @@ class Frequency
     public static function lists()
     {
         return [
-            '1' => trans('fi.days'),
-            '2' => trans('fi.weeks'),
-            '3' => trans('fi.months'),
-            '4' => trans('fi.years'),
+            '1' => trans('ip.days'),
+            '2' => trans('ip.weeks'),
+            '3' => trans('ip.months'),
+            '4' => trans('ip.years'),
         ];
     }
 }

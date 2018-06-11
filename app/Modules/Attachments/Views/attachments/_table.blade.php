@@ -1,7 +1,7 @@
 <script type="text/javascript">
   $(function () {
     $('.btn-delete-attachment').click(function () {
-      if (confirm('{{ trans('fi.delete_record_warning') }}')) {
+      if (confirm('{{ trans('ip.delete_record_warning') }}')) {
         $.post("{{ route('attachments.ajax.delete') }}", {
           model: '{{ addslashes($model) }}',
           model_id: '{{ $object->id }}',
@@ -35,7 +35,7 @@
 
     @if (!config('app.demo'))
         <a href="javascript:void(0)" class="btn btn-primary btn-sm"
-           id="btn-attach-files">{{ trans('fi.attach_files') }}</a>
+           id="btn-attach-files">{{ trans('ip.attach_files') }}</a>
     @else
         <a href="javascript:void(0)" class="btn btn-primary btn-sm">File attachments are disabled in the demo</a>
     @endif
@@ -43,8 +43,8 @@
     <table class="table table-condensed">
         <thead>
         <tr>
-            <th>{{ trans('fi.attachment') }}</th>
-            <th>{{ trans('fi.client_visibility') }}</th>
+            <th>{{ trans('ip.attachment') }}</th>
+            <th>{{ trans('ip.client_visibility') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -60,7 +60,7 @@
                 </td>
                 <td>
                     <a class="btn btn-xs btn-default btn-delete-attachment" href="javascript:void(0);"
-                       title="{{ trans('fi.delete') }}" data-attachment-id="{{ $attachment->id }}">
+                       title="{{ trans('ip.delete') }}" data-attachment-id="{{ $attachment->id }}">
                         <i class="fa fa-times"></i>
                     </a>
                 </td>

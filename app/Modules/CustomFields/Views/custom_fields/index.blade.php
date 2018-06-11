@@ -4,12 +4,12 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.custom_fields') }}
+            {{ trans('ip.custom_fields') }}
         </h1>
 
         <div class="pull-right">
             <a href="{{ route('customFields.create') }}" class="btn btn-primary"><i
-                        class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
+                        class="fa fa-plus"></i> {{ trans('ip.new') }}</a>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -29,11 +29,11 @@
 
                             <thead>
                             <tr>
-                                <th>{!! Sortable::link('tbl_name', trans('fi.table_name')) !!}</th>
-                                <th>{!! Sortable::link('column_name', trans('fi.column_name')) !!}</th>
-                                <th>{!! Sortable::link('field_label', trans('fi.field_label')) !!}</th>
-                                <th>{!! Sortable::link('field_type', trans('fi.field_type')) !!}</th>
-                                <th>{{ trans('fi.options') }}</th>
+                                <th>{!! Sortable::link('tbl_name', trans('ip.table_name')) !!}</th>
+                                <th>{!! Sortable::link('column_name', trans('ip.column_name')) !!}</th>
+                                <th>{!! Sortable::link('field_label', trans('ip.field_label')) !!}</th>
+                                <th>{!! Sortable::link('field_type', trans('ip.field_type')) !!}</th>
+                                <th>{{ trans('ip.options') }}</th>
                             </tr>
                             </thead>
 
@@ -48,14 +48,14 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
                                                     data-toggle="dropdown">
-                                                {{ trans('fi.options') }} <span class="caret"></span>
+                                                {{ trans('ip.options') }} <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li><a href="{{ route('customFields.edit', [$customField->id]) }}"><i
-                                                                class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                                                                class="fa fa-edit"></i> {{ trans('ip.edit') }}</a></li>
                                                 <li><a href="{{ route('customFields.delete', [$customField->id]) }}"
-                                                       onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
-                                                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a>
+                                                       onclick="return confirm('{{ trans('ip.delete_record_warning') }}');"><i
+                                                                class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a>
                                                 </li>
                                             </ul>
                                         </div>

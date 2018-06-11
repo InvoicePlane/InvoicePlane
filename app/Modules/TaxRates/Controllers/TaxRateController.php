@@ -44,7 +44,7 @@ class TaxRateController extends Controller
         TaxRate::create($request->all());
 
         return redirect($this->getReturnUrl())
-            ->with('alertSuccess', trans('fi.record_successfully_created'));
+            ->with('alertSuccess', trans('ip.record_successfully_created'));
     }
 
     public function edit($id)
@@ -65,7 +65,7 @@ class TaxRateController extends Controller
         $taxRate->save();
 
         return redirect($this->getReturnUrl())
-            ->with('alertInfo', trans('fi.record_successfully_updated'));
+            ->with('alertInfo', trans('ip.record_successfully_updated'));
     }
 
     public function delete($id)
@@ -73,11 +73,11 @@ class TaxRateController extends Controller
         $taxRate = TaxRate::find($id);
 
         if ($taxRate->in_use) {
-            $alert = trans('fi.cannot_delete_record_in_use');
+            $alert = trans('ip.cannot_delete_record_in_use');
         } else {
             $taxRate->delete();
 
-            $alert = trans('fi.record_successfully_deleted');
+            $alert = trans('ip.record_successfully_deleted');
         }
 
         return redirect()->route('taxRates.index')

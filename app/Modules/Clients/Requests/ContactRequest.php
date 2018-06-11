@@ -26,8 +26,8 @@ class ContactRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => trans('fi.name'),
-            'email' => trans('fi.email'),
+            'name' => trans('ip.name'),
+            'email' => trans('ip.email'),
         ];
     }
 

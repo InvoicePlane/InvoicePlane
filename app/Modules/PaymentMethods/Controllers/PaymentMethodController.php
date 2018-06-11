@@ -44,7 +44,7 @@ class PaymentMethodController extends Controller
         PaymentMethod::create($request->all());
 
         return redirect($this->getReturnUrl())
-            ->with('alertSuccess', trans('fi.record_successfully_created'));
+            ->with('alertSuccess', trans('ip.record_successfully_created'));
     }
 
     public function edit($id)
@@ -64,7 +64,7 @@ class PaymentMethodController extends Controller
         $paymentMethod->save();
 
         return redirect($this->getReturnUrl())
-            ->with('alertInfo', trans('fi.record_successfully_updated'));
+            ->with('alertInfo', trans('ip.record_successfully_updated'));
     }
 
     public function delete($id)
@@ -72,6 +72,6 @@ class PaymentMethodController extends Controller
         PaymentMethod::destroy($id);
 
         return redirect()->route('paymentMethods.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 }

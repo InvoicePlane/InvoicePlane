@@ -29,7 +29,7 @@
     }
 
     $('.btn-delete-invoice-item').click(function () {
-      if (!confirm('{!! trans('fi.delete_record_warning') !!}')) return false;
+      if (!confirm('{!! trans('ip.delete_record_warning') !!}')) return false;
       var id = $(this).data('item-id');
       $.post('{{ route('invoiceItem.delete') }}', {
         id: id
@@ -93,7 +93,7 @@
         discount: $('#discount').val()
       }).done(function () {
         $('#div-invoice-edit').load('{{ route('invoiceEdit.refreshEdit', [$invoice->id]) }}', function () {
-          notify('{{ trans('fi.record_successfully_updated') }}', 'success');
+          notify('{{ trans('ip.record_successfully_updated') }}', 'success');
         });
       }).fail(function (response) {
         $.each($.parseJSON(response.responseText).errors, function (id, message) {

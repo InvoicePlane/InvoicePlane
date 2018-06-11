@@ -44,16 +44,16 @@ class Contact extends Model
 
     public function getFormattedDefaultBccAttribute()
     {
-        return ($this->default_bcc) ? trans('fi.yes') : trans('fi.no');
+        return ($this->default_bcc) ? trans('ip.yes') : trans('ip.no');
     }
 
     public function getFormattedDefaultCcAttribute()
     {
-        return ($this->default_cc) ? trans('fi.yes') : trans('fi.no');
+        return ($this->default_cc) ? trans('ip.yes') : trans('ip.no');
     }
 
     public function getFormattedDefaultToAttribute()
     {
-        return ($this->default_to) ? trans('fi.yes') : trans('fi.no');
+        return ($this->default_to) ? trans('ip.yes') : trans('ip.no');
     }
 }

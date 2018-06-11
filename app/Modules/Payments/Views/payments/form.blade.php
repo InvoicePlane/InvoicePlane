@@ -19,12 +19,12 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.payment_form') }}
+            {{ trans('ip.payment_form') }}
         </h1>
 
         <div class="pull-right">
             <a href="{{ route('payments.index') }}" class="btn btn-default">Cancel</a>
-            {!! Form::submit(trans('fi.save'), ['class' => 'btn btn-primary']) !!}
+            {!! Form::submit(trans('ip.save'), ['class' => 'btn btn-primary']) !!}
         </div>
         <div class="clearfix"></div>
     </section>
@@ -42,25 +42,25 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label>{{ trans('fi.amount') }}: </label>
+                            <label>{{ trans('ip.amount') }}: </label>
                             {!! Form::text('amount', $payment->formatted_numeric_amount, ['id' => 'amount',
                             'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('fi.payment_date') }}: </label>
+                            <label>{{ trans('ip.payment_date') }}: </label>
                             {!! Form::text('paid_at', $payment->formatted_paid_at, ['id' => 'paid_at', 'class'
                             => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('fi.payment_method') }}</label>
+                            <label>{{ trans('ip.payment_method') }}</label>
                             {!! Form::select('payment_method_id', $paymentMethods, null, ['id' =>
                             'payment_method_id', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('fi.note') }}</label>
+                            <label>{{ trans('ip.note') }}</label>
                             {!! Form::textarea('note', null, ['id' => 'note', 'class' => 'form-control']) !!}
                         </div>
 

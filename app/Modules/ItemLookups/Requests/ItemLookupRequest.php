@@ -27,8 +27,8 @@ class ItemLookupRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => trans('fi.name'),
-            'price' => trans('fi.price'),
+            'name' => trans('ip.name'),
+            'price' => trans('ip.price'),
         ];
     }
 

@@ -24,14 +24,14 @@ class CustomFields
     public static function tableNames()
     {
         return [
-            'clients' => trans('fi.clients'),
-            'company_profiles' => trans('fi.company_profiles'),
-            'expenses' => trans('fi.expenses'),
-            'invoices' => trans('fi.invoices'),
-            'quotes' => trans('fi.quotes'),
-            'recurring_invoices' => trans('fi.recurring_invoices'),
-            'payments' => trans('fi.payments'),
-            'users' => trans('fi.users'),
+            'clients' => trans('ip.clients'),
+            'company_profiles' => trans('ip.company_profiles'),
+            'expenses' => trans('ip.expenses'),
+            'invoices' => trans('ip.invoices'),
+            'quotes' => trans('ip.quotes'),
+            'recurring_invoices' => trans('ip.recurring_invoices'),
+            'payments' => trans('ip.payments'),
+            'users' => trans('ip.users'),
         ];
     }
 
@@ -43,9 +43,9 @@ class CustomFields
     public static function fieldTypes()
     {
         return [
-            'text' => trans('fi.text'),
-            'dropdown' => trans('fi.dropdown'),
-            'textarea' => trans('fi.textarea'),
+            'text' => trans('ip.text'),
+            'dropdown' => trans('ip.dropdown'),
+            'textarea' => trans('ip.textarea'),
         ];
     }
 }

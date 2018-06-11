@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('fi.invoices') }}</h1>
+        <h1>{{ trans('ip.invoices') }}</h1>
     </section>
 
     <section class="content">

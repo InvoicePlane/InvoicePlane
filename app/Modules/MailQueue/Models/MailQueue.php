@@ -73,7 +73,7 @@ class MailQueue extends Model
 
     public function getFormattedSentAttribute()
     {
-        return ($this->attributes['sent']) ? trans('fi.yes') : trans('fi.no');
+        return ($this->attributes['sent']) ? trans('ip.yes') : trans('ip.no');
     }
 
     /*

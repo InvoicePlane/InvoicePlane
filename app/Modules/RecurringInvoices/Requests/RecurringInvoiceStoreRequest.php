@@ -26,21 +26,21 @@ class RecurringInvoiceStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'company_profile_id' => trans('fi.company_profile'),
-            'client_name' => trans('fi.client'),
-            'user_id' => trans('fi.user'),
-            'next_date' => trans('fi.start_date'),
-            'recurring_frequency' => trans('fi.frequency'),
-            'recurring_period' => trans('fi.frequency'),
-            'summary' => trans('fi.summary'),
-            'exchange_rate' => trans('fi.exchange_rate'),
-            'template' => trans('fi.template'),
-            'client_id' => trans('fi.client'),
-            'group_id' => trans('fi.group'),
-            'stop_date' => trans('fi.stop_date'),
-            'items.*.name' => trans('fi.name'),
-            'items.*.quantity' => trans('fi.quantity'),
-            'items.*.price' => trans('fi.price'),
+            'company_profile_id' => trans('ip.company_profile'),
+            'client_name' => trans('ip.client'),
+            'user_id' => trans('ip.user'),
+            'next_date' => trans('ip.start_date'),
+            'recurring_frequency' => trans('ip.frequency'),
+            'recurring_period' => trans('ip.frequency'),
+            'summary' => trans('ip.summary'),
+            'exchange_rate' => trans('ip.exchange_rate'),
+            'template' => trans('ip.template'),
+            'client_id' => trans('ip.client'),
+            'group_id' => trans('ip.group'),
+            'stop_date' => trans('ip.stop_date'),
+            'items.*.name' => trans('ip.name'),
+            'items.*.quantity' => trans('ip.quantity'),
+            'items.*.price' => trans('ip.price'),
         ];
     }
 

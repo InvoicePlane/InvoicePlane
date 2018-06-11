@@ -26,11 +26,11 @@ class PaymentImporter extends AbstractImporter
     public function getFields()
     {
         return [
-            'paid_at' => '* ' . trans('fi.date'),
-            'invoice_id' => '* ' . trans('fi.invoice_number'),
-            'amount' => '* ' . trans('fi.amount'),
-            'payment_method_id' => '* ' . trans('fi.payment_method'),
-            'note' => trans('fi.note'),
+            'paid_at' => '* ' . trans('ip.date'),
+            'invoice_id' => '* ' . trans('ip.invoice_number'),
+            'amount' => '* ' . trans('ip.amount'),
+            'payment_method_id' => '* ' . trans('ip.payment_method'),
+            'note' => trans('ip.note'),
         ];
     }
 

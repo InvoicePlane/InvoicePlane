@@ -22,7 +22,7 @@
         if (response.status == 400) {
           showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
         } else {
-          alert('{{ trans('fi.unknown_error') }}');
+          alert('{{ trans('ip.unknown_error') }}');
         }
       });
     });

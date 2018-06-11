@@ -26,10 +26,10 @@ class GroupRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => trans('fi.name'),
-            'next_id' => trans('fi.next_number'),
-            'left_pad' => trans('fi.left_pad'),
-            'format' => trans('fi.format'),
+            'name' => trans('ip.name'),
+            'next_id' => trans('ip.next_number'),
+            'left_pad' => trans('ip.left_pad'),
+            'format' => trans('ip.format'),
         ];
     }
 

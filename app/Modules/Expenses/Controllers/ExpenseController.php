@@ -41,10 +41,10 @@ class ExpenseController extends Controller
         return view('expenses.index')
             ->with('expenses', $expenses)
             ->with('displaySearch', true)
-            ->with('categories', ['' => trans('fi.all_categories')] + ExpenseCategory::getList())
-            ->with('vendors', ['' => trans('fi.all_vendors')] + ExpenseVendor::getList())
-            ->with('statuses', ['' => trans('fi.all_statuses'), 'billed' => trans('fi.billed'), 'not_billed' => trans('fi.not_billed'), 'not_billable' => trans('fi.not_billable')])
-            ->with('companyProfiles', ['' => trans('fi.all_company_profiles')] + CompanyProfile::getList());
+            ->with('categories', ['' => trans('ip.all_categories')] + ExpenseCategory::getList())
+            ->with('vendors', ['' => trans('ip.all_vendors')] + ExpenseVendor::getList())
+            ->with('statuses', ['' => trans('ip.all_statuses'), 'billed' => trans('ip.billed'), 'not_billed' => trans('ip.not_billed'), 'not_billable' => trans('ip.not_billable')])
+            ->with('companyProfiles', ['' => trans('ip.all_company_profiles')] + CompanyProfile::getList());
     }
 
     public function delete($id)
@@ -52,7 +52,7 @@ class ExpenseController extends Controller
         Expense::destroy($id);
 
         return redirect($this->getReturnUrl())
-            ->with('alertInfo', trans('fi.record_successfully_deleted'));
+            ->with('alertInfo', trans('ip.record_successfully_deleted'));
     }
 
     public function bulkDelete()

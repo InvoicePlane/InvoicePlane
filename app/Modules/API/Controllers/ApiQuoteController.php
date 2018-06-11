@@ -73,6 +73,6 @@ class ApiQuoteController extends ApiController
             return response(200);
         }
 
-        return response()->json([trans('fi.record_not_found')], 400);
+        return response()->json([trans('ip.record_not_found')], 400);
     }
 }

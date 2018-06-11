@@ -62,6 +62,6 @@ class Currency extends Model
 
     public function getFormattedPlacementAttribute()
     {
-        return ($this->placement == 'before') ? trans('fi.before_amount') : trans('fi.after_amount');
+        return ($this->placement == 'before') ? trans('ip.before_amount') : trans('ip.after_amount');
     }
 }

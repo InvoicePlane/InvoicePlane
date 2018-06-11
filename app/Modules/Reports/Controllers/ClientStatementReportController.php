@@ -64,6 +64,6 @@ class ClientStatementReportController extends Controller
         $html = view('reports.output.client_statement')
             ->with('results', $results)->render();
 
-        $pdf->download($html, trans('fi.client_statement') . '.pdf');
+        $pdf->download($html, trans('ip.client_statement') . '.pdf');
     }
 }

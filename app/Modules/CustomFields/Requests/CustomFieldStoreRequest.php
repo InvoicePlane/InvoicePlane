@@ -26,9 +26,9 @@ class CustomFieldStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'tbl_name' => trans('fi.table_name'),
-            'field_label' => trans('fi.field_label'),
-            'field_type' => trans('fi.field_type'),
+            'tbl_name' => trans('ip.table_name'),
+            'field_label' => trans('ip.field_label'),
+            'field_type' => trans('ip.field_type'),
         ];
     }
 

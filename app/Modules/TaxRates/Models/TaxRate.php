@@ -41,7 +41,7 @@ class TaxRate extends Model
 
     public static function getList()
     {
-        return ['0' => trans('fi.none')] + self::pluck('name', 'id')->all();
+        return ['0' => trans('ip.none')] + self::pluck('name', 'id')->all();
     }
 
     /*
@@ -62,7 +62,7 @@ class TaxRate extends Model
 
     public function getFormattedIsCompoundAttribute()
     {
-        return ($this->attributes['is_compound']) ? trans('fi.yes') : trans('fi.no');
+        return ($this->attributes['is_compound']) ? trans('ip.yes') : trans('ip.no');
     }
 
     public function getInUseAttribute()

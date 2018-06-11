@@ -64,6 +64,6 @@ class PaymentsCollectedReportController extends Controller
         $html = view('reports.output.payments_collected')
             ->with('results', $results)->render();
 
-        $pdf->download($html, trans('fi.payments_collected') . '.pdf');
+        $pdf->download($html, trans('ip.payments_collected') . '.pdf');
     }
 }

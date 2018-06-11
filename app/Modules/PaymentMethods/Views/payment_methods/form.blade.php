@@ -16,10 +16,10 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.payment_method_form') }}
+            {{ trans('ip.payment_method_form') }}
         </h1>
         <div class="pull-right">
-            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('fi.save') }}</button>
+            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -37,7 +37,7 @@
                     <div class="box-body">
 
                         <div class="control-group">
-                            <label>{{ trans('fi.payment_method') }}: </label>
+                            <label>{{ trans('ip.payment_method') }}: </label>
                             {!! Form::text('name', null, ['id' => 'name', 'class' => 'form-control']) !!}
                         </div>
 

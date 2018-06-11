@@ -30,7 +30,7 @@
     <section class="content">
         <div class="box box-solid">
             <div class="box-header">
-                <h3 class="box-title">{{ trans('fi.invoice_summary') }}</h3>
+                <h3 class="box-title">{{ trans('ip.invoice_summary') }}</h3>
 
                 <div class="box-tools pull-right">
                     <div class="btn-group">
@@ -53,7 +53,7 @@
                         </ul>
                     </div>
                     <button class="btn btn-box-tool create-invoice"><i
-                                class="fa fa-plus"></i> {{ trans('fi.create_invoice') }}</button>
+                                class="fa fa-plus"></i> {{ trans('ip.create_invoice') }}</button>
                 </div>
             </div>
             <div class="box-body">
@@ -63,13 +63,13 @@
                             <div class="inner">
                                 <h3>{{ $invoicesTotalDraft }}</h3>
 
-                                <p>{{ trans('fi.draft_invoices') }}</p>
+                                <p>{{ trans('ip.draft_invoices') }}</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-edit"></i>
                             </div>
                             <a href="{{ route('invoices.index') }}?status=draft" class="small-box-footer">
-                                {{ trans('fi.view_draft_invoices') }} <i class="fa fa-arrow-circle-right"></i>
+                                {{ trans('ip.view_draft_invoices') }} <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -78,13 +78,13 @@
                             <div class="inner">
                                 <h3>{{ $invoicesTotalSent }}</h3>
 
-                                <p>{{ trans('fi.sent_invoices') }}</p>
+                                <p>{{ trans('ip.sent_invoices') }}</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-share"></i>
                             </div>
                             <a class="small-box-footer" href="{{ route('invoices.index') }}?status=sent">
-                                {{ trans('fi.view_sent_invoices') }} <i class="fa fa-arrow-circle-right"></i>
+                                {{ trans('ip.view_sent_invoices') }} <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -94,11 +94,11 @@
                             <div class="inner">
                                 <h3>{{ $invoicesTotalOverdue }}</h3>
 
-                                <p>{{ trans('fi.overdue_invoices') }}</p>
+                                <p>{{ trans('ip.overdue_invoices') }}</p>
                             </div>
                             <div class="icon"><i class="ion ion-alert"></i></div>
                             <a class="small-box-footer" href="{{ route('invoices.index') }}?status=overdue">
-                                {{ trans('fi.view_overdue_invoices') }} <i class="fa fa-arrow-circle-right"></i>
+                                {{ trans('ip.view_overdue_invoices') }} <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -107,11 +107,11 @@
                             <div class="inner">
                                 <h3>{{ $invoicesTotalPaid }}</h3>
 
-                                <p>{{ trans('fi.payments_collected') }}</p>
+                                <p>{{ trans('ip.payments_collected') }}</p>
                             </div>
                             <div class="icon"><i class="ion ion-heart"></i></div>
                             <a class="small-box-footer" href="{{ route('payments.index') }}">
-                                {{ trans('fi.view_payments') }} <i class="fa fa-arrow-circle-right"></i>
+                                {{ trans('ip.view_payments') }} <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -126,25 +126,25 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">{{ trans('fi.custom_date_range') }}</h4>
+                    <h4 class="modal-title" id="myModalLabel">{{ trans('ip.custom_date_range') }}</h4>
                 </div>
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label>{{ trans('fi.from_date') }} (yyyy-mm-dd):</label>
+                        <label>{{ trans('ip.from_date') }} (yyyy-mm-dd):</label>
                         {!! Form::text('setting_widgetInvoiceSummaryDashboardTotalsFromDate', config('fi.widgetInvoiceSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'invoice-dashboard-total-setting-from-date']) !!}
                     </div>
 
                     <div class="form-group">
-                        <label>{{ trans('fi.to_date') }} (yyyy-mm-dd):</label>
+                        <label>{{ trans('ip.to_date') }} (yyyy-mm-dd):</label>
                         {!! Form::text('setting_widgetInvoiceSummaryDashboardTotalsToDate', config('fi.widgetInvoiceSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'invoice-dashboard-total-setting-to-date']) !!}
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('fi.cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.cancel') }}</button>
                     <button type="button" class="btn btn-primary invoice-dashboard-total-change-option"
-                            data-id="custom_date_range" data-dismiss="modal">{{ trans('fi.save') }}</button>
+                            data-id="custom_date_range" data-dismiss="modal">{{ trans('ip.save') }}</button>
                 </div>
             </div>
         </div>

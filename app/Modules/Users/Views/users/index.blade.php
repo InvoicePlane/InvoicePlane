@@ -14,7 +14,7 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.users') }}
+            {{ trans('ip.users') }}
         </h1>
 
         <div class="pull-right">
@@ -27,11 +27,11 @@
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
                         aria-expanded="false">
-                    {{ trans('fi.new') }} <span class="caret"></span>
+                    {{ trans('ip.new') }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="{{ route('users.create', ['admin']) }}">{{ trans('fi.admin_account') }}</a></li>
-                    <li><a href="{{ route('users.create', ['client']) }}">{{ trans('fi.client_account') }}</a></li>
+                    <li><a href="{{ route('users.create', ['admin']) }}">{{ trans('ip.admin_account') }}</a></li>
+                    <li><a href="{{ route('users.create', ['client']) }}">{{ trans('ip.client_account') }}</a></li>
                 </ul>
             </div>
         </div>
@@ -53,10 +53,10 @@
 
                             <thead>
                             <tr>
-                                <th>{!! Sortable::link('name', trans('fi.name')) !!}</th>
-                                <th>{!! Sortable::link('email', trans('fi.email')) !!}</th>
-                                <th>{{ trans('fi.type') }}</th>
-                                <th>{{ trans('fi.options') }}</th>
+                                <th>{!! Sortable::link('name', trans('ip.name')) !!}</th>
+                                <th>{!! Sortable::link('email', trans('ip.email')) !!}</th>
+                                <th>{{ trans('ip.type') }}</th>
+                                <th>{{ trans('ip.options') }}</th>
                             </tr>
                             </thead>
 
@@ -67,23 +67,23 @@
                                         <a href="{{ route('users.edit', [$user->id, $user->user_type]) }}">{{ $user->name }}</a>
                                     </td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ trans('fi.' . $user->user_type) }}</td>
+                                    <td>{{ trans('ip.' . $user->user_type) }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
                                                     data-toggle="dropdown">
-                                                {{ trans('fi.options') }} <span class="caret"></span>
+                                                {{ trans('ip.options') }} <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li>
                                                     <a href="{{ route('users.edit', [$user->id, $user->user_type]) }}"><i
-                                                                class="fa fa-edit"></i> {{ trans('fi.edit') }}</a></li>
+                                                                class="fa fa-edit"></i> {{ trans('ip.edit') }}</a></li>
                                                 <li><a href="{{ route('users.password.edit', [$user->id]) }}"><i
-                                                                class="fa fa-lock"></i> {{ trans('fi.reset_password') }}
+                                                                class="fa fa-lock"></i> {{ trans('ip.reset_password') }}
                                                     </a></li>
                                                 <li><a href="{{ route('users.delete', [$user->id]) }}"
-                                                       onclick="return confirm('{{ trans('fi.delete_record_warning') }}');"><i
-                                                                class="fa fa-trash-o"></i> {{ trans('fi.delete') }}</a>
+                                                       onclick="return confirm('{{ trans('ip.delete_record_warning') }}');"><i
+                                                                class="fa fa-trash-o"></i> {{ trans('ip.delete') }}</a>
                                                 </li>
                                             </ul>
                                         </div>

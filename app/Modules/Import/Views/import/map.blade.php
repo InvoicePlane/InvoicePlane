@@ -6,11 +6,11 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.map_fields_to_import') }}
+            {{ trans('ip.map_fields_to_import') }}
         </h1>
 
         <div class="pull-right">
-            {!! Form::submit(trans('fi.submit'), ['class' => 'btn btn-primary']) !!}
+            {!! Form::submit(trans('ip.submit'), ['class' => 'btn btn-primary']) !!}
         </div>
         <div class="clearfix"></div>
     </section>

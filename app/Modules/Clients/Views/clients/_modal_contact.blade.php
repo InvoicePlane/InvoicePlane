@@ -26,9 +26,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">
                     @if ($editMode)
-                        {{ trans('fi.edit_contact') }}
+                        {{ trans('ip.edit_contact') }}
                     @else
-                        {{ trans('fi.add_contact') }}
+                        {{ trans('ip.add_contact') }}
                     @endif
                 </h4>
             </div>
@@ -39,14 +39,14 @@
                 <form class="form-horizontal">
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('fi.name') }}:</label>
+                        <label class="col-sm-3 control-label">{{ trans('ip.name') }}:</label>
                         <div class="col-sm-9">
                             {!! Form::text('contact_name', ($editMode) ? $contact->name : null, ['class' => 'form-control', 'id' => 'contact_name']) !!}
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('fi.email') }}:</label>
+                        <label class="col-sm-3 control-label">{{ trans('ip.email') }}:</label>
                         <div class="col-sm-9">
                             {!! Form::text('contact_email', ($editMode) ? $contact->email : null, ['class' => 'form-control', 'id' => 'contact_email']) !!}
                         </div>
@@ -56,8 +56,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('fi.cancel') }}</button>
-                <button type="button" id="btn-contact-submit" class="btn btn-primary">{{ trans('fi.save') }}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.cancel') }}</button>
+                <button type="button" id="btn-contact-submit" class="btn btn-primary">{{ trans('ip.save') }}</button>
             </div>
         </div>
     </div>

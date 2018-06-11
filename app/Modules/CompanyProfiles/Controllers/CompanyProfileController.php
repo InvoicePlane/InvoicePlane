@@ -60,7 +60,7 @@ class CompanyProfileController extends Controller
         $companyProfile->custom->update($request->input('custom', []));
 
         return redirect($this->getReturnUrl())
-            ->with('alertSuccess', trans('fi.record_successfully_created'));
+            ->with('alertSuccess', trans('ip.record_successfully_created'));
     }
 
     public function edit($id)
@@ -94,17 +94,17 @@ class CompanyProfileController extends Controller
         $companyProfile->custom->update($request->input('custom', []));
 
         return redirect($this->getReturnUrl())
-            ->with('alertInfo', trans('fi.record_successfully_updated'));
+            ->with('alertInfo', trans('ip.record_successfully_updated'));
     }
 
     public function delete($id)
     {
         if (CompanyProfile::inUse($id)) {
-            $alert = trans('fi.cannot_delete_record_in_use');
+            $alert = trans('ip.cannot_delete_record_in_use');
         } else {
             CompanyProfile::destroy($id);
 
-            $alert = trans('fi.record_successfully_deleted');
+            $alert = trans('ip.record_successfully_deleted');
         }
 
         return redirect()->route('companyProfiles.index')

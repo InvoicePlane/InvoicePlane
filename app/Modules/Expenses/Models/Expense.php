@@ -110,8 +110,8 @@ class Expense extends Model
     public function getAttachmentPermissionOptionsAttribute()
     {
         return [
-            '0' => trans('fi.not_visible'),
-            '1' => trans('fi.visible'),
+            '0' => trans('ip.not_visible'),
+            '1' => trans('ip.visible'),
         ];
     }
 

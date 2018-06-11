@@ -27,9 +27,9 @@ class SettingUpdateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'setting.invoicesDueAfter' => trans('fi.invoices_due_after'),
-            'setting.quotesExpireAfter' => trans('fi.quotes_expire_after'),
-            'setting.pdfBinaryPath' => trans('fi.binary_path'),
+            'setting.invoicesDueAfter' => trans('ip.invoices_due_after'),
+            'setting.quotesExpireAfter' => trans('ip.quotes_expire_after'),
+            'setting.pdfBinaryPath' => trans('ip.binary_path'),
         ];
     }
 

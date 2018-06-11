@@ -65,6 +65,6 @@ class ProfitLossReportController extends Controller
         $html = view('reports.output.profit_loss')
             ->with('results', $results)->render();
 
-        $pdf->download($html, trans('fi.profit_and_loss') . '.pdf');
+        $pdf->download($html, trans('ip.profit_and_loss') . '.pdf');
     }
 }

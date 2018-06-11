@@ -48,7 +48,7 @@ class QuoteController extends Controller
             ->with('status', $status)
             ->with('statuses', QuoteStatuses::listsAllFlat())
             ->with('keyedStatuses', QuoteStatuses::lists())
-            ->with('companyProfiles', ['' => trans('fi.all_company_profiles')] + CompanyProfile::getList())
+            ->with('companyProfiles', ['' => trans('ip.all_company_profiles')] + CompanyProfile::getList())
             ->with('displaySearch', true);
     }
 
@@ -57,7 +57,7 @@ class QuoteController extends Controller
         Quote::destroy($id);
 
         return redirect()->route('quotes.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 
     public function bulkDelete()

@@ -27,10 +27,10 @@ class PaymentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'paid_at' => trans('fi.payment_date'),
-            'invoice_id' => trans('fi.invoice'),
-            'amount' => trans('fi.amount'),
-            'payment_method_id' => trans('fi.payment_method'),
+            'paid_at' => trans('ip.payment_date'),
+            'invoice_id' => trans('ip.invoice'),
+            'amount' => trans('ip.amount'),
+            'payment_method_id' => trans('ip.payment_method'),
         ];
     }
 

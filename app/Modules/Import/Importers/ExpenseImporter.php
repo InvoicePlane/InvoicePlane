@@ -22,14 +22,14 @@ class ExpenseImporter extends AbstractImporter
     public function getFields()
     {
         $fields = [
-            'expense_date' => '* ' . trans('fi.date'),
-            'category_name' => '* ' . trans('fi.category'),
-            'amount' => '* ' . trans('fi.amount'),
-            'vendor_name' => trans('fi.vendor'),
-            'client_name' => trans('fi.client'),
-            'description' => trans('fi.description'),
-            'tax' => trans('fi.tax'),
-            'company_profile' => trans('fi.company_profile'),
+            'expense_date' => '* ' . trans('ip.date'),
+            'category_name' => '* ' . trans('ip.category'),
+            'amount' => '* ' . trans('ip.amount'),
+            'vendor_name' => trans('ip.vendor'),
+            'client_name' => trans('ip.client'),
+            'description' => trans('ip.description'),
+            'tax' => trans('ip.tax'),
+            'company_profile' => trans('ip.company_profile'),
         ];
 
         return $fields;
@@ -51,12 +51,12 @@ class ExpenseImporter extends AbstractImporter
             'category_name' => 'required',
             'amount' => 'required|numeric',
         ])->setAttributeNames([
-            'user_id' => trans('fi.user'),
-            'company_profile_id' => trans('fi.company_profile'),
-            'expense_date' => trans('fi.date'),
-            'category_name' => trans('fi.category'),
-            'description' => trans('fi.description'),
-            'amount' => trans('fi.amount'),
+            'user_id' => trans('ip.user'),
+            'company_profile_id' => trans('ip.company_profile'),
+            'expense_date' => trans('ip.date'),
+            'category_name' => trans('ip.category'),
+            'description' => trans('ip.description'),
+            'amount' => trans('ip.amount'),
         ]);
     }
 

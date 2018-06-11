@@ -47,7 +47,7 @@ class CurrencyController extends Controller
         Currency::create($request->all());
 
         return redirect($this->getReturnUrl())
-            ->with('alertSuccess', trans('fi.record_successfully_created'));
+            ->with('alertSuccess', trans('ip.record_successfully_created'));
     }
 
     public function edit($id)
@@ -66,7 +66,7 @@ class CurrencyController extends Controller
         $currency->save();
 
         return redirect($this->getReturnUrl())
-            ->with('alertInfo', trans('fi.record_successfully_updated'));
+            ->with('alertInfo', trans('ip.record_successfully_updated'));
     }
 
     public function delete($id)
@@ -74,11 +74,11 @@ class CurrencyController extends Controller
         $currency = Currency::find($id);
 
         if ($currency->in_use) {
-            $alert = trans('fi.cannot_delete_record_in_use');
+            $alert = trans('ip.cannot_delete_record_in_use');
         } else {
             Currency::destroy($id);
 
-            $alert = trans('fi.record_successfully_deleted');
+            $alert = trans('ip.record_successfully_deleted');
         }
 
         return redirect()->route('currencies.index')

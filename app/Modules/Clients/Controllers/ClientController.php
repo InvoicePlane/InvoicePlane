@@ -61,7 +61,7 @@ class ClientController extends Controller
         $client->custom->update($request->get('custom', []));
 
         return redirect()->route('clients.edit', [$client->id])
-            ->with('alertInfo', trans('fi.record_successfully_created'));
+            ->with('alertInfo', trans('ip.record_successfully_created'));
     }
 
     public function show($clientId)
@@ -118,7 +118,7 @@ class ClientController extends Controller
         $client->custom->update($request->get('custom', []));
 
         return redirect()->route('clients.edit', [$id])
-            ->with('alertInfo', trans('fi.record_successfully_updated'));
+            ->with('alertInfo', trans('ip.record_successfully_updated'));
     }
 
     public function delete($clientId)
@@ -126,7 +126,7 @@ class ClientController extends Controller
         Client::destroy($clientId);
 
         return redirect()->route('clients.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 
     public function bulkDelete()
@@ -190,7 +190,7 @@ class ClientController extends Controller
 
         return response()->json([
             'success' => false,
-            'errors' => ['messages' => [trans('fi.client_not_found')]],
+            'errors' => ['messages' => [trans('ip.client_not_found')]],
         ], 400);
     }
 

@@ -27,8 +27,8 @@ class TaxRateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => trans('fi.name'),
-            'percent' => trans('fi.percent'),
+            'name' => trans('ip.name'),
+            'percent' => trans('ip.percent'),
         ];
     }
 

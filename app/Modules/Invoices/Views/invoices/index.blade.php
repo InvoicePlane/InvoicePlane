@@ -7,14 +7,14 @@
 @section('content')
 
     <section class="content-header">
-        <h1 class="pull-left">{{ trans('fi.invoices') }}</h1>
+        <h1 class="pull-left">{{ trans('ip.invoices') }}</h1>
 
         <div class="pull-right">
 
             <div class="btn-group bulk-actions">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                         aria-expanded="false">
-                    {{ trans('fi.change_status') }} <span class="caret"></span>
+                    {{ trans('ip.change_status') }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     @foreach ($keyedStatuses as $key => $status)
@@ -25,7 +25,7 @@
             </div>
 
             <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i
-                        class="fa fa-trash"></i> {{ trans('fi.delete') }}</a>
+                        class="fa fa-trash"></i> {{ trans('ip.delete') }}</a>
 
             <div class="btn-group">
                 {!! Form::open(['method' => 'GET', 'id' => 'filter']) !!}
@@ -34,7 +34,7 @@
                 {!! Form::close() !!}
             </div>
             <a href="javascript:void(0)" class="btn btn-primary create-invoice"><i
-                        class="fa fa-plus"></i> {{ trans('fi.new') }}</a>
+                        class="fa fa-plus"></i> {{ trans('ip.new') }}</a>
         </div>
 
         <div class="clearfix"></div>

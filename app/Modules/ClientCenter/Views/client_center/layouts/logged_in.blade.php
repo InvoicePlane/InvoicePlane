@@ -16,22 +16,22 @@
     <ul class="sidebar-menu">
         <li>
             <a href="{{ route('clientCenter.dashboard') }}">
-                <i class="fa fa-dashboard"></i> <span>{{ trans('fi.dashboard') }}</span>
+                <i class="fa fa-dashboard"></i> <span>{{ trans('ip.dashboard') }}</span>
             </a>
         </li>
         <li>
             <a href="{{ route('clientCenter.quotes') }}">
-                <i class="fa fa-file-text-o"></i> <span>{{ trans('fi.quotes') }}</span>
+                <i class="fa fa-file-text-o"></i> <span>{{ trans('ip.quotes') }}</span>
             </a>
         </li>
         <li>
             <a href="{{ route('clientCenter.invoices') }}">
-                <i class="fa fa-file-text"></i> <span>{{ trans('fi.invoices') }}</span>
+                <i class="fa fa-file-text"></i> <span>{{ trans('ip.invoices') }}</span>
             </a>
         </li>
         <li>
             <a href="{{ route('clientCenter.payments') }}">
-                <i class="fa fa-credit-card"></i> <span>{{ trans('fi.payments') }}</span>
+                <i class="fa fa-credit-card"></i> <span>{{ trans('ip.payments') }}</span>
             </a>
         </li>
     </ul>

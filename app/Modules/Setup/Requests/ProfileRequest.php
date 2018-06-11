@@ -26,10 +26,10 @@ class ProfileRequest extends FormRequest
     public function attributes()
     {
         return [
-            'user.name' => trans('fi.name'),
-            'user.email' => trans('fi.email'),
-            'user.password' => trans('fi.password'),
-            'company_profile.company' => trans('fi.company_profile'),
+            'user.name' => trans('ip.name'),
+            'user.email' => trans('ip.email'),
+            'user.password' => trans('ip.password'),
+            'company_profile.company' => trans('ip.company_profile'),
         ];
     }
 

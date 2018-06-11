@@ -150,7 +150,7 @@ class Client extends Model
 
     public function getAttachmentPermissionOptionsAttribute()
     {
-        return ['0' => trans('fi.not_visible')];
+        return ['0' => trans('ip.not_visible')];
     }
 
     public function getFormattedBalanceAttribute()

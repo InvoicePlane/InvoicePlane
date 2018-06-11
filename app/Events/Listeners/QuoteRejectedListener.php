@@ -23,7 +23,7 @@ class QuoteRejectedListener
             'to' => [$event->quote->user->email],
             'cc' => [config('fi.mailDefaultCc')],
             'bcc' => [config('fi.mailDefaultBcc')],
-            'subject' => trans('fi.quote_status_change_notification'),
+            'subject' => trans('ip.quote_status_change_notification'),
             'body' => $parser->parse('quoteRejectedEmailBody'),
             'attach_pdf' => config('fi.attachPdf'),
         ]);

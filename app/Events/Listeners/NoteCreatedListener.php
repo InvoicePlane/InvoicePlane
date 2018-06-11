@@ -18,7 +18,7 @@ class NoteCreatedListener
             'to' => [$event->note->notable->user->email],
             'cc' => [config('fi.mailDefaultCc')],
             'bcc' => [config('fi.mailDefaultBcc')],
-            'subject' => trans('fi.note_notification'),
+            'subject' => trans('ip.note_notification'),
             'body' => $event->note->formatted_note,
             'attach_pdf' => config('fi.attachPdf'),
         ]);

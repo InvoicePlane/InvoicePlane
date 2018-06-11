@@ -18,11 +18,11 @@ class FileNames
 {
     public static function invoice($invoice)
     {
-        return trans('fi.invoice') . '_' . str_replace('/', '-', $invoice->number) . '.pdf';
+        return trans('ip.invoice') . '_' . str_replace('/', '-', $invoice->number) . '.pdf';
     }
 
     public static function quote($quote)
     {
-        return trans('fi.quote') . '_' . str_replace('/', '-', $quote->number) . '.pdf';
+        return trans('ip.quote') . '_' . str_replace('/', '-', $quote->number) . '.pdf';
     }
 }

@@ -6,11 +6,11 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.import_data') }}
+            {{ trans('ip.import_data') }}
         </h1>
         <div class="pull-right">
             @if (!config('app.demo'))
-                {!! Form::submit(trans('fi.submit'), ['class' => 'btn btn-primary']) !!}
+                {!! Form::submit(trans('ip.submit'), ['class' => 'btn btn-primary']) !!}
             @endif
         </div>
         <div class="clearfix"></div>
@@ -29,12 +29,12 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label>{{ trans('fi.what_to_import') }}</label>
+                            <label>{{ trans('ip.what_to_import') }}</label>
                             {!! Form::select('import_type', $importTypes, null, ['class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('fi.select_file_to_import') }}</label>
+                            <label>{{ trans('ip.select_file_to_import') }}</label>
                             @if (!config('app.demo'))
                                 {!! Form::file('import_file') !!}
                             @else

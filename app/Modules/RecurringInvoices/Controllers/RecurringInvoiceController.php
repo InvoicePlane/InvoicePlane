@@ -46,8 +46,8 @@ class RecurringInvoiceController extends Controller
             ->with('displaySearch', true)
             ->with('frequencies', Frequency::lists())
             ->with('status', $status)
-            ->with('statuses', ['all_statuses' => trans('fi.all_statuses'), 'active' => trans('fi.active'), 'inactive' => trans('fi.inactive')])
-            ->with('companyProfiles', ['' => trans('fi.all_company_profiles')] + CompanyProfile::getList());
+            ->with('statuses', ['all_statuses' => trans('ip.all_statuses'), 'active' => trans('ip.active'), 'inactive' => trans('ip.inactive')])
+            ->with('companyProfiles', ['' => trans('ip.all_company_profiles')] + CompanyProfile::getList());
     }
 
     public function delete($id)
@@ -55,6 +55,6 @@ class RecurringInvoiceController extends Controller
         RecurringInvoice::destroy($id);
 
         return redirect()->route('recurringInvoices.index')
-            ->with('alert', trans('fi.record_successfully_deleted'));
+            ->with('alert', trans('ip.record_successfully_deleted'));
     }
 }

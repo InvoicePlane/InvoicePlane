@@ -39,7 +39,7 @@ class QuoteRecalculateController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => trans('fi.recalculation_complete'),
+            'message' => trans('ip.recalculation_complete'),
         ], 200);
     }
 }

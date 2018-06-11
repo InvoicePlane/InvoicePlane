@@ -65,6 +65,6 @@ class TaxSummaryReportController extends Controller
         $html = view('reports.output.tax_summary')
             ->with('results', $results)->render();
 
-        $pdf->download($html, trans('fi.tax_summary') . '.pdf');
+        $pdf->download($html, trans('ip.tax_summary') . '.pdf');
     }
 }

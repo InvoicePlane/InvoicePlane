@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content-header">
-        <h1>{{ trans('fi.setup') }}</h1>
+        <h1>{{ trans('ip.setup') }}</h1>
     </section>
 
     <section class="content">
@@ -18,7 +18,7 @@
 
                         <p>@lang('fi.setup_welcome')</p>
 
-                        {!! Form::submit(trans('fi.continue'), ['class' => 'btn btn-primary']) !!}
+                        {!! Form::submit(trans('ip.continue'), ['class' => 'btn btn-primary']) !!}
 
                     </div>
                 </div>

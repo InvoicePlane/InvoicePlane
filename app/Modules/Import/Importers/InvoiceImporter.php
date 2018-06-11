@@ -25,14 +25,14 @@ class InvoiceImporter extends AbstractImporter
     public function getFields()
     {
         return [
-            'invoice_date' => '* ' . trans('fi.date'),
-            'company_profile' => '* ' . trans('fi.company_profile'),
-            'client_name' => '* ' . trans('fi.client_name'),
-            'number' => '* ' . trans('fi.invoice_number'),
-            'group_id' => trans('fi.group'),
-            'due_at' => trans('fi.due_date'),
-            'summary' => trans('fi.summary'),
-            'terms' => trans('fi.terms_and_conditions'),
+            'invoice_date' => '* ' . trans('ip.date'),
+            'company_profile' => '* ' . trans('ip.company_profile'),
+            'client_name' => '* ' . trans('ip.client_name'),
+            'number' => '* ' . trans('ip.invoice_number'),
+            'group_id' => trans('ip.group'),
+            'due_at' => trans('ip.due_date'),
+            'summary' => trans('ip.summary'),
+            'terms' => trans('ip.terms_and_conditions'),
         ];
     }
 

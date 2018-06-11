@@ -34,6 +34,6 @@ class RecurringInvoiceRecalculateController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
 
-        return response()->json(['success' => true, 'message' => trans('fi.recalculation_complete')], 200);
+        return response()->json(['success' => true, 'message' => trans('ip.recalculation_complete')], 200);
     }
 }

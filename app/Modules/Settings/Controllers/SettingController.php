@@ -58,15 +58,15 @@ class SettingController extends Controller
                 'paymentMethods' => PaymentMethod::getList(),
                 'emailSendMethods' => MailSettings::listSendMethods(),
                 'emailEncryptions' => MailSettings::listEncryptions(),
-                'yesNoArray' => ['0' => trans('fi.no'), '1' => trans('fi.yes')],
+                'yesNoArray' => ['0' => trans('ip.no'), '1' => trans('ip.yes')],
                 'timezones' => array_combine(timezone_identifiers_list(), timezone_identifiers_list()),
-                'paperSizes' => ['letter' => trans('fi.letter'), 'A4' => trans('fi.a4'), 'legal' => trans('fi.legal')],
-                'paperOrientations' => ['portrait' => trans('fi.portrait'), 'landscape' => trans('fi.landscape')],
+                'paperSizes' => ['letter' => trans('ip.letter'), 'A4' => trans('ip.a4'), 'legal' => trans('ip.legal')],
+                'paperOrientations' => ['portrait' => trans('ip.portrait'), 'landscape' => trans('ip.landscape')],
                 'currencies' => Currency::getList(),
-                'exchangeRateModes' => ['automatic' => trans('fi.automatic'), 'manual' => trans('fi.manual')],
+                'exchangeRateModes' => ['automatic' => trans('ip.automatic'), 'manual' => trans('ip.manual')],
                 'pdfDrivers' => PDFFactory::getDrivers(),
-                'convertQuoteOptions' => ['quote' => trans('fi.convert_quote_option1'), 'invoice' => trans('fi.convert_quote_option2')],
-                'clientUniqueNameOptions' => ['0' => trans('fi.client_unique_name_option_1'), '1' => trans('fi.client_unique_name_option_2')],
+                'convertQuoteOptions' => ['quote' => trans('ip.convert_quote_option1'), 'invoice' => trans('ip.convert_quote_option2')],
+                'clientUniqueNameOptions' => ['0' => trans('ip.client_unique_name_option_1'), '1' => trans('ip.client_unique_name_option_2')],
                 'dashboardWidgets' => DashboardWidgets::listsByOrder(),
                 'colWidthArray' => array_combine(range(1, 12), range(1, 12)),
                 'displayOrderArray' => array_combine(range(1, 24), range(1, 24)),
@@ -77,10 +77,10 @@ class SettingController extends Controller
                 'roundTaxDecimalOptions' => ['2' => '2', '3' => '3', '4' => '4'],
                 'companyProfiles' => CompanyProfile::getList(),
                 'merchantDrivers' => MerchantFactory::getDrivers(),
-                'invoiceStatuses' => InvoiceStatuses::listsAllFlat() + ['overdue' => trans('fi.overdue')],
+                'invoiceStatuses' => InvoiceStatuses::listsAllFlat() + ['overdue' => trans('ip.overdue')],
                 'quoteStatuses' => QuoteStatuses::listsAllFlat(),
-                'invoiceWhenDraftOptions' => [0 => trans('fi.keep_invoice_date_as_is'), 1 => trans('fi.change_invoice_date_to_todays_date')],
-                'quoteWhenDraftOptions' => [0 => trans('fi.keep_quote_date_as_is'), 1 => trans('fi.change_quote_date_to_todays_date')],
+                'invoiceWhenDraftOptions' => [0 => trans('ip.keep_invoice_date_as_is'), 1 => trans('ip.change_invoice_date_to_todays_date')],
+                'quoteWhenDraftOptions' => [0 => trans('ip.keep_quote_date_as_is'), 1 => trans('ip.change_quote_date_to_todays_date')],
             ]);
     }
 
@@ -107,7 +107,7 @@ class SettingController extends Controller
         Setting::writeEmailTemplates();
 
         return redirect()->route('settings.index')
-            ->with('alertSuccess', trans('fi.settings_successfully_saved'));
+            ->with('alertSuccess', trans('ip.settings_successfully_saved'));
     }
 
     public function updateCheck()
@@ -118,9 +118,9 @@ class SettingController extends Controller
         $currentVersion = $updateChecker->getCurrentVersion();
 
         if ($updateAvailable) {
-            $message = trans('fi.update_available', ['version' => $currentVersion]);
+            $message = trans('ip.update_available', ['version' => $currentVersion]);
         } else {
-            $message = trans('fi.update_not_available');
+            $message = trans('ip.update_not_available');
         }
 
         return response()->json(

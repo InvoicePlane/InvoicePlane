@@ -5,7 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">{{ trans('fi.copy') }}</h4>
+                <h4 class="modal-title">{{ trans('ip.copy') }}</h4>
             </div>
             <div class="modal-body">
 
@@ -14,21 +14,21 @@
                 <form class="form-horizontal">
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('fi.client') }}</label>
+                        <label class="col-sm-3 control-label">{{ trans('ip.client') }}</label>
                         <div class="col-sm-9">
                             {!! Form::text('client_name', $invoice->client->unique_name, ['id' => 'copy_client_name', 'class' => 'form-control client-lookup', 'autocomplete' => 'off']) !!}
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('fi.date') }}</label>
+                        <label class="col-sm-3 control-label">{{ trans('ip.date') }}</label>
                         <div class="col-sm-9">
                             {!! Form::text('invoice_date', date(config('fi.dateFormat')), ['id' => 'copy_invoice_date', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('fi.company_profile') }}</label>
+                        <label class="col-sm-3 control-label">{{ trans('ip.company_profile') }}</label>
                         <div class="col-sm-9">
                             {!! Form::select('company_profile_id', $companyProfiles, config('fi.defaultCompanyProfile'),
                             ['id' => 'copy_company_profile_id', 'class' => 'form-control']) !!}
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">{{ trans('fi.group') }}</label>
+                        <label class="col-sm-3 control-label">{{ trans('ip.group') }}</label>
                         <div class="col-sm-9">
                             {!! Form::select('group_id', $groups, $invoice->group_id, ['id' => 'copy_group_id', 'class' => 'form-control']) !!}
                         </div>
@@ -46,9 +46,9 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('fi.cancel') }}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('ip.cancel') }}</button>
                 <button type="button" id="btn-copy-invoice-submit"
-                        class="btn btn-primary">{{ trans('fi.submit') }}</button>
+                        class="btn btn-primary">{{ trans('ip.submit') }}</button>
             </div>
         </div>
     </div>

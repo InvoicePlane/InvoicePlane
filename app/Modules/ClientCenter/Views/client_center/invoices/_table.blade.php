@@ -1,25 +1,25 @@
 <table class="table table-hover">
     <thead>
     <tr>
-        <th>{{ trans('fi.status') }}</th>
-        <th>{{ trans('fi.invoice') }}</th>
-        <th>{{ trans('fi.date') }}</th>
-        <th>{{ trans('fi.due') }}</th>
-        <th>{{ trans('fi.summary') }}</th>
-        <th>{{ trans('fi.total') }}</th>
-        <th>{{ trans('fi.balance') }}</th>
-        <th>{{ trans('fi.options') }}</th>
+        <th>{{ trans('ip.status') }}</th>
+        <th>{{ trans('ip.invoice') }}</th>
+        <th>{{ trans('ip.date') }}</th>
+        <th>{{ trans('ip.due') }}</th>
+        <th>{{ trans('ip.summary') }}</th>
+        <th>{{ trans('ip.total') }}</th>
+        <th>{{ trans('ip.balance') }}</th>
+        <th>{{ trans('ip.options') }}</th>
     </tr>
     </thead>
     <tbody>
     @foreach ($invoices as $invoice)
         <tr>
             <td>
-                <span class="label label-{{ $invoiceStatuses[$invoice->invoice_status_id] }}">{{ trans('fi.' . $invoiceStatuses[$invoice->invoice_status_id]) }}</span>
+                <span class="label label-{{ $invoiceStatuses[$invoice->invoice_status_id] }}">{{ trans('ip.' . $invoiceStatuses[$invoice->invoice_status_id]) }}</span>
                 @if ($invoice->viewed)
-                    <span class="label label-success">{{ trans('fi.viewed') }}</span>
+                    <span class="label label-success">{{ trans('ip.viewed') }}</span>
                 @else
-                    <span class="label label-default">{{ trans('fi.not_viewed') }}</span>
+                    <span class="label label-default">{{ trans('ip.not_viewed') }}</span>
                 @endif
             </td>
             <td>{{ $invoice->number }}</td>
@@ -31,13 +31,13 @@
             <td>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                        {{ trans('fi.options') }} <span class="caret"></span>
+                        {{ trans('ip.options') }} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('clientCenter.public.invoice.pdf', [$invoice->url_key]) }}"
-                               target="_blank"><i class="fa fa-print"></i> {{ trans('fi.pdf') }}</a></li>
+                               target="_blank"><i class="fa fa-print"></i> {{ trans('ip.pdf') }}</a></li>
                         <li><a href="{{ route('clientCenter.public.invoice.show', [$invoice->url_key]) }}"
-                               target="_blank"><i class="fa fa-search"></i> {{ trans('fi.view') }}</a></li>
+                               target="_blank"><i class="fa fa-search"></i> {{ trans('ip.view') }}</a></li>
                     </ul>
                 </div>
             </td>

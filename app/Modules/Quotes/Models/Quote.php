@@ -166,7 +166,7 @@ class Quote extends Model
 
     public function getAttachmentPermissionOptionsAttribute()
     {
-        return ['0' => trans('fi.not_visible'), '1' => trans('fi.visible')];
+        return ['0' => trans('ip.not_visible'), '1' => trans('ip.visible')];
     }
 
     public function getFormattedCreatedAtAttribute()

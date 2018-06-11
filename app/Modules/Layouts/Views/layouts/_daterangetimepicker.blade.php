@@ -21,29 +21,29 @@
                     @else
                     format: "{{ strtoupper(config('fi.datepickerFormat')) }} h:mm A",
                     @endif
-                    customRangeLabel: "{{ trans('fi.custom') }}",
+                    customRangeLabel: "{{ trans('ip.custom') }}",
                   daysOfWeek: [
-                    "{{ trans('fi.day_short_sunday') }}",
-                    "{{ trans('fi.day_short_monday') }}",
-                    "{{ trans('fi.day_short_tuesday') }}",
-                    "{{ trans('fi.day_short_wednesday') }}",
-                    "{{ trans('fi.day_short_thursday') }}",
-                    "{{ trans('fi.day_short_friday') }}",
-                    "{{ trans('fi.day_short_saturday') }}"
+                    "{{ trans('ip.day_short_sunday') }}",
+                    "{{ trans('ip.day_short_monday') }}",
+                    "{{ trans('ip.day_short_tuesday') }}",
+                    "{{ trans('ip.day_short_wednesday') }}",
+                    "{{ trans('ip.day_short_thursday') }}",
+                    "{{ trans('ip.day_short_friday') }}",
+                    "{{ trans('ip.day_short_saturday') }}"
                   ],
                   monthNames: [
-                    "{{ trans('fi.month_january') }}",
-                    "{{ trans('fi.month_february') }}",
-                    "{{ trans('fi.month_march') }}",
-                    "{{ trans('fi.month_april') }}",
-                    "{{ trans('fi.month_may') }}",
-                    "{{ trans('fi.month_june') }}",
-                    "{{ trans('fi.month_july') }}",
-                    "{{ trans('fi.month_august') }}",
-                    "{{ trans('fi.month_september') }}",
-                    "{{ trans('fi.month_october') }}",
-                    "{{ trans('fi.month_november') }}",
-                    "{{ trans('fi.month_december') }}"
+                    "{{ trans('ip.month_january') }}",
+                    "{{ trans('ip.month_february') }}",
+                    "{{ trans('ip.month_march') }}",
+                    "{{ trans('ip.month_april') }}",
+                    "{{ trans('ip.month_may') }}",
+                    "{{ trans('ip.month_june') }}",
+                    "{{ trans('ip.month_july') }}",
+                    "{{ trans('ip.month_august') }}",
+                    "{{ trans('ip.month_september') }}",
+                    "{{ trans('ip.month_october') }}",
+                    "{{ trans('ip.month_november') }}",
+                    "{{ trans('ip.month_december') }}"
                   ],
                   firstDay: 1
                 }

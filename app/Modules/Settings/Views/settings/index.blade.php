@@ -13,7 +13,7 @@
           $.post("{{ route('invoices.recalculate') }}").done(function (response) {
             alert(response.message);
           }).fail(function (response) {
-            alert('{{ trans('fi.error') }}: ' + $.parseJSON(response.responseText).message);
+            alert('{{ trans('ip.error') }}: ' + $.parseJSON(response.responseText).message);
           }).always(function () {
             $btn.button('reset');
           });
@@ -24,7 +24,7 @@
           $.post("{{ route('quotes.recalculate') }}").done(function (response) {
             alert(response.message);
           }).fail(function (response) {
-            alert('{{ trans('fi.error') }}: ' + $.parseJSON(response.responseText).message);
+            alert('{{ trans('ip.error') }}: ' + $.parseJSON(response.responseText).message);
           }).always(function () {
             $btn.button('reset');
           });
@@ -45,11 +45,11 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.system_settings') }}
+            {{ trans('ip.system_settings') }}
         </h1>
 
         <div class="pull-right">
-            <button class="btn btn-primary" id="btn-submit"><i class="fa fa-save"></i> {{ trans('fi.save') }}</button>
+            <button class="btn btn-primary" id="btn-submit"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -65,15 +65,15 @@
 
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs" id="setting-tabs">
-                        <li class="active"><a data-toggle="tab" href="#tab-general">{{ trans('fi.general') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-dashboard">{{ trans('fi.dashboard') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-invoices">{{ trans('fi.invoices') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-quotes">{{ trans('fi.quotes') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-taxes">{{ trans('fi.taxes') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-email">{{ trans('fi.email') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-pdf">{{ trans('fi.pdf') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-online-payments">{{ trans('fi.online_payments') }}</a></li>
-                        <li><a data-toggle="tab" href="#tab-backup">{{ trans('fi.backup') }}</a></li>
+                        <li class="active"><a data-toggle="tab" href="#tab-general">{{ trans('ip.general') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-dashboard">{{ trans('ip.dashboard') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-invoices">{{ trans('ip.invoices') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-quotes">{{ trans('ip.quotes') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-taxes">{{ trans('ip.taxes') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-email">{{ trans('ip.email') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-pdf">{{ trans('ip.pdf') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-online-payments">{{ trans('ip.online_payments') }}</a></li>
+                        <li><a data-toggle="tab" href="#tab-backup">{{ trans('ip.backup') }}</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="tab-general" class="tab-pane active">

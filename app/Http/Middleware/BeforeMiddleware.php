@@ -43,7 +43,7 @@ class BeforeMiddleware
                 $mailPassword = (config('fi.mailPassword')) ? Crypt::decrypt(config('fi.mailPassword')) : '';
             } catch (\Exception $e) {
                 if (config('fi.mailDriver') == 'smtp') {
-                    session()->flash('error', '<strong>' . trans('fi.error') . '</strong> - ' . trans('fi.mail_hash_error'));
+                    session()->flash('error', '<strong>' . trans('ip.error') . '</strong> - ' . trans('ip.mail_hash_error'));
                 }
             }
 

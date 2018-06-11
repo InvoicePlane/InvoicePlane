@@ -45,7 +45,7 @@ class Stripe extends MerchantDriver
                 'customer' => $customer->id,
                 'amount' => $invoice->amount->balance * 100,
                 'currency' => $invoice->currency_code,
-                'description' => trans('fi.invoice') . ' #' . $invoice->number,
+                'description' => trans('ip.invoice') . ' #' . $invoice->number,
             ]);
 
             $payment = Payment::create([

@@ -16,10 +16,10 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.currency_form') }}
+            {{ trans('ip.currency_form') }}
         </h1>
         <div class="pull-right">
-            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('fi.save') }}</button>
+            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -37,15 +37,15 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label>{{ trans('fi.name') }}: </label>
+                            <label>{{ trans('ip.name') }}: </label>
                             {!! Form::text('name', null, ['id' => 'name', 'class' => 'form-control']) !!}
-                            <p class="help-block">{{ trans('fi.help_currency_name') }}</p>
+                            <p class="help-block">{{ trans('ip.help_currency_name') }}</p>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.code') }}: </label>
+                                    <label>{{ trans('ip.code') }}: </label>
                                     @if ($editMode and $currency->in_use)
                                         {!! Form::text('code', null, ['id' => 'code', 'class' => 'form-control',
                                         'readonly' => 'readonly']) !!}
@@ -54,23 +54,23 @@
                                         !!}
                                     @endif
 
-                                    <p class="help-block">{{ trans('fi.help_currency_code') }}</p>
+                                    <p class="help-block">{{ trans('ip.help_currency_code') }}</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.symbol') }}: </label>
+                                    <label>{{ trans('ip.symbol') }}: </label>
                                     {!! Form::text('symbol', null, ['id' => 'symbol', 'class' => 'form-control'])
                                     !!}
-                                    <p class="help-block">{{ trans('fi.help_currency_symbol') }}</p>
+                                    <p class="help-block">{{ trans('ip.help_currency_symbol') }}</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.symbol_placement') }}: </label>
-                                    {!! Form::select('placement', ['before' => trans('fi.before_amount'), 'after'
-                                    => trans('fi.after_amount')], null, ['class' => 'form-control']) !!}
-                                    <p class="help-block">{{ trans('fi.help_currency_symbol_placement') }}</p>
+                                    <label>{{ trans('ip.symbol_placement') }}: </label>
+                                    {!! Form::select('placement', ['before' => trans('ip.before_amount'), 'after'
+                                    => trans('ip.after_amount')], null, ['class' => 'form-control']) !!}
+                                    <p class="help-block">{{ trans('ip.help_currency_symbol_placement') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -78,14 +78,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.decimal_point') }}: </label>
+                                    <label>{{ trans('ip.decimal_point') }}: </label>
                                     {!! Form::text('decimal', null, ['id' => 'decimal', 'class' => 'form-control'])
                                     !!}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.thousands_separator') }}: </label>
+                                    <label>{{ trans('ip.thousands_separator') }}: </label>
                                     {!! Form::text('thousands', null, ['id' => 'thousands', 'class' =>
                                     'form-control']) !!}
                                 </div>

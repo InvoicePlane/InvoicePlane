@@ -38,6 +38,6 @@ class UserPasswordController extends Controller
         $user->save();
 
         return redirect($this->getReturnUrl())
-            ->with('alertInfo', trans('fi.password_successfully_reset'));
+            ->with('alertInfo', trans('ip.password_successfully_reset'));
     }
 }

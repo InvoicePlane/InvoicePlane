@@ -16,10 +16,10 @@
 
     <section class="content-header">
         <h1 class="pull-left">
-            {{ trans('fi.custom_field_form') }}
+            {{ trans('ip.custom_field_form') }}
         </h1>
         <div class="pull-right">
-            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('fi.save') }}</button>
+            <button class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('ip.save') }}</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -37,7 +37,7 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label>{{ trans('fi.table_name') }}: </label>
+                            <label>{{ trans('ip.table_name') }}: </label>
                             @if ($editMode == true)
                                 {!! Form::text('tbl_name', $tableNames[$customField->tbl_name], ['id' => 'tbl_name', 'readonly' => 'readonly', 'class' => 'form-control']) !!}
                             @else
@@ -46,19 +46,19 @@
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('fi.field_label') }}: </label>
+                            <label>{{ trans('ip.field_label') }}: </label>
                             {!! Form::text('field_label', null, ['id' => 'field_label', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('fi.field_type') }}: </label>
+                            <label>{{ trans('ip.field_type') }}: </label>
                             {!! Form::select('field_type', $fieldTypes, null, ['id' => 'field_type', 'class' => 'form-control']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label>{{ trans('fi.field_meta') }}: </label>
+                            <label>{{ trans('ip.field_meta') }}: </label>
                             {!! Form::text('field_meta', null, ['id' => 'field_meta', 'class' => 'form-control']) !!}
-                            <span class="help-block">{{ trans('fi.field_meta_description') }}</span>
+                            <span class="help-block">{{ trans('ip.field_meta_description') }}</span>
                         </div>
 
                     </div>

@@ -41,10 +41,10 @@
 @section('content')
 
     <section class="content-header">
-        <h1 class="pull-left">{{ trans('fi.profit_and_loss') }}</h1>
+        <h1 class="pull-left">{{ trans('ip.profit_and_loss') }}</h1>
 
         <div class="pull-right">
-            <button class="btn btn-primary" id="btn-run-report">{{ trans('fi.run_report') }}</button>
+            <button class="btn btn-primary" id="btn-run-report">{{ trans('ip.run_report') }}</button>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -59,14 +59,14 @@
 
                 <div class="box box-primary">
                     <div class="box-header">
-                        <h3 class="box-title">{{ trans('fi.options') }}</h3>
+                        <h3 class="box-title">{{ trans('ip.options') }}</h3>
                     </div>
                     <div class="box-body">
 
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.company_profile') }}:</label>
+                                    <label>{{ trans('ip.company_profile') }}:</label>
                                     {!! Form::select('company_profile_id', $companyProfiles, null, ['id' => 'company_profile_id', 'class' => 'form-control'])  !!}
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.date_range') }}:</label>
+                                    <label>{{ trans('ip.date_range') }}:</label>
                                     {!! Form::hidden('from_date', null, ['id' => 'from_date']) !!}
                                     {!! Form::hidden('to_date', null, ['id' => 'to_date']) !!}
                                     {!! Form::text('date_range', null, ['id' => 'date_range', 'class' => 'form-control', 'readonly' => 'readonly']) !!}
@@ -86,8 +86,8 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>{{ trans('fi.include_profit_based_on') }}:</label>
-                                    {!! Form::select('include_profit_based_on', ['invoice_date' => trans('fi.invoice_date'), 'payment_date' => trans('fi.payment_date')], null, ['id' => 'include_profit_based_on', 'class' => 'form-control'])  !!}
+                                    <label>{{ trans('ip.include_profit_based_on') }}:</label>
+                                    {!! Form::select('include_profit_based_on', ['invoice_date' => trans('ip.invoice_date'), 'payment_date' => trans('ip.payment_date')], null, ['id' => 'include_profit_based_on', 'class' => 'form-control'])  !!}
                                 </div>
                             </div>
                         </div>
@@ -95,13 +95,13 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="input-group">
-                                    <label>{{ trans('fi.output_type') }}:</label><br>
+                                    <label>{{ trans('ip.output_type') }}:</label><br>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type" value="preview"
-                                               checked="checked"> {{ trans('fi.preview') }}
+                                               checked="checked"> {{ trans('ip.preview') }}
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" name="output_type" value="pdf"> {{ trans('fi.pdf') }}
+                                        <input type="radio" name="output_type" value="pdf"> {{ trans('ip.pdf') }}
                                     </label>
                                 </div>
                             </div>
