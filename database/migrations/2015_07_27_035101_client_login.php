@@ -12,7 +12,7 @@ class ClientLogin extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('client_id');
+            $table->integer('client_id')->nullable();
 
             $table->index('client_id');
         });

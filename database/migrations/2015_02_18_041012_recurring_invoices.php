@@ -12,8 +12,8 @@ class RecurringInvoices extends Migration
         });
 
         Schema::table('recurring_invoices', function (Blueprint $table) {
-            $table->date('generate_at')->default('0000-00-00');
-            $table->date('stop_at')->default('0000-00-00');
+            $table->date('generate_at')->nullable();
+            $table->date('stop_at')->nullable();
         });
 
         DB::table('recurring_invoices')->update(['generate_at' => DB::raw('old_generate_at')]);

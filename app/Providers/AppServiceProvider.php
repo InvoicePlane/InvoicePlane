@@ -5,6 +5,7 @@ namespace FI\Providers;
 use FI\Support\Directory;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
         if (config('proxies.trust_all')) {
             request()->setTrustedProxies([request()->getClientIp()]);
         }
+
+        Schema::defaultStringLength(191);
 
         $this->app->view->addLocation(base_path('custom/overrides'));
 
