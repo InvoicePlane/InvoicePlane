@@ -17,10 +17,12 @@ namespace FI\Modules\Setup\Controllers;
 use FI\Http\Controllers\Controller;
 use FI\Modules\CompanyProfiles\Models\CompanyProfile;
 use FI\Modules\Settings\Models\Setting;
-use FI\Modules\Setup\Requests\LicenseRequest;
+use FI\Modules\Setup\Requests\DBRequest;
 use FI\Modules\Setup\Requests\ProfileRequest;
 use FI\Modules\Users\Models\User;
 use FI\Support\Migrations;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SetupController extends Controller
 {
@@ -44,24 +46,55 @@ class SetupController extends Controller
     public function prerequisites()
     {
         $errors = [];
-        $versionRequired = '5.5.9';
-        $dbDriver = config('database.default');
-        $dbConfig = config('database.connections.' . $dbDriver);
+        $versionRequired = '7.0.0';
 
         if (version_compare(phpversion(), $versionRequired, '<')) {
             $errors[] = sprintf(trans('ip.php_version_error'), $versionRequired);
         }
 
-        if (!$dbConfig['host'] or !$dbConfig['database'] or !$dbConfig['username'] or !$dbConfig['password']) {
-            $errors[] = trans('ip.database_not_configured');
-        }
-
         if (!$errors) {
-            return redirect()->route('setup.migration');
+            return redirect()->route('setup.dbconfig');
         }
 
         return view('setup.prerequisites')
             ->with('errors', $errors);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function dbConfig()
+    {
+        return view('setup.dbconfig');
+    }
+
+    /**
+     * @param DBRequest $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
+    public function postDbConfig(DBRequest $request)
+    {
+        $input = $request->all();
+
+        // Create test configuration with new credentials
+        config(['database.connections.setup' => config('database.connections.mysql')]);
+        config(['database.connections.setup.host' => $input['db_host']]);
+        config(['database.connections.setup.port' => $input['db_port']]);
+        config(['database.connections.setup.database' => $input['db_database']]);
+        config(['database.connections.setup.username' => $input['db_username']]);
+        config(['database.connections.setup.password' => $input['db_password']]);
+
+        // Check the new database config
+        try {
+            DB::connection('setup')->getPdo();
+        } catch (\Exception $e) {
+            return view('setup.dbconfig')->with('errors', collect(trans('ip.database_configuration_failed')));
+        }
+
+        // Save the new credentials to the .env file
+        self::writeEnv($input);
+
+        return redirect()->route('setup.migration');
     }
 
     public function migration()
@@ -111,5 +144,22 @@ class SetupController extends Controller
     public function complete()
     {
         return view('setup.complete');
+    }
+
+    /**
+     * Write values to the .env file base on an key => value array
+     *
+     * @param array $data
+     */
+    private function writeEnv(array $data)
+    {
+        $config = file_get_contents(base_path('.env'));
+
+        foreach ($data as $key => $value) {
+            $key = strtoupper($key);
+            $config = preg_replace("/$key=(.*)?/", "$key=" . $value, $config);
+        }
+
+        Storage::disk('base')->put('.env', $config);
     }
 }

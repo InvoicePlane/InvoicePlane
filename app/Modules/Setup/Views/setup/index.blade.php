@@ -16,7 +16,7 @@
                 <div class="box box-primary">
                     <div class="box-body">
 
-                        <p>@lang('fi.setup_welcome')</p>
+                        <p>@lang('ip.setup_welcome')</p>
 
                         {!! Form::submit(trans('ip.continue'), ['class' => 'btn btn-primary']) !!}
 

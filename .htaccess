@@ -17,6 +17,7 @@
     RewriteRule ^custom/addons/.* index.php [L,NC]
     RewriteRule ^custom/overrides/.* index.php [L,NC]
     RewriteRule ^artisan index.php [L,NC]
+    RewriteRule ^.env index.php [L,NC]
     RewriteRule ^composer.json index.php [L,NC]
     RewriteRule ^composer.lock index.php [L,NC]
 

@@ -18,6 +18,9 @@ Route::group(['middleware' => 'web', 'namespace' => 'FI\Modules\Setup\Controller
 
     Route::get('setup/prerequisites', ['uses' => 'SetupController@prerequisites', 'as' => 'setup.prerequisites']);
 
+    Route::get('setup/db-config', ['uses' => 'SetupController@dbConfig', 'as' => 'setup.dbconfig']);
+    Route::post('setup/db-config', ['uses' => 'SetupController@postDbConfig', 'as' => 'setup.postDbconfig']);
+
     Route::get('setup/migration', ['uses' => 'SetupController@migration', 'as' => 'setup.migration']);
     Route::post('setup/migration', ['uses' => 'SetupController@postMigration', 'as' => 'setup.postMigration']);
 
