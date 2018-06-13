@@ -20,6 +20,8 @@
 
                         <h4>@lang('ip.database_setup')</h4>
 
+                        <p>@lang('ip.database_configuration_info')</p>
+
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
 
