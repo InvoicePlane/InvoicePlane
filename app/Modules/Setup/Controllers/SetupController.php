@@ -21,6 +21,7 @@ use FI\Modules\Setup\Requests\DBRequest;
 use FI\Modules\Setup\Requests\ProfileRequest;
 use FI\Modules\Users\Models\User;
 use FI\Support\Migrations;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -53,6 +54,15 @@ class SetupController extends Controller
         }
 
         if (!$errors) {
+            // Write a new app key to the env before continuing
+            if (config('app.key') === 'SomeRandomStringWith32Characters') {
+                $new_key = 'base64:' . base64_encode(
+                        Encrypter::generateKey(config('app.cipher'))
+                    );
+
+                self::writeEnv(['APP_KEY' => $new_key]);
+            }
+
             return redirect()->route('setup.dbconfig');
         }
 
@@ -123,14 +133,10 @@ class SetupController extends Controller
     public function postAccount(ProfileRequest $request)
     {
         if (!User::count()) {
-            $input = request()->all();
-
-            unset($input['user']['password_confirmation']);
+            $input = request()->except('password_confirmation');
 
             $user = new User($input['user']);
-
             $user->password = $input['user']['password'];
-
             $user->save();
 
             $companyProfile = CompanyProfile::create($input['company_profile']);
