@@ -12,6 +12,8 @@ This version is the official successor of FusionInvoice and based on the latest 
 is marked as an alpha version because we plan to restructure and update the application and add new features.  
 You can use this application but expect breaking changes until we announce InvoicePlane 2 as a stable version.
 
+More information can be found in [this announcement](https://community.invoiceplane.com/t/topic/6299).
+
 ---
 
 ### Quick Installation
