@@ -1,6 +1,8 @@
 ![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
 #### _Version 2.0.0 Alpha 1_
 
+[![Travis-CI Build Status](https://travis-ci.com/InvoicePlane/InvoicePlane.svg?branch=v2.0.0)](https://travis-ci.com/InvoicePlane/InvoicePlane) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/846787effdab46fa88dc8880dd3fce94)](https://www.codacy.com/app/InvoicePlane/InvoicePlane) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/invoiceplane/localized.svg)](https://translations.invoiceplane.com/project/invoiceplane)
+
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
 For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
 
