@@ -45,15 +45,15 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="db_user">@lang('ip.database_user')</label>
-                                    {!! Form::text('db_user', old('db_user'), [
+                                    <label for="db_username">@lang('ip.database_user')</label>
+                                    {!! Form::text('db_username', old('db_username'), [
                                         'class' => 'form-control', 'placeholder' => trans('ip.database_user')
                                     ]) !!}
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="db_pass">@lang('ip.database_pass')</label>
-                                    {!! Form::password('db_pass', [
+                                    <label for="db_password">@lang('ip.database_pass')</label>
+                                    {!! Form::password('db_password', [
                                         'class' => 'form-control', 'placeholder' => trans('ip.database_pass')
                                     ]) !!}
                                 </div>

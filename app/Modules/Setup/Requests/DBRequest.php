@@ -28,9 +28,9 @@ class DBRequest extends FormRequest
         return [
             'db_host' => trans('ip.db_host'),
             'db_port' => trans('ip.db_port'),
-            'db_user' => trans('ip.db_user'),
             'db_database' => trans('ip.db_database'),
-            'db_pass' => trans('ip.db_pass'),
+            'db_username' => trans('ip.db_user'),
+            'db_password' => trans('ip.db_pass'),
             'db_prefix' => trans('ip.db_prefix'),
         ];
     }
