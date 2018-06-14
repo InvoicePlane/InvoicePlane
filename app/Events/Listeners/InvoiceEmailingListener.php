@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\InvoiceEmailing;
-use FI\Support\DateFormatter;
+use IP\Events\InvoiceEmailing;
+use IP\Support\DateFormatter;
 
 class InvoiceEmailingListener
 {

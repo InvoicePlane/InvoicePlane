@@ -1,11 +1,11 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\InvoiceCreated;
-use FI\Modules\CustomFields\Models\InvoiceCustom;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Invoices\Support\InvoiceCalculate;
+use IP\Events\InvoiceCreated;
+use IP\Modules\CustomFields\Models\InvoiceCustom;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Invoices\Support\InvoiceCalculate;
 
 class InvoiceCreatedListener
 {

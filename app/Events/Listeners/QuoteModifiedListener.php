@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\QuoteModified;
-use FI\Modules\Quotes\Support\QuoteCalculate;
+use IP\Events\QuoteModified;
+use IP\Modules\Quotes\Support\QuoteCalculate;
 
 class QuoteModifiedListener
 {

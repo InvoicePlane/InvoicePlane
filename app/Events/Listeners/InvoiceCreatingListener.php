@@ -1,12 +1,12 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\InvoiceCreating;
-use FI\Modules\Currencies\Support\CurrencyConverterFactory;
-use FI\Modules\Groups\Models\Group;
-use FI\Support\DateFormatter;
-use FI\Support\Statuses\InvoiceStatuses;
+use IP\Events\InvoiceCreating;
+use IP\Modules\Currencies\Support\CurrencyConverterFactory;
+use IP\Modules\Groups\Models\Group;
+use IP\Support\DateFormatter;
+use IP\Support\Statuses\InvoiceStatuses;
 
 class InvoiceCreatingListener
 {

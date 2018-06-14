@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\RecurringInvoiceModified;
-use FI\Modules\RecurringInvoices\Support\RecurringInvoiceCalculate;
+use IP\Events\RecurringInvoiceModified;
+use IP\Modules\RecurringInvoices\Support\RecurringInvoiceCalculate;
 
 class RecurringInvoiceModifiedListener
 {

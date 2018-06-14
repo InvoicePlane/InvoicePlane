@@ -1,11 +1,11 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\InvoiceDeleted;
-use FI\Modules\Expenses\Models\Expense;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Quotes\Models\Quote;
+use IP\Events\InvoiceDeleted;
+use IP\Modules\Expenses\Models\Expense;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Quotes\Models\Quote;
 
 class InvoiceDeletedListener
 {

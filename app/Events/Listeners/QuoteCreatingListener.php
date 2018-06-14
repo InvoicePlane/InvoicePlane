@@ -1,12 +1,12 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\QuoteCreating;
-use FI\Modules\Currencies\Support\CurrencyConverterFactory;
-use FI\Modules\Groups\Models\Group;
-use FI\Support\DateFormatter;
-use FI\Support\Statuses\QuoteStatuses;
+use IP\Events\QuoteCreating;
+use IP\Modules\Currencies\Support\CurrencyConverterFactory;
+use IP\Modules\Groups\Models\Group;
+use IP\Support\DateFormatter;
+use IP\Support\Statuses\QuoteStatuses;
 
 class QuoteCreatingListener
 {

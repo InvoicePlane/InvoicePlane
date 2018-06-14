@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\UserCreated;
-use FI\Modules\CustomFields\Models\UserCustom;
+use IP\Events\UserCreated;
+use IP\Modules\CustomFields\Models\UserCustom;
 
 class UserCreatedListener
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\InvoiceViewed;
+use IP\Events\InvoiceViewed;
 
 class InvoiceViewedListener
 {

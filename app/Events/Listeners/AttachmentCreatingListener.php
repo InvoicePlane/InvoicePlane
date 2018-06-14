@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\AttachmentCreating;
+use IP\Events\AttachmentCreating;
 
 class AttachmentCreatingListener
 {

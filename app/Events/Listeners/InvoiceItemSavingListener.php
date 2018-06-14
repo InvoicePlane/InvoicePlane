@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\InvoiceItemSaving;
-use FI\Modules\Invoices\Models\InvoiceItem;
+use IP\Events\InvoiceItemSaving;
+use IP\Modules\Invoices\Models\InvoiceItem;
 
 class InvoiceItemSavingListener
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\ExpenseSaving;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Expenses\Models\ExpenseCategory;
-use FI\Modules\Expenses\Models\ExpenseVendor;
+use IP\Events\ExpenseSaving;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Expenses\Models\ExpenseCategory;
+use IP\Modules\Expenses\Models\ExpenseVendor;
 
 class ExpenseSavingListener
 {

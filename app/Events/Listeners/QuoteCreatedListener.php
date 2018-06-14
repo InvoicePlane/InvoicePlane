@@ -1,11 +1,11 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\QuoteCreated;
-use FI\Modules\CustomFields\Models\QuoteCustom;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Quotes\Support\QuoteCalculate;
+use IP\Events\QuoteCreated;
+use IP\Modules\CustomFields\Models\QuoteCustom;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Quotes\Support\QuoteCalculate;
 
 class QuoteCreatedListener
 {

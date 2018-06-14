@@ -1,11 +1,11 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\InvoiceCreatedRecurring;
-use FI\Events\InvoiceEmailed;
-use FI\Modules\MailQueue\Support\MailQueue;
-use FI\Support\Parser;
+use IP\Events\InvoiceCreatedRecurring;
+use IP\Events\InvoiceEmailed;
+use IP\Modules\MailQueue\Support\MailQueue;
+use IP\Support\Parser;
 
 class InvoiceCreatedRecurringListener
 {

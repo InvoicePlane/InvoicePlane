@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\QuoteDeleted;
-use FI\Modules\Groups\Models\Group;
+use IP\Events\QuoteDeleted;
+use IP\Modules\Groups\Models\Group;
 
 class QuoteDeletedListener
 {

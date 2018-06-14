@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events\Listeners;
+namespace IP\Events\Listeners;
 
-use FI\Events\SettingSaving;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Events\SettingSaving;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
 
 class SettingSavingListener
 {
