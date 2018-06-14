@@ -1,10 +1,10 @@
 <?php
 
-namespace FI\Widgets\Dashboard\InvoiceSummary\Composers;
+namespace IP\Widgets\Dashboard\InvoiceSummary\Composers;
 
-use FI\Modules\Invoices\Models\InvoiceAmount;
-use FI\Modules\Payments\Models\Payment;
-use FI\Support\CurrencyFormatter;
+use IP\Modules\Invoices\Models\InvoiceAmount;
+use IP\Modules\Payments\Models\Payment;
+use IP\Support\CurrencyFormatter;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceSummaryWidgetComposer

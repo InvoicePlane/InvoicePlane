@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Widgets\Dashboard\QuoteSummary\Controllers;
+namespace IP\Widgets\Dashboard\QuoteSummary\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Settings\Models\Setting;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Settings\Models\Setting;
 
 class WidgetController extends Controller
 {
