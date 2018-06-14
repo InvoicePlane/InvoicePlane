@@ -1,6 +1,6 @@
 <?php
 
-namespace FI\Traits;
+namespace IP\Traits;
 
 use Illuminate\Support\Facades\DB;
 

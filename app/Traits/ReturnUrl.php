@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Traits;
+namespace IP\Traits;
 
 trait ReturnUrl
 {

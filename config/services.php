@@ -30,7 +30,7 @@ return [
     ],
 
     'stripe' => [
-        'model' => FI\User::class,
+        'model' => IP\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],

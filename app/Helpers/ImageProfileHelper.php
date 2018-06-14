@@ -1,6 +1,6 @@
 <?php
 
-use FI\Support\ProfileImage\ProfileImageFactory;
+use IP\Support\ProfileImage\ProfileImageFactory;
 
 function profileImageUrl($user)
 {
