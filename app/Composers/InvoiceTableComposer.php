@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Composers;
+namespace IP\Composers;
 
-use FI\Support\Statuses\InvoiceStatuses;
+use IP\Support\Statuses\InvoiceStatuses;
 
 class InvoiceTableComposer
 {

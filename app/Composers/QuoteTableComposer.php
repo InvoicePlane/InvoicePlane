@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Composers;
+namespace IP\Composers;
 
-use FI\Support\Statuses\QuoteStatuses;
+use IP\Support\Statuses\QuoteStatuses;
 
 class QuoteTableComposer
 {
