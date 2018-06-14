@@ -32,7 +32,7 @@
             "database/factories"
         ],
         "psr-4": {
-            "FI\\": "app/",
+            "IP\\": "app/",
             "Addons\\": "custom/addons/"
         }
     },

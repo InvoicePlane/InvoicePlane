@@ -1,6 +1,6 @@
 <?php
 
-namespace FI;
+namespace IP;
 
 class Application extends \Illuminate\Foundation\Application
 {
