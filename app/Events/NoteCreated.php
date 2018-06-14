@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Notes\Models\Note;
+use IP\Modules\Notes\Models\Note;
 use Illuminate\Queue\SerializesModels;
 
 class NoteCreated extends Event

@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
 use Illuminate\Queue\SerializesModels;
 
 class CompanyProfileSaving extends Event

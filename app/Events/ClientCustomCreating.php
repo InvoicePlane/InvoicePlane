@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\CustomFields\Models\ClientCustom;
+use IP\Modules\CustomFields\Models\ClientCustom;
 use Illuminate\Queue\SerializesModels;
 
 class ClientCustomCreating extends Event

@@ -1,6 +1,6 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
 abstract class Event
 {

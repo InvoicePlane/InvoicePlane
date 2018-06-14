@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Clients\Models\Client;
+use IP\Modules\Clients\Models\Client;
 use Illuminate\Queue\SerializesModels;
 
 class ClientCreating extends Event

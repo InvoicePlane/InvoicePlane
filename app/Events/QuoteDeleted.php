@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Quotes\Models\Quote;
+use IP\Modules\Quotes\Models\Quote;
 use Illuminate\Queue\SerializesModels;
 
 class QuoteDeleted extends Event

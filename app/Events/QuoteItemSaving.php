@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Quotes\Models\QuoteItem;
+use IP\Modules\Quotes\Models\QuoteItem;
 use Illuminate\Queue\SerializesModels;
 
 class QuoteItemSaving extends Event

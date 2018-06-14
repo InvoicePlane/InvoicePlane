@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Users\Models\User;
+use IP\Modules\Users\Models\User;
 use Illuminate\Queue\SerializesModels;
 
 class UserCreated extends Event

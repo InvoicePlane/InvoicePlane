@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\Invoice;
 use Illuminate\Queue\SerializesModels;
 
 class InvoiceDeleted extends Event

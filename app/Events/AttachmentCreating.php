@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Attachments\Models\Attachment;
+use IP\Modules\Attachments\Models\Attachment;
 use Illuminate\Queue\SerializesModels;
 
 class AttachmentCreating extends Event

@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Expenses\Models\Expense;
+use IP\Modules\Expenses\Models\Expense;
 use Illuminate\Queue\SerializesModels;
 
 class ExpenseDeleting extends Event

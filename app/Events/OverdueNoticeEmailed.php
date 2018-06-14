@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\MailQueue\Models\MailQueue;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\MailQueue\Models\MailQueue;
 use Illuminate\Queue\SerializesModels;
 
 class OverdueNoticeEmailed extends Event

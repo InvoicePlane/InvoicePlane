@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Events;
+namespace IP\Events;
 
-use FI\Modules\Payments\Models\Payment;
+use IP\Modules\Payments\Models\Payment;
 use Illuminate\Queue\SerializesModels;
 
 class PaymentCreated extends Event
