@@ -1,6 +1,6 @@
 <?php
 
-namespace FI\Providers;
+namespace IP\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -12,184 +12,184 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'FI\Events\AttachmentCreating' => [
-            'FI\Events\Listeners\AttachmentCreatingListener',
+        'IP\Events\AttachmentCreating' => [
+            'IP\Events\Listeners\AttachmentCreatingListener',
         ],
 
-        'FI\Events\AttachmentDeleted' => [
-            'FI\Events\Listeners\AttachmentDeletedListener',
+        'IP\Events\AttachmentDeleted' => [
+            'IP\Events\Listeners\AttachmentDeletedListener',
         ],
 
-        'FI\Events\CheckAttachment' => [
-            'FI\Events\Listeners\CheckAttachmentListener',
+        'IP\Events\CheckAttachment' => [
+            'IP\Events\Listeners\CheckAttachmentListener',
         ],
 
-        'FI\Events\ClientCreated' => [
-            'FI\Events\Listeners\ClientCreatedListener',
+        'IP\Events\ClientCreated' => [
+            'IP\Events\Listeners\ClientCreatedListener',
         ],
 
-        'FI\Events\ClientCreating' => [
-            'FI\Events\Listeners\ClientCreatingListener',
+        'IP\Events\ClientCreating' => [
+            'IP\Events\Listeners\ClientCreatingListener',
         ],
 
-        'FI\Events\ClientDeleted' => [
-            'FI\Events\Listeners\ClientDeletedListener',
+        'IP\Events\ClientDeleted' => [
+            'IP\Events\Listeners\ClientDeletedListener',
         ],
 
-        'FI\Events\ClientSaving' => [
-            'FI\Events\Listeners\ClientSavingListener',
+        'IP\Events\ClientSaving' => [
+            'IP\Events\Listeners\ClientSavingListener',
         ],
 
-        'FI\Events\CompanyProfileCreated' => [
-            'FI\Events\Listeners\CompanyProfileCreatedListener',
+        'IP\Events\CompanyProfileCreated' => [
+            'IP\Events\Listeners\CompanyProfileCreatedListener',
         ],
 
-        'FI\Events\CompanyProfileCreating' => [
-            'FI\Events\Listeners\CompanyProfileCreatingListener',
+        'IP\Events\CompanyProfileCreating' => [
+            'IP\Events\Listeners\CompanyProfileCreatingListener',
         ],
 
-        'FI\Events\CompanyProfileDeleted' => [
-            'FI\Events\Listeners\CompanyProfileDeletedListener',
+        'IP\Events\CompanyProfileDeleted' => [
+            'IP\Events\Listeners\CompanyProfileDeletedListener',
         ],
 
-        'FI\Events\CompanyProfileSaving' => [
-            'FI\Events\Listeners\CompanyProfileSavingListener',
+        'IP\Events\CompanyProfileSaving' => [
+            'IP\Events\Listeners\CompanyProfileSavingListener',
         ],
 
-        'FI\Events\ExpenseCreated' => [
-            'FI\Events\Listeners\ExpenseCreatedListener',
+        'IP\Events\ExpenseCreated' => [
+            'IP\Events\Listeners\ExpenseCreatedListener',
         ],
 
-        'FI\Events\ExpenseDeleting' => [
-            'FI\Events\Listeners\ExpenseDeletingListener',
+        'IP\Events\ExpenseDeleting' => [
+            'IP\Events\Listeners\ExpenseDeletingListener',
         ],
 
-        'FI\Events\ExpenseSaved' => [],
+        'IP\Events\ExpenseSaved' => [],
 
-        'FI\Events\ExpenseSaving' => [
-            'FI\Events\Listeners\ExpenseSavingListener',
+        'IP\Events\ExpenseSaving' => [
+            'IP\Events\Listeners\ExpenseSavingListener',
         ],
 
-        'FI\Events\InvoiceCreated' => [
-            'FI\Events\Listeners\InvoiceCreatedListener',
+        'IP\Events\InvoiceCreated' => [
+            'IP\Events\Listeners\InvoiceCreatedListener',
         ],
 
-        'FI\Events\InvoiceCreating' => [
-            'FI\Events\Listeners\InvoiceCreatingListener',
+        'IP\Events\InvoiceCreating' => [
+            'IP\Events\Listeners\InvoiceCreatingListener',
         ],
 
-        'FI\Events\InvoiceCreatedRecurring' => [
-            'FI\Events\Listeners\InvoiceCreatedRecurringListener',
+        'IP\Events\InvoiceCreatedRecurring' => [
+            'IP\Events\Listeners\InvoiceCreatedRecurringListener',
         ],
 
-        'FI\Events\InvoiceDeleted' => [
-            'FI\Events\Listeners\InvoiceDeletedListener',
+        'IP\Events\InvoiceDeleted' => [
+            'IP\Events\Listeners\InvoiceDeletedListener',
         ],
 
-        'FI\Events\InvoiceEmailing' => [
-            'FI\Events\Listeners\InvoiceEmailingListener',
+        'IP\Events\InvoiceEmailing' => [
+            'IP\Events\Listeners\InvoiceEmailingListener',
         ],
 
-        'FI\Events\InvoiceEmailed' => [
-            'FI\Events\Listeners\InvoiceEmailedListener',
+        'IP\Events\InvoiceEmailed' => [
+            'IP\Events\Listeners\InvoiceEmailedListener',
         ],
 
-        'FI\Events\InvoiceItemSaving' => [
-            'FI\Events\Listeners\InvoiceItemSavingListener',
+        'IP\Events\InvoiceItemSaving' => [
+            'IP\Events\Listeners\InvoiceItemSavingListener',
         ],
 
-        'FI\Events\InvoiceModified' => [
-            'FI\Events\Listeners\InvoiceModifiedListener',
+        'IP\Events\InvoiceModified' => [
+            'IP\Events\Listeners\InvoiceModifiedListener',
         ],
 
-        'FI\Events\InvoiceViewed' => [
-            'FI\Events\Listeners\InvoiceViewedListener',
+        'IP\Events\InvoiceViewed' => [
+            'IP\Events\Listeners\InvoiceViewedListener',
         ],
 
-        'FI\Events\NoteCreated' => [
-            'FI\Events\Listeners\NoteCreatedListener',
+        'IP\Events\NoteCreated' => [
+            'IP\Events\Listeners\NoteCreatedListener',
         ],
 
-        'FI\Events\OverdueNoticeEmailed' => [],
+        'IP\Events\OverdueNoticeEmailed' => [],
 
-        'FI\Events\PaymentCreated' => [
-            'FI\Events\Listeners\PaymentCreatedListener',
+        'IP\Events\PaymentCreated' => [
+            'IP\Events\Listeners\PaymentCreatedListener',
         ],
 
-        'FI\Events\PaymentCreating' => [
-            'FI\Events\Listeners\PaymentCreatingListener',
+        'IP\Events\PaymentCreating' => [
+            'IP\Events\Listeners\PaymentCreatingListener',
         ],
 
-        'FI\Events\QuoteCreated' => [
-            'FI\Events\Listeners\QuoteCreatedListener',
+        'IP\Events\QuoteCreated' => [
+            'IP\Events\Listeners\QuoteCreatedListener',
         ],
 
-        'FI\Events\QuoteCreating' => [
-            'FI\Events\Listeners\QuoteCreatingListener',
+        'IP\Events\QuoteCreating' => [
+            'IP\Events\Listeners\QuoteCreatingListener',
         ],
 
-        'FI\Events\QuoteDeleted' => [
-            'FI\Events\Listeners\QuoteDeletedListener',
+        'IP\Events\QuoteDeleted' => [
+            'IP\Events\Listeners\QuoteDeletedListener',
         ],
 
-        'FI\Events\QuoteItemSaving' => [
-            'FI\Events\Listeners\QuoteItemSavingListener',
+        'IP\Events\QuoteItemSaving' => [
+            'IP\Events\Listeners\QuoteItemSavingListener',
         ],
 
-        'FI\Events\QuoteModified' => [
-            'FI\Events\Listeners\QuoteModifiedListener',
+        'IP\Events\QuoteModified' => [
+            'IP\Events\Listeners\QuoteModifiedListener',
         ],
 
-        'FI\Events\QuoteEmailed' => [
-            'FI\Events\Listeners\QuoteEmailedListener',
+        'IP\Events\QuoteEmailed' => [
+            'IP\Events\Listeners\QuoteEmailedListener',
         ],
 
-        'FI\Events\QuoteEmailing' => [
-            'FI\Events\Listeners\QuoteEmailingListener',
+        'IP\Events\QuoteEmailing' => [
+            'IP\Events\Listeners\QuoteEmailingListener',
         ],
 
-        'FI\Events\QuoteApproved' => [
-            'FI\Events\Listeners\QuoteApprovedListener',
+        'IP\Events\QuoteApproved' => [
+            'IP\Events\Listeners\QuoteApprovedListener',
         ],
 
-        'FI\Events\QuoteRejected' => [
-            'FI\Events\Listeners\QuoteRejectedListener',
+        'IP\Events\QuoteRejected' => [
+            'IP\Events\Listeners\QuoteRejectedListener',
         ],
 
-        'FI\Events\QuoteViewed' => [
-            'FI\Events\Listeners\QuoteViewedListener',
+        'IP\Events\QuoteViewed' => [
+            'IP\Events\Listeners\QuoteViewedListener',
         ],
 
-        'FI\Events\RecurringInvoiceCreated' => [
-            'FI\Events\Listeners\RecurringInvoiceCreatedListener',
+        'IP\Events\RecurringInvoiceCreated' => [
+            'IP\Events\Listeners\RecurringInvoiceCreatedListener',
         ],
 
-        'FI\Events\RecurringInvoiceCreating' => [
-            'FI\Events\Listeners\RecurringInvoiceCreatingListener',
+        'IP\Events\RecurringInvoiceCreating' => [
+            'IP\Events\Listeners\RecurringInvoiceCreatingListener',
         ],
 
-        'FI\Events\RecurringInvoiceDeleted' => [
-            'FI\Events\Listeners\RecurringInvoiceDeletedListener',
+        'IP\Events\RecurringInvoiceDeleted' => [
+            'IP\Events\Listeners\RecurringInvoiceDeletedListener',
         ],
 
-        'FI\Events\RecurringInvoiceItemSaving' => [
-            'FI\Events\Listeners\RecurringInvoiceItemSavingListener',
+        'IP\Events\RecurringInvoiceItemSaving' => [
+            'IP\Events\Listeners\RecurringInvoiceItemSavingListener',
         ],
 
-        'FI\Events\RecurringInvoiceModified' => [
-            'FI\Events\Listeners\RecurringInvoiceModifiedListener',
+        'IP\Events\RecurringInvoiceModified' => [
+            'IP\Events\Listeners\RecurringInvoiceModifiedListener',
         ],
 
-        'FI\Events\SettingSaving' => [
-            'FI\Events\Listeners\SettingSavingListener',
+        'IP\Events\SettingSaving' => [
+            'IP\Events\Listeners\SettingSavingListener',
         ],
 
-        'FI\Events\UserCreated' => [
-            'FI\Events\Listeners\UserCreatedListener',
+        'IP\Events\UserCreated' => [
+            'IP\Events\Listeners\UserCreatedListener',
         ],
 
-        'FI\Events\UserDeleted' => [
-            'FI\Events\Listeners\UserDeletedListener',
+        'IP\Events\UserDeleted' => [
+            'IP\Events\Listeners\UserDeletedListener',
         ],
     ];
 

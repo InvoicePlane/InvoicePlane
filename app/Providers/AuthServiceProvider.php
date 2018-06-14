@@ -1,6 +1,6 @@
 <?php
 
-namespace FI\Providers;
+namespace IP\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -12,7 +12,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'FI\Model' => 'FI\Policies\ModelPolicy',
+        'IP\Model' => 'IP\Policies\ModelPolicy',
     ];
 
     /**

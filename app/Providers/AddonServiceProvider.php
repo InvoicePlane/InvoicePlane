@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Providers;
+namespace IP\Providers;
 
-use FI\Modules\Addons\Models\Addon;
+use IP\Modules\Addons\Models\Addon;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 

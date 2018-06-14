@@ -1,4 +1,4 @@
-<?php namespace FI\Providers;
+<?php namespace IP\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
