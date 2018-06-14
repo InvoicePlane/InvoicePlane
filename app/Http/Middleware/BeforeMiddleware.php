@@ -1,11 +1,11 @@
 <?php
 
-namespace FI\Http\Middleware;
+namespace IP\Http\Middleware;
 
 use Closure;
-use FI\Modules\Currencies\Models\Currency;
-use FI\Modules\Settings\Models\Setting;
-use FI\Support\DateFormatter;
+use IP\Modules\Currencies\Models\Currency;
+use IP\Modules\Settings\Models\Setting;
+use IP\Support\DateFormatter;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 

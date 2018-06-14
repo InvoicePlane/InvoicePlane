@@ -1,9 +1,9 @@
 <?php
 
-namespace FI\Http\Middleware;
+namespace IP\Http\Middleware;
 
 use Closure;
-use FI\Modules\Users\Models\User;
+use IP\Modules\Users\Models\User;
 
 class AuthenticateAPI
 {
