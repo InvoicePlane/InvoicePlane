@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\PDF;
+namespace IP\Support\PDF;
 
 abstract class PDFAbstract implements PDFInterface
 {

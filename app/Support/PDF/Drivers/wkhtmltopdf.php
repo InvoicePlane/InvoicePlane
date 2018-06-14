@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\PDF\Drivers;
+namespace IP\Support\PDF\Drivers;
 
-use FI\Support\PDF\PDFAbstract;
+use IP\Support\PDF\PDFAbstract;
 use Knp\Snappy\Pdf;
 
 class wkhtmltopdf extends PDFAbstract

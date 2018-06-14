@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\ProfileImage;
+namespace IP\Support\ProfileImage;
 
-use FI\Modules\Users\Models\User;
+use IP\Modules\Users\Models\User;
 
 interface ProfileImageInterface
 {

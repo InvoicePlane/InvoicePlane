@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support;
+namespace IP\Support;
 
 use Collective\Html\FormFacade;
-use FI\Modules\Clients\Models\Client;
+use IP\Modules\Clients\Models\Client;
 
 class Contacts
 {

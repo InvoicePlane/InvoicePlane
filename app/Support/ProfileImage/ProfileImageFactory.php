@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\ProfileImage;
+namespace IP\Support\ProfileImage;
 
 class ProfileImageFactory
 {
     public static function create()
     {
-        $class = 'FI\Support\ProfileImage\Drivers\\' . config('fi.profileImageDriver');
+        $class = 'IP\Support\ProfileImage\Drivers\\' . config('fi.profileImageDriver');
 
         return new $class;
     }

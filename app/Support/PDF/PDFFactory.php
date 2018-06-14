@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\PDF;
+namespace IP\Support\PDF;
 
-use FI\Support\Directory;
+use IP\Support\Directory;
 
 class PDFFactory
 {
     public static function create()
     {
-        $class = 'FI\Support\PDF\Drivers\\' . config('fi.pdfDriver');
+        $class = 'IP\Support\PDF\Drivers\\' . config('fi.pdfDriver');
 
         return new $class;
     }

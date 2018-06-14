@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support;
+namespace IP\Support;
 
 use DateInterval;
 use DateTime;

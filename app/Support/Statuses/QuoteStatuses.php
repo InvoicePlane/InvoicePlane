@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\Statuses;
+namespace IP\Support\Statuses;
 
 class QuoteStatuses extends AbstractStatuses
 {

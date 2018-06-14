@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\PDF\Drivers;
+namespace IP\Support\PDF\Drivers;
 
 use Dompdf\Dompdf as PDF;
 use Dompdf\Options;
-use FI\Support\PDF\PDFAbstract;
+use IP\Support\PDF\PDFAbstract;
 
 class domPDF extends PDFAbstract
 {

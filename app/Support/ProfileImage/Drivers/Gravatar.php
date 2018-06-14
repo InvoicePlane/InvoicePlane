@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Support\ProfileImage\Drivers;
+namespace IP\Support\ProfileImage\Drivers;
 
-use FI\Modules\Users\Models\User;
-use FI\Support\ProfileImage\ProfileImageInterface;
+use IP\Modules\Users\Models\User;
+use IP\Support\ProfileImage\ProfileImageInterface;
 
 class Gravatar implements ProfileImageInterface
 {
