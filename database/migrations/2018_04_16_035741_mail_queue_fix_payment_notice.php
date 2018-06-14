@@ -1,6 +1,6 @@
 <?php
 
-use FI\Modules\MailQueue\Models\MailQueue;
+use IP\Modules\MailQueue\Models\MailQueue;
 use Illuminate\Database\Migrations\Migration;
 
 class MailQueueFixPaymentNotice extends Migration

@@ -1,6 +1,6 @@
 <?php
 
-use FI\Modules\Settings\Models\Setting;
+use IP\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 
 class Version201617 extends Migration

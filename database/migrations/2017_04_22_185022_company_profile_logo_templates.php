@@ -1,7 +1,7 @@
 <?php
 
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Settings\Models\Setting;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 

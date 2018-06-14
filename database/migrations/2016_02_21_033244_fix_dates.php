@@ -1,9 +1,9 @@
 <?php
 
 use Carbon\Carbon;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Payments\Models\Payment;
-use FI\Modules\Settings\Models\Setting;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Payments\Models\Payment;
+use IP\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 
 class FixDates extends Migration

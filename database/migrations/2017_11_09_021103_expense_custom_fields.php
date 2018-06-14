@@ -1,7 +1,7 @@
 <?php
 
-use FI\Modules\CustomFields\Models\ExpenseCustom;
-use FI\Modules\Expenses\Models\Expense;
+use IP\Modules\CustomFields\Models\ExpenseCustom;
+use IP\Modules\Expenses\Models\Expense;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 

@@ -16,11 +16,11 @@ class Viewed extends Migration
         });
 
         DB::table('invoices')->whereIn('id', function ($query) {
-            $query->select('audit_id')->from('activities')->where('audit_type', 'FI\Modules\Invoices\Models\Invoice');
+            $query->select('audit_id')->from('activities')->where('audit_type', 'IP\Modules\Invoices\Models\Invoice');
         })->update(['viewed' => 1]);
 
         DB::table('quotes')->whereIn('id', function ($query) {
-            $query->select('audit_id')->from('activities')->where('audit_type', 'FI\Modules\Quotes\Models\Quote');
+            $query->select('audit_id')->from('activities')->where('audit_type', 'IP\Modules\Quotes\Models\Quote');
         })->update(['viewed' => 1]);
     }
 

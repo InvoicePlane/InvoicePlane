@@ -1,6 +1,6 @@
 <?php
 
-use FI\Modules\Users\Models\User;
+use IP\Modules\Users\Models\User;
 use Illuminate\Database\Migrations\Migration;
 
 class ClientUserAccounts extends Migration

@@ -1,7 +1,7 @@
 <?php
 
-use FI\Modules\CustomFields\Models\RecurringInvoiceCustom;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoice;
+use IP\Modules\CustomFields\Models\RecurringInvoiceCustom;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
 use Illuminate\Database\Migrations\Migration;
 
 class AddMissingRecurringCustom extends Migration

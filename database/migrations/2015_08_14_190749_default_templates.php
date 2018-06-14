@@ -1,9 +1,9 @@
 <?php
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Settings\Models\Setting;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 
 class DefaultTemplates extends Migration

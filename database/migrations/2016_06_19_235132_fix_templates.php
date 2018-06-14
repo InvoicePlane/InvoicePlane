@@ -1,8 +1,8 @@
 <?php
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Quotes\Models\Quote;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Quotes\Models\Quote;
 use Illuminate\Database\Migrations\Migration;
 
 class FixTemplates extends Migration

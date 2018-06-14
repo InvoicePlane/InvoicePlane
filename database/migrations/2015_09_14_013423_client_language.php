@@ -1,7 +1,7 @@
 <?php
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Settings\Models\Setting;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 

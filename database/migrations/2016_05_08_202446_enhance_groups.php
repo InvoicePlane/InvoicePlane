@@ -1,6 +1,6 @@
 <?php
 
-use FI\Modules\Groups\Models\Group;
+use IP\Modules\Groups\Models\Group;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 

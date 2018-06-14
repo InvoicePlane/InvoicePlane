@@ -1,15 +1,15 @@
 <?php
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CustomFields\Models\ClientCustom;
-use FI\Modules\CustomFields\Models\InvoiceCustom;
-use FI\Modules\CustomFields\Models\PaymentCustom;
-use FI\Modules\CustomFields\Models\QuoteCustom;
-use FI\Modules\CustomFields\Models\UserCustom;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Payments\Models\Payment;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Users\Models\User;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CustomFields\Models\ClientCustom;
+use IP\Modules\CustomFields\Models\InvoiceCustom;
+use IP\Modules\CustomFields\Models\PaymentCustom;
+use IP\Modules\CustomFields\Models\QuoteCustom;
+use IP\Modules\CustomFields\Models\UserCustom;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Payments\Models\Payment;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\Users\Models\User;
 use Illuminate\Database\Migrations\Migration;
 
 class DefaultCustomRecords extends Migration

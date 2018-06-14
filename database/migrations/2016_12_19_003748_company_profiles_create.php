@@ -1,10 +1,10 @@
 <?php
 
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Expenses\Models\Expense;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Users\Models\User;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Expenses\Models\Expense;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\Users\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 

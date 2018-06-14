@@ -1,7 +1,7 @@
 <?php
 
-use FI\Modules\Currencies\Models\Currency;
-use FI\Modules\Settings\Models\Setting;
+use IP\Modules\Currencies\Models\Currency;
+use IP\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 

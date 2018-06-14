@@ -1,6 +1,6 @@
 <?php
 
-use FI\Modules\PaymentMethods\Models\PaymentMethod;
+use IP\Modules\PaymentMethods\Models\PaymentMethod;
 use Illuminate\Database\Migrations\Migration;
 
 class PaymentMethods extends Migration
