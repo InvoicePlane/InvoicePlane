@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CustomFields\Support;
+namespace IP\Modules\CustomFields\Support;
 
 class CustomFields
 {

@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CompanyProfiles\Models;
+namespace IP\Modules\CompanyProfiles\Models;
 
-use FI\Events\CompanyProfileCreated;
-use FI\Events\CompanyProfileCreating;
-use FI\Events\CompanyProfileDeleted;
-use FI\Events\CompanyProfileSaving;
-use FI\Modules\Expenses\Models\Expense;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Quotes\Models\Quote;
+use IP\Events\CompanyProfileCreated;
+use IP\Events\CompanyProfileCreating;
+use IP\Events\CompanyProfileDeleted;
+use IP\Events\CompanyProfileSaving;
+use IP\Modules\Expenses\Models\Expense;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Quotes\Models\Quote;
 use Illuminate\Database\Eloquent\Model;
 
 class CompanyProfile extends Model
@@ -82,7 +82,7 @@ class CompanyProfile extends Model
 
     public function custom()
     {
-        return $this->hasOne('FI\Modules\CustomFields\Models\CompanyProfileCustom');
+        return $this->hasOne('IP\Modules\CustomFields\Models\CompanyProfileCustom');
     }
 
     /*

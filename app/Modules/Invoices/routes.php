@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Invoices\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\Invoices\Controllers'], function () {
     Route::group(['prefix' => 'invoices'], function () {
         Route::get('/', ['uses' => 'InvoiceController@index', 'as' => 'invoices.index']);
         Route::get('create', ['uses' => 'InvoiceCreateController@create', 'as' => 'invoices.create']);

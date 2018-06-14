@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Expenses\Models;
+namespace IP\Modules\Expenses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

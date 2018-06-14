@@ -12,16 +12,16 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Clients\Controllers;
+namespace IP\Modules\Clients\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Clients\Requests\ClientStoreRequest;
-use FI\Modules\Clients\Requests\ClientUpdateRequest;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Payments\Models\Payment;
-use FI\Support\Frequency;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Clients\Requests\ClientStoreRequest;
+use IP\Modules\Clients\Requests\ClientUpdateRequest;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Payments\Models\Payment;
+use IP\Support\Frequency;
+use IP\Traits\ReturnUrl;
 
 class ClientController extends Controller
 {

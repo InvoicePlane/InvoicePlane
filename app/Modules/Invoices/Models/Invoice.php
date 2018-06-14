@@ -12,19 +12,19 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Models;
+namespace IP\Modules\Invoices\Models;
 
 use Carbon\Carbon;
-use FI\Events\InvoiceCreated;
-use FI\Events\InvoiceCreating;
-use FI\Events\InvoiceDeleted;
-use FI\Support\CurrencyFormatter;
-use FI\Support\DateFormatter;
-use FI\Support\FileNames;
-use FI\Support\HTML;
-use FI\Support\NumberFormatter;
-use FI\Support\Statuses\InvoiceStatuses;
-use FI\Traits\Sortable;
+use IP\Events\InvoiceCreated;
+use IP\Events\InvoiceCreating;
+use IP\Events\InvoiceDeleted;
+use IP\Support\CurrencyFormatter;
+use IP\Support\DateFormatter;
+use IP\Support\FileNames;
+use IP\Support\HTML;
+use IP\Support\NumberFormatter;
+use IP\Support\Statuses\InvoiceStatuses;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -73,27 +73,27 @@ class Invoice extends Model
 
     public function activities()
     {
-        return $this->morphMany('FI\Modules\Activity\Models\Activity', 'audit');
+        return $this->morphMany('IP\Modules\Activity\Models\Activity', 'audit');
     }
 
     public function amount()
     {
-        return $this->hasOne('FI\Modules\Invoices\Models\InvoiceAmount');
+        return $this->hasOne('IP\Modules\Invoices\Models\InvoiceAmount');
     }
 
     public function attachments()
     {
-        return $this->morphMany('FI\Modules\Attachments\Models\Attachment', 'attachable');
+        return $this->morphMany('IP\Modules\Attachments\Models\Attachment', 'attachable');
     }
 
     public function client()
     {
-        return $this->belongsTo('FI\Modules\Clients\Models\Client');
+        return $this->belongsTo('IP\Modules\Clients\Models\Client');
     }
 
     public function clientAttachments()
     {
-        $relationship = $this->morphMany('FI\Modules\Attachments\Models\Attachment', 'attachable');
+        $relationship = $this->morphMany('IP\Modules\Attachments\Models\Attachment', 'attachable');
 
         if ($this->status_text == 'paid') {
             $relationship->whereIn('client_visibility', [1, 2]);
@@ -106,27 +106,27 @@ class Invoice extends Model
 
     public function companyProfile()
     {
-        return $this->belongsTo('FI\Modules\CompanyProfiles\Models\CompanyProfile');
+        return $this->belongsTo('IP\Modules\CompanyProfiles\Models\CompanyProfile');
     }
 
     public function currency()
     {
-        return $this->belongsTo('FI\Modules\Currencies\Models\Currency', 'currency_code', 'code');
+        return $this->belongsTo('IP\Modules\Currencies\Models\Currency', 'currency_code', 'code');
     }
 
     public function custom()
     {
-        return $this->hasOne('FI\Modules\CustomFields\Models\InvoiceCustom');
+        return $this->hasOne('IP\Modules\CustomFields\Models\InvoiceCustom');
     }
 
     public function group()
     {
-        return $this->belongsTo('FI\Modules\Groups\Models\Group');
+        return $this->belongsTo('IP\Modules\Groups\Models\Group');
     }
 
     public function items()
     {
-        return $this->hasMany('FI\Modules\Invoices\Models\InvoiceItem')
+        return $this->hasMany('IP\Modules\Invoices\Models\InvoiceItem')
             ->orderBy('display_order');
     }
 
@@ -134,38 +134,38 @@ class Invoice extends Model
     // and the fact that Laravel has a protected items property.
     public function invoiceItems()
     {
-        return $this->hasMany('FI\Modules\Invoices\Models\InvoiceItem')
+        return $this->hasMany('IP\Modules\Invoices\Models\InvoiceItem')
             ->orderBy('display_order');
     }
 
     public function mailQueue()
     {
-        return $this->morphMany('FI\Modules\MailQueue\Models\MailQueue', 'mailable');
+        return $this->morphMany('IP\Modules\MailQueue\Models\MailQueue', 'mailable');
     }
 
     public function notes()
     {
-        return $this->morphMany('FI\Modules\Notes\Models\Note', 'notable');
+        return $this->morphMany('IP\Modules\Notes\Models\Note', 'notable');
     }
 
     public function payments()
     {
-        return $this->hasMany('FI\Modules\Payments\Models\Payment');
+        return $this->hasMany('IP\Modules\Payments\Models\Payment');
     }
 
     public function quote()
     {
-        return $this->hasOne('FI\Modules\Quotes\Models\Quote');
+        return $this->hasOne('IP\Modules\Quotes\Models\Quote');
     }
 
     public function transactions()
     {
-        return $this->hasMany('FI\Modules\Merchant\Models\InvoiceTransaction');
+        return $this->hasMany('IP\Modules\Merchant\Models\InvoiceTransaction');
     }
 
     public function user()
     {
-        return $this->belongsTo('FI\Modules\Users\Models\User');
+        return $this->belongsTo('IP\Modules\Users\Models\User');
     }
 
     /*

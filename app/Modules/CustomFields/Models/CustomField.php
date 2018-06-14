@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CustomFields\Models;
+namespace IP\Modules\CustomFields\Models;
 
-use FI\Traits\Sortable;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 

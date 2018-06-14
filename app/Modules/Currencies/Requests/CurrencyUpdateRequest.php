@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Currencies\Requests;
+namespace IP\Modules\Currencies\Requests;
 
 class CurrencyUpdateRequest extends CurrencyStoreRequest
 {

@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Support;
+namespace IP\Modules\Invoices\Support;
 
-use FI\Support\Calculators\Calculator;
-use FI\Support\Calculators\Interfaces\PayableInterface;
+use IP\Support\Calculators\Calculator;
+use IP\Support\Calculators\Interfaces\PayableInterface;
 
 class InvoiceCalculator extends Calculator implements PayableInterface
 {

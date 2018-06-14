@@ -220,14 +220,14 @@
                             <div class="tab-pane" id="tab-notes">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        @include('notes._notes', ['object' => $quote, 'model' => 'FI\Modules\Quotes\Models\Quote', 'showPrivateCheckbox' => true, 'hideHeader' => true])
+                                        @include('notes._notes', ['object' => $quote, 'model' => 'IP\Modules\Quotes\Models\Quote', 'showPrivateCheckbox' => true, 'hideHeader' => true])
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane" id="tab-attachments">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        @include('attachments._table', ['object' => $quote, 'model' => 'FI\Modules\Quotes\Models\Quote'])
+                                        @include('attachments._table', ['object' => $quote, 'model' => 'IP\Modules\Quotes\Models\Quote'])
                                     </div>
                                 </div>
                             </div>

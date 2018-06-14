@@ -12,16 +12,16 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Controllers;
+namespace IP\Modules\Invoices\Controllers;
 
-use FI\Events\InvoiceEmailed;
-use FI\Events\InvoiceEmailing;
-use FI\Http\Controllers\Controller;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\MailQueue\Support\MailQueue;
-use FI\Requests\SendEmailRequest;
-use FI\Support\Contacts;
-use FI\Support\Parser;
+use IP\Events\InvoiceEmailed;
+use IP\Events\InvoiceEmailing;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\MailQueue\Support\MailQueue;
+use IP\Requests\SendEmailRequest;
+use IP\Support\Contacts;
+use IP\Support\Parser;
 
 class InvoiceMailController extends Controller
 {

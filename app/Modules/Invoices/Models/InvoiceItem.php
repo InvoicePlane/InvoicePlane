@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Models;
+namespace IP\Modules\Invoices\Models;
 
-use FI\Events\InvoiceItemSaving;
-use FI\Events\InvoiceModified;
-use FI\Support\CurrencyFormatter;
-use FI\Support\NumberFormatter;
+use IP\Events\InvoiceItemSaving;
+use IP\Events\InvoiceModified;
+use IP\Support\CurrencyFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class InvoiceItem extends Model
@@ -55,22 +55,22 @@ class InvoiceItem extends Model
 
     public function amount()
     {
-        return $this->hasOne('FI\Modules\Invoices\Models\InvoiceItemAmount', 'item_id');
+        return $this->hasOne('IP\Modules\Invoices\Models\InvoiceItemAmount', 'item_id');
     }
 
     public function invoice()
     {
-        return $this->belongsTo('FI\Modules\Invoices\Models\Invoice');
+        return $this->belongsTo('IP\Modules\Invoices\Models\Invoice');
     }
 
     public function taxRate()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate');
     }
 
     public function taxRate2()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
     }
 
     /*

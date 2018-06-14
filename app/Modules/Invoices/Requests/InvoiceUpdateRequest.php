@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Requests;
+namespace IP\Modules\Invoices\Requests;
 
-use FI\Support\NumberFormatter;
+use IP\Support\NumberFormatter;
 
 class InvoiceUpdateRequest extends InvoiceStoreRequest
 {

@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Controllers;
+namespace IP\Modules\RecurringInvoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoice;
-use FI\Support\Frequency;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
+use IP\Support\Frequency;
+use IP\Traits\ReturnUrl;
 
 class RecurringInvoiceController extends Controller
 {

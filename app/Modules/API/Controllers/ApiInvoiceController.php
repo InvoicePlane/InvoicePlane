@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Controllers;
+namespace IP\Modules\API\Controllers;
 
-use FI\Modules\API\Requests\APIInvoiceItemRequest;
-use FI\Modules\API\Requests\APIInvoiceStoreRequest;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Modules\Users\Models\User;
+use IP\Modules\API\Requests\APIInvoiceItemRequest;
+use IP\Modules\API\Requests\APIInvoiceStoreRequest;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Modules\Users\Models\User;
 
 class ApiInvoiceController extends ApiController
 {

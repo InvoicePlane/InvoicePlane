@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\PaymentMethods\Requests;
+namespace IP\Modules\PaymentMethods\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Quotes\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\Quotes\Controllers'], function () {
     Route::group(['prefix' => 'quotes'], function () {
         Route::get('/', ['uses' => 'QuoteController@index', 'as' => 'quotes.index']);
         Route::get('create', ['uses' => 'QuoteCreateController@create', 'as' => 'quotes.create']);

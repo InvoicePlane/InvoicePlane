@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
-use FI\Modules\Expenses\Models\Expense;
+use IP\Modules\Expenses\Models\Expense;
 use Illuminate\Support\Facades\Validator;
 
 class ExpenseImporter extends AbstractImporter

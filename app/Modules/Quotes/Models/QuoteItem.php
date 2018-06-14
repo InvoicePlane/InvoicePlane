@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Models;
+namespace IP\Modules\Quotes\Models;
 
-use FI\Events\QuoteItemSaving;
-use FI\Events\QuoteModified;
-use FI\Support\CurrencyFormatter;
-use FI\Support\NumberFormatter;
+use IP\Events\QuoteItemSaving;
+use IP\Events\QuoteModified;
+use IP\Support\CurrencyFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class QuoteItem extends Model
@@ -55,22 +55,22 @@ class QuoteItem extends Model
 
     public function amount()
     {
-        return $this->hasOne('FI\Modules\Quotes\Models\QuoteItemAmount', 'item_id');
+        return $this->hasOne('IP\Modules\Quotes\Models\QuoteItemAmount', 'item_id');
     }
 
     public function quote()
     {
-        return $this->belongsTo('FI\Modules\Quotes\Models\Quote');
+        return $this->belongsTo('IP\Modules\Quotes\Models\Quote');
     }
 
     public function taxRate()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate');
     }
 
     public function taxRate2()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
     }
 
     /*

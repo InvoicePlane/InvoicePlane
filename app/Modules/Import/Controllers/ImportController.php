@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Controllers;
+namespace IP\Modules\Import\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Import\Importers\ImportFactory;
-use FI\Modules\Import\Requests\ImportRequest;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Import\Importers\ImportFactory;
+use IP\Modules\Import\Requests\ImportRequest;
 
 class ImportController extends Controller
 {

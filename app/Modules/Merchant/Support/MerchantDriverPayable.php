@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Modules\Merchant\Support;
+namespace IP\Modules\Merchant\Support;
 
-use FI\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\Invoice;
 
 abstract class MerchantDriverPayable extends MerchantDriver
 {

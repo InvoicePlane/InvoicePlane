@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CustomFields\Models;
+namespace IP\Modules\CustomFields\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

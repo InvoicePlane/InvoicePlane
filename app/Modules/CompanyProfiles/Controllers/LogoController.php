@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CompanyProfiles\Controllers;
+namespace IP\Modules\CompanyProfiles\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
 
 class LogoController extends Controller
 {

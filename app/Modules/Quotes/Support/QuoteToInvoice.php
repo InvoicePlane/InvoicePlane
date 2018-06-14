@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Support;
+namespace IP\Modules\Quotes\Support;
 
-use FI\Events\InvoiceModified;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Support\Statuses\InvoiceStatuses;
-use FI\Support\Statuses\QuoteStatuses;
+use IP\Events\InvoiceModified;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Support\Statuses\InvoiceStatuses;
+use IP\Support\Statuses\QuoteStatuses;
 
 class QuoteToInvoice
 {

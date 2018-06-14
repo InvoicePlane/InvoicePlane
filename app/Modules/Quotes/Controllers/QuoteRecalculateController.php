@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Controllers;
+namespace IP\Modules\Quotes\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Quotes\Support\QuoteCalculate;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Quotes\Support\QuoteCalculate;
 
 class QuoteRecalculateController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['prefix' => 'attachments', 'middleware' => 'web', 'namespace' => 'FI\Modules\Attachments\Controllers'], function () {
+Route::group(['prefix' => 'attachments', 'middleware' => 'web', 'namespace' => 'IP\Modules\Attachments\Controllers'], function () {
     Route::get('{urlKey}/download', ['uses' => 'AttachmentController@download', 'as' => 'attachments.download']);
 
     Route::group(['middleware' > 'auth.admin'], function () {

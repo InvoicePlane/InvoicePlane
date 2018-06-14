@@ -1,8 +1,8 @@
 <?php
 
-namespace FI\Modules\Merchant\Support;
+namespace IP\Modules\Merchant\Support;
 
-use FI\Support\Directory;
+use IP\Support\Directory;
 
 class MerchantFactory
 {
@@ -30,7 +30,7 @@ class MerchantFactory
      */
     public static function create($driver)
     {
-        $driver = 'FI\\Modules\\Merchant\\Support\\Drivers\\' . $driver;
+        $driver = 'IP\\Modules\\Merchant\\Support\\Drivers\\' . $driver;
 
         return new $driver;
     }

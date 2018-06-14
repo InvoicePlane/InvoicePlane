@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Currencies\Controllers;
+namespace IP\Modules\Currencies\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Currencies\Models\Currency;
-use FI\Modules\Currencies\Requests\CurrencyStoreRequest;
-use FI\Modules\Currencies\Requests\CurrencyUpdateRequest;
-use FI\Modules\Currencies\Support\CurrencyConverterFactory;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Currencies\Models\Currency;
+use IP\Modules\Currencies\Requests\CurrencyStoreRequest;
+use IP\Modules\Currencies\Requests\CurrencyUpdateRequest;
+use IP\Modules\Currencies\Support\CurrencyConverterFactory;
+use IP\Traits\ReturnUrl;
 
 class CurrencyController extends Controller
 {

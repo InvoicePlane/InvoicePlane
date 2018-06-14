@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\PaymentMethods\Controllers;
+namespace IP\Modules\PaymentMethods\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\PaymentMethods\Models\PaymentMethod;
-use FI\Modules\PaymentMethods\Requests\PaymentMethodRequest;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\PaymentMethods\Models\PaymentMethod;
+use IP\Modules\PaymentMethods\Requests\PaymentMethodRequest;
+use IP\Traits\ReturnUrl;
 
 class PaymentMethodController extends Controller
 {

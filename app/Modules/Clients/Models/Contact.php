@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Clients\Models;
+namespace IP\Modules\Clients\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,7 +28,7 @@ class Contact extends Model
 
     public function client()
     {
-        return $this->belongsTo('FI\Modules\Clients\Models\Client');
+        return $this->belongsTo('IP\Modules\Clients\Models\Client');
     }
 
     /*

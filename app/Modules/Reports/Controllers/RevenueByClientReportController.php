@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Reports\Controllers;
+namespace IP\Modules\Reports\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Reports\Reports\RevenueByClientReport;
-use FI\Modules\Reports\Requests\YearRequest;
-use FI\Support\DateFormatter;
-use FI\Support\PDF\PDFFactory;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Reports\Reports\RevenueByClientReport;
+use IP\Modules\Reports\Requests\YearRequest;
+use IP\Support\DateFormatter;
+use IP\Support\PDF\PDFFactory;
 
 class RevenueByClientReportController extends Controller
 {

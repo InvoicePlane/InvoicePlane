@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Groups\Models;
+namespace IP\Modules\Groups\Models;
 
-use FI\Traits\Sortable;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model

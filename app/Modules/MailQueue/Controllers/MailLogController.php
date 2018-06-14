@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\MailQueue\Controllers;
+namespace IP\Modules\MailQueue\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\MailQueue\Models\MailQueue;
+use IP\Http\Controllers\Controller;
+use IP\Modules\MailQueue\Models\MailQueue;
 
 class MailLogController extends Controller
 {

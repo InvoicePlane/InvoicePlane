@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Reports\Controllers;
+namespace IP\Modules\Reports\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Reports\Reports\ClientStatementReport;
-use FI\Modules\Reports\Requests\ClientStatementReportRequest;
-use FI\Support\PDF\PDFFactory;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Reports\Reports\ClientStatementReport;
+use IP\Modules\Reports\Requests\ClientStatementReportRequest;
+use IP\Support\PDF\PDFFactory;
 
 class ClientStatementReportController extends Controller
 {

@@ -70,7 +70,7 @@
 
                 @if (auth()->check())
                     <div id="view-notes">
-                        @include('notes._notes', ['object' => $quote, 'model' => 'FI\Modules\Quotes\Models\Quote'])
+                        @include('notes._notes', ['object' => $quote, 'model' => 'IP\Modules\Quotes\Models\Quote'])
                     </div>
                 @endif
 

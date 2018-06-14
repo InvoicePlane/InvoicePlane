@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Reports\Controllers;
+namespace IP\Modules\Reports\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Expenses\Models\ExpenseCategory;
-use FI\Modules\Expenses\Models\ExpenseVendor;
-use FI\Modules\Reports\Reports\ExpenseListReport;
-use FI\Modules\Reports\Requests\DateRangeRequest;
-use FI\Support\PDF\PDFFactory;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Expenses\Models\ExpenseCategory;
+use IP\Modules\Expenses\Models\ExpenseVendor;
+use IP\Modules\Reports\Reports\ExpenseListReport;
+use IP\Modules\Reports\Requests\DateRangeRequest;
+use IP\Support\PDF\PDFFactory;
 
 class ExpenseListReportController extends Controller
 {

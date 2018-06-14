@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Settings\Controllers;
+namespace IP\Modules\Settings\Controllers;
 
-use FI\Http\Controllers\Controller;
+use IP\Http\Controllers\Controller;
 use Ifsnop\Mysqldump\Mysqldump;
 
 class BackupController extends Controller

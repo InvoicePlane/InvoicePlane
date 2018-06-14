@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Controllers;
+namespace IP\Modules\RecurringInvoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
+use IP\Http\Controllers\Controller;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
 
 class RecurringInvoiceItemController extends Controller
 {

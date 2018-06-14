@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Clients\Models;
+namespace IP\Modules\Clients\Models;
 
-use FI\Events\ClientCreated;
-use FI\Events\ClientCreating;
-use FI\Events\ClientDeleted;
-use FI\Events\ClientSaving;
-use FI\Support\CurrencyFormatter;
-use FI\Support\Statuses\InvoiceStatuses;
-use FI\Traits\Sortable;
+use IP\Events\ClientCreated;
+use IP\Events\ClientCreating;
+use IP\Events\ClientDeleted;
+use IP\Events\ClientSaving;
+use IP\Support\CurrencyFormatter;
+use IP\Support\Statuses\InvoiceStatuses;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -84,57 +84,57 @@ class Client extends Model
 
     public function attachments()
     {
-        return $this->morphMany('FI\Modules\Attachments\Models\Attachment', 'attachable');
+        return $this->morphMany('IP\Modules\Attachments\Models\Attachment', 'attachable');
     }
 
     public function contacts()
     {
-        return $this->hasMany('FI\Modules\Clients\Models\Contact');
+        return $this->hasMany('IP\Modules\Clients\Models\Contact');
     }
 
     public function currency()
     {
-        return $this->belongsTo('FI\Modules\Currencies\Models\Currency', 'currency_code', 'code');
+        return $this->belongsTo('IP\Modules\Currencies\Models\Currency', 'currency_code', 'code');
     }
 
     public function custom()
     {
-        return $this->hasOne('FI\Modules\CustomFields\Models\ClientCustom');
+        return $this->hasOne('IP\Modules\CustomFields\Models\ClientCustom');
     }
 
     public function expenses()
     {
-        return $this->hasMany('FI\Modules\Expenses\Models\Expense');
+        return $this->hasMany('IP\Modules\Expenses\Models\Expense');
     }
 
     public function invoices()
     {
-        return $this->hasMany('FI\Modules\Invoices\Models\Invoice');
+        return $this->hasMany('IP\Modules\Invoices\Models\Invoice');
     }
 
     public function merchant()
     {
-        return $this->hasOne('FI\Modules\Merchant\Models\MerchantClient');
+        return $this->hasOne('IP\Modules\Merchant\Models\MerchantClient');
     }
 
     public function notes()
     {
-        return $this->morphMany('FI\Modules\Notes\Models\Note', 'notable');
+        return $this->morphMany('IP\Modules\Notes\Models\Note', 'notable');
     }
 
     public function quotes()
     {
-        return $this->hasMany('FI\Modules\Quotes\Models\Quote');
+        return $this->hasMany('IP\Modules\Quotes\Models\Quote');
     }
 
     public function recurringInvoices()
     {
-        return $this->hasMany('FI\Modules\RecurringInvoices\Models\RecurringInvoice');
+        return $this->hasMany('IP\Modules\RecurringInvoices\Models\RecurringInvoice');
     }
 
     public function user()
     {
-        return $this->hasOne('FI\Modules\Users\Models\User');
+        return $this->hasOne('IP\Modules\Users\Models\User');
     }
 
     /*

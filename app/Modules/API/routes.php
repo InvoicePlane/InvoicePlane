@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['prefix' => 'api', 'middleware' => 'web', 'namespace' => 'FI\Modules\API\Controllers'], function () {
+Route::group(['prefix' => 'api', 'middleware' => 'web', 'namespace' => 'IP\Modules\API\Controllers'], function () {
     Route::group(['middleware' => 'auth.admin'], function () {
         Route::post('generate_keys', ['uses' => 'ApiKeyController@generateKeys', 'as' => 'api.generateKeys']);
     });

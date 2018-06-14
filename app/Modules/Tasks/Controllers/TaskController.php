@@ -12,20 +12,20 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Tasks\Controllers;
+namespace IP\Modules\Tasks\Controllers;
 
 use Carbon\Carbon;
-use FI\Events\InvoiceCreatedRecurring;
-use FI\Events\OverdueNoticeEmailed;
-use FI\Http\Controllers\Controller;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Modules\MailQueue\Support\MailQueue;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoice;
-use FI\Support\DateFormatter;
-use FI\Support\Parser;
-use FI\Support\Statuses\InvoiceStatuses;
+use IP\Events\InvoiceCreatedRecurring;
+use IP\Events\OverdueNoticeEmailed;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Modules\MailQueue\Support\MailQueue;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
+use IP\Support\DateFormatter;
+use IP\Support\Parser;
+use IP\Support\Statuses\InvoiceStatuses;
 use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller

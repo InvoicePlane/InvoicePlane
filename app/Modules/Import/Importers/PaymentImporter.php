@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\PaymentMethods\Models\PaymentMethod;
-use FI\Modules\Payments\Models\Payment;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\PaymentMethods\Models\PaymentMethod;
+use IP\Modules\Payments\Models\Payment;
 use Illuminate\Support\Facades\Validator;
 
 class PaymentImporter extends AbstractImporter

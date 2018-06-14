@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Users\Models;
+namespace IP\Modules\Users\Models;
 
-use FI\Events\UserCreated;
-use FI\Events\UserDeleted;
-use FI\Traits\Sortable;
+use IP\Events\UserCreated;
+use IP\Events\UserDeleted;
+use IP\Traits\Sortable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -57,27 +57,27 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function client()
     {
-        return $this->belongsTo('FI\Modules\Clients\Models\Client');
+        return $this->belongsTo('IP\Modules\Clients\Models\Client');
     }
 
     public function custom()
     {
-        return $this->hasOne('FI\Modules\CustomFields\Models\UserCustom');
+        return $this->hasOne('IP\Modules\CustomFields\Models\UserCustom');
     }
 
     public function expenses()
     {
-        return $this->hasMany('FI\Modules\Expenses\Models\Expense');
+        return $this->hasMany('IP\Modules\Expenses\Models\Expense');
     }
 
     public function invoices()
     {
-        return $this->hasMany('FI\Modules\Invoices\Models\Invoice');
+        return $this->hasMany('IP\Modules\Invoices\Models\Invoice');
     }
 
     public function quotes()
     {
-        return $this->hasMany('FI\Modules\Quotes\Models\Quote');
+        return $this->hasMany('IP\Modules\Quotes\Models\Quote');
     }
 
     /*

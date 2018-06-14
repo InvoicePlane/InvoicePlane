@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Currencies\Support\Drivers;
+namespace IP\Modules\Currencies\Support\Drivers;
 
 class FixerIOCurrencyConverter
 {

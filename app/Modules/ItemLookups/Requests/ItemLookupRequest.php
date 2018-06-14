@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\ItemLookups\Requests;
+namespace IP\Modules\ItemLookups\Requests;
 
-use FI\Support\NumberFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ItemLookupRequest extends FormRequest

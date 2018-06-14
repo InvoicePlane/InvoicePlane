@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\ItemLookups\Models;
+namespace IP\Modules\ItemLookups\Models;
 
-use FI\Support\CurrencyFormatter;
-use FI\Support\NumberFormatter;
-use FI\Traits\Sortable;
+use IP\Support\CurrencyFormatter;
+use IP\Support\NumberFormatter;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -40,12 +40,12 @@ class ItemLookup extends Model
 
     public function taxRate()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate');
     }
 
     public function taxRate2()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
     }
 
     /*

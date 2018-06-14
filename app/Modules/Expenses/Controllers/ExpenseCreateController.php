@@ -12,16 +12,16 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Expenses\Controllers;
+namespace IP\Modules\Expenses\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Expenses\Models\Expense;
-use FI\Modules\Expenses\Requests\ExpenseRequest;
-use FI\Support\DateFormatter;
-use FI\Support\NumberFormatter;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Expenses\Models\Expense;
+use IP\Modules\Expenses\Requests\ExpenseRequest;
+use IP\Support\DateFormatter;
+use IP\Support\NumberFormatter;
+use IP\Traits\ReturnUrl;
 
 class ExpenseCreateController extends Controller
 {

@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Requests;
+namespace IP\Modules\RecurringInvoices\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

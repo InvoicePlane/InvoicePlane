@@ -225,7 +225,7 @@
                             <div class="tab-pane" id="tab-notes">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        @include('notes._notes', ['object' => $invoice, 'model' => 'FI\Modules\Invoices\Models\Invoice', 'showPrivateCheckbox' => true, 'hideHeader' => true])
+                                        @include('notes._notes', ['object' => $invoice, 'model' => 'IP\Modules\Invoices\Models\Invoice', 'showPrivateCheckbox' => true, 'hideHeader' => true])
                                     </div>
                                 </div>
                             </div>
@@ -233,7 +233,7 @@
                             <div class="tab-pane" id="tab-attachments">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        @include('attachments._table', ['object' => $invoice, 'model' => 'FI\Modules\Invoices\Models\Invoice'])
+                                        @include('attachments._table', ['object' => $invoice, 'model' => 'IP\Modules\Invoices\Models\Invoice'])
                                     </div>
                                 </div>
                             </div>

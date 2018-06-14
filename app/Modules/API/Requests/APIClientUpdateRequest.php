@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Requests;
+namespace IP\Modules\API\Requests;
 
-use FI\Modules\Clients\Requests\ClientUpdateRequest;
+use IP\Modules\Clients\Requests\ClientUpdateRequest;
 
 class APIClientUpdateRequest extends ClientUpdateRequest
 {

@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Users\Controllers;
+namespace IP\Modules\Users\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Users\Models\User;
-use FI\Modules\Users\Requests\UserStoreRequest;
-use FI\Modules\Users\Requests\UserUpdateRequest;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Users\Models\User;
+use IP\Modules\Users\Requests\UserStoreRequest;
+use IP\Modules\Users\Requests\UserUpdateRequest;
+use IP\Traits\ReturnUrl;
 
 class UserController extends Controller
 {

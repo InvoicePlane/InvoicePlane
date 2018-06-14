@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Support;
+namespace IP\Modules\Quotes\Support;
 
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Quotes\Models\QuoteAmount;
-use FI\Modules\Quotes\Models\QuoteItem;
-use FI\Modules\Quotes\Models\QuoteItemAmount;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\Quotes\Models\QuoteAmount;
+use IP\Modules\Quotes\Models\QuoteItem;
+use IP\Modules\Quotes\Models\QuoteItemAmount;
 
 class QuoteCalculate
 {

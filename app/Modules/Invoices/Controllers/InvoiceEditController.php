@@ -12,20 +12,20 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Controllers;
+namespace IP\Modules\Invoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Currencies\Models\Currency;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Modules\Invoices\Requests\InvoiceUpdateRequest;
-use FI\Modules\Invoices\Support\InvoiceTemplates;
-use FI\Modules\ItemLookups\Models\ItemLookup;
-use FI\Modules\TaxRates\Models\TaxRate;
-use FI\Support\DateFormatter;
-use FI\Support\Statuses\InvoiceStatuses;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Currencies\Models\Currency;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Modules\Invoices\Requests\InvoiceUpdateRequest;
+use IP\Modules\Invoices\Support\InvoiceTemplates;
+use IP\Modules\ItemLookups\Models\ItemLookup;
+use IP\Modules\TaxRates\Models\TaxRate;
+use IP\Support\DateFormatter;
+use IP\Support\Statuses\InvoiceStatuses;
+use IP\Traits\ReturnUrl;
 
 class InvoiceEditController extends Controller
 {

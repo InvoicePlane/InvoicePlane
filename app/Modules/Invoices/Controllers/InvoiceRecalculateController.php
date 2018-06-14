@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Controllers;
+namespace IP\Modules\Invoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Invoices\Support\InvoiceCalculate;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Invoices\Support\InvoiceCalculate;
 
 class InvoiceRecalculateController extends Controller
 {

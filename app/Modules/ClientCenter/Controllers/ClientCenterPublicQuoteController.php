@@ -12,16 +12,16 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\ClientCenter\Controllers;
+namespace IP\Modules\ClientCenter\Controllers;
 
-use FI\Events\QuoteApproved;
-use FI\Events\QuoteRejected;
-use FI\Events\QuoteViewed;
-use FI\Http\Controllers\Controller;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Support\FileNames;
-use FI\Support\PDF\PDFFactory;
-use FI\Support\Statuses\QuoteStatuses;
+use IP\Events\QuoteApproved;
+use IP\Events\QuoteRejected;
+use IP\Events\QuoteViewed;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Support\FileNames;
+use IP\Support\PDF\PDFFactory;
+use IP\Support\Statuses\QuoteStatuses;
 
 class ClientCenterPublicQuoteController extends Controller
 {

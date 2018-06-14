@@ -81,6 +81,6 @@
     {!! Form::close() !!}
 
     <section class="content">
-        @include('notes._notes', ['object' => $payment, 'model' => 'FI\Modules\Payments\Models\Payment', 'showPrivateCheckbox' => true])
+        @include('notes._notes', ['object' => $payment, 'model' => 'IP\Modules\Payments\Models\Payment', 'showPrivateCheckbox' => true])
     </section>
 @stop

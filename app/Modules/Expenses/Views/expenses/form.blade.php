@@ -122,7 +122,7 @@
                                 </div>
                             @endif
                         @else
-                            @include('attachments._table', ['object' => $expense, 'model' => 'FI\Modules\Expenses\Models\Expense'])
+                            @include('attachments._table', ['object' => $expense, 'model' => 'IP\Modules\Expenses\Models\Expense'])
                         @endif
                     </div>
 

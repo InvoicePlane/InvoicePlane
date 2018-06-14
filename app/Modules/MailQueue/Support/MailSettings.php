@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\MailQueue\Support;
+namespace IP\Modules\MailQueue\Support;
 
 class MailSettings
 {

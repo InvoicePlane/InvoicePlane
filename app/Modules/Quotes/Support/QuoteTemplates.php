@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Support;
+namespace IP\Modules\Quotes\Support;
 
-use FI\Support\Directory;
+use IP\Support\Directory;
 
 class QuoteTemplates
 {

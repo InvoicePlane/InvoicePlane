@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
 class ImportFactory
 {
@@ -20,21 +20,21 @@ class ImportFactory
     {
         switch ($importType) {
             case 'clients':
-                return app()->make('FI\Modules\Import\Importers\ClientImporter');
+                return app()->make('IP\Modules\Import\Importers\ClientImporter');
             case 'quotes':
-                return app()->make('FI\Modules\Import\Importers\QuoteImporter');
+                return app()->make('IP\Modules\Import\Importers\QuoteImporter');
             case 'invoices':
-                return app()->make('FI\Modules\Import\Importers\InvoiceImporter');
+                return app()->make('IP\Modules\Import\Importers\InvoiceImporter');
             case 'payments':
-                return app()->make('FI\Modules\Import\Importers\PaymentImporter');
+                return app()->make('IP\Modules\Import\Importers\PaymentImporter');
             case 'invoiceItems':
-                return app()->make('FI\Modules\Import\Importers\InvoiceItemImporter');
+                return app()->make('IP\Modules\Import\Importers\InvoiceItemImporter');
             case 'quoteItems':
-                return app()->make('FI\Modules\Import\Importers\QuoteItemImporter');
+                return app()->make('IP\Modules\Import\Importers\QuoteItemImporter');
             case 'itemLookups':
-                return app()->make('FI\Modules\Import\Importers\ItemLookupImporter');
+                return app()->make('IP\Modules\Import\Importers\ItemLookupImporter');
             case 'expenses':
-                return app('FI\Modules\Import\Importers\ExpenseImporter');
+                return app('IP\Modules\Import\Importers\ExpenseImporter');
         }
     }
 }

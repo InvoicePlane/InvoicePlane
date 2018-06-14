@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;

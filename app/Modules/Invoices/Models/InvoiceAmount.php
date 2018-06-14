@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Models;
+namespace IP\Modules\Invoices\Models;
 
-use FI\Support\CurrencyFormatter;
-use FI\Support\NumberFormatter;
+use IP\Support\CurrencyFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class InvoiceAmount extends Model
@@ -34,7 +34,7 @@ class InvoiceAmount extends Model
 
     public function invoice()
     {
-        return $this->belongsTo('FI\Modules\Invoices\Models\Invoice');
+        return $this->belongsTo('IP\Modules\Invoices\Models\Invoice');
     }
 
     /*

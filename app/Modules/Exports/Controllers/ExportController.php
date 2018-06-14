@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Exports\Controllers;
+namespace IP\Modules\Exports\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Exports\Support\Export;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Exports\Support\Export;
 
 class ExportController extends Controller
 {

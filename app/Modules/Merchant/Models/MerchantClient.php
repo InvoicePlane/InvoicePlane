@@ -1,6 +1,6 @@
 <?php
 
-namespace FI\Modules\Merchant\Models;
+namespace IP\Modules\Merchant\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

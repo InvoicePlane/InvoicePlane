@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Requests;
+namespace IP\Modules\Quotes\Requests;
 
-use FI\Support\NumberFormatter;
+use IP\Support\NumberFormatter;
 
 class QuoteUpdateRequest extends QuoteStoreRequest
 {

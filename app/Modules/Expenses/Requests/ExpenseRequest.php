@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Expenses\Requests;
+namespace IP\Modules\Expenses\Requests;
 
-use FI\Support\NumberFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExpenseRequest extends FormRequest

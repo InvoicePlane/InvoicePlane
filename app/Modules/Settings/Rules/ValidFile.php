@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Settings\Rules;
+namespace IP\Modules\Settings\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 

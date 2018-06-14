@@ -12,19 +12,19 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Models;
+namespace IP\Modules\Quotes\Models;
 
 use Carbon\Carbon;
-use FI\Events\QuoteCreated;
-use FI\Events\QuoteCreating;
-use FI\Events\QuoteDeleted;
-use FI\Support\CurrencyFormatter;
-use FI\Support\DateFormatter;
-use FI\Support\FileNames;
-use FI\Support\HTML;
-use FI\Support\NumberFormatter;
-use FI\Support\Statuses\QuoteStatuses;
-use FI\Traits\Sortable;
+use IP\Events\QuoteCreated;
+use IP\Events\QuoteCreating;
+use IP\Events\QuoteDeleted;
+use IP\Support\CurrencyFormatter;
+use IP\Support\DateFormatter;
+use IP\Support\FileNames;
+use IP\Support\HTML;
+use IP\Support\NumberFormatter;
+use IP\Support\Statuses\QuoteStatuses;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -72,27 +72,27 @@ class Quote extends Model
 
     public function activities()
     {
-        return $this->morphMany('FI\Modules\Activity\Models\Activity', 'audit');
+        return $this->morphMany('IP\Modules\Activity\Models\Activity', 'audit');
     }
 
     public function amount()
     {
-        return $this->hasOne('FI\Modules\Quotes\Models\QuoteAmount');
+        return $this->hasOne('IP\Modules\Quotes\Models\QuoteAmount');
     }
 
     public function attachments()
     {
-        return $this->morphMany('FI\Modules\Attachments\Models\Attachment', 'attachable');
+        return $this->morphMany('IP\Modules\Attachments\Models\Attachment', 'attachable');
     }
 
     public function client()
     {
-        return $this->belongsTo('FI\Modules\Clients\Models\Client');
+        return $this->belongsTo('IP\Modules\Clients\Models\Client');
     }
 
     public function clientAttachments()
     {
-        $relationship = $this->morphMany('FI\Modules\Attachments\Models\Attachment', 'attachable');
+        $relationship = $this->morphMany('IP\Modules\Attachments\Models\Attachment', 'attachable');
 
         $relationship->where('client_visibility', 1);
 
@@ -101,56 +101,56 @@ class Quote extends Model
 
     public function companyProfile()
     {
-        return $this->belongsTo('FI\Modules\CompanyProfiles\Models\CompanyProfile');
+        return $this->belongsTo('IP\Modules\CompanyProfiles\Models\CompanyProfile');
     }
 
     public function currency()
     {
-        return $this->belongsTo('FI\Modules\Currencies\Models\Currency', 'currency_code', 'code');
+        return $this->belongsTo('IP\Modules\Currencies\Models\Currency', 'currency_code', 'code');
     }
 
     public function custom()
     {
-        return $this->hasOne('FI\Modules\CustomFields\Models\QuoteCustom');
+        return $this->hasOne('IP\Modules\CustomFields\Models\QuoteCustom');
     }
 
     public function group()
     {
-        return $this->hasOne('FI\Modules\Groups\Models\Group');
+        return $this->hasOne('IP\Modules\Groups\Models\Group');
     }
 
     public function invoice()
     {
-        return $this->belongsTo('FI\Modules\Invoices\Models\Invoice');
+        return $this->belongsTo('IP\Modules\Invoices\Models\Invoice');
     }
 
     public function mailQueue()
     {
-        return $this->morphMany('FI\Modules\MailQueue\Models\MailQueue', 'mailable');
+        return $this->morphMany('IP\Modules\MailQueue\Models\MailQueue', 'mailable');
     }
 
     public function items()
     {
-        return $this->hasMany('FI\Modules\Quotes\Models\QuoteItem')
+        return $this->hasMany('IP\Modules\Quotes\Models\QuoteItem')
             ->orderBy('display_order');
     }
 
     public function notes()
     {
-        return $this->morphMany('FI\Modules\Notes\Models\Note', 'notable');
+        return $this->morphMany('IP\Modules\Notes\Models\Note', 'notable');
     }
 
     // This and items() are the exact same. This is added to appease the IDE gods
     // and the fact that Laravel has a protected items property.
     public function quoteItems()
     {
-        return $this->hasMany('FI\Modules\Quotes\Models\QuoteItem')
+        return $this->hasMany('IP\Modules\Quotes\Models\QuoteItem')
             ->orderBy('display_order');
     }
 
     public function user()
     {
-        return $this->belongsTo('FI\Modules\Users\Models\User');
+        return $this->belongsTo('IP\Modules\Users\Models\User');
     }
 
     /*

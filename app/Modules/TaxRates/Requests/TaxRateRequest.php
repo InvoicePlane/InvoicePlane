@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\TaxRates\Requests;
+namespace IP\Modules\TaxRates\Requests;
 
-use FI\Support\NumberFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TaxRateRequest extends FormRequest

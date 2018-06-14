@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Reports\Reports;
+namespace IP\Modules\Reports\Reports;
 
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Support\CurrencyFormatter;
-use FI\Support\DateFormatter;
-use FI\Support\NumberFormatter;
-use FI\Support\Statuses\InvoiceStatuses;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Support\CurrencyFormatter;
+use IP\Support\DateFormatter;
+use IP\Support\NumberFormatter;
+use IP\Support\Statuses\InvoiceStatuses;
 
 class ItemSalesReport
 {

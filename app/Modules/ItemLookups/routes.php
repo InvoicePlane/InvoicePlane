@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\ItemLookups\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\ItemLookups\Controllers'], function () {
     Route::get('item_lookups', ['uses' => 'ItemLookupController@index', 'as' => 'itemLookups.index']);
     Route::get('item_lookups/create', ['uses' => 'ItemLookupController@create', 'as' => 'itemLookups.create']);
     Route::get('item_lookups/{itemLookup}/edit', ['uses' => 'ItemLookupController@edit', 'as' => 'itemLookups.edit']);

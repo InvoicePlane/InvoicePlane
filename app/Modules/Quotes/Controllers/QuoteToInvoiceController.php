@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Controllers;
+namespace IP\Modules\Quotes\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Quotes\Requests\QuoteToInvoiceRequest;
-use FI\Modules\Quotes\Support\QuoteToInvoice;
-use FI\Support\DateFormatter;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\Quotes\Requests\QuoteToInvoiceRequest;
+use IP\Modules\Quotes\Support\QuoteToInvoice;
+use IP\Support\DateFormatter;
 
 class QuoteToInvoiceController extends Controller
 {

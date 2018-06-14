@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Import\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\Import\Controllers'], function () {
     Route::get('import', ['uses' => 'ImportController@index', 'as' => 'import.index']);
     Route::get('import/map/{import_type}', ['uses' => 'ImportController@mapImport', 'as' => 'import.map']);
 

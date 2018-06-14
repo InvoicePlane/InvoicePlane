@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Models;
+namespace IP\Modules\RecurringInvoices\Models;
 
-use FI\Events\RecurringInvoiceItemSaving;
-use FI\Events\RecurringInvoiceModified;
-use FI\Support\CurrencyFormatter;
-use FI\Support\NumberFormatter;
+use IP\Events\RecurringInvoiceItemSaving;
+use IP\Events\RecurringInvoiceModified;
+use IP\Support\CurrencyFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class RecurringInvoiceItem extends Model
@@ -59,22 +59,22 @@ class RecurringInvoiceItem extends Model
 
     public function amount()
     {
-        return $this->hasOne('FI\Modules\RecurringInvoices\Models\RecurringInvoiceItemAmount', 'item_id');
+        return $this->hasOne('IP\Modules\RecurringInvoices\Models\RecurringInvoiceItemAmount', 'item_id');
     }
 
     public function recurringInvoice()
     {
-        return $this->belongsTo('FI\Modules\RecurringInvoices\Models\RecurringInvoice');
+        return $this->belongsTo('IP\Modules\RecurringInvoices\Models\RecurringInvoice');
     }
 
     public function taxRate()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate');
     }
 
     public function taxRate2()
     {
-        return $this->belongsTo('FI\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
+        return $this->belongsTo('IP\Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
     }
 
     /*

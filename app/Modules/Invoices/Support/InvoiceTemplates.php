@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Support;
+namespace IP\Modules\Invoices\Support;
 
-use FI\Support\Directory;
+use IP\Support\Directory;
 
 class InvoiceTemplates
 {

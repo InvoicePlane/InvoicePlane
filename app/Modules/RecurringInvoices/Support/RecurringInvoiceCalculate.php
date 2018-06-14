@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Support;
+namespace IP\Modules\RecurringInvoices\Support;
 
-use FI\Modules\RecurringInvoices\Models\RecurringInvoice;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoiceAmount;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoiceItemAmount;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoiceAmount;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoiceItemAmount;
 
 class RecurringInvoiceCalculate
 {

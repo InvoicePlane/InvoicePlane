@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Addons\Controllers;
+namespace IP\Modules\Addons\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Addons\Models\Addon;
-use FI\Support\Directory;
-use FI\Support\Migrations;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Addons\Models\Addon;
+use IP\Support\Directory;
+use IP\Support\Migrations;
 
 class AddonController extends Controller
 {

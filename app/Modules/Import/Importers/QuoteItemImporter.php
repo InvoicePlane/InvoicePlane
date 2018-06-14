@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
-use FI\Events\QuoteModified;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\TaxRates\Models\TaxRate;
+use IP\Events\QuoteModified;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\TaxRates\Models\TaxRate;
 use Illuminate\Support\Facades\Validator;
 
 class QuoteItemImporter extends AbstractImporter

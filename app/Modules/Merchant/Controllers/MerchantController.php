@@ -1,10 +1,10 @@
 <?php
 
-namespace FI\Modules\Merchant\Controllers;
+namespace IP\Modules\Merchant\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Merchant\Support\MerchantFactory;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Merchant\Support\MerchantFactory;
 
 class MerchantController extends Controller
 {

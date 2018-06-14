@@ -12,18 +12,18 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Payments\Models;
+namespace IP\Modules\Payments\Models;
 
 use Carbon\Carbon;
-use FI\Events\InvoiceModified;
-use FI\Events\PaymentCreated;
-use FI\Events\PaymentCreating;
-use FI\Support\CurrencyFormatter;
-use FI\Support\DateFormatter;
-use FI\Support\FileNames;
-use FI\Support\HTML;
-use FI\Support\NumberFormatter;
-use FI\Traits\Sortable;
+use IP\Events\InvoiceModified;
+use IP\Events\PaymentCreated;
+use IP\Events\PaymentCreating;
+use IP\Support\CurrencyFormatter;
+use IP\Support\DateFormatter;
+use IP\Support\FileNames;
+use IP\Support\HTML;
+use IP\Support\NumberFormatter;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -79,27 +79,27 @@ class Payment extends Model
 
     public function custom()
     {
-        return $this->hasOne('FI\Modules\CustomFields\Models\PaymentCustom');
+        return $this->hasOne('IP\Modules\CustomFields\Models\PaymentCustom');
     }
 
     public function invoice()
     {
-        return $this->belongsTo('FI\Modules\Invoices\Models\Invoice');
+        return $this->belongsTo('IP\Modules\Invoices\Models\Invoice');
     }
 
     public function mailQueue()
     {
-        return $this->morphMany('FI\Modules\MailQueue\Models\MailQueue', 'mailable');
+        return $this->morphMany('IP\Modules\MailQueue\Models\MailQueue', 'mailable');
     }
 
     public function notes()
     {
-        return $this->morphMany('FI\Modules\Notes\Models\Note', 'notable');
+        return $this->morphMany('IP\Modules\Notes\Models\Note', 'notable');
     }
 
     public function paymentMethod()
     {
-        return $this->belongsTo('FI\Modules\PaymentMethods\Models\PaymentMethod');
+        return $this->belongsTo('IP\Modules\PaymentMethods\Models\PaymentMethod');
     }
 
     /*

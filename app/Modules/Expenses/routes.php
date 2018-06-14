@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'prefix' => 'expenses', 'namespace' => 'FI\Modules\Expenses\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'prefix' => 'expenses', 'namespace' => 'IP\Modules\Expenses\Controllers'], function () {
     Route::get('/', ['uses' => 'ExpenseController@index', 'as' => 'expenses.index']);
     Route::get('create', ['uses' => 'ExpenseCreateController@create', 'as' => 'expenses.create']);
     Route::post('create', ['uses' => 'ExpenseCreateController@store', 'as' => 'expenses.store']);

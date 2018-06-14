@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Payments\Requests;
+namespace IP\Modules\Payments\Requests;
 
-use FI\Support\NumberFormatter;
+use IP\Support\NumberFormatter;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PaymentRequest extends FormRequest

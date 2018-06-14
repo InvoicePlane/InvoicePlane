@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Dashboard\Controllers;
+namespace IP\Modules\Dashboard\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Support\DashboardWidgets;
+use IP\Http\Controllers\Controller;
+use IP\Support\DashboardWidgets;
 
 class DashboardController extends Controller
 {

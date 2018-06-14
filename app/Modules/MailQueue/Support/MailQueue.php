@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\MailQueue\Support;
+namespace IP\Modules\MailQueue\Support;
 
-use FI\Support\PDF\PDFFactory;
+use IP\Support\PDF\PDFFactory;
 use Illuminate\Support\Facades\Mail;
 
 class MailQueue
@@ -36,7 +36,7 @@ class MailQueue
 
     public function send($id)
     {
-        $mail = \FI\Modules\MailQueue\Models\MailQueue::find($id);
+        $mail = \IP\Modules\MailQueue\Models\MailQueue::find($id);
 
         if ($this->sendMail(
             $mail->from,

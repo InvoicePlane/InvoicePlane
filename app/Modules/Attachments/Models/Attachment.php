@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Attachments\Models;
+namespace IP\Modules\Attachments\Models;
 
-use FI\Events\AttachmentCreating;
-use FI\Events\AttachmentDeleted;
-use FI\Support\DateFormatter;
+use IP\Events\AttachmentCreating;
+use IP\Events\AttachmentDeleted;
+use IP\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class Attachment extends Model
@@ -51,7 +51,7 @@ class Attachment extends Model
 
     public function user()
     {
-        return $this->belongsTo('FI\Modules\Users\Models\User');
+        return $this->belongsTo('IP\Modules\Users\Models\User');
     }
 
     /*

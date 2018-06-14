@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'prefix' => 'clients', 'namespace' => 'FI\Modules\Clients\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'prefix' => 'clients', 'namespace' => 'IP\Modules\Clients\Controllers'], function () {
     Route::get('/', ['uses' => 'ClientController@index', 'as' => 'clients.index']);
     Route::get('create', ['uses' => 'ClientController@create', 'as' => 'clients.create']);
     Route::get('{id}/edit', ['uses' => 'ClientController@edit', 'as' => 'clients.edit']);

@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Support;
+namespace IP\Modules\RecurringInvoices\Support;
 
-use FI\Support\Calculators\Calculator;
+use IP\Support\Calculators\Calculator;
 
 class RecurringInvoiceCalculator extends Calculator
 {

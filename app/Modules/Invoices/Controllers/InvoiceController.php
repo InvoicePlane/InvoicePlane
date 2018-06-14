@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Controllers;
+namespace IP\Modules\Invoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Support\FileNames;
-use FI\Support\PDF\PDFFactory;
-use FI\Support\Statuses\InvoiceStatuses;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Support\FileNames;
+use IP\Support\PDF\PDFFactory;
+use IP\Support\Statuses\InvoiceStatuses;
+use IP\Traits\ReturnUrl;
 
 class InvoiceController extends Controller
 {

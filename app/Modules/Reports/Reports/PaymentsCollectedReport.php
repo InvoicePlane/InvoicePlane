@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Reports\Reports;
+namespace IP\Modules\Reports\Reports;
 
-use FI\Modules\Payments\Models\Payment;
-use FI\Support\CurrencyFormatter;
-use FI\Support\DateFormatter;
+use IP\Modules\Payments\Models\Payment;
+use IP\Support\CurrencyFormatter;
+use IP\Support\DateFormatter;
 
 class PaymentsCollectedReport
 {

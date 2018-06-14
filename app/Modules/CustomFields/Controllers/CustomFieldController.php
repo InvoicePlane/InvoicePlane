@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CustomFields\Controllers;
+namespace IP\Modules\CustomFields\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\CustomFields\Requests\CustomFieldStoreRequest;
-use FI\Modules\CustomFields\Requests\CustomFieldUpdateRequest;
-use FI\Modules\CustomFields\Support\CustomFields;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\CustomFields\Requests\CustomFieldStoreRequest;
+use IP\Modules\CustomFields\Requests\CustomFieldUpdateRequest;
+use IP\Modules\CustomFields\Support\CustomFields;
+use IP\Traits\ReturnUrl;
 
 class CustomFieldController extends Controller
 {

@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\TaxRates\Controllers;
+namespace IP\Modules\TaxRates\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\TaxRates\Models\TaxRate;
-use FI\Modules\TaxRates\Requests\TaxRateRequest;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\TaxRates\Models\TaxRate;
+use IP\Modules\TaxRates\Requests\TaxRateRequest;
+use IP\Traits\ReturnUrl;
 
 class TaxRateController extends Controller
 {

@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Requests;
+namespace IP\Modules\API\Requests;
 
-use FI\Modules\Invoices\Requests\InvoiceStoreRequest;
+use IP\Modules\Invoices\Requests\InvoiceStoreRequest;
 
 class APIInvoiceStoreRequest extends InvoiceStoreRequest
 {

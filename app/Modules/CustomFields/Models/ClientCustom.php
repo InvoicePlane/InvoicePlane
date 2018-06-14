@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CustomFields\Models;
+namespace IP\Modules\CustomFields\Models;
 
-use FI\Events\ClientCustomCreating;
+use IP\Events\ClientCustomCreating;
 use Illuminate\Database\Eloquent\Model;
 
 class ClientCustom extends Model

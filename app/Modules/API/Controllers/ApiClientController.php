@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Controllers;
+namespace IP\Modules\API\Controllers;
 
-use FI\Modules\API\Requests\APIClientUpdateRequest;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Clients\Requests\ClientStoreRequest;
+use IP\Modules\API\Requests\APIClientUpdateRequest;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Clients\Requests\ClientStoreRequest;
 use Illuminate\Http\Request;
 
 class ApiClientController extends ApiController

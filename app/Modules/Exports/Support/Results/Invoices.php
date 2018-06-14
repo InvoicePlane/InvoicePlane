@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Exports\Support\Results;
+namespace IP\Modules\Exports\Support\Results;
 
-use FI\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\Invoice;
 
 class Invoices implements SourceInterface
 {

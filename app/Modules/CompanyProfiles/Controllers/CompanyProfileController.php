@@ -12,16 +12,16 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CompanyProfiles\Controllers;
+namespace IP\Modules\CompanyProfiles\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\CompanyProfiles\Requests\CompanyProfileStoreRequest;
-use FI\Modules\CompanyProfiles\Requests\CompanyProfileUpdateRequest;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Invoices\Support\InvoiceTemplates;
-use FI\Modules\Quotes\Support\QuoteTemplates;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\CompanyProfiles\Requests\CompanyProfileStoreRequest;
+use IP\Modules\CompanyProfiles\Requests\CompanyProfileUpdateRequest;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Invoices\Support\InvoiceTemplates;
+use IP\Modules\Quotes\Support\QuoteTemplates;
+use IP\Traits\ReturnUrl;
 
 class CompanyProfileController extends Controller
 {

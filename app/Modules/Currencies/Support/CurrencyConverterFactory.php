@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Currencies\Support;
+namespace IP\Modules\Currencies\Support;
 
 class CurrencyConverterFactory
 {
     public static function create()
     {
-        $class = 'FI\Modules\Currencies\Support\Drivers\\' . config('fi.currencyConversionDriver');
+        $class = 'IP\Modules\Currencies\Support\Drivers\\' . config('fi.currencyConversionDriver');
 
         return new $class;
     }

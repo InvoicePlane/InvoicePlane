@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Currencies\Models;
+namespace IP\Modules\Currencies\Models;
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Traits\Sortable;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 
 class Currency extends Model

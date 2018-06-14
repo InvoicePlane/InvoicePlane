@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
-use FI\Modules\ItemLookups\Models\ItemLookup;
-use FI\Modules\TaxRates\Models\TaxRate;
+use IP\Modules\ItemLookups\Models\ItemLookup;
+use IP\Modules\TaxRates\Models\TaxRate;
 use Illuminate\Support\Facades\Validator;
 
 class ItemLookupImporter extends AbstractImporter

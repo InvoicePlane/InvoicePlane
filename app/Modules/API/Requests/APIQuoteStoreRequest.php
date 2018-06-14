@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Requests;
+namespace IP\Modules\API\Requests;
 
-use FI\Modules\Quotes\Requests\QuoteStoreRequest;
+use IP\Modules\Quotes\Requests\QuoteStoreRequest;
 
 class APIQuoteStoreRequest extends QuoteStoreRequest
 {

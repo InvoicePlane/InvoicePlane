@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Activity\Models;
+namespace IP\Modules\Activity\Models;
 
-use FI\Support\DateFormatter;
+use IP\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
@@ -32,7 +32,7 @@ class Activity extends Model
     {
         if ($this->audit) {
             switch ($this->audit_type) {
-                case 'FI\Modules\Quotes\Models\Quote':
+                case 'IP\Modules\Quotes\Models\Quote':
 
                     switch ($this->activity) {
                         case 'public.viewed':
@@ -50,7 +50,7 @@ class Activity extends Model
 
                     break;
 
-                case 'FI\Modules\Invoices\Models\Invoice':
+                case 'IP\Modules\Invoices\Models\Invoice':
 
                     switch ($this->activity) {
                         case 'public.viewed':

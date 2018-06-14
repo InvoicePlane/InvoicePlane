@@ -12,21 +12,21 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Controllers;
+namespace IP\Modules\RecurringInvoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Currencies\Models\Currency;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Invoices\Support\InvoiceTemplates;
-use FI\Modules\ItemLookups\Models\ItemLookup;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoice;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
-use FI\Modules\RecurringInvoices\Requests\RecurringInvoiceUpdateRequest;
-use FI\Modules\TaxRates\Models\TaxRate;
-use FI\Support\DateFormatter;
-use FI\Support\Frequency;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Currencies\Models\Currency;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Invoices\Support\InvoiceTemplates;
+use IP\Modules\ItemLookups\Models\ItemLookup;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
+use IP\Modules\RecurringInvoices\Requests\RecurringInvoiceUpdateRequest;
+use IP\Modules\TaxRates\Models\TaxRate;
+use IP\Support\DateFormatter;
+use IP\Support\Frequency;
+use IP\Traits\ReturnUrl;
 
 class RecurringInvoiceEditController extends Controller
 {

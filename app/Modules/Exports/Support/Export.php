@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Exports\Support;
+namespace IP\Modules\Exports\Support;
 
 use Exporter\Handler;
 use Exporter\Source\ArraySourceIterator;
@@ -36,7 +36,7 @@ class Export
 
     public function writeFile()
     {
-        $resultsClass = 'FI\Modules\Exports\Support\Results\\' . $this->exportType;
+        $resultsClass = 'IP\Modules\Exports\Support\Results\\' . $this->exportType;
         $writerClass = 'Exporter\Writer\\' . $this->writerType;
 
         $fileExtension = strtolower(str_replace('Writer', '', $this->writerType));

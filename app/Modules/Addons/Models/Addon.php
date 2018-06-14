@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Addons\Models;
+namespace IP\Modules\Addons\Models;
 
-use FI\Support\Migrations;
+use IP\Support\Migrations;
 use Illuminate\Database\Eloquent\Model;
 
 class Addon extends Model

@@ -1,11 +1,11 @@
 <?php
 
-namespace FI\Modules\Merchant\Support\Drivers;
+namespace IP\Modules\Merchant\Support\Drivers;
 
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Merchant\Models\MerchantPayment;
-use FI\Modules\Merchant\Support\MerchantDriverPayable;
-use FI\Modules\Payments\Models\Payment;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Merchant\Models\MerchantPayment;
+use IP\Modules\Merchant\Support\MerchantDriverPayable;
+use IP\Modules\Payments\Models\Payment;
 
 class Mollie extends MerchantDriverPayable
 {

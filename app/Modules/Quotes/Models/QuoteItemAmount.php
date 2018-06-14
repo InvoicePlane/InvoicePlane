@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Models;
+namespace IP\Modules\Quotes\Models;
 
-use FI\Support\CurrencyFormatter;
+use IP\Support\CurrencyFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class QuoteItemAmount extends Model
@@ -27,7 +27,7 @@ class QuoteItemAmount extends Model
 
     public function item()
     {
-        return $this->belongsTo('FI\Modules\Quotes\Models\QuoteItem');
+        return $this->belongsTo('IP\Modules\Quotes\Models\QuoteItem');
     }
 
     /*

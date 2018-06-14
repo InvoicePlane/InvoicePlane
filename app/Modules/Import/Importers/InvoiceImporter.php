@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Invoices\Models\Invoice;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Invoices\Models\Invoice;
 use Illuminate\Support\Facades\Validator;
 
 class InvoiceImporter extends AbstractImporter

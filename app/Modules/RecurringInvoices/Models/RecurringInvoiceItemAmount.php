@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Models;
+namespace IP\Modules\RecurringInvoices\Models;
 
-use FI\Support\CurrencyFormatter;
+use IP\Support\CurrencyFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class RecurringInvoiceItemAmount extends Model
@@ -29,7 +29,7 @@ class RecurringInvoiceItemAmount extends Model
 
     public function item()
     {
-        return $this->belongsTo('FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem');
+        return $this->belongsTo('IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem');
     }
 
     /*

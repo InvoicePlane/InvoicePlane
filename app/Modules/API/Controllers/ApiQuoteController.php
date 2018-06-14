@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Controllers;
+namespace IP\Modules\API\Controllers;
 
-use FI\Modules\API\Requests\APIQuoteItemRequest;
-use FI\Modules\API\Requests\APIQuoteStoreRequest;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Quotes\Models\QuoteItem;
-use FI\Modules\Users\Models\User;
+use IP\Modules\API\Requests\APIQuoteItemRequest;
+use IP\Modules\API\Requests\APIQuoteStoreRequest;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\Quotes\Models\QuoteItem;
+use IP\Modules\Users\Models\User;
 
 class ApiQuoteController extends ApiController
 {

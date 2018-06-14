@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\CustomFields\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\CustomFields\Controllers'], function () {
     Route::get('custom_fields', ['uses' => 'CustomFieldController@index', 'as' => 'customFields.index']);
     Route::get('custom_fields/create', ['uses' => 'CustomFieldController@create', 'as' => 'customFields.create']);
     Route::get('custom_fields/{id}/edit', ['uses' => 'CustomFieldController@edit', 'as' => 'customFields.edit']);

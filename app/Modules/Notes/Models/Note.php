@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Notes\Models;
+namespace IP\Modules\Notes\Models;
 
-use FI\Support\DateFormatter;
+use IP\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model
@@ -36,7 +36,7 @@ class Note extends Model
 
     public function user()
     {
-        return $this->belongsTo('FI\Modules\Users\Models\User');
+        return $this->belongsTo('IP\Modules\Users\Models\User');
     }
 
     /*

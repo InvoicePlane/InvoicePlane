@@ -12,28 +12,28 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Settings\Controllers;
+namespace IP\Modules\Settings\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Currencies\Models\Currency;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Invoices\Support\InvoiceTemplates;
-use FI\Modules\MailQueue\Support\MailSettings;
-use FI\Modules\Merchant\Support\MerchantFactory;
-use FI\Modules\PaymentMethods\Models\PaymentMethod;
-use FI\Modules\Quotes\Support\QuoteTemplates;
-use FI\Modules\Settings\Models\Setting;
-use FI\Modules\Settings\Requests\SettingUpdateRequest;
-use FI\Modules\TaxRates\Models\TaxRate;
-use FI\Support\DashboardWidgets;
-use FI\Support\DateFormatter;
-use FI\Support\Languages;
-use FI\Support\PDF\PDFFactory;
-use FI\Support\Skins;
-use FI\Support\Statuses\InvoiceStatuses;
-use FI\Support\Statuses\QuoteStatuses;
-use FI\Support\UpdateChecker;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Currencies\Models\Currency;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Invoices\Support\InvoiceTemplates;
+use IP\Modules\MailQueue\Support\MailSettings;
+use IP\Modules\Merchant\Support\MerchantFactory;
+use IP\Modules\PaymentMethods\Models\PaymentMethod;
+use IP\Modules\Quotes\Support\QuoteTemplates;
+use IP\Modules\Settings\Models\Setting;
+use IP\Modules\Settings\Requests\SettingUpdateRequest;
+use IP\Modules\TaxRates\Models\TaxRate;
+use IP\Support\DashboardWidgets;
+use IP\Support\DateFormatter;
+use IP\Support\Languages;
+use IP\Support\PDF\PDFFactory;
+use IP\Support\Skins;
+use IP\Support\Statuses\InvoiceStatuses;
+use IP\Support\Statuses\QuoteStatuses;
+use IP\Support\UpdateChecker;
 use Illuminate\Support\Facades\Crypt;
 
 class SettingController extends Controller

@@ -12,20 +12,20 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Controllers;
+namespace IP\Modules\Quotes\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Currencies\Models\Currency;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\ItemLookups\Models\ItemLookup;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Modules\Quotes\Models\QuoteItem;
-use FI\Modules\Quotes\Requests\QuoteUpdateRequest;
-use FI\Modules\Quotes\Support\QuoteTemplates;
-use FI\Modules\TaxRates\Models\TaxRate;
-use FI\Support\DateFormatter;
-use FI\Support\Statuses\QuoteStatuses;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Currencies\Models\Currency;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\ItemLookups\Models\ItemLookup;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Modules\Quotes\Models\QuoteItem;
+use IP\Modules\Quotes\Requests\QuoteUpdateRequest;
+use IP\Modules\Quotes\Support\QuoteTemplates;
+use IP\Modules\TaxRates\Models\TaxRate;
+use IP\Support\DateFormatter;
+use IP\Support\Statuses\QuoteStatuses;
+use IP\Traits\ReturnUrl;
 
 class QuoteEditController extends Controller
 {

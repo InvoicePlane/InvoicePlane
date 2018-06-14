@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Attachments\Controllers;
+namespace IP\Modules\Attachments\Controllers;
 
-use FI\Events\CheckAttachment;
-use FI\Http\Controllers\Controller;
-use FI\Modules\Attachments\Models\Attachment;
+use IP\Events\CheckAttachment;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Attachments\Models\Attachment;
 
 class AttachmentController extends Controller
 {

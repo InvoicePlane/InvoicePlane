@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\Settings\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\Settings\Controllers'], function () {
     Route::get('settings', ['uses' => 'SettingController@index', 'as' => 'settings.index']);
     Route::post('settings', ['uses' => 'SettingController@update', 'as' => 'settings.update']);
     Route::get('settings/update_check', ['uses' => 'SettingController@updateCheck', 'as' => 'settings.updateCheck']);

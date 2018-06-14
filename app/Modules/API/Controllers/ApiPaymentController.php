@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Controllers;
+namespace IP\Modules\API\Controllers;
 
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Payments\Models\Payment;
-use FI\Modules\Payments\Requests\PaymentRequest;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Payments\Models\Payment;
+use IP\Modules\Payments\Requests\PaymentRequest;
 
 class ApiPaymentController extends ApiController
 {

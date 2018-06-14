@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Support;
+namespace IP\Modules\Invoices\Support;
 
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Invoices\Models\InvoiceAmount;
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Modules\Invoices\Models\InvoiceItemAmount;
-use FI\Modules\Payments\Models\Payment;
-use FI\Support\Statuses\InvoiceStatuses;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\InvoiceAmount;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Modules\Invoices\Models\InvoiceItemAmount;
+use IP\Modules\Payments\Models\Payment;
+use IP\Support\Statuses\InvoiceStatuses;
 
 class InvoiceCalculate
 {

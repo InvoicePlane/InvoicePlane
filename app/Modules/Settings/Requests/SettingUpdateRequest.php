@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Settings\Requests;
+namespace IP\Modules\Settings\Requests;
 
-use FI\Modules\Settings\Rules\ValidFile;
+use IP\Modules\Settings\Rules\ValidFile;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SettingUpdateRequest extends FormRequest

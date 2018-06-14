@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Sessions\Controllers;
+namespace IP\Modules\Sessions\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Sessions\Requests\SessionRequest;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Sessions\Requests\SessionRequest;
 
 class SessionController extends Controller
 {

@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Groups\Controllers;
+namespace IP\Modules\Groups\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Groups\GroupOptions;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Groups\Requests\GroupRequest;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Groups\GroupOptions;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Groups\Requests\GroupRequest;
+use IP\Traits\ReturnUrl;
 
 class GroupController extends Controller
 {

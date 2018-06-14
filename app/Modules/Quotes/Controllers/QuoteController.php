@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Controllers;
+namespace IP\Modules\Quotes\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Support\FileNames;
-use FI\Support\PDF\PDFFactory;
-use FI\Support\Statuses\QuoteStatuses;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Support\FileNames;
+use IP\Support\PDF\PDFFactory;
+use IP\Support\Statuses\QuoteStatuses;
+use IP\Traits\ReturnUrl;
 
 class QuoteController extends Controller
 {

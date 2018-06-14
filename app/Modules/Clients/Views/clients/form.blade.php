@@ -48,10 +48,10 @@
                                 @include('clients._contacts', ['contacts' => $client->contacts()->orderBy('name')->get(), 'clientId' => $client->id])
                             </div>
                             <div class="tab-pane" id="tab-attachments">
-                                @include('attachments._table', ['object' => $client, 'model' => 'FI\Modules\Clients\Models\Client'])
+                                @include('attachments._table', ['object' => $client, 'model' => 'IP\Modules\Clients\Models\Client'])
                             </div>
                             <div class="tab-pane" id="tab-notes">
-                                @include('notes._notes', ['object' => $client, 'model' => 'FI\Modules\Clients\Models\Client', 'hideHeader' => true])
+                                @include('notes._notes', ['object' => $client, 'model' => 'IP\Modules\Clients\Models\Client', 'hideHeader' => true])
                             </div>
                         @endif
                     </div>

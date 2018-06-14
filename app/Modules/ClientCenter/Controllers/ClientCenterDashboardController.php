@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\ClientCenter\Controllers;
+namespace IP\Modules\ClientCenter\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Payments\Models\Payment;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Support\Statuses\InvoiceStatuses;
-use FI\Support\Statuses\QuoteStatuses;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Payments\Models\Payment;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Support\Statuses\InvoiceStatuses;
+use IP\Support\Statuses\QuoteStatuses;
 use Illuminate\Support\Facades\DB;
 
 class ClientCenterDashboardController extends Controller

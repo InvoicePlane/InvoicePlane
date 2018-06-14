@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Models;
+namespace IP\Modules\RecurringInvoices\Models;
 
-use FI\Events\RecurringInvoiceCreated;
-use FI\Events\RecurringInvoiceCreating;
-use FI\Events\RecurringInvoiceDeleted;
-use FI\Support\DateFormatter;
-use FI\Support\NumberFormatter;
-use FI\Traits\Sortable;
+use IP\Events\RecurringInvoiceCreated;
+use IP\Events\RecurringInvoiceCreating;
+use IP\Events\RecurringInvoiceDeleted;
+use IP\Support\DateFormatter;
+use IP\Support\NumberFormatter;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -56,42 +56,42 @@ class RecurringInvoice extends Model
 
     public function activities()
     {
-        return $this->morphMany('FI\Modules\Activity\Models\Activity', 'audit');
+        return $this->morphMany('IP\Modules\Activity\Models\Activity', 'audit');
     }
 
     public function amount()
     {
-        return $this->hasOne('FI\Modules\RecurringInvoices\Models\RecurringInvoiceAmount');
+        return $this->hasOne('IP\Modules\RecurringInvoices\Models\RecurringInvoiceAmount');
     }
 
     public function client()
     {
-        return $this->belongsTo('FI\Modules\Clients\Models\Client');
+        return $this->belongsTo('IP\Modules\Clients\Models\Client');
     }
 
     public function companyProfile()
     {
-        return $this->belongsTo('FI\Modules\CompanyProfiles\Models\CompanyProfile');
+        return $this->belongsTo('IP\Modules\CompanyProfiles\Models\CompanyProfile');
     }
 
     public function currency()
     {
-        return $this->belongsTo('FI\Modules\Currencies\Models\Currency', 'currency_code', 'code');
+        return $this->belongsTo('IP\Modules\Currencies\Models\Currency', 'currency_code', 'code');
     }
 
     public function custom()
     {
-        return $this->hasOne('FI\Modules\CustomFields\Models\RecurringInvoiceCustom');
+        return $this->hasOne('IP\Modules\CustomFields\Models\RecurringInvoiceCustom');
     }
 
     public function group()
     {
-        return $this->belongsTo('FI\Modules\Groups\Models\Group');
+        return $this->belongsTo('IP\Modules\Groups\Models\Group');
     }
 
     public function items()
     {
-        return $this->hasMany('FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem')
+        return $this->hasMany('IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem')
             ->orderBy('display_order');
     }
 
@@ -99,13 +99,13 @@ class RecurringInvoice extends Model
     // and the fact that Laravel has a protected items property.
     public function recurringInvoiceItems()
     {
-        return $this->hasMany('FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem')
+        return $this->hasMany('IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem')
             ->orderBy('display_order');
     }
 
     public function user()
     {
-        return $this->belongsTo('FI\Modules\Users\Models\User');
+        return $this->belongsTo('IP\Modules\Users\Models\User');
     }
 
     /*

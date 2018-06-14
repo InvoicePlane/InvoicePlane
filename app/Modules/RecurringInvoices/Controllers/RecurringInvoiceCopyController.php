@@ -12,17 +12,17 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Controllers;
+namespace IP\Modules\RecurringInvoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoice;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
-use FI\Modules\RecurringInvoices\Requests\RecurringInvoiceStoreRequest;
-use FI\Support\DateFormatter;
-use FI\Support\Frequency;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
+use IP\Modules\RecurringInvoices\Requests\RecurringInvoiceStoreRequest;
+use IP\Support\DateFormatter;
+use IP\Support\Frequency;
 
 class RecurringInvoiceCopyController extends Controller
 {

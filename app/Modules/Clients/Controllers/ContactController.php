@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Clients\Controllers;
+namespace IP\Modules\Clients\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Clients\Models\Contact;
-use FI\Modules\Clients\Requests\ContactRequest;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Clients\Models\Contact;
+use IP\Modules\Clients\Requests\ContactRequest;
 
 class ContactController extends Controller
 {

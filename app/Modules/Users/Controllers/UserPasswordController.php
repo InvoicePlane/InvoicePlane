@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Users\Controllers;
+namespace IP\Modules\Users\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Users\Models\User;
-use FI\Modules\Users\Requests\UpdatePasswordRequest;
-use FI\Traits\ReturnUrl;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Users\Models\User;
+use IP\Modules\Users\Requests\UpdatePasswordRequest;
+use IP\Traits\ReturnUrl;
 
 class UserPasswordController extends Controller
 {

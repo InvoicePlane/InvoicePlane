@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Quotes\Models\Quote;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Quotes\Models\Quote;
 use Illuminate\Support\Facades\Validator;
 
 class QuoteImporter extends AbstractImporter

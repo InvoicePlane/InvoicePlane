@@ -12,16 +12,16 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Controllers;
+namespace IP\Modules\Quotes\Controllers;
 
-use FI\Events\QuoteEmailed;
-use FI\Events\QuoteEmailing;
-use FI\Http\Controllers\Controller;
-use FI\Modules\MailQueue\Support\MailQueue;
-use FI\Modules\Quotes\Models\Quote;
-use FI\Requests\SendEmailRequest;
-use FI\Support\Contacts;
-use FI\Support\Parser;
+use IP\Events\QuoteEmailed;
+use IP\Events\QuoteEmailing;
+use IP\Http\Controllers\Controller;
+use IP\Modules\MailQueue\Support\MailQueue;
+use IP\Modules\Quotes\Models\Quote;
+use IP\Requests\SendEmailRequest;
+use IP\Support\Contacts;
+use IP\Support\Parser;
 
 class QuoteMailController extends Controller
 {

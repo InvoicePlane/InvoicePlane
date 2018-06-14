@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Expenses\Controllers;
+namespace IP\Modules\Expenses\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Expenses\Models\Expense;
-use FI\Modules\Expenses\Requests\ExpenseBillRequest;
-use FI\Modules\Invoices\Models\InvoiceItem;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Expenses\Models\Expense;
+use IP\Modules\Expenses\Requests\ExpenseBillRequest;
+use IP\Modules\Invoices\Models\InvoiceItem;
 
 class ExpenseBillController extends Controller
 {

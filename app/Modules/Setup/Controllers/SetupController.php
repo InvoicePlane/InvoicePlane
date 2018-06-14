@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Setup\Controllers;
+namespace IP\Modules\Setup\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Settings\Models\Setting;
-use FI\Modules\Setup\Requests\DBRequest;
-use FI\Modules\Setup\Requests\ProfileRequest;
-use FI\Modules\Users\Models\User;
-use FI\Support\Migrations;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Settings\Models\Setting;
+use IP\Modules\Setup\Requests\DBRequest;
+use IP\Modules\Setup\Requests\ProfileRequest;
+use IP\Modules\Users\Models\User;
+use IP\Support\Migrations;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;

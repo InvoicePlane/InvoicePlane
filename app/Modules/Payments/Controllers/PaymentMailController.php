@@ -12,14 +12,14 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Payments\Controllers;
+namespace IP\Modules\Payments\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\MailQueue\Support\MailQueue;
-use FI\Modules\Payments\Models\Payment;
-use FI\Requests\SendEmailRequest;
-use FI\Support\Contacts;
-use FI\Support\Parser;
+use IP\Http\Controllers\Controller;
+use IP\Modules\MailQueue\Support\MailQueue;
+use IP\Modules\Payments\Models\Payment;
+use IP\Requests\SendEmailRequest;
+use IP\Support\Contacts;
+use IP\Support\Parser;
 
 class PaymentMailController extends Controller
 {

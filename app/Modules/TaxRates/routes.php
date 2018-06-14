@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\TaxRates\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\TaxRates\Controllers'], function () {
     Route::get('tax_rates', ['uses' => 'TaxRateController@index', 'as' => 'taxRates.index']);
     Route::get('tax_rates/create', ['uses' => 'TaxRateController@create', 'as' => 'taxRates.create']);
     Route::get('tax_rates/{taxRate}/edit', ['uses' => 'TaxRateController@edit', 'as' => 'taxRates.edit']);

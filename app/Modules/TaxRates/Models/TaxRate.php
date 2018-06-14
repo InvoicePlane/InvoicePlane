@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\TaxRates\Models;
+namespace IP\Modules\TaxRates\Models;
 
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Modules\Quotes\Models\QuoteItem;
-use FI\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
-use FI\Support\NumberFormatter;
-use FI\Traits\Sortable;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Modules\Quotes\Models\QuoteItem;
+use IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
+use IP\Support\NumberFormatter;
+use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 
 class TaxRate extends Model

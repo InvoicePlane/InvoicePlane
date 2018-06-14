@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\RecurringInvoices\Requests;
+namespace IP\Modules\RecurringInvoices\Requests;
 
-use FI\Support\NumberFormatter;
+use IP\Support\NumberFormatter;
 
 class RecurringInvoiceUpdateRequest extends RecurringInvoiceStoreRequest
 {

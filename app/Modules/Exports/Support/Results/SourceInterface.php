@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Exports\Support\Results;
+namespace IP\Modules\Exports\Support\Results;
 
 interface SourceInterface
 {

@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\ClientCenter\Controllers;
+namespace IP\Modules\ClientCenter\Controllers;
 
-use FI\Events\InvoiceViewed;
-use FI\Http\Controllers\Controller;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Merchant\Support\MerchantFactory;
-use FI\Support\FileNames;
-use FI\Support\PDF\PDFFactory;
-use FI\Support\Statuses\InvoiceStatuses;
+use IP\Events\InvoiceViewed;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Merchant\Support\MerchantFactory;
+use IP\Support\FileNames;
+use IP\Support\PDF\PDFFactory;
+use IP\Support\Statuses\InvoiceStatuses;
 
 class ClientCenterPublicInvoiceController extends Controller
 {

@@ -12,13 +12,13 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\ItemLookups\Controllers;
+namespace IP\Modules\ItemLookups\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\ItemLookups\Models\ItemLookup;
-use FI\Modules\ItemLookups\Requests\ItemLookupRequest;
-use FI\Modules\TaxRates\Models\TaxRate;
-use FI\Support\NumberFormatter;
+use IP\Http\Controllers\Controller;
+use IP\Modules\ItemLookups\Models\ItemLookup;
+use IP\Modules\ItemLookups\Requests\ItemLookupRequest;
+use IP\Modules\TaxRates\Models\TaxRate;
+use IP\Support\NumberFormatter;
 
 class ItemLookupController extends Controller
 {

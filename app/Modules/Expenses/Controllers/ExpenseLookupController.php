@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Expenses\Controllers;
+namespace IP\Modules\Expenses\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Expenses\Models\ExpenseCategory;
-use FI\Modules\Expenses\Models\ExpenseVendor;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Expenses\Models\ExpenseCategory;
+use IP\Modules\Expenses\Models\ExpenseVendor;
 
 class ExpenseLookupController extends Controller
 {

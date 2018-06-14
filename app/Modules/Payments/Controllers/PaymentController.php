@@ -12,15 +12,15 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Payments\Controllers;
+namespace IP\Modules\Payments\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\CustomFields\Models\CustomField;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\PaymentMethods\Models\PaymentMethod;
-use FI\Modules\Payments\Models\Payment;
-use FI\Modules\Payments\Requests\PaymentRequest;
-use FI\Support\DateFormatter;
+use IP\Http\Controllers\Controller;
+use IP\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\PaymentMethods\Models\PaymentMethod;
+use IP\Modules\Payments\Models\Payment;
+use IP\Modules\Payments\Requests\PaymentRequest;
+use IP\Support\DateFormatter;
 
 class PaymentController extends Controller
 {

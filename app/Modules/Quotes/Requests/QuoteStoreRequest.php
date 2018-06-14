@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Quotes\Requests;
+namespace IP\Modules\Quotes\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

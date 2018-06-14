@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\CustomFields\Requests;
+namespace IP\Modules\CustomFields\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

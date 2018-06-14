@@ -12,10 +12,10 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Import\Importers;
+namespace IP\Modules\Import\Importers;
 
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CustomFields\Models\CustomField;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CustomFields\Models\CustomField;
 use Illuminate\Support\Facades\Validator;
 
 class ClientImporter extends AbstractImporter

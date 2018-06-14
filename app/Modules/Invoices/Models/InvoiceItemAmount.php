@@ -12,9 +12,9 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Models;
+namespace IP\Modules\Invoices\Models;
 
-use FI\Support\CurrencyFormatter;
+use IP\Support\CurrencyFormatter;
 use Illuminate\Database\Eloquent\Model;
 
 class InvoiceItemAmount extends Model
@@ -29,7 +29,7 @@ class InvoiceItemAmount extends Model
 
     public function item()
     {
-        return $this->belongsTo('FI\Modules\Invoices\Models\InvoiceItem');
+        return $this->belongsTo('IP\Modules\Invoices\Models\InvoiceItem');
     }
 
     /*

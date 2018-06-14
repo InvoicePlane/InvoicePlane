@@ -12,11 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Notes\Controllers;
+namespace IP\Modules\Notes\Controllers;
 
-use FI\Events\NoteCreated;
-use FI\Http\Controllers\Controller;
-use FI\Modules\Notes\Models\Note;
+use IP\Events\NoteCreated;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Notes\Models\Note;
 
 class NoteController extends Controller
 {

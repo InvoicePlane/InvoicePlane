@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\PaymentMethods\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\PaymentMethods\Controllers'], function () {
     Route::get('payment_methods', ['uses' => 'PaymentMethodController@index', 'as' => 'paymentMethods.index']);
     Route::get('payment_methods/create', ['uses' => 'PaymentMethodController@create', 'as' => 'paymentMethods.create']);
     Route::get('payment_methods/{paymentMethod}/edit', ['uses' => 'PaymentMethodController@edit', 'as' => 'paymentMethods.edit']);

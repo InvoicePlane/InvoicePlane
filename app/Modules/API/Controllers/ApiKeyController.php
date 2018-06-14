@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\API\Controllers;
+namespace IP\Modules\API\Controllers;
 
 class ApiKeyController extends ApiController
 {

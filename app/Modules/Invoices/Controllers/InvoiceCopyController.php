@@ -12,16 +12,16 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Invoices\Controllers;
+namespace IP\Modules\Invoices\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Clients\Models\Client;
-use FI\Modules\CompanyProfiles\Models\CompanyProfile;
-use FI\Modules\Groups\Models\Group;
-use FI\Modules\Invoices\Models\Invoice;
-use FI\Modules\Invoices\Models\InvoiceItem;
-use FI\Modules\Invoices\Requests\InvoiceStoreRequest;
-use FI\Support\DateFormatter;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Clients\Models\Client;
+use IP\Modules\CompanyProfiles\Models\CompanyProfile;
+use IP\Modules\Groups\Models\Group;
+use IP\Modules\Invoices\Models\Invoice;
+use IP\Modules\Invoices\Models\InvoiceItem;
+use IP\Modules\Invoices\Requests\InvoiceStoreRequest;
+use IP\Support\DateFormatter;
 
 class InvoiceCopyController extends Controller
 {

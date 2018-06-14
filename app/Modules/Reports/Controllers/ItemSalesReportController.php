@@ -12,12 +12,12 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-namespace FI\Modules\Reports\Controllers;
+namespace IP\Modules\Reports\Controllers;
 
-use FI\Http\Controllers\Controller;
-use FI\Modules\Reports\Reports\ItemSalesReport;
-use FI\Modules\Reports\Requests\DateRangeRequest;
-use FI\Support\PDF\PDFFactory;
+use IP\Http\Controllers\Controller;
+use IP\Modules\Reports\Reports\ItemSalesReport;
+use IP\Modules\Reports\Requests\DateRangeRequest;
+use IP\Support\PDF\PDFFactory;
 
 class ItemSalesReportController extends Controller
 {

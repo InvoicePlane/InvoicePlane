@@ -12,7 +12,7 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'FI\Modules\RecurringInvoices\Controllers'], function () {
+Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\RecurringInvoices\Controllers'], function () {
     Route::group(['prefix' => 'recurring_invoices'], function () {
         Route::get('/', ['uses' => 'RecurringInvoiceController@index', 'as' => 'recurringInvoices.index']);
         Route::get('create', ['uses' => 'RecurringInvoiceCreateController@create', 'as' => 'recurringInvoices.create']);
