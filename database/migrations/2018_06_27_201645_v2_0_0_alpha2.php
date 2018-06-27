@@ -19,7 +19,7 @@ use IP\Modules\PaymentMethods\Models\PaymentMethod;
  * version then.
  * For new users this migration will create and fill all base tables.
  */
-class V200Alpha1 extends Migration
+class V200Alpha2 extends Migration
 {
     /**
      * Run the migrations.
