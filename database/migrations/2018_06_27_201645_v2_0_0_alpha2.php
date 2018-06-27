@@ -5,8 +5,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use IP\Modules\Currencies\Models\Currency;
-use IP\Modules\Settings\Models\Setting;
 use IP\Modules\PaymentMethods\Models\PaymentMethod;
+use IP\Modules\Settings\Models\Setting;
 
 /**
  * Migration for Version 2.0.0-Alpha.2
@@ -50,7 +50,7 @@ class V200Alpha2 extends Migration
 
             $table->index('audit_type');
             $table->index('activity');
-            $table->index('parent_id');
+            $table->index('audit_id');
         });
 
         Schema::create('addons', function (Blueprint $table) {
@@ -170,7 +170,7 @@ class V200Alpha2 extends Migration
             $table->string('field_type');
             $table->text('field_meta');
 
-            $table->index('table_name');
+            $table->index('tbl_name');
         });
 
         Schema::create('expenses', function (Blueprint $table) {
@@ -493,7 +493,7 @@ class V200Alpha2 extends Migration
 
             $table->index('user_id');
             $table->index('client_id');
-            $table->index('invoice_group_id');
+            $table->index('group_id');
             $table->index('number');
             $table->index('company_profile_id');
         });
@@ -622,27 +622,29 @@ class V200Alpha2 extends Migration
         // Migrate Base Data
 
         // Add basic voucher groups
-        DB::table('invoice_groups')->insert(
-            [
+        DB::table('groups')->insert([
                 'name' => trans('ip.invoice_default'),
                 'next_id' => 1,
                 'left_pad' => 0,
-                'prefix' => 'INV',
-                'prefix_year' => 0,
-                'prefix_month' => 0,
-            ]
-        );
+                'format' => 'INV{NUMBER}',
+                'reset_number' => 0,
+                'last_id' => 0,
+                'last_year' => 0,
+                'last_month' => 0,
+                'last_week' => 0,
+            ]);
 
-        DB::table('invoice_groups')->insert(
-            [
+        DB::table('groups')->insert([
                 'name' => trans('ip.quote_default'),
                 'next_id' => 1,
                 'left_pad' => 0,
-                'prefix' => 'QUO',
-                'prefix_year' => 0,
-                'prefix_month' => 0,
-            ]
-        );
+                'format' => 'QUO{NUMBER}',
+                'reset_number' => 0,
+                'last_id' => 0,
+                'last_year' => 0,
+                'last_month' => 0,
+                'last_week' => 0,
+            ]);
 
         // Add base settings
         $settings = [
