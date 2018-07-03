@@ -664,6 +664,8 @@ class V200Alpha2 extends Migration
             'skin' => 'skin-invoiceplane.min.css',
             'timezone' => 'UTC',
             'version' => '2.0.0-alpha2',
+            'widgetEnabledInvoiceSummary' => '1',
+            'widgetEnabledQuoteSummary' => '1',
         ];
 
         foreach ($settings as $key => $value) {
