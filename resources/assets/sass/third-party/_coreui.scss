@@ -1,0 +1,69 @@
+/*!
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+// Override Boostrap variables
+@import "../../../../node_modules/@coreui/coreui/scss/bootstrap-variables";
+
+// Import Bootstrap source files
+@import "../../../../node_modules/bootstrap/scss/bootstrap";
+
+// Import core styles
+@import "variables";
+@import "../../../../node_modules/@coreui/coreui/scss/mixins";
+
+// Animations
+@import "../../../../node_modules/@coreui/coreui/scss/animate";
+
+// Vendors
+@import "../../../../node_modules/@coreui/coreui/scss/vendors";
+
+// Components
+@import "../../../../node_modules/@coreui/coreui/scss/aside";
+@import "../../../../node_modules/@coreui/coreui/scss/avatars";
+@import "../../../../node_modules/@coreui/coreui/scss/badge";
+@import "../../../../node_modules/@coreui/coreui/scss/breadcrumb-menu";
+@import "../../../../node_modules/@coreui/coreui/scss/breadcrumb";
+@import "../../../../node_modules/@coreui/coreui/scss/brand-card";
+@import "../../../../node_modules/@coreui/coreui/scss/brand-buttons";
+@import "../../../../node_modules/@coreui/coreui/scss/buttons";
+@import "../../../../node_modules/@coreui/coreui/scss/callout";
+@import "../../../../node_modules/@coreui/coreui/scss/card";
+@import "../../../../node_modules/@coreui/coreui/scss/charts";
+@import "../../../../node_modules/@coreui/coreui/scss/dropdown";
+@import "../../../../node_modules/@coreui/coreui/scss/footer";
+@import "../../../../node_modules/@coreui/coreui/scss/grid";
+@import "../../../../node_modules/@coreui/coreui/scss/header";
+@import "../../../../node_modules/@coreui/coreui/scss/input-group";
+@import "../../../../node_modules/@coreui/coreui/scss/images";
+@import "../../../../node_modules/@coreui/coreui/scss/list-group";
+@import "../../../../node_modules/@coreui/coreui/scss/modal";
+@import "../../../../node_modules/@coreui/coreui/scss/nav";
+@import "../../../../node_modules/@coreui/coreui/scss/progress";
+@import "../../../../node_modules/@coreui/coreui/scss/progress-group";
+@import "../../../../node_modules/@coreui/coreui/scss/sidebar";
+@import "../../../../node_modules/@coreui/coreui/scss/switches";
+@import "../../../../node_modules/@coreui/coreui/scss/tables";
+@import "../../../../node_modules/@coreui/coreui/scss/widgets";
+
+// Layout Options
+@import "../../../../node_modules/@coreui/coreui/scss/layout";
+
+@import "../../../../node_modules/@coreui/coreui/scss/others";
+
+// Utility classes
+@import "../../../../node_modules/@coreui/coreui/scss/utilities";
+
+// Right-to-left
+@import "../../../../node_modules/@coreui/coreui/scss/rtl";
+
+// Custom Properties support for Internet Explorer
+@import "../../../../node_modules/@coreui/coreui/scss/ie-custom-properties";

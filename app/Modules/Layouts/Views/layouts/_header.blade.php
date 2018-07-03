@@ -1,60 +1,64 @@
-<header class="main-header">
-
-    <a href="{{ route('dashboard.index')}}" class="logo">
-        <span class="logo-lg">{{ config('fi.headerTitleText') }}</span>
+<header class="app-header navbar">
+    <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a href="{{ route('dashboard.index')}}" class="navbar-brand">
+        {{ config('fi.headerTitleText') }}
     </a>
-
-    <nav class="navbar navbar-static-top" role="navigation">
-
-        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </a>
-
-        <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
-
-                <li>
-                    <a href="https://wiki.invoiceplane.com/en/2.0/" title="@lang('ip.documentation')"
-                       target="_blank">
-                        <i class="fa fa-question-circle"></i>
-                    </a>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="@lang('ip.system')">
-                        <i class="fa fa-cog"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ route('addons.index') }}">@lang('ip.addons')</a></li>
-                        <li><a href="{{ route('currencies.index') }}">@lang('ip.currencies')</a></li>
-                        <li><a href="{{ route('customFields.index') }}">@lang('ip.custom_fields')</a></li>
-                        <li><a href="{{ route('companyProfiles.index') }}">@lang('ip.company_profiles')</a></li>
-                        <li><a href="{{ route('export.index') }}">@lang('ip.export_data')</a></li>
-                        <li><a href="{{ route('groups.index') }}">@lang('ip.groups')</a></li>
-                        <li><a href="{{ route('import.index') }}">@lang('ip.import_data')</a></li>
-                        <li><a href="{{ route('itemLookups.index') }}">@lang('ip.item_lookups')</a></li>
-                        <li><a href="{{ route('mailLog.index') }}">@lang('ip.mail_log')</a></li>
-                        <li><a href="{{ route('paymentMethods.index') }}">@lang('ip.payment_methods')</a></li>
-                        <li><a href="{{ route('taxRates.index') }}">@lang('ip.tax_rates')</a></li>
-                        <li><a href="{{ route('users.index') }}">@lang('ip.user_accounts')</a></li>
-                        <li><a href="{{ route('settings.index') }}">@lang('ip.system_settings')</a></li>
-                        @foreach (config('fi.menus.system') as $menu)
-                            @if (view()->exists($menu))
-                                @include($menu)
-                            @endif
-                        @endforeach
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="{{ route('session.logout') }}" title="@lang('ip.sign_out')"><i
-                                class="fa fa-power-off"></i></a>
-                </li>
-
-            </ul>
-        </div>
-    </nav>
+    <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <ul class="nav navbar-nav d-md-down-none">
+        <li class="nav-item dropdown px-3">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @lang('ip.settings')
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ route('addons.index') }}">@lang('ip.addons')</a>
+                <a class="dropdown-item" href="{{ route('currencies.index') }}">@lang('ip.currencies')</a>
+                <a class="dropdown-item" href="{{ route('customFields.index') }}">@lang('ip.custom_fields')</a>
+                <a class="dropdown-item" href="{{ route('companyProfiles.index') }}">@lang('ip.company_profiles')</a>
+                <a class="dropdown-item" href="{{ route('export.index') }}">@lang('ip.export_data')</a>
+                <a class="dropdown-item" href="{{ route('groups.index') }}">@lang('ip.groups')</a>
+                <a class="dropdown-item" href="{{ route('import.index') }}">@lang('ip.import_data')</a>
+                <a class="dropdown-item" href="{{ route('itemLookups.index') }}">@lang('ip.item_lookups')</a>
+                <a class="dropdown-item" href="{{ route('mailLog.index') }}">@lang('ip.mail_log')</a>
+                <a class="dropdown-item" href="{{ route('paymentMethods.index') }}">@lang('ip.payment_methods')</a>
+                <a class="dropdown-item" href="{{ route('taxRates.index') }}">@lang('ip.tax_rates')</a>
+                <a class="dropdown-item" href="{{ route('users.index') }}">@lang('ip.user_accounts')</a>
+                <a class="dropdown-item" href="{{ route('settings.index') }}">@lang('ip.system_settings')</a>
+                @foreach (config('fi.menus.system') as $menu)
+                    @if (view()->exists($menu))
+                        @include($menu)
+                    @endif
+                @endforeach
+            </div>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link nav-link pr-3" data-toggle="dropdown" href="#" role="button"
+                    aria-haspopup="true" aria-expanded="false">
+                @if (config('fi.displayProfileImage'))
+                    <img src="{{ $profileImageUrl }}" alt="User Image"/>
+                @else
+                    {{ $userName }}
+                @endif
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-header text-center">
+                    <strong>Account</strong>
+                </div>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-bell-o"></i> Updates
+                    <span class="badge badge-info">42</span>
+                </a>
+                <div class="divider"></div>
+                <a class="dropdown-item" href="{{ route('session.logout') }}">
+                    <i class="fa fa-lock"></i> Logout
+                </a>
+            </div>
+        </li>
+    </ul>
 </header>
