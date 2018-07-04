@@ -1,13 +1,9 @@
 /*!
- * InvoicePlane
- *
- * @package     InvoicePlane
- * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
- * @license     https://invoiceplane.com/license
- * @link        https://invoiceplane.com
- *
- * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ * CoreUI - Open Source Dashboard UI Kit
+ * @version v2.0.3
+ * @link https://coreui.io
+ * Copyright (c) 2018 creativeLabs Łukasz Holeczek
+ * Licensed under MIT (https://coreui.io/license)
  */
 
 // Override Boostrap variables
@@ -17,7 +13,7 @@
 @import "../../../../node_modules/bootstrap/scss/bootstrap";
 
 // Import core styles
-@import "variables";
+@import "coreui-variables";
 @import "../../../../node_modules/@coreui/coreui/scss/mixins";
 
 // Animations
