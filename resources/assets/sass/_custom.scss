@@ -1,20 +1,3 @@
-html {
-  -webkit-font-smoothing: antialiased;
-}
-
-body {
-  color: #414141;
-}
-
-.box {
-  /*-webkit-box-shadow: inset hoff voff blur color;*/
-  /*-moz-box-shadow: inset hoff voff blur color;*/
-  /*box-shadow: inset hoff voff blur color;*/
-  box-shadow: 0 2px 4px rgba(0,0,0,.15), 0 0 1px rgba(0,0,0,.08);
-  /*-webkit-box-shadow: inset 0 1px 55px rgba(0,0,0,.15);*/
-  /*-moz-box-shadow: inset 0 1px 55px rgba(0,0,0,.15);*/
-  /*box-shadow: inset 0 1px 55px rgba(0,0,0,.15);*/
-}
 
 .clickable {
   cursor: pointer;
@@ -23,6 +6,20 @@ body {
 .form-control.inline {
   // Fix for inline select fields
   width: auto;
+}
+
+// Create light variants of color backgrounds
+@each $color, $value in $theme-colors {
+  @include bg-variant(".bg-#{$color}-light", rgba($value, 0.5));
+}
+
+// Create backgrounds from status colors
+@each $status, $value in $status-colors {
+  @include bg-variant(".bg-status-#{$status}", $value);
+}
+
+@each $status, $value in $status-colors {
+  @include bg-variant(".bg-status-#{$status}-light", rgba($value, 0.5));
 }
 
 /* Twitter Typeahead */
