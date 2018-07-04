@@ -81,7 +81,7 @@ module.exports = function (grunt) {
       src: [
         'node_modules/jquery/dist/jquery.js',
         'node_modules/jquery-ui-dist/jquery-ui.js',
-        'node_modules/bootstrap/dist/js/bootstrap.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
         'node_modules/@coreui/coreui/dist/js/coreui.js',
         'node_modules/autosize/dist/autosize.js',
         'node_modules/moment/moment.js',
