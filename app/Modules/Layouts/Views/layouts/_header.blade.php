@@ -8,13 +8,13 @@
     <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <ul class="nav navbar-nav d-md-down-none">
+    <ul class="nav navbar-nav ml-auto d-md-down-none">
         <li class="nav-item dropdown px-3">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 @lang('ip.settings')
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{{ route('addons.index') }}">@lang('ip.addons')</a>
                 <a class="dropdown-item" href="{{ route('currencies.index') }}">@lang('ip.currencies')</a>
                 <a class="dropdown-item" href="{{ route('customFields.index') }}">@lang('ip.custom_fields')</a>
@@ -35,10 +35,8 @@
                 @endforeach
             </div>
         </li>
-    </ul>
-    <ul class="nav navbar-nav ml-auto">
         <li class="nav-item dropdown">
-            <a class="nav-link nav-link pr-3" data-toggle="dropdown" href="#" role="button"
+            <a class="nav-link dropdown-toggle pr-3" data-toggle="dropdown" href="#" role="button"
                     aria-haspopup="true" aria-expanded="false">
                 @if (config('fi.displayProfileImage'))
                     <img src="{{ $profileImageUrl }}" alt="User Image"/>
