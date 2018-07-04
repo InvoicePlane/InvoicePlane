@@ -665,7 +665,10 @@ class V200Alpha2 extends Migration
             'timezone' => 'UTC',
             'version' => '2.0.0-alpha2',
             'widgetEnabledInvoiceSummary' => '1',
+            'widgetColumnWidthInvoiceSummary' => '6',
             'widgetEnabledQuoteSummary' => '1',
+            'widgetColumnWidthQuoteSummary' => '6',
+            'widgetColumnWidthClientActivity' => '6',
         ];
 
         foreach ($settings as $key => $value) {
