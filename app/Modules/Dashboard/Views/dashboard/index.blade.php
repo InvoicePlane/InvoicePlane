@@ -5,7 +5,7 @@
     @include('layouts._alerts')
 
     <section class="content-header">
-        <h1>@lang('ip.dashboard')</h1>
+        <h3 class="mb-3">@lang('ip.dashboard')</h3>
     </section>
 
     <div class="row">

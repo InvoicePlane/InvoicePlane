@@ -34,7 +34,7 @@
             <div class="float-right">
                 <span class="text-muted mr-2">{{ $quoteDashboardTotalOptions[config('fi.widgetQuoteSummaryDashboardTotals')] }}</span>
                 <div class="dropdown d-inline-block">
-                    <span class="clickable dropdown-toggle" type="button" data-toggle="dropdown"
+                    <span class="clickable text-muted dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                          <i class="fa fa-cog"></i>
                     </span>
