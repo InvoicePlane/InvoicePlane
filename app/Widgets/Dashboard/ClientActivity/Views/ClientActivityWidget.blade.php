@@ -1,11 +1,13 @@
 <div id="client-activity-widget">
-    <section class="content">
-        <div class="box box-solid">
-            <div class="box-header">
-                <h3 class="box-title">@lang('ip.recent_client_activity')</h3>
-            </div>
-            <div class="box-body no-padding">
-                <table class="table table-striped">
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">
+                <i class="fa fa-users mr-2"></i> @lang('ip.recent_client_activity')
+            </span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
                     <tbody>
                     <tr>
                         <th>@lang('ip.date')</th>
@@ -21,5 +23,5 @@
                 </table>
             </div>
         </div>
-    </section>
+    </div>
 </div>
