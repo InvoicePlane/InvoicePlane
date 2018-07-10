@@ -18,7 +18,7 @@ class ProfileImageFactory
 {
     public static function create()
     {
-        $class = 'IP\Support\ProfileImage\Drivers\\' . config('fi.profileImageDriver');
+        $class = 'IP\Support\ProfileImage\Drivers\\' . config('fi.profileImageDriver', 'Gravatar');
 
         return new $class;
     }
