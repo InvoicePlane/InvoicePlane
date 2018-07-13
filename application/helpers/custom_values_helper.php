@@ -105,8 +105,8 @@ function format_avs($txt)
     if (!preg_match('/(\d{3})(\d{4})(\d{4})(\d{2})/', $txt, $matches)) {
         return $txt;
     }
-    return $matches[1] . "." . $matches[2] . "." . $matches[3] . "." . $matches[4];
 
+    return $matches[1] . "." . $matches[2] . "." . $matches[3] . "." . $matches[4];
 }
 
 /**
@@ -116,6 +116,15 @@ function format_avs($txt)
 function format_fallback($txt)
 {
     return format_text($txt);
+}
+
+/**
+ * @param $markdown
+ * @return string
+ */
+function format_markdown($markdown)
+{
+    return $markdown;
 }
 
 /**
@@ -196,8 +205,7 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             break;
             case "MARKDOWN":
             ?>
-            <textarea class="form-control" 
-                  data-provide="markdown"
+            <textarea class="form-control has-markdown"
                   name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                    id="<?php echo $custom_field->custom_field_id; ?>"
                    ><?php _htmlsc($fieldValue); ?></textarea>

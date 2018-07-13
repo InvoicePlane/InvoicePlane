@@ -23,10 +23,6 @@
     <script src="<?php _core_asset('js/locales/select2/' . trans('cldr') . '.js'); ?>"></script>
 <?php } ?>
 
-
-<script src="<?php echo base_url(); ?>assets/core/js/bootstrap-markdown.js"></script>
-<link href="<?php echo base_url(); ?>assets/core/css/bootstrap-markdown.min.css" rel="stylesheet">
-
 <script>
     Dropzone.autoDiscover = false;
 
@@ -101,5 +97,16 @@
             });
         });
 
+        $('.has-markdown').markdown({
+            iconlibrary: 'fa',
+            hiddenButtons: ['cmdImage', 'cmdCode'],
+            language: '<?php _trans('cldr'); ?>',
+        });
+
+        $('.cf-markdown').each(function(){
+            var md = $(this);
+            console.log(md.html());
+            md.html(markdown.toHTML(md.html().trim()));
+        });
     });
 </script>

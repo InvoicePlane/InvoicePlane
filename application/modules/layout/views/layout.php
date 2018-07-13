@@ -44,10 +44,10 @@ $this->layout->load_view('layout/includes/navbar');
 <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js"></script>
 
 <?php if (trans('cldr') != 'en') { ?>
     <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
+    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-markdown.<?php _trans('cldr'); ?>.js"></script>
 <?php } ?>
 
 </body>
