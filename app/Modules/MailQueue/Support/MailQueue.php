@@ -23,6 +23,14 @@ class MailQueue
 
     public function create($object, $input)
     {
+        if (!array_key_exists('cc', $input)) {
+            $input['cc'] = '';
+        }
+
+        if (!array_key_exists('bcc', $input)) {
+            $input['bcc'] = '';
+        }
+
         return $object->mailQueue()->create([
             'from' => json_encode(['email' => $object->user->email, 'name' => $object->user->name]),
             'to' => json_encode($input['to']),
