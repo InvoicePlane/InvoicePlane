@@ -35,6 +35,17 @@ function _htmlsc($output)
 }
 
 /**
+ * Parse markdown to HTML
+ *
+ * @param mixed $output
+ */
+function _markdown($output)
+{
+    $Parsedown = new Parsedown();
+    echo $Parsedown->text($output);
+}
+
+/**
  * Echo something with escaped HTML entities
  *
  * @param mixed $output

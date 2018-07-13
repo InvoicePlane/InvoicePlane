@@ -194,6 +194,15 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
                 </select>
             <?php
             break;
+            case "MARKDOWN":
+            ?>
+            <textarea class="form-control" 
+                  data-provide="markdown"
+                  name="custom[<?php echo $custom_field->custom_field_id; ?>]"
+                   id="<?php echo $custom_field->custom_field_id; ?>"
+                   ><?php _htmlsc($fieldValue); ?></textarea>
+            <?php
+            break;
             default:
             ?>
             <input type="text" class="form-control"

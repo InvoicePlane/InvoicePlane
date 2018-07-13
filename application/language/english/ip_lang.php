@@ -303,6 +303,7 @@ $lang = array(
     'loginalert_user_not_found'                    => 'There is no account registered with this Email address.',
     'loginalert_wrong_auth_code'                   => 'Password reset denied. You provided an invalid auth token.',
     'logout'                                       => 'Logout',
+    'markdown'                                     => 'Markdown',
     'mark_invoices_sent_pdf'                       => 'Mark invoices as sent when PDF is generated',
     'mark_quotes_sent_pdf'                         => 'Mark quotes as sent when PDF is generated',
     'max_quantity'                                 => 'Maximum Quantity',
