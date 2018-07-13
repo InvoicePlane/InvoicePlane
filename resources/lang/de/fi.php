@@ -236,7 +236,7 @@ return [
     'invoiced'                                => 'Berechnet',
     'invoices'                                => 'Rechnungen',
     'invoices_due_after'                      => 'Rechnungen, die fällig sind nach (Tage)',
-    'issued'                                  => 'Gestellt',
+    'issued'                                  => 'Erstellt',
     'item'                                    => 'Eintrag',
     'item_lookup_form'                        => 'Eintragssuche',
     'item_lookups'                            => 'Eintragssuchen',
