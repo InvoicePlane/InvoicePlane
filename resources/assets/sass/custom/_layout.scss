@@ -1,0 +1,52 @@
+/*
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+#app {
+  width: 100%;
+  overflow-x: hidden;
+
+  @include media-breakpoint-up('lg') {
+    display: flex;
+  }
+}
+
+#main {
+  width: 100%;
+  padding-bottom: 4rem;
+  position: relative;
+
+  @include media-breakpoint-up('lg') {
+    flex: 1 1 75%;
+    padding-left: 25%;
+    padding-top: $topbar-height;
+  }
+}
+
+#topbar {
+  display: flex;
+  width: 100%;
+  padding: $btn-padding-y 0;
+  background: $topbar-bg;
+  z-index: $zindex-fixed;
+
+  @include media-breakpoint-up('lg') {
+    position: fixed;
+    top: 0;
+    left: 25%;
+    width: 75%;
+    border-bottom: 1px solid $topbar-border;
+  }
+}
+
+#content {
+  padding: $spacer;
+}

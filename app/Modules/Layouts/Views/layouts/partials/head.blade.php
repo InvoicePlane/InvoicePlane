@@ -6,3 +6,4 @@
 @endif
 
 <script src="{{ asset('assets/dist/dependencies.js') }}"></script>
+<script src="{{ asset('assets/dist/app.js') }}"></script>

@@ -92,14 +92,23 @@ module.exports = function (grunt) {
   });
 
   grunt.config('uglify', {
+    js_app: {
+      files: {
+        'assets/dist/app.js': ['assets/dist/dependencies.js']
+      }
+    },
     js_dependencies: {
       files: {
-        'assets/dist/dependencies.js': ['assets/dist/dependencies.js']
+        'assets/dist/dependencies.js': ['resources/assets/js/app.js']
       }
     }
   });
 
   grunt.config('copy', {
+    app_js: {
+      src: ['resources/assets/js/app.js'],
+      dest: 'assets/dist/app.js'
+    },
     fontawesome: {
       expand: true,
       flatten: true,
@@ -151,6 +160,7 @@ module.exports = function (grunt) {
     'sass:dev',
     'postcss:dev',
     'concat:js_dependencies',
+    'copy:app_js',
     'copy:fontawesome',
     'copy:chosen_js',
     'copy:bs_datepicker',
@@ -159,18 +169,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('dev', [
-    'clean:styles',
-    'clean:js',
-    'clean:fonts',
-    'clean:third_party',
-    'sass:dev',
-    'postcss:dev',
-    'concat:js_dependencies',
-    'copy:fontawesome',
-    'copy:chosen_js',
-    'copy:bs_datepicker',
-    'copy:daterangepicker',
-    'copy:typeahead',
+    'dev-build',
     'watch'
   ]);
 
@@ -183,6 +182,7 @@ module.exports = function (grunt) {
     'postcss:build',
     'concat:js_dependencies',
     'uglify:js_dependencies',
+    'uglify:js_app',
     'copy:fontawesome',
     'copy:chosen_js',
     'copy:bs_datepicker',

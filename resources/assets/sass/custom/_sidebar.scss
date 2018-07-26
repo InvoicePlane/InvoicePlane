@@ -1,0 +1,154 @@
+/*
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+#sidebar {
+  width: 320px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  overflow: auto;
+  background: $sidebar-bg;
+  color: color-yiq($sidebar-bg);
+  left: -320px;
+  z-index: $zindex-modal;
+  transition: left 0.2s ease-out;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+
+  .sidebar-visible & {
+    left: 0;
+    transition: left 0.2s ease-out;
+  }
+
+  @include media-breakpoint-up('lg') {
+    width: 25%;
+    left: 0;
+  }
+
+  a {
+    color: color-yiq($sidebar-bg);
+
+    @include hover-focus-active {
+      color: color-yiq($sidebar-bg);
+    }
+  }
+
+  .sidebar-top {
+    padding: $btn-padding-y 0;
+    background: $sidebar-bg-top;
+    color: color-yiq($sidebar-bg-top);
+    border-bottom: 1px solid lighten($sidebar-bg-top, 5%);
+
+    a {
+      color: color-yiq($sidebar-bg-top);
+    }
+  }
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: $zindex-modal-backdrop;
+  background: rgba(0, 0, 0, .1);
+
+  @include media-breakpoint-down('lg') {
+
+    .sidebar-visible & {
+      display: block;
+    }
+  }
+}
+
+.sidebar-toggle,
+.sidebar-toggle-nav {
+  @include media-breakpoint-up('lg') {
+    display: none;
+  }
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 .5rem;
+
+  li {
+    width: 100%;
+
+    a {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      padding: $btn-padding-y $btn-padding-x;
+
+      @include hover-focus-active {
+        background-color: lighten($sidebar-bg, 2.5%);
+      }
+    }
+
+    &.divider {
+      margin: 0;
+      border-bottom: 1px solid lighten($sidebar-bg, 7.5%);
+    }
+  }
+
+  .has-submenu {
+    background-color: lighten($sidebar-bg, 2.5%);
+
+    .menu-icon {
+      padding: $btn-padding-y $btn-padding-x;
+
+      &:before {
+        content: "\f107";
+      }
+    }
+
+    &.collapsed {
+      background-color: $sidebar-bg;
+
+      @include hover-focus-active {
+        background-color: lighten($sidebar-bg, 2.5%);
+      }
+
+      .menu-icon:before {
+        content: "\f104";
+      }
+    }
+  }
+
+  .submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: lighten($sidebar-bg, 2.5%);
+    border-bottom: 1px solid lighten($sidebar-bg, 7.5%);
+    border-left: 10px solid lighten($sidebar-bg, 7.5%);
+
+    li {
+      padding: 0;
+
+      a {
+        font-size: $font-size-sm;
+
+        @include hover-focus-active {
+          background-color: lighten($sidebar-bg, 5%);
+        }
+      }
+
+      &.divider {
+        margin: 0;
+      }
+    }
+  }
+}

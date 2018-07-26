@@ -22,3 +22,12 @@ $status-colors: map-merge((
   "paid": $success,
   "overdue": $danger,
 ), $colors);
+
+// sidebar Variables
+$sidebar-bg: $primary;
+$sidebar-bg-top: $gray-100;
+
+// Topbar
+$topbar-bg: $gray-100;
+$topbar-border: $gray-200;
+$topbar-height: $nav-link-height + ($btn-padding-y * 2);
