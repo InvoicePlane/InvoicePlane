@@ -26,8 +26,8 @@ class MailQueue
         return $object->mailQueue()->create([
             'from' => json_encode(['email' => $object->user->email, 'name' => $object->user->name]),
             'to' => json_encode($input['to']),
-            'cc' => json_encode(($input['cc']) ?: []),
-            'bcc' => json_encode(($input['bcc']) ?: []),
+            'cc' => json_encode(isset($input['cc']) ? $input['cc'] : []),
+            'bcc' => json_encode(isset($input['bcc']) ? $input['bcc'] : []),
             'subject' => $input['subject'],
             'body' => $input['body'],
             'attach_pdf' => $input['attach_pdf'],
