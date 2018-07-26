@@ -1,0 +1,25 @@
+/*
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+// Create light variants of color backgrounds
+@each $color, $value in $theme-colors {
+  @include bg-variant(".bg-#{$color}-light", rgba($value, 0.5));
+}
+
+// Create backgrounds from status colors
+@each $status, $value in $status-colors {
+  @include bg-variant(".bg-status-#{$status}", $value);
+}
+
+@each $status, $value in $status-colors {
+  @include bg-variant(".bg-status-#{$status}-light", rgba($value, 0.5));
+}

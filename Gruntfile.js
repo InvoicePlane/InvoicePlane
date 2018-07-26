@@ -14,10 +14,9 @@ module.exports = function (grunt) {
       'assets/dist/*.js', 'assets/dist/*.js.map' // Javascript
     ],
     fonts: [
-      'assets/dist/fonts/**/*.*', '!assets/dist/fonts/.gitignore' // Font Awesome + Ionicons
+      'assets/dist/fonts/**/*.*', '!assets/dist/fonts/.gitignore' // Font Awesome
     ],
     third_party: [
-      'assets/dist/adminlte/**/*.*', '!assets/dist/adminlte/.gitignore', // Admin LTE
       'assets/dist/bs-datepicker/**/*.*', '!assets/dist/bs-datepicker/.gitignore', // Bootstrap Datepicker
       'assets/dist/chosen-js/**/*.*', '!assets/dist/chosen-js/.gitignore', // Chosen JS
       'assets/dist/daterangepicker/**/*.*', '!assets/dist/daterangepicker/.gitignore', // Chosen JS
@@ -82,8 +81,7 @@ module.exports = function (grunt) {
       src: [
         'node_modules/jquery/dist/jquery.js',
         'node_modules/jquery-ui-dist/jquery-ui.js',
-        'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
-        'node_modules/admin-lte/dist/js/app.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
         'node_modules/autosize/dist/autosize.js',
         'node_modules/moment/moment.js',
         'node_modules/bootstrap-notify/bootstrap-notify.js',
@@ -107,18 +105,6 @@ module.exports = function (grunt) {
       flatten: true,
       src: ['node_modules/font-awesome/fonts/*'],
       dest: 'assets/dist/fonts/'
-    },
-    ionicons: {
-      expand: true,
-      flatten: true,
-      src: ['node_modules/ionicons/dist/fonts/*'],
-      dest: 'assets/dist/fonts/'
-    },
-    adminlte: {
-      expand: true,
-      cwd: 'node_modules/admin-lte/dist/',
-      src: ['**'],
-      dest: 'assets/dist/adminlte/'
     },
     chosen_js: {
       expand: true,
@@ -166,8 +152,6 @@ module.exports = function (grunt) {
     'postcss:dev',
     'concat:js_dependencies',
     'copy:fontawesome',
-    'copy:ionicons',
-    'copy:adminlte',
     'copy:chosen_js',
     'copy:bs_datepicker',
     'copy:daterangepicker',
@@ -182,10 +166,7 @@ module.exports = function (grunt) {
     'sass:dev',
     'postcss:dev',
     'concat:js_dependencies',
-    'concat:js_dependencies',
     'copy:fontawesome',
-    'copy:ionicons',
-    'copy:adminlte',
     'copy:chosen_js',
     'copy:bs_datepicker',
     'copy:daterangepicker',
@@ -203,8 +184,6 @@ module.exports = function (grunt) {
     'concat:js_dependencies',
     'uglify:js_dependencies',
     'copy:fontawesome',
-    'copy:ionicons',
-    'copy:adminlte',
     'copy:chosen_js',
     'copy:bs_datepicker',
     'copy:daterangepicker',
