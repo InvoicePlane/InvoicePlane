@@ -20,9 +20,10 @@
                     <div class="input-group">
                         <input type="text" name="search" class="form-control"
                                 placeholder="@lang('ip.search')..."/>
-                        <span class="input-group-btn">
-                <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
-              </span>
+                        <div class="input-group-btn">
+                            <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </li>

@@ -22,6 +22,7 @@
   z-index: $zindex-modal;
   transition: left 0.2s ease-out;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+  font-weight: $font-weight-light;
 
   .sidebar-visible & {
     left: 0;
@@ -38,6 +39,10 @@
 
     @include hover-focus-active {
       color: color-yiq($sidebar-bg);
+    }
+
+    .fa {
+      margin-right: $spacer * .25;
     }
   }
 
