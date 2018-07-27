@@ -4,42 +4,48 @@
     <meta charset="UTF-8">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/ip_logo_64x64.png') }}">
 
-    <title>{{ config('fi.headerTitleText') }}</title>
+    <title>{{ config('ip.headerTitleText') }}</title>
 
-    @include('layouts._head')
-
-    @include('layouts._js_global')
+    @include('layouts.partials.head')
+    @include('layouts.partials.js_global')
 
     @yield('head')
-
     @yield('javascript')
 
 </head>
-<body class="skin-invoiceplane layout-boxed sidebar-mini">
+<body class="setup">
 
-<div class="wrapper">
+<div class="container pt-5 pb-5">
+    <div class="row justify-content-center">
+        <div class="col col-md-10 col-lg-8">
 
-    <header class="main-header">
+            <div class="logo-wrapper text-center">
+                <img src="{{ asset('assets/img/ip_logo.svg') }}" alt="@lang('ip.setup')"
+                        width="300px" class="mb-5">
+            </div>
 
-        <a href="#" class="logo">
-            <span class="logo-lg">InvoicePlane</span>
-        </a>
+            <div class="card">
 
-        <nav class="navbar navbar-static-top" role="navigation">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        @yield('title')
+                    </h5>
+                </div>
 
-            @yield('header')
+                <div class="card-body">
 
-        </nav>
-    </header>
+                    @include('layouts._alerts')
 
-    <div class="content-wrapper content-wrapper-public">
-        @yield('content')
+                    @yield('content')
+
+                </div>
+            </div>
+
+        </div>
     </div>
-
 </div>
-
-<div id="modal-placeholder"></div>
 
 </body>
 </html>
