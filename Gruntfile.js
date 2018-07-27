@@ -94,12 +94,12 @@ module.exports = function (grunt) {
   grunt.config('uglify', {
     js_app: {
       files: {
-        'assets/dist/app.js': ['assets/dist/dependencies.js']
+        'assets/dist/app.js': ['resources/assets/js/app.js']
       }
     },
     js_dependencies: {
       files: {
-        'assets/dist/dependencies.js': ['resources/assets/js/app.js']
+        'assets/dist/dependencies.js': ['assets/dist/dependencies.js']
       }
     }
   });
