@@ -22,7 +22,6 @@
   z-index: $zindex-modal;
   transition: left 0.2s ease-out;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
-  font-weight: $font-weight-light;
 
   .sidebar-visible & {
     left: 0;
@@ -56,6 +55,11 @@
       color: color-yiq($sidebar-bg-top);
     }
   }
+
+  .sidebar-top-logo {
+    margin: 0 0 0 $nav-link-padding-x;
+    max-height: $nav-link-height;
+  }
 }
 
 .sidebar-backdrop {
@@ -66,7 +70,7 @@
   bottom: 0;
   left: 0;
   z-index: $zindex-modal-backdrop;
-  background: rgba(0, 0, 0, .1);
+  background: rgba(0, 0, 0, .15);
 
   @include media-breakpoint-down('lg') {
 
@@ -87,6 +91,7 @@
   list-style: none;
   padding: 0;
   margin: 0 0 .5rem;
+  font-weight: $font-weight-light;
 
   li {
     width: 100%;
@@ -95,7 +100,7 @@
       display: block;
       width: 100%;
       text-decoration: none;
-      padding: $btn-padding-y $btn-padding-x;
+      padding: $btn-padding-y-lg $btn-padding-x-lg;
 
       @include hover-focus-active {
         background-color: lighten($sidebar-bg, 2.5%);
@@ -138,7 +143,7 @@
     margin: 0;
     background-color: lighten($sidebar-bg, 2.5%);
     border-bottom: 1px solid lighten($sidebar-bg, 7.5%);
-    border-left: 10px solid lighten($sidebar-bg, 7.5%);
+    border-left: $btn-padding-x solid lighten($sidebar-bg, 7.5%);
 
     li {
       padding: 0;

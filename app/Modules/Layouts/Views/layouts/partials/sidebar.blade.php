@@ -2,8 +2,13 @@
 
     <div class="sidebar-top nav">
         <div class="nav-item">
+            <img src="{{ asset('assets/img/ip_logo_1x1.svg') }}"
+                    alt="{{ config('fi.headerTitleText') }}" class="sidebar-top-logo">
+        </div>
+        <div class="nav-item">
             <a href="{{ route('dashboard.index') }}" class="nav-link">
-                <span class="logo-lg">{{ config('fi.headerTitleText') }}</span>
+
+                {{ config('fi.headerTitleText') }}
             </a>
         </div>
         <a href="#" class="sidebar-toggle ml-auto nav-link">
@@ -73,37 +78,37 @@
             <ul id="submenu-reports" class="submenu collapse">
                 <li>
                     <a href="{{ route('reports.clientStatement') }}">
-                        <i class="fa fa-caret-right"></i> @lang('ip.client_statement')
+                        @lang('ip.client_statement')
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('reports.expenseList') }}">
-                        <i class="fa fa-caret-right"></i> @lang('ip.expense_list')
+                        @lang('ip.expense_list')
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('reports.itemSales') }}">
-                        <i class="fa fa-caret-right"></i> @lang('ip.item_sales')
+                        @lang('ip.item_sales')
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('reports.paymentsCollected') }}">
-                        <i class="fa fa-caret-right"></i> @lang('ip.payments_collected')
+                        @lang('ip.payments_collected')
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('reports.profitLoss') }}">
-                        <i class="fa fa-caret-right"></i> @lang('ip.profit_and_loss')
+                        @lang('ip.profit_and_loss')
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('reports.revenueByClient') }}">
-                        <i class="fa fa-caret-right"></i> @lang('ip.revenue_by_client')
+                        @lang('ip.revenue_by_client')
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('reports.taxSummary') }}">
-                        <i class="fa fa-caret-right"></i> @lang('ip.tax_summary')
+                        @lang('ip.tax_summary')
                     </a>
                 </li>
 

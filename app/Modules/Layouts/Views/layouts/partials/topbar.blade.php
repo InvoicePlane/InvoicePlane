@@ -14,34 +14,63 @@
             <a href="https://wiki.invoiceplane.com/en/2.0/" title="@lang('ip.documentation')"
                     target="_blank" class="nav-link">
                 <i class="fa fa-question-circle"></i>
+                <span class="sr-only">@lang('ip.documentation')</span>
             </a>
         </li>
 
         <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" title="@lang('ip.system')">
                 <i class="fa fa-cog"></i>
+                <span class="sr-only">@lang('ip.system')</span>
             </a>
-            <ul class="dropdown-menu">
-                <li><a href="{{ route('addons.index') }}">@lang('ip.addons')</a></li>
-                <li><a href="{{ route('currencies.index') }}">@lang('ip.currencies')</a></li>
-                <li><a href="{{ route('customFields.index') }}">@lang('ip.custom_fields')</a></li>
-                <li><a href="{{ route('companyProfiles.index') }}">@lang('ip.company_profiles')</a></li>
-                <li><a href="{{ route('export.index') }}">@lang('ip.export_data')</a></li>
-                <li><a href="{{ route('groups.index') }}">@lang('ip.groups')</a></li>
-                <li><a href="{{ route('import.index') }}">@lang('ip.import_data')</a></li>
-                <li><a href="{{ route('itemLookups.index') }}">@lang('ip.item_lookups')</a></li>
-                <li><a href="{{ route('mailLog.index') }}">@lang('ip.mail_log')</a></li>
-                <li><a href="{{ route('paymentMethods.index') }}">@lang('ip.payment_methods')</a></li>
-                <li><a href="{{ route('taxRates.index') }}">@lang('ip.tax_rates')</a></li>
-                <li><a href="{{ route('users.index') }}">@lang('ip.user_accounts')</a></li>
-                <li><a href="{{ route('settings.index') }}">@lang('ip.system_settings')</a></li>
+            <div class="dropdown-menu">
+
+                <a href="{{ route('addons.index') }}" class="dropdown-item">
+                    @lang('ip.addons')
+                </a>
+                <a href="{{ route('currencies.index') }}" class="dropdown-item">
+                    @lang('ip.currencies')
+                </a>
+                <a href="{{ route('customFields.index') }}" class="dropdown-item">
+                    @lang('ip.custom_fields')
+                </a>
+                <a href="{{ route('companyProfiles.index') }}" class="dropdown-item">
+                    @lang('ip.company_profiles')
+                </a>
+                <a href="{{ route('export.index') }}" class="dropdown-item">
+                    @lang('ip.export_data')
+                </a>
+                <a href="{{ route('groups.index') }}" class="dropdown-item">
+                    @lang('ip.groups')
+                </a>
+                <a href="{{ route('import.index') }}" class="dropdown-item">
+                    @lang('ip.import_data')
+                </a>
+                <a href="{{ route('itemLookups.index') }}" class="dropdown-item">
+                    @lang('ip.item_lookups')
+                </a>
+                <a href="{{ route('mailLog.index') }}" class="dropdown-item">
+                    @lang('ip.mail_log')
+                </a>
+                <a href="{{ route('paymentMethods.index') }}" class="dropdown-item">
+                    @lang('ip.payment_methods')
+                </a>
+                <a href="{{ route('taxRates.index') }}" class="dropdown-item">
+                    @lang('ip.tax_rates')
+                </a>
+                <a href="{{ route('users.index') }}" class="dropdown-item">
+                    @lang('ip.user_accounts')
+                </a>
+                <a href="{{ route('settings.index') }}" class="dropdown-item">
+                    @lang('ip.system_settings')
+                </a>
 
                 @foreach (config('fi.menus.system') as $menu)
                     @if (view()->exists($menu))
                         @include($menu)
                     @endif
                 @endforeach
-            </ul>
+            </div>
         </li>
 
         @if (config('fi.displayProfileImage'))
