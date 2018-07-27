@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>@lang('ip.welcome')</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/ip_logo_64x64.png') }}">
 
     @include('layouts._head')
 
