@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>@lang('ip.welcome')</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <link rel="icon" type="image/png" href="{{ asset('assets/img/ip_logo_64x64.png') }}">
 
-    @include('layouts._head')
+    <title>@lang('ip.welcome')</title>
 
-    @include('layouts._js_global')
+    @include('layouts.partials.head')
+    @include('layouts.partials.js_global')
 
 </head>
 <body class="login-page">
@@ -53,9 +53,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
-
+                    <div class="row mt-4">
                         <div class="col-8">
+
                             <div class="custom-control custom-checkbox pt-1">
                                 <input type="hidden" name="remember_me" value="0">
                                 <input type="checkbox" class="custom-control-input" id="remember_me">
@@ -64,13 +64,15 @@
                                     @lang('ip.remember_me')
                                 </label>
                             </div>
+
                         </div>
                         <div class="col-4">
+
                             <button type="submit" class="btn btn-primary btn-block">
                                 @lang('ip.sign_in')
                             </button>
-                        </div>
 
+                        </div>
                     </div>
 
                     {!! Form::close() !!}
