@@ -563,7 +563,7 @@ div.table-content {
   color: $color_status_canceled;
 }
 
-// Invoices and Quotes Status
+// Invoices, Quotes and Clients Status
 .label {
   font-weight: normal;
   padding: $padding-base-vertical $padding-base-horizontal;
@@ -600,6 +600,14 @@ div.table-content {
 
   &.canceled {
     background-color: lighten($color_status_canceled, 10%);
+  }
+
+  &.active {
+    background-color: lighten($color_status_active, 10%);
+  }
+
+  &.inactive {
+    background-color: lighten($color_status_inactive, 10%);
   }
 }
 
