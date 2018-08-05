@@ -30,7 +30,7 @@
                             <?php _trans('default_invoice_tax_rate_placement'); ?>
                         </label>
                         <select name="settings[default_include_item_tax]" id="settings[default_include_item_tax]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <option value="0" <?php check_select(get_setting('default_include_item_tax'), '0'); ?>>
                                 <?php _trans('apply_before_item_tax'); ?>

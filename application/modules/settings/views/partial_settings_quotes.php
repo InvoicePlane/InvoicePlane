@@ -23,7 +23,7 @@
                             <?php _trans('default_quote_group'); ?>
                         </label>
                         <select name="settings[default_quote_group]" id="settings[default_quote_group]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($invoice_groups as $invoice_group) { ?>
                                 <option value="<?php echo $invoice_group->invoice_group_id; ?>"
@@ -39,7 +39,7 @@
                             <?php _trans('mark_quotes_sent_pdf'); ?>
                         </label>
                         <select name="settings[mark_quotes_sent_pdf]" id="settings[mark_quotes_sent_pdf]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -73,7 +73,7 @@
                             <?php _trans('generate_quote_number_for_draft'); ?>
                         </label>
                         <select name="settings[generate_quote_number_for_draft]" class="form-control simple-select"
-                                id="settings[generate_quote_number_for_draft]">
+                                id="settings[generate_quote_number_for_draft]" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -103,7 +103,7 @@
                             <?php _trans('default_pdf_template'); ?>
                         </label>
                         <select name="settings[pdf_quote_template]" id="settings[pdf_quote_template]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($pdf_quote_templates as $quote_template) { ?>
                                 <option value="<?php echo $quote_template; ?>"
@@ -119,7 +119,7 @@
                             <?php _trans('default_public_template'); ?>
                         </label>
                         <select name="settings[public_quote_template]" id="settings[public_quote_template]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($public_quote_templates as $quote_template) { ?>
                                 <option value="<?php echo $quote_template; ?>"
@@ -138,7 +138,7 @@
                             <?php _trans('default_email_template'); ?>
                         </label>
                         <select name="settings[email_quote_template]" id="settings[email_quote_template]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($email_templates_quote as $email_template) { ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
