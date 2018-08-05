@@ -315,7 +315,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php _trans('status'); ?>
                                     </label>
                                     <select name="quote_status_id" id="quote_status_id"
-                                            class="form-control input-sm simple-select">
+                                            class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
                                         <?php foreach ($quote_statuses as $key => $status) { ?>
                                             <option value="<?php echo $key; ?>"
                                                     <?php if ($key == $quote->quote_status_id) { ?>selected="selected"
