@@ -30,59 +30,17 @@ class Ajax extends Admin_Controller
         $this->mdl_invoices->set_id($invoice_id);
 
         if ($this->mdl_invoices->run_validation('validation_rules_save_invoice')) {
-            $items = json_decode($this->input->post('items'));
-
-            foreach ($items as $item) {
-                // Check if an item has either a quantity + price or name or description
-                if (!empty($item->item_name)) {
-                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
-                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
-                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
-                    if (property_exists($item, 'item_date')) {
-                        $item->item_date = ($item->item_date ? date_to_mysql($item->item_date) : null);
-                    }
-                    $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
-                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
-                    $item_id = ($item->item_id) ?: null;
-                    unset($item->item_id);
-
-                    if (!$item->item_task_id) {
-                        unset($item->item_task_id);
-                    } else {
-                        $this->load->model('tasks/mdl_tasks');
-                        $this->mdl_tasks->update_status(4, $item->item_task_id);
-                    }
-
-                    $this->mdl_items->save($item_id, $item);
-                } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
-                    // Throw an error message and use the form validation for that
-                    $this->load->library('form_validation');
-                    $this->form_validation->set_rules('item_name', trans('item'), 'required');
-                    $this->form_validation->run();
-
-                    $response = [
-                        'success' => 0,
-                        'validation_errors' => [
-                            'item_name' => form_error('item_name', '', ''),
-                        ],
-                    ];
-
-                    echo json_encode($response);
-                    exit;
-                }
-            }
 
             $invoice_status = $this->input->post('invoice_status_id');
 
             if ($this->input->post('invoice_discount_amount') === '') {
-                $invoice_discount_amount = floatval(0);
+                $invoice_discount_amount = (float)0;
             } else {
                 $invoice_discount_amount = $this->input->post('invoice_discount_amount');
             }
 
             if ($this->input->post('invoice_discount_percent') === '') {
-                $invoice_discount_percent = floatval(0);
+                $invoice_discount_percent = (float)0;
             } else {
                 $invoice_discount_percent = $this->input->post('invoice_discount_percent');
             }
@@ -115,6 +73,9 @@ class Ajax extends Admin_Controller
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
+            $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+
+            // Sumex saving
             $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
 
             if ($sumexInvoice >= 1) {
@@ -129,6 +90,53 @@ class Ajax extends Admin_Controller
                     'sumex_observations' => $this->input->post('invoice_sumex_observations'),
                 ];
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
+            }
+
+            // Save all items
+            $items = json_decode($this->input->post('items'));
+
+            foreach ($items as $item) {
+                // Check if an item has either a quantity + price or name or description
+                if (!empty($item->item_name)) {
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : (float)0);
+                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : (float)0);
+                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
+                    $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
+                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
+                    $item->item_discount_calc = $invoice->invoice_item_discount_calc;
+
+                    if (property_exists($item, 'item_date')) {
+                        $item->item_date = ($item->item_date ? date_to_mysql($item->item_date) : null);
+                    }
+
+                    $item_id = ($item->item_id) ?: null;
+                    unset($item->item_id);
+
+                    if (!$item->item_task_id) {
+                        unset($item->item_task_id);
+                    } else {
+                        $this->load->model('tasks/mdl_tasks');
+                        $this->mdl_tasks->update_status(4, $item->item_task_id);
+                    }
+
+                    $this->mdl_items->save($item_id, $item);
+                } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
+                    // Throw an error message and use the form validation for that
+                    $this->load->library('form_validation');
+                    $this->form_validation->set_rules('item_name', trans('item'), 'required');
+                    $this->form_validation->run();
+
+                    $response = [
+                        'success' => 0,
+                        'validation_errors' => [
+                            'item_name' => form_error('item_name', '', ''),
+                        ],
+                    ];
+
+                    echo json_encode($response);
+                    exit;
+                }
             }
 
             // Recalculate for discounts

@@ -29,32 +29,14 @@ class Ajax extends Admin_Controller
         $this->mdl_quotes->set_id($quote_id);
 
         if ($this->mdl_quotes->run_validation('validation_rules_save_quote')) {
-            $items = json_decode($this->input->post('items'));
-
-            foreach ($items as $item) {
-                if ($item->item_name) {
-                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
-                    $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
-                    $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
-                    $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
-                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
-
-                    $item_id = ($item->item_id) ?: null;
-                    unset($item->item_id);
-
-                    $this->mdl_quote_items->save($item_id, $item);
-                }
-            }
-
             if ($this->input->post('quote_discount_amount') === '') {
-                $quote_discount_amount = floatval(0);
+                $quote_discount_amount = (float)0;
             } else {
                 $quote_discount_amount = $this->input->post('quote_discount_amount');
             }
 
             if ($this->input->post('quote_discount_percent') === '') {
-                $quote_discount_percent = floatval(0);
+                $quote_discount_percent = (float)0;
             } else {
                 $quote_discount_percent = $this->input->post('quote_discount_percent');
             }
@@ -80,6 +62,27 @@ class Ajax extends Admin_Controller
             ];
 
             $this->mdl_quotes->save($quote_id, $db_array);
+            $quote = $this->mdl_quotes->get_by_id($quote_id);
+
+            // Save all items
+            $items = json_decode($this->input->post('items'));
+
+            foreach ($items as $item) {
+                if ($item->item_name) {
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : (float)0);
+                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : (float)0);
+                    $item->item_discount_amount = $item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id = ($item->item_product_id ?: null);
+                    $item->item_product_unit_id = ($item->item_product_unit_id ?: null);
+                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
+                    $item->item_discount_calc = $quote->quote_item_discount_calc;
+
+                    $item_id = $item->item_id ?: null;
+                    unset($item->item_id);
+
+                    $this->mdl_quote_items->save($item_id, $item);
+                }
+            }
 
             // Recalculate for discounts
             $this->load->model('quotes/mdl_quote_amounts');

@@ -42,6 +42,23 @@ function invoice_logo_pdf()
     return '';
 }
 
+/**
+ * Returns true if the invoice was created after the upgrade to version 1.5.10 which
+ * implies that the new item discount calculation method should be used.
+ *
+ * @param string $invoice_creation_date
+ * @return bool
+ */
+function invoice_discountcalc($invoice_creation_date)
+{
+    $invoice_creation_date = strtotime($invoice_creation_date);
+
+    $CI = &get_instance();
+    $CI->load->model('mdl_versions');
+    $version = $CI->mdl_versions->where('version_file', '033_1.5.10.sql')->row();
+
+    return isset($version->version_date_applied) && $invoice_creation_date > $version->version_date_applied;
+}
 
 /**
  * Returns a Swiss IS / IS+ code line

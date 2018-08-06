@@ -29,19 +29,28 @@ class Mdl_Quote_Item_Amounts extends CI_Model
         $this->load->model('quotes/mdl_quote_items');
         $item = $this->mdl_quote_items->get_by_id($item_id);
 
-        $item_price = $item->item_price;
-        $item_subtotal = $item->item_quantity * $item_price;
-        $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
-        $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-        $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        if ($item->item_discount_calc) {
+            // Use the correct discount calculation method
+            $item_subtotal = $item->item_quantity * $item->item_price;
+            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
+            $item_taxable_amount = $item_subtotal - $item_discount_total;
+            $item_tax_total = $item_taxable_amount * ($item->item_tax_rate_percent / 100);
+            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        } else {
+            // Use the legacy discount calculation method
+            $item_subtotal = $item->item_quantity * $item->item_price;
+            $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
+            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
+            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        }
 
-        $db_array = array(
+        $db_array = [
             'item_id' => $item_id,
             'item_subtotal' => $item_subtotal,
             'item_tax_total' => $item_tax_total,
             'item_discount' => $item_discount_total,
             'item_total' => $item_total,
-        );
+        ];
 
         $this->db->where('item_id', $item_id);
         if ($this->db->get('ip_quote_item_amounts')->num_rows()) {
