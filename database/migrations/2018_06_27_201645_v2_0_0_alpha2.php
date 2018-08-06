@@ -176,6 +176,7 @@ class V200Alpha2 extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
+            $table->integer('company_profile_id');
             $table->date('expense_date');
             $table->integer('user_id');
             $table->integer('category_id');
