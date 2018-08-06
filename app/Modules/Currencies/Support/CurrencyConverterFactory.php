@@ -18,7 +18,15 @@ class CurrencyConverterFactory
 {
     public static function create()
     {
-        $class = 'IP\Modules\Currencies\Support\Drivers\\' . config('fi.currencyConversionDriver');
+
+$test = config('fi.currencyConversionDriver');
+if(!isset($test) || $test === null)
+{
+$test = 'FixerIOCurrencyConverter';
+}
+
+
+        $class = 'IP\Modules\Currencies\Support\Drivers\\' . $test;
 
         return new $class;
     }

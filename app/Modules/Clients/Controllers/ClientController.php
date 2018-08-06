@@ -41,6 +41,10 @@ class ClientController extends Controller
             ->keywords(request('search'))
             ->paginate(config('fi.resultsPerPage'));
 
+
+
+
+
         return view('clients.index')
             ->with('clients', $clients)
             ->with('status', $status)
