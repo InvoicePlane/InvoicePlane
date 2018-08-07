@@ -26,8 +26,8 @@ class NumberFormatter
      */
     public static function format($number, $currency = null, $decimalPlaces = null)
     {
-        $currency = ($currency) ?: config('fi.currency');
-        $decimalPlaces = ($decimalPlaces) ?: config('fi.amountDecimals');
+        $currency = ($currency) ?: config('ip.currency');
+        $decimalPlaces = ($decimalPlaces) ?: config('ip.amountDecimals');
 
         return number_format($number, $decimalPlaces, $currency->decimal, $currency->thousands);
     }
@@ -41,7 +41,7 @@ class NumberFormatter
      */
     public static function unformat($number, $currency = null)
     {
-        $currency = ($currency) ?: config('fi.currency');
+        $currency = ($currency) ?: config('ip.currency');
 
         $number = str_replace($currency->decimal, 'D', $number);
         $number = str_replace($currency->thousands, '', $number);
