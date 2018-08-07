@@ -25,7 +25,7 @@ class PaymentCreatedListener
         }
 
         if (request('email_payment_receipt') == 'true'
-            or (!request()->exists('email_payment_receipt') and config('fi.automaticEmailPaymentReceipts') and $event->payment->invoice->client->email)
+            or (!request()->exists('email_payment_receipt') and config('ip.automaticEmailPaymentReceipts') and $event->payment->invoice->client->email)
         ) {
             $parser = new Parser($event->payment);
 
@@ -37,7 +37,7 @@ class PaymentCreatedListener
                 'bcc' => $contacts->getSelectedContactsBcc(),
                 'subject' => $parser->parse('paymentReceiptEmailSubject'),
                 'body' => $parser->parse('paymentReceiptBody'),
-                'attach_pdf' => config('fi.attachPdf'),
+                'attach_pdf' => config('ip.attachPdf'),
             ]);
 
             $this->mailQueue->send($mail->id);
