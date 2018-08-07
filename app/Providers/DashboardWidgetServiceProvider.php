@@ -22,7 +22,7 @@ class DashboardWidgetServiceProvider extends ServiceProvider
 
             // Register the widget setting validation rules if they exist.
             if (file_exists($settingValidationPath)) {
-                config(['fi.settingValidationRules.' . $widget => require($settingValidationPath)]);
+                config(['ip.settingValidationRules.' . $widget => require($settingValidationPath)]);
             }
         }
     }
