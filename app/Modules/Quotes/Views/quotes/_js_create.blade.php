@@ -9,7 +9,7 @@
       $('#create_client_name').typeahead('val', clientName);
     });
 
-    $('#create_quote_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+    $('#create_quote_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
 
     $('#quote-create-confirm').click(function () {
 

@@ -23,14 +23,14 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">@lang('ip.date')</label>
                         <div class="col-sm-9">
-                            {!! Form::text('invoice_date', date(config('fi.dateFormat')), ['id' => 'copy_invoice_date', 'class' => 'form-control']) !!}
+                            {!! Form::text('invoice_date', date(config('ip.dateFormat')), ['id' => 'copy_invoice_date', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label">@lang('ip.company_profile')</label>
                         <div class="col-sm-9">
-                            {!! Form::select('company_profile_id', $companyProfiles, config('fi.defaultCompanyProfile'),
+                            {!! Form::select('company_profile_id', $companyProfiles, config('ip.defaultCompanyProfile'),
                             ['id' => 'copy_company_profile_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>

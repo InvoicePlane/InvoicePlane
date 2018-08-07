@@ -18,7 +18,7 @@
 
         <a href="{{ route('invoices.pdf', [$invoice->id]) }}" target="_blank" id="btn-pdf-invoice"
            class="btn btn-default"><i class="fa fa-print"></i> @lang('ip.pdf')</a>
-        @if (config('fi.mailConfigured'))
+        @if (config('ip.mailConfigured'))
             <a href="javascript:void(0)" id="btn-email-invoice" class="btn btn-default email-invoice"
                data-invoice-id="{{ $invoice->id }}" data-redirect-to="{{ route('invoices.edit', [$invoice->id]) }}"><i
                         class="fa fa-envelope"></i> @lang('ip.email')</a>
@@ -29,7 +29,7 @@
                 @lang('ip.other') <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                @if ($invoice->isPayable or config('fi.allowPaymentsWithoutBalance'))
+                @if ($invoice->isPayable or config('ip.allowPaymentsWithoutBalance'))
                     <li><a href="javascript:void(0)" id="btn-enter-payment" class="enter-payment"
                            data-invoice-id="{{ $invoice->id }}"
                            data-invoice-balance="{{ $invoice->amount->formatted_numeric_balance }}"
@@ -147,8 +147,8 @@
                                     <td>{!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 1]) !!}</td>
                                     <td>{!! Form::text('quantity', null, ['class' => 'form-control']) !!}</td>
                                     <td>{!! Form::text('price', null, ['class' => 'form-control']) !!}</td>
-                                    <td>{!! Form::select('tax_rate_id', $taxRates, config('fi.itemTaxRate'), ['class' => 'form-control']) !!}</td>
-                                    <td>{!! Form::select('tax_rate_2_id', $taxRates, config('fi.itemTax2Rate'), ['class' => 'form-control']) !!}</td>
+                                    <td>{!! Form::select('tax_rate_id', $taxRates, config('ip.itemTaxRate'), ['class' => 'form-control']) !!}</td>
+                                    <td>{!! Form::select('tax_rate_2_id', $taxRates, config('ip.itemTax2Rate'), ['class' => 'form-control']) !!}</td>
                                     <td></td>
                                     <td></td>
                                 </tr>

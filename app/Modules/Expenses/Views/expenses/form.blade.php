@@ -11,7 +11,7 @@
 @section('javascript')
     <script type="text/javascript">
       $(function () {
-        $('#expense_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+        $('#expense_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
       });
     </script>
 @stop
@@ -53,7 +53,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>* @lang('ip.company_profile'): </label>
-                                    {!! Form::select('company_profile_id', $companyProfiles, (($editMode) ? $expense->company_profile_id : config('fi.defaultCompanyProfile')), ['id' => 'company_profile_id', 'class' => 'form-control']) !!}
+                                    {!! Form::select('company_profile_id', $companyProfiles, (($editMode) ? $expense->company_profile_id : config('ip.defaultCompanyProfile')), ['id' => 'company_profile_id', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
 

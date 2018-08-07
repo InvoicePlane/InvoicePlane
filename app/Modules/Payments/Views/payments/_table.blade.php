@@ -41,7 +41,7 @@
                                         class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                         <li><a href="{{ route('invoices.pdf', [$payment->invoice->id]) }}" target="_blank"
                                id="btn-pdf-invoice"><i class="fa fa-print"></i> @lang('ip.invoice')</a></li>
-                        @if (config('fi.mailConfigured'))
+                        @if (config('ip.mailConfigured'))
                             <li><a href="javascript:void(0)" class="email-payment-receipt"
                                    data-payment-id="{{ $payment->id }}" data-redirect-to="{{ request()->fullUrl() }}"><i
                                             class="fa fa-envelope"></i> @lang('ip.email_payment_receipt')</a></li>

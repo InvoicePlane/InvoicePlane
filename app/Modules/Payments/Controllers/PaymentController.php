@@ -34,7 +34,7 @@ class PaymentController extends Controller
             ->keywords(request('search'))
             ->clientId(request('client'))
             ->sortable(['paid_at' => 'desc', 'length(number)' => 'desc', 'number' => 'desc'])
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('payments.index')
             ->with('payments', $payments)

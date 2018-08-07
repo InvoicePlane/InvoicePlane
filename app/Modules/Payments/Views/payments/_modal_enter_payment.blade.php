@@ -49,12 +49,12 @@
                         </div>
                     </div>
 
-                    @if (config('fi.mailConfigured') and $client->email)
+                    @if (config('ip.mailConfigured') and $client->email)
                         <div class="form-group">
                             <label class="col-sm-4 control-label">@lang('ip.email_payment_receipt')</label>
 
                             <div class="col-sm-8">
-                                {!! Form::checkbox('email_payment_receipt', 1, config('fi.automaticEmailPaymentReceipts'), ['id' => 'email_payment_receipt']) !!}
+                                {!! Form::checkbox('email_payment_receipt', 1, config('ip.automaticEmailPaymentReceipts'), ['id' => 'email_payment_receipt']) !!}
                             </div>
                         </div>
                     @endif

@@ -36,7 +36,7 @@ class ExpenseController extends Controller
             ->status(request('status'))
             ->companyProfileId(request('company_profile'))
             ->sortable(['expense_date' => 'desc'])
-            ->paginate(config('fi.defaultNumPerPage'));
+            ->paginate(config('ip.defaultNumPerPage'));
 
         return view('expenses.index')
             ->with('expenses', $expenses)

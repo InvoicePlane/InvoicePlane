@@ -7,7 +7,7 @@
       $('#client_name').focus();
     });
 
-    $('#copy_invoice_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+    $('#copy_invoice_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
 
     var clients = new Bloodhound({
       datumTokenizer: function (d) {

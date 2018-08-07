@@ -39,7 +39,7 @@ class ClientController extends Controller
             ->sortable(['name' => 'asc'])
             ->status($status)
             ->keywords(request('search'))
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('clients.index')
             ->with('clients', $clients)
@@ -74,19 +74,19 @@ class ClientController extends Controller
             ->with(['client', 'activities', 'amount.invoice.currency'])
             ->orderBy('created_at', 'desc')
             ->orderBy('id', 'desc')
-            ->take(config('fi.resultsPerPage'))->get();
+            ->take(config('ip.resultsPerPage'))->get();
 
         $quotes = $client->quotes()
             ->with(['client', 'activities', 'amount.quote.currency'])
             ->orderBy('created_at', 'desc')
             ->orderBy('id', 'desc')
-            ->take(config('fi.resultsPerPage'))->get();
+            ->take(config('ip.resultsPerPage'))->get();
 
         $recurringInvoices = $client->recurringInvoices()
             ->with(['client', 'amount.recurringInvoice.currency'])
             ->orderBy('next_date', 'desc')
             ->orderBy('id', 'desc')
-            ->take(config('fi.resultsPerPage'))->get();
+            ->take(config('ip.resultsPerPage'))->get();
 
         return view('clients.view')
             ->with('client', $client)

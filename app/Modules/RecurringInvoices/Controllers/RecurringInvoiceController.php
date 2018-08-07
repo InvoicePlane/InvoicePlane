@@ -39,7 +39,7 @@ class RecurringInvoiceController extends Controller
             ->status($status)
             ->companyProfileId(request('company_profile'))
             ->sortable(['next_date' => 'desc', 'id' => 'desc'])
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('recurring_invoices.index')
             ->with('recurringInvoices', $recurringInvoices)

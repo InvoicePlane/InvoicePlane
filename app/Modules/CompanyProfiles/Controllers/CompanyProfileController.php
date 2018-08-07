@@ -32,7 +32,7 @@ class CompanyProfileController extends Controller
         $this->setReturnUrl();
 
         return view('company_profiles.index')
-            ->with('companyProfiles', CompanyProfile::orderBy('company')->paginate(config('fi.resultsPerPage')));
+            ->with('companyProfiles', CompanyProfile::orderBy('company')->paginate(config('ip.resultsPerPage')));
     }
 
     public function create()

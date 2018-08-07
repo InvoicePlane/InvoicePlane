@@ -9,8 +9,8 @@
       $('#create_client_name').typeahead('val', clientName);
     });
 
-    $('#create_next_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
-    $('#create_stop_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+    $('#create_next_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
+    $('#create_stop_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
 
     $('#recurring-invoice-create-confirm').click(function () {
 

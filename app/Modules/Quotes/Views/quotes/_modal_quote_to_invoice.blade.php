@@ -27,7 +27,7 @@
                         <label class="col-sm-3 control-label">@lang('ip.group')</label>
 
                         <div class="col-sm-9">
-                            {!! Form::select('group_id', $groups, config('fi.invoiceGroup'), ['id' => 'to_invoice_group_id', 'class' => 'form-control']) !!}
+                            {!! Form::select('group_id', $groups, config('ip.invoiceGroup'), ['id' => 'to_invoice_group_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 

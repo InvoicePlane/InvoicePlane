@@ -41,7 +41,7 @@ class SettingController extends Controller
     public function index()
     {
         try {
-            Crypt::decrypt(config('fi.mailPassword'));
+            Crypt::decrypt(config('ip.mailPassword'));
             session()->forget('error');
         } catch (\Exception $e) {
             // Do nothing, already done in Config Provider
@@ -70,7 +70,7 @@ class SettingController extends Controller
                 'dashboardWidgets' => DashboardWidgets::listsByOrder(),
                 'colWidthArray' => array_combine(range(1, 12), range(1, 12)),
                 'displayOrderArray' => array_combine(range(1, 24), range(1, 24)),
-                'merchant' => config('fi.merchant'),
+                'merchant' => config('ip.merchant'),
                 'skins' => Skins::lists(),
                 'resultsPerPage' => array_combine(range(15, 100, 5), range(15, 100, 5)),
                 'amountDecimalOptions' => ['0' => '0', '2' => '2', '3' => '3', '4' => '4'],

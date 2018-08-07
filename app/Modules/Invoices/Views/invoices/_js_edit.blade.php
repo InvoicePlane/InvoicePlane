@@ -2,8 +2,8 @@
 
   $(function () {
 
-    $('#invoice_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
-    $('#due_at').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+    $('#invoice_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
+    $('#due_at').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
     autosize($('textarea'));
 
     $('#btn-copy-invoice').click(function () {

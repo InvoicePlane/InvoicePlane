@@ -7,8 +7,8 @@
       $('#client_name').focus();
     });
 
-    $('#copy_next_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
-    $('#copy_stop_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+    $('#copy_next_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
+    $('#copy_stop_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
 
     var clients = new Bloodhound({
       datumTokenizer: function (d) {

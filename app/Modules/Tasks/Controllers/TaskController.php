@@ -48,7 +48,7 @@ class TaskController extends Controller
 
     private function queueOverdueInvoices()
     {
-        $days = config('fi.overdueInvoiceReminderFrequency');
+        $days = config('ip.overdueInvoiceReminderFrequency');
 
         if ($days) {
             $days = explode(',', $days);
@@ -76,11 +76,11 @@ class TaskController extends Controller
 
                         $mail = $this->mailQueue->create($invoice, [
                             'to' => [$invoice->client->email],
-                            'cc' => [config('fi.mailDefaultCc')],
-                            'bcc' => [config('fi.mailDefaultBcc')],
+                            'cc' => [config('ip.mailDefaultCc')],
+                            'bcc' => [config('ip.mailDefaultBcc')],
                             'subject' => $parser->parse('overdueInvoiceEmailSubject'),
                             'body' => $parser->parse('overdueInvoiceEmailBody'),
-                            'attach_pdf' => config('fi.attachPdf'),
+                            'attach_pdf' => config('ip.attachPdf'),
                         ]);
 
                         $this->mailQueue->send($mail->id);
@@ -96,7 +96,7 @@ class TaskController extends Controller
 
     private function queueUpcomingInvoices()
     {
-        $days = config('fi.upcomingPaymentNoticeFrequency');
+        $days = config('ip.upcomingPaymentNoticeFrequency');
 
         if ($days) {
             $days = explode(',', $days);
@@ -124,11 +124,11 @@ class TaskController extends Controller
 
                         $mail = $this->mailQueue->create($invoice, [
                             'to' => [$invoice->client->email],
-                            'cc' => [config('fi.mailDefaultCc')],
-                            'bcc' => [config('fi.mailDefaultBcc')],
+                            'cc' => [config('ip.mailDefaultCc')],
+                            'bcc' => [config('ip.mailDefaultBcc')],
                             'subject' => $parser->parse('upcomingPaymentNoticeEmailSubject'),
                             'body' => $parser->parse('upcomingPaymentNoticeEmailBody'),
-                            'attach_pdf' => config('fi.attachPdf'),
+                            'attach_pdf' => config('ip.attachPdf'),
                         ]);
 
                         $this->mailQueue->send($mail->id);

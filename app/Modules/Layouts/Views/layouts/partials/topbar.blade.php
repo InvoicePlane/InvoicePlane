@@ -65,7 +65,7 @@
                     @lang('ip.system_settings')
                 </a>
 
-                @foreach (config('fi.menus.system') as $menu)
+                @foreach (config('ip.menus.system') as $menu)
                     @if (view()->exists($menu))
                         @include($menu)
                     @endif
@@ -73,7 +73,7 @@
             </div>
         </li>
 
-        @if (config('fi.displayProfileImage'))
+        @if (config('ip.displayProfileImage'))
             <li class="nav-item">
                 <img src="{{ $profileImageUrl }}" alt="{{ $userName }}" class="user-image"/>
                 {{ $userName }}

@@ -108,13 +108,13 @@
     <div class="col-md-3">
         <div class="form-group">
             <label>@lang('ip.default_currency'): </label>
-            {!! Form::select('currency_code', $currencies, ((isset($client)) ? $client->currency_code : config('fi.baseCurrency')), ['id' => 'currency_code', 'class' => 'form-control']) !!}
+            {!! Form::select('currency_code', $currencies, ((isset($client)) ? $client->currency_code : config('ip.baseCurrency')), ['id' => 'currency_code', 'class' => 'form-control']) !!}
         </div>
     </div>
     <div class="col-md-3">
         <div class="form-group">
             <label>@lang('ip.language'): </label>
-            {!! Form::select('language', $languages, ((isset($client)) ? $client->language : config('fi.language')), ['id' => 'language', 'class' => 'form-control']) !!}
+            {!! Form::select('language', $languages, ((isset($client)) ? $client->language : config('ip.language')), ['id' => 'language', 'class' => 'form-control']) !!}
         </div>
     </div>
 </div>

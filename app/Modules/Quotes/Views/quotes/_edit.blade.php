@@ -18,7 +18,7 @@
 
         <a href="{{ route('quotes.pdf', [$quote->id]) }}" target="_blank" id="btn-pdf-quote"
            class="btn btn-default"><i class="fa fa-print"></i> @lang('ip.pdf')</a>
-        @if (config('fi.mailConfigured'))
+        @if (config('ip.mailConfigured'))
             <a href="javascript:void(0)" id="btn-email-quote" class="btn btn-default email-quote"
                data-quote-id="{{ $quote->id }}" data-redirect-to="{{ route('quotes.edit', [$quote->id]) }}"><i
                         class="fa fa-envelope"></i> @lang('ip.email')</a>
@@ -144,8 +144,8 @@
                                     <td>{!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 1]) !!}</td>
                                     <td>{!! Form::text('quantity', null, ['class' => 'form-control']) !!}</td>
                                     <td>{!! Form::text('price', null, ['class' => 'form-control']) !!}</td>
-                                    <td>{!! Form::select('tax_rate_id', $taxRates, config('fi.itemTaxRate'), ['class' => 'form-control']) !!}</td>
-                                    <td>{!! Form::select('tax_rate_2_id', $taxRates, config('fi.itemTax2Rate'), ['class' => 'form-control']) !!}</td>
+                                    <td>{!! Form::select('tax_rate_id', $taxRates, config('ip.itemTaxRate'), ['class' => 'form-control']) !!}</td>
+                                    <td>{!! Form::select('tax_rate_2_id', $taxRates, config('ip.itemTax2Rate'), ['class' => 'form-control']) !!}</td>
                                     <td></td>
                                     <td></td>
                                 </tr>

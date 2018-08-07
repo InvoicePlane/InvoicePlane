@@ -30,7 +30,7 @@ class ApiClientController extends ApiController
     {
         $clients = Client::getSelect()
             ->orderBy('name')
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return response()->json($clients);
     }

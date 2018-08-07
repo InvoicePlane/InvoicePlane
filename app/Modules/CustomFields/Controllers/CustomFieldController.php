@@ -29,7 +29,7 @@ class CustomFieldController extends Controller
     {
         $this->setReturnUrl();
 
-        $customFields = CustomField::sortable(['tbl_name' => 'asc', 'field_label' => 'asc'])->paginate(config('fi.resultsPerPage'));
+        $customFields = CustomField::sortable(['tbl_name' => 'asc', 'field_label' => 'asc'])->paginate(config('ip.resultsPerPage'));
 
         return view('custom_fields.index')
             ->with('customFields', $customFields)

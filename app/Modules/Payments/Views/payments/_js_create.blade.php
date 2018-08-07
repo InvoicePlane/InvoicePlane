@@ -4,7 +4,7 @@
 
     $('#modal-enter-payment').modal();
 
-    $('#payment_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+    $('#payment_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
 
     $('#enter-payment-confirm').click(function () {
 

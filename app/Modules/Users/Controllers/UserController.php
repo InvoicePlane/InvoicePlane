@@ -30,7 +30,7 @@ class UserController extends Controller
     {
         $this->setReturnUrl();
 
-        $users = User::sortable(['name' => 'asc'])->userType(request('userType'))->paginate(config('fi.resultsPerPage'));
+        $users = User::sortable(['name' => 'asc'])->userType(request('userType'))->paginate(config('ip.resultsPerPage'));
 
         return view('users.index')
             ->with('users', $users)

@@ -41,7 +41,7 @@ class Currency extends Model
 
     public function getInUseAttribute()
     {
-        if ($this->code == config('fi.baseCurrency')) {
+        if ($this->code == config('ip.baseCurrency')) {
             return true;
         }
 

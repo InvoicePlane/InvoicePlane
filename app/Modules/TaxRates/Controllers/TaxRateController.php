@@ -27,7 +27,7 @@ class TaxRateController extends Controller
     {
         $this->setReturnUrl();
 
-        $taxRates = TaxRate::sortable(['name' => 'asc'])->paginate(config('fi.resultsPerPage'));
+        $taxRates = TaxRate::sortable(['name' => 'asc'])->paginate(config('ip.resultsPerPage'));
 
         return view('tax_rates.index')
             ->with('taxRates', $taxRates);

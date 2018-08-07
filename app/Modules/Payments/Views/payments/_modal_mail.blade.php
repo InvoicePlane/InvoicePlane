@@ -60,7 +60,7 @@
                         <label class="col-sm-3 control-label">@lang('ip.attach_pdf')</label>
 
                         <div class="col-sm-9">
-                            {!! Form::checkbox('attach_pdf', 1, config('fi.attachPdf'), ['id' => 'attach_pdf']) !!}
+                            {!! Form::checkbox('attach_pdf', 1, config('ip.attachPdf'), ['id' => 'attach_pdf']) !!}
                         </div>
                     </div>
 

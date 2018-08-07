@@ -55,7 +55,7 @@ class Setting extends Model
 
         $setting->save();
 
-        config(['fi.' . $key => $value]);
+        config(['ip.' . $key => $value]);
     }
 
     public static function setAll()
@@ -64,7 +64,7 @@ class Setting extends Model
             $settings = self::all();
 
             foreach ($settings as $setting) {
-                config(['fi.' . $setting->setting_key => $setting->setting_value]);
+                config(['ip.' . $setting->setting_key => $setting->setting_value]);
             }
 
             return true;

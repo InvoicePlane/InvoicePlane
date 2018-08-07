@@ -57,7 +57,7 @@
                         <li><a href="{{ route('clientCenter.public.invoice.show', [$invoice->url_key]) }}"
                                target="_blank" id="btn-public-invoice"><i
                                         class="fa fa-globe"></i> @lang('ip.public')</a></li>
-                        @if ($invoice->isPayable or config('fi.allowPaymentsWithoutBalance'))
+                        @if ($invoice->isPayable or config('ip.allowPaymentsWithoutBalance'))
                             <li><a href="javascript:void(0)" id="btn-enter-payment" class="enter-payment"
                                    data-invoice-id="{{ $invoice->id }}"
                                    data-invoice-balance="{{ $invoice->amount->formatted_numeric_balance }}"

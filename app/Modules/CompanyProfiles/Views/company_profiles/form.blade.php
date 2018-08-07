@@ -129,13 +129,13 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>@lang('ip.default_invoice_template'):</label>
-                                    {!! Form::select('invoice_template', $invoiceTemplates, ((isset($companyProfile)) ? $companyProfile->invoice_template : config('fi.invoiceTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
+                                    {!! Form::select('invoice_template', $invoiceTemplates, ((isset($companyProfile)) ? $companyProfile->invoice_template : config('ip.invoiceTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>@lang('ip.default_quote_template'):</label>
-                                    {!! Form::select('quote_template', $quoteTemplates, ((isset($companyProfile)) ? $companyProfile->quote_template : config('fi.quoteTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
+                                    {!! Form::select('quote_template', $quoteTemplates, ((isset($companyProfile)) ? $companyProfile->quote_template : config('ip.quoteTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                         </div>

@@ -3,12 +3,12 @@
     <div class="sidebar-top nav">
         <div class="nav-item">
             <img src="{{ asset('assets/img/ip_logo_1x1.svg') }}"
-                    alt="{{ config('fi.headerTitleText') }}" class="sidebar-top-logo">
+                    alt="{{ config('ip.headerTitleText') }}" class="sidebar-top-logo">
         </div>
         <div class="nav-item">
             <a href="{{ route('dashboard.index') }}" class="nav-link">
 
-                {{ config('fi.headerTitleText') }}
+                {{ config('ip.headerTitleText') }}
             </a>
         </div>
         <a href="#" class="sidebar-toggle ml-auto nav-link">
@@ -45,12 +45,12 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('quotes.index', ['status' => config('fi.quoteStatusFilter')]) }}">
+            <a href="{{ route('quotes.index', ['status' => config('ip.quoteStatusFilter')]) }}">
                 <i class="fa fa-fw fa-file-text-o"></i> <span>@lang('ip.quotes')</span>
             </a>
         </li>
         <li>
-            <a href="{{ route('invoices.index', ['status' => config('fi.invoiceStatusFilter')]) }}">
+            <a href="{{ route('invoices.index', ['status' => config('ip.invoiceStatusFilter')]) }}">
                 <i class="fa fa-fw fa-file-text"></i> <span>@lang('ip.invoices')</span>
             </a>
         </li>
@@ -112,7 +112,7 @@
                     </a>
                 </li>
 
-                @foreach (config('fi.menus.reports') as $report)
+                @foreach (config('ip.menus.reports') as $report)
                     @if (view()->exists($report))
                         @include($report)
                     @endif
@@ -120,7 +120,7 @@
             </ul>
         </li>
 
-        @foreach (config('fi.menus.navigation') as $menu)
+        @foreach (config('ip.menus.navigation') as $menu)
             @if (view()->exists($menu))
                 @include($menu)
             @endif

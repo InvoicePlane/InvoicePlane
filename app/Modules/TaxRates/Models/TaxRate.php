@@ -79,7 +79,7 @@ class TaxRate extends Model
             return true;
         }
 
-        if (config('fi.itemTaxRate') == $this->id or config('fi.itemTax2Rate') == $this->id) {
+        if (config('ip.itemTaxRate') == $this->id or config('ip.itemTax2Rate') == $this->id) {
             return true;
         }
 

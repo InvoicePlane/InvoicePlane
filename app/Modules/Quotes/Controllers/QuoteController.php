@@ -41,7 +41,7 @@ class QuoteController extends Controller
             ->clientId(request('client'))
             ->companyProfileId(request('company_profile'))
             ->sortable(['quote_date' => 'desc', 'LENGTH(number)' => 'desc', 'number' => 'desc'])
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('quotes.index')
             ->with('quotes', $quotes)

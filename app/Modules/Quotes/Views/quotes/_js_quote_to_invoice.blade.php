@@ -4,7 +4,7 @@
     // Display the create quote modal
     $('#modal-quote-to-invoice').modal('show');
 
-    $('#to_invoice_date').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
+    $('#to_invoice_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
 
     // Creates the invoice
     $('#btn-quote-to-invoice-submit').click(function () {

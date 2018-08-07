@@ -11,7 +11,7 @@
         startDate: startDate,
         endDate: endDate,
         locale: {
-          format: "{{ strtoupper(config('fi.datepickerFormat')) }}",
+          format: "{{ strtoupper(config('ip.datepickerFormat')) }}",
           customRangeLabel: "{!! trans('ip.custom') !!}",
           daysOfWeek: [
             "@lang('ip.day_short_sunday')",

@@ -24,7 +24,7 @@ class ItemLookupController extends Controller
 {
     public function index()
     {
-        $itemLookups = ItemLookup::sortable(['name' => 'asc'])->with(['taxRate', 'taxRate2'])->keywords(request('search'))->paginate(config('fi.resultsPerPage'));
+        $itemLookups = ItemLookup::sortable(['name' => 'asc'])->with(['taxRate', 'taxRate2'])->keywords(request('search'))->paginate(config('ip.resultsPerPage'));
 
         return view('item_lookups.index')
             ->with('itemLookups', $itemLookups)

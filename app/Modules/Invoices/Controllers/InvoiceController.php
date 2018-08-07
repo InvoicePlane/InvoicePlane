@@ -41,7 +41,7 @@ class InvoiceController extends Controller
             ->clientId(request('client'))
             ->companyProfileId(request('company_profile'))
             ->sortable(['invoice_date' => 'desc', 'LENGTH(number)' => 'desc', 'number' => 'desc'])
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('invoices.index')
             ->with('invoices', $invoices)

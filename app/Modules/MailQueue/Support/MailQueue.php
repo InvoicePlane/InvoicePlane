@@ -95,8 +95,8 @@ class MailQueue
                     }
                 }
 
-                if (config('fi.mailReplyToAddress')) {
-                    $message->replyTo(config('fi.mailReplyToAddress'));
+                if (config('ip.mailReplyToAddress')) {
+                    $message->replyTo(config('ip.mailReplyToAddress'));
                 }
 
                 if ($attachmentPath) {

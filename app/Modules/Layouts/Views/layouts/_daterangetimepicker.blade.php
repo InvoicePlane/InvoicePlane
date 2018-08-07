@@ -12,14 +12,14 @@
         autoApply: true,
         startDate: startDate,
         endDate: endDate,
-                @if (config('fi.use24HourTimeFormat'))
+                @if (config('ip.use24HourTimeFormat'))
                 timePicker24Hour: true,
                 @endif
                 locale: {
-                    @if (config('fi.use24HourTimeFormat'))
-                    format: "{{ strtoupper(config('fi.datepickerFormat')) }} H:mm",
+                    @if (config('ip.use24HourTimeFormat'))
+                    format: "{{ strtoupper(config('ip.datepickerFormat')) }} H:mm",
                     @else
-                    format: "{{ strtoupper(config('fi.datepickerFormat')) }} h:mm A",
+                    format: "{{ strtoupper(config('ip.datepickerFormat')) }} h:mm A",
                     @endif
                     customRangeLabel: "@lang('ip.custom')",
                   daysOfWeek: [

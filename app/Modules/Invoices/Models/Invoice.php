@@ -241,7 +241,7 @@ class Invoice extends Model
 
     public function getIsForeignCurrencyAttribute()
     {
-        if ($this->attributes['currency_code'] == config('fi.baseCurrency')) {
+        if ($this->attributes['currency_code'] == config('ip.baseCurrency')) {
             return false;
         }
 

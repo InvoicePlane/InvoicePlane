@@ -24,7 +24,7 @@ class SessionController extends Controller
         deleteTempFiles();
         deleteViewCache();
 
-        return view('sessions.login')->with('skin', config('fi.skin'));
+        return view('sessions.login')->with('skin', config('ip.skin'));
     }
 
     public function attempt(SessionRequest $request)

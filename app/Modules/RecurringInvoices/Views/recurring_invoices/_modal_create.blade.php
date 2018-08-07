@@ -30,7 +30,7 @@
                         <label class="col-sm-3 control-label">@lang('ip.company_profile')</label>
 
                         <div class="col-sm-9">
-                            {!! Form::select('company_profile_id', $companyProfiles, config('fi.defaultCompanyProfile'),
+                            {!! Form::select('company_profile_id', $companyProfiles, config('ip.defaultCompanyProfile'),
                             ['id' => 'company_profile_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>
@@ -39,14 +39,14 @@
                         <label class="col-sm-3 control-label">@lang('ip.group')</label>
 
                         <div class="col-sm-9">
-                            {!! Form::select('group_id', $groups, config('fi.invoiceGroup'), ['id' => 'create_group_id', 'class' => 'form-control']) !!}
+                            {!! Form::select('group_id', $groups, config('ip.invoiceGroup'), ['id' => 'create_group_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label">@lang('ip.start_date')</label>
                         <div class="col-sm-9">
-                            {!! Form::text('next_date', date(config('fi.dateFormat')), ['id' => 'create_next_date', 'class' => 'form-control']) !!}
+                            {!! Form::text('next_date', date(config('ip.dateFormat')), ['id' => 'create_next_date', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 

@@ -34,7 +34,7 @@ class QuoteToInvoice
             'number' => Group::generateNumber($groupId),
             'user_id' => $quote->user_id,
             'invoice_status_id' => InvoiceStatuses::getStatusId('draft'),
-            'terms' => ((config('fi.convertQuoteTerms') == 'quote') ? $quote->terms : config('fi.invoiceTerms')),
+            'terms' => ((config('ip.convertQuoteTerms') == 'quote') ? $quote->terms : config('ip.invoiceTerms')),
             'footer' => $quote->footer,
             'currency_code' => $quote->currency_code,
             'exchange_rate' => $quote->exchange_rate,
