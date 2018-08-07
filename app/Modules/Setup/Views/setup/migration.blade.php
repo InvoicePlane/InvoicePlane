@@ -36,11 +36,11 @@
 
     <p>@lang('ip.step_database_setup')</p>
 
-    <a class="btn btn-primary" id="btn-run-migration">@lang('ip.continue')</a>
+    <button type="button" class="btn btn-primary" id="btn-run-migration">@lang('ip.continue')</button>
 
-    <a class="btn btn-primary" id="btn-running-migration" style="display: none;" disabled="disabled">
+    <button type="button" class="btn btn-primary" id="btn-running-migration" style="display: none;" disabled="disabled">
         @lang('ip.installing_please_wait')
-    </a>
+    </button>
 
     <a href="{{ route('setup.account') }}" class="btn btn-success" id="btn-migration-complete" style="display: none;">
         @lang('ip.continue')
