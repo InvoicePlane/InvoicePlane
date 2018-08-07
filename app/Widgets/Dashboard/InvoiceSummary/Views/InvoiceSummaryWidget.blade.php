@@ -35,7 +35,7 @@
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-calendar"></i> {{ $invoiceDashboardTotalOptions[config('fi.widgetInvoiceSummaryDashboardTotals')] }}
+                            <i class="fa fa-calendar"></i> {{ $invoiceDashboardTotalOptions[config('ip.widgetInvoiceSummaryDashboardTotals')] }}
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             @foreach ($invoiceDashboardTotalOptions as $key => $option)
@@ -132,12 +132,12 @@
 
                     <div class="form-group">
                         <label>@lang('ip.from_date') (yyyy-mm-dd):</label>
-                        {!! Form::text('setting_widgetInvoiceSummaryDashboardTotalsFromDate', config('fi.widgetInvoiceSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'invoice-dashboard-total-setting-from-date']) !!}
+                        {!! Form::text('setting_widgetInvoiceSummaryDashboardTotalsFromDate', config('ip.widgetInvoiceSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'invoice-dashboard-total-setting-from-date']) !!}
                     </div>
 
                     <div class="form-group">
                         <label>@lang('ip.to_date') (yyyy-mm-dd):</label>
-                        {!! Form::text('setting_widgetInvoiceSummaryDashboardTotalsToDate', config('fi.widgetInvoiceSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'invoice-dashboard-total-setting-to-date']) !!}
+                        {!! Form::text('setting_widgetInvoiceSummaryDashboardTotalsToDate', config('ip.widgetInvoiceSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'invoice-dashboard-total-setting-to-date']) !!}
                     </div>
 
                 </div>

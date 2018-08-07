@@ -35,7 +35,7 @@
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-calendar"></i> {{ $quoteDashboardTotalOptions[config('fi.widgetQuoteSummaryDashboardTotals')] }}
+                            <i class="fa fa-calendar"></i> {{ $quoteDashboardTotalOptions[config('ip.widgetQuoteSummaryDashboardTotals')] }}
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             @foreach ($quoteDashboardTotalOptions as $key => $option)
@@ -129,12 +129,12 @@
 
                     <div class="form-group">
                         <label>@lang('ip.from_date') (yyyy-mm-dd):</label>
-                        {!! Form::text('setting_widgetQuoteSummaryDashboardTotalsFromDate', config('fi.widgetQuoteSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-from-date']) !!}
+                        {!! Form::text('setting_widgetQuoteSummaryDashboardTotalsFromDate', config('ip.widgetQuoteSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-from-date']) !!}
                     </div>
 
                     <div class="form-group">
                         <label>@lang('ip.to_date') (yyyy-mm-dd):</label>
-                        {!! Form::text('setting_widgetQuoteSummaryDashboardTotalsToDate', config('fi.widgetQuoteSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-to-date']) !!}
+                        {!! Form::text('setting_widgetQuoteSummaryDashboardTotalsToDate', config('ip.widgetQuoteSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-to-date']) !!}
                     </div>
 
                 </div>
