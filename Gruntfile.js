@@ -1,114 +1,93 @@
-'use strict';
-module.exports = function (grunt) {
+module.exports = grunt => {
 
-  // Load grunt tasks automatically
+  // load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
-  // MODULES
+  // track the time each task takes
+  require('time-grunt')(grunt);
 
-  grunt.config('clean', {
-    styles: [
-      'assets/dist/*.css', 'assets/dist/*.css.map' // CSS
-    ],
-    js: [
-      'assets/dist/*.js', 'assets/dist/*.js.map' // Javascript
-    ],
-    fonts: [
-      'assets/dist/fonts/**/*.*', '!assets/dist/fonts/.gitignore' // Font Awesome
-    ],
-    third_party: [
-      'assets/dist/bs-datepicker/**/*.*', '!assets/dist/bs-datepicker/.gitignore', // Bootstrap Datepicker
-      'assets/dist/chosen-js/**/*.*', '!assets/dist/chosen-js/.gitignore', // Chosen JS
-      'assets/dist/daterangepicker/**/*.*', '!assets/dist/daterangepicker/.gitignore', // Chosen JS
-      'assets/dist/typeahead/**/*.*', '!assets/dist/typeahead/.gitignore', // Typeahead JS
-    ]
+  // default config
+  grunt.initConfig({
+    paths: {
+      assets: './resources/assets',
+      dist: './assets/dist'
+    }
   });
 
-  grunt.config('sass', {
-    dev: {
+  // Scripts
+  grunt.config('browserify', {
+    prod: {
       options: {
-        outputStyle: 'extended',
-        sourceMap: true
+        transform: ['babelify', ['uglifyify', {global: true}]],
+        browserifyOptions: {
+          debug: true
+        }
       },
-      files: {
-        'assets/dist/app.css': 'resources/assets/sass/app.scss',
-        'assets/dist/adminlte/css/skins/skin-invoiceplane.min.css': 'resources/assets/sass/skin-invoiceplane.scss'
+      files: [
+        {
+          src: '<%= paths.assets %>/js/app.js',
+          dest: '<%= paths.dist %>/app.js'
+        }
+      ]
+    }
+  });
+
+  // Browsersync
+  grunt.config('browserSync', {
+    prod: {
+      bsFiles: {
+        src: [
+          '<%= paths.dist %>/*.js',
+          '<%= paths.dist %>/*.css'
+        ]
+      },
+      options: {
+        port: 3010,
+        watchTask: true,
+        notify: false,
+        open: false,
+        ghostMode: false
       }
+    }
+  });
+
+  // Post CSS
+  const autoprefixer = require('autoprefixer');
+
+  grunt.config('postcss', {
+    prod: {
+      options: {
+        map: true,
+        processors: [
+          autoprefixer({
+            browsers: 'last 3 version'
+          })
+        ]
+      },
+      src: '<%= paths.dist %>/app.css'
+    }
+  });
+
+  // CSS
+  const sass = require('node-sass');
+
+  grunt.config('sass', {
+    options: {
+      implementation: sass
     },
     build: {
       options: {
         outputStyle: 'compressed',
-        sourceMap: false
+        sourceMap: true
       },
       files: {
-        'assets/dist/app.css': 'resources/assets/sass/app.scss',
-        'assets/dist/adminlte/css/skins/skin-invoiceplane.min.css': 'resources/assets/sass/skin-invoiceplane.scss'
+        '<%= paths.dist %>/app.css': '<%= paths.assets %>/sass/app.scss'
       }
     }
   });
 
-  grunt.config('postcss', {
-    dev: {
-      options: {
-        map: true,
-        processors: [
-          require('autoprefixer')({
-            browsers: 'last 3 version'
-          })
-        ]
-      },
-      src: [
-        'assets/dist/*.css'
-      ]
-    },
-    build: {
-      options: {
-        map: false,
-        processors: [
-          require('autoprefixer')({
-            browsers: 'last 3 version'
-          })
-        ]
-      },
-      src: [
-        'assets/dist/*.css'
-      ]
-    }
-  });
-
-  grunt.config('concat', {
-    js_dependencies: {
-      src: [
-        'node_modules/jquery/dist/jquery.js',
-        'node_modules/jquery-ui-dist/jquery-ui.js',
-        'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
-        'node_modules/autosize/dist/autosize.js',
-        'node_modules/moment/moment.js',
-        'node_modules/bootstrap-notify/bootstrap-notify.js',
-        'node_modules/jquery-slimscroll/jquery.slimscroll.js'
-      ],
-      dest: 'assets/dist/dependencies.js'
-    }
-  });
-
-  grunt.config('uglify', {
-    js_app: {
-      files: {
-        'assets/dist/app.js': ['resources/assets/js/app.js']
-      }
-    },
-    js_dependencies: {
-      files: {
-        'assets/dist/dependencies.js': ['assets/dist/dependencies.js']
-      }
-    }
-  });
-
+  // Copy tasks
   grunt.config('copy', {
-    app_js: {
-      src: ['resources/assets/js/app.js'],
-      dest: 'assets/dist/app.js'
-    },
     fontawesome: {
       expand: true,
       flatten: true,
@@ -141,52 +120,32 @@ module.exports = function (grunt) {
     }
   });
 
+  // File watcher
   grunt.config('watch', {
     sass: {
       files: 'resources/assets/sass/**/*.scss',
-      tasks: ['sass:dev', 'postcss:dev']
+      tasks: ['sass', 'postcss']
+    },
+    js: {
+      files: 'resources/assets/js/**/*.js',
+      tasks: ['browserify']
     }
   });
 
-  // TASKS
-
-  grunt.registerTask('default', 'build');
-
-  grunt.registerTask('dev-build', [
-    'clean:styles',
-    'clean:js',
-    'clean:fonts',
-    'clean:third_party',
-    'sass:dev',
-    'postcss:dev',
-    'concat:js_dependencies',
-    'copy:app_js',
-    'copy:fontawesome',
-    'copy:chosen_js',
-    'copy:bs_datepicker',
-    'copy:daterangepicker',
-    'copy:typeahead'
+  // Tasks
+  grunt.registerTask('build', [
+    'browserify',
+    'sass',
+    'postcss',
+    'copy'
   ]);
 
   grunt.registerTask('dev', [
-    'dev-build',
-    'watch'
+    'build',
+    'watch',
+    'browserSync'
   ]);
 
-  grunt.registerTask('build', [
-    'clean:styles',
-    'clean:js',
-    'clean:fonts',
-    'clean:third_party',
-    'sass:build',
-    'postcss:build',
-    'concat:js_dependencies',
-    'uglify:js_dependencies',
-    'uglify:js_app',
-    'copy:fontawesome',
-    'copy:chosen_js',
-    'copy:bs_datepicker',
-    'copy:daterangepicker',
-    'copy:typeahead'
-  ]);
+  grunt.registerTask('default', ['build']);
+
 };
