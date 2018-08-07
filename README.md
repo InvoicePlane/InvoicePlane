@@ -26,6 +26,21 @@ More information can be found in [this announcement](https://community.invoicepl
 4. Make sure that the storage folder and all containing folders are writable.
 5. Open http://your-invoiceplane-domain.com/index.php/setup and follow the instructions.
 
+### Setup for Developers
+
+If you would like to use Docker for development follow these steps:
+
+1. Create a new .env file: `cp .env.docker .env`
+2. Open the .env file and adjust the settings to match your configuration. Normally you should just need to change
+    the URL.
+3. Make sure that Docker with Docker Compose is installed and run `docker-compose up -d`
+4. Install all PHP dependencies: `docker exec -i invoiceplane-php bash -c "composer install -n"`
+5. Install all NPM dependencies (which requires Node version > 8 installed): `npm install`
+6. Compile all assets: `./node_modules/.bin/grunt build`
+6. Open `http://your-invoiceplane-domain.com/setup` and follow the setup to properly install the app.
+
+Further information about development can be found in the [Dev Wiki](https://devwiki.invoiceplane.com/).
+
 ---
 
 ### Support / Development / Chat

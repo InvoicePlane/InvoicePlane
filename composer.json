@@ -1,12 +1,12 @@
 {
-    "name": "invoiceplane",
-    "version": "2.0.0",
+    "name": "invoiceplane/invoiceplane",
+    "version": "2.0.0-alpha.1",
     "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
     "homepage": "https://invoiceplane.com",
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.0",
         "doctrine/dbal": "^2.6",
         "dompdf/dompdf": "^0.8.2",
         "fideloper/proxy": "~3.3",
@@ -16,6 +16,7 @@
         "laravelcollective/html": "^5.5",
         "mollie/mollie-api-php": "^1.9",
         "paypal/rest-api-sdk-php": "^1.13",
+        "predis/predis": "^1.1",
         "sonata-project/exporter": "^1.8",
         "stripe/stripe-php": "^5.8"
     },
