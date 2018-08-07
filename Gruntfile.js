@@ -51,6 +51,22 @@ module.exports = grunt => {
     }
   });
 
+  // Concat
+  grunt.config('concat', {
+    js_dependencies: {
+      src: [
+        'node_modules/jquery/dist/jquery.min.js',
+        'node_modules/jquery-ui-dist/jquery-ui.min.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+        'node_modules/autosize/dist/autosize.min.js',
+        'node_modules/moment/min/moment.min.js',
+        'node_modules/bootstrap-notify/bootstrap-notify.min.js',
+        'node_modules/jquery-slimscroll/jquery.slimscroll.min.js'
+      ],
+      dest: '<%= paths.dist %>/dependencies.js'
+    }
+  });
+
   // Post CSS
   const autoprefixer = require('autoprefixer');
 
@@ -135,6 +151,7 @@ module.exports = grunt => {
   // Tasks
   grunt.registerTask('build', [
     'browserify',
+    'concat',
     'sass',
     'postcss',
     'copy'
