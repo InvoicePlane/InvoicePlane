@@ -46,10 +46,8 @@ class Ajax extends Admin_Controller
 
         $invoice_status = $this->input->post('invoice_status_id');
 
-
-
-        $invoice_discount_amount  = ( is_numeric($this->input->post('invoice_discount_amount'))  ? $this->input->post('invoice_discount_amount')  : 0 );
-        $invoice_discount_percent = ( is_numeric($this->input->post('invoice_discount_percent')) ? $this->input->post('invoice_discount_percent') : 0 );
+        $invoice_discount_amount = (is_numeric($this->input->post('invoice_discount_amount')) ? $this->input->post('invoice_discount_amount') : 0);
+        $invoice_discount_percent = (is_numeric($this->input->post('invoice_discount_percent')) ? $this->input->post('invoice_discount_percent') : 0);
 
         // Generate new invoice number if needed
         $invoice_number = $this->input->post('invoice_number');
@@ -60,19 +58,18 @@ class Ajax extends Admin_Controller
         }
 
         $db_array = [
-            'invoice_number'           => $invoice_number,
-            'invoice_terms'            => $this->input->post('invoice_terms'),
-            'invoice_date_created'     => date_to_mysql($this->input->post('invoice_date_created')),
-            'invoice_date_due'         => date_to_mysql($this->input->post('invoice_date_due')),
-            'invoice_password'         => $this->input->post('invoice_password'),
-            'invoice_status_id'        => $invoice_status,
-            'payment_method'           => $this->input->post('payment_method'),
-            'invoice_discount_amount'  => standardize_amount($invoice_discount_amount),
+            'invoice_number' => $invoice_number,
+            'invoice_terms' => $this->input->post('invoice_terms'),
+            'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
+            'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
+            'invoice_password' => $this->input->post('invoice_password'),
+            'invoice_status_id' => $invoice_status,
+            'payment_method' => $this->input->post('payment_method'),
+            'invoice_discount_amount' => standardize_amount($invoice_discount_amount),
             'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
         ];
 
         $db_array['is_read_only'] = $this->get_read_only_status($invoice_status);
-
 
         $this->mdl_invoices->save($invoice_id, $db_array);
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
@@ -80,6 +77,7 @@ class Ajax extends Admin_Controller
         $this->save_sumex($invoice_id);
         $matches = [];
         $response = $this->save_all_items($invoice, $invoice_id, $matches);
+
         $this->respond($response);
     }
 
@@ -353,30 +351,31 @@ class Ajax extends Admin_Controller
      */
     public function delete_item($invoice_id)
     {
-        
-
-        //Default to failure.
+        // Default to failure.
         $response['success'] = 0;
         $item_id = $this->input->post('item_id');
         $this->load->model('mdl_invoices');
 
         // Only continue if no item id was provided
-        if(empty($item_id) === true) $this->respond($response);
+        if (empty($item_id) === true) {
+            $this->respond($response);
+        }
 
         $object = $this->mdl_invoices->get_by_id($invoice_id);
 
         // Only continue if the invoice exists
-        if(is_object($object) === false) $this->respond($response);
+        if (is_object($object) === false) {
+            $this->respond($response);
+        }
 
         // Delete invoice item
         $this->load->model('mdl_items');
         $item = $this->mdl_items->delete($item_id);
-        
+
         // Check if deletion was successful
         $response['success'] = ($item ? 1 : 0);
 
         // Mark task as complete from invoiced
-        // SEEMS THIS NEVER WORKED? $item was set to a boolean from the mdl_items::delete() method.
         if (isset($item->item_task_id) && $item->item_task_id) {
             $this->load->model('tasks/mdl_tasks');
             $this->mdl_tasks->update_status(3, $item->item_task_id);
@@ -388,27 +387,30 @@ class Ajax extends Admin_Controller
 
     /**
      * @param $invoice_status
-     * @param $db_array
      * @return mixed
      */
-
     public function get_read_only_status($invoice_status)
     {
         // check if status changed to sent, the feature is enabled and settings is set to sent
-        if ($this->config->item('disable_read_only') !== false)  return 0;
+        if ($this->config->item('disable_read_only') !== false) {
+            return 0;
+        }
 
         return ($invoice_status == get_setting('read_only_toggle') ? 1 : 0);
     }
 
     /**
      * @param $invoice_id
+     * @return bool
      */
     public function save_sumex($invoice_id)
     {
         // Sumex saving
         $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
 
-        if($sumexInvoice === 0) return false;
+        if ($sumexInvoice === 0) {
+            return false;
+        }
 
         $sumex_array = [
             'sumex_invoice' => $invoice_id,
@@ -434,7 +436,7 @@ class Ajax extends Admin_Controller
         $items = json_decode($this->input->post('items'));
 
         //check for JSON error, and respond accordingly.
-        if(json_last_error() !== JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             $this->load->helper('json_error');
             $response = [
                 'success' => 0,
@@ -486,15 +488,15 @@ class Ajax extends Admin_Controller
      */
     public function process_item($invoice, $item)
     {
-        $item->item_quantity        = ($item->item_quantity         ? standardize_amount($item->item_quantity)        : (int) 0 );
-        $item->item_price           = ($item->item_quantity         ? standardize_amount($item->item_price)           : (int) 0 );
-        $item->item_discount_amount = ($item->item_discount_amount  ? standardize_amount($item->item_discount_amount) : null    );
-        $item->item_product_id      = ($item->item_product_id       ? $item->item_product_id                          : null    );
-        $item->item_product_unit_id = ($item->item_product_unit_id  ? $item->item_product_unit_id                     : null    );
+        $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : (int)0);
+        $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : (int)0);
+        $item->item_discount_amount = ($item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null);
+        $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
+        $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
 
-        $item->item_product_unit    = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
+        $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
 
-        $item->item_discount_calc   = $invoice->invoice_item_discount_calc;
+        $item->item_discount_calc = $invoice->invoice_item_discount_calc;
 
         if (property_exists($item, 'item_date')) {
             $item->item_date = ($item->item_date ? date_to_mysql($item->item_date) : null);
@@ -511,11 +513,10 @@ class Ajax extends Admin_Controller
     /**
      * @param $item
      */
-
     public function save_item_tasks($item)
     {
         if (!$item->item_task_id) {
-            //Not sure what conditions exist that we have to unset a blank or falsey id, but OK. ??
+            // Not sure what conditions exist that we have to unset a blank or falsey id, but OK. ??
             unset($item->item_task_id);
             return;
         }
@@ -527,17 +528,19 @@ class Ajax extends Admin_Controller
     /**
      * @param $invoice_id
      * @param $matches
+     * @return bool
      */
     public function save_custom_fields($invoice_id, $matches)
     {
-        if (!$this->input->post('custom'))  return false;
+        if (!$this->input->post('custom')) {
+            return false;
+        }
 
         $db_array = [];
-        $values   = [];
+        $values = [];
 
         // Should be refactored to remove else statements, but not going to mess with regex without unit tests.
         // See: https://phpmd.org/rules/cleancode.html
-
         foreach ($this->input->post('custom') as $custom) {
             if (preg_match("/^(.*)\[\]$/i", $custom['name'], $matches)) {
                 $values[$matches[1]][] = $custom['value'];
@@ -565,6 +568,8 @@ class Ajax extends Admin_Controller
 
             $this->respond($response);
         }
+
+        return true;
     }
 
 }
