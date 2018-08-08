@@ -20,7 +20,6 @@ class Kernel extends HttpKernel
         // \Illuminate\Foundation\Http\Middleware\ConvertEmptySringsToNull::class,
         \IP\Http\Middleware\TrustProxies::class,
         \IP\Http\Middleware\BeforeMiddleware::class,
-        \IP\Http\Middleware\AfterMiddleware::class,
     ];
 
     /**
