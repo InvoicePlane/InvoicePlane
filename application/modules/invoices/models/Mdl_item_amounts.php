@@ -1,5 +1,7 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,43 +12,33 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
+include(__DIR__ . '/ItemInterface.php');
+include(__DIR__ . '/ItemFactory.php');
+include(__DIR__ . '/ItemBase.php');
+include(__DIR__ . '/ItemLegacy.php');
+include(__DIR__ . '/Item.php');
+
 /**
  * Class Mdl_Item_Amounts
  */
 class Mdl_Item_Amounts extends CI_Model
 {
+
     /**
      * @param $item_id
      */
     public function calculate($item_id)
     {
+
         $this->load->model('invoices/mdl_items');
         $item = $this->mdl_items->get_by_id($item_id);
 
-        if ($item->item_discount_calc) {
-            // Use the correct discount calculation method
-            $item_subtotal = $item->item_quantity * $item->item_price;
-            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-            $item_taxable_amount = $item_subtotal - $item_discount_total;
-            $item_tax_total = $item_taxable_amount * ($item->item_tax_rate_percent / 100);
-            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
-        } else {
-            // Use the legacy discount calculation method
-            $item_subtotal = $item->item_quantity * $item->item_price;
-            $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
-            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
-        }
-
-        $db_array = [
-            'item_id' => $item_id,
-            'item_subtotal' => $item_subtotal,
-            'item_tax_total' => $item_tax_total,
-            'item_discount' => $item_discount_total,
-            'item_total' => $item_total,
-        ];
+        $ItemFactory = new ItemFactory();
+        $Item = $ItemFactory->get_item($item);
+        $db_array = $Item->get_values();
 
         $this->db->where('item_id', $item_id);
+
         if ($this->db->get('ip_invoice_item_amounts')->num_rows()) {
             $this->db->where('item_id', $item_id);
             $this->db->update('ip_invoice_item_amounts', $db_array);

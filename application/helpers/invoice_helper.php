@@ -51,13 +51,19 @@ function invoice_logo_pdf()
  */
 function invoice_discountcalc($invoice_creation_date)
 {
-    $invoice_creation_date = strtotime($invoice_creation_date);
-
     $CI = &get_instance();
     $CI->load->model('mdl_versions');
     $version = $CI->mdl_versions->where('version_file', '033_1.5.10.sql')->row();
 
-    return isset($version->version_date_applied) && $invoice_creation_date > $version->version_date_applied;
+    // Return false if version applied is not set because we cannot determine version status.
+    // No point in continuing here or doing additional conditionals if this fails!
+    if (!isset($version->version_date_applied)) {
+        return 0;
+    }
+
+    $patch_applied = strtotime($version->version_date_applied);
+
+    return ($invoice_creation_date >= $patch_applied ? 1 : 0);
 }
 
 /**
@@ -71,6 +77,7 @@ function invoice_discountcalc($invoice_creation_date)
  * @return string
  * @throws Error
  */
+
 function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
 {
     $isEur = false;
