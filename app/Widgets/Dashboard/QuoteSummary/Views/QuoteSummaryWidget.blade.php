@@ -1,7 +1,7 @@
 @include('layouts._datepicker')
 
 <div id="quote-dashboard-totals-widget">
-    <script type="text/javascript">
+    <script>
       $(function () {
         $('.quote-dashboard-total-change-option').click(function () {
           var option = $(this).data('id');
@@ -27,103 +27,103 @@
       });
     </script>
 
-    <section class="content">
+    <section class="widget-content">
 
-        <div class="box box-solid">
-            <div class="box-header">
-                <h3 class="box-title">@lang('ip.quote_summary')</h3>
-                <div class="box-tools pull-right">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5>@lang('ip.quote_summary')</h5>
+                <div class="widget-actions">
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-calendar"></i> {{ $quoteDashboardTotalOptions[config('ip.widgetQuoteSummaryDashboardTotals')] }}
                         </button>
-                        <ul class="dropdown-menu" role="menu">
+                        <div class="dropdown-menu ">
                             @foreach ($quoteDashboardTotalOptions as $key => $option)
-                                <li>
-                                    @if ($key != 'custom_date_range')
-                                        <a href="#" onclick="return false;" class="quote-dashboard-total-change-option"
-                                           data-id="{{ $key }}">{{ $option }}</a>
-                                    @else
-                                        <a href="#" onclick="return false;" data-toggle="modal"
-                                           data-target="#quote-summary-widget-modal">{{ $option }}</a>
-                                    @endif
-                                </li>
+                                @if ($key !== 'custom_date_range')
+                                    <a href="#" class="dropdown-item small quote-dashboard-total-change-option"
+                                            onclick="return false;" data-id="{{ $key }}">
+                                        {{ $option }}
+                                    </a>
+                                @else
+                                    <a href="#" onclick="return false;" class="dropdown-item small"
+                                            data-toggle="modal" data-target="#quote-summary-widget-modal">
+                                        {{ $option }}
+                                    </a>
+                                @endif
                             @endforeach
-                        </ul>
+                        </div>
                     </div>
-                    <button class="btn btn-box-tool create-quote"><i
-                                class="fa fa-plus"></i> @lang('ip.create_quote')</button>
+                    <button class="btn btn-sm create-quote" data-toggle="tooltip" title="@lang('ip.create_quote')">
+                        <i class="fa fa-plus"></i>
+                    </button>
                 </div>
             </div>
-            <div class="box-body">
+            <div class="card-body">
 
                 <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                        <div class="small-box bg-purple">
-                            <div class="inner">
-                                <h3>{{ $quotesTotalDraft }}</h3>
-
-                                <p>@lang('ip.draft_quotes')</p>
+                    <div class="col-12 col-lg-6">
+                        <div class="card card-body bg-status-draft-light">
+                            <div class="mb-1">
+                                <h3 class="mb-3">{{ $quotesTotalDraft }}</h3>
+                                <span>@lang('ip.draft_quotes')</span>
                             </div>
-                            <div class="icon"><i class="ion ion-edit"></i></div>
-                            <a class="small-box-footer" href="{{ route('quotes.index') }}?status=draft">
+                            <a class="text-light small" href="{{ route('quotes.index') }}?status=draft">
                                 @lang('ip.view_draft_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="small-box bg-olive">
-                            <div class="inner">
-                                <h3>{{ $quotesTotalSent }}</h3>
 
-                                <p>@lang('ip.sent_quotes')</p>
+                    <div class="col-12 col-lg-6 mt-3 mt-lg-0">
+                        <div class="card card-body bg-status-sent">
+                            <div class="mb-1">
+                                <h3 class="mb-3">{{ $quotesTotalSent }}</h3>
+                                <span>@lang('ip.sent_quotes')</span>
                             </div>
-                            <div class="icon"><i class="ion ion-share"></i></div>
-                            <a class="small-box-footer" href="{{ route('quotes.index') }}?status=sent">
+                            <a class="text-light small" href="{{ route('quotes.index') }}?status=sent">
                                 @lang('ip.view_sent_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-lg-6 col-md-12">
-                        <div class="small-box bg-orange">
-                            <div class="inner">
-                                <h3>{{ $quotesTotalRejected }}</h3>
-
-                                <p>@lang('ip.rejected_quotes')</p>
+                <div class="row mt-lg-3">
+                    <div class="col-12 col-lg-6 mt-3 mt-lg-0">
+                        <div class="card card-body bg-status-rejected">
+                            <div class="mb-1">
+                                <h3 class="mb-3">{{ $quotesTotalRejected }}</h3>
+                                <span>@lang('ip.rejected_quotes')</span>
                             </div>
-                            <div class="icon"><i class="ion ion-thumbsdown"></i></div>
-                            <a class="small-box-footer" href="{{ route('quotes.index') }}?status=rejected">
+                            <a class="text-light small" href="{{ route('quotes.index') }}?status=rejected">
                                 @lang('ip.view_rejected_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="small-box bg-blue">
-                            <div class="inner">
-                                <h3>{{ $quotesTotalApproved }}</h3>
-
-                                <p>@lang('ip.approved_quotes')</p>
+                    <div class="col-12 col-lg-6 mt-3 mt-lg-0">
+                        <div class="card card-body bg-status-approved">
+                            <div class="mb-1">
+                                <h3 class="mb-3">{{ $quotesTotalApproved }}</h3>
+                                <span>@lang('ip.approved_quotes')</span>
                             </div>
-                            <div class="icon"><i class="ion ion-thumbsup"></i></div>
-                            <a class="small-box-footer" href="{{ route('quotes.index') }}?status=approved">
+                            <a class="text-light small" href="{{ route('quotes.index') }}?status=approved">
                                 @lang('ip.view_approved_quotes') <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
     </section>
 
-    <div class="modal fade" id="quote-summary-widget-modal" tabindex="-1" role="dialog">
+    <div id="quote-summary-widget-modal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title">@lang('ip.custom_date_range')</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fa fa-times"></i></span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">@lang('ip.custom_date_range')</h4>
                 </div>
                 <div class="modal-body">
 
@@ -139,11 +139,16 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                        @lang('ip.cancel')
+                    </button>
                     <button type="button" class="btn btn-primary quote-dashboard-total-change-option"
-                            data-id="custom_date_range" data-dismiss="modal">@lang('ip.save')</button>
+                            data-id="custom_date_range" data-dismiss="modal">
+                        @lang('ip.save')
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
 </div>

@@ -10,7 +10,7 @@
 
     @foreach ($widgets as $widget)
         @if (config('ip.widgetEnabled' . $widget))
-            <div class="col-md-{{ config('ip.widgetColumnWidth' . $widget) }} col-sm-12">
+            <div class="col-sm-12 col-md-{{ config('ip.widgetColumnWidth' . $widget, 6) }}">
                 @include($widget . 'Widget')
             </div>
         @endif
