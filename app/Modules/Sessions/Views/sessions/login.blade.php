@@ -20,7 +20,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h5 class="mb-0">@lang('ip.sign_in')</h5>
+                    <span class="card-title">@lang('ip.sign_in')</span>
                 </div>
 
                 <div class="card-body">
@@ -36,7 +36,7 @@
                                     <i class="fa fa-fw fa-envelope"></i>
                                 </div>
                             </div>
-                            <input type="email" name="email" id="email" class="form-control"
+                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}"
                                     placeholder="@lang('ip.email')" aria-label="@lang('ip.email')">
                         </div>
                     </div>
@@ -58,7 +58,8 @@
 
                             <div class="custom-control custom-checkbox pt-1">
                                 <input type="hidden" name="remember_me" value="0">
-                                <input type="checkbox" class="custom-control-input" id="remember_me">
+                                <input type="checkbox" class="custom-control-input" id="remember_me"
+                                        @if(old('remember_me')) checked @endif>
 
                                 <label class="custom-control-label" for="remember_me">
                                     @lang('ip.remember_me')
