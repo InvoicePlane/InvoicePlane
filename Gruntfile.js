@@ -32,25 +32,6 @@ module.exports = grunt => {
     }
   });
 
-  // Browsersync
-  grunt.config('browserSync', {
-    prod: {
-      bsFiles: {
-        src: [
-          '<%= paths.dist %>/*.js',
-          '<%= paths.dist %>/*.css'
-        ]
-      },
-      options: {
-        port: 3010,
-        watchTask: true,
-        notify: false,
-        open: false,
-        ghostMode: false
-      }
-    }
-  });
-
   // Concat
   grunt.config('concat', {
     js_dependencies: {
@@ -159,8 +140,7 @@ module.exports = grunt => {
 
   grunt.registerTask('dev', [
     'build',
-    'watch',
-    'browserSync'
+    'watch'
   ]);
 
   grunt.registerTask('default', ['build']);
