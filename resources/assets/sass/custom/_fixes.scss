@@ -14,3 +14,11 @@
   // Fix for inline select fields
   width: auto;
 }
+
+// Add spacing to upfollowing dashboard modules
+.dashboard-widget + .dashboard-widget {
+
+  @include media-breakpoint-down('sm') {
+    margin-top: $spacer;
+  }
+}
