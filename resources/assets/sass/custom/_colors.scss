@@ -16,10 +16,32 @@
 }
 
 // Create backgrounds from status colors
-@each $status, $value in $status-colors {
-  @include bg-variant(".bg-status-#{$status}", $value);
+@each $status, $color in $status-colors {
+  .bg-status-#{$status} {
+    background-color: $color;
+    color: color-yiq($color);
+  }
+
+  a.bg-status-#{$status},
+  button.bg-status-#{$status} {
+    @include hover-focus {
+      background-color: darken($color, 10%) !important;
+    }
+  }
 }
 
-@each $status, $value in $status-colors {
-  @include bg-variant(".bg-status-#{$status}-light", rgba($value, 0.5));
+@each $status, $color in $status-colors {
+  $color: rgba($color, 0.5);
+
+  .bg-status-#{$status}-light {
+    background-color: $color;
+    color: color-yiq($color);
+  }
+
+  a.bg-status-#{$status}-light,
+  button.bg-status-#{$status}-light {
+    @include hover-focus {
+      background-color: darken($color, 10%) !important;
+    }
+  }
 }
