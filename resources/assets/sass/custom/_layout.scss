@@ -29,6 +29,11 @@
     padding-left: 25%;
     padding-top: $topbar-height;
   }
+
+  @include media-breakpoint-up('xl') {
+    flex: 1 1 80%;
+    padding-left: 20%;
+  }
 }
 
 #topbar {
@@ -44,6 +49,11 @@
     left: 25%;
     width: 75%;
     border-bottom: 1px solid $topbar-border;
+  }
+
+  @include media-breakpoint-up('xl') {
+    left: 20%;
+    width: 80%;
   }
 }
 

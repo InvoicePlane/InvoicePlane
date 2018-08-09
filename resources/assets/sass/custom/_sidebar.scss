@@ -33,6 +33,10 @@
     left: 0;
   }
 
+  @include media-breakpoint-up('xl') {
+    width: 20%;
+  }
+
   a {
     color: color-yiq($sidebar-bg);
 
@@ -47,12 +51,12 @@
 
   .sidebar-top {
     padding: $btn-padding-y 0;
-    background: $sidebar-bg-top;
-    color: color-yiq($sidebar-bg-top);
-    border-bottom: 1px solid lighten($sidebar-bg-top, 5%);
+    border-bottom: 1px solid lighten($sidebar-top-bg, 5%);
+    background-color: $sidebar-top-bg;
+    color: $sidebar-top-color;
 
     a {
-      color: color-yiq($sidebar-bg-top);
+      color: $sidebar-top-color;
     }
   }
 
@@ -104,6 +108,10 @@
 
       @include hover-focus-active {
         background-color: lighten($sidebar-bg, 2.5%);
+      }
+
+      @include media-breakpoint-up('xl') {
+        padding: $btn-padding-y-xl $btn-padding-x-xl;
       }
     }
 

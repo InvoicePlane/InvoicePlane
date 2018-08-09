@@ -33,7 +33,8 @@ $status-colors: map-merge((
 
 // sidebar Variables
 $sidebar-bg: $primary;
-$sidebar-bg-top: $gray-100;
+$sidebar-top-bg: $gray-100;
+$sidebar-top-color: $gray-700;
 
 // Topbar
 $topbar-bg: $gray-100;

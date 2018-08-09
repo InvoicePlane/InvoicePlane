@@ -187,7 +187,7 @@ $grid-breakpoints: (
   sm: 576px,
   md: 768px,
   lg: 992px,
-  xl: 1200px
+  xl: 1400px
 ) !default;
 
 @include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
@@ -219,6 +219,7 @@ $grid-gutter-width:           30px !default;
 //
 // Define common padding and border radius sizes and more.
 
+$line-height-xl:              1.5 !default;
 $line-height-lg:              1.5 !default;
 $line-height-sm:              1.5 !default;
 
@@ -363,6 +364,10 @@ $input-btn-padding-y-lg:      .5rem !default;
 $input-btn-padding-x-lg:      1rem !default;
 $input-btn-line-height-lg:    $line-height-lg !default;
 
+$input-btn-padding-y-xl:      .8rem !default;
+$input-btn-padding-x-xl:      1.3rem !default;
+$input-btn-line-height-xl:    $line-height-xl !default;
+
 $input-btn-border-width:      $border-width !default;
 
 
@@ -381,6 +386,10 @@ $btn-line-height-sm:          $input-btn-line-height-sm !default;
 $btn-padding-y-lg:            $input-btn-padding-y-lg !default;
 $btn-padding-x-lg:            $input-btn-padding-x-lg !default;
 $btn-line-height-lg:          $input-btn-line-height-lg !default;
+
+$btn-padding-y-xl:            $input-btn-padding-y-xl !default;
+$btn-padding-x-xl:            $input-btn-padding-x-xl !default;
+$btn-line-height-xl:          $input-btn-line-height-xl !default;
 
 $btn-border-width:            $input-btn-border-width !default;
 
