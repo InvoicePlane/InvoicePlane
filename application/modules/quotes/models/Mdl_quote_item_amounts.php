@@ -1,13 +1,19 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+include(__DIR__ . '/QuoteItemInterface.php');
+include(__DIR__ . '/QuoteItemFactory.php');
+include(__DIR__ . '/QuoteItemBase.php');
+include(__DIR__ . '/QuoteItemLegacy.php');
+include(__DIR__ . '/QuoteItem.php');
+
 /*
- * InvoicePlane
+ * quotePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author		quotePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 quotePlane.com
+ * @license		https://quoteplane.com/license.txt
+ * @link		https://quoteplane.com
  */
 
 /**
@@ -16,12 +22,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Mdl_Quote_Item_Amounts extends CI_Model
 {
     /**
-     * item_amount_id
-     * item_id
-     * item_subtotal (item_quantity * item_price)
-     * item_tax_total
-     * item_total ((item_quantity * item_price) + item_tax_total)
-     *
      * @param $item_id
      */
     public function calculate($item_id)
@@ -29,30 +29,12 @@ class Mdl_Quote_Item_Amounts extends CI_Model
         $this->load->model('quotes/mdl_quote_items');
         $item = $this->mdl_quote_items->get_by_id($item_id);
 
-        if ($item->item_discount_calc) {
-            // Use the correct discount calculation method
-            $item_subtotal = $item->item_quantity * $item->item_price;
-            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-            $item_taxable_amount = $item_subtotal - $item_discount_total;
-            $item_tax_total = $item_taxable_amount * ($item->item_tax_rate_percent / 100);
-            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
-        } else {
-            // Use the legacy discount calculation method
-            $item_subtotal = $item->item_quantity * $item->item_price;
-            $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
-            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
-        }
-
-        $db_array = [
-            'item_id' => $item_id,
-            'item_subtotal' => $item_subtotal,
-            'item_tax_total' => $item_tax_total,
-            'item_discount' => $item_discount_total,
-            'item_total' => $item_total,
-        ];
+        $ItemFactory = new QuoteItemFactory();
+        $Item = $ItemFactory->get_item($item);
+        $db_array = $Item->get_values();
 
         $this->db->where('item_id', $item_id);
+
         if ($this->db->get('ip_quote_item_amounts')->num_rows()) {
             $this->db->where('item_id', $item_id);
             $this->db->update('ip_quote_item_amounts', $db_array);
@@ -60,5 +42,4 @@ class Mdl_Quote_Item_Amounts extends CI_Model
             $this->db->insert('ip_quote_item_amounts', $db_array);
         }
     }
-
 }
