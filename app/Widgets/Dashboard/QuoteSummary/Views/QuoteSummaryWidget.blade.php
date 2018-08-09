@@ -30,29 +30,30 @@
     <section class="widget-content">
 
         <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
+            <div class="card-header d-sm-flex flex-wrap align-items-center justify-content-between">
+
                 <h5>@lang('ip.quote_summary')</h5>
-                <div class="widget-actions">
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-calendar"></i> {{ $quoteDashboardTotalOptions[config('ip.widgetQuoteSummaryDashboardTotals')] }}
-                        </button>
-                        <div class="dropdown-menu ">
-                            @foreach ($quoteDashboardTotalOptions as $key => $option)
-                                @if ($key !== 'custom_date_range')
-                                    <a href="#" class="dropdown-item small quote-dashboard-total-change-option"
-                                            onclick="return false;" data-id="{{ $key }}">
-                                        {{ $option }}
-                                    </a>
-                                @else
-                                    <a href="#" onclick="return false;" class="dropdown-item small"
-                                            data-toggle="modal" data-target="#quote-summary-widget-modal">
-                                        {{ $option }}
-                                    </a>
-                                @endif
-                            @endforeach
-                        </div>
+
+                <div class="widget-actions mt-2 mt-sm-0">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-calendar"></i> {{ $quoteDashboardTotalOptions[config('ip.widgetQuoteSummaryDashboardTotals')] }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        @foreach ($quoteDashboardTotalOptions as $key => $option)
+                            @if ($key !== 'custom_date_range')
+                                <a href="#" class="dropdown-item small quote-dashboard-total-change-option"
+                                        onclick="return false;" data-id="{{ $key }}">
+                                    {{ $option }}
+                                </a>
+                            @else
+                                <a href="#" onclick="return false;" class="dropdown-item small"
+                                        data-toggle="modal" data-target="#quote-summary-widget-modal">
+                                    {{ $option }}
+                                </a>
+                            @endif
+                        @endforeach
                     </div>
+
                     <button class="btn btn-sm create-quote" data-toggle="tooltip" title="@lang('ip.create_quote')">
                         <i class="fa fa-plus"></i>
                     </button>
@@ -61,7 +62,7 @@
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6">
                         <div class="card card-body bg-status-draft-light">
                             <div class="mb-1">
                                 <h3 class="mb-3">{{ $quotesTotalDraft }}</h3>
@@ -73,7 +74,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-lg-6 mt-3 mt-lg-0">
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6 mt-3 mt-sm-0 mt-md-3 mt-xl-0">
                         <div class="card card-body bg-status-sent">
                             <div class="mb-1">
                                 <h3 class="mb-3">{{ $quotesTotalSent }}</h3>
@@ -86,8 +87,8 @@
                     </div>
                 </div>
 
-                <div class="row mt-lg-3">
-                    <div class="col-12 col-lg-6 mt-3 mt-lg-0">
+                <div class="row mt-sm-3 mt-md-0 mt-xl-3">
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6 mt-3 mt-sm-0 mt-md-3 mt-xl-0">
                         <div class="card card-body bg-status-rejected">
                             <div class="mb-1">
                                 <h3 class="mb-3">{{ $quotesTotalRejected }}</h3>
@@ -98,7 +99,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6 mt-3 mt-lg-0">
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6 mt-3 mt-sm-0 mt-md-3 mt-xl-0">
                         <div class="card card-body bg-status-approved">
                             <div class="mb-1">
                                 <h3 class="mb-3">{{ $quotesTotalApproved }}</h3>
