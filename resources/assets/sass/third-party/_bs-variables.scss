@@ -133,9 +133,11 @@ $spacers: map-merge(
       0: 0,
       1: ($spacer * .25),
       2: ($spacer * .5),
-      3: $spacer,
-      4: ($spacer * 1.5),
-      5: ($spacer * 3)
+      3: ($spacer * .75),
+      4: $spacer,
+      5: ($spacer * 1.5),
+      6: ($spacer * 2),
+      7: ($spacer * 3)
     ),
     $spacers
 );
@@ -272,7 +274,7 @@ $h4-font-size:                $font-size-base * 1.5 !default;
 $h5-font-size:                $font-size-base * 1.25 !default;
 $h6-font-size:                $font-size-base !default;
 
-$headings-margin-bottom:      ($spacer / 2) !default;
+$headings-margin-bottom:      0 !default;
 $headings-font-family:        inherit !default;
 $headings-font-weight:        500 !default;
 $headings-line-height:        1.2 !default;
@@ -622,6 +624,8 @@ $dropdown-header-color:             $gray-600 !default;
 $zindex-dropdown:                   1000 !default;
 $zindex-sticky:                     1020 !default;
 $zindex-fixed:                      1030 !default;
+$zindex-sidebar:                    1035 !default;
+$zindex-sidebar-backdrop:           1036 !default;
 $zindex-modal-backdrop:             1040 !default;
 $zindex-modal:                      1050 !default;
 $zindex-popover:                    1060 !default;
