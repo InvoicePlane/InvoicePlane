@@ -1,4 +1,7 @@
 <?php
+
+namespace InvoicePlane\InvoicePlane;
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -18,7 +21,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  * @author Michael Munger <mj@hph.io>
  */
-class ItemLegacy extends ItemBase
+class ItemQuoteLegacy extends ItemBase
 {
 
     /**

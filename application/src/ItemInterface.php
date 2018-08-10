@@ -1,4 +1,7 @@
 <?php
+
+namespace InvoicePlane\InvoicePlane;
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*

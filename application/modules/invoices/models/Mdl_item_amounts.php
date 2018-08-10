@@ -1,7 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
@@ -12,11 +10,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-include(__DIR__ . '/ItemInterface.php');
-include(__DIR__ . '/ItemFactory.php');
-include(__DIR__ . '/ItemBase.php');
-include(__DIR__ . '/ItemLegacy.php');
-include(__DIR__ . '/Item.php');
+use InvoicePlane\InvoicePlane\ItemFactory;
 
 /**
  * Class Mdl_Item_Amounts
@@ -34,7 +28,7 @@ class Mdl_Item_Amounts extends CI_Model
         $item = $this->mdl_items->get_by_id($item_id);
 
         $ItemFactory = new ItemFactory();
-        $Item = $ItemFactory->get_item($item);
+        $Item = $ItemFactory->get_item('invoice', $item);
         $db_array = $Item->get_values();
 
         $this->db->where('item_id', $item_id);
