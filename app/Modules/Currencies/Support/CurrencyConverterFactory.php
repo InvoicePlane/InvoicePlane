@@ -18,15 +18,12 @@ class CurrencyConverterFactory
 {
     public static function create()
     {
+        $fallback_driver = config('fi.currencyConversionDriver');
+        if (!isset($fallback_driver) || $fallback_driver === null) {
+            $fallback_driver = 'FixerIOCurrencyConverter';
+        }
 
-$test = config('fi.currencyConversionDriver');
-if(!isset($test) || $test === null)
-{
-$test = 'FixerIOCurrencyConverter';
-}
-
-
-        $class = 'IP\Modules\Currencies\Support\Drivers\\' . $test;
+        $class = 'IP\Modules\Currencies\Support\Drivers\\' . $fallback_driver;
 
         return new $class;
     }
