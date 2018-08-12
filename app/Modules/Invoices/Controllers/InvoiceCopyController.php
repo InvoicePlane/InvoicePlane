@@ -71,15 +71,7 @@ class InvoiceCopyController extends Controller
             ]);
         }
 
-        // Copy the custom fields
-        /*$custom = collect($fromInvoice->custom)->except('invoice_id')->toArray();
-        $toInvoice->custom->update($custom);*/
-
         return response()->json(['id' => $fromInvoice->id], 200);
-        /*return redirect()->route('invoices.index')
-            ->with('alert', trans('ip.record_successfully_inserted'));*/
-
-
 
     }
 }
