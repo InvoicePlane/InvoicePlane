@@ -13,9 +13,6 @@ class CheckAttachmentListener
                 if ($attachment) {
                     $event->object->attachments()->create([
                         'user_id' => auth()->user()->id,
-                        /*
-                         *  Wasn't posted with the upload form, give it a default value
-                         **/
                         'client_visibility' => 0,
                         'filename' => $attachment->getClientOriginalName(),
                         'mimetype' => $attachment->getMimeType(),
