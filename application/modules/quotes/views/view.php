@@ -2,7 +2,6 @@
 $cv = $this->controller->view_data["custom_values"];
 ?>
 <script>
-
     $(function () {
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load(
@@ -23,13 +22,13 @@ $cv = $this->controller->view_data["custom_values"];
         });
 
         <?php if (!$items) { ?>
-        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         <?php } ?>
 
         $('#btn_save_quote').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tbody.item').each(function () {
+            $('#item_table .item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -132,6 +131,24 @@ $cv = $this->controller->view_data["custom_values"];
             }
         });
 
+      <?php if (get_setting('show_responsive_itemlist') == 1) { ?>
+        function UpR(k) {
+          var parent = k.parents('.item');
+          var pos = parent.prev();
+          parent.insertBefore(pos);
+        }
+        function DownR(k) {
+          var parent = k.parents('.item');
+          var pos = parent.next();
+          parent.insertAfter(pos);
+        }
+        $(document).on('click', '.up', function () {
+          UpR($(this));
+        });
+        $(document).on('click', '.down', function () {
+          DownR($(this));
+        });
+      <?php } else { ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
@@ -145,6 +162,7 @@ $cv = $this->controller->view_data["custom_values"];
             helper: fixHelper,
             items: 'tbody',
         });
+      <?php } ?>
     });
 </script>
 
@@ -368,7 +386,12 @@ $cv = $this->controller->view_data["custom_values"];
 
         </div>
 
-        <?php $this->layout->load_view('quotes/partial_item_table'); ?>
+        <?php if (get_setting('show_responsive_itemlist') == 1) {
+            $this->layout->load_view('quotes/partial_itemlist_responsive');
+          } else {
+            $this->layout->load_view('quotes/partial_itemlist_table');
+          }
+        ?>
 
         <hr/>
 
