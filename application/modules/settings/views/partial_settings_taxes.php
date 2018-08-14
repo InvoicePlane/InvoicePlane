@@ -63,4 +63,112 @@
         </div>
     </div>
 
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php _trans('invoice_calculation'); ?>
+        </div>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="settings[default_item_tax_rate]">
+                            <?php _trans('item'); ?>
+                        </label>
+                        <ul class="non_sortable">
+                            <li class="calculation-state-default calculation-state-default-disabled"><?php _trans('subtotal'); ?></li>
+                        </ul>
+                        <ul id="sortable1">
+                            <?php if(get_setting('item_tax_order') === "1") { ?>
+                                <li class="calculation-state-default"><?php _trans('tax'); ?>
+                                    <input class="currentposition_item" type="hidden" id="settings[item_tax_order]" name="settings[item_tax_order]" value="<?php echo get_setting('item_tax_order'); ?>">
+                                </li>
+                                <li class="calculation-state-default"><?php _trans('discount'); ?>
+                                    <input class="currentposition_item" type="hidden" id="settings[item_discount_order]" name="settings[item_discount_order]" value="<?php echo get_setting('item_discount_order'); ?>">
+                                </li>
+                            <?php } else { ?>
+                                <li class="calculation-state-default"><?php _trans('discount'); ?>
+                                    <input class="currentposition_item" type="hidden" id="settings[item_discount_order]" name="settings[item_discount_order]" value="<?php echo get_setting('item_discount_order'); ?>">
+                                </li>
+                                <li class="calculation-state-default"><?php _trans('tax'); ?>
+                                    <input class="currentposition_item" type="hidden" id="settings[item_tax_order]" name="settings[item_tax_order]" value="<?php echo get_setting('item_tax_order'); ?>">
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <ul class="non_sortable">
+                            <li class="calculation-state-default calculation-state-default-disabled"><?php _trans('total'); ?></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="settings[default_item_tax_rate]">
+                            <?php _trans('invoice'); ?>
+                        </label>
+                        <ul id="sortable2">
+                            <?php if(get_setting('invoice_tax_order') === "1") { ?>
+                                <li class="calculation-state-default"><?php _trans('tax'); ?>
+                                    <input class="currentposition_invoice" type="hidden" id="settings[invoice_tax_order]" name="settings[invoice_tax_order]" value="<?php echo get_setting('invoice_tax_order'); ?>">
+                                </li>
+                                <li class="calculation-state-default"><?php _trans('discount'); ?>
+                                    <input class="currentposition_invoice" type="hidden" id="settings[invoice_discount_order]" name="settings[invoice_discount_order]" value="<?php echo get_setting('invoice_discount_order'); ?>">
+                                </li>
+                            <?php } else { ?>
+                                <li class="calculation-state-default"><?php _trans('discount'); ?>
+                                    <input class="currentposition_invoice" type="hidden" id="settings[invoice_discount_order]" name="settings[invoice_discount_order]" value="<?php echo get_setting('invoice_discount_order'); ?>">
+                                </li>
+                                <li class="calculation-state-default"><?php _trans('tax'); ?>
+                                    <input class="currentposition_invoice" type="hidden" id="settings[invoice_tax_order]" name="settings[invoice_tax_order]" value="<?php echo get_setting('invoice_tax_order'); ?>">
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <ul class="non_sortable">
+                            <li class="calculation-state-default calculation-state-default-disabled"><?php _trans('total'); ?></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<script>
+    $( function() {
+        $( "#sortable1" ).sortable({
+            stop: function () {
+                var cnt = 1;
+                $('input.currentposition_item').each(function() {
+                    $(this).val(cnt);
+                    cnt++;
+                });
+            }
+        });
+
+        $( "#sortable2" ).sortable({
+            stop: function () {
+                var cnt = 1;
+                $('input.currentposition_invoice').each(function() {
+                    $(this).val(cnt);
+                    cnt++;
+                });
+            }
+        });
+
+        $( "#sortable1 li, #sortable2 li" ).disableSelection();
+    } );
+</script>
+
+
+<!-- Move it to the CSS file -->
+<style>
+    .non_sortable, #sortable1, #sortable2 { list-style-type: none; margin: 0; padding: 0; zoom: 1; }
+    .non_sortable li, #sortable1 li, #sortable2 li { margin: 0 5px 5px 5px; padding: 3px; width: 90%; }
+    .calculation-state-default{ border: 1px solid #c5c5c5; background: #f6f6f6; font-weight: normal; color: #454545; }
+    .calculation-state-default-disabled{ opacity: .35; filter: Alpha(Opacity=35); background-image: none; }
+</style>
