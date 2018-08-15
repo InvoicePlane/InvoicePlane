@@ -57,6 +57,15 @@
   }
 }
 
+#content-header,
 #content {
   padding: $spacer;
+}
+
+#content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  border-bottom: $border-width solid $border-color;
 }

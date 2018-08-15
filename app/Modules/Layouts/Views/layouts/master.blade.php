@@ -20,20 +20,27 @@
 
 <div id="app">
 
-    <div id="sidebar">
+    <aside id="sidebar">
         @include('layouts.partials.sidebar')
-    </div>
+    </aside>
     <div class="sidebar-backdrop sidebar-toggle"></div>
 
-    <div id="main">
+    <section id="main">
 
         @include('layouts.partials.topbar')
 
-        <div id="content">
-            @yield('content')
-        </div>
+        @hasSection('content-header')
+            <section id="content-header">
+                @yield('content-header')
+            </section>
+        @endif
 
-    </div>
+        <section id="content">
+            @include('layouts._alerts')
+            @yield('content')
+        </section>
+
+    </section>
 
 </div>
 
