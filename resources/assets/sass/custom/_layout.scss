@@ -72,7 +72,7 @@
 
 .table-content {
   // Pull the table content outside the content padding
-  margin: calc(#{-$spacer} + 1px) -#{$spacer} 0;
+  margin: calc(#{-$spacer} - 1px) -#{$spacer} 0;
 
   .alert + & {
     // Do not pull tables to the top after alerts
