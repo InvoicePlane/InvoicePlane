@@ -69,3 +69,13 @@
   flex-wrap: nowrap;
   border-bottom: $border-width solid $border-color;
 }
+
+.table-content {
+  // Pull the table content outside the content padding
+  margin: calc(#{-$spacer} + 1px) -#{$spacer} 0;
+
+  .alert + & {
+    // Do not pull tables to the top after alerts
+    margin-top: 0;
+  }
+}
