@@ -283,6 +283,11 @@
                                     </td>
                                 </tr>
                             <?php } ?>
+                        		<tr>
+                            		<td colspan="6" class="text-right small">
+                                		<?php echo anchor('projects/index', trans('view_all')); ?>
+                            		</td>
+                        		</tr>
                             </tbody>
 
                         </table>
@@ -322,7 +327,7 @@
                                         <?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?>
                                     </td>
                                     <td>
-                                    <span class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
+                                    <span class="<?php if ($task->is_overdue) { ?>font-overdue<?php } ?>">
                                         <?php echo date_from_mysql($task->task_finish_date); ?>
                                     </span>
                                     </td>
@@ -331,6 +336,11 @@
                                     </td>
                                 </tr>
                             <?php } ?>
+                        		<tr>
+                            		<td colspan="6" class="text-right small">
+                                		<?php echo anchor('tasks/index', trans('view_all')); ?>
+                            		</td>
+                        		</tr>
                             </tbody>
 
                         </table>
