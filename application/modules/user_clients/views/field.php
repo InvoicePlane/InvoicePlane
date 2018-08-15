@@ -50,7 +50,7 @@
                                             method="POST">
                                             <?php _csrf_field(); ?>
                                             <button type="submit" class="btn btn-default btn-sm"
-                                                    onclick="return confirm('<?php _trans('delete_invoice_warning'); ?>');">
+                                                    onclick="return confirm('<?php _trans('delete_user_client_warning'); ?>');">
                                                 <i class="fa fa-trash-o fa-margin"></i> <?php _trans('remove'); ?>
                                             </button>
                                         </form>
