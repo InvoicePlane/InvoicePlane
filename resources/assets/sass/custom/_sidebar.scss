@@ -64,6 +64,14 @@
     margin: 0 0 0 $nav-link-padding-x;
     max-height: $nav-link-height;
   }
+
+  .sidebar-form {
+    padding: $btn-padding-y-lg $btn-padding-x-lg;
+
+    @include media-breakpoint-up('xl') {
+      padding: $btn-padding-y-xl $btn-padding-x-xl;
+    }
+  }
 }
 
 .sidebar-backdrop {

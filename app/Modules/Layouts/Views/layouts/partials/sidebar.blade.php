@@ -3,7 +3,7 @@
     <div class="sidebar-top nav">
         <div class="nav-item">
             <img src="{{ asset('assets/img/ip_logo_1x1.svg') }}"
-                    alt="{{ config('ip.headerTitleText') }}" class="sidebar-top-logo">
+                alt="{{ config('ip.headerTitleText') }}" class="sidebar-top-logo">
         </div>
         <div class="nav-item">
             <a href="{{ route('dashboard.index') }}" class="nav-link">
@@ -23,10 +23,11 @@
                 <form action="{{ request()->fullUrl() }}" method="get" class="sidebar-form">
                     <input type="hidden" name="status" value="{{ request('status') }}"/>
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control"
-                                placeholder="@lang('ip.search')..."/>
-                        <div class="input-group-btn">
-                            <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                        <input type="text" name="search" class="form-control" placeholder="@lang('ip.search')..."
+                            aria-label="Recipient's username">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn" id="button-addon2">
+                                <i class="fa fa-search"></i>
                             </button>
                         </div>
                     </div>
