@@ -27,7 +27,7 @@
 
                 <div class="panel-body table-content">
                     <div class="table-responsive no-margin">
-                        <table class="table table-striped no-margin">
+                        <table class="table table-hover table-striped no-margin">
 
                             <thead>
                             <tr>
