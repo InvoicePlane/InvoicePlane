@@ -18,7 +18,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-hover table-striped">
 
             <thead>
             <tr>

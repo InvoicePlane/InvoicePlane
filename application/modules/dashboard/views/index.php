@@ -43,7 +43,7 @@
                     <span class="pull-right text-muted"><?php echo lang($quote_status_period); ?></span>
                 </div>
 
-                <table class="table table-bordered table-condensed no-margin">
+                <table class="table table-hover table-bordered table-condensed no-margin">
                     <?php foreach ($quote_status_totals as $total) { ?>
                         <tr>
                             <td>
@@ -71,7 +71,7 @@
                     <span class="pull-right text-muted"><?php echo lang($invoice_status_period); ?></span>
                 </div>
 
-                <table class="table table-bordered table-condensed no-margin">
+                <table class="table table-hover table-bordered table-condensed no-margin">
                     <?php foreach ($invoice_status_totals as $total) { ?>
                         <tr>
                             <td>
@@ -120,7 +120,7 @@
                     <b><i class="fa fa-history fa-margin"></i> <?php _trans('recent_quotes'); ?></b>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-striped table-condensed no-margin">
+                    <table class="table table-hover table-striped table-condensed no-margin">
                         <thead>
                         <tr>
                             <th><?php _trans('status'); ?></th>
@@ -180,7 +180,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-condensed no-margin">
+                    <table class="table table-hover table-striped table-condensed no-margin">
                         <thead>
                         <tr>
                             <th><?php _trans('status'); ?></th>
@@ -264,7 +264,7 @@
                         <b><i class="fa fa-list fa-margin"></i> <?php _trans('projects'); ?></b>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-condensed no-margin">
+                        <table class="table table-hover table-striped table-condensed no-margin">
                             <thead>
                             <tr>
                                 <th><?php _trans('project_name'); ?></th>
@@ -304,7 +304,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-condensed no-margin">
+                        <table class="table table-hover table-striped table-condensed no-margin">
 
                             <thead>
                             <tr>
