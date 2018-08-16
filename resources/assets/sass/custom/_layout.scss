@@ -57,7 +57,6 @@
   }
 }
 
-#content-header,
 #content {
   padding: $spacer;
 }
@@ -67,6 +66,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
+  padding: $navbar-padding-y $spacer;
   border-bottom: $border-width solid $border-color;
 }
 
