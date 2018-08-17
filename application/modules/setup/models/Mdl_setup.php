@@ -193,8 +193,12 @@ class Mdl_Setup extends CI_Model
                 // if (!$update_applied)
                 if (!$update_applied->num_rows()) {
                     $file_contents = file_get_contents(APPPATH . $this->getSqlPath() . '/' . $sql_file);
-
-                    $this->execute_contents($file_contents);
+                  
+                    // Skip execution if this is a versioning file (because of postgres problems)
+                    if (substr($file_contents, 0, 26) !== '/* Added for versioning */')
+                    {
+                      $this->execute_contents($file_contents);
+                    }
 
                     $this->save_version($sql_file);
 
@@ -265,6 +269,13 @@ class Mdl_Setup extends CI_Model
 
     public function upgrade_023_1_5_0()
     {
+        // Pre IP v1.5.9: MySQL only
+        //   As postgres was added firstly to IPv1.5.9 this is routine is only relevant 
+        //   if we are not using the default mysqli driver (otherwise this is an installation
+        //   and these tables are empty).
+        if ($this->db->dbdriver != 'mysqli')
+          return;
+      
         $res = $this->db->query('SELECT * FROM ip_custom_fields');
         $drop_columns = array();
 
@@ -377,14 +388,27 @@ class Mdl_Setup extends CI_Model
     {
         // The following code will determine if the ip_users table has an existing user_all_clients column
         // If the table already has the column it will be shown in any user query, so get one now
-        $test_user = $this->db->query('SELECT * FROM `ip_users` ORDER BY `user_id` ASC LIMIT 1')->row();
-
-        // Add new user key if applicable
-        if (!isset($test_user->user_all_clients)) {
-            $this->db->query('ALTER TABLE `ip_users`
-              ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
-              AFTER `user_psalt`;'
-            );
+        switch($this->db->dbdriver) {
+          case 'postgre':
+            $test_user = $this->db->query('SELECT * FROM ip_users ORDER BY user_id ASC LIMIT 1')->row();
+            // Add new user key if applicable
+            if (!isset($test_user->user_all_clients)) {
+                $this->db->query('ALTER TABLE ip_users
+                  ADD COLUMN user_all_clients SMALLINT NOT NULL DEFAULT 0;'
+                );
+            }
+            break;
+          case 'mysqli':
+          default:
+            $test_user = $this->db->query('SELECT * FROM `ip_users` ORDER BY `user_id` ASC LIMIT 1')->row();
+            // Add new user key if applicable
+            if (!isset($test_user->user_all_clients)) {
+                $this->db->query('ALTER TABLE `ip_users`
+                  ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
+                  AFTER `user_psalt`;'
+                );
+            }
+            break;
         }
 
         // Copy the invoice pdf footer to the new quote pdf footer setting
