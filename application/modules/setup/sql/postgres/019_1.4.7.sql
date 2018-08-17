@@ -28,10 +28,10 @@ ALTER TABLE ip_quotes
 
 -- IP-408 - Add reference to products to items
 ALTER TABLE ip_invoice_items
-  ADD COLUMN item_product_id INT(11) DEFAULT NULL;
+  ADD COLUMN item_product_id INTEGER DEFAULT NULL;
 
 ALTER TABLE ip_quote_items
-  ADD COLUMN item_product_id INT(11) DEFAULT NULL;
+  ADD COLUMN item_product_id INTEGER DEFAULT NULL;
 
 -- IP-303 - Incorrect decimal value: '' for column 'item_discount_amount'
 ALTER TABLE ip_invoices
