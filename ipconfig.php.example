@@ -23,6 +23,8 @@ DB_USERNAME=
 DB_PASSWORD=
 DB_DATABASE=
 DB_PORT=
+# Database driver, one of [ mysqli | postgres ] 
+DB_DRIVER=mysqli
 
 # If you want to be logged out after closing your browser window, set this setting to 0 (ZERO).
 # The number represents the amount of minutes after that IP will automatically log out users,
