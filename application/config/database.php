@@ -80,7 +80,7 @@ $db['default'] = array(
     'username' => getenv('DB_USERNAME'),
     'password' => getenv('DB_PASSWORD'),
     'database' => getenv('DB_DATABASE'),
-    'dbdriver' => 'mysqli',
+    'dbdriver' => getenv('DB_DRIVER'),
     'dbprefix' => '',
     'pconnect' => FALSE,
     'db_debug' => (ENVIRONMENT !== 'production'),
