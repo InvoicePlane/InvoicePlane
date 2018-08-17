@@ -1,2 +1,3 @@
-ALTER TABLE ip_merchant_responses
-  ADD COLUMN merchant_response_successful SMALLINT DEFAULT 1;
+ALTER TABLE `ip_merchant_responses`
+  ADD `merchant_response_successful` TINYINT(1) DEFAULT 1
+  AFTER `invoice_id`;

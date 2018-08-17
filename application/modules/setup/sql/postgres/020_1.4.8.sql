@@ -1,109 +1,105 @@
--- IP-322 - Invoice item_name database field should be larger + additional db changes
+# IP-322 - Invoice item_name database field should be larger + additional db changes
 ALTER TABLE ip_clients
-  ALTER COLUMN client_name TYPE TEXT;
+  MODIFY COLUMN client_name TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_address_1 TYPE TEXT;
+  MODIFY COLUMN client_address_1 TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_address_2 TYPE TEXT;
+  MODIFY COLUMN client_address_2 TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_city TYPE TEXT;
+  MODIFY COLUMN client_city TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_state TYPE TEXT;
+  MODIFY COLUMN client_state TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_zip TYPE TEXT;
+  MODIFY COLUMN client_zip TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_country TYPE TEXT;
+  MODIFY COLUMN client_country TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_phone TYPE TEXT;
+  MODIFY COLUMN client_phone TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_fax TYPE TEXT;
+  MODIFY COLUMN client_fax TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_mobile TYPE TEXT;
+  MODIFY COLUMN client_mobile TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_email TYPE TEXT;
+  MODIFY COLUMN client_email TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_web TYPE TEXT;
+  MODIFY COLUMN client_web TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_vat_id TYPE TEXT;
+  MODIFY COLUMN client_vat_id TEXT;
 ALTER TABLE ip_clients
-  ALTER COLUMN client_tax_code TYPE TEXT;
+  MODIFY COLUMN client_tax_code TEXT;
 ALTER TABLE ip_custom_fields
-  ALTER COLUMN custom_field_table TYPE VARCHAR(255);
+  MODIFY COLUMN custom_field_table VARCHAR(255);
 ALTER TABLE ip_custom_fields
-  ALTER COLUMN custom_field_label TYPE TEXT;
+  MODIFY COLUMN custom_field_label TEXT;
 ALTER TABLE ip_custom_fields
-  ALTER COLUMN custom_field_column TYPE TEXT;
+  MODIFY COLUMN custom_field_column TEXT;
 ALTER TABLE ip_email_templates
-  ALTER COLUMN email_template_title TYPE TEXT;
+  MODIFY COLUMN email_template_title TEXT;
 ALTER TABLE ip_email_templates
-  ALTER COLUMN email_template_subject TYPE TEXT;
+  MODIFY COLUMN email_template_subject TEXT;
 ALTER TABLE ip_email_templates
-  ALTER COLUMN email_template_from_name TYPE TEXT;
+  MODIFY COLUMN email_template_from_name TEXT;
 ALTER TABLE ip_email_templates
-  ALTER COLUMN email_template_from_email TYPE TEXT;
+  MODIFY COLUMN email_template_from_email TEXT;
 ALTER TABLE ip_email_templates
-  ALTER COLUMN email_template_cc TYPE TEXT;
+  MODIFY COLUMN email_template_cc TEXT;
 ALTER TABLE ip_email_templates
-  ALTER COLUMN email_template_bcc TYPE TEXT;
+  MODIFY COLUMN email_template_bcc TEXT;
 ALTER TABLE ip_families
-  ALTER COLUMN family_name TYPE TEXT;
+  MODIFY COLUMN family_name TEXT;
 ALTER TABLE ip_invoice_groups
-  ALTER COLUMN invoice_group_name TYPE TEXT;
+  MODIFY COLUMN invoice_group_name TEXT;
 ALTER TABLE ip_invoice_items
-  ALTER COLUMN item_name TYPE TEXT, 
-  ALTER COLUMN item_name SET DEFAULT NULL;
+  MODIFY COLUMN item_name TEXT DEFAULT NULL;
 ALTER TABLE ip_invoice_items
-  ALTER COLUMN item_description TYPE TEXT,
-  ALTER COLUMN item_description SET DEFAULT NULL;
+  MODIFY COLUMN item_description LONGTEXT DEFAULT NULL;
 ALTER TABLE ip_payment_methods
-  ALTER COLUMN payment_method_name TYPE TEXT;
+  MODIFY COLUMN payment_method_name TEXT;
 ALTER TABLE ip_products
-  ALTER COLUMN product_sku TYPE TEXT;
+  MODIFY COLUMN product_sku TEXT;
 ALTER TABLE ip_products
-  ALTER COLUMN product_name TYPE TEXT;
+  MODIFY COLUMN product_name TEXT;
 ALTER TABLE ip_projects
-  ALTER COLUMN project_name TYPE TEXT;
+  MODIFY COLUMN project_name TEXT;
 ALTER TABLE ip_quote_items
-  ALTER COLUMN item_name TYPE TEXT,
-  ALTER COLUMN item_name SET DEFAULT NULL;
+  MODIFY COLUMN item_name TEXT DEFAULT NULL;
 ALTER TABLE ip_quote_items
-  ALTER COLUMN item_description TYPE TEXT,
-  ALTER COLUMN item_description SET DEFAULT NULL;
+  MODIFY COLUMN item_description TEXT DEFAULT NULL;
 ALTER TABLE ip_tasks
-  ALTER COLUMN task_name TYPE TEXT;
+  MODIFY COLUMN task_name TEXT;
 ALTER TABLE ip_tax_rates
-  ALTER COLUMN tax_rate_name TYPE TEXT;
+  MODIFY COLUMN tax_rate_name TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_name TYPE TEXT;
+  MODIFY COLUMN user_name TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_company TYPE TEXT;
+  MODIFY COLUMN user_company TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_address_1 TYPE TEXT;
+  MODIFY COLUMN user_address_1 TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_address_2 TYPE TEXT;
+  MODIFY COLUMN user_address_2 TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_city TYPE TEXT;
+  MODIFY COLUMN user_city TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_state TYPE TEXT;
+  MODIFY COLUMN user_state TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_zip TYPE TEXT;
+  MODIFY COLUMN user_zip TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_country TYPE TEXT;
+  MODIFY COLUMN user_country TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_phone TYPE TEXT;
+  MODIFY COLUMN user_phone TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_fax TYPE TEXT;
+  MODIFY COLUMN user_fax TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_mobile TYPE TEXT;
+  MODIFY COLUMN user_mobile TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_email TYPE TEXT;
+  MODIFY COLUMN user_email TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_web TYPE TEXT;
+  MODIFY COLUMN user_web TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_vat_id TYPE TEXT;
+  MODIFY COLUMN user_vat_id TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_tax_code TYPE TEXT;
+  MODIFY COLUMN user_tax_code TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_psalt TYPE TEXT;
+  MODIFY COLUMN user_psalt TEXT;
 ALTER TABLE ip_users
-  ALTER COLUMN user_tax_code TYPE TEXT;
+  MODIFY COLUMN user_tax_code TEXT;

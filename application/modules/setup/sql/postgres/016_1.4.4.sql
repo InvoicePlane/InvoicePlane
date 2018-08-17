@@ -1,4 +1,4 @@
--- IP-355 - Overhaul for PDF files, change the old file names to the new ones
+# IP-355 - Overhaul for PDF files, change the old file names to the new ones
 UPDATE ip_settings
 SET setting_value = 'InvoicePlane'
 WHERE setting_key = 'pdf_invoice_template' AND
