@@ -31,6 +31,22 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="db_driver">
+                        <?php _trans('db_driver'); ?>
+                    </label>
+                    <select name="db_driver" id="db_driver" class="form-control simple-select"
+                            onchange="document.getElementById('db_port').value=({mysqli:3306,postgre:5432})[this.options[this.selectedIndex].value]">
+                        <option value="mysqli">
+                            <?php echo trans('db_driver_use_mysqli') ?>
+                        </option>
+                        <option value="postgre">
+                            <?php echo trans('db_driver_use_postgre') ?>
+                        </option>
+                    </select>
+                    <span class="help-block"><?php _trans('setup_db_driver_info'); ?></span>
+                </div>
+            
+                <div class="form-group">
                     <label for="db_port">
                         <?php _trans('port'); ?>
                     </label>

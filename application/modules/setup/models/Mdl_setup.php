@@ -15,14 +15,42 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Setup extends CI_Model
 {
+    /* cached sql path variable */
+    private $sqlpath = null;
+    
     public $errors = array();
 
+    /**
+     * Retrieve correct sql subpath for files depending
+     * on used driver within IPCONFIG_FILE.
+     *
+     * @return Relative SQL path string, e.g. 'modules/setup/sql/mysql'
+     */
+    private function getSqlPath() 
+    {
+        if (!$this->sqlpath) 
+        {
+            // Pre-define default subpath
+            $subpath = 'mysql';
+            
+            // Retrieve used driver to install correct SQL files (check for postgres)
+            $this->load->database();
+            if ($this->db->dbdriver == 'postgre') {
+                $subpath = 'postgres';
+            }
+            
+            // Store path
+            $this->sqlpath = 'modules/setup/sql/'.$subpath;
+        }
+        return $this->sqlpath;
+    }
+    
     /**
      * @return bool
      */
     public function install_tables()
     {
-        $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
+        $file_contents = file_get_contents(APPPATH . $this->getSqlPath() . '/000_1.0.0.sql');
 
         $this->execute_contents($file_contents);
 
@@ -146,7 +174,7 @@ class Mdl_Setup extends CI_Model
     public function upgrade_tables()
     {
         // Collect the available SQL files
-        $sql_files = directory_map(APPPATH . 'modules/setup/sql', true);
+        $sql_files = directory_map(APPPATH . $this->getSqlPath(), true);
 
         // Sort them so they're in natural order
         sort($sql_files);
@@ -164,7 +192,7 @@ class Mdl_Setup extends CI_Model
 
                 // if (!$update_applied)
                 if (!$update_applied->num_rows()) {
-                    $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
+                    $file_contents = file_get_contents(APPPATH . $this->getSqlPath() . '/' . $sql_file);
 
                     $this->execute_contents($file_contents);
 
