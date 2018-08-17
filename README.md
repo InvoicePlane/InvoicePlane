@@ -1,8 +1,23 @@
-![InvoicePlane](http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
-#### _Version 1.5.9_
+<p align="center">
+  <img src="http://invoiceplane.com/content/logo/SVG/logo_small.svg">
+</p>
+<p>&nbsp;</p>
 
-InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.    
-For more information visit __[InvoicePlane.com](https://invoiceplane.com)__ or try the __[demo](https://demo.invoiceplane.com)__.
+<p align="center">
+<a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1"></a>
+<a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Downloads&url=https%3A%2F%2Fids.invoiceplane.com%2Fapi%2Fget-stats&query=downloads.total_readable&colorB=429ae1&suffix=%20total"></a>
+<a href="https://translations.invoiceplane.com/project/fusioninvoice"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Localization%20Progress&url=https%3A%2F%2Fids.invoiceplane.com%2Fapi%2Fget-stats&query=%24.localization.details.total_progress&colorB=429ae1&suffix=%25"></a>
+</p>
+
+<p align="center" bgcolor="#429ae1"><b>InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.<br>
+  For more information visit <a href="https://invoiceplane.com">InvoicePlane.com</a> or try the <a href="https://demo.invoiceplane.com">Demo</a>.</b></p>
+
+---
+
+Since the start of the project in 2014, InvoicePlane evolved into a software that is used world wide. However, it is
+still developed in our free time, as a hobby. We do your best to fulfill any legal requirements but please note that we
+cannot make sure that the app is working 100% correct. Also, due to the fact that InvoicePlane is a free and open
+source software without an income, there are no professional audits of the app yet.
 
 ---
 
@@ -32,7 +47,9 @@ If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoicepla
 
 ### Support / Development / Chat
 
-Need some help or want to talk with other about InvoicePlane? Follow these links to get in touch.
+Need some help or want to talk with other about InvoicePlane? Follow these links to get in touch.  
+Please notice that InvoicePlane is **not** a commercial software but a small open source project and we neither offer 
+24/7 support nor any form of SLA or paid help.
 
 [![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)  
 [![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)  
