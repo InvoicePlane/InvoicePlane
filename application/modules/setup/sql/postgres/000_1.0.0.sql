@@ -132,10 +132,10 @@ CREATE INDEX invoices_user_id_idx ON ip_invoices (user_id, client_id, invoice_gr
 CREATE TABLE ip_invoices_recurring (
   invoice_recurring_id SERIAL,
   invoice_id           INTEGER NOT NULL,
-  recur_start_date     DATE,
-  recur_end_date       DATE,
+  recur_start_date     DATE    NOT NULL,
+  recur_end_date       DATE    NOT NULL,
   recur_frequency      CHAR(2) NOT NULL,
-  recur_next_date      DATE
+  recur_next_date      DATE    NOT NULL
 );
 
 CREATE TABLE ip_item_lookups (

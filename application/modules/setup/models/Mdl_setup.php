@@ -193,12 +193,8 @@ class Mdl_Setup extends CI_Model
                 // if (!$update_applied)
                 if (!$update_applied->num_rows()) {
                     $file_contents = file_get_contents(APPPATH . $this->getSqlPath() . '/' . $sql_file);
-                  
-                    // Skip execution if this is a versioning file (because of postgres problems)
-                    if (substr($file_contents, 0, 26) !== '/* Added for versioning */')
-                    {
-                      $this->execute_contents($file_contents);
-                    }
+
+                    $this->execute_contents($file_contents);
 
                     $this->save_version($sql_file);
 
@@ -269,11 +265,6 @@ class Mdl_Setup extends CI_Model
 
     public function upgrade_023_1_5_0()
     {
-        $this->load->helper('sql');
-        $pkey = sql_primary_key();
-        $qc   = sql_quote_char();
-        $int  = sql_integer();
-        
         $res = $this->db->query('SELECT * FROM ip_custom_fields');
         $drop_columns = array();
 
@@ -294,47 +285,52 @@ class Mdl_Setup extends CI_Model
                 );
             }
         }
-        
+
         // Create tables
-        $this->db->query("CREATE TABLE {$qc}ip_client_custom_new{$qc} (
-            {$qc}client_custom_id{$qc}            {$pkey},
-            {$qc}client_id{$qc}                   $int NOT NULL, 
-            {$qc}client_custom_fieldid{$qc}       $int NOT NULL,
-            {$qc}client_custom_fieldvalue{$qc}    TEXT,
-            UNIQUE (client_id, client_custom_fieldid)
-        );");
-        
-        $this->db->query("CREATE TABLE {$qc}ip_invoice_custom_new{$qc} (
-            {$qc}invoice_custom_id{$qc}           {$pkey},
-            {$qc}invoice_id{$qc}                  $int NOT NULL, 
-            {$qc}invoice_custom_fieldid{$qc}      $int NOT NULL,
-            {$qc}invoice_custom_fieldvalue{$qc}   TEXT,
+        $this->db->query('CREATE TABLE `ip_client_custom_new`
+            (
+                `client_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+                `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
+                `client_custom_fieldvalue` TEXT NULL ,
+                UNIQUE (client_id, client_custom_fieldid)
+            );'
+        );
+
+        $this->db->query('CREATE TABLE `ip_invoice_custom_new`
+            (
+            `invoice_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+            `invoice_id` INT NOT NULL, `invoice_custom_fieldid` INT NOT NULL,
+            `invoice_custom_fieldvalue` TEXT NULL ,
             UNIQUE (invoice_id, invoice_custom_fieldid)
-        );");
-        
-        $this->db->query("CREATE TABLE {$qc}ip_quote_custom_new{$qc} (
-            {$qc}quote_custom_id{$qc}             {$pkey},
-            {$qc}quote_id{$qc}                    $int NOT NULL, 
-            {$qc}quote_custom_fieldid{$qc}        $int NOT NULL,
-            {$qc}quote_custom_fieldvalue{$qc}     TEXT,
-            UNIQUE (quote_id, quote_custom_fieldid)
-        );");
-        
-        $this->db->query("CREATE TABLE {$qc}ip_payment_custom_new{$qc} (
-            {$qc}payment_custom_id{$qc}           {$pkey},
-            {$qc}payment_id{$qc}                  $int NOT NULL, 
-            {$qc}payment_custom_fieldid{$qc}      $int NOT NULL,
-            {$qc}payment_custom_fieldvalue{$qc}   TEXT,
-            UNIQUE (payment_id, payment_custom_fieldid)
-        );");
-        
-        $this->db->query("CREATE TABLE ip_user_custom_new (
-            {$qc}user_custom_id{$qc}              {$pkey},
-            {$qc}user_id{$qc}                     $int NOT NULL, 
-            {$qc}user_custom_fieldid{$qc}         $int NOT NULL,
-            {$qc}user_custom_fieldvalue{$qc}      TEXT,
-            UNIQUE (user_id, user_custom_fieldid)
-        );");
+            );'
+        );
+
+        $this->db->query('CREATE TABLE `ip_quote_custom_new`
+            (
+                `quote_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+                `quote_id` INT NOT NULL, `quote_custom_fieldid` INT NOT NULL,
+                `quote_custom_fieldvalue` TEXT NULL ,
+                UNIQUE (quote_id, quote_custom_fieldid)
+            );'
+        );
+
+        $this->db->query('CREATE TABLE `ip_payment_custom_new`
+            (
+                `payment_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+                `payment_id` INT NOT NULL, `payment_custom_fieldid` INT NOT NULL,
+                `payment_custom_fieldvalue` TEXT NULL ,
+                UNIQUE (payment_id, payment_custom_fieldid)
+            );'
+        );
+
+        $this->db->query('CREATE TABLE `ip_user_custom_new`
+            (
+                `user_custom_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT ,
+                `user_id` INT NOT NULL, `user_custom_fieldid` INT NOT NULL,
+                `user_custom_fieldvalue` TEXT NULL ,
+                UNIQUE (user_id, user_custom_fieldid)
+            );'
+        );
 
         // Migrate Data
         foreach ($drop_columns as $value) {
@@ -369,42 +365,26 @@ class Mdl_Setup extends CI_Model
 
         // Drop old cloumns, and rename new ones
         foreach ($tables as $table) {
-            $this->db->query("DROP TABLE IF EXISTS {$qc}ip_{$table}_custom{$qc}");
-            $query = sql_rename_table(
-                'ip_'.$table.'_custom_new', 
-                'ip_' . $table . '_custom'
-            );
+            $this->db->query('DROP TABLE IF EXISTS `ip_' . $table . '_custom`');
+            $query = 'RENAME TABLE `ip_' . $table . '_custom_new` TO `ip_' . $table . '_custom`';
             $this->db->query($query);
         }
 
-        $this->db->query("ALTER TABLE {$qc}ip_custom_fields{$qc} DROP COLUMN {$qc}custom_field_column{$qc}");
+        $this->db->query('ALTER TABLE ip_custom_fields DROP COLUMN custom_field_column');
     }
 
     public function upgrade_029_1_5_6()
     {
         // The following code will determine if the ip_users table has an existing user_all_clients column
         // If the table already has the column it will be shown in any user query, so get one now
-        switch($this->db->dbdriver) {
-          case 'postgre':
-            $test_user = $this->db->query('SELECT * FROM ip_users ORDER BY user_id ASC LIMIT 1')->row();
-            // Add new user key if applicable
-            if (!isset($test_user->user_all_clients)) {
-                $this->db->query('ALTER TABLE ip_users
-                  ADD COLUMN user_all_clients SMALLINT NOT NULL DEFAULT 0;'
-                );
-            }
-            break;
-          case 'mysqli':
-          default:
-            $test_user = $this->db->query('SELECT * FROM `ip_users` ORDER BY `user_id` ASC LIMIT 1')->row();
-            // Add new user key if applicable
-            if (!isset($test_user->user_all_clients)) {
-                $this->db->query('ALTER TABLE `ip_users`
-                  ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
-                  AFTER `user_psalt`;'
-                );
-            }
-            break;
+        $test_user = $this->db->query('SELECT * FROM `ip_users` ORDER BY `user_id` ASC LIMIT 1')->row();
+
+        // Add new user key if applicable
+        if (!isset($test_user->user_all_clients)) {
+            $this->db->query('ALTER TABLE `ip_users`
+              ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
+              AFTER `user_psalt`;'
+            );
         }
 
         // Copy the invoice pdf footer to the new quote pdf footer setting
