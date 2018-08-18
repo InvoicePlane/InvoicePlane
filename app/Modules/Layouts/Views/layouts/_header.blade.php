@@ -30,6 +30,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('addons.index') }}">@lang('ip.addons')</a></li>
                         <li><a href="{{ route('currencies.index') }}">@lang('ip.currencies')</a></li>
+                        <li><a href="{{ route('customFields.index') }}">@lang('ip.custom_fields')</a></li>
                         <li><a href="{{ route('companyProfiles.index') }}">@lang('ip.company_profiles')</a></li>
                         <li><a href="{{ route('export.index') }}">@lang('ip.export_data')</a></li>
                         <li><a href="{{ route('groups.index') }}">@lang('ip.groups')</a></li>
