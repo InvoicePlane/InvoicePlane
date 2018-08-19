@@ -34,6 +34,7 @@ class InvoiceEditController extends Controller
     public function edit($id)
     {
         $invoice = Invoice::with(['items.amount.item.invoice.currency'])->find($id);
+        $invoice_item_count = isset($invoice->invoiceItems) ? count($invoice->invoiceItems) : 0;
 
         return view('invoices.edit')
             ->with('invoice', $invoice)
@@ -43,7 +44,7 @@ class InvoiceEditController extends Controller
             ->with('customFields', CustomField::forTable('invoices')->get())
             ->with('returnUrl', $this->getReturnUrl())
             ->with('templates', InvoiceTemplates::lists())
-            ->with('itemCount', count($invoice->invoiceItems));
+            ->with('itemCount', $invoice_item_count);
     }
 
     public function update(InvoiceUpdateRequest $request, $id)
@@ -57,9 +58,6 @@ class InvoiceEditController extends Controller
         $invoice = Invoice::find($id);
         $invoice->fill($invoiceInput);
         $invoice->save();
-
-        // Save the custom fields.
-        $invoice->custom->update(request('custom', []));
 
         // Save the items.
         foreach ($request->input('items') as $item) {

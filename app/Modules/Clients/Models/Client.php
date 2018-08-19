@@ -155,6 +155,7 @@ class Client extends Model
 
     public function getFormattedBalanceAttribute()
     {
+        $this->balance = isset($this->balance) ? $this->balance : 0;
         return CurrencyFormatter::format($this->balance, $this->currency);
     }
 

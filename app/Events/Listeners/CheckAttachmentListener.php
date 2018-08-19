@@ -13,6 +13,7 @@ class CheckAttachmentListener
                 if ($attachment) {
                     $event->object->attachments()->create([
                         'user_id' => auth()->user()->id,
+                        'client_visibility' => 0,
                         'filename' => $attachment->getClientOriginalName(),
                         'mimetype' => $attachment->getMimeType(),
                         'size' => $attachment->getSize(),

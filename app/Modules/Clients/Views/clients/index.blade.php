@@ -78,7 +78,8 @@
                             </thead>
 
                             <tbody>
-                            @foreach ($clients as $client)
+
+                            @forelse($clients as $client)
                                 <tr>
                                     <td><input type="checkbox" class="bulk-record" data-id="{{ $client->id }}"></td>
                                     <td>
@@ -119,9 +120,10 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <p>There are no clients yet!</p>
+                            @endforelse
                             </tbody>
-
                         </table>
                     </div>
 

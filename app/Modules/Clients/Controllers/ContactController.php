@@ -30,7 +30,17 @@ class ContactController extends Controller
 
     public function store(ContactRequest $request, $clientId)
     {
-        Contact::create($request->all());
+        /*
+         *  So we got the result from the request, except for a couple of fields.
+         *  We're going to fill those fields to create the Contact object and then store it.
+         **/
+        $default_values = [
+            'default_to' =>  0 ,
+            'default_cc' => 0,
+            'default_bcc' => 0,
+        ];
+        $test = array_merge($request->all(), $default_values);
+        Contact::create($test);
 
         return $this->loadContacts($clientId);
     }
