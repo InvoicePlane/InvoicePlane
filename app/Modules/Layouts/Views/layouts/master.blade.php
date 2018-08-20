@@ -29,6 +29,10 @@
 
         @include('layouts.partials.topbar')
 
+        @hasSection('content-form')
+            @yield('content-form')
+        @endif
+
         @hasSection('content-header')
             <section id="content-header">
                 @yield('content-header')
@@ -39,6 +43,10 @@
             @include('layouts._alerts')
             @yield('content')
         </section>
+
+        @hasSection('content-form')
+            {!! Form::close() !!}
+        @endif
 
     </section>
 
