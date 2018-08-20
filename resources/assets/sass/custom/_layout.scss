@@ -10,8 +10,17 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
 #app {
   width: 100%;
+  height: 100%;
   overflow-x: hidden;
 
   @include media-breakpoint-up('lg') {
@@ -21,6 +30,7 @@
 
 #main {
   width: 100%;
+  height: 100%;
   padding-bottom: 4rem;
   position: relative;
 

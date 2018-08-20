@@ -624,12 +624,12 @@ $dropdown-header-color:             $gray-600 !default;
 $zindex-dropdown:                   1000 !default;
 $zindex-sticky:                     1020 !default;
 $zindex-fixed:                      1030 !default;
-$zindex-sidebar:                    1035 !default;
-$zindex-sidebar-backdrop:           1036 !default;
 $zindex-modal-backdrop:             1040 !default;
 $zindex-modal:                      1050 !default;
 $zindex-popover:                    1060 !default;
 $zindex-tooltip:                    1070 !default;
+$zindex-sidebar-backdrop:           1080 !default;
+$zindex-sidebar:                    1090 !default;
 
 // Navs
 
