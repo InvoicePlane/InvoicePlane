@@ -176,6 +176,7 @@ class V200Alpha2 extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
+            $table->integer('company_profile_id');
             $table->date('expense_date');
             $table->integer('user_id');
             $table->integer('category_id');
@@ -678,9 +679,9 @@ class V200Alpha2 extends Migration
         }
 
         // Add base payment methods
-        PaymentMethod::create(['name' => trans('fi.cash')]);
-        PaymentMethod::create(['name' => trans('fi.credit_card')]);
-        PaymentMethod::create(['name' => trans('fi.online_payment')]);
+        PaymentMethod::create(['name' => trans('ip.cash')]);
+        PaymentMethod::create(['name' => trans('ip.credit_card')]);
+        PaymentMethod::create(['name' => trans('ip.online_payment')]);
 
         // Save new currencies
         Currency::create([

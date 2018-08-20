@@ -35,7 +35,7 @@ Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\
 
     Route::group(['prefix' => 'invoice_copy'], function () {
         Route::post('create', ['uses' => 'InvoiceCopyController@create', 'as' => 'invoiceCopy.create']);
-        Route::post('store', ['uses' => 'InvoiceCopyController@store', 'as' => 'invoiceCopy.store']);
+        Route::post('store', ['uses' => 'InvoiceCopyController@storeMeNow', 'as' => 'invoiceCopy.store']);
     });
 
     Route::group(['prefix' => 'invoice_mail'], function () {

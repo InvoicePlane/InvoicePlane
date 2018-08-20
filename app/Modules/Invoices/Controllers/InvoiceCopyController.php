@@ -37,6 +37,7 @@ class InvoiceCopyController extends Controller
             ->with('user_id', auth()->user()->id);
     }
 
+//
     public function store(InvoiceStoreRequest $request)
     {
         $client = Client::firstOrCreateByUniqueName($request->input('client_name'));
@@ -70,10 +71,7 @@ class InvoiceCopyController extends Controller
             ]);
         }
 
-        // Copy the custom fields
-        $custom = collect($fromInvoice->custom)->except('invoice_id')->toArray();
-        $toInvoice->custom->update($custom);
+        return response()->json(['id' => $fromInvoice->id], 200);
 
-        return response()->json(['id' => $toInvoice->id], 200);
     }
 }
