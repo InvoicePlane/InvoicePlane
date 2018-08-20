@@ -76,7 +76,7 @@ class V200Alpha2 extends Migration
             $table->string('mimetype');
             $table->integer('size');
             $table->string('url_key');
-            $table->integer('client_visibility');
+            $table->integer('client_visibility')->default(0);
         });
 
         Schema::create('clients', function (Blueprint $table) {
