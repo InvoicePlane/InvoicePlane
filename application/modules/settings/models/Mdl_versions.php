@@ -24,7 +24,7 @@ class Mdl_Versions extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
+        $this->db->select($this->sqlCalcFoundRowsHelper() . 'ip_versions.*', false);
     }
 
     public function default_order_by()
