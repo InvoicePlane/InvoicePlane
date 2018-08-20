@@ -141,9 +141,9 @@ class V200Alpha2 extends Migration
             $table->integer('client_id');
             $table->string('name');
             $table->string('email');
-            $table->boolean('default_to');
-            $table->boolean('default_cc');
-            $table->boolean('default_bcc');
+            $table->boolean('default_to')->default(0);
+            $table->boolean('default_cc')->default(0);
+            $table->boolean('default_bcc')->default(0);
 
             $table->index('client_id');
         });
