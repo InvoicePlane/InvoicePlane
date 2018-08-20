@@ -14,8 +14,8 @@
 
 namespace IP\Modules\Settings\Requests;
 
-use IP\Modules\Settings\Rules\ValidFile;
 use Illuminate\Foundation\Http\FormRequest;
+use IP\Modules\Settings\Rules\ValidFile;
 
 class SettingUpdateRequest extends FormRequest
 {

@@ -14,8 +14,8 @@
 
 namespace IP\Modules\Addons\Models;
 
-use IP\Support\Migrations;
 use Illuminate\Database\Eloquent\Model;
+use IP\Support\Migrations;
 
 class Addon extends Model
 {

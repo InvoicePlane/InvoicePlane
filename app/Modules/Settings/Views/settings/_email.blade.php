@@ -1,34 +1,34 @@
 @section('javascript')
     @parent
-    <script type="text/javascript">
-      $(function () {
+    <script>
+        $(function () {
 
-        $('#mailPassword').val('');
+            $('#mailPassword').val('');
 
-        updateEmailOptions();
+            updateEmailOptions();
 
-        $('#mailDriver').change(function () {
-          updateEmailOptions();
+            $('#mailDriver').change(function () {
+                updateEmailOptions();
+            });
+
+            function updateEmailOptions () {
+
+                $('.email-option').hide();
+
+                mailDriver = $('#mailDriver').val();
+
+                if (mailDriver == 'smtp') {
+                    $('.smtp-option').show();
+                }
+                else if (mailDriver == 'sendmail') {
+                    $('.sendmail-option').show();
+                }
+                else if (mailDriver == 'mail') {
+                    $('.phpmail-option').show();
+                }
+            }
+
         });
-
-        function updateEmailOptions () {
-
-          $('.email-option').hide();
-
-          mailDriver = $('#mailDriver').val();
-
-          if (mailDriver == 'smtp') {
-            $('.smtp-option').show();
-          }
-          else if (mailDriver == 'sendmail') {
-            $('.sendmail-option').show();
-          }
-          else if (mailDriver == 'mail') {
-            $('.phpmail-option').show();
-          }
-        }
-
-      });
     </script>
 @stop
 
@@ -118,8 +118,8 @@
             <label>@lang('ip.quote_email_subject'): </label>
             {!! Form::text('setting[quoteEmailSubject]', config('ip.quoteEmailSubject'), ['class' => 'form-control']) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
     <div class="col-md-6">
@@ -127,8 +127,8 @@
             <label>@lang('ip.invoice_email_subject'): </label>
             {!! Form::text('setting[invoiceEmailSubject]', config('ip.invoiceEmailSubject'), ['class' => 'form-control']) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
 </div>
@@ -139,8 +139,8 @@
             <label>@lang('ip.default_quote_email_body'): </label>
             {!! Form::textarea('setting[quoteEmailBody]', config('ip.quoteEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
     <div class="col-md-6">
@@ -148,8 +148,8 @@
             <label>@lang('ip.default_invoice_email_body'): </label>
             {!! Form::textarea('setting[invoiceEmailBody]', config('ip.invoiceEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
 </div>
@@ -160,8 +160,8 @@
             <label>@lang('ip.overdue_email_subject'): </label>
             {!! Form::text('setting[overdueInvoiceEmailSubject]', config('ip.overdueInvoiceEmailSubject'), ['class' => 'form-control']) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
     <div class="col-md-6">
@@ -169,8 +169,8 @@
             <label>@lang('ip.upcoming_payment_notice_email_subject'): </label>
             {!! Form::text('setting[upcomingPaymentNoticeEmailSubject]', config('ip.upcomingPaymentNoticeEmailSubject'), ['class' => 'form-control']) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
 </div>
@@ -181,8 +181,8 @@
             <label>@lang('ip.default_overdue_invoice_email_body'): </label>
             {!! Form::textarea('setting[overdueInvoiceEmailBody]', config('ip.overdueInvoiceEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
     <div class="col-md-6">
@@ -190,8 +190,8 @@
             <label>@lang('ip.upcoming_payment_notice_email_body'): </label>
             {!! Form::textarea('setting[upcomingPaymentNoticeEmailBody]', config('ip.upcomingPaymentNoticeEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#invoice-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
 </div>
@@ -219,8 +219,8 @@
             <label>@lang('ip.quote_approved_email_body'): </label>
             {!! Form::textarea('setting[quoteApprovedEmailBody]', config('ip.quoteApprovedEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
     <div class="col-md-6">
@@ -228,8 +228,8 @@
             <label>@lang('ip.quote_rejected_email_body'): </label>
             {!! Form::textarea('setting[quoteRejectedEmailBody]', config('ip.quoteRejectedEmailBody'), ['class' => 'form-control', 'rows' => 5]) !!}
             <span class="help-block"><a
-                        href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
-                        target="_blank">@lang('ip.available_fields')</a></span>
+                    href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#quote-email-template"
+                    target="_blank">@lang('ip.available_fields')</a></span>
         </div>
     </div>
 </div>
@@ -238,14 +238,14 @@
     <label>@lang('ip.payment_receipt_email_subject'): </label>
     {!! Form::text('setting[paymentReceiptEmailSubject]', config('ip.paymentReceiptEmailSubject'), ['class' => 'form-control']) !!}
     <span class="help-block"><a
-                href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template"
-                target="_blank">@lang('ip.available_fields')</a></span>
+            href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template"
+            target="_blank">@lang('ip.available_fields')</a></span>
 </div>
 
 <div class="form-group">
     <label>@lang('ip.default_payment_receipt_body'): </label>
     {!! Form::textarea('setting[paymentReceiptBody]', config('ip.paymentReceiptBody'), ['class' => 'form-control', 'rows' => 5]) !!}
     <span class="help-block"><a
-                href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template"
-                target="_blank">@lang('ip.available_fields')</a></span>
+            href="https://wiki.invoiceplane.com/en/2.0/customization/email-templates#payment-receipt-email-template"
+            target="_blank">@lang('ip.available_fields')</a></span>
 </div>

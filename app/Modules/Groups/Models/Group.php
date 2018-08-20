@@ -14,8 +14,8 @@
 
 namespace IP\Modules\Groups\Models;
 
-use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
+use IP\Traits\Sortable;
 
 class Group extends Model
 {

@@ -15,6 +15,7 @@
 namespace IP\Modules\Tasks\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use IP\Events\InvoiceCreatedRecurring;
 use IP\Events\OverdueNoticeEmailed;
 use IP\Http\Controllers\Controller;
@@ -26,7 +27,6 @@ use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
 use IP\Support\DateFormatter;
 use IP\Support\Parser;
 use IP\Support\Statuses\InvoiceStatuses;
-use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -179,7 +179,8 @@ class TaskController extends Controller
             }
 
             if ($recurringInvoice->stop_date == '0000-00-00' or ($recurringInvoice->stop_date !== '0000-00-00' and ($recurringInvoice->next_date < $recurringInvoice->stop_date))) {
-                $nextDate = DateFormatter::incrementDate(substr($recurringInvoice->next_date, 0, 10), $recurringInvoice->recurring_period, $recurringInvoice->recurring_frequency);
+                $nextDate = DateFormatter::incrementDate(substr($recurringInvoice->next_date, 0, 10),
+                    $recurringInvoice->recurring_period, $recurringInvoice->recurring_frequency);
             } else {
                 $nextDate = '0000-00-00';
             }

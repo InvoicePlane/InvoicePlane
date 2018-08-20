@@ -12,8 +12,8 @@
                         id: '{{ $id }}'
                     });
                 }).fail(function (response) {
-                    showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
-                });
+                showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
+            });
         });
 
     });

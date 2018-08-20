@@ -2,34 +2,34 @@
 
 @section('javascript')
 
-    <script type="text/javascript">
-      $(function () {
+    <script>
+        $(function () {
 
-        $('#btn-run-report').click(function () {
+            $('#btn-run-report').click(function () {
 
-          var company_profile_id = $('#company_profile_id').val();
-          var year = $('#year').val();
+                var company_profile_id = $('#company_profile_id').val();
+                var year = $('#year').val();
 
-          $.post("{{ route('reports.revenueByClient.validate') }}", {
-            company_profile_id: company_profile_id,
-            year: year
-          }).done(function () {
-            clearErrors();
-            $('#form-validation-placeholder').html('');
-            var output_type = $('input[name=output_type]:checked').val();
-            query_string = '?company_profile_id=' + company_profile_id + '&year=' + year;
-            if (output_type == 'preview') {
-              $('#preview').show();
-              $('#preview-results').attr('src', "{{ route('reports.revenueByClient.html') }}" + query_string);
-            }
-            else if (output_type == 'pdf') {
-              window.location.href = "{{ route('reports.revenueByClient.pdf') }}" + query_string;
-            }
-          }).fail(function (response) {
-            showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
-          });
+                $.post("{{ route('reports.revenueByClient.validate') }}", {
+                    company_profile_id: company_profile_id,
+                    year: year
+                }).done(function () {
+                    clearErrors();
+                    $('#form-validation-placeholder').html('');
+                    var output_type = $('input[name=output_type]:checked').val();
+                    query_string = '?company_profile_id=' + company_profile_id + '&year=' + year;
+                    if (output_type == 'preview') {
+                        $('#preview').show();
+                        $('#preview-results').attr('src', "{{ route('reports.revenueByClient.html') }}" + query_string);
+                    }
+                    else if (output_type == 'pdf') {
+                        window.location.href = "{{ route('reports.revenueByClient.pdf') }}" + query_string;
+                    }
+                }).fail(function (response) {
+                    showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
+                });
+            });
         });
-      });
     </script>
 
 @stop
@@ -83,11 +83,11 @@
                                     <label>@lang('ip.output_type'):</label><br>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type" value="preview"
-                                               checked="checked"> @lang('ip.preview')
+                                            checked="checked"> @lang('ip.preview')
                                     </label>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type"
-                                               value="pdf"> @lang('ip.pdf')
+                                            value="pdf"> @lang('ip.pdf')
                                     </label>
                                 </div>
                             </div>
@@ -100,10 +100,10 @@
         </div>
 
         <div class="row" id="preview"
-             style="height: 100%; background-color: #e6e6e6; padding: 25px; margin: 0; display: none;">
+            style="height: 100%; background-color: #e6e6e6; padding: 25px; margin: 0; display: none;">
             <div class="col-lg-10 col-lg-offset-1" style="background-color: white;">
                 <iframe src="about:blank" id="preview-results" frameborder="0" style="width: 100%;" scrolling="no"
-                        onload="resizeIframe(this, 500);"></iframe>
+                    onload="resizeIframe(this, 500);"></iframe>
             </div>
         </div>
 

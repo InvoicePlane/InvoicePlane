@@ -23,7 +23,7 @@
 
             <div class="logo-wrapper text-center">
                 <img src="{{ asset('assets/img/ip_logo.svg') }}" alt="@lang('ip.setup')"
-                        width="300px" class="mb-5">
+                    width="300px" class="mb-5">
             </div>
 
             <div class="card">

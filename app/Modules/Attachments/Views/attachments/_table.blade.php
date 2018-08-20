@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     $(function () {
         $('.btn-delete-attachment').click(function () {
             if (confirm('@lang('ip.delete_record_warning')')) {

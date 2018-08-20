@@ -23,7 +23,8 @@
         <tr>
             <td><input type="checkbox" class="bulk-record" data-id="{{ $invoice->id }}"></td>
             <td class="hidden-sm hidden-xs">
-                <span class="label label-{{ $statuses[$invoice->invoice_status_id] }}">{{ trans('ip.' . $statuses[$invoice->invoice_status_id]) }}</span>
+                <span
+                    class="label label-{{ $statuses[$invoice->invoice_status_id] }}">{{ trans('ip.' . $statuses[$invoice->invoice_status_id]) }}</span>
                 @if ($invoice->viewed)
                     <span class="label label-success">@lang('ip.viewed')</span>
                 @else
@@ -31,12 +32,12 @@
                 @endif
             </td>
             <td><a href="{{ route('invoices.edit', [$invoice->id]) }}"
-                   title="@lang('ip.edit')">{{ $invoice->number }}</a></td>
+                    title="@lang('ip.edit')">{{ $invoice->number }}</a></td>
             <td class="hidden-xs">{{ $invoice->formatted_invoice_date }}</td>
             <td class="hidden-md hidden-sm hidden-xs"
                 @if ($invoice->isOverdue) style="color: red; font-weight: bold;" @endif>{{ $invoice->formatted_due_at }}</td>
             <td><a href="{{ route('clients.show', [$invoice->client->id]) }}"
-                   title="@lang('ip.view_client')">{{ $invoice->client->unique_name }}</a></td>
+                    title="@lang('ip.view_client')">{{ $invoice->client->unique_name }}</a></td>
             <td class="hidden-sm hidden-xs">{{ $invoice->summary }}</td>
             <td style="text-align: right; padding-right: 25px;">{{ $invoice->amount->formatted_total }}</td>
             <td class="hidden-sm hidden-xs"
@@ -48,25 +49,25 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('invoices.edit', [$invoice->id]) }}"><i
-                                        class="fa fa-edit"></i> @lang('ip.edit')</a></li>
+                                    class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                         <li><a href="{{ route('invoices.pdf', [$invoice->id]) }}" target="_blank"
-                               id="btn-pdf-invoice"><i class="fa fa-print"></i> @lang('ip.pdf')</a></li>
+                                id="btn-pdf-invoice"><i class="fa fa-print"></i> @lang('ip.pdf')</a></li>
                         <li><a href="javascript:void(0)" class="email-invoice" data-invoice-id="{{ $invoice->id }}"
-                               data-redirect-to="{{ request()->fullUrl() }}"><i
-                                        class="fa fa-envelope"></i> @lang('ip.email')</a></li>
+                                data-redirect-to="{{ request()->fullUrl() }}"><i
+                                    class="fa fa-envelope"></i> @lang('ip.email')</a></li>
                         <li><a href="{{ route('clientCenter.public.invoice.show', [$invoice->url_key]) }}"
-                               target="_blank" id="btn-public-invoice"><i
-                                        class="fa fa-globe"></i> @lang('ip.public')</a></li>
+                                target="_blank" id="btn-public-invoice"><i
+                                    class="fa fa-globe"></i> @lang('ip.public')</a></li>
                         @if ($invoice->isPayable or config('ip.allowPaymentsWithoutBalance'))
                             <li><a href="javascript:void(0)" id="btn-enter-payment" class="enter-payment"
-                                   data-invoice-id="{{ $invoice->id }}"
-                                   data-invoice-balance="{{ $invoice->amount->formatted_numeric_balance }}"
-                                   data-redirect-to="{{ request()->fullUrl() }}"><i
-                                            class="fa fa-credit-card"></i> @lang('ip.enter_payment')</a></li>
+                                    data-invoice-id="{{ $invoice->id }}"
+                                    data-invoice-balance="{{ $invoice->amount->formatted_numeric_balance }}"
+                                    data-redirect-to="{{ request()->fullUrl() }}"><i
+                                        class="fa fa-credit-card"></i> @lang('ip.enter_payment')</a></li>
                         @endif
                         <li><a href="{{ route('invoices.delete', [$invoice->id]) }}"
-                               onclick="return confirm('@lang('ip.delete_record_warning')');"><i
-                                        class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
+                                onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                    class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
                     </ul>
                 </div>
             </td>

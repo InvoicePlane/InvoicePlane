@@ -22,7 +22,8 @@
         <tr>
             <td><input type="checkbox" class="bulk-record" data-id="{{ $quote->id }}"></td>
             <td class="hidden-sm hidden-xs">
-                <span class="label label-{{ $statuses[$quote->quote_status_id] }}">{{ trans('ip.' . $statuses[$quote->quote_status_id]) }}</span>
+                <span
+                    class="label label-{{ $statuses[$quote->quote_status_id] }}">{{ trans('ip.' . $statuses[$quote->quote_status_id]) }}</span>
                 @if ($quote->viewed)
                     <span class="label label-success">@lang('ip.viewed')</span>
                 @else
@@ -30,11 +31,11 @@
                 @endif
             </td>
             <td><a href="{{ route('quotes.edit', [$quote->id]) }}"
-                   title="@lang('ip.edit')">{{ $quote->number }}</a></td>
+                    title="@lang('ip.edit')">{{ $quote->number }}</a></td>
             <td class="hidden-xs">{{ $quote->formatted_quote_date }}</td>
             <td class="hidden-sm hidden-xs">{{ $quote->formatted_expires_at }}</td>
             <td><a href="{{ route('clients.show', [$quote->client->id]) }}"
-                   title="@lang('ip.view_client')">{{ $quote->client->unique_name }}</a></td>
+                    title="@lang('ip.view_client')">{{ $quote->client->unique_name }}</a></td>
             <td class="hidden-sm hidden-xs">{{ $quote->summary }}</td>
             <td style="text-align: right; padding-right: 25px;">{{ $quote->amount->formatted_total }}</td>
             <td class="hidden-xs">
@@ -51,17 +52,17 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('quotes.edit', [$quote->id]) }}"><i
-                                        class="fa fa-edit"></i> @lang('ip.edit')</a></li>
+                                    class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                         <li><a href="{{ route('quotes.pdf', [$quote->id]) }}" target="_blank" id="btn-pdf-quote"><i
-                                        class="fa fa-print"></i> @lang('ip.pdf')</a></li>
+                                    class="fa fa-print"></i> @lang('ip.pdf')</a></li>
                         <li><a href="javascript:void(0)" class="email-quote" data-quote-id="{{ $quote->id }}"
-                               data-redirect-to="{{ request()->fullUrl() }}"><i
-                                        class="fa fa-envelope"></i> @lang('ip.email')</a></li>
+                                data-redirect-to="{{ request()->fullUrl() }}"><i
+                                    class="fa fa-envelope"></i> @lang('ip.email')</a></li>
                         <li><a href="{{ route('clientCenter.public.quote.show', [$quote->url_key]) }}" target="_blank"
-                               id="btn-public-quote"><i class="fa fa-globe"></i> @lang('ip.public')</a></li>
+                                id="btn-public-quote"><i class="fa fa-globe"></i> @lang('ip.public')</a></li>
                         <li><a href="{{ route('quotes.delete', [$quote->id]) }}"
-                               onclick="return confirm('@lang('ip.delete_record_warning')');"><i
-                                        class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
+                                onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                    class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
                     </ul>
                 </div>
             </td>

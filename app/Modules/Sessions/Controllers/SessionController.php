@@ -31,7 +31,10 @@ class SessionController extends Controller
     {
         $rememberMe = ($request->input('remember_me')) ? true : false;
 
-        if (!auth()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')], $rememberMe)) {
+        if (!auth()->attempt([
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ], $rememberMe)) {
             return redirect()->route('session.login')->with('error', trans('ip.invalid_credentials'));
         }
 

@@ -64,7 +64,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
                 <button type="button" id="btn-submit-mail-invoice" class="btn btn-primary"
-                        data-loading-text="@lang('ip.sending')...">@lang('ip.send')</button>
+                    data-loading-text="@lang('ip.sending')...">@lang('ip.send')</button>
             </div>
         </div>
     </div>

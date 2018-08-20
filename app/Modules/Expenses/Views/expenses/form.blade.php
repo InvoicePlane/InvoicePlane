@@ -9,10 +9,10 @@
 @stop
 
 @section('javascript')
-    <script type="text/javascript">
-      $(function () {
-        $('#expense_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
-      });
+    <script>
+        $(function () {
+            $('#expense_date').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
+        });
     </script>
 @stop
 

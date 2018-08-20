@@ -1,7 +1,7 @@
-<script type="text/javascript">
-  $(function () {
-    $('#modal-mail-content').modal();
-  });
+<script>
+    $(function () {
+        $('#modal-mail-content').modal();
+    });
 </script>
 
 <div class="modal fade" id="modal-mail-content">

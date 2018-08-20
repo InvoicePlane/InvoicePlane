@@ -15,6 +15,8 @@
 namespace IP\Modules\Quotes\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use IP\Events\QuoteCreated;
 use IP\Events\QuoteCreating;
 use IP\Events\QuoteDeleted;
@@ -25,8 +27,6 @@ use IP\Support\HTML;
 use IP\Support\NumberFormatter;
 use IP\Support\Statuses\QuoteStatuses;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Quote extends Model
 {
@@ -384,7 +384,9 @@ class Quote extends Model
                 ->orWhere('expires_at', 'like', '%' . $keywords . '%')
                 ->orWhere('summary', 'like', '%' . $keywords . '%')
                 ->orWhereIn('client_id', function ($query) use ($keywords) {
-                    $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
+                    $query->select('id')
+                        ->from('clients')
+                        ->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
                 });
         }
 

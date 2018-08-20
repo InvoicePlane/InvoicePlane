@@ -62,7 +62,7 @@
         <div class="form-group">
             <label>@lang('ip.recalculate_quotes'): </label><br>
             <button type="button" class="btn btn-default" id="btn-recalculate-quotes"
-                    data-loading-text="@lang('ip.recalculating_wait')">@lang('ip.recalculate')</button>
+                data-loading-text="@lang('ip.recalculating_wait')">@lang('ip.recalculate')</button>
             <p class="help-block">@lang('ip.recalculate_help_text')</p>
         </div>
     </div>

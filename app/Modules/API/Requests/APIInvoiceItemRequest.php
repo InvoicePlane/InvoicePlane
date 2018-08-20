@@ -14,8 +14,8 @@
 
 namespace IP\Modules\API\Requests;
 
-use IP\Support\NumberFormatter;
 use Illuminate\Foundation\Http\FormRequest;
+use IP\Support\NumberFormatter;
 
 class APIInvoiceItemRequest extends FormRequest
 {

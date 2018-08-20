@@ -18,11 +18,11 @@
         <tr>
             <td>
                 <a href="{{ route('recurringInvoices.edit', [$recurringInvoice->id]) }}"
-                   title="@lang('ip.edit')">{{ $recurringInvoice->id }}</a>
+                    title="@lang('ip.edit')">{{ $recurringInvoice->id }}</a>
             </td>
             <td>
                 <a href="{{ route('clients.show', [$recurringInvoice->client->id]) }}"
-                   title="@lang('ip.view_client')">{{ $recurringInvoice->client->unique_name }}</a>
+                    title="@lang('ip.view_client')">{{ $recurringInvoice->client->unique_name }}</a>
             </td>
             <td class="hidden-sm hidden-xs">{{ $recurringInvoice->summary }}</td>
             <td>{{ $recurringInvoice->formatted_next_date }}</td>
@@ -36,10 +36,10 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('recurringInvoices.edit', [$recurringInvoice->id]) }}"><i
-                                        class="fa fa-edit"></i> @lang('ip.edit')</a></li>
+                                    class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                         <li><a href="{{ route('recurringInvoices.delete', [$recurringInvoice->id]) }}"
-                               onclick="return confirm('@lang('ip.delete_record_warning')');"><i
-                                        class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
+                                onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                    class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
                     </ul>
                 </div>
             </td>

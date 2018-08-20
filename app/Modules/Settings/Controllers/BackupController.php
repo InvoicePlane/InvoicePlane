@@ -14,8 +14,8 @@
 
 namespace IP\Modules\Settings\Controllers;
 
-use IP\Http\Controllers\Controller;
 use Ifsnop\Mysqldump\Mysqldump;
+use IP\Http\Controllers\Controller;
 
 class BackupController extends Controller
 {

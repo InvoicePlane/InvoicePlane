@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                             <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}"
-                                    placeholder="@lang('ip.email')" aria-label="@lang('ip.email')">
+                                placeholder="@lang('ip.email')" aria-label="@lang('ip.email')" autofocus>
                         </div>
                     </div>
 
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <input type="password" name="password" id="password" class="form-control"
-                                    placeholder="@lang('ip.password')" aria-label="@lang('ip.password')">
+                                placeholder="@lang('ip.password')" aria-label="@lang('ip.password')">
                         </div>
                     </div>
 
@@ -59,7 +59,7 @@
                             <div class="custom-control custom-checkbox pt-1">
                                 <input type="hidden" name="remember_me" value="0">
                                 <input type="checkbox" class="custom-control-input" id="remember_me"
-                                        @if(old('remember_me')) checked @endif>
+                                    @if(old('remember_me')) checked @endif>
 
                                 <label class="custom-control-label" for="remember_me">
                                     @lang('ip.remember_me')

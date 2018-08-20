@@ -26,12 +26,12 @@ class FixerIOCurrencyConverter
     public function convert($from, $to)
     {
         try {
-            $result = json_decode(file_get_contents('https://api.fixer.io/latest?base=' . $from . '&symbols=' . $to), true);
+            $url = 'https://api.fixer.io/latest?base=' . $from . '&symbols=' . $to;
+            $result = json_decode(file_get_contents($url), true);
 
             return $result['rates'][strtoupper($to)];
         } catch (\Exception $e) {
             return '1.0000000';
         }
-
     }
 }

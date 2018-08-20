@@ -14,10 +14,10 @@
 
 namespace IP\Modules\ClientCenter\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use IP\Http\Controllers\Controller;
 use IP\Modules\Invoices\Models\Invoice;
 use IP\Support\Statuses\InvoiceStatuses;
-use Illuminate\Support\Facades\DB;
 
 class ClientCenterInvoiceController extends Controller
 {

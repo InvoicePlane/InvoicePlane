@@ -20,18 +20,21 @@ class QuoteCustom extends Model
 {
     /**
      * The table name
+     *
      * @var string
      */
     protected $table = 'quotes_custom';
 
     /**
      * The primary key
+     *
      * @var string
      */
     protected $primaryKey = 'quote_id';
 
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = [];

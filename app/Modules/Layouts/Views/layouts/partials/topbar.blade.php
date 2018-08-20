@@ -12,7 +12,7 @@
 
         <li class="nav-item">
             <a href="https://wiki.invoiceplane.com/en/2.0/" title="@lang('ip.documentation')"
-                    target="_blank" class="nav-link">
+                target="_blank" class="nav-link">
                 <i class="fa fa-question-circle"></i>
                 <span class="sr-only">@lang('ip.documentation')</span>
             </a>

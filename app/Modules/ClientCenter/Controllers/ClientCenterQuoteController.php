@@ -14,10 +14,10 @@
 
 namespace IP\Modules\ClientCenter\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use IP\Http\Controllers\Controller;
 use IP\Modules\Quotes\Models\Quote;
 use IP\Support\Statuses\QuoteStatuses;
-use Illuminate\Support\Facades\DB;
 
 class ClientCenterQuoteController extends Controller
 {

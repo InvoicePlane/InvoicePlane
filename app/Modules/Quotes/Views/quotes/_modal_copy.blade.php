@@ -51,7 +51,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
                 <button type="button" id="btn-copy-quote-submit"
-                        class="btn btn-primary">@lang('ip.submit')</button>
+                    class="btn btn-primary">@lang('ip.submit')</button>
             </div>
         </div>
     </div>

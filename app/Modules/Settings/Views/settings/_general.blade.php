@@ -1,17 +1,17 @@
 @section('javascript')
     @parent
-    <script type="text/javascript">
-      $().ready(function () {
-        $('#btn-check-update').click(function () {
-          $.get("{{ route('settings.updateCheck') }}")
-            .done(function (response) {
-              alert(response.message);
-            })
-            .fail(function (response) {
-              alert("@lang('ip.unknown_error')");
+    <script>
+        $().ready(function () {
+            $('#btn-check-update').click(function () {
+                $.get("{{ route('settings.updateCheck') }}")
+                    .done(function (response) {
+                        alert(response.message);
+                    })
+                    .fail(function (response) {
+                        alert("@lang('ip.unknown_error')");
+                    });
             });
         });
-      });
     </script>
 @stop
 
@@ -39,7 +39,7 @@
                 {!! Form::text('version', config('ip.version'), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
                 <span class="input-group-btn">
 					<button class="btn btn-default" id="btn-check-update"
-                            type="button">@lang('ip.check_for_update')</button>
+                        type="button">@lang('ip.check_for_update')</button>
 				</span>
             </div>
         </div>

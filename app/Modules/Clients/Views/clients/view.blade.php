@@ -8,13 +8,13 @@
         </h1>
         <div class="pull-right">
             <a href="javascript:void(0)" class="btn btn-default create-quote"
-               data-unique-name="{{ $client->unique_name }}">@lang('ip.create_quote')</a>
+                data-unique-name="{{ $client->unique_name }}">@lang('ip.create_quote')</a>
             <a href="javascript:void(0)" class="btn btn-default create-invoice"
-               data-unique-name="{{ $client->unique_name }}">@lang('ip.create_invoice')</a>
+                data-unique-name="{{ $client->unique_name }}">@lang('ip.create_invoice')</a>
             <a href="{{ route('clients.edit', [$client->id]) }}" class="btn btn-default">@lang('ip.edit')</a>
             <a class="btn btn-default" href="{{ route('clients.delete', [$client->id]) }}"
-               onclick="return confirm('@lang('ip.delete_client_warning')');"><i
-                        class="fa fa-trash"></i> @lang('ip.delete')</a>
+                onclick="return confirm('@lang('ip.delete_client_warning')');"><i
+                    class="fa fa-trash"></i> @lang('ip.delete')</a>
         </div>
         <div class="clearfix"></div>
     </section>
@@ -77,7 +77,7 @@
                                         <tr>
                                             <td class="col-md-2">@lang('ip.email')</td>
                                             <td class="col-md-10"><a
-                                                        href="mailto:{!! $client->email !!}">{!! $client->email !!}</a>
+                                                    href="mailto:{!! $client->email !!}">{!! $client->email !!}</a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -95,7 +95,7 @@
                                         <tr>
                                             <td class="col-md-2">@lang('ip.web')</td>
                                             <td class="col-md-10"><a href="{!! $client->web !!}"
-                                                                     target="_blank">{!! $client->web !!}</a></td>
+                                                    target="_blank">{!! $client->web !!}</a></td>
                                         </tr>
                                         @foreach ($customFields as $customField)
                                             <tr>
@@ -119,7 +119,7 @@
                             <div class="panel panel-default">
                                 @include('quotes._table')
                                 <div class="panel-footer"><p class="text-center"><strong><a
-                                                    href="{{ route('quotes.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
+                                                href="{{ route('quotes.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
                                     </p></div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                             <div class="panel panel-default">
                                 @include('invoices._table')
                                 <div class="panel-footer"><p class="text-center"><strong><a
-                                                    href="{{ route('invoices.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
+                                                href="{{ route('invoices.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
                                     </p></div>
                             </div>
                         </div>
@@ -137,7 +137,7 @@
                             <div class="panel panel-default">
                                 @include('recurring_invoices._table')
                                 <div class="panel-footer"><p class="text-center"><strong><a
-                                                    href="{{ route('recurringInvoices.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
+                                                href="{{ route('recurringInvoices.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
                                     </p></div>
                             </div>
                         </div>
@@ -146,7 +146,7 @@
                             <div class="panel panel-default">
                                 @include('payments._table')
                                 <div class="panel-footer"><p class="text-center"><strong><a
-                                                    href="{{ route('payments.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
+                                                href="{{ route('payments.index') }}?client={{ $client->id }}">@lang('ip.view_all')</a></strong>
                                     </p></div>
                             </div>
                         </div>

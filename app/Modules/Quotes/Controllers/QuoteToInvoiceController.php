@@ -47,7 +47,10 @@ class QuoteToInvoiceController extends Controller
         $invoice = $this->quoteToInvoice->convert(
             $quote,
             DateFormatter::unformat($request->input('invoice_date')),
-            DateFormatter::incrementDateByDays(DateFormatter::unformat($request->input('invoice_date')), config('ip.invoicesDueAfter')),
+            DateFormatter::incrementDateByDays(
+                DateFormatter::unformat($request->input('invoice_date')),
+                config('ip.invoicesDueAfter')
+            ),
             $request->input('group_id')
         );
 

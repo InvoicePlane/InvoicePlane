@@ -77,7 +77,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
                 <button type="button" id="recurring-invoice-create-confirm"
-                        class="btn btn-primary">@lang('ip.submit')
+                    class="btn btn-primary">@lang('ip.submit')
                 </button>
             </div>
         </div>

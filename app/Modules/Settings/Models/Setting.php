@@ -14,15 +14,16 @@
 
 namespace IP\Modules\Settings\Models;
 
-use IP\Events\SettingSaving;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
+use IP\Events\SettingSaving;
 
 class Setting extends Model
 {
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = ['id'];

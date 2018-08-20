@@ -14,11 +14,11 @@
 
 namespace IP\Modules\Quotes\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Events\QuoteItemSaving;
 use IP\Events\QuoteModified;
 use IP\Support\CurrencyFormatter;
 use IP\Support\NumberFormatter;
-use Illuminate\Database\Eloquent\Model;
 
 class QuoteItem extends Model
 {

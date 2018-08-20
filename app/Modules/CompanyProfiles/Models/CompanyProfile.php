@@ -14,6 +14,7 @@
 
 namespace IP\Modules\CompanyProfiles\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Events\CompanyProfileCreated;
 use IP\Events\CompanyProfileCreating;
 use IP\Events\CompanyProfileDeleted;
@@ -21,7 +22,6 @@ use IP\Events\CompanyProfileSaving;
 use IP\Modules\Expenses\Models\Expense;
 use IP\Modules\Invoices\Models\Invoice;
 use IP\Modules\Quotes\Models\Quote;
-use Illuminate\Database\Eloquent\Model;
 
 class CompanyProfile extends Model
 {

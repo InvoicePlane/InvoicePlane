@@ -2,18 +2,18 @@
 
 @section('content')
 
-    <script type="text/javascript">
-      $(function () {
-        $('#name').focus();
+    <script>
+        $(function () {
+            $('#name').focus();
 
-          @if ($editMode == true)
-          $('#btn-delete-logo').click(function () {
-            $.post("{{ route('companyProfiles.deleteLogo', [$companyProfile->id]) }}").done(function () {
-              $('#div-logo').html('');
+            @if ($editMode == true)
+            $('#btn-delete-logo').click(function () {
+                $.post("{{ route('companyProfiles.deleteLogo', [$companyProfile->id]) }}").done(function () {
+                    $('#div-logo').html('');
+                });
             });
-          });
-          @endif
-      });
+            @endif
+        });
     </script>
 
     @if ($editMode == true)
@@ -117,7 +117,7 @@
                                             @if ($editMode and $companyProfile->logo)
                                                 <p>{!! $companyProfile->logo(100) !!}</p>
                                                 <a href="javascript:void(0)"
-                                                   id="btn-delete-logo">@lang('ip.remove_logo')</a>
+                                                    id="btn-delete-logo">@lang('ip.remove_logo')</a>
                                             @endif
                                         </div>
                                         {!! Form::file('logo') !!}
