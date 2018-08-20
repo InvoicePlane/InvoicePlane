@@ -1,22 +1,20 @@
-<script type="text/javascript">
+<script>
+    $(function () {
 
-  $(function () {
+        var clients = new Bloodhound({
+            datumTokenizer: function (d) {
+                return Bloodhound.tokenizers.whitespace(d.num);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: '{{ route('clients.ajax.lookup') }}' + '?query=%QUERY'
+        });
 
-    var clients = new Bloodhound({
-      datumTokenizer: function (d) {
-        return Bloodhound.tokenizers.whitespace(d.num);
-      },
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      remote: '{{ route('clients.ajax.lookup') }}' + '?query=%QUERY'
+        clients.initialize();
+
+        $('.client-lookup').typeahead(null, {
+            minLength: 3,
+            source: clients.ttAdapter()
+        });
+
     });
-
-    clients.initialize();
-
-    $('.client-lookup').typeahead(null, {
-      minLength: 3,
-      source: clients.ttAdapter()
-    });
-
-  });
-
 </script>

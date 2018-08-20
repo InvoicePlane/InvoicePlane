@@ -14,10 +14,11 @@
 
 namespace IP\Modules\Attachments\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Events\AttachmentCreating;
 use IP\Events\AttachmentDeleted;
 use IP\Support\DateFormatter;
-use Illuminate\Database\Eloquent\Model;
+use IP\Support\NumberFormatter;
 
 class Attachment extends Model
 {
@@ -68,5 +69,16 @@ class Attachment extends Model
     public function getFormattedCreatedAtAttribute()
     {
         return DateFormatter::format($this->created_at, true);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getformattedSize()
+    {
+        return NumberFormatter::fileSize($this->size);
     }
 }
