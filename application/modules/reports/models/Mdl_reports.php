@@ -22,7 +22,9 @@ class Mdl_Reports extends CI_Model
      */
     public function sales_by_client($from_date = null, $to_date = null)
     {
-        $this->db->select('client_name, client_surname, CONCAT(client_name," ", client_surname) AS client_namesurname');
+        $this->load->helper('sql');
+        $this->db->select("client_name, client_surname, " .
+            sqlConcat($this->db->dbdriver, 'client_name', ' ', 'client_surname') . " AS client_namesurname");
 
         if ($from_date and $to_date) {
 
@@ -202,6 +204,8 @@ class Mdl_Reports extends CI_Model
         $maxQuantity = null,
         $taxChecked = false
     ) {
+        $this->load->helper('sql');
+        
         if ($minQuantity == "") {
             $minQuantity = 0;
         }
@@ -224,7 +228,7 @@ class Mdl_Reports extends CI_Model
         $this->db->select('client_name as Name');
         $this->db->select('client_name');
         $this->db->select('client_surname');
-        $this->db->select('CONCAT(client_name," ", client_surname) AS client_namesurname');
+        $this->db->select(sqlConcat($this->db->dbdriver, 'client_name', ' ', 'client_surname'). ' AS client_namesurname');
 
         if ($taxChecked == false) {
 

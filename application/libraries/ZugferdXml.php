@@ -93,7 +93,7 @@ class ZugferdXml
      */
     function zugferdFormattedDate($date)
     {
-        if ($date && $date <> '0000-00-00') {
+        if ($date && $date <> '0000-00-00' && $date <> 'NULL') {
             $date = DateTime::createFromFormat('Y-m-d', $date);
             return $date->format('Ymd');
         }

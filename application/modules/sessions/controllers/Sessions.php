@@ -50,7 +50,8 @@ class Sessions extends Base_Controller
             } else {
 
                 // Check if the user is marked as active
-                if ($user->user_active == 0) {
+                $this->load->helper('sql');
+                if (!sqlToBool($user->user_active)) {
                     $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
                     $this->mdl_sessions->log_sessionevent('loginalert_user_inactive');
                     redirect('sessions/login');

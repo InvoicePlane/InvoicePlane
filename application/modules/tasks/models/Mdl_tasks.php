@@ -20,9 +20,11 @@ class Mdl_Tasks extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *,
-          (CASE WHEN DATEDIFF(NOW(), task_finish_date) > 0 THEN 1 ELSE 0 END) is_overdue
-        ', false);
+        $this->load->helper('sql');
+        $datediff = sqlDateDiff('NOW()', 'task_finish_date', $this->db->dbdriver);
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . "*,
+          (CASE WHEN $datediff > 0 THEN 1 ELSE 0 END) is_overdue
+        ", false);
     }
 
     public function default_order_by()

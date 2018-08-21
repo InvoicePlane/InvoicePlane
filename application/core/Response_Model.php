@@ -46,23 +46,4 @@ class Response_Model extends Form_Validation_Model
 
         $this->session->set_flashdata('alert_success', trans('record_successfully_deleted'));
     }
-  
-    /**
-     * Helper method for SQL_CALC_FOUND_ROWS
-     *
-     * @return Either 'SQL_CALC_FOUND_ROWS ' as string with trailing space for mysql or 
-     *         an empty string when using any other database.
-     */
-    public function sqlCalcFoundRowsHelper()
-    {
-        // Check if database is already loaded
-        if (!$this->db) {
-            $this->load->database();
-        }
-        // For MySQLi driver, use SQL_CALC_FOUND_ROWS
-        if ($this->db->dbdriver == 'mysqli') {
-            return 'SQL_CALC_FOUND_ROWS ';
-        }
-        return '';
-    }
 }

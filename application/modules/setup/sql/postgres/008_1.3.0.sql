@@ -4,7 +4,7 @@ ALTER TABLE ip_quotes
 
 -- Solves IP-216
 ALTER TABLE ip_invoices
-  ADD COLUMN invoice_time_created TIME NOT NULL DEFAULT '00:00:00',
+  ADD COLUMN invoice_time_created TIME DEFAULT NULL,
   ADD COLUMN invoice_password VARCHAR(90) NULL;
 
 -- Solves IP-196

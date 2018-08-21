@@ -44,7 +44,8 @@ class Mdl_Custom_Fields extends MY_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*', false);
+        $this->load->helper('sql');
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . 'ip_custom_fields.*', false);
     }
 
     public function default_order_by()
