@@ -113,7 +113,8 @@
 
             <div class="form-group">
                 <label for="invoice_group_id"><?php _trans('invoice_group'); ?></label>
-                <select name="invoice_group_id" id="invoice_group_id" class="form-control simple-select">
+                <select name="invoice_group_id" id="invoice_group_id"
+                	class="form-control simple-select" data-minimum-results-for-search="Infinity">
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                 <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
