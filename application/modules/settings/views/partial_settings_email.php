@@ -34,7 +34,7 @@
                             <?php _trans('email_pdf_attachment'); ?>
                         </label>
                         <select name="settings[email_pdf_attachment]" id="settings[email_pdf_attachment]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0"><?php _trans('no'); ?></option>
                             <option value="1" <?php check_select(get_setting('email_pdf_attachment'), '1'); ?>>
                                 <?php _trans('yes'); ?>
@@ -47,7 +47,7 @@
                             <?php _trans('email_send_method'); ?>
                         </label>
                         <select name="settings[email_send_method]" id="email_send_method"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <option value="phpmail" <?php check_select(get_setting('email_send_method'), 'phpmail'); ?>>
                                 <?php _trans('email_send_method_phpmail'); ?>

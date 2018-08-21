@@ -103,7 +103,8 @@
                            value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
                 <?php } ?>
 
-                <select id="payment_method_id" name="payment_method_id" class="form-control simple-select"
+                <select id="payment_method_id" name="payment_method_id"
+                	class="form-control simple-select" data-minimum-results-for-search="Infinity"
                     <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
 
                     <?php foreach ($payment_methods as $payment_method) { ?>
