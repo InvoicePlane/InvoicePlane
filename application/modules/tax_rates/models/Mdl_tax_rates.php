@@ -20,7 +20,8 @@ class Mdl_Tax_Rates extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
+        $this->load->helper('sql');
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . '*', false);
     }
 
     public function default_order_by()

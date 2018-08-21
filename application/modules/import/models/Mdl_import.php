@@ -78,11 +78,14 @@ class Mdl_Import extends Response_Model
 
     public function default_select()
     {
-        $this->db->select("SQL_CALC_FOUND_ROWS ip_imports.*,
+        $this->load->helper('sql');
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . "
+            ip_imports.*,
             (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_clients' AND ip_import_details.import_id = ip_imports.import_id) AS num_clients,
             (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_invoices' AND ip_import_details.import_id = ip_imports.import_id) AS num_invoices,
             (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_invoice_items' AND ip_import_details.import_id = ip_imports.import_id) AS num_invoice_items,
-            (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_payments' AND ip_import_details.import_id = ip_imports.import_id) AS num_payments", false);
+            (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_payments' AND ip_import_details.import_id = ip_imports.import_id) AS num_payments", 
+        false);
     }
 
     public function default_order_by()

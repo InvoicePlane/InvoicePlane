@@ -24,7 +24,8 @@ class Mdl_Quote_Custom extends Validator
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_quote_custom.*, ip_custom_fields.*', false);
+        $this->load->helper('sql');
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . 'ip_quote_custom.*, ip_custom_fields.*', false);
     }
 
     public function default_join()

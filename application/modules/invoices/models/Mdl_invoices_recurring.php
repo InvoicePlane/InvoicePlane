@@ -50,10 +50,12 @@ class Mdl_Invoices_Recurring extends Response_Model
 
     public function default_select()
     {
-        $this->db->select("SQL_CALC_FOUND_ROWS ip_invoices.*,
+        $this->load->helper('sql');
+        $this->db->select( sqlCalcFoundRows($this->db->dbdriver) . "
+            ip_invoices.*,
             ip_clients.client_name,
             ip_invoices_recurring.*,
-            IF(recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00', 'active', 'inactive') AS recur_status", false);
+            IF(recur_end_date > date(NOW()) OR recur_end_date = ".sqlNullDate($this->db->dbdriver).", 'active', 'inactive') AS recur_status", false);
     }
 
     public function default_join()
@@ -102,7 +104,8 @@ class Mdl_Invoices_Recurring extends Response_Model
         if ($db_array['recur_end_date']) {
             $db_array['recur_end_date'] = date_to_mysql($db_array['recur_end_date']);
         } else {
-            $db_array['recur_end_date'] = '0000-00-00';
+            $this->load->helper('sql');
+            $db_array['recur_end_date'] = sqlNullDate($this->db->dbdriver);
         }
 
         return $db_array;
@@ -113,9 +116,10 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function stop($invoice_recurring_id)
     {
+        $this->load->helper('sql');
         $db_array = array(
             'recur_end_date' => date('Y-m-d'),
-            'recur_next_date' => '0000-00-00'
+            'recur_next_date' => sqlNullDate($this->db->dbdriver)
         );
 
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
@@ -128,7 +132,8 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function active()
     {
-        $this->filter_where("recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date = '0000-00-00')");
+        $this->load->helper('sql');
+        $this->filter_where("recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date = ".sqlNullDate($this->db->dbdriver).")");
         return $this;
     }
 

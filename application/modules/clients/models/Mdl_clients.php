@@ -22,9 +22,11 @@ class Mdl_Clients extends Response_Model
 
     public function default_select()
     {
+        $this->load->helper('sql');
+        $dbd = $this->db->dbdriver;
         $this->db->select(
-            'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname'
+            sqlCalcFoundRows($dbd) . $this->table . '.*, ' .
+            sqlConcat($dbd, $this->table.'.client_name', ' ', $this->table . '.client_surname').' AS client_fullname'
             , false);
     }
 
@@ -204,19 +206,34 @@ class Mdl_Clients extends Response_Model
 
     public function with_total()
     {
-        $this->filter_select('IFnull((SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_total', false);
+        $this->load->helper('sql');
+        $this->filter_select(
+            sqlIfNull('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (
+                            SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
+                        ))', 0, $this->db->dbdriver) .' AS client_invoice_total', 
+            false);
         return $this;
     }
 
     public function with_total_paid()
     {
-        $this->filter_select('IFnull((SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_paid', false);
+        $this->load->helper('sql');
+        $this->filter_select(
+            sqlIfNull('(SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (
+                            SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
+                        ))', 0, $this->db->dbdriver) .' AS client_invoice_paid', 
+            false);
         return $this;
     }
 
     public function with_total_balance()
     {
-        $this->filter_select('IFnull((SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_balance', false);
+        $this->load->helper('sql');
+        $this->filter_select(
+            sqlIfNull('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (
+                            SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
+                        ))', 0, $this->db->dbdriver) .' AS client_invoice_balance', 
+            false);
         return $this;
     }
 
