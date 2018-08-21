@@ -24,7 +24,7 @@ class Mdl_Reports extends CI_Model
     {
         $this->load->helper('sql');
         $this->db->select("client_name, client_surname, " .
-            sql_concat('client_name', "' '", 'client_surname') . " AS client_namesurname");
+            sqlConcat($this->db->dbdriver, 'client_name', ' ', 'client_surname') . " AS client_namesurname");
 
         if ($from_date and $to_date) {
 
@@ -133,7 +133,6 @@ class Mdl_Reports extends CI_Model
      */
     public function invoice_aging()
     {
-        $this->load->helper('sql');
         $this->db->select('client_name, client_surname');
 
         $this->db->select('
@@ -143,8 +142,8 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sql_date_subtract('NOW()',sql_dt_interval('1 DAY')).'
-                            AND invoice_date_due >= '.sql_date_subtract('NOW()',sql_dt_interval('15 DAY')).'
+                            AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 1 DAY) 
+                            AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 15 DAY)
                 )
         ) AS range_1', false);
 
@@ -155,8 +154,8 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sql_date_subtract('NOW()',sql_dt_interval('16 DAY')).'
-                            AND invoice_date_due >= '.sql_date_subtract('NOW()',sql_dt_interval('30 DAY')).'
+                            AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 16 DAY) 
+                            AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                 )
         ) AS range_2', false);
 
@@ -167,7 +166,7 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sql_date_subtract('NOW()',sql_dt_interval('31 DAY')).'
+                            AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 31 DAY)
                 )
         ) AS range_3', false);
 
@@ -178,20 +177,16 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sql_date_subtract('NOW()',sql_dt_interval('1 DAY')).'
+                            AND invoice_date_due <= DATE_SUB(NOW(), INTERVAL 1 DAY)
                 )
         ) AS total_balance', false);
-        
-        $subquery = $this->db->get_compiled_select('ip_clients');
-        
-        $this->db->select('*');
-        $this->db->from("($subquery) s");
-        $this->db->where('range_1 >', 0);
-        $this->db->or_where('range_2 >', 0);
-        $this->db->or_where('range_3 >', 0);
-        $this->db->or_where('total_balance >', 0);
 
-        return $this->db->get()->result();
+        $this->db->having('range_1 >', 0);
+        $this->db->or_having('range_2 >', 0);
+        $this->db->or_having('range_3 >', 0);
+        $this->db->or_having('total_balance >', 0);
+
+        return $this->db->get('ip_clients')->result();
     }
 
     /**
@@ -210,7 +205,6 @@ class Mdl_Reports extends CI_Model
         $taxChecked = false
     ) {
         $this->load->helper('sql');
-        $date_created_like = sql_date_to_string('inv.invoice_date_created').' LIKE \'%';
         
         if ($minQuantity == "") {
             $minQuantity = 0;
@@ -234,7 +228,7 @@ class Mdl_Reports extends CI_Model
         $this->db->select('client_name as Name');
         $this->db->select('client_name');
         $this->db->select('client_surname');
-        $this->db->select(sql_concat('client_name', "' '", 'client_surname'). ' AS client_namesurname');
+        $this->db->select(sqlConcat($this->db->dbdriver, 'client_name', ' ', 'client_surname'). ' AS client_namesurname');
 
         if ($taxChecked == false) {
 
@@ -266,9 +260,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            ' . $date_created_like . $index . '-01-%\' 
-                                            OR ' . $date_created_like . $index . '-02-%\' 
-                                            OR ' . $date_created_like . $index . '-03-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-01-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -284,9 +278,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            ' . $date_created_like . $index . '-04-%\' 
-                                            OR ' . $date_created_like . $index . '-05-%\' 
-                                            OR ' . $date_created_like . $index . '-06-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-04-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -302,9 +296,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            ' . $date_created_like . $index . '-07-%\' 
-                                            OR ' . $date_created_like . $index . '-08-%\' 
-                                            OR ' . $date_created_like . $index . '-09-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-07-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -320,9 +314,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            ' . $date_created_like . $index . '-10-%\' 
-                                            OR ' . $date_created_like . $index . '-11-%\' 
-                                            OR ' . $date_created_like . $index . '-12-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-10-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);
@@ -393,9 +387,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-01-%\' 
-                                            OR ' . $date_created_like . $index . '-02-%\' 
-                                            OR ' . $date_created_like . $index . '-03-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-01-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -411,9 +405,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-04-%\' 
-                                            OR ' . $date_created_like . $index . '-05-%\' 
-                                            OR ' . $date_created_like . $index . '-06-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-04-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -429,9 +423,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-07-%\' 
-                                            OR ' . $date_created_like . $index . '-08-%\' 
-                                            OR ' . $date_created_like . $index . '-09-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-07-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -447,9 +441,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-10-%\' 
-                                            OR ' . $date_created_like . $index . '-11-%\' 
-                                            OR ' . $date_created_like . $index . '-12-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-10-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);
@@ -514,9 +508,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-01-%\' 
-                                            OR ' . $date_created_like . $index . '-02-%\' 
-                                            OR ' . $date_created_like . $index . '-03-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-01-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -532,9 +526,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-04-%\' 
-                                            OR ' . $date_created_like . $index . '-05-%\' 
-                                            OR ' . $date_created_like . $index . '-06-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-04-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -550,9 +544,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-07-%\' 
-                                            OR ' . $date_created_like . $index . '-08-%\' 
-                                            OR ' . $date_created_like . $index . '-09-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-07-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -568,9 +562,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-10-%\' 
-                                            OR ' . $date_created_like . $index . '-11-%\' 
-                                            OR ' . $date_created_like . $index . '-12-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-10-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);
@@ -641,9 +635,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-01-%\' 
-                                            OR ' . $date_created_like . $index . '-02-%\' 
-                                            OR ' . $date_created_like . $index . '-03-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-01-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-02-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -659,9 +653,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-04-%\' 
-                                            OR ' . $date_created_like . $index . '-06-%\'
-                                            OR ' . $date_created_like . $index . '-05-%\' 
+                                            inv.invoice_date_created LIKE \'%' . $index . '-04-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-05-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-06-%\'
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -677,9 +671,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-07-%\' 
-                                            OR ' . $date_created_like . $index . '-08-%\' 
-                                            OR ' . $date_created_like . $index . '-09-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-07-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-08-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -695,9 +689,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            ' . $date_created_like . $index . '-10-%\' 
-                                            OR ' . $date_created_like . $index . '-11-%\' 
-                                            OR ' . $date_created_like . $index . '-12-%\'
+                                            inv.invoice_date_created LIKE \'%' . $index . '-10-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-11-%\' 
+                                            OR inv.invoice_date_created LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);

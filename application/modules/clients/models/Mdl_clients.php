@@ -23,9 +23,10 @@ class Mdl_Clients extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
+        $dbd = $this->db->dbdriver;
         $this->db->select(
-            sql_calc_found_rows() . $this->table . '.*, ' .
-            sql_concat($this->table.'.client_name', "' '", $this->table . '.client_surname').' AS client_fullname'
+            sqlCalcFoundRows($dbd) . $this->table . '.*, ' .
+            sqlConcat($dbd, $this->table.'.client_name', ' ', $this->table . '.client_surname').' AS client_fullname'
             , false);
     }
 
@@ -150,10 +151,9 @@ class Mdl_Clients extends Response_Model
     function convert_date($input)
     {
         $this->load->helper('date_helper');
-        $this->load->helper('sql');
 
         if ($input == '') {
-            return sql_empty_date_input();
+            return '';
         }
 
         return date_to_mysql($input);
@@ -208,9 +208,9 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('sql');
         $this->filter_select(
-            sql_if_null('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (
+            sqlIfNull('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
-                        ))', 0) .' AS client_invoice_total', 
+                        ))', 0, $this->db->dbdriver) .' AS client_invoice_total', 
             false);
         return $this;
     }
@@ -219,9 +219,9 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('sql');
         $this->filter_select(
-            sql_if_null('(SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (
+            sqlIfNull('(SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
-                        ))', 0) .' AS client_invoice_paid', 
+                        ))', 0, $this->db->dbdriver) .' AS client_invoice_paid', 
             false);
         return $this;
     }
@@ -230,9 +230,9 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('sql');
         $this->filter_select(
-            sql_if_null('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (
+            sqlIfNull('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
-                        ))', 0) .' AS client_invoice_balance', 
+                        ))', 0, $this->db->dbdriver) .' AS client_invoice_balance', 
             false);
         return $this;
     }

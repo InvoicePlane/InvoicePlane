@@ -66,7 +66,8 @@ class Mdl_Quotes extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select( sql_calc_found_rows() . "
+        $dbd = $this->db->dbdriver;
+        $this->db->select( sqlCalcFoundRows($dbd) . "
             ip_users.user_name,
             ip_users.user_company,
             ip_users.user_address_1,
@@ -84,10 +85,10 @@ class Mdl_Quotes extends Response_Model
             ip_users.user_tax_code,
             ip_clients.*,
             ip_quote_amounts.quote_amount_id,
-            ".sql_if_null('ip_quote_amounts.quote_item_subtotal', '0.00')." AS quote_item_subtotal,
-            ".sql_if_null('ip_quote_amounts.quote_item_tax_total', '0.00')." AS quote_item_tax_total,
-            ".sql_if_null('ip_quote_amounts.quote_tax_total', '0.00')." AS quote_tax_total,
-            ".sql_if_null('ip_quote_amounts.quote_total', '0.00')." AS quote_total,
+            ".sqlIfNull('ip_quote_amounts.quote_item_subtotal', '0.00', $dbd)." AS quote_item_subtotal,
+            ".sqlIfNull('ip_quote_amounts.quote_item_tax_total', '0.00', $dbd)." AS quote_item_tax_total,
+            ".sqlIfNull('ip_quote_amounts.quote_tax_total', '0.00', $dbd)." AS quote_tax_total,
+            ".sqlIfNull('ip_quote_amounts.quote_total', '0.00', $dbd)." AS quote_total,
                 ip_invoices.invoice_number,
             ip_quotes.*", false);
     }

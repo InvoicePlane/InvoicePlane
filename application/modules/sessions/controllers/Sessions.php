@@ -51,7 +51,7 @@ class Sessions extends Base_Controller
 
                 // Check if the user is marked as active
                 $this->load->helper('sql');
-                if (!sql_to_bool($user->user_active)) {
+                if (!sqlToBool($user->user_active)) {
                     $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
                     $this->mdl_sessions->log_sessionevent('loginalert_user_inactive');
                     redirect('sessions/login');
@@ -79,6 +79,22 @@ class Sessions extends Base_Controller
         }
 
         $this->load->view('session_login', $view_data);
+    }
+
+    /**
+     * @param $email_address
+     * @param $password
+     * @return bool
+     */
+    public function authenticate($email_address, $password)
+    {
+        $this->load->model('mdl_sessions');
+
+        if ($this->mdl_sessions->auth($email_address, $password)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function logout()

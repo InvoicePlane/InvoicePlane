@@ -28,7 +28,7 @@ class Mdl_User_Custom extends Validator
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sql_calc_found_rows() . 'ip_user_custom.*, ip_custom_fields.*', false);
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . 'ip_user_custom.*, ip_custom_fields.*', false);
     }
 
     public function default_join()

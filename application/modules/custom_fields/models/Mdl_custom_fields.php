@@ -45,7 +45,7 @@ class Mdl_Custom_Fields extends MY_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sql_calc_found_rows() . 'ip_custom_fields.*', false);
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . 'ip_custom_fields.*', false);
     }
 
     public function default_order_by()
@@ -158,8 +158,6 @@ class Mdl_Custom_Fields extends MY_Model
         $clean_name = preg_replace('/[^a-z0-9_\s]/', '', strtolower(diacritics_remove_diacritics($custom_field_label)));
 
         $db_array['custom_field_type'] = $type;
-
-        $db_array['custom_field_order'] = (empty($db_array['custom_field_order']) ? 0 : $db_array['custom_field_order']);
 
         // Return the db array
         return $db_array;

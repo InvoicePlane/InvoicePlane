@@ -21,7 +21,7 @@ class Mdl_Payment_Methods extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sql_calc_found_rows() . '*', false);
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . '*', false);
     }
 
     public function order_by()

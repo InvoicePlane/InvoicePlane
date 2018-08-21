@@ -21,7 +21,7 @@ class Mdl_Projects extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sql_calc_found_rows() . '*', false);
+        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . '*', false);
     }
 
     public function default_order_by()
@@ -54,7 +54,6 @@ class Mdl_Projects extends Response_Model
             'client_id' => array(
                 'field' => 'client_id',
                 'label' => trans('client'),
-                'rules' => 'required'
             )
         );
     }
