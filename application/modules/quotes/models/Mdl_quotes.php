@@ -60,33 +60,34 @@ class Mdl_Quotes extends Response_Model
 
     public function default_select()
     {
-        $this->db->select("
-            SQL_CALC_FOUND_ROWS
+        $this->load->helper('sql');
+        $dbd = $this->db->dbdriver;
+        $this->db->select( sqlCalcFoundRows($dbd) . "
             ip_users.user_name,
-			ip_users.user_company,
-			ip_users.user_address_1,
-			ip_users.user_address_2,
-			ip_users.user_city,
-			ip_users.user_state,
-			ip_users.user_zip,
-			ip_users.user_country,
-			ip_users.user_phone,
-			ip_users.user_fax,
-			ip_users.user_mobile,
-			ip_users.user_email,
-			ip_users.user_web,
-			ip_users.user_vat_id,
-			ip_users.user_tax_code,
-			ip_clients.*,
-			ip_quote_amounts.quote_amount_id,
-			IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
-			IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
-			IFnull(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
-			IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
-            ip_invoices.invoice_number,
-			ip_quotes.*", false);
+            ip_users.user_company,
+            ip_users.user_address_1,
+            ip_users.user_address_2,
+            ip_users.user_city,
+            ip_users.user_state,
+            ip_users.user_zip,
+            ip_users.user_country,
+            ip_users.user_phone,
+            ip_users.user_fax,
+            ip_users.user_mobile,
+            ip_users.user_email,
+            ip_users.user_web,
+            ip_users.user_vat_id,
+            ip_users.user_tax_code,
+            ip_clients.*,
+            ip_quote_amounts.quote_amount_id,
+            ".sqlIfNull('ip_quote_amounts.quote_item_subtotal', '0.00', $dbd)." AS quote_item_subtotal,
+            ".sqlIfNull('ip_quote_amounts.quote_item_tax_total', '0.00', $dbd)." AS quote_item_tax_total,
+            ".sqlIfNull('ip_quote_amounts.quote_tax_total', '0.00', $dbd)." AS quote_tax_total,
+            ".sqlIfNull('ip_quote_amounts.quote_total', '0.00', $dbd)." AS quote_total,
+                ip_invoices.invoice_number,
+            ip_quotes.*", false);
     }
-
+    
     public function default_order_by()
     {
         $this->db->order_by('ip_quotes.quote_id DESC');

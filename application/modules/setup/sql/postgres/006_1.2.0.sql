@@ -59,7 +59,7 @@ INSERT INTO ip_products (
   SELECT
     0                              AS family_id,
     -- default to 0 (no family)
-    concat('sku-', item_lookup_id) AS product_sku,
+    ('sku-' || item_lookup_id) AS product_sku,
     -- use ip_item_lookup primary key as new SKU
     item_name,
     item_description,
