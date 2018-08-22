@@ -29,7 +29,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  |-----------------------------------------------------------------
- | SQL control functions and other wrappers
+ | SQL control & generic functions and other wrappers
  |-----------------------------------------------------------------
  */
 
@@ -71,11 +71,70 @@ function sqlIfNull($val1, $val2, $dbd = 'mysqli')
 }
 
 
+/**
+ * Rename table
+ *
+ * @param old   Old table name
+ * @param new   New table name
+ * @param dbd   Database driver
+ * @return Alter table query as string without trailing semicolon.
+ */
+function sqlRenameTable($old, $new, $dbd = 'mysqli')
+{
+    switch($dbd) {
+        case 'postgre':
+            return "ALTER TABLE $old RENAME TO $new";
+        default:
+            /* default mysqli */
+            break;
+    }
+    return "RENAME TABLE `$old` TO `$new`";
+}
+
+
+/**
+ * Get SQL quote char
+ *
+ * @param dbd   Database driver
+ * @return Single quote char used within driver to quote e.g. table names.
+ *         Might also be an empty string.
+ */
+function sqlQuoteChar($dbd = 'mysqli')
+{
+    switch($dbd) {
+        case 'postgre':
+            return '';
+        default:
+            /* default mysqli */
+            break;
+    }
+    return '`';
+}
+
+
 /*
  |-----------------------------------------------------------------
  | SQL data types
  |-----------------------------------------------------------------
  */
+
+/**
+ * Get SQL integer data type
+ *
+ * @param dbd   Database driver
+ * @return Integer datatype as string.
+ */
+function sqlInteger($dbd)
+{
+    switch($dbd) {
+        case 'postgre':
+            return 'INTEGER';
+        default:
+            /* default mysqli */
+            break;
+    }
+    return 'INT';
+}
 
 /**
  * Get general boolean value from database.
@@ -94,6 +153,24 @@ function sqlToBool($val)
         $val === 'true' || 
         $val === 't'
     );
+}
+
+/**
+ * Get a special marked null or empty string as an empty date input
+ * for form data. Null marked strings will be handled specially 
+ * when inserting data into the database.
+ *
+ * @param dbd   Database driver
+ * @return 'NULL::NULL' strings for databases where NULL type should be 
+ *         stored, empty string for e.g. MySQL.
+ */
+function sqlEmptyDateInput($dbd = 'mysqli')
+{
+    // Use non-standard zero-dates for MySQL
+    if ($dbd == 'mysqli')
+        return '';
+    // Default is null
+    return 'NULL::NULL';
 }
 
 /**
@@ -140,6 +217,27 @@ function sqlNullDateTime($dbd = 'mysqli')
     // Default is null
     return 'NULL';
 }
+
+
+/**
+ * Get primary key column constraint
+ *
+ * @param dbd   Database driver
+ * @return Primary key column constraint for create table statement
+ */
+function sqlPrimaryKey($dbd = 'mysqli')
+{
+    switch($dbd) {
+        case 'postgre':
+            return "SERIAL";
+        default:
+            /* default mysqli */
+            break;
+    }
+    return 'INT NOT NULL PRIMARY KEY AUTO_INCREMENT';
+}
+
+
 
 
 /*
