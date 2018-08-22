@@ -522,6 +522,30 @@ class Mdl_Invoices extends Response_Model
         return $this;
     }
 
+    /**
+     * Run this as last filter. The is_overdue_subquery method
+     * makes extracts the current query as subquery and runs the
+     * WHERE overdue = 1 part onto the new query.
+     *
+     * @return Database object with new query using the default select,
+     *         join and order_by as subquery.
+     */
+    public function is_overdue_subquery()
+    {
+        $this->default_select();
+        $this->db->from($this->table);
+        $this->default_join();
+        $this->default_order_by();
+        
+        // Prestore compiled query (note: direct inline subquery does not work)
+        $subquery = $this->db->get_compiled_select();
+        
+        $this->db->select('*');
+        $this->db->from("($subquery) s");
+        $this->db->where("is_overdue = 1");
+        return $this->db;
+    }
+
     public function by_client($client_id)
     {
         $this->filter_where('ip_invoices.client_id', $client_id);

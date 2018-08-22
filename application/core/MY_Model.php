@@ -219,7 +219,10 @@ class MY_Model extends CI_Model
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
 
-        $this->total_rows = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
+        $rowsquery = ($this->db->dbdriver == 'mysqli') ?
+            'SELECT FOUND_ROWS() AS num_rows' :
+            'SELECT COUNT(*) AS num_rows FROM '.$this->table;
+        $this->total_rows = $this->db->query($rowsquery)->row()->num_rows;
         $this->total_pages = ceil($this->total_rows / $per_page);
         $this->previous_offset = $this->offset - $per_page;
         $this->next_offset = $this->offset + $per_page;
@@ -254,7 +257,7 @@ class MY_Model extends CI_Model
         if (!$db_array) {
             $db_array = $this->db_array();
         }
-
+        
         $datetime = date('Y-m-d H:i:s');
 
         if (!$id) {
@@ -277,6 +280,16 @@ class MY_Model extends CI_Model
                     $db_array[$this->date_modified_field] = $datetime;
                 } else {
                     $db_array->{$this->date_modified_field} = $datetime;
+                }
+            }
+            
+            // Remove null type fields for input to store NULL values
+            // see sql_helper.php, e.g. sqlEmptyDateInput($dbd)
+            if (is_array($db_array)) {
+                foreach ($db_array as $k => $v) {
+                    if ($v === 'NULL::NULL') {
+                        unset($db_array[$k]);
+                    }
                 }
             }
 
