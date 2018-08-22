@@ -26,7 +26,7 @@ class Mdl_Clients extends Response_Model
         $dbd = $this->db->dbdriver;
         $this->db->select(
             sqlCalcFoundRows($dbd) . $this->table . '.*, ' .
-            sqlConcat($dbd, $this->table.'.client_name', ' ', $this->table . '.client_surname').' AS client_fullname'
+            sqlConcat($dbd, $this->table.'.client_name', "' '", $this->table . '.client_surname').' AS client_fullname'
             , false);
     }
 
@@ -151,9 +151,10 @@ class Mdl_Clients extends Response_Model
     function convert_date($input)
     {
         $this->load->helper('date_helper');
+        $this->load->helper('sql');
 
         if ($input == '') {
-            return '';
+            return sqlEmptyDateInput($this->db->dbdriver);
         }
 
         return date_to_mysql($input);
