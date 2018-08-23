@@ -54,6 +54,7 @@ class Mdl_Projects extends Response_Model
             'client_id' => array(
                 'field' => 'client_id',
                 'label' => trans('client'),
+                'rules' => 'required'
             )
         );
     }

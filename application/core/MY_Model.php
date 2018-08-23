@@ -260,7 +260,7 @@ class MY_Model extends CI_Model
         
         $datetime = date('Y-m-d H:i:s');
 
-        // Update 'NULL::NULL' string values to be stored as real null values
+        // Update 'NULL::NULL' strings to be stored as null values
         if (is_array($db_array)) {
             foreach ($db_array as $k => $v) {
                 if ($v === 'NULL::NULL') {

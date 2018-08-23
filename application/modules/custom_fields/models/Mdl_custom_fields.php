@@ -159,6 +159,8 @@ class Mdl_Custom_Fields extends MY_Model
 
         $db_array['custom_field_type'] = $type;
 
+        $db_array['custom_field_order'] = (empty($db_array['custom_field_order']) ? 0 : $db_array['custom_field_order']);
+
         // Return the db array
         return $db_array;
     }
