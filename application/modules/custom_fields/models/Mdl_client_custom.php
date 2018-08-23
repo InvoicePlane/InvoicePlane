@@ -28,7 +28,7 @@ class Mdl_Client_Custom extends Validator
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . 'ip_client_custom.*, ip_custom_fields.*', false);
+        $this->db->select(sqlCalcFoundRows() . 'ip_client_custom.*, ip_custom_fields.*', false);
     }
 
     public function default_order_by()

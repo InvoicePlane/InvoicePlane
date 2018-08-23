@@ -28,7 +28,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Retrieve general database driver
+ * Retrieve general database driver. The dbdriver
+ * is cached within a global variable for quicker loading
+ * in case .
  *
  * @return Default CI database driver
  */
@@ -37,7 +39,7 @@ function sqlDbDriver()
     if (!array_key_exists('dbdriver', $GLOBALS)) {
         $CI = &get_instance();
         if (!$CI->db->dbdriver) {
-            $CI->db->load();
+            $CI->load->database();
         }
         $GLOBALS['dbdriver'] = $CI->db->dbdriver;
     }
@@ -53,14 +55,13 @@ function sqlDbDriver()
 /**
  * Add SQL_CALC_FOUND_ROWS prefix depending on db driver.
  *
- * @param dbd   Database driver
  * @return Either 'SQL_CALC_FOUND_ROWS ' as string with trailing space for mysql or 
  *         an empty string when using any other database.
  */
-function sqlCalcFoundRows($dbd = 'mysqli')
+function sqlCalcFoundRows()
 {
     // Use SQL_CALC_FOUND_ROWS only for mysqli
-    return ($dbd != 'mysqli') ? '' : 'SQL_CALC_FOUND_ROWS ';
+    return (sqlDbDriver() != 'mysqli') ? '' : 'SQL_CALC_FOUND_ROWS ';
 }
 
 
@@ -71,13 +72,12 @@ function sqlCalcFoundRows($dbd = 'mysqli')
  *
  * @param val1  First value that will be tested against null
  * @param val2  Second value
- * @param dbd   Database driver
  * @return First value if it is not null, otherwise second value. If second value
  *         if also null, null is returned.
  */
-function sqlIfNull($val1, $val2, $dbd = 'mysqli')
+function sqlIfNull($val1, $val2)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "coalesce($val1, $val2)";
         default:
@@ -93,12 +93,11 @@ function sqlIfNull($val1, $val2, $dbd = 'mysqli')
  *
  * @param old   Old table name
  * @param new   New table name
- * @param dbd   Database driver
  * @return Alter table query as string without trailing semicolon.
  */
-function sqlRenameTable($old, $new, $dbd = 'mysqli')
+function sqlRenameTable($old, $new)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "ALTER TABLE $old RENAME TO $new";
         default:
@@ -112,13 +111,12 @@ function sqlRenameTable($old, $new, $dbd = 'mysqli')
 /**
  * Get SQL quote char
  *
- * @param dbd   Database driver
  * @return Single quote char used within driver to quote e.g. table names.
  *         Might also be an empty string.
  */
-function sqlQuoteChar($dbd = 'mysqli')
+function sqlQuoteChar()
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return '';
         default:
@@ -138,12 +136,11 @@ function sqlQuoteChar($dbd = 'mysqli')
 /**
  * Get SQL integer data type
  *
- * @param dbd   Database driver
  * @return Integer datatype as string.
  */
-function sqlInteger($dbd)
+function sqlInteger()
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return 'INTEGER';
         default:
@@ -178,9 +175,9 @@ function sqlToBool($val)
  * @param val   The value that will be cast.
  * @return String calling the CAST method to get a string representation
  */
-function sqlDateToString($val, $dbd)
+function sqlDateToString($val)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "CAST($val AS TEXT)";
         default:
@@ -195,14 +192,13 @@ function sqlDateToString($val, $dbd)
  * for form data. Null marked strings will be handled specially 
  * when inserting data into the database.
  *
- * @param dbd   Database driver
  * @return 'NULL::NULL' strings for databases where NULL type should be 
  *         stored, empty string for e.g. MySQL.
  */
-function sqlEmptyDateInput($dbd = 'mysqli')
+function sqlEmptyDateInput()
 {
     // Use non-standard zero-dates for MySQL
-    if ($dbd == 'mysqli')
+    if (sqlDbDriver() == 'mysqli')
         return '';
     // Default is null
     return 'NULL::NULL';
@@ -211,13 +207,12 @@ function sqlEmptyDateInput($dbd = 'mysqli')
 /**
  * Get a null or zero date as string
  *
- * @param dbd   Database driver
  * @return In case of mysqli a zero date, otherwise NULL as string
  */
-function sqlNullDate($dbd = 'mysqli')
+function sqlNullDate()
 {
     // Use non-standard zero-dates for MySQL
-    if ($dbd == 'mysqli')
+    if (sqlDbDriver() == 'mysqli')
         return '0000-00-00';
     // Default is null
     return 'NULL';
@@ -226,13 +221,12 @@ function sqlNullDate($dbd = 'mysqli')
 /**
  * Get a null or zero time as string
  *
- * @param dbd   Database driver
  * @return In case of mysqli a zero time, otherwise NULL as string
  */
-function sqlNullTime($dbd = 'mysqli')
+function sqlNullTime()
 {
     // Use non-standard zero-times for MySQL
-    if ($dbd == 'mysqli')
+    if (sqlDbDriver() == 'mysqli')
         return '00:00:00';
     // Default is null
     return 'NULL';
@@ -241,13 +235,12 @@ function sqlNullTime($dbd = 'mysqli')
 /**
  * Get a null or zero datetime timestamp as string
  *
- * @param dbd   Database driver
  * @return In case of mysqli a zero timestamp, otherwise NULL as string
  */
-function sqlNullDateTime($dbd = 'mysqli')
+function sqlNullDateTime()
 {
     // Use non-standard zero-datetimes for MySQL
-    if ($dbd == 'mysqli')
+    if (sqlDbDriver() == 'mysqli')
         return '0000-00-00 00:00:00';
     // Default is null
     return 'NULL';
@@ -257,12 +250,11 @@ function sqlNullDateTime($dbd = 'mysqli')
 /**
  * Get primary key column constraint
  *
- * @param dbd   Database driver
  * @return Primary key column constraint for create table statement
  */
-function sqlPrimaryKey($dbd = 'mysqli')
+function sqlPrimaryKey()
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "SERIAL";
         default:
@@ -280,21 +272,18 @@ function sqlPrimaryKey($dbd = 'mysqli')
  */
 
 /**
- * Concatenate two or more (non-)strings. Note that the first
- * param is the used database driver, the first concat value
- * is the second param.
+ * Concatenate two or more (non-)strings
  * 
- * @param dbd       Database driver
  * @param ... vals   Variadic list of values
  * @return String concatenating all input values
  */
-function sqlConcat($dbd, ...$vals)
+function sqlConcat(...$vals)
 {
     $start  = 'CONCAT(';
     $end    = ')';
     $glue   = ',';
     
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             $start = '(';
             $glue = '||';
@@ -320,14 +309,13 @@ function sqlConcat($dbd, ...$vals)
  *
  * @param val   Any datetime string that will be enclosed by the
  *              driver specific year function. 
- * @param dbd   Database driver
  * @return Sql string calling the year function with the passed
  *         parameter, e.g. "YEAR(<val>)". Result string might 
  *         contain single quotes for inner strings.
  */
-function sqlYear($val, $dbd = 'mysqli')
+function sqlYear($val)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "to_char($val, 'YYYY')";
         default:
@@ -343,14 +331,13 @@ function sqlYear($val, $dbd = 'mysqli')
  *
  * @param val   Any datetime string that will be enclosed by the
  *              driver specific month function. 
- * @param dbd   Database driver
  * @return Sql string calling the month function with the passed
  *         parameter, e.g. "MONTH(<val>)". Result string might 
  *         contain single quotes for inner strings.
  */
-function sqlMonth($val, $dbd = 'mysqli')
+function sqlMonth($val)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "to_char($val, 'MM')";
         default:
@@ -366,14 +353,13 @@ function sqlMonth($val, $dbd = 'mysqli')
  *
  * @param val   Any datetime string that will be enclosed by the
  *              driver specific quarter function. 
- * @param dbd   Database driver
  * @return Sql string calling the quarter function with the passed
  *         parameter, e.g. "QUARTER(<val>)". Result string might 
  *         contain single quotes for inner strings.
  */
-function sqlQuarter($val, $dbd = 'mysqli')
+function sqlQuarter($val)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "to_char($val, 'Q')";
         default:
@@ -388,14 +374,13 @@ function sqlQuarter($val, $dbd = 'mysqli')
  * Get sql interval as string
  *
  * @param val   Interval value
- * @param dbd   Database driver
  *
  * @return Sql string for datetime interval as string. Result string 
  *         might contain single quotes for inner strings.
  */
-function sqlDtInterval($val, $dbd = 'mysqli')
+function sqlDtInterval($val)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "INTERVAL '$val'";;
         default:
@@ -411,13 +396,11 @@ function sqlDtInterval($val, $dbd = 'mysqli')
  *
  * @param dts   Datetime start value
  * @param dte   Datetime end value
- * @param dbd   Database driver
- *
  * @return Sql string for datetime interval as integer result
  */
-function sqlDateDiff($dts, $dte, $dbd = 'mysqli')
+function sqlDateDiff($dts, $dte)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "(".$dts."::timestamp::date - ".$dte."::timestamp::date)";
         default:
@@ -433,13 +416,11 @@ function sqlDateDiff($dts, $dte, $dbd = 'mysqli')
  *
  * @param val1  Date, time, timestamp or interval value 1
  * @param val2  Date, time, timestamp or interval value 2
- * @param dbd   Database driver
- *
  * @return Sql string for subtracting value 1 from value 2
  */
-function sqlDateSubtract($val1, $val2, $dbd = 'mysqli')
+function sqlDateSubtract($val1, $val2)
 {
-    switch($dbd) {
+    switch(sqlDbDriver()) {
         case 'postgre':
             return "$val1 - $val2";
         default:
