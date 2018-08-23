@@ -260,6 +260,15 @@ class MY_Model extends CI_Model
         
         $datetime = date('Y-m-d H:i:s');
 
+        // Update 'NULL::NULL' string values to be stored as real null values
+        if (is_array($db_array)) {
+            foreach ($db_array as $k => $v) {
+                if ($v === 'NULL::NULL') {
+                    $db_array[$k] = null;
+                }
+            }
+        }
+
         if (!$id) {
             if ($this->date_created_field) {
                 if (is_array($db_array)) {
@@ -283,16 +292,6 @@ class MY_Model extends CI_Model
                 }
             }
             
-            // Remove null type fields for input to store NULL values
-            // see sql_helper.php, e.g. sqlEmptyDateInput($dbd)
-            if (is_array($db_array)) {
-                foreach ($db_array as $k => $v) {
-                    if ($v === 'NULL::NULL') {
-                        unset($db_array[$k]);
-                    }
-                }
-            }
-
             $this->db->insert($this->table, $db_array);
 
             return $this->db->insert_id();
