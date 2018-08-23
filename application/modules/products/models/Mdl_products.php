@@ -21,7 +21,7 @@ class Mdl_Products extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sqlCalcFoundRows($this->db->dbdriver) . '*', false);
+        $this->db->select(sqlCalcFoundRows() . '*', false);
     }
 
     public function default_order_by()

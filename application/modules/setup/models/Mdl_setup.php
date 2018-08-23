@@ -270,10 +270,9 @@ class Mdl_Setup extends CI_Model
     public function upgrade_023_1_5_0()
     {
         $this->load->helper('sql');
-        $dbd  = $this->db->dbdriver;
-        $pkey = sqlPrimaryKey($dbd);
-        $qc   = sqlQuoteChar($dbd);
-        $int  = sqlInteger($dbd);
+        $pkey = sqlPrimaryKey();
+        $qc   = sqlQuoteChar();
+        $int  = sqlInteger();
         
         $res = $this->db->query('SELECT * FROM ip_custom_fields');
         $drop_columns = array();
@@ -373,8 +372,7 @@ class Mdl_Setup extends CI_Model
             $this->db->query("DROP TABLE IF EXISTS {$qc}ip_{$table}_custom{$qc}");
             $query = sqlRenameTable(
                 'ip_'.$table.'_custom_new', 
-                'ip_' . $table . '_custom', 
-                $dbd
+                'ip_' . $table . '_custom'
             );
             $this->db->query($query);
         }

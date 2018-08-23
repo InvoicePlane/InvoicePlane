@@ -22,7 +22,7 @@ class Mdl_Payments extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select( sqlCalcFoundRows($this->db->dbdriver) . "
+        $this->db->select( sqlCalcFoundRows() . "
             ip_payment_methods.*,
             ip_invoice_amounts.*,
             ip_clients.client_name,
