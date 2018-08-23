@@ -104,7 +104,8 @@ class Mdl_Tasks extends Response_Model
 
         $db_array['task_finish_date'] = date_to_mysql($db_array['task_finish_date']);
         $db_array['task_price'] = standardize_amount($db_array['task_price']);
-
+        $db_array['project_id'] = (empty($db_array['project_id']) ? 0 : $db_array['project_id']);
+        
         return $db_array;
     }
 
