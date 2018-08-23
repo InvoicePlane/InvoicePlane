@@ -24,7 +24,7 @@ class Mdl_Reports extends CI_Model
     {
         $this->load->helper('sql');
         $this->db->select("client_name, client_surname, " .
-            sqlConcat($this->db->dbdriver, 'client_name', "' '", 'client_surname') . " AS client_namesurname");
+            sqlConcat('client_name', "' '", 'client_surname') . " AS client_namesurname");
 
         if ($from_date and $to_date) {
 
@@ -134,7 +134,6 @@ class Mdl_Reports extends CI_Model
     public function invoice_aging()
     {
         $this->load->helper('sql');
-        $dbd = $this->db->dbdriver;
         $this->db->select('client_name, client_surname');
 
         $this->db->select('
@@ -144,8 +143,8 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('1 DAY', $dbd), $dbd).'
-                            AND invoice_date_due >= '.sqlDateSubtract('NOW()',sqlDtInterval('15 DAY', $dbd), $dbd).'
+                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('1 DAY')).'
+                            AND invoice_date_due >= '.sqlDateSubtract('NOW()',sqlDtInterval('15 DAY')).'
                 )
         ) AS range_1', false);
 
@@ -156,8 +155,8 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('16 DAY', $dbd), $dbd).'
-                            AND invoice_date_due >= '.sqlDateSubtract('NOW()',sqlDtInterval('30 DAY', $dbd), $dbd).'
+                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('16 DAY')).'
+                            AND invoice_date_due >= '.sqlDateSubtract('NOW()',sqlDtInterval('30 DAY')).'
                 )
         ) AS range_2', false);
 
@@ -168,7 +167,7 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('31 DAY', $dbd), $dbd).'
+                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('31 DAY')).'
                 )
         ) AS range_3', false);
 
@@ -179,7 +178,7 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id 
-                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('1 DAY', $dbd), $dbd).'
+                            AND invoice_date_due <= '.sqlDateSubtract('NOW()',sqlDtInterval('1 DAY')).'
                 )
         ) AS total_balance', false);
         
@@ -211,7 +210,6 @@ class Mdl_Reports extends CI_Model
         $taxChecked = false
     ) {
         $this->load->helper('sql');
-        $dbd = $this->db->dbdriver;
         
         if ($minQuantity == "") {
             $minQuantity = 0;
@@ -235,7 +233,7 @@ class Mdl_Reports extends CI_Model
         $this->db->select('client_name as Name');
         $this->db->select('client_name');
         $this->db->select('client_surname');
-        $this->db->select(sqlConcat($dbd, 'client_name', "' '", 'client_surname'). ' AS client_namesurname');
+        $this->db->select(sqlConcat('client_name', "' '", 'client_surname'). ' AS client_namesurname');
 
         if ($taxChecked == false) {
 
@@ -267,9 +265,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-01-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-02-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-03-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-01-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-02-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -285,9 +283,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-04-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-05-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-06-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-04-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-05-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-06-%\'
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -303,9 +301,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-07-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-08-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-09-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-07-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-08-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -321,9 +319,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-10-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-11-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-12-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-10-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-11-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);
@@ -394,9 +392,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-01-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-02-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-03-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-01-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-02-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -412,9 +410,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-04-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-05-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-06-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-04-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-05-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-06-%\'
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -430,9 +428,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-07-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-08-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-09-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-07-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-08-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -448,9 +446,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-10-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-11-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-12-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-10-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-11-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);
@@ -515,9 +513,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-01-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-02-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-03-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-01-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-02-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -533,9 +531,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-04-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-05-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-06-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-04-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-05-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-06-%\'
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -551,9 +549,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-07-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-08-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-09-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-07-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-08-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -569,9 +567,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-10-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-11-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-12-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-10-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-11-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);
@@ -642,9 +640,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-01-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-02-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-03-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-01-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-02-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-03-%\'
                                         )
                             )
                     ) AS payment_t1_' . $index . '', false);
@@ -660,9 +658,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-04-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-06-%\'
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-05-%\' 
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-04-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-06-%\'
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-05-%\' 
                                         )
                             )
                     ) AS payment_t2_' . $index . '', false);
@@ -678,9 +676,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-07-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-08-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-09-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-07-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-08-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-09-%\'
                                         )
                             )
                     ) AS payment_t3_' . $index . '', false);
@@ -696,9 +694,9 @@ class Mdl_Reports extends CI_Model
                                         AND ' . $this->db->escape($to_date) . '>= inv.invoice_date_created 
                                         AND 
                                         (
-                                            '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-10-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-11-%\' 
-                                            OR '.sqlDateToString('inv.invoice_date_created',$dbd).' LIKE \'%' . $index . '-12-%\'
+                                            '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-10-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-11-%\' 
+                                            OR '.sqlDateToString('inv.invoice_date_created').' LIKE \'%' . $index . '-12-%\'
                                         )
                             )
                     ) AS payment_t4_' . $index . '', false);

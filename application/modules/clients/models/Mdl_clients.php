@@ -23,10 +23,9 @@ class Mdl_Clients extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $dbd = $this->db->dbdriver;
         $this->db->select(
-            sqlCalcFoundRows($dbd) . $this->table . '.*, ' .
-            sqlConcat($dbd, $this->table.'.client_name', "' '", $this->table . '.client_surname').' AS client_fullname'
+            sqlCalcFoundRows() . $this->table . '.*, ' .
+            sqlConcat($this->table.'.client_name', "' '", $this->table . '.client_surname').' AS client_fullname'
             , false);
     }
 
@@ -154,7 +153,7 @@ class Mdl_Clients extends Response_Model
         $this->load->helper('sql');
 
         if ($input == '') {
-            return sqlEmptyDateInput($this->db->dbdriver);
+            return sqlEmptyDateInput();
         }
 
         return date_to_mysql($input);
@@ -211,7 +210,7 @@ class Mdl_Clients extends Response_Model
         $this->filter_select(
             sqlIfNull('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
-                        ))', 0, $this->db->dbdriver) .' AS client_invoice_total', 
+                        ))', 0) .' AS client_invoice_total', 
             false);
         return $this;
     }
@@ -222,7 +221,7 @@ class Mdl_Clients extends Response_Model
         $this->filter_select(
             sqlIfNull('(SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
-                        ))', 0, $this->db->dbdriver) .' AS client_invoice_paid', 
+                        ))', 0) .' AS client_invoice_paid', 
             false);
         return $this;
     }
@@ -233,7 +232,7 @@ class Mdl_Clients extends Response_Model
         $this->filter_select(
             sqlIfNull('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
-                        ))', 0, $this->db->dbdriver) .' AS client_invoice_balance', 
+                        ))', 0) .' AS client_invoice_balance', 
             false);
         return $this;
     }
