@@ -238,8 +238,6 @@ function sqlPrimaryKey($dbd = 'mysqli')
 }
 
 
-
-
 /*
  |-----------------------------------------------------------------
  | SQL string methods
