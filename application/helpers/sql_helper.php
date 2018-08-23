@@ -27,6 +27,23 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  |
  */
 
+/**
+ * Retrieve general database driver
+ *
+ * @return Default CI database driver
+ */
+function sqlDbDriver()
+{
+    if (!array_key_exists('dbdriver', $GLOBALS)) {
+        $CI = &get_instance();
+        if (!$CI->db->dbdriver) {
+            $CI->db->load();
+        }
+        $GLOBALS['dbdriver'] = $CI->db->dbdriver;
+    }
+    return $GLOBALS['dbdriver'];
+}
+
 /*
  |-----------------------------------------------------------------
  | SQL control & generic functions and other wrappers
@@ -153,6 +170,24 @@ function sqlToBool($val)
         $val === 'true' || 
         $val === 't'
     );
+}
+
+/**
+ * Cast a date value to string type.
+ *
+ * @param val   The value that will be cast.
+ * @return String calling the CAST method to get a string representation
+ */
+function sqlDateToString($val, $dbd)
+{
+    switch($dbd) {
+        case 'postgre':
+            return "CAST($val AS TEXT)";
+        default:
+            /* default mysqli */
+            break;
+    }
+    return "CAST($val AS CHAR)";
 }
 
 /**
@@ -390,4 +425,26 @@ function sqlDateDiff($dts, $dte, $dbd = 'mysqli')
             break;
     }
     return "DATEDIFF($dts, $dte)";
+}
+
+
+/**
+ * Subtract date / interval
+ *
+ * @param val1  Date, time, timestamp or interval value 1
+ * @param val2  Date, time, timestamp or interval value 2
+ * @param dbd   Database driver
+ *
+ * @return Sql string for subtracting value 1 from value 2
+ */
+function sqlDateSubtract($val1, $val2, $dbd = 'mysqli')
+{
+    switch($dbd) {
+        case 'postgre':
+            return "$val1 - $val2";
+        default:
+            /* default mysqli */
+            break;
+    }
+    return "DATE_SUB($val1, $val2)";
 }
