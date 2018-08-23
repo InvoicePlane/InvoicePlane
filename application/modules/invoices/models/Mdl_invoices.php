@@ -516,34 +516,34 @@ class Mdl_Invoices extends Response_Model
         return $this;
     }
 
+    /**
+     * Select all overdue invoices
+     * Note: Postgres will handle this method differently by
+     *       compiling the select statement for all default
+     *       methods and building a select using the compiled
+     *       one as subselect. This is done as postgres does
+     *       has problems with HAVING on temp columns.
+     */
     public function is_overdue()
     {
+        if ($this->db->dbdriver == 'postgre') {
+            // Run postgres specific code using a subquery
+            $this->default_select();
+            $this->db->from($this->table);
+            $this->default_join();
+            $this->default_order_by();
+
+            // Prestore compiled query (note: direct inline subquery does not work)
+            $subquery = $this->db->get_compiled_select();
+
+            $this->db->select('*');
+            $this->db->from("($subquery) s");
+            $this->db->where("is_overdue = 1");
+            return $this->db;
+        }
+        // General / mysql code via query building
         $this->filter_having('is_overdue', 1);
         return $this;
-    }
-
-    /**
-     * Run this as last filter. The is_overdue_subquery method
-     * makes extracts the current query as subquery and runs the
-     * WHERE overdue = 1 part onto the new query.
-     *
-     * @return Database object with new query using the default select,
-     *         join and order_by as subquery.
-     */
-    public function is_overdue_subquery()
-    {
-        $this->default_select();
-        $this->db->from($this->table);
-        $this->default_join();
-        $this->default_order_by();
-        
-        // Prestore compiled query (note: direct inline subquery does not work)
-        $subquery = $this->db->get_compiled_select();
-        
-        $this->db->select('*');
-        $this->db->from("($subquery) s");
-        $this->db->where("is_overdue = 1");
-        return $this->db;
     }
 
     public function by_client($client_id)

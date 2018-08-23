@@ -78,7 +78,7 @@ function date_formats()
  */
 function date_from_mysql($date, $ignore_post_check = false)
 {
-    if ($date <> '0000-00-00' && $date <> 'NULL') {
+    if ($date && $date <> '0000-00-00' && $date <> 'NULL') {
         if (!$_POST or $ignore_post_check) {
             $CI = &get_instance();
 
@@ -111,6 +111,9 @@ function date_to_mysql($date)
 {
     $CI = &get_instance();
 
+    if ($CI->db->dbdriver != 'mysqli' && !$date)
+        return 'NULL::NULL';
+    
     $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
     return $date->format('Y-m-d');
 }
