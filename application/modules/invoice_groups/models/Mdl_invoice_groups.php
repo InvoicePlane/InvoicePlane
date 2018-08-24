@@ -21,7 +21,7 @@ class Mdl_Invoice_Groups extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sqlCalcFoundRows() . '*', false);
+        $this->db->select(sql_calc_found_rows() . '*', false);
     }
 
     public function default_order_by()

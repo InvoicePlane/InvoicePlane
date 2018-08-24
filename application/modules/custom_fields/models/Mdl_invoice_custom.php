@@ -25,7 +25,7 @@ class Mdl_Invoice_Custom extends Validator
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sqlCalcFoundRows() . 'ip_invoice_custom.*, ip_custom_fields.*', false);
+        $this->db->select(sql_calc_found_rows() . 'ip_invoice_custom.*, ip_custom_fields.*', false);
     }
 
     public function default_join()
