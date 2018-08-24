@@ -21,8 +21,8 @@ class Mdl_Tasks extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $datediff = sqlDateDiff('NOW()', 'task_finish_date');
-        $this->db->select(sqlCalcFoundRows() . "*,
+        $datediff = sql_date_diff('NOW()', 'task_finish_date');
+        $this->db->select(sql_calc_found_rows() . "*,
           (CASE WHEN $datediff > 0 THEN 1 ELSE 0 END) is_overdue
         ", false);
     }

@@ -179,30 +179,30 @@ class Mdl_Quote_Amounts extends CI_Model
 					FROM ip_quote_amounts
 					WHERE quote_id IN 
 					(SELECT quote_id FROM ip_quotes
-					WHERE ".sqlMonth("quote_date_created")." = ".sqlMonth("NOW()").
-					"AND ".sqlYear("quote_date_created")." = ".sqlYear("NOW()").")")->row()->total_quoted;
+					WHERE ".sql_month("quote_date_created")." = ".sql_month("NOW()").
+					"AND ".sql_year("quote_date_created")." = ".sql_year("NOW()").")")->row()->total_quoted;
             case 'last_month':
                 return $this->db->query("
 					SELECT SUM(quote_total) AS total_quoted 
 					FROM ip_quote_amounts
 					WHERE quote_id IN 
 					(SELECT quote_id FROM ip_quotes
-					WHERE ".sqlMonth("quote_date_created")." = ".sqlMonth("NOW() - ".sqlDtInterval('1 MONTH')).
-					"AND ".sqlYear("quote_date_created")." = ".sqlYear("NOW() - ".sqlDtInterval('1 MONTH')).")")->row()->total_quoted;
+					WHERE ".sql_month("quote_date_created")." = ".sql_month("NOW() - ".sql_dt_interval('1 MONTH')).
+					"AND ".sql_year("quote_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 MONTH')).")")->row()->total_quoted;
             case 'year':
                 return $this->db->query("
 					SELECT SUM(quote_total) AS total_quoted 
 					FROM ip_quote_amounts
 					WHERE quote_id IN 
 					(SELECT quote_id FROM ip_quotes 
-            WHERE ".sqlYear("quote_date_created")." = ".sqlYear("NOW()").")")->row()->total_quoted;
+            WHERE ".sql_year("quote_date_created")." = ".sql_year("NOW()").")")->row()->total_quoted;
             case 'last_year':
                 return $this->db->query("
 					SELECT SUM(quote_total) AS total_quoted 
 					FROM ip_quote_amounts
 					WHERE quote_id IN 
 					(SELECT quote_id FROM ip_quotes 
-            WHERE ".sqlYear("quote_date_created")." = ".sqlYear("NOW() - ".sqlDtInterval('1 YEAR')).")")->row()->total_quoted;
+            WHERE ".sql_year("quote_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 YEAR')).")")->row()->total_quoted;
             default:
                 return $this->db->query("SELECT SUM(quote_total) AS total_quoted FROM ip_quote_amounts")->row()->total_quoted;
         }
@@ -224,8 +224,8 @@ class Mdl_Quote_Amounts extends CI_Model
 					    COUNT(*) AS num_total
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
-					              AND ".sqlMonth("ip_quotes.quote_date_created")." = ".sqlMonth("NOW()").
-                       "AND ".sqlYear("ip_quotes.quote_date_created")." = ".sqlYear("NOW()").
+					              AND ".sql_month("ip_quotes.quote_date_created")." = ".sql_month("NOW()").
+                       "AND ".sql_year("ip_quotes.quote_date_created")." = ".sql_year("NOW()").
 					"GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
             case 'last-month':
@@ -235,8 +235,8 @@ class Mdl_Quote_Amounts extends CI_Model
 					    COUNT(*) AS num_total
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
-					              AND ".sqlMonth("ip_quotes.quote_date_created")." = ".sqlMonth("NOW() - ".sqlDtInterval('1 MONTH')).
-                       "AND ".sqlYear("ip_quotes.quote_date_created")." = ".sqlYear("NOW() - ".sqlDtInterval('1 MONTH')).
+					              AND ".sql_month("ip_quotes.quote_date_created")." = ".sql_month("NOW() - ".sql_dt_interval('1 MONTH')).
+                       "AND ".sql_year("ip_quotes.quote_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 MONTH')).
 					"GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
             case 'this-quarter':
@@ -246,8 +246,8 @@ class Mdl_Quote_Amounts extends CI_Model
 					    COUNT(*) AS num_total
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
-					              AND ".sqlQuarter("ip_quotes.quote_date_created")." = ".sqlQuarter("NOW()").
-                       "AND ".sqlYear("ip_quotes.quote_date_created")." = ".sqlYear("NOW()").
+					              AND ".sql_quarter("ip_quotes.quote_date_created")." = ".sql_quarter("NOW()").
+                       "AND ".sql_year("ip_quotes.quote_date_created")." = ".sql_year("NOW()").
 					"GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
             case 'last-quarter':
@@ -257,8 +257,8 @@ class Mdl_Quote_Amounts extends CI_Model
 					    COUNT(*) AS num_total
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
-					              AND ".sqlQuarter("ip_quotes.quote_date_created")." = ".sqlQuarter("NOW() - ".sqlDtInterval('3 MONTH')).
-                       "AND ".sqlYear("ip_quotes.quote_date_created")." = ".sqlYear("NOW() - ".sqlDtInterval('3 MONTH')).
+					              AND ".sql_quarter("ip_quotes.quote_date_created")." = ".sql_quarter("NOW() - ".sql_dt_interval('3 MONTH')).
+                       "AND ".sql_year("ip_quotes.quote_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('3 MONTH')).
 					"GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
             case 'this-year':
@@ -268,7 +268,7 @@ class Mdl_Quote_Amounts extends CI_Model
 					    COUNT(*) AS num_total
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
-					              AND ".sqlYear("ip_quotes.quote_date_created")." = ".sqlYear("NOW()").
+					              AND ".sql_year("ip_quotes.quote_date_created")." = ".sql_year("NOW()").
 					"GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
             case 'last-year':
@@ -278,7 +278,7 @@ class Mdl_Quote_Amounts extends CI_Model
 					    COUNT(*) AS num_total
 					FROM ip_quote_amounts
 					JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
-					              AND ".sqlYear("ip_quotes.quote_date_created")." = ".sqlYear("NOW() - ".sqlDtInterval('1 YEAR')).
+					              AND ".sql_year("ip_quotes.quote_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 YEAR')).
 				  "GROUP BY ip_quotes.quote_status_id")->result_array();
                 break;
         }
