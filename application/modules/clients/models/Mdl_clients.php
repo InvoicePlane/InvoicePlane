@@ -24,8 +24,8 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('sql');
         $this->db->select(
-            sqlCalcFoundRows() . $this->table . '.*, ' .
-            sqlConcat($this->table.'.client_name', "' '", $this->table . '.client_surname').' AS client_fullname'
+            sql_calc_found_rows() . $this->table . '.*, ' .
+            sql_concat($this->table.'.client_name', "' '", $this->table . '.client_surname').' AS client_fullname'
             , false);
     }
 
@@ -153,7 +153,7 @@ class Mdl_Clients extends Response_Model
         $this->load->helper('sql');
 
         if ($input == '') {
-            return sqlEmptyDateInput();
+            return sql_empty_date_input();
         }
 
         return date_to_mysql($input);
@@ -208,7 +208,7 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('sql');
         $this->filter_select(
-            sqlIfNull('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (
+            sql_if_null('(SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
                         ))', 0) .' AS client_invoice_total', 
             false);
@@ -219,7 +219,7 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('sql');
         $this->filter_select(
-            sqlIfNull('(SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (
+            sql_if_null('(SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
                         ))', 0) .' AS client_invoice_paid', 
             false);
@@ -230,7 +230,7 @@ class Mdl_Clients extends Response_Model
     {
         $this->load->helper('sql');
         $this->filter_select(
-            sqlIfNull('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (
+            sql_if_null('(SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (
                             SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id
                         ))', 0) .' AS client_invoice_balance', 
             false);

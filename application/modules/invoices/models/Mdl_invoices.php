@@ -51,7 +51,7 @@ class Mdl_Invoices extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select( sqlCalcFoundRows() . "
+        $this->db->select( sql_calc_found_rows() . "
             ip_quotes.*,
             ip_users.user_name,
             ip_users.user_company,
@@ -75,17 +75,17 @@ class Mdl_Invoices extends Response_Model
             ip_clients.*,
             ip_invoice_sumex.*,
             ip_invoice_amounts.invoice_amount_id,
-            ".sqlIfNull('ip_invoice_amounts.invoice_item_subtotal', '0.00')." AS invoice_item_subtotal,
-            ".sqlIfNull('ip_invoice_amounts.invoice_item_tax_total', '0.00')." AS invoice_item_tax_total,
-            ".sqlIfNull('ip_invoice_amounts.invoice_tax_total', '0.00')." AS invoice_tax_total,
-            ".sqlIfNull('ip_invoice_amounts.invoice_total', '0.00')." AS invoice_total,
-            ".sqlIfNull('ip_invoice_amounts.invoice_paid', '0.00')." AS invoice_paid,
-            ".sqlIfNull('ip_invoice_amounts.invoice_balance', '0.00')." AS invoice_balance,
+            ".sql_if_null('ip_invoice_amounts.invoice_item_subtotal', '0.00')." AS invoice_item_subtotal,
+            ".sql_if_null('ip_invoice_amounts.invoice_item_tax_total', '0.00')." AS invoice_item_tax_total,
+            ".sql_if_null('ip_invoice_amounts.invoice_tax_total', '0.00')." AS invoice_tax_total,
+            ".sql_if_null('ip_invoice_amounts.invoice_total', '0.00')." AS invoice_total,
+            ".sql_if_null('ip_invoice_amounts.invoice_paid', '0.00')." AS invoice_paid,
+            ".sql_if_null('ip_invoice_amounts.invoice_balance', '0.00')." AS invoice_balance,
             ip_invoice_amounts.invoice_sign AS invoice_sign,
-            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND ".sqlDateDiff('NOW()', 'invoice_date_due')." > 0 THEN 1 ELSE 0 END) is_overdue,
-            ".sqlDateDiff('NOW()', 'invoice_date_due')." AS days_overdue,
+            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND ".sql_date_diff('NOW()', 'invoice_date_due')." > 0 THEN 1 ELSE 0 END) is_overdue,
+            ".sql_date_diff('NOW()', 'invoice_date_due')." AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring 
-                WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> ".sqlNullDate().") WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
+                WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> ".sql_null_date().") WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
             ip_invoices.*", false);
     }
 

@@ -270,9 +270,9 @@ class Mdl_Setup extends CI_Model
     public function upgrade_023_1_5_0()
     {
         $this->load->helper('sql');
-        $pkey = sqlPrimaryKey();
-        $qc   = sqlQuoteChar();
-        $int  = sqlInteger();
+        $pkey = sql_primary_key();
+        $qc   = sql_quote_char();
+        $int  = sql_integer();
         
         $res = $this->db->query('SELECT * FROM ip_custom_fields');
         $drop_columns = array();
@@ -370,7 +370,7 @@ class Mdl_Setup extends CI_Model
         // Drop old cloumns, and rename new ones
         foreach ($tables as $table) {
             $this->db->query("DROP TABLE IF EXISTS {$qc}ip_{$table}_custom{$qc}");
-            $query = sqlRenameTable(
+            $query = sql_rename_table(
                 'ip_'.$table.'_custom_new', 
                 'ip_' . $table . '_custom'
             );

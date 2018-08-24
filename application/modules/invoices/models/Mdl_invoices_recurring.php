@@ -51,11 +51,11 @@ class Mdl_Invoices_Recurring extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select( sqlCalcFoundRows() . "
+        $this->db->select( sql_calc_found_rows() . "
             ip_invoices.*,
             ip_clients.client_name,
             ip_invoices_recurring.*,
-            (CASE WHEN recur_end_date > date(NOW()) OR recur_end_date = ".sqlNullDate()." THEN 'active' ELSE 'inactive' END) AS recur_status", false);
+            (CASE WHEN recur_end_date > date(NOW()) OR recur_end_date = ".sql_null_date()." THEN 'active' ELSE 'inactive' END) AS recur_status", false);
     }
 
     public function default_join()
@@ -105,7 +105,7 @@ class Mdl_Invoices_Recurring extends Response_Model
             $db_array['recur_end_date'] = date_to_mysql($db_array['recur_end_date']);
         } else {
             $this->load->helper('sql');
-            $db_array['recur_end_date'] = sqlEmptyDateInput();
+            $db_array['recur_end_date'] = sql_empty_date_input();
         }
 
         return $db_array;
@@ -132,7 +132,7 @@ class Mdl_Invoices_Recurring extends Response_Model
     public function active()
     {
         $this->load->helper('sql');
-        $this->filter_where("recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date = ".sqlNullDate().")");
+        $this->filter_where("recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date = ".sql_null_date().")");
         return $this;
     }
 

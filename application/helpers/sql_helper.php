@@ -19,7 +19,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  | of directly calling any function or running logic.
  | Sql helper functions have the name convention 
  |
- |   sql<FuncName>(<params>)
+ |   sql_<func_name>(<params>)
  |
  | Currently added support for db-drivers (ci3-names):
  |   - mysqli
@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *
  * @return Default CI database driver
  */
-function sqlDbDriver()
+function sql_db_driver()
 {
     if (!array_key_exists('dbdriver', $GLOBALS)) {
         $CI = &get_instance();
@@ -58,10 +58,10 @@ function sqlDbDriver()
  * @return Either 'SQL_CALC_FOUND_ROWS ' as string with trailing space for mysql or 
  *         an empty string when using any other database.
  */
-function sqlCalcFoundRows()
+function sql_calc_found_rows()
 {
     // Use SQL_CALC_FOUND_ROWS only for mysqli
-    return (sqlDbDriver() != 'mysqli') ? '' : 'SQL_CALC_FOUND_ROWS ';
+    return (sql_db_driver() != 'mysqli') ? '' : 'SQL_CALC_FOUND_ROWS ';
 }
 
 
@@ -75,9 +75,9 @@ function sqlCalcFoundRows()
  * @return First value if it is not null, otherwise second value. If second value
  *         if also null, null is returned.
  */
-function sqlIfNull($val1, $val2)
+function sql_if_null($val1, $val2)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "coalesce($val1, $val2)";
         default:
@@ -95,9 +95,9 @@ function sqlIfNull($val1, $val2)
  * @param new   New table name
  * @return Alter table query as string without trailing semicolon.
  */
-function sqlRenameTable($old, $new)
+function sql_rename_table($old, $new)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "ALTER TABLE $old RENAME TO $new";
         default:
@@ -114,9 +114,9 @@ function sqlRenameTable($old, $new)
  * @return Single quote char used within driver to quote e.g. table names.
  *         Might also be an empty string.
  */
-function sqlQuoteChar()
+function sql_quote_char()
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return '';
         default:
@@ -138,9 +138,9 @@ function sqlQuoteChar()
  *
  * @return Integer datatype as string.
  */
-function sqlInteger()
+function sql_integer()
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return 'INTEGER';
         default:
@@ -158,7 +158,7 @@ function sqlInteger()
  * @param val   The value that will be tested.
  * @return Boolean value representation
  */
-function sqlToBool($val)
+function sql_to_bool($val)
 {
     return $val && (
         $val === 1      || 
@@ -175,9 +175,9 @@ function sqlToBool($val)
  * @param val   The value that will be cast.
  * @return String calling the CAST method to get a string representation
  */
-function sqlDateToString($val)
+function sql_date_to_string($val)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "CAST($val AS TEXT)";
         default:
@@ -195,10 +195,10 @@ function sqlDateToString($val)
  * @return 'NULL::NULL' strings for databases where NULL type should be 
  *         stored, empty string for e.g. MySQL.
  */
-function sqlEmptyDateInput()
+function sql_empty_date_input()
 {
     // Use non-standard zero-dates for MySQL
-    if (sqlDbDriver() == 'mysqli')
+    if (sql_db_driver() == 'mysqli')
         return '';
     // Default is null
     return 'NULL::NULL';
@@ -209,10 +209,10 @@ function sqlEmptyDateInput()
  *
  * @return In case of mysqli a zero date, otherwise NULL as string
  */
-function sqlNullDate()
+function sql_null_date()
 {
     // Use non-standard zero-dates for MySQL
-    if (sqlDbDriver() == 'mysqli')
+    if (sql_db_driver() == 'mysqli')
         return '0000-00-00';
     // Default is null
     return 'NULL';
@@ -223,10 +223,10 @@ function sqlNullDate()
  *
  * @return In case of mysqli a zero time, otherwise NULL as string
  */
-function sqlNullTime()
+function sql_null_time()
 {
     // Use non-standard zero-times for MySQL
-    if (sqlDbDriver() == 'mysqli')
+    if (sql_db_driver() == 'mysqli')
         return '00:00:00';
     // Default is null
     return 'NULL';
@@ -237,10 +237,10 @@ function sqlNullTime()
  *
  * @return In case of mysqli a zero timestamp, otherwise NULL as string
  */
-function sqlNullDateTime()
+function sql_null_date_time()
 {
     // Use non-standard zero-datetimes for MySQL
-    if (sqlDbDriver() == 'mysqli')
+    if (sql_db_driver() == 'mysqli')
         return '0000-00-00 00:00:00';
     // Default is null
     return 'NULL';
@@ -252,9 +252,9 @@ function sqlNullDateTime()
  *
  * @return Primary key column constraint for create table statement
  */
-function sqlPrimaryKey()
+function sql_primary_key()
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "SERIAL";
         default:
@@ -277,13 +277,13 @@ function sqlPrimaryKey()
  * @param ... vals   Variadic list of values
  * @return String concatenating all input values
  */
-function sqlConcat(...$vals)
+function sql_concat(...$vals)
 {
     $start  = 'CONCAT(';
     $end    = ')';
     $glue   = ',';
     
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             $start = '(';
             $glue = '||';
@@ -313,9 +313,9 @@ function sqlConcat(...$vals)
  *         parameter, e.g. "YEAR(<val>)". Result string might 
  *         contain single quotes for inner strings.
  */
-function sqlYear($val)
+function sql_year($val)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "to_char($val, 'YYYY')";
         default:
@@ -335,9 +335,9 @@ function sqlYear($val)
  *         parameter, e.g. "MONTH(<val>)". Result string might 
  *         contain single quotes for inner strings.
  */
-function sqlMonth($val)
+function sql_month($val)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "to_char($val, 'MM')";
         default:
@@ -357,9 +357,9 @@ function sqlMonth($val)
  *         parameter, e.g. "QUARTER(<val>)". Result string might 
  *         contain single quotes for inner strings.
  */
-function sqlQuarter($val)
+function sql_quarter($val)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "to_char($val, 'Q')";
         default:
@@ -378,9 +378,9 @@ function sqlQuarter($val)
  * @return Sql string for datetime interval as string. Result string 
  *         might contain single quotes for inner strings.
  */
-function sqlDtInterval($val)
+function sql_dt_interval($val)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "INTERVAL '$val'";;
         default:
@@ -398,9 +398,9 @@ function sqlDtInterval($val)
  * @param dte   Datetime end value
  * @return Sql string for datetime interval as integer result
  */
-function sqlDateDiff($dts, $dte)
+function sql_date_diff($dts, $dte)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "(".$dts."::timestamp::date - ".$dte."::timestamp::date)";
         default:
@@ -418,9 +418,9 @@ function sqlDateDiff($dts, $dte)
  * @param val2  Date, time, timestamp or interval value 2
  * @return Sql string for subtracting value 1 from value 2
  */
-function sqlDateSubtract($val1, $val2)
+function sql_date_subtract($val1, $val2)
 {
-    switch(sqlDbDriver()) {
+    switch(sql_db_driver()) {
         case 'postgre':
             return "$val1 - $val2";
         default:
