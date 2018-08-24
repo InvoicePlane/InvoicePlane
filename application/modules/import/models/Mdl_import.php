@@ -79,7 +79,7 @@ class Mdl_Import extends Response_Model
     public function default_select()
     {
         $this->load->helper('sql');
-        $this->db->select(sqlCalcFoundRows() . "
+        $this->db->select(sql_calc_found_rows() . "
             ip_imports.*,
             (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_clients' AND ip_import_details.import_id = ip_imports.import_id) AS num_clients,
             (SELECT COUNT(*) FROM ip_import_details WHERE import_table_name = 'ip_invoices' AND ip_import_details.import_id = ip_imports.import_id) AS num_invoices,
