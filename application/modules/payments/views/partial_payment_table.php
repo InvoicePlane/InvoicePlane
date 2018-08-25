@@ -26,7 +26,7 @@
                         <?php _htmlsc(format_client($payment)); ?>
                     </a>
                 </td>
-                <td><?php echo format_currency($payment->payment_amount); ?></td>
+                <td class="amount"><?php echo format_currency($payment->payment_amount); ?></td>
                 <td><?php _htmlsc($payment->payment_method_name); ?></td>
                 <td><?php _htmlsc($payment->payment_note); ?></td>
                 <td>
