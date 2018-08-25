@@ -71,6 +71,30 @@ class Settings extends Admin_Controller
                     $this->mdl_settings->save($key, $value);
 
                 }
+
+                // set thousands_separator and decimal_point according to number_format
+                switch(true) {
+                    case ($key == 'number_format' && $value == 'us_uk_format'):
+                        $this->mdl_settings->save('thousands_separator', ',');
+                        $this->mdl_settings->save('decimal_point', '.');
+                        break;
+
+                    case ($key == 'number_format' && $value == 'eu_format'):
+                        $this->mdl_settings->save('thousands_separator', '.');
+                        $this->mdl_settings->save('decimal_point', ',');
+                        break;
+
+                    case ($key == 'number_format' && $value == 'iso80000_1_point_format'):
+                        $this->mdl_settings->save('thousands_separator', ' ');
+                        $this->mdl_settings->save('decimal_point', '.');
+                        break;
+
+                    case ($key == 'number_format' && $value == 'iso80000_1_comma_format'):
+                        $this->mdl_settings->save('thousands_separator', ' ');
+                        $this->mdl_settings->save('decimal_point', ',');
+                        break;
+                }
+
             }
 
             $upload_config = array(
