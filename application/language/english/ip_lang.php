@@ -330,6 +330,10 @@ $lang = array(
     'note'                                         => 'Note',
     'notes'                                        => 'Notes',
     'not_set'                                      => 'Not set yet',
+    'number_format'                                => 'Number Format',
+    'number_format_us_uk'                          => '1,000,000.00 (US/UK format)',
+    'number_format_european'                       => '1.000.000,00 (European format)',
+    'number_format_iso_80k_1'                      => '1 000 000.00 (ISO 80000-1)',
     'open'                                         => 'Open',
     'open_invoices'                                => 'Open Invoices',
     'open_quotes'                                  => 'Open Quotes',
@@ -695,6 +699,7 @@ $lang = array(
     'sumex_veka'                                   => 'VEKA',
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
+
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
