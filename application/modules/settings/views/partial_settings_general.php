@@ -105,6 +105,17 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="default_list_limit">
+                            <?php _trans('default_list_limit'); ?>
+                        </label>
+                        <input type="number" name="settings[default_list_limit]" id="default_list_limit"
+                               class="form-control" minlength="1" min="1" required
+                               value="<?php echo get_setting('default_list_limit', 15, true) ?>">
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -207,19 +218,6 @@
                         <input type="text" name="settings[decimal_point]" id="settings[decimal_point]"
                                class="form-control"
                                value="<?php echo get_setting('decimal_point', '', true); ?>">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <div class="form-group">
-                        <label for="default_list_limit">
-                            <?php _trans('default_list_limit'); ?>
-                        </label>
-                        <input type="number" name="settings[default_list_limit]" id="default_list_limit"
-                               class="form-control" minlength="1" min="1" required
-                               value="<?php echo get_setting('default_list_limit', 15, true) ?>">
                     </div>
                 </div>
             </div>
