@@ -50,8 +50,8 @@ class Mdl_Invoices extends Response_Model
 
     public function default_select()
     {
-        $this->db->select("
-            SQL_CALC_FOUND_ROWS
+        $this->load->helper('sql');
+        $this->db->select( sql_calc_found_rows() . "
             ip_quotes.*,
             ip_users.user_name,
             ip_users.user_company,
@@ -75,16 +75,17 @@ class Mdl_Invoices extends Response_Model
             ip_clients.*,
             ip_invoice_sumex.*,
             ip_invoice_amounts.invoice_amount_id,
-            IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
-            IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
-            IFnull(ip_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
-            IFnull(ip_invoice_amounts.invoice_total, '0.00') AS invoice_total,
-            IFnull(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
-            IFnull(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
+            ".sql_if_null('ip_invoice_amounts.invoice_item_subtotal', '0.00')." AS invoice_item_subtotal,
+            ".sql_if_null('ip_invoice_amounts.invoice_item_tax_total', '0.00')." AS invoice_item_tax_total,
+            ".sql_if_null('ip_invoice_amounts.invoice_tax_total', '0.00')." AS invoice_tax_total,
+            ".sql_if_null('ip_invoice_amounts.invoice_total', '0.00')." AS invoice_total,
+            ".sql_if_null('ip_invoice_amounts.invoice_paid', '0.00')." AS invoice_paid,
+            ".sql_if_null('ip_invoice_amounts.invoice_balance', '0.00')." AS invoice_balance,
             ip_invoice_amounts.invoice_sign AS invoice_sign,
-            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
-            DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
-            (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> '0000-00-00') WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
+            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND ".sql_date_diff('NOW()', 'invoice_date_due')." > 0 THEN 1 ELSE 0 END) is_overdue,
+            ".sql_date_diff('NOW()', 'invoice_date_due')." AS days_overdue,
+            (CASE (SELECT COUNT(*) FROM ip_invoices_recurring 
+                WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date <> ".sql_null_date().") WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
             ip_invoices.*", false);
     }
 
@@ -514,8 +515,32 @@ class Mdl_Invoices extends Response_Model
         return $this;
     }
 
+    /**
+     * Select all overdue invoices
+     * Note: Postgres will handle this method differently by
+     *       compiling the select statement for all default
+     *       methods and building a select using the compiled
+     *       one as subselect. This is done as postgres does
+     *       has problems with HAVING on temp columns.
+     */
     public function is_overdue()
     {
+        if ($this->db->dbdriver == 'postgre') {
+            // Run postgres specific code using a subquery
+            $this->default_select();
+            $this->db->from($this->table);
+            $this->default_join();
+            $this->default_order_by();
+
+            // Prestore compiled query (note: direct inline subquery does not work)
+            $subquery = $this->db->get_compiled_select();
+
+            $this->db->select('*');
+            $this->db->from("($subquery) s");
+            $this->db->where("is_overdue = 1");
+            return $this->db;
+        }
+        // General / mysql code via query building
         $this->filter_having('is_overdue', 1);
         return $this;
     }

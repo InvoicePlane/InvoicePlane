@@ -337,6 +337,8 @@ class Ajax extends Admin_Controller
             // Save the invoice id to the quote
             $this->db->where('quote_id', $this->input->post('quote_id'));
             $this->db->set('invoice_id', $invoice_id);
+            // Set the status of the quote to "invoied", 7
+            $this->db->set('quote_status_id', 7);
             $this->db->update('ip_quotes');
 
             $quote_items = $this->mdl_quote_items->where('quote_id', $this->input->post('quote_id'))->get()->result();

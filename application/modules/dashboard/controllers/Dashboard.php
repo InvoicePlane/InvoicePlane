@@ -26,7 +26,7 @@ class Dashboard extends Admin_Controller
 
         $quote_overview_period = get_setting('quote_overview_period');
         $invoice_overview_period = get_setting('invoice_overview_period');
-
+        
         $this->layout->set(
             array(
                 'invoice_status_totals' => $this->mdl_invoice_amounts->get_status_totals($invoice_overview_period),

@@ -20,9 +20,11 @@ class Mdl_Tasks extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *,
-          (CASE WHEN DATEDIFF(NOW(), task_finish_date) > 0 THEN 1 ELSE 0 END) is_overdue
-        ', false);
+        $this->load->helper('sql');
+        $datediff = sql_date_diff('NOW()', 'task_finish_date');
+        $this->db->select(sql_calc_found_rows() . "*,
+          (CASE WHEN $datediff > 0 THEN 1 ELSE 0 END) is_overdue
+        ", false);
     }
 
     public function default_order_by()
@@ -102,7 +104,8 @@ class Mdl_Tasks extends Response_Model
 
         $db_array['task_finish_date'] = date_to_mysql($db_array['task_finish_date']);
         $db_array['task_price'] = standardize_amount($db_array['task_price']);
-
+        $db_array['project_id'] = (empty($db_array['project_id']) ? 0 : $db_array['project_id']);
+        
         return $db_array;
     }
 

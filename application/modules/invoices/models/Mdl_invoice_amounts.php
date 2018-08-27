@@ -44,10 +44,10 @@ class Mdl_Invoice_Amounts extends CI_Model
 		        SUM(item_tax_total) AS invoice_item_tax_total,
 		        SUM(item_subtotal) + SUM(item_tax_total) AS invoice_total,
 		        SUM(item_discount) AS invoice_item_discount
-		FROM ip_invoice_item_amounts
-		WHERE item_id IN (
-		    SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . "
-		    )
+        FROM ip_invoice_item_amounts
+        WHERE item_id IN (
+            SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . "
+            )
         ");
 
         $invoice_amounts = $query->row();
@@ -215,6 +215,7 @@ class Mdl_Invoice_Amounts extends CI_Model
      */
     public function get_total_invoiced($period = null)
     {
+        $this->load->helper('sql');
         switch ($period) {
             case 'month':
                 return $this->db->query("
@@ -222,28 +223,30 @@ class Mdl_Invoice_Amounts extends CI_Model
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
 					(SELECT invoice_id FROM ip_invoices
-					WHERE MONTH(invoice_date_created) = MONTH(NOW()) 
-					AND YEAR(invoice_date_created) = YEAR(NOW()))")->row()->total_invoiced;
+					WHERE ".sql_month("invoice_date_created")." = ".sql_month("NOW()").
+					"AND ".sql_year("invoice_date_created")." = ".sql_year("NOW()").")")->row()->total_invoiced;
             case 'last_month':
                 return $this->db->query("
 					SELECT SUM(invoice_total) AS total_invoiced 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
 					(SELECT invoice_id FROM ip_invoices
-					WHERE MONTH(invoice_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
-					AND YEAR(invoice_date_created) = YEAR(NOW() - INTERVAL 1 MONTH))")->row()->total_invoiced;
+					WHERE ".sql_month("invoice_date_created")." = ".sql_month("NOW() - ".sql_dt_interval('1 MONTH')).
+					"AND ".sql_year("invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 MONTH')).")")->row()->total_invoiced;
             case 'year':
                 return $this->db->query("
 					SELECT SUM(invoice_total) AS total_invoiced 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
-					(SELECT invoice_id FROM ip_invoices WHERE YEAR(invoice_date_created) = YEAR(NOW()))")->row()->total_invoiced;
+					(SELECT invoice_id FROM ip_invoices 
+            WHERE ".sql_year("invoice_date_created")." = ".sql_year("NOW()").")")->row()->total_invoiced;
             case 'last_year':
                 return $this->db->query("
 					SELECT SUM(invoice_total) AS total_invoiced 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
-					(SELECT invoice_id FROM ip_invoices WHERE YEAR(invoice_date_created) = YEAR(NOW() - INTERVAL 1 YEAR))")->row()->total_invoiced;
+					(SELECT invoice_id FROM ip_invoices 
+            WHERE ".sql_year("invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 YEAR')).")")->row()->total_invoiced;
             default:
                 return $this->db->query("SELECT SUM(invoice_total) AS total_invoiced FROM ip_invoice_amounts")->row()->total_invoiced;
         }
@@ -255,6 +258,7 @@ class Mdl_Invoice_Amounts extends CI_Model
      */
     public function get_total_paid($period = null)
     {
+        $this->load->helper('sql');
         switch ($period) {
             case 'month':
                 return $this->db->query("
@@ -262,25 +266,27 @@ class Mdl_Invoice_Amounts extends CI_Model
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
 					(SELECT invoice_id FROM ip_invoices
-					WHERE MONTH(invoice_date_created) = MONTH(NOW())
-					AND YEAR(invoice_date_created) = YEAR(NOW()))")->row()->total_paid;
+					WHERE ".sql_month("invoice_date_created")." = ".sql_month("NOW()").
+					"AND ".sql_year("invoice_date_created")." = ".sql_year("NOW()").")")->row()->total_paid;
             case 'last_month':
                 return $this->db->query("SELECT SUM(invoice_paid) AS total_paid 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
 					(SELECT invoice_id FROM ip_invoices
-					WHERE MONTH(invoice_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
-					AND YEAR(invoice_date_created) = YEAR(NOW() - INTERVAL 1 MONTH))")->row()->total_paid;
+					WHERE ".sql_month("invoice_date_created")." = ".sql_month("NOW() - ".sql_dt_interval('1 MONTH')).
+					"AND ".sql_year("invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 MONTH')).")")->row()->total_paid;
             case 'year':
                 return $this->db->query("SELECT SUM(invoice_paid) AS total_paid 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
-					(SELECT invoice_id FROM ip_invoices WHERE YEAR(invoice_date_created) = YEAR(NOW()))")->row()->total_paid;
+					(SELECT invoice_id FROM ip_invoices 
+            WHERE ".sql_year("invoice_date_created")." = ".sql_year("NOW()").")")->row()->total_paid;
             case 'last_year':
                 return $this->db->query("SELECT SUM(invoice_paid) AS total_paid 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
-					(SELECT invoice_id FROM ip_invoices WHERE YEAR(invoice_date_created) = YEAR(NOW() - INTERVAL 1 YEAR))")->row()->total_paid;
+					(SELECT invoice_id FROM ip_invoices 
+            WHERE ".sql_year("invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 YEAR')).")")->row()->total_paid;
             default:
                 return $this->db->query("SELECT SUM(invoice_paid) AS total_paid FROM ip_invoice_amounts")->row()->total_paid;
         }
@@ -292,31 +298,34 @@ class Mdl_Invoice_Amounts extends CI_Model
      */
     public function get_total_balance($period = null)
     {
+        $this->load->helper('sql');
         switch ($period) {
             case 'month':
                 return $this->db->query("SELECT SUM(invoice_balance) AS total_balance 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
 					(SELECT invoice_id FROM ip_invoices
-					WHERE MONTH(invoice_date_created) = MONTH(NOW())
-					AND YEAR(invoice_date_created) = YEAR(NOW()))")->row()->total_balance;
+					WHERE ".sql_month("invoice_date_created")." = ".sql_month("NOW()").
+					"AND ".sql_year("invoice_date_created")." = ".sql_year("NOW()").")")->row()->total_balance;
             case 'last_month':
                 return $this->db->query("SELECT SUM(invoice_balance) AS total_balance 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
 					(SELECT invoice_id FROM ip_invoices
-					WHERE MONTH(invoice_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
-					AND YEAR(invoice_date_created) = YEAR(NOW() - INTERVAL 1 MONTH))")->row()->total_balance;
+					WHERE ".sql_month("invoice_date_created")." = ".sql_month("NOW() - ".sql_dt_interval('1 MONTH')).
+					"AND ".sql_year("invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 MONTH')).")")->row()->total_balance;
             case 'year':
                 return $this->db->query("SELECT SUM(invoice_balance) AS total_balance 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
-					(SELECT invoice_id FROM ip_invoices WHERE YEAR(invoice_date_created) = YEAR(NOW()))")->row()->total_balance;
+					(SELECT invoice_id FROM ip_invoices 
+            WHERE ".sql_year("invoice_date_created")." = ".sql_year("NOW()").")")->row()->total_balance;
             case 'last_year':
                 return $this->db->query("SELECT SUM(invoice_balance) AS total_balance 
 					FROM ip_invoice_amounts
 					WHERE invoice_id IN 
-					(SELECT invoice_id FROM ip_invoices WHERE YEAR(invoice_date_created) = (YEAR(NOW() - INTERVAL 1 YEAR)))")->row()->total_balance;
+					(SELECT invoice_id FROM ip_invoices 
+            WHERE ".sql_year("invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 YEAR')).")")->row()->total_balance;
             default:
                 return $this->db->query("SELECT SUM(invoice_balance) AS total_balance FROM ip_invoice_amounts")->row()->total_balance;
         }
@@ -328,6 +337,7 @@ class Mdl_Invoice_Amounts extends CI_Model
      */
     public function get_status_totals($period = '')
     {
+        $this->load->helper('sql');
         switch ($period) {
             default:
             case 'this-month':
@@ -335,52 +345,52 @@ class Mdl_Invoice_Amounts extends CI_Model
 					SELECT ip_invoices.invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW())
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                        AND ".sql_month("ip_invoices.invoice_date_created")." = ".sql_month("NOW()").
+                       "AND ".sql_year("ip_invoices.invoice_date_created")." = ".sql_year("NOW()").
+					"GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'last-month':
                 $results = $this->db->query("
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                        AND ".sql_month("ip_invoices.invoice_date_created")." = ".sql_month("NOW() - ".sql_dt_interval('1 MONTH')).
+                       "AND ".sql_year("ip_invoices.invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 MONTH')).
+					"GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'this-quarter':
                 $results = $this->db->query("
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW())
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                        AND ".sql_quarter("ip_invoices.invoice_date_created")." = ".sql_quarter("NOW()").
+                       "AND ".sql_year("ip_invoices.invoice_date_created")." = ".sql_year("NOW()").
+					"GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'last-quarter':
                 $results = $this->db->query("
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                        AND ".sql_quarter("ip_invoices.invoice_date_created")." = ".sql_quarter("NOW() - ".sql_dt_interval('3 MONTH')).
+                       "AND ".sql_year("ip_invoices.invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('3 MONTH')).
+					"GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'this-year':
                 $results = $this->db->query("
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(ip_invoice_amounts.invoice_paid) ELSE SUM(ip_invoice_amounts.invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                        AND ".sql_year("ip_invoices.invoice_date_created")." = ".sql_year("NOW()").
+					"GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
             case 'last-year':
                 $results = $this->db->query("
 					SELECT invoice_status_id, (CASE ip_invoices.invoice_status_id WHEN 4 THEN SUM(invoice_paid) ELSE SUM(invoice_balance) END) AS sum_total, COUNT(*) AS num_total
 					FROM ip_invoice_amounts
 					JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW() - INTERVAL 1 YEAR)
-					GROUP BY ip_invoices.invoice_status_id")->result_array();
+                        AND ".sql_year("ip_invoices.invoice_date_created")." = ".sql_year("NOW() - ".sql_dt_interval('1 YEAR')).
+				  "GROUP BY ip_invoices.invoice_status_id")->result_array();
                 break;
         }
 

@@ -1,5 +1,7 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -15,6 +17,15 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Sessions extends Base_Controller
 {
+    /**
+     * Sessions constructor.
+     */
+    public function __construct()
+    {
+        $this->load->model('mdl_sessions');
+        parent::__construct();
+    }
+
     public function index()
     {
         redirect('sessions/login');
@@ -22,12 +33,11 @@ class Sessions extends Base_Controller
 
     public function login()
     {
-        $view_data = array(
-            'login_logo' => get_setting('login_logo')
-        );
+        $view_data = [
+            'login_logo' => get_setting('login_logo'),
+        ];
 
         if ($this->input->post('btn_login')) {
-
             $this->db->where('user_email', $this->input->post('email'));
             $query = $this->db->get('ip_users');
             $user = $query->row();
@@ -35,30 +45,37 @@ class Sessions extends Base_Controller
             // Check if the user exists
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
+                $this->mdl_sessions->log_sessionevent('loginalert_user_not_found');
                 redirect('sessions/login');
             } else {
 
                 // Check if the user is marked as active
-                if ($user->user_active == 0) {
+                $this->load->helper('sql');
+                if (!sql_to_bool($user->user_active)) {
                     $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
+                    $this->mdl_sessions->log_sessionevent('loginalert_user_inactive');
                     redirect('sessions/login');
                 } else {
 
                     if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
+                        // Properly redirect the user to either the dashboard or the guest panel
                         if ($this->session->userdata('user_type') == 1) {
+                            $this->mdl_sessions->log_sessionevent('user ' . $user->user_email . ' logged in');
                             redirect('dashboard');
                         } elseif ($this->session->userdata('user_type') == 2) {
+                            $this->mdl_sessions->log_sessionevent('guest logged in');
                             redirect('guest');
                         }
                     } else {
+                        // Credentials are not correct
                         $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
+                        $this->mdl_sessions->log_sessionevent('loginalert_credentials_incorrect');
                         redirect('sessions/login');
                     }
 
                 }
 
             }
-
         }
 
         $this->load->view('session_login', $view_data);
@@ -105,10 +122,10 @@ class Sessions extends Base_Controller
                 redirect('sessions/passwordreset');
             }
 
-            $formdata = array(
+            $formdata = [
                 'token' => $token,
                 'user_id' => $user->user_id,
-            );
+            ];
 
             return $this->load->view('session_new_password', $formdata);
         }
@@ -144,9 +161,9 @@ class Sessions extends Base_Controller
             );
 
             // Update the user and set him active again
-            $db_array = array(
+            $db_array = [
                 'user_passwordreset_token' => '',
-            );
+            ];
 
             $this->db->where('user_id', $user_id);
             $this->db->update('ip_users', $db_array);
@@ -172,9 +189,9 @@ class Sessions extends Base_Controller
                 $token = md5(time() . $email);
 
                 // Save the token to the database and set the user to inactive
-                $db_array = array(
+                $db_array = [
                     'user_passwordreset_token' => $token,
-                );
+                ];
 
                 $this->db->where('user_email', $email);
                 $this->db->update('ip_users', $db_array);
@@ -184,9 +201,9 @@ class Sessions extends Base_Controller
 
                 // Preprare some variables for the email
                 $email_resetlink = site_url('sessions/passwordreset/' . $token);
-                $email_message = $this->load->view('emails/passwordreset', array(
-                    'resetlink' => $email_resetlink
-                ), true);
+                $email_message = $this->load->view('emails/passwordreset', [
+                    'resetlink' => $email_resetlink,
+                ], true);
 
                 $email_from = get_setting('smtp_mail_from');
                 if (empty($email_from)) {
@@ -237,4 +254,17 @@ class Sessions extends Base_Controller
         return $this->load->view('session_passwordreset');
     }
 
+    /**
+     * @param $email_address
+     * @param $password
+     * @return bool
+     */
+    private function authenticate($email_address, $password)
+    {
+        if ($this->mdl_sessions->auth($email_address, $password)) {
+            return true;
+        }
+
+        return false;
+    }
 }

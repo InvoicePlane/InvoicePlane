@@ -209,7 +209,8 @@ class Setup extends MX_Controller
                 $this->input->post('db_username'),
                 $this->input->post('db_password'),
                 $this->input->post('db_database'),
-                $this->input->post('db_port')
+                $this->input->post('db_port'),
+                $this->input->post('db_driver')
             );
         }
 
@@ -236,8 +237,9 @@ class Setup extends MX_Controller
      * @param $password
      * @param $database
      * @param int $port
+     * @param $driver
      */
-    private function write_database_config($hostname, $username, $password, $database, $port = 3306)
+    private function write_database_config($hostname, $username, $password, $database, $port = 3306, $driver = 'mysqli')
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
@@ -246,6 +248,7 @@ class Setup extends MX_Controller
         $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD=" . $password, $config);
         $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE=" . $database, $config);
         $config = preg_replace("/DB_PORT=(.*)?/", "DB_PORT=" . $port, $config);
+        $config = preg_replace("/DB_DRIVER=(.*)?/", "DB_DRIVER=" . $driver, $config);
 
         write_file(IPCONFIG_FILE, $config);
     }
