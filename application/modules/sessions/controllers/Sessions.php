@@ -81,22 +81,6 @@ class Sessions extends Base_Controller
         $this->load->view('session_login', $view_data);
     }
 
-    /**
-     * @param $email_address
-     * @param $password
-     * @return bool
-     */
-    public function authenticate($email_address, $password)
-    {
-        $this->load->model('mdl_sessions');
-
-        if ($this->mdl_sessions->auth($email_address, $password)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function logout()
     {
         $this->session->sess_destroy();
