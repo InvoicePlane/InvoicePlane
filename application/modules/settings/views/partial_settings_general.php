@@ -199,32 +199,23 @@
             </div>
 
             <div class="row">
-				<div class="col-xs-12 col-md-6">
-					<div class="form-group">
-						<label for="number_format">
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="settings[number_format]">
                             <?php _trans('number_format'); ?>
-                        <select name="settings[number_format]"
-							class="form-control simple-select" id="number_format"
-							data-minimum-results-for-search="Infinity">
-							<option value="us_uk_format"
-							    <?php check_select(get_setting('number_format'), 'us_uk_format'); ?>>
-								<?php _trans('number_format_us_uk'); ?>
-							</option>
-							<option value="eu_format"
-								<?php check_select(get_setting('number_format'), 'eu_format'); ?>>
-								<?php _trans('number_format_european'); ?>
-							</option>
-							<option value="iso80000_1_point_format"
-								<?php check_select(get_setting('number_format'), 'iso80000_1_point_format'); ?>>
-								<?php _trans('number_format_iso_80k_1'); ?>
-							</option>
-							<option value="iso80000_1_comma_format"
-								<?php check_select(get_setting('number_format'), 'iso80000_1_comma_format'); ?>>
-								<?php _trans('number_format_iso_80k_1'); ?>
-							</option>
-						</select>
-					</div>
-				</div>
+                        </label>
+                        <select name="settings[number_format]" id="settings[number_format]"
+                            class="form-control simple-select"
+                            data-minimum-results-for-search="Infinity">
+                            <?php foreach ($number_formats as $key => $value) { ?>
+                                <option value="<?php print($key); ?>"
+                                    <?php check_select(get_setting('number_format'), $value['label']); ?>>
+                                    <?php _trans($value['label']); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
 			</div>
 
         </div>
