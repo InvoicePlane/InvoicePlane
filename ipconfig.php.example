@@ -23,7 +23,7 @@ DB_USERNAME=
 DB_PASSWORD=
 DB_DATABASE=
 DB_PORT=
-# Database driver, one of [ mysqli | postgres ] 
+# Database driver, one of [ mysqli | postgre ]
 DB_DRIVER=mysqli
 
 # If you want to be logged out after closing your browser window, set this setting to 0 (ZERO).
