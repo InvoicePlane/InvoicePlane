@@ -280,7 +280,7 @@ $cv = $this->controller->view_data['custom_values'];
                             <label for="client_birthdate"><?php _trans('birthdate'); ?></label>
                             <?php
                             $bdate = $this->mdl_clients->form_value('client_birthdate');
-                            if ($bdate && $bdate != "0000-00-00") {
+                            if ($bdate && $bdate != "0000-00-00" && $bdate != 'NULL') {
                                 $bdate = date_from_mysql($bdate);
                             } else {
                                 $bdate = '';

@@ -20,7 +20,8 @@ class Mdl_Products extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS *', false);
+        $this->load->helper('sql');
+        $this->db->select(sql_calc_found_rows() . '*', false);
     }
 
     public function default_order_by()
@@ -121,8 +122,9 @@ class Mdl_Products extends Response_Model
         $db_array['family_id'] = (empty($db_array['family_id']) ? null : $db_array['family_id']);
         $db_array['unit_id'] = (empty($db_array['unit_id']) ? null : $db_array['unit_id']);
         $db_array['tax_rate_id'] = (empty($db_array['tax_rate_id']) ? null : $db_array['tax_rate_id']);
+        $db_array['product_tariff'] = (empty($db_array['product_tariff']) ? null : $db_array['product_tariff']);
 
         return $db_array;
     }
-
+    
 }

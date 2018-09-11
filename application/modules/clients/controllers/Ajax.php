@@ -40,11 +40,21 @@ class Ajax extends Admin_Controller
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
         $escapedQuery = str_replace("%", "", $escapedQuery);
-        $clients = $this->mdl_clients
-            ->where('client_active', 1)
-            ->having('client_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+        
+        $like = "LIKE '{$moreClientsQuery}{$escapedQuery}%'";
+
+        // Start query
+        $clients = $this->mdl_clients->where('client_active', 1);
+        // DB driver specific part
+        $clients = ($this->db->dbdriver == 'postgre') ?
+            /* POSTGRES specific */
+            $clients->where("( client_name $like OR client_surname $like OR (client_name || ' ' || client_surname) $like )") :
+            /* MySQL and others */
+            $clients->having('client_name '.$like)
+                ->or_having('client_surname '.$like)
+                ->or_having('client_fullname '.$like) ;
+        // Finish query and retrieve result set
+        $clients = $clients
             ->order_by('client_name')
             ->get()
             ->result();
