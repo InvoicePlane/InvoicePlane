@@ -41,7 +41,7 @@
                             <?php _trans('theme'); ?>
                         </label>
                         <select name="settings[system_theme]" id="settings[system_theme]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <?php foreach ($available_themes as $theme_key => $theme_name) { ?>
                                 <option value="<?php echo $theme_key; ?>" <?php check_select(get_setting('system_theme'), $theme_key); ?>>
                                     <?php echo $theme_name; ?>
@@ -59,7 +59,7 @@
                             <?php _trans('first_day_of_week'); ?>
                         </label>
                         <select name="settings[first_day_of_week]" id="settings[first_day_of_week]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <?php foreach ($first_days_of_weeks as $first_day_of_week_id => $first_day_of_week_name) { ?>
                                 <option value="<?php echo $first_day_of_week_id; ?>"
                                     <?php check_select(get_setting('first_day_of_week'), $first_day_of_week_id); ?>>
@@ -135,7 +135,7 @@
                             <?php _trans('currency_symbol_placement'); ?>
                         </label>
                         <select name="settings[currency_symbol_placement]" id="settings[currency_symbol_placement]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="before" <?php check_select(get_setting('currency_symbol_placement'), 'before'); ?>>
                                 <?php _trans('before_amount'); ?>
                             </option>
@@ -175,7 +175,7 @@
                             <?php _trans('tax_rate_decimal_places'); ?>
                         </label>
                         <select name="settings[tax_rate_decimal_places]" class="form-control simple-select"
-                                id="tax_rate_decimal_places">
+                                id="tax_rate_decimal_places" data-minimum-results-for-search="Infinity">
                             <option value="2" <?php check_select(get_setting('tax_rate_decimal_places'), '2'); ?>>
                                 2
                             </option>
@@ -241,7 +241,7 @@
                             <?php _trans('quote_overview_period'); ?>
                         </label>
                         <select name="settings[quote_overview_period]" id="settings[quote_overview_period]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="this-month" <?php check_select(get_setting('quote_overview_period'), 'this-month'); ?>>
                                 <?php _trans('this_month'); ?>
                             </option>
@@ -270,7 +270,7 @@
                             <?php _trans('invoice_overview_period'); ?>
                         </label>
                         <select name="settings[invoice_overview_period]" id="settings[invoice_overview_period]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="this-month" <?php check_select(get_setting('invoice_overview_period'), 'this-month'); ?>>
                                 <?php _trans('this_month'); ?>
                             </option>
@@ -301,7 +301,7 @@
                             <?php _trans('disable_quickactions'); ?>
                         </label>
                         <select name="settings[disable_quickactions]" class="form-control simple-select"
-                                id="disable_quickactions">
+                                id="disable_quickactions" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -329,7 +329,7 @@
                             <?php _trans('disable_sidebar'); ?>
                         </label>
                         <select name="settings[disable_sidebar]" class="form-control simple-select"
-                                id="disable_sidebar">
+                                id="disable_sidebar" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -360,7 +360,7 @@
                             <?php _trans('monospaced_font_for_amounts'); ?>
                         </label>
                         <select name="settings[monospace_amounts]" class="form-control simple-select"
-                                id="monospace_amounts">
+                                id="monospace_amounts" data-minimum-results-for-search="Infinity">
                             <option value="0"><?php _trans('no'); ?></option>
                             <option value="1" <?php check_select(get_setting('monospace_amounts'), '1'); ?>>
                                 <?php _trans('yes'); ?>
@@ -396,7 +396,7 @@
                             <?php _trans('open_reports_in_new_tab'); ?>
                         </label>
                         <select name="settings[reports_in_new_tab]" id="settings[reports_in_new_tab]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0"><?php _trans('no'); ?></option>
                             <option value="1" <?php check_select(get_setting('reports_in_new_tab'), '1'); ?>>
                                 <?php _trans('yes'); ?>
@@ -425,7 +425,7 @@
                             <?php _trans('bcc_mails_to_admin'); ?>
                         </label>
                         <select name="settings[bcc_mails_to_admin]" id="settings[bcc_mails_to_admin]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0"><?php _trans('no'); ?></option>
                             <option value="1" <?php check_select(get_setting('bcc_mails_to_admin'), '1'); ?>>
                                 <?php _trans('yes'); ?>

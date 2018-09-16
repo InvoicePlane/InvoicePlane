@@ -14,7 +14,7 @@
                             <?php _trans('default_invoice_group'); ?>
                         </label>
                         <select name="settings[default_invoice_group]" id="settings[default_invoice_group]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($invoice_groups as $invoice_group) { ?>
                                 <option value="<?php echo $invoice_group->invoice_group_id; ?>"
@@ -42,7 +42,7 @@
                             <?php _trans('default_payment_method'); ?>
                         </label>
                         <select name="settings[invoice_default_payment_method]" class="form-control simple-select"
-                                id="settings[invoice_default_payment_method]">
+                                id="settings[invoice_default_payment_method]" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php
                             foreach ($payment_methods as $payment_method) { ?>
@@ -67,7 +67,7 @@
                             <?php _trans('generate_invoice_number_for_draft'); ?>
                         </label>
                         <select name="settings[generate_invoice_number_for_draft]" class="form-control simple-select"
-                                id="settings[generate_invoice_number_for_draft]">
+                                id="settings[generate_invoice_number_for_draft]" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -97,7 +97,7 @@
                             <?php _trans('mark_invoices_sent_pdf'); ?>
                         </label>
                         <select name="settings[mark_invoices_sent_pdf]" id="settings[mark_invoices_sent_pdf]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -112,7 +112,7 @@
                             <?php _trans('pdf_watermark'); ?>
                         </label>
                         <select name="settings[pdf_watermark]" id="settings[pdf_watermark]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -136,7 +136,7 @@
                             <?php _trans('invoice_pdf_include_zugferd'); ?>
                         </label>
                         <select name="settings[include_zugferd]" id="settings[include_zugferd]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -184,7 +184,7 @@
                             <?php _trans('default_pdf_template'); ?>
                         </label>
                         <select name="settings[pdf_invoice_template]" id="settings[pdf_invoice_template]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
                                 <option value="<?php echo $invoice_template; ?>"
@@ -200,7 +200,7 @@
                             <?php _trans('pdf_template_paid'); ?>
                         </label>
                         <select name="settings[pdf_invoice_template_paid]" id="settings[pdf_invoice_template_paid]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
                                 <option value="<?php echo $invoice_template; ?>"
@@ -216,7 +216,7 @@
                             <?php _trans('pdf_template_overdue'); ?>
                         </label>
                         <select name="settings[pdf_invoice_template_overdue]" class="form-control simple-select"
-                                id="settings[pdf_invoice_template_overdue]">
+                                id="settings[pdf_invoice_template_overdue]" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
                                 <option value="<?php echo $invoice_template; ?>"
@@ -232,7 +232,7 @@
                             <?php _trans('default_public_template'); ?>
                         </label>
                         <select name="settings[public_invoice_template]" id="settings[public_invoice_template]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($public_invoice_templates as $invoice_template) { ?>
                                 <option value="<?php echo $invoice_template; ?>"
@@ -251,7 +251,7 @@
                             <?php _trans('default_email_template'); ?>
                         </label>
                         <select name="settings[email_invoice_template]" id="settings[email_invoice_template]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($email_templates_invoice as $email_template) { ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
@@ -267,7 +267,7 @@
                             <?php _trans('email_template_paid'); ?>
                         </label>
                         <select name="settings[email_invoice_template_paid]" id="settings[email_invoice_template_paid]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($email_templates_invoice as $email_template) { ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
@@ -283,7 +283,7 @@
                             <?php _trans('email_template_overdue'); ?>
                         </label>
                         <select name="settings[email_invoice_template_overdue]" class="form-control simple-select"
-                                id="settings[email_invoice_template_overdue]">
+                                id="settings[email_invoice_template_overdue]" data-minimum-results-for-search="Infinity">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($email_templates_invoice as $email_template) { ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
@@ -329,7 +329,7 @@
                             <?php _trans('automatic_email_on_recur'); ?>
                         </label>
                         <select name="settings[automatic_email_on_recur]" id="settings[automatic_email_on_recur]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -359,7 +359,7 @@
                             <?php _trans('set_to_read_only'); ?>
                         </label>
                         <select name="settings[read_only_toggle]" id="settings[read_only_toggle]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="2" <?php check_select(get_setting('read_only_toggle'), '2'); ?>>
                                 <?php _trans('sent'); ?>
                             </option>
@@ -390,7 +390,8 @@
                         <label for="settings[sumex]">
                             <?php _trans('invoice_sumex'); ?>
                         </label>
-                        <select name="settings[sumex]" id="settings[sumex]" class="form-control simple-select">
+                        <select name="settings[sumex]" id="settings[sumex]"
+                        	class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
@@ -406,7 +407,7 @@
                             <?php _trans('invoice_sumex_sliptype'); ?>
                         </label>
                         <select name="settings[sumex_sliptype]" id="settings[sumex_sliptype]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <?php
                             $slipTypes = array("esr9", "esrRed");
                             foreach ($slipTypes as $k => $v): ?>
@@ -440,7 +441,7 @@
                             <?php _trans('invoice_sumex_place'); ?>
                         </label>
                         <select name="settings[sumex_place]" id="settings[sumex_place]"
-                                class="form-control simple-select">
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
                             <?php
                             $places = Sumex::PLACES;
                             foreach ($places as $k => $v): ?>

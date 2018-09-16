@@ -34,7 +34,7 @@ class Ajax extends Admin_Controller
             foreach ($items as $item) {
                 if ($item->item_name) {
                     $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : floatval(0));
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
                     $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);

@@ -14,7 +14,7 @@
                             <?php _trans('enable_projects'); ?>
                         </label>
                         <select name="settings[projects_enabled]" class="form-control simple-select"
-                                id="settings[projects_enabled]">
+                                id="settings[projects_enabled]" data-minimum-results-for-search="Infinity">
                             <option value="0">
                                 <?php _trans('no'); ?>
                             </option>
