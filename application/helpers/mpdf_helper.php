@@ -51,6 +51,10 @@ function pdf_create(
     // mPDF configuration
     $mpdf->useAdobeCJK = true;
     $mpdf->autoScriptToLang = true;
+    $mpdf->autoLangToFont = true;
+    $mpdf->autoVietnamese = true;
+    $mpdf->autoArabic = true;
+    $mpdf->autoLangToFont = true;
 
     if (IP_DEBUG) {
         // Enable image error logging
