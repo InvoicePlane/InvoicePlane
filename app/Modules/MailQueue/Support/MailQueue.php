@@ -14,8 +14,8 @@
 
 namespace IP\Modules\MailQueue\Support;
 
-use IP\Support\PDF\PDFFactory;
 use Illuminate\Support\Facades\Mail;
+use IP\Support\PDF\PDFFactory;
 
 class MailQueue
 {
@@ -70,39 +70,40 @@ class MailQueue
         try {
             $htmlTemplate = (view()->exists('email_templates.html')) ? 'email_templates.html' : 'templates.emails.html';
 
-            Mail::send([$htmlTemplate, 'templates.emails.text'], ['body' => $body], function ($message) use ($from, $to, $cc, $bcc, $subject, $attachmentPath) {
-                $from = json_decode($from, true);
-                $to = json_decode($to, true);
-                $cc = json_decode($cc, true);
-                $bcc = json_decode($bcc, true);
+            Mail::send([$htmlTemplate, 'templates.emails.text'], ['body' => $body],
+                function ($message) use ($from, $to, $cc, $bcc, $subject, $attachmentPath) {
+                    $from = json_decode($from, true);
+                    $to = json_decode($to, true);
+                    $cc = json_decode($cc, true);
+                    $bcc = json_decode($bcc, true);
 
-                $message->from($from['email'], $from['name']);
-                $message->subject($subject);
+                    $message->from($from['email'], $from['name']);
+                    $message->subject($subject);
 
-                foreach ($to as $toRecipient) {
-                    $message->to(trim($toRecipient));
-                }
-
-                foreach ($cc as $ccRecipient) {
-                    if ($ccRecipient !== '') {
-                        $message->cc(trim($ccRecipient));
+                    foreach ($to as $toRecipient) {
+                        $message->to(trim($toRecipient));
                     }
-                }
 
-                foreach ($bcc as $bccRecipient) {
-                    if ($bccRecipient !== '') {
-                        $message->bcc(trim($bccRecipient));
+                    foreach ($cc as $ccRecipient) {
+                        if ($ccRecipient !== '') {
+                            $message->cc(trim($ccRecipient));
+                        }
                     }
-                }
 
-                if (config('fi.mailReplyToAddress')) {
-                    $message->replyTo(config('fi.mailReplyToAddress'));
-                }
+                    foreach ($bcc as $bccRecipient) {
+                        if ($bccRecipient !== '') {
+                            $message->bcc(trim($bccRecipient));
+                        }
+                    }
 
-                if ($attachmentPath) {
-                    $message->attach($attachmentPath);
-                }
-            });
+                    if (config('ip.mailReplyToAddress')) {
+                        $message->replyTo(config('ip.mailReplyToAddress'));
+                    }
+
+                    if ($attachmentPath) {
+                        $message->attach($attachmentPath);
+                    }
+                });
 
             if ($attachmentPath and file_exists($attachmentPath)) {
                 unlink($attachmentPath);

@@ -29,11 +29,11 @@ class CurrencyController extends Controller
     {
         $this->setReturnUrl();
 
-        $currencies = Currency::sortable(['name' => 'asc'])->paginate(config('fi.resultsPerPage'));
+        $currencies = Currency::sortable(['name' => 'asc'])->paginate(config('ip.resultsPerPage'));
 
         return view('currencies.index')
             ->with('currencies', $currencies)
-            ->with('baseCurrency', config('fi.baseCurrency'));
+            ->with('baseCurrency', config('ip.baseCurrency'));
     }
 
     public function create()
@@ -89,6 +89,6 @@ class CurrencyController extends Controller
     {
         $currencyConverter = CurrencyConverterFactory::create();
 
-        return $currencyConverter->convert(config('fi.baseCurrency'), request('currency_code'));
+        return $currencyConverter->convert(config('ip.baseCurrency'), request('currency_code'));
     }
 }

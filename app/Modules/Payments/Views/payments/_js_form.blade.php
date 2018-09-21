@@ -1,7 +1,7 @@
-<script type="text/javascript">
+<script>
 
-  $(function () {
-    $('#paid_at').datepicker({format: '{{ config('fi.datepickerFormat') }}', autoclose: true});
-  });
+    $(function () {
+        $('#paid_at').datepicker({format: '{{ config('ip.datepickerFormat') }}', autoclose: true});
+    });
 
 </script>

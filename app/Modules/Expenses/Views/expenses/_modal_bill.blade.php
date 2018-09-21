@@ -1,31 +1,31 @@
-<script type="text/javascript">
+<script>
 
-  $(function () {
-    $('#create-expense-bill').modal();
+    $(function () {
+        $('#create-expense-bill').modal();
 
-    $('.add-line-item').change(function () {
-      if ($('input[name=add_line_item]:checked').val() == 1) {
-        $('#line-item-options').show();
-      }
-      else {
-        $('#line-item-options').hide();
-      }
+        $('.add-line-item').change(function () {
+            if ($('input[name=add_line_item]:checked').val() == 1) {
+                $('#line-item-options').show();
+            }
+            else {
+                $('#line-item-options').hide();
+            }
+        });
+
+        $('#btn-create-expense-bill-confirm').click(function () {
+            $.post("{{ route('expenseBill.store') }}", {
+                id: {{ $expense->id }},
+                invoice_id: $('#invoice_id').val(),
+                item_name: $('#item_name').val(),
+                item_description: $('#item_description').val(),
+                add_line_item: $('input[name=add_line_item]:checked').val()
+            }).done(function () {
+                window.location = '{{ $redirectTo }}';
+            }).fail(function (response) {
+                showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
+            });
+        });
     });
-
-    $('#btn-create-expense-bill-confirm').click(function () {
-      $.post("{{ route('expenseBill.store') }}", {
-        id: {{ $expense->id }},
-        invoice_id: $('#invoice_id').val(),
-        item_name: $('#item_name').val(),
-        item_description: $('#item_description').val(),
-        add_line_item: $('input[name=add_line_item]:checked').val()
-      }).done(function () {
-        window.location = '{{ $redirectTo }}';
-      }).fail(function (response) {
-        showErrors($.parseJSON(response.responseText).errors, '#modal-status-placeholder');
-      });
-    });
-  });
 </script>
 
 <div class="modal fade" id="create-expense-bill">
@@ -50,8 +50,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label">{!! Form::radio('add_line_item', 1, true, ['class' => 'add-line-item']) !!} @lang('ip.add_line_item_to_invoice')</label><br>
-                            <label class="control-label">{!! Form::radio('add_line_item', 0, false, ['class' => 'add-line-item']) !!} @lang('ip.do_not_add_line_item_to_invoice')</label>
+                            <label
+                                class="control-label">{!! Form::radio('add_line_item', 1, true, ['class' => 'add-line-item']) !!} @lang('ip.add_line_item_to_invoice')</label><br>
+                            <label
+                                class="control-label">{!! Form::radio('add_line_item', 0, false, ['class' => 'add-line-item']) !!} @lang('ip.do_not_add_line_item_to_invoice')</label>
                         </div>
 
                         <div id="line-item-options">
@@ -76,7 +78,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
                 @if ($invoices)
                     <button type="button" id="btn-create-expense-bill-confirm"
-                            class="btn btn-primary">@lang('ip.submit')</button>
+                        class="btn btn-primary">@lang('ip.submit')</button>
                 @endif
             </div>
         </div>

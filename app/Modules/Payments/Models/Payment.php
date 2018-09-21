@@ -15,6 +15,8 @@
 namespace IP\Modules\Payments\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use IP\Events\InvoiceModified;
 use IP\Events\PaymentCreated;
 use IP\Events\PaymentCreating;
@@ -24,8 +26,6 @@ use IP\Support\FileNames;
 use IP\Support\HTML;
 use IP\Support\NumberFormatter;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Payment extends Model
 {
@@ -33,11 +33,21 @@ class Payment extends Model
 
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = ['id'];
 
-    protected $sortable = ['paid_at', 'invoices.invoice_date', 'invoices.number', 'invoices.summary', 'clients.name', 'amount', 'payment_methods.name', 'note'];
+    protected $sortable = [
+        'paid_at',
+        'invoices.invoice_date',
+        'invoices.number',
+        'invoices.summary',
+        'clients.name',
+        'amount',
+        'payment_methods.name',
+        'note',
+    ];
 
     protected $dates = ['paid_at'];
 
@@ -179,14 +189,17 @@ class Payment extends Model
 
             $query->where('payments.created_at', 'like', '%' . $keywords . '%')
                 ->orWhereIn('invoice_id', function ($query) use ($keywords) {
-                    $query->select('id')->from('invoices')->where(DB::raw('lower(number)'), 'like', '%' . $keywords . '%')
+                    $query->select('id')->from('invoices')->where(DB::raw('lower(number)'), 'like',
+                        '%' . $keywords . '%')
                         ->orWhere('summary', 'like', '%' . $keywords . '%')
                         ->orWhereIn('client_id', function ($query) use ($keywords) {
-                            $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
+                            $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"),
+                                'like', '%' . $keywords . '%');
                         });
                 })
                 ->orWhereIn('payment_method_id', function ($query) use ($keywords) {
-                    $query->select('id')->from('payment_methods')->where(DB::raw('lower(name)'), 'like', '%' . $keywords . '%');
+                    $query->select('id')->from('payment_methods')->where(DB::raw('lower(name)'), 'like',
+                        '%' . $keywords . '%');
                 });
         }
 

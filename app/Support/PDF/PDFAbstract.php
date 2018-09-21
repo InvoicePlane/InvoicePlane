@@ -22,8 +22,8 @@ abstract class PDFAbstract implements PDFInterface
 
     public function __construct()
     {
-        $this->paperSize = config('fi.paperSize') ?: 'letter';
-        $this->paperOrientation = config('fi.paperOrientation') ?: 'portrait';
+        $this->paperSize = config('ip.paperSize') ?: 'letter';
+        $this->paperOrientation = config('ip.paperOrientation') ?: 'portrait';
     }
 
     public function setPaperSize($paperSize)

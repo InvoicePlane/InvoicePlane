@@ -26,8 +26,8 @@ class NumberFormatter
      */
     public static function format($number, $currency = null, $decimalPlaces = null)
     {
-        $currency = ($currency) ?: config('fi.currency');
-        $decimalPlaces = ($decimalPlaces) ?: config('fi.amountDecimals');
+        $currency = ($currency) ?: config('ip.currency');
+        $decimalPlaces = ($decimalPlaces) ?: config('ip.amountDecimals');
 
         return number_format($number, $decimalPlaces, $currency->decimal, $currency->thousands);
     }
@@ -41,12 +41,33 @@ class NumberFormatter
      */
     public static function unformat($number, $currency = null)
     {
-        $currency = ($currency) ?: config('fi.currency');
+        $currency = ($currency) ?: config('ip.currency');
 
         $number = str_replace($currency->decimal, 'D', $number);
         $number = str_replace($currency->thousands, '', $number);
         $number = str_replace('D', '.', $number);
 
         return $number;
+    }
+
+    /**
+     * Returns a proper calculated file size of an int representing the bytes of
+     * a file
+     *
+     * @param int $bytes
+     * @param int $round
+     * @return string
+     */
+    public static function fileSize($bytes, $round = 2): string
+    {
+        $types = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+
+        for ($i = 0; $bytes >= 1024 && $i < (count($types) - 1); $i++) {
+            $bytes /= 1024;
+        }
+
+        $bytes = $round ? round($bytes, $round) : $bytes;
+
+        return $bytes . ' ' . $types[$i];
     }
 }

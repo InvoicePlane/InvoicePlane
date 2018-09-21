@@ -14,16 +14,17 @@
 
 namespace IP\Modules\RecurringInvoices\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Events\RecurringInvoiceItemSaving;
 use IP\Events\RecurringInvoiceModified;
 use IP\Support\CurrencyFormatter;
 use IP\Support\NumberFormatter;
-use Illuminate\Database\Eloquent\Model;
 
 class RecurringInvoiceItem extends Model
 {
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = ['id'];

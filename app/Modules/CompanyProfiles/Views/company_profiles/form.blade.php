@@ -2,18 +2,18 @@
 
 @section('content')
 
-    <script type="text/javascript">
-      $(function () {
-        $('#name').focus();
+    <script>
+        $(function () {
+            $('#name').focus();
 
-          @if ($editMode == true)
-          $('#btn-delete-logo').click(function () {
-            $.post("{{ route('companyProfiles.deleteLogo', [$companyProfile->id]) }}").done(function () {
-              $('#div-logo').html('');
+            @if ($editMode == true)
+            $('#btn-delete-logo').click(function () {
+                $.post("{{ route('companyProfiles.deleteLogo', [$companyProfile->id]) }}").done(function () {
+                    $('#div-logo').html('');
+                });
             });
-          });
-          @endif
-      });
+            @endif
+        });
     </script>
 
     @if ($editMode == true)
@@ -117,7 +117,7 @@
                                             @if ($editMode and $companyProfile->logo)
                                                 <p>{!! $companyProfile->logo(100) !!}</p>
                                                 <a href="javascript:void(0)"
-                                                   id="btn-delete-logo">@lang('ip.remove_logo')</a>
+                                                    id="btn-delete-logo">@lang('ip.remove_logo')</a>
                                             @endif
                                         </div>
                                         {!! Form::file('logo') !!}
@@ -129,13 +129,13 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>@lang('ip.default_invoice_template'):</label>
-                                    {!! Form::select('invoice_template', $invoiceTemplates, ((isset($companyProfile)) ? $companyProfile->invoice_template : config('fi.invoiceTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
+                                    {!! Form::select('invoice_template', $invoiceTemplates, ((isset($companyProfile)) ? $companyProfile->invoice_template : config('ip.invoiceTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>@lang('ip.default_quote_template'):</label>
-                                    {!! Form::select('quote_template', $quoteTemplates, ((isset($companyProfile)) ? $companyProfile->quote_template : config('fi.quoteTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
+                                    {!! Form::select('quote_template', $quoteTemplates, ((isset($companyProfile)) ? $companyProfile->quote_template : config('ip.quoteTemplate')), ['id' => 'invoice_template', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                         </div>

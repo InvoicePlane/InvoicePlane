@@ -38,9 +38,11 @@ class RevenueByClientReport
 
         foreach ($payments as $payment) {
             if (isset($results[$payment->invoice->client->name]['months'][date('n', strtotime($payment->paid_at))])) {
-                $results[$payment->invoice->client->name]['months'][date('n', strtotime($payment->paid_at))] += $payment->amount / $payment->invoice->exchange_rate;
+                $results[$payment->invoice->client->name]['months'][date('n',
+                    strtotime($payment->paid_at))] += $payment->amount / $payment->invoice->exchange_rate;
             } else {
-                $results[$payment->invoice->client->name]['months'][date('n', strtotime($payment->paid_at))] = $payment->amount / $payment->invoice->exchange_rate;
+                $results[$payment->invoice->client->name]['months'][date('n',
+                    strtotime($payment->paid_at))] = $payment->amount / $payment->invoice->exchange_rate;
             }
         }
 

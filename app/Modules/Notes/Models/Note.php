@@ -14,8 +14,8 @@
 
 namespace IP\Modules\Notes\Models;
 
-use IP\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
+use IP\Support\DateFormatter;
 
 class Note extends Model
 {

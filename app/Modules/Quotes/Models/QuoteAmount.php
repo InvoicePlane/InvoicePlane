@@ -14,13 +14,14 @@
 
 namespace IP\Modules\Quotes\Models;
 
-use IP\Support\CurrencyFormatter;
 use Illuminate\Database\Eloquent\Model;
+use IP\Support\CurrencyFormatter;
 
 class QuoteAmount extends Model
 {
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = ['id'];
@@ -64,6 +65,7 @@ class QuoteAmount extends Model
 
     /**
      * Retrieve the formatted total prior to conversion.
+     *
      * @return string
      */
     public function getFormattedTotalWithoutConversionAttribute()

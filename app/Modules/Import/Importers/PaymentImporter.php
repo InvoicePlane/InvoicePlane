@@ -14,10 +14,10 @@
 
 namespace IP\Modules\Import\Importers;
 
+use Illuminate\Support\Facades\Validator;
 use IP\Modules\Invoices\Models\Invoice;
 use IP\Modules\PaymentMethods\Models\PaymentMethod;
 use IP\Modules\Payments\Models\Payment;
-use Illuminate\Support\Facades\Validator;
 
 class PaymentImporter extends AbstractImporter
 {

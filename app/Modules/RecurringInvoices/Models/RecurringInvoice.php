@@ -14,14 +14,14 @@
 
 namespace IP\Modules\RecurringInvoices\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use IP\Events\RecurringInvoiceCreated;
 use IP\Events\RecurringInvoiceCreating;
 use IP\Events\RecurringInvoiceDeleted;
 use IP\Support\DateFormatter;
 use IP\Support\NumberFormatter;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class RecurringInvoice extends Model
 {
@@ -29,7 +29,14 @@ class RecurringInvoice extends Model
 
     protected $guarded = ['id'];
 
-    protected $sortable = ['id', 'clients.name', 'summary', 'next_date', 'stop_date', 'recurring_invoice_amounts.total'];
+    protected $sortable = [
+        'id',
+        'clients.name',
+        'summary',
+        'next_date',
+        'stop_date',
+        'recurring_invoice_amounts.total',
+    ];
 
     public static function boot()
     {
@@ -149,7 +156,7 @@ class RecurringInvoice extends Model
 
     public function getIsForeignCurrencyAttribute()
     {
-        if ($this->attributes['currency_code'] == config('fi.baseCurrency')) {
+        if ($this->attributes['currency_code'] == config('ip.baseCurrency')) {
             return false;
         }
 
@@ -199,7 +206,8 @@ class RecurringInvoice extends Model
 
             $query->where('summary', 'like', '%' . $keywords . '%')
                 ->orWhereIn('client_id', function ($query) use ($keywords) {
-                    $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
+                    $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"),
+                        'like', '%' . $keywords . '%');
                 });
         }
 

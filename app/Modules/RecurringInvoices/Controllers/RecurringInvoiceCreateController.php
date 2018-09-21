@@ -43,6 +43,7 @@ class RecurringInvoiceCreateController extends Controller
 
         $recurringInvoice = RecurringInvoice::create($input);
 
-        return response()->json(['success' => true, 'url' => route('recurringInvoices.edit', [$recurringInvoice->id])], 200);
+        return response()->json(['success' => true, 'url' => route('recurringInvoices.edit', [$recurringInvoice->id])],
+            200);
     }
 }

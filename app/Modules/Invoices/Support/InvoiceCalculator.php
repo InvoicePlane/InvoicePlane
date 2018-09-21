@@ -36,7 +36,8 @@ class InvoiceCalculator extends Calculator implements PayableInterface
     public function calculatePayments()
     {
         if (!$this->isCanceled) {
-            $this->calculatedAmount['balance'] = round($this->calculatedAmount['total'], 2) - $this->calculatedAmount['paid'];
+            $rounded_amount = round($this->calculatedAmount['total'], 2);
+            $this->calculatedAmount['balance'] = $rounded_amount - $this->calculatedAmount['paid'];
         } else {
             $this->calculatedAmount['balance'] = 0;
         }

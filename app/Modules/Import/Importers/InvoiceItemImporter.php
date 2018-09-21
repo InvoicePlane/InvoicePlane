@@ -14,10 +14,10 @@
 
 namespace IP\Modules\Import\Importers;
 
+use Illuminate\Support\Facades\Validator;
 use IP\Events\InvoiceModified;
 use IP\Modules\Invoices\Models\Invoice;
 use IP\Modules\TaxRates\Models\TaxRate;
-use Illuminate\Support\Facades\Validator;
 
 class InvoiceItemImporter extends AbstractImporter
 {
@@ -113,7 +113,9 @@ class InvoiceItemImporter extends AbstractImporter
                     $record['display_order'] = 0;
 
                     if ($this->validateRecord($record)) {
-                        if (!isset($record['description'])) $record['description'] = '';
+                        if (!isset($record['description'])) {
+                            $record['description'] = '';
+                        }
 
                         $invoice->items()->create($record);
 

@@ -14,13 +14,13 @@
 
 namespace IP\Modules\ClientCenter\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use IP\Http\Controllers\Controller;
 use IP\Modules\Invoices\Models\Invoice;
 use IP\Modules\Payments\Models\Payment;
 use IP\Modules\Quotes\Models\Quote;
 use IP\Support\Statuses\InvoiceStatuses;
 use IP\Support\Statuses\QuoteStatuses;
-use Illuminate\Support\Facades\DB;
 
 class ClientCenterDashboardController extends Controller
 {
@@ -29,8 +29,8 @@ class ClientCenterDashboardController extends Controller
 
     public function __construct(
         InvoiceStatuses $invoiceStatuses,
-        QuoteStatuses $quoteStatuses)
-    {
+        QuoteStatuses $quoteStatuses
+    ) {
         $this->invoiceStatuses = $invoiceStatuses;
         $this->quoteStatuses = $quoteStatuses;
     }

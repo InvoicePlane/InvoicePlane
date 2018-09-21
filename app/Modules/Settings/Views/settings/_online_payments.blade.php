@@ -12,10 +12,10 @@
                 <div class="form-group">
                     @if (!is_array($setting))
                         <label>{{ trans('ip.' . snake_case($setting)) }}</label>
-                        {!! Form::text('setting[' . $driver->getSettingKey($setting) . ']', config('fi.' . $driver->getSettingKey($setting)), ['class' => 'form-control']) !!}
+                        {!! Form::text('setting[' . $driver->getSettingKey($setting) . ']', config('ip.' . $driver->getSettingKey($setting)), ['class' => 'form-control']) !!}
                     @else
                         <label>{{ trans('ip.' . snake_case($key)) }}</label>
-                        {!! Form::select('setting[' . $driver->getSettingKey($key) . ']', $setting, config('fi.' . $driver->getSettingKey($key)), ['class' => 'form-control']) !!}
+                        {!! Form::select('setting[' . $driver->getSettingKey($key) . ']', $setting, config('ip.' . $driver->getSettingKey($key)), ['class' => 'form-control']) !!}
                     @endif
                 </div>
             </div>

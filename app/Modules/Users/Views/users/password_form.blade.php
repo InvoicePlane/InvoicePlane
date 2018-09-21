@@ -2,10 +2,10 @@
 
 @section('content')
 
-    <script type="text/javascript">
-      $(function () {
-        $('#password').focus();
-      });
+    <script>
+        $(function () {
+            $('#password').focus();
+        });
     </script>
 
     {!! Form::open(['route' => ['users.password.update', $user->id]]) !!}

@@ -44,7 +44,7 @@ class Mollie extends MerchantDriverPayable
             $fiPayment = Payment::create([
                 'invoice_id' => $invoice->id,
                 'amount' => $payment->amount,
-                'payment_method_id' => config('fi.onlinePaymentMethod'),
+                'payment_method_id' => config('ip.onlinePaymentMethod'),
             ]);
 
             MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->id);

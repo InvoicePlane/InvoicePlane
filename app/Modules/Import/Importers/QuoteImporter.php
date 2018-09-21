@@ -14,11 +14,11 @@
 
 namespace IP\Modules\Import\Importers;
 
+use Illuminate\Support\Facades\Validator;
 use IP\Modules\Clients\Models\Client;
 use IP\Modules\CompanyProfiles\Models\CompanyProfile;
 use IP\Modules\Groups\Models\Group;
 use IP\Modules\Quotes\Models\Quote;
-use Illuminate\Support\Facades\Validator;
 
 class QuoteImporter extends AbstractImporter
 {

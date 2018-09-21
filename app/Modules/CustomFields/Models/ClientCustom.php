@@ -14,8 +14,8 @@
 
 namespace IP\Modules\CustomFields\Models;
 
-use IP\Events\ClientCustomCreating;
 use Illuminate\Database\Eloquent\Model;
+use IP\Events\ClientCustomCreating;
 
 class ClientCustom extends Model
 {

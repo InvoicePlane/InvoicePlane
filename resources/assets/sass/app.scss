@@ -11,14 +11,16 @@
  */
 
 // Third Party / Dependencies
-@import "third-party/bs-variables";
 @import "third-party/bootstrap";
 
 // Custom
-@import "custom";
+@import "ip-variables";
+@import "custom/colors";
+@import "custom/fixes";
+@import "custom/helper";
+@import "custom/sidebar";
+@import "custom/layout";
 
 // Fonts
 $fa-font-path: "fonts" !default;
 @import "../../../node_modules/font-awesome/scss/font-awesome";
-$ionicons-font-path: "fonts" !default;
-@import "../../../node_modules/ionicons/dist/scss/ionicons";

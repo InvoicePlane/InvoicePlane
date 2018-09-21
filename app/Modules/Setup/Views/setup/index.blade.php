@@ -1,33 +1,17 @@
 @extends('setup.master')
 
+@section('title')
+    @lang('ip.setup')
+@endsection
+
 @section('content')
 
-    <section class="content-header">
-        <h1>@lang('ip.setup')</h1>
-    </section>
+    {!! Form::open() !!}
 
-    <section class="content">
+    <p>@lang('ip.setup_welcome')</p>
 
-        {!! Form::open() !!}
+    {!! Form::submit(trans('ip.continue'), ['class' => 'btn btn-primary']) !!}
 
-        <div class="row">
-            <div class="col-md-12">
+    {!! Form::close() !!}
 
-                <div class="box box-primary">
-                    <div class="box-body">
-
-                        <p>@lang('ip.setup_welcome')</p>
-
-                        {!! Form::submit(trans('ip.continue'), ['class' => 'btn btn-primary']) !!}
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        {!! Form::close() !!}
-
-    </section>
-
-@stop
+@endsection

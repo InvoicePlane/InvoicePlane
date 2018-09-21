@@ -4,37 +4,37 @@
 
     @include('layouts._daterangepicker')
 
-    <script type="text/javascript">
-      $(function () {
-        $('#btn-run-report').click(function () {
+    <script>
+        $(function () {
+            $('#btn-run-report').click(function () {
 
-          var from_date = $('#from_date').val();
-          var to_date = $('#to_date').val();
-          var company_profile_id = $('#company_profile_id').val();
-          var include_profit_based_on = $('#include_profit_based_on').val();
+                var from_date = $('#from_date').val();
+                var to_date = $('#to_date').val();
+                var company_profile_id = $('#company_profile_id').val();
+                var include_profit_based_on = $('#include_profit_based_on').val();
 
-          $.post("{{ route('reports.profitLoss.validate') }}", {
-            from_date: from_date,
-            to_date: to_date,
-            company_profile_id: company_profile_id
-          }).done(function () {
-            clearErrors();
-            $('#form-validation-placeholder').html('');
-            output_type = $('input[name=output_type]:checked').val();
-            query_string = '?from_date=' + from_date + '&to_date=' + to_date + '&company_profile_id=' + company_profile_id + '&include_profit_based_on=' + include_profit_based_on;
-            if (output_type == 'preview') {
-              $('#preview').show();
-              $('#preview-results').attr('src', "{{ route('reports.profitLoss.html') }}" + query_string);
-            }
-            else if (output_type == 'pdf') {
-              window.location = "{{ route('reports.profitLoss.pdf') }}" + query_string;
-            }
+                $.post("{{ route('reports.profitLoss.validate') }}", {
+                    from_date: from_date,
+                    to_date: to_date,
+                    company_profile_id: company_profile_id
+                }).done(function () {
+                    clearErrors();
+                    $('#form-validation-placeholder').html('');
+                    output_type = $('input[name=output_type]:checked').val();
+                    query_string = '?from_date=' + from_date + '&to_date=' + to_date + '&company_profile_id=' + company_profile_id + '&include_profit_based_on=' + include_profit_based_on;
+                    if (output_type == 'preview') {
+                        $('#preview').show();
+                        $('#preview-results').attr('src', "{{ route('reports.profitLoss.html') }}" + query_string);
+                    }
+                    else if (output_type == 'pdf') {
+                        window.location = "{{ route('reports.profitLoss.pdf') }}" + query_string;
+                    }
 
-          }).fail(function (response) {
-            showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
-          });
+                }).fail(function (response) {
+                    showErrors($.parseJSON(response.responseText).errors, '#form-validation-placeholder');
+                });
+            });
         });
-      });
     </script>
 @stop
 
@@ -98,7 +98,7 @@
                                     <label>@lang('ip.output_type'):</label><br>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type" value="preview"
-                                               checked="checked"> @lang('ip.preview')
+                                            checked="checked"> @lang('ip.preview')
                                     </label>
                                     <label class="radio-inline">
                                         <input type="radio" name="output_type" value="pdf"> @lang('ip.pdf')
@@ -115,10 +115,10 @@
         </div>
 
         <div class="row" id="preview"
-             style="height: 100%; background-color: #e6e6e6; padding: 25px; margin: 0; display: none;">
+            style="height: 100%; background-color: #e6e6e6; padding: 25px; margin: 0; display: none;">
             <div class="col-lg-8 col-lg-offset-2" style="background-color: white;">
                 <iframe src="about:blank" id="preview-results" frameborder="0" style="width: 100%;" scrolling="no"
-                        onload="resizeIframe(this, 500);"></iframe>
+                    onload="resizeIframe(this, 500);"></iframe>
             </div>
         </div>
 

@@ -14,9 +14,9 @@
 
 namespace IP\Modules\Import\Importers;
 
+use Illuminate\Support\Facades\Validator;
 use IP\Modules\Clients\Models\Client;
 use IP\Modules\CustomFields\Models\CustomField;
-use Illuminate\Support\Facades\Validator;
 
 class ClientImporter extends AbstractImporter
 {

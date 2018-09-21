@@ -12,7 +12,11 @@
  * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
  */
 
-Route::group(['middleware' => ['web', 'auth.admin'], 'prefix' => 'addons', 'namespace' => 'IP\Modules\Addons\Controllers'], function () {
+Route::group([
+    'middleware' => ['web', 'auth.admin'],
+    'prefix' => 'addons',
+    'namespace' => 'IP\Modules\Addons\Controllers',
+], function () {
     Route::get('/', ['uses' => 'AddonController@index', 'as' => 'addons.index']);
 
     Route::get('install/{id}', ['uses' => 'AddonController@install', 'as' => 'addons.install']);

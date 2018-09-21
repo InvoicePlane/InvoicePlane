@@ -17,5 +17,6 @@ Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\
     Route::get('import/map/{import_type}', ['uses' => 'ImportController@mapImport', 'as' => 'import.map']);
 
     Route::post('import/upload', ['uses' => 'ImportController@upload', 'as' => 'import.upload']);
-    Route::post('import/map/{import_type}', ['uses' => 'ImportController@mapImportSubmit', 'as' => 'import.map.submit']);
+    Route::post('import/map/{import_type}',
+        ['uses' => 'ImportController@mapImportSubmit', 'as' => 'import.map.submit']);
 });

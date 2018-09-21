@@ -15,6 +15,7 @@
 namespace IP\Modules\Tasks\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use IP\Events\InvoiceCreatedRecurring;
 use IP\Events\OverdueNoticeEmailed;
 use IP\Http\Controllers\Controller;
@@ -26,7 +27,6 @@ use IP\Modules\RecurringInvoices\Models\RecurringInvoice;
 use IP\Support\DateFormatter;
 use IP\Support\Parser;
 use IP\Support\Statuses\InvoiceStatuses;
-use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -48,7 +48,7 @@ class TaskController extends Controller
 
     private function queueOverdueInvoices()
     {
-        $days = config('fi.overdueInvoiceReminderFrequency');
+        $days = config('ip.overdueInvoiceReminderFrequency');
 
         if ($days) {
             $days = explode(',', $days);
@@ -76,11 +76,11 @@ class TaskController extends Controller
 
                         $mail = $this->mailQueue->create($invoice, [
                             'to' => [$invoice->client->email],
-                            'cc' => [config('fi.mailDefaultCc')],
-                            'bcc' => [config('fi.mailDefaultBcc')],
+                            'cc' => [config('ip.mailDefaultCc')],
+                            'bcc' => [config('ip.mailDefaultBcc')],
                             'subject' => $parser->parse('overdueInvoiceEmailSubject'),
                             'body' => $parser->parse('overdueInvoiceEmailBody'),
-                            'attach_pdf' => config('fi.attachPdf'),
+                            'attach_pdf' => config('ip.attachPdf'),
                         ]);
 
                         $this->mailQueue->send($mail->id);
@@ -96,7 +96,7 @@ class TaskController extends Controller
 
     private function queueUpcomingInvoices()
     {
-        $days = config('fi.upcomingPaymentNoticeFrequency');
+        $days = config('ip.upcomingPaymentNoticeFrequency');
 
         if ($days) {
             $days = explode(',', $days);
@@ -124,11 +124,11 @@ class TaskController extends Controller
 
                         $mail = $this->mailQueue->create($invoice, [
                             'to' => [$invoice->client->email],
-                            'cc' => [config('fi.mailDefaultCc')],
-                            'bcc' => [config('fi.mailDefaultBcc')],
+                            'cc' => [config('ip.mailDefaultCc')],
+                            'bcc' => [config('ip.mailDefaultBcc')],
                             'subject' => $parser->parse('upcomingPaymentNoticeEmailSubject'),
                             'body' => $parser->parse('upcomingPaymentNoticeEmailBody'),
-                            'attach_pdf' => config('fi.attachPdf'),
+                            'attach_pdf' => config('ip.attachPdf'),
                         ]);
 
                         $this->mailQueue->send($mail->id);
@@ -179,7 +179,8 @@ class TaskController extends Controller
             }
 
             if ($recurringInvoice->stop_date == '0000-00-00' or ($recurringInvoice->stop_date !== '0000-00-00' and ($recurringInvoice->next_date < $recurringInvoice->stop_date))) {
-                $nextDate = DateFormatter::incrementDate(substr($recurringInvoice->next_date, 0, 10), $recurringInvoice->recurring_period, $recurringInvoice->recurring_frequency);
+                $nextDate = DateFormatter::incrementDate(substr($recurringInvoice->next_date, 0, 10),
+                    $recurringInvoice->recurring_period, $recurringInvoice->recurring_frequency);
             } else {
                 $nextDate = '0000-00-00';
             }

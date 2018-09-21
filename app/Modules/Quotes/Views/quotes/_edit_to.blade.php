@@ -6,9 +6,9 @@
 
         <div class="box-tools pull-right">
             <button class="btn btn-default btn-sm" id="btn-change-client"><i
-                        class="fa fa-exchange"></i> @lang('ip.change')</button>
+                    class="fa fa-exchange"></i> @lang('ip.change')</button>
             <button class="btn btn-default btn-sm" id="btn-edit-client" data-client-id="{{ $quote->client->id }}"><i
-                        class="fa fa-pencil"></i> @lang('ip.edit')</button>
+                    class="fa fa-pencil"></i> @lang('ip.edit')</button>
         </div>
     </div>
     <div class="box-body">

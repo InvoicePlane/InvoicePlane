@@ -19,7 +19,7 @@
                 {!! Form::close() !!}
             </div>
             <a href="javascript:void(0)" class="btn btn-primary create-recurring-invoice"><i
-                        class="fa fa-plus"></i> @lang('ip.new')</a>
+                    class="fa fa-plus"></i> @lang('ip.new')</a>
         </div>
 
         <div class="clearfix"></div>

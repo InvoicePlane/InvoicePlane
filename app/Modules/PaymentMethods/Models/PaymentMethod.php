@@ -14,8 +14,8 @@
 
 namespace IP\Modules\PaymentMethods\Models;
 
-use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
+use IP\Traits\Sortable;
 
 class PaymentMethod extends Model
 {

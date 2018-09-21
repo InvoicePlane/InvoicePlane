@@ -15,6 +15,8 @@
 namespace IP\Modules\Invoices\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use IP\Events\InvoiceCreated;
 use IP\Events\InvoiceCreating;
 use IP\Events\InvoiceDeleted;
@@ -25,8 +27,6 @@ use IP\Support\HTML;
 use IP\Support\NumberFormatter;
 use IP\Support\Statuses\InvoiceStatuses;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Invoice extends Model
 {
@@ -228,8 +228,9 @@ class Invoice extends Model
     public function getIsOverdueAttribute()
     {
         // Only invoices in Sent status qualify to be overdue
-        if ($this->attributes['due_at'] < date('Y-m-d') and $this->attributes['invoice_status_id'] == InvoiceStatuses::getStatusId('sent'))
+        if ($this->attributes['due_at'] < date('Y-m-d') and $this->attributes['invoice_status_id'] == InvoiceStatuses::getStatusId('sent')) {
             return 1;
+        }
 
         return 0;
     }
@@ -241,7 +242,7 @@ class Invoice extends Model
 
     public function getIsForeignCurrencyAttribute()
     {
-        if ($this->attributes['currency_code'] == config('fi.baseCurrency')) {
+        if ($this->attributes['currency_code'] == config('ip.baseCurrency')) {
             return false;
         }
 
@@ -436,7 +437,8 @@ class Invoice extends Model
                 ->orWhere('due_at', 'like', '%' . $keywords . '%')
                 ->orWhere('summary', 'like', '%' . $keywords . '%')
                 ->orWhereIn('client_id', function ($query) use ($keywords) {
-                    $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
+                    $query->select('id')->from('clients')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"),
+                        'like', '%' . $keywords . '%');
                 });
         }
 

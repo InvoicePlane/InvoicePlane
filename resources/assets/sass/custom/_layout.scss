@@ -1,0 +1,91 @@
+/*
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+
+  @include media-breakpoint-up('lg') {
+    display: flex;
+  }
+}
+
+#main {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 4rem;
+  position: relative;
+
+  @include media-breakpoint-up('lg') {
+    flex: 1 1 75%;
+    padding-left: 25%;
+    padding-top: $topbar-height;
+  }
+
+  @include media-breakpoint-up('xl') {
+    flex: 1 1 80%;
+    padding-left: 20%;
+  }
+}
+
+#topbar {
+  display: flex;
+  width: 100%;
+  padding: $btn-padding-y 0;
+  background: $topbar-bg;
+  z-index: $zindex-fixed;
+
+  @include media-breakpoint-up('lg') {
+    position: fixed;
+    top: 0;
+    left: 25%;
+    width: 75%;
+    border-bottom: 1px solid $topbar-border;
+  }
+
+  @include media-breakpoint-up('xl') {
+    left: 20%;
+    width: 80%;
+  }
+}
+
+#content {
+  padding: $spacer;
+}
+
+#content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: $navbar-padding-y $spacer;
+  border-bottom: $border-width solid $border-color;
+}
+
+.table-content {
+  // Pull the table content outside the content padding
+  margin: calc(#{-$spacer} - 1px) -#{$spacer} 0;
+
+  .alert + & {
+    // Do not pull tables to the top after alerts
+    margin-top: 0;
+  }
+}

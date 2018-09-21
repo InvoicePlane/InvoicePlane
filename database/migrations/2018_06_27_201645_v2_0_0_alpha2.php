@@ -76,7 +76,7 @@ class V200Alpha2 extends Migration
             $table->string('mimetype');
             $table->integer('size');
             $table->string('url_key');
-            $table->integer('client_visibility');
+            $table->integer('client_visibility')->default(0);
         });
 
         Schema::create('clients', function (Blueprint $table) {
@@ -141,9 +141,9 @@ class V200Alpha2 extends Migration
             $table->integer('client_id');
             $table->string('name');
             $table->string('email');
-            $table->boolean('default_to');
-            $table->boolean('default_cc');
-            $table->boolean('default_bcc');
+            $table->boolean('default_to')->default(0);
+            $table->boolean('default_cc')->default(0);
+            $table->boolean('default_bcc')->default(0);
 
             $table->index('client_id');
         });
@@ -665,6 +665,13 @@ class V200Alpha2 extends Migration
             'skin' => 'skin-invoiceplane.min.css',
             'timezone' => 'UTC',
             'version' => '2.0.0-alpha2',
+            'widgetEnabledInvoiceSummary' => '1',
+            'widgetColumnWidthInvoiceSummary' => '6',
+            'widgetInvoiceSummaryDashboardTotals' => 'year_to_date',
+            'widgetEnabledQuoteSummary' => '1',
+            'widgetColumnWidthQuoteSummary' => '6',
+            'widgetColumnWidthClientActivity' => '6',
+            'widgetQuoteSummaryDashboardTotals' => 'year_to_date',
         ];
 
         foreach ($settings as $key => $value) {
