@@ -14,14 +14,15 @@
 
 namespace IP\Modules\Invoices\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Support\CurrencyFormatter;
 use IP\Support\NumberFormatter;
-use Illuminate\Database\Eloquent\Model;
 
 class InvoiceAmount extends Model
 {
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = ['id'];
@@ -80,6 +81,7 @@ class InvoiceAmount extends Model
 
     /**
      * Retrieve the formatted total prior to conversion.
+     *
      * @return string
      */
     public function getFormattedTotalWithoutConversionAttribute()

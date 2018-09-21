@@ -14,6 +14,7 @@
 
 namespace IP\Modules\Settings\Controllers;
 
+use Illuminate\Support\Facades\Crypt;
 use IP\Http\Controllers\Controller;
 use IP\Modules\CompanyProfiles\Models\CompanyProfile;
 use IP\Modules\Currencies\Models\Currency;
@@ -34,14 +35,13 @@ use IP\Support\Skins;
 use IP\Support\Statuses\InvoiceStatuses;
 use IP\Support\Statuses\QuoteStatuses;
 use IP\Support\UpdateChecker;
-use Illuminate\Support\Facades\Crypt;
 
 class SettingController extends Controller
 {
     public function index()
     {
         try {
-            Crypt::decrypt(config('fi.mailPassword'));
+            Crypt::decrypt(config('ip.mailPassword'));
             session()->forget('error');
         } catch (\Exception $e) {
             // Do nothing, already done in Config Provider
@@ -65,12 +65,18 @@ class SettingController extends Controller
                 'currencies' => Currency::getList(),
                 'exchangeRateModes' => ['automatic' => trans('ip.automatic'), 'manual' => trans('ip.manual')],
                 'pdfDrivers' => PDFFactory::getDrivers(),
-                'convertQuoteOptions' => ['quote' => trans('ip.convert_quote_option1'), 'invoice' => trans('ip.convert_quote_option2')],
-                'clientUniqueNameOptions' => ['0' => trans('ip.client_unique_name_option_1'), '1' => trans('ip.client_unique_name_option_2')],
+                'convertQuoteOptions' => [
+                    'quote' => trans('ip.convert_quote_option1'),
+                    'invoice' => trans('ip.convert_quote_option2'),
+                ],
+                'clientUniqueNameOptions' => [
+                    '0' => trans('ip.client_unique_name_option_1'),
+                    '1' => trans('ip.client_unique_name_option_2'),
+                ],
                 'dashboardWidgets' => DashboardWidgets::listsByOrder(),
                 'colWidthArray' => array_combine(range(1, 12), range(1, 12)),
                 'displayOrderArray' => array_combine(range(1, 24), range(1, 24)),
-                'merchant' => config('fi.merchant'),
+                'merchant' => config('ip.merchant'),
                 'skins' => Skins::lists(),
                 'resultsPerPage' => array_combine(range(15, 100, 5), range(15, 100, 5)),
                 'amountDecimalOptions' => ['0' => '0', '2' => '2', '3' => '3', '4' => '4'],
@@ -79,8 +85,14 @@ class SettingController extends Controller
                 'merchantDrivers' => MerchantFactory::getDrivers(),
                 'invoiceStatuses' => InvoiceStatuses::listsAllFlat() + ['overdue' => trans('ip.overdue')],
                 'quoteStatuses' => QuoteStatuses::listsAllFlat(),
-                'invoiceWhenDraftOptions' => [0 => trans('ip.keep_invoice_date_as_is'), 1 => trans('ip.change_invoice_date_to_todays_date')],
-                'quoteWhenDraftOptions' => [0 => trans('ip.keep_quote_date_as_is'), 1 => trans('ip.change_quote_date_to_todays_date')],
+                'invoiceWhenDraftOptions' => [
+                    0 => trans('ip.keep_invoice_date_as_is'),
+                    1 => trans('ip.change_invoice_date_to_todays_date'),
+                ],
+                'quoteWhenDraftOptions' => [
+                    0 => trans('ip.keep_quote_date_as_is'),
+                    1 => trans('ip.change_quote_date_to_todays_date'),
+                ],
             ]);
     }
 

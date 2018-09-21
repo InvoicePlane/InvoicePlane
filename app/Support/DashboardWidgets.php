@@ -23,7 +23,7 @@ class DashboardWidgets
         $unassigned = 100;
 
         foreach ($widgets as $widget) {
-            if (!$displayOrder = config('fi.widgetDisplayOrder' . $widget)) {
+            if (!$displayOrder = config('ip.widgetDisplayOrder' . $widget)) {
                 $displayOrder = $unassigned;
                 $unassigned++;
             }

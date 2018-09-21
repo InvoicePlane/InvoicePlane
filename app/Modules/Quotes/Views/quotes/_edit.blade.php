@@ -11,17 +11,17 @@
 
     @if ($quote->invoice)
         <span class="label label-info"><a href="{{ route('invoices.edit', [$quote->invoice_id]) }}"
-                                          style="color: inherit;">@lang('ip.converted_to_invoice') {{ $quote->invoice->number }}</a></span>
+                style="color: inherit;">@lang('ip.converted_to_invoice') {{ $quote->invoice->number }}</a></span>
     @endif
 
     <div class="pull-right">
 
         <a href="{{ route('quotes.pdf', [$quote->id]) }}" target="_blank" id="btn-pdf-quote"
-           class="btn btn-default"><i class="fa fa-print"></i> @lang('ip.pdf')</a>
-        @if (config('fi.mailConfigured'))
+            class="btn btn-default"><i class="fa fa-print"></i> @lang('ip.pdf')</a>
+        @if (config('ip.mailConfigured'))
             <a href="javascript:void(0)" id="btn-email-quote" class="btn btn-default email-quote"
-               data-quote-id="{{ $quote->id }}" data-redirect-to="{{ route('quotes.edit', [$quote->id]) }}"><i
-                        class="fa fa-envelope"></i> @lang('ip.email')</a>
+                data-quote-id="{{ $quote->id }}" data-redirect-to="{{ route('quotes.edit', [$quote->id]) }}"><i
+                    class="fa fa-envelope"></i> @lang('ip.email')</a>
         @endif
 
         <div class="btn-group">
@@ -30,34 +30,34 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li><a href="javascript:void(0)" id="btn-copy-quote"><i
-                                class="fa fa-copy"></i> @lang('ip.copy')</a></li>
+                            class="fa fa-copy"></i> @lang('ip.copy')</a></li>
                 <li><a href="javascript:void(0)" id="btn-quote-to-invoice"><i
-                                class="fa fa-check"></i> @lang('ip.quote_to_invoice')</a></li>
+                            class="fa fa-check"></i> @lang('ip.quote_to_invoice')</a></li>
                 <li><a href="{{ route('clientCenter.public.quote.show', [$quote->url_key]) }}" target="_blank"><i
-                                class="fa fa-globe"></i> @lang('ip.public')</a></li>
+                            class="fa fa-globe"></i> @lang('ip.public')</a></li>
                 <li class="divider"></li>
                 <li><a href="{{ route('quotes.delete', [$quote->id]) }}"
-                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
-                                class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
+                        onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                            class="fa fa-trash-o"></i> @lang('ip.delete')</a></li>
             </ul>
         </div>
 
         <div class="btn-group">
             @if ($returnUrl)
                 <a href="{{ $returnUrl }}" class="btn btn-default"><i
-                            class="fa fa-backward"></i> @lang('ip.back')</a>
+                        class="fa fa-backward"></i> @lang('ip.back')</a>
             @endif
         </div>
 
         <div class="btn-group">
             <button type="button" class="btn btn-primary btn-save-quote"><i
-                        class="fa fa-save"></i> @lang('ip.save')</button>
+                    class="fa fa-save"></i> @lang('ip.save')</button>
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li><a href="#" class="btn-save-quote"
-                       data-apply-exchange-rate="1">@lang('ip.save_and_apply_exchange_rate')</a></li>
+                        data-apply-exchange-rate="1">@lang('ip.save_and_apply_exchange_rate')</a></li>
             </ul>
         </div>
 
@@ -114,7 +114,7 @@
 
                             <div class="box-tools pull-right">
                                 <button class="btn btn-primary btn-sm" id="btn-add-item"><i
-                                            class="fa fa-plus"></i> @lang('ip.add_item')</button>
+                                        class="fa fa-plus"></i> @lang('ip.add_item')</button>
                             </div>
                         </div>
 
@@ -139,13 +139,13 @@
                                         {!! Form::hidden('id', '') !!}
                                         {!! Form::text('name', null, ['class' => 'form-control']) !!}<br>
                                         <label><input type="checkbox" name="save_item_as_lookup"
-                                                      tabindex="999"> @lang('ip.save_item_as_lookup')</label>
+                                                tabindex="999"> @lang('ip.save_item_as_lookup')</label>
                                     </td>
                                     <td>{!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 1]) !!}</td>
                                     <td>{!! Form::text('quantity', null, ['class' => 'form-control']) !!}</td>
                                     <td>{!! Form::text('price', null, ['class' => 'form-control']) !!}</td>
-                                    <td>{!! Form::select('tax_rate_id', $taxRates, config('fi.itemTaxRate'), ['class' => 'form-control']) !!}</td>
-                                    <td>{!! Form::select('tax_rate_2_id', $taxRates, config('fi.itemTax2Rate'), ['class' => 'form-control']) !!}</td>
+                                    <td>{!! Form::select('tax_rate_id', $taxRates, config('ip.itemTaxRate'), ['class' => 'form-control']) !!}</td>
+                                    <td>{!! Form::select('tax_rate_2_id', $taxRates, config('ip.itemTax2Rate'), ['class' => 'form-control']) !!}</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -164,8 +164,8 @@
                                         <td style="text-align: right; padding-right: 25px;">{{ $item->amount->formatted_subtotal }}</td>
                                         <td>
                                             <a class="btn btn-xs btn-default btn-delete-quote-item"
-                                               href="javascript:void(0);"
-                                               title="@lang('ip.delete')" data-item-id="{{ $item->id }}">
+                                                href="javascript:void(0);"
+                                                title="@lang('ip.delete')" data-item-id="{{ $item->id }}">
                                                 <i class="fa fa-times"></i>
                                             </a>
                                         </td>
@@ -186,7 +186,7 @@
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab-additional"
-                                                  data-toggle="tab">@lang('ip.additional')</a></li>
+                                    data-toggle="tab">@lang('ip.additional')</a></li>
                             <li><a href="#tab-notes" data-toggle="tab">@lang('ip.notes')</a></li>
                             <li><a href="#tab-attachments" data-toggle="tab">@lang('ip.attachments')</a></li>
                         </ul>
@@ -293,8 +293,8 @@
                             'exchange_rate', 'class' => 'form-control input-sm']) !!}
                             <span class="input-group-btn">
                                 <button class="btn btn-default btn-sm" id="btn-update-exchange-rate" type="button"
-                                        data-toggle="tooltip" data-placement="left"
-                                        title="@lang('ip.update_exchange_rate')"><i class="fa fa-refresh"></i>
+                                    data-toggle="tooltip" data-placement="left"
+                                    title="@lang('ip.update_exchange_rate')"><i class="fa fa-refresh"></i>
                                 </button>
                             </span>
                         </div>

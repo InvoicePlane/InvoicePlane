@@ -52,7 +52,9 @@ class ProfitLossReport
             $results['income'] += $payment->amount / $payment->invoice->exchange_rate;
         }
 
-        $expenses = Expense::where('expense_date', '>=', $fromDate)->where('expense_date', '<=', $toDate)->with('category');
+        $expenses = Expense::where('expense_date', '>=', $fromDate)
+            ->where('expense_date', '<=', $toDate)
+            ->with('category');
 
         if ($companyProfileId) {
             $expenses->where('company_profile_id', $companyProfileId);

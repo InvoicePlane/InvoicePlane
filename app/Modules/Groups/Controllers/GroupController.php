@@ -35,7 +35,7 @@ class GroupController extends Controller
     {
         $this->setReturnUrl();
 
-        $groups = Group::sortable(['name' => 'asc'])->paginate(config('fi.resultsPerPage'));
+        $groups = Group::sortable(['name' => 'asc'])->paginate(config('ip.resultsPerPage'));
 
         return view('groups.index')
             ->with('groups', $groups)

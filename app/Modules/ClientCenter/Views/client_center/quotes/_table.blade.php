@@ -14,7 +14,9 @@
     @foreach ($quotes as $quote)
         <tr>
             <td>
-                <span class="label label-{{ $quoteStatuses[$quote->quote_status_id] }}">{{ trans('ip.' . $quoteStatuses[$quote->quote_status_id]) }}</span>
+                <span class="label label-{{ $quoteStatuses[$quote->quote_status_id] }}">
+                    {{ trans('ip.' . $quoteStatuses[$quote->quote_status_id]) }}
+                </span>
                 @if ($quote->viewed)
                     <span class="label label-success">@lang('ip.viewed')</span>
                 @else
@@ -33,9 +35,9 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('clientCenter.public.quote.pdf', [$quote->url_key]) }}" target="_blank"><i
-                                        class="fa fa-print"></i> @lang('ip.pdf')</a></li>
+                                    class="fa fa-print"></i> @lang('ip.pdf')</a></li>
                         <li><a href="{{ route('clientCenter.public.quote.show', [$quote->url_key]) }}"
-                               target="_blank"><i class="fa fa-search"></i> @lang('ip.view')</a></li>
+                                target="_blank"><i class="fa fa-search"></i> @lang('ip.view')</a></li>
                     </ul>
                 </div>
             </td>

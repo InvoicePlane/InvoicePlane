@@ -30,11 +30,15 @@ class UserController extends Controller
     {
         $this->setReturnUrl();
 
-        $users = User::sortable(['name' => 'asc'])->userType(request('userType'))->paginate(config('fi.resultsPerPage'));
+        $users = User::sortable(['name' => 'asc'])->userType(request('userType'))->paginate(config('ip.resultsPerPage'));
 
         return view('users.index')
             ->with('users', $users)
-            ->with('userTypes', ['' => trans('ip.all_accounts'), 'admin' => trans('ip.admin_accounts'), 'client' => trans('ip.client_accounts')]);
+            ->with('userTypes', [
+                '' => trans('ip.all_accounts'),
+                'admin' => trans('ip.admin_accounts'),
+                'client' => trans('ip.client_accounts'),
+            ]);
     }
 
     public function create($userType)

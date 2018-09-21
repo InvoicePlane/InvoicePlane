@@ -14,6 +14,9 @@
 
 namespace IP\Modules\Setup\Controllers;
 
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use IP\Http\Controllers\Controller;
 use IP\Modules\CompanyProfiles\Models\CompanyProfile;
 use IP\Modules\Settings\Models\Setting;
@@ -21,9 +24,6 @@ use IP\Modules\Setup\Requests\DBRequest;
 use IP\Modules\Setup\Requests\ProfileRequest;
 use IP\Modules\Users\Models\User;
 use IP\Support\Migrations;
-use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class SetupController extends Controller
 {

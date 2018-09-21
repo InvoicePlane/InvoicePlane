@@ -2,42 +2,86 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>@lang('ip.welcome')</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/ip_logo_64x64.png') }}">
 
-    @include('layouts._head')
+    <title>@lang('ip.welcome')</title>
 
-    @include('layouts._js_global')
+    @include('layouts.partials.head')
+    @include('layouts.partials.js_global')
 
 </head>
 <body class="login-page">
-<div class="login-box">
-    <div class="login-box-body">
-        @include('layouts._alerts')
-        {!! Form::open() !!}
-        <div class="form-group has-feedback">
-            <input type="email" name="email" id="email" class="form-control" placeholder="@lang('ip.email')">
-            <span class="fa fa-envelope form-control-feedback"></span>
-        </div>
-        <div class="form-group has-feedback">
-            <input type="password" name="password" class="form-control" placeholder="@lang('ip.password')">
-            <span class="fa fa-lock form-control-feedback"></span>
-        </div>
-        <div class="row">
-            <div class="col-xs-8">
-                <div class="checkbox">
-                    <label>
-                        <input type="hidden" name="remember_me" value="0">
-                        <input type="checkbox" name="remember_me" value="1"> @lang('ip.remember_me')
-                    </label>
+
+<div class="container pt-5">
+    <div class="row justify-content-center">
+        <div class="col col-md-8 col-lg-6">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span class="card-title">@lang('ip.sign_in')</span>
+                </div>
+
+                <div class="card-body">
+
+                    @include('layouts._alerts')
+
+                    {!! Form::open() !!}
+
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-fw fa-envelope"></i>
+                                </div>
+                            </div>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}"
+                                placeholder="@lang('ip.email')" aria-label="@lang('ip.email')" autofocus>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-fw fa-lock"></i>
+                                </div>
+                            </div>
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="@lang('ip.password')" aria-label="@lang('ip.password')">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-8">
+
+                            <div class="custom-control custom-checkbox pt-1">
+                                <input type="hidden" name="remember_me" value="0">
+                                <input type="checkbox" class="custom-control-input" id="remember_me"
+                                    @if(old('remember_me')) checked @endif>
+
+                                <label class="custom-control-label" for="remember_me">
+                                    @lang('ip.remember_me')
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="col-4">
+
+                            <button type="submit" class="btn btn-primary btn-block">
+                                @lang('ip.sign_in')
+                            </button>
+
+                        </div>
+                    </div>
+
+                    {!! Form::close() !!}
+
                 </div>
             </div>
-            <div class="col-xs-4">
-                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('ip.sign_in')</button>
-            </div>
-        </div>
-        {!! Form::close() !!}
 
+        </div>
     </div>
 </div>
 

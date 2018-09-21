@@ -14,15 +14,15 @@
 
 namespace IP\Modules\Users\Models;
 
-use IP\Events\UserCreated;
-use IP\Events\UserDeleted;
-use IP\Traits\Sortable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use IP\Events\UserCreated;
+use IP\Events\UserDeleted;
+use IP\Traits\Sortable;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {

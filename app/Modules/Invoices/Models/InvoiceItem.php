@@ -14,11 +14,11 @@
 
 namespace IP\Modules\Invoices\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Events\InvoiceItemSaving;
 use IP\Events\InvoiceModified;
 use IP\Support\CurrencyFormatter;
 use IP\Support\NumberFormatter;
-use Illuminate\Database\Eloquent\Model;
 
 class InvoiceItem extends Model
 {

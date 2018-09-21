@@ -75,6 +75,9 @@ class RecurringInvoiceCopyController extends Controller
         $custom = collect($fromRecurringInvoice->custom)->except('recurring_invoice_id')->toArray();
         $toRecurringInvoice->custom->update($custom);
 
-        return response()->json(['success' => true, 'url' => route('recurringInvoices.edit', [$toRecurringInvoice->id])], 200);
+        return response()->json([
+            'success' => true,
+            'url' => route('recurringInvoices.edit', [$toRecurringInvoice->id]),
+        ], 200);
     }
 }

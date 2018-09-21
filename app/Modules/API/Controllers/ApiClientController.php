@@ -14,10 +14,10 @@
 
 namespace IP\Modules\API\Controllers;
 
+use Illuminate\Http\Request;
 use IP\Modules\API\Requests\APIClientUpdateRequest;
 use IP\Modules\Clients\Models\Client;
 use IP\Modules\Clients\Requests\ClientStoreRequest;
-use Illuminate\Http\Request;
 
 class ApiClientController extends ApiController
 {
@@ -30,7 +30,7 @@ class ApiClientController extends ApiController
     {
         $clients = Client::getSelect()
             ->orderBy('name')
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return response()->json($clients);
     }

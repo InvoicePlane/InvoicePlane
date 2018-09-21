@@ -24,10 +24,14 @@ Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\
 
         Route::get('{id}/edit/refresh', ['uses' => 'QuoteEditController@refreshEdit', 'as' => 'quoteEdit.refreshEdit']);
         Route::post('edit/refresh_to', ['uses' => 'QuoteEditController@refreshTo', 'as' => 'quoteEdit.refreshTo']);
-        Route::post('edit/refresh_from', ['uses' => 'QuoteEditController@refreshFrom', 'as' => 'quoteEdit.refreshFrom']);
-        Route::post('edit/refresh_totals', ['uses' => 'QuoteEditController@refreshTotals', 'as' => 'quoteEdit.refreshTotals']);
-        Route::post('edit/update_client', ['uses' => 'QuoteEditController@updateClient', 'as' => 'quoteEdit.updateClient']);
-        Route::post('edit/update_company_profile', ['uses' => 'QuoteEditController@updateCompanyProfile', 'as' => 'quoteEdit.updateCompanyProfile']);
+        Route::post('edit/refresh_from',
+            ['uses' => 'QuoteEditController@refreshFrom', 'as' => 'quoteEdit.refreshFrom']);
+        Route::post('edit/refresh_totals',
+            ['uses' => 'QuoteEditController@refreshTotals', 'as' => 'quoteEdit.refreshTotals']);
+        Route::post('edit/update_client',
+            ['uses' => 'QuoteEditController@updateClient', 'as' => 'quoteEdit.updateClient']);
+        Route::post('edit/update_company_profile',
+            ['uses' => 'QuoteEditController@updateCompanyProfile', 'as' => 'quoteEdit.updateCompanyProfile']);
         Route::post('recalculate', ['uses' => 'QuoteRecalculateController@recalculate', 'as' => 'quotes.recalculate']);
         Route::post('bulk/delete', ['uses' => 'QuoteController@bulkDelete', 'as' => 'quotes.bulk.delete']);
         Route::post('bulk/status', ['uses' => 'QuoteController@bulkStatus', 'as' => 'quotes.bulk.status']);

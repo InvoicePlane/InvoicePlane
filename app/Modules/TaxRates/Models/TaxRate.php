@@ -14,12 +14,12 @@
 
 namespace IP\Modules\TaxRates\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Modules\Invoices\Models\InvoiceItem;
 use IP\Modules\Quotes\Models\QuoteItem;
 use IP\Modules\RecurringInvoices\Models\RecurringInvoiceItem;
 use IP\Support\NumberFormatter;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
 
 class TaxRate extends Model
 {
@@ -27,6 +27,7 @@ class TaxRate extends Model
 
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = ['id'];
@@ -79,7 +80,7 @@ class TaxRate extends Model
             return true;
         }
 
-        if (config('fi.itemTaxRate') == $this->id or config('fi.itemTax2Rate') == $this->id) {
+        if (config('ip.itemTaxRate') == $this->id or config('ip.itemTax2Rate') == $this->id) {
             return true;
         }
 

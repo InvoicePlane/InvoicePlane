@@ -35,7 +35,7 @@ class ContactController extends Controller
          *  We're going to fill those fields to create the Contact object and then store it.
          **/
         $default_values = [
-            'default_to' =>  0 ,
+            'default_to' => 0,
             'default_cc' => 0,
             'default_bcc' => 0,
         ];

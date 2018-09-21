@@ -1,0 +1,47 @@
+/*
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+// Create light variants of color backgrounds
+@each $color, $value in $theme-colors {
+  @include bg-variant(".bg-#{$color}-light", rgba($value, 0.5));
+}
+
+// Create backgrounds from status colors
+@each $status, $color in $status-colors {
+  .bg-status-#{$status} {
+    background-color: $color;
+    color: color-yiq($color);
+  }
+
+  a.bg-status-#{$status},
+  button.bg-status-#{$status} {
+    @include hover-focus {
+      background-color: darken($color, 10%) !important;
+    }
+  }
+}
+
+@each $status, $color in $status-colors {
+  $color: rgba($color, 0.5);
+
+  .bg-status-#{$status}-light {
+    background-color: $color;
+    color: color-yiq($color);
+  }
+
+  a.bg-status-#{$status}-light,
+  button.bg-status-#{$status}-light {
+    @include hover-focus {
+      background-color: darken($color, 10%) !important;
+    }
+  }
+}

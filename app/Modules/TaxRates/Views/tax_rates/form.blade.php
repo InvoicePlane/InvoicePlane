@@ -2,10 +2,10 @@
 
 @section('content')
 
-    <script type="text/javascript">
-      $(function () {
-        $('#name').focus();
-      });
+    <script>
+        $(function () {
+            $('#name').focus();
+        });
     </script>
 
     @if ($editMode == true)

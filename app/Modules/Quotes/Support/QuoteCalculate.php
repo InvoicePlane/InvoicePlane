@@ -50,7 +50,15 @@ class QuoteCalculate
             $taxRate2IsCompound = ($quoteItem->tax_rate_2_is_compound) ? 1 : 0;
             $taxRate1CalculateVat = ($quoteItem->tax_rate_1_calculate_vat) ? 1 : 0;
 
-            $calculator->addItem($quoteItem->id, $quoteItem->quantity, $quoteItem->price, $taxRatePercent, $taxRate2Percent, $taxRate2IsCompound, $taxRate1CalculateVat);
+            $calculator->addItem(
+                $quoteItem->id,
+                $quoteItem->quantity,
+                $quoteItem->price,
+                $taxRatePercent,
+                $taxRate2Percent,
+                $taxRate2IsCompound,
+                $taxRate1CalculateVat
+            );
         }
 
         $calculator->calculate();

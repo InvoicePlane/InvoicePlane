@@ -22,7 +22,12 @@ class ExportController extends Controller
     public function index()
     {
         return view('export.index')
-            ->with('writers', ['CsvWriter' => 'CSV', 'JsonWriter' => 'JSON', 'XlsWriter' => 'XLS', 'XmlWriter' => 'XML']);
+            ->with('writers', [
+                'CsvWriter' => 'CSV',
+                'JsonWriter' => 'JSON',
+                'XlsWriter' => 'XLS',
+                'XmlWriter' => 'XML',
+            ]);
     }
 
     public function export($exportType)

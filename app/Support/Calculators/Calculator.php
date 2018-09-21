@@ -131,7 +131,7 @@ abstract class Calculator
 
             if ($item['taxRatePercent']) {
                 if (!$item['calculateVat']) {
-                    $tax1 = round($discountedSubtotal * ($item['taxRatePercent'] / 100), config('fi.roundTaxDecimals'));
+                    $tax1 = round($discountedSubtotal * ($item['taxRatePercent'] / 100), config('ip.roundTaxDecimals'));
                 } else {
                     $tax1 = $discountedSubtotal - ($discountedSubtotal / (1 + $item['taxRatePercent'] / 100));
                     $subtotal = $subtotal - $tax1;
@@ -142,9 +142,9 @@ abstract class Calculator
 
             if ($item['taxRate2Percent']) {
                 if ($item['taxRate2IsCompound']) {
-                    $tax2 = round(($discountedSubtotal + $tax1) * ($item['taxRate2Percent'] / 100), config('fi.roundTaxDecimals'));
+                    $tax2 = round(($discountedSubtotal + $tax1) * ($item['taxRate2Percent'] / 100), config('ip.roundTaxDecimals'));
                 } else {
-                    $tax2 = round($discountedSubtotal * ($item['taxRate2Percent'] / 100), config('fi.roundTaxDecimals'));
+                    $tax2 = round($discountedSubtotal * ($item['taxRate2Percent'] / 100), config('ip.roundTaxDecimals'));
                 }
             } else {
                 $tax2 = 0;

@@ -15,7 +15,7 @@
 function formatAddress($object)
 {
     if ($object->address or $object->city or $object->state or $object->zip or $object->country) {
-        $address = config('fi.addressFormat');
+        $address = config('ip.addressFormat');
 
         $address = str_replace('{{ address }}', $object->address, $address);
         $address = str_replace('{{ city }}', $object->city, $address);

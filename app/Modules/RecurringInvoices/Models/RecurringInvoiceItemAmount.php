@@ -14,8 +14,8 @@
 
 namespace IP\Modules\RecurringInvoices\Models;
 
-use IP\Support\CurrencyFormatter;
 use Illuminate\Database\Eloquent\Model;
+use IP\Support\CurrencyFormatter;
 
 class RecurringInvoiceItemAmount extends Model
 {

@@ -27,7 +27,7 @@
                         <label class="col-sm-3 control-label">@lang('ip.group')</label>
 
                         <div class="col-sm-9">
-                            {!! Form::select('group_id', $groups, config('fi.invoiceGroup'), ['id' => 'to_invoice_group_id', 'class' => 'form-control']) !!}
+                            {!! Form::select('group_id', $groups, config('ip.invoiceGroup'), ['id' => 'to_invoice_group_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 
@@ -37,7 +37,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">@lang('ip.cancel')</button>
                 <button type="button" id="btn-quote-to-invoice-submit"
-                        class="btn btn-primary">@lang('ip.submit')</button>
+                    class="btn btn-primary">@lang('ip.submit')</button>
             </div>
         </div>
     </div>

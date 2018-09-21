@@ -54,7 +54,15 @@ class RecurringInvoiceCalculate
             $taxRate2IsCompound = ($recurringInvoiceItem->tax_rate_2_is_compound) ? 1 : 0;
             $taxRate1CalculateVat = ($recurringInvoiceItem->tax_rate_1_calculate_vat) ? 1 : 0;
 
-            $calculator->addItem($recurringInvoiceItem->id, $recurringInvoiceItem->quantity, $recurringInvoiceItem->price, $taxRatePercent, $taxRate2Percent, $taxRate2IsCompound, $taxRate1CalculateVat);
+            $calculator->addItem(
+                $recurringInvoiceItem->id,
+                $recurringInvoiceItem->quantity,
+                $recurringInvoiceItem->price,
+                $taxRatePercent,
+                $taxRate2Percent,
+                $taxRate2IsCompound,
+                $taxRate1CalculateVat
+            );
         }
 
         $calculator->calculate();

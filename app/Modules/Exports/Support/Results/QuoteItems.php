@@ -21,7 +21,8 @@ class QuoteItems implements SourceInterface
     public function getResults($params = [])
     {
         $quoteItem = QuoteItem::select('quotes.number', 'quote_items.created_at', 'quote_items.name',
-            'quote_items.description', 'quote_items.quantity', 'quote_items.price', 'tax_rate_1.name AS tax_rate_1_name',
+            'quote_items.description', 'quote_items.quantity', 'quote_items.price',
+            'tax_rate_1.name AS tax_rate_1_name',
             'tax_rate_1.percent AS tax_rate_1_percent', 'tax_rate_1.is_compound AS tax_rate_1_is_compound',
             'quote_item_amounts.tax_1 AS tax_rate_1_amount', 'tax_rate_2.name AS tax_rate_2_name',
             'tax_rate_2.percent AS tax_rate_2_percent', 'tax_rate_2.is_compound AS tax_rate_2_is_compound',

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1500px" height="1500px" viewBox="0 0 1500 1500" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <!-- (c) Copyright 2018 by InvoicePlane.com and Kovah.de -->
+    <title>InvoicePlane</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(69.000000, 69.000000)">
+            <polygon id="Path-4" fill="#1E73B8" points="481.353208 879 585.768174 928.984102 667 958.074721 468 1206"></polygon>
+            <polygon id="Path-3" fill="#2181CE" points="286 761.748735 1213 267 482.40506 880.105238 467.854006 1206 360.526479 988.375201"></polygon>
+            <polygon id="Path-2" fill="#429AE1" points="12 671.28302 55.0533414 645.162836 174.694932 556.527089 1213 267 285.88787 762 126.083016 720.620617"></polygon>
+            <polygon id="Path-5" fill="#429AE1" points="483 879.904924 581.714524 934.737372 718.46337 986 940.863823 924.796611 1213 267"></polygon>
+        </g>
+    </g>
+</svg>

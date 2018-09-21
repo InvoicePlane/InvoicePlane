@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section('javascript')
-    <script type="text/javascript">
-      $(function () {
-        $('.user_filter_options').change(function () {
-          $('form#filter').submit();
+    <script>
+        $(function () {
+            $('.user_filter_options').change(function () {
+                $('form#filter').submit();
+            });
         });
-      });
     </script>
 @stop
 
@@ -26,7 +26,7 @@
 
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-                        aria-expanded="false">
+                    aria-expanded="false">
                     @lang('ip.new') <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
@@ -71,19 +71,19 @@
                                     <td>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
-                                                    data-toggle="dropdown">
+                                                data-toggle="dropdown">
                                                 @lang('ip.options') <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li>
                                                     <a href="{{ route('users.edit', [$user->id, $user->user_type]) }}"><i
-                                                                class="fa fa-edit"></i> @lang('ip.edit')</a></li>
+                                                            class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                                                 <li><a href="{{ route('users.password.edit', [$user->id]) }}"><i
-                                                                class="fa fa-lock"></i> @lang('ip.reset_password')
+                                                            class="fa fa-lock"></i> @lang('ip.reset_password')
                                                     </a></li>
                                                 <li><a href="{{ route('users.delete', [$user->id]) }}"
-                                                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
-                                                                class="fa fa-trash-o"></i> @lang('ip.delete')</a>
+                                                        onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                                            class="fa fa-trash-o"></i> @lang('ip.delete')</a>
                                                 </li>
                                             </ul>
                                         </div>

@@ -14,8 +14,8 @@
 
 namespace IP\Modules\Settings\Requests;
 
-use IP\Modules\Settings\Rules\ValidFile;
 use Illuminate\Foundation\Http\FormRequest;
+use IP\Modules\Settings\Rules\ValidFile;
 
 class SettingUpdateRequest extends FormRequest
 {
@@ -41,7 +41,7 @@ class SettingUpdateRequest extends FormRequest
             'setting.pdfBinaryPath' => ['required_if:setting.pdfDriver,wkhtmltopdf', new ValidFile],
         ];
 
-        foreach (config('fi.settingValidationRules') as $settingValidationRules) {
+        foreach (config('ip.settingValidationRules') as $settingValidationRules) {
             $rules = array_merge($rules, $settingValidationRules['rules']);
         }
 

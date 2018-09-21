@@ -24,7 +24,8 @@ Route::group(['middleware' => ['web', 'auth.admin'], 'namespace' => 'IP\Modules\
     Route::get('users/{id}/delete', ['uses' => 'UserController@delete', 'as' => 'users.delete']);
 
     Route::get('users/{id}/password/edit', ['uses' => 'UserPasswordController@edit', 'as' => 'users.password.edit']);
-    Route::post('users/{id}/password/edit', ['uses' => 'UserPasswordController@update', 'as' => 'users.password.update']);
+    Route::post('users/{id}/password/edit',
+        ['uses' => 'UserPasswordController@update', 'as' => 'users.password.update']);
 
     Route::post('users/client', ['uses' => 'UserController@getClientInfo', 'as' => 'users.clientInfo']);
 });

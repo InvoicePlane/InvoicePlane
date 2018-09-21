@@ -108,7 +108,8 @@ class RecurringInvoiceEditController extends Controller
     public function refreshTotals()
     {
         return view('recurring_invoices._edit_totals')
-            ->with('recurringInvoice', RecurringInvoice::with(['items.amount.item.recurringInvoice.currency'])->find(request('id')));
+            ->with('recurringInvoice',
+                RecurringInvoice::with(['items.amount.item.recurringInvoice.currency'])->find(request('id')));
     }
 
     public function refreshTo()

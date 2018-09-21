@@ -13,19 +13,19 @@
 
             <div class="btn-group bulk-actions">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                        aria-expanded="false">
+                    aria-expanded="false">
                     @lang('ip.change_status') <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     @foreach ($keyedStatuses as $key => $status)
                         <li><a href="javascript:void(0)" class="bulk-change-status"
-                               data-status="{{ $key }}">{{ $status }}</a></li>
+                                data-status="{{ $key }}">{{ $status }}</a></li>
                     @endforeach
                 </ul>
             </div>
 
             <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i
-                        class="fa fa-trash"></i> @lang('ip.delete')</a>
+                    class="fa fa-trash"></i> @lang('ip.delete')</a>
 
             <div class="btn-group">
                 {!! Form::open(['method' => 'GET', 'id' => 'filter']) !!}
@@ -34,7 +34,7 @@
                 {!! Form::close() !!}
             </div>
             <a href="javascript:void(0)" class="btn btn-primary create-quote"><i
-                        class="fa fa-plus"></i> @lang('ip.new')</a>
+                    class="fa fa-plus"></i> @lang('ip.new')</a>
         </div>
 
         <div class="clearfix"></div>

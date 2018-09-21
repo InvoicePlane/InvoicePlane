@@ -14,9 +14,9 @@
 
 namespace IP\Modules\CustomFields\Models;
 
-use IP\Traits\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use IP\Traits\Sortable;
 
 class CustomField extends Model
 {

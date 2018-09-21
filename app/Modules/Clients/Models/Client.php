@@ -14,6 +14,8 @@
 
 namespace IP\Modules\Clients\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use IP\Events\ClientCreated;
 use IP\Events\ClientCreating;
 use IP\Events\ClientDeleted;
@@ -21,8 +23,6 @@ use IP\Events\ClientSaving;
 use IP\Support\CurrencyFormatter;
 use IP\Support\Statuses\InvoiceStatuses;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Client extends Model
 {
@@ -207,7 +207,9 @@ class Client extends Model
     private function getPaidSql()
     {
         return DB::table('invoice_amounts')->select(DB::raw('sum(paid)'))->whereIn('invoice_id', function ($q) {
-            $q->select('id')->from('invoices')->where('invoices.client_id', '=', DB::raw(DB::getTablePrefix() . 'clients.id'));
+            $q->select('id')
+                ->from('invoices')
+                ->where('invoices.client_id', '=', DB::raw(DB::getTablePrefix() . 'clients.id'));
         })->toSql();
     }
 
@@ -220,7 +222,9 @@ class Client extends Model
     private function getTotalSql()
     {
         return DB::table('invoice_amounts')->select(DB::raw('sum(total)'))->whereIn('invoice_id', function ($q) {
-            $q->select('id')->from('invoices')->where('invoices.client_id', '=', DB::raw(DB::getTablePrefix() . 'clients.id'));
+            $q->select('id')
+                ->from('invoices')
+                ->where('invoices.client_id', '=', DB::raw(DB::getTablePrefix() . 'clients.id'));
         })->toSql();
     }
 
@@ -244,7 +248,8 @@ class Client extends Model
                 if ($keyword) {
                     $keyword = strtolower($keyword);
 
-                    $query->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name),LOWER(email),phone,fax,mobile)"), 'LIKE', "%$keyword%");
+                    $query->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name),LOWER(email),phone,fax,mobile)"),
+                        'LIKE', "%$keyword%");
                 }
             }
         }

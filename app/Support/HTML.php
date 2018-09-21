@@ -23,7 +23,7 @@ class HTML
     {
         app()->setLocale($invoice->client->language);
 
-        config(['fi.baseCurrency' => $invoice->currency_code]);
+        config(['ip.baseCurrency' => $invoice->currency_code]);
 
         event(new InvoiceHTMLCreating($invoice));
 
@@ -44,7 +44,7 @@ class HTML
     {
         app()->setLocale($quote->client->language);
 
-        config(['fi.baseCurrency' => $quote->currency_code]);
+        config(['ip.baseCurrency' => $quote->currency_code]);
 
         event(new QuoteHTMLCreating($quote));
 

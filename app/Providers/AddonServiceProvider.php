@@ -15,9 +15,9 @@ class AddonServiceProvider extends ServiceProvider
             return;
         }
 
-        config(['fi.menus.navigation' => []]);
-        config(['fi.menus.system' => []]);
-        config(['fi.menus.reports' => []]);
+        config(['ip.menus.navigation' => []]);
+        config(['ip.menus.system' => []]);
+        config(['ip.menus.reports' => []]);
 
         // Get the enabled addons.
         $addons = Addon::where('enabled', 1)->orderBy('name')->get();
@@ -25,15 +25,15 @@ class AddonServiceProvider extends ServiceProvider
         // For each enabled addon, load the appropriate things.
         foreach ($addons as $addon) {
             if (isset($addon->navigation_menu) and $addon->navigation_menu) {
-                config(['fi.menus.navigation.' . $addon->id => $addon->navigation_menu]);
+                config(['ip.menus.navigation.' . $addon->id => $addon->navigation_menu]);
             }
 
             if (isset($addon->navigation_reports) and $addon->navigation_reports) {
-                config(['fi.menus.reports.' . $addon->id => $addon->navigation_reports]);
+                config(['ip.menus.reports.' . $addon->id => $addon->navigation_reports]);
             }
 
             if (isset($addon->system_menu) and $addon->system_menu) {
-                config(['fi.menus.system.' . $addon->id => $addon->system_menu]);
+                config(['ip.menus.system.' . $addon->id => $addon->system_menu]);
             }
 
             // Scan addon directories for routes, views and language files.

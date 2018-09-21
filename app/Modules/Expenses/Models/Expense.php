@@ -14,6 +14,7 @@
 
 namespace IP\Modules\Expenses\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Events\CheckAttachment;
 use IP\Events\ExpenseCreated;
 use IP\Events\ExpenseDeleting;
@@ -22,7 +23,6 @@ use IP\Support\CurrencyFormatter;
 use IP\Support\DateFormatter;
 use IP\Support\NumberFormatter;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model
 {

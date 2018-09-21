@@ -30,16 +30,16 @@
 
 <div class="form-group">
     <label>@lang('ip.dashboard_totals_option'): </label>
-    {!! Form::select('setting[widgetQuoteSummaryDashboardTotals]', $dashboardTotalOptions, config('fi.widgetQuoteSummaryDashboardTotals'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting']) !!}
+    {!! Form::select('setting[widgetQuoteSummaryDashboardTotals]', $dashboardTotalOptions, config('ip.widgetQuoteSummaryDashboardTotals'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting']) !!}
 </div>
 
 <div class="row" id="div-quote-dashboard-totals-date-range">
     <div class="col-md-2">
         <label>@lang('ip.from_date') (yyyy-mm-dd):</label>
-        {!! Form::text('setting[widgetQuoteSummaryDashboardTotalsFromDate]', config('fi.widgetQuoteSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-from-date']) !!}
+        {!! Form::text('setting[widgetQuoteSummaryDashboardTotalsFromDate]', config('ip.widgetQuoteSummaryDashboardTotalsFromDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-from-date']) !!}
     </div>
     <div class="col-md-2">
         <label>@lang('ip.to_date') (yyyy-mm-dd):</label>
-        {!! Form::text('setting[widgetQuoteSummaryDashboardTotalsToDate]', config('fi.widgetQuoteSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-to-date']) !!}
+        {!! Form::text('setting[widgetQuoteSummaryDashboardTotalsToDate]', config('ip.widgetQuoteSummaryDashboardTotalsToDate'), ['class' => 'form-control', 'id' => 'quote-dashboard-total-setting-to-date']) !!}
     </div>
 </div>

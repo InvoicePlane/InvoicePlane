@@ -16,11 +16,11 @@ class ClientCreatingListener
         $event->client->url_key = str_random(32);
 
         if (!$event->client->currency_code) {
-            $event->client->currency_code = config('fi.baseCurrency');
+            $event->client->currency_code = config('ip.baseCurrency');
         }
 
         if (!$event->client->language) {
-            $event->client->language = config('fi.language');
+            $event->client->language = config('ip.language');
         }
     }
 }

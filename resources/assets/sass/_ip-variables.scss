@@ -1,0 +1,44 @@
+/*
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
+
+// Spacers
+$spacer-0: 0;
+$spacer-1: $spacer * .25;
+$spacer-2: $spacer * .5;
+$spacer-3: $spacer * 1;
+$spacer-4: $spacer * 1.5;
+$spacer-5: $spacer * 3;
+
+$icon-spacing: $spacer-2;
+
+// Status colors
+$status-colors: () !default;
+$status-colors: map-merge((
+  "draft": $secondary,
+  "sent": $info,
+  "viewed": $warning,
+  "approved": $success,
+  "rejected": $danger,
+  "canceled": $dark,
+  "paid": $success,
+  "overdue": $danger,
+), $colors);
+
+// sidebar Variables
+$sidebar-bg: $primary;
+$sidebar-top-bg: $gray-100;
+$sidebar-top-color: $gray-700;
+
+// Topbar
+$topbar-bg: $gray-100;
+$topbar-border: $border-color;
+$topbar-height: $nav-link-height + ($btn-padding-y * 2);

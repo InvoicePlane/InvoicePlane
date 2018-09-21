@@ -1,14 +1,14 @@
 @extends('layouts.master')
 
 @section('javascript')
-    <script type="text/javascript">
-      $(function () {
-        $('.btn-show-content').click(function () {
-          $('#modal-placeholder').load('{{ route('mailLog.content') }}', {
-            id: $(this).data('id')
-          });
+    <script>
+        $(function () {
+            $('.btn-show-content').click(function () {
+                $('#modal-placeholder').load('{{ route('mailLog.content') }}', {
+                    id: $(this).data('id')
+                });
+            });
         });
-      });
     </script>
 @stop
 
@@ -53,18 +53,18 @@
                                     <td>{{ $mail->formatted_cc }}</td>
                                     <td>{{ $mail->formatted_bcc }}</td>
                                     <td><a href="javascript:void(0)" class="btn-show-content"
-                                           data-id="{{ $mail->id }}">{{ $mail->subject }}</a></td>
+                                            data-id="{{ $mail->id }}">{{ $mail->subject }}</a></td>
                                     <td>{{ $mail->formatted_sent }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
-                                                    data-toggle="dropdown">
+                                                data-toggle="dropdown">
                                                 @lang('ip.options') <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li><a href="{{ route('mailLog.delete', [$mail->id]) }}"
-                                                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
-                                                                class="fa fa-trash-o"></i> @lang('ip.delete')</a>
+                                                        onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                                            class="fa fa-trash-o"></i> @lang('ip.delete')</a>
                                                 </li>
                                             </ul>
                                         </div>

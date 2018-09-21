@@ -14,11 +14,11 @@ class CompanyProfileCreatingListener
     public function handle(CompanyProfileCreating $event)
     {
         if (!$event->companyProfile->invoice_template) {
-            $event->companyProfile->invoice_template = config('fi.invoiceTemplate');
+            $event->companyProfile->invoice_template = config('ip.invoiceTemplate');
         }
 
         if (!$event->companyProfile->quote_template) {
-            $event->companyProfile->quote_template = config('fi.quoteTemplate');
+            $event->companyProfile->quote_template = config('ip.quoteTemplate');
         }
     }
 }

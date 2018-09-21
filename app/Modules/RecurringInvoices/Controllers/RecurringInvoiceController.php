@@ -32,21 +32,26 @@ class RecurringInvoiceController extends Controller
 
         $recurringInvoices = RecurringInvoice::select('recurring_invoices.*')
             ->join('clients', 'clients.id', '=', 'recurring_invoices.client_id')
-            ->join('recurring_invoice_amounts', 'recurring_invoice_amounts.recurring_invoice_id', '=', 'recurring_invoices.id')
+            ->join('recurring_invoice_amounts', 'recurring_invoice_amounts.recurring_invoice_id', '=',
+                'recurring_invoices.id')
             ->with(['client', 'activities', 'amount.recurringInvoice.currency'])
             ->keywords(request('search'))
             ->clientId(request('client'))
             ->status($status)
             ->companyProfileId(request('company_profile'))
             ->sortable(['next_date' => 'desc', 'id' => 'desc'])
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('recurring_invoices.index')
             ->with('recurringInvoices', $recurringInvoices)
             ->with('displaySearch', true)
             ->with('frequencies', Frequency::lists())
             ->with('status', $status)
-            ->with('statuses', ['all_statuses' => trans('ip.all_statuses'), 'active' => trans('ip.active'), 'inactive' => trans('ip.inactive')])
+            ->with('statuses', [
+                'all_statuses' => trans('ip.all_statuses'),
+                'active' => trans('ip.active'),
+                'inactive' => trans('ip.inactive'),
+            ])
             ->with('companyProfiles', ['' => trans('ip.all_company_profiles')] + CompanyProfile::getList());
     }
 

@@ -15,7 +15,9 @@
     @foreach ($invoices as $invoice)
         <tr>
             <td>
-                <span class="label label-{{ $invoiceStatuses[$invoice->invoice_status_id] }}">{{ trans('ip.' . $invoiceStatuses[$invoice->invoice_status_id]) }}</span>
+                <span class="label label-{{ $invoiceStatuses[$invoice->invoice_status_id] }}">
+                    {{ trans('ip.' . $invoiceStatuses[$invoice->invoice_status_id]) }}
+                </span>
                 @if ($invoice->viewed)
                     <span class="label label-success">@lang('ip.viewed')</span>
                 @else
@@ -35,9 +37,9 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="{{ route('clientCenter.public.invoice.pdf', [$invoice->url_key]) }}"
-                               target="_blank"><i class="fa fa-print"></i> @lang('ip.pdf')</a></li>
+                                target="_blank"><i class="fa fa-print"></i> @lang('ip.pdf')</a></li>
                         <li><a href="{{ route('clientCenter.public.invoice.show', [$invoice->url_key]) }}"
-                               target="_blank"><i class="fa fa-search"></i> @lang('ip.view')</a></li>
+                                target="_blank"><i class="fa fa-search"></i> @lang('ip.view')</a></li>
                     </ul>
                 </div>
             </td>

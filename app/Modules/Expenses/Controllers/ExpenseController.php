@@ -36,14 +36,19 @@ class ExpenseController extends Controller
             ->status(request('status'))
             ->companyProfileId(request('company_profile'))
             ->sortable(['expense_date' => 'desc'])
-            ->paginate(config('fi.defaultNumPerPage'));
+            ->paginate(config('ip.defaultNumPerPage'));
 
         return view('expenses.index')
             ->with('expenses', $expenses)
             ->with('displaySearch', true)
             ->with('categories', ['' => trans('ip.all_categories')] + ExpenseCategory::getList())
             ->with('vendors', ['' => trans('ip.all_vendors')] + ExpenseVendor::getList())
-            ->with('statuses', ['' => trans('ip.all_statuses'), 'billed' => trans('ip.billed'), 'not_billed' => trans('ip.not_billed'), 'not_billable' => trans('ip.not_billable')])
+            ->with('statuses', [
+                '' => trans('ip.all_statuses'),
+                'billed' => trans('ip.billed'),
+                'not_billed' => trans('ip.not_billed'),
+                'not_billable' => trans('ip.not_billable'),
+            ])
             ->with('companyProfiles', ['' => trans('ip.all_company_profiles')] + CompanyProfile::getList());
     }
 

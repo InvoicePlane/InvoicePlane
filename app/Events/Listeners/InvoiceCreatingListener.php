@@ -27,15 +27,15 @@ class InvoiceCreatingListener
         }
 
         if (!$invoice->due_at) {
-            $invoice->due_at = DateFormatter::incrementDateByDays($invoice->invoice_date->format('Y-m-d'), config('fi.invoicesDueAfter'));
+            $invoice->due_at = DateFormatter::incrementDateByDays($invoice->invoice_date->format('Y-m-d'), config('ip.invoicesDueAfter'));
         }
 
         if (!$invoice->company_profile_id) {
-            $invoice->company_profile_id = config('fi.defaultCompanyProfile');
+            $invoice->company_profile_id = config('ip.defaultCompanyProfile');
         }
 
         if (!$invoice->group_id) {
-            $invoice->group_id = config('fi.invoiceGroup');
+            $invoice->group_id = config('ip.invoiceGroup');
         }
 
         if (!$invoice->number) {
@@ -43,11 +43,11 @@ class InvoiceCreatingListener
         }
 
         if (!isset($invoice->terms)) {
-            $invoice->terms = config('fi.invoiceTerms');
+            $invoice->terms = config('ip.invoiceTerms');
         }
 
         if (!isset($invoice->footer)) {
-            $invoice->footer = config('fi.invoiceFooter');
+            $invoice->footer = config('ip.invoiceFooter');
         }
 
         if (!$invoice->invoice_status_id) {
@@ -62,11 +62,11 @@ class InvoiceCreatingListener
             $invoice->template = $invoice->companyProfile->invoice_template;
         }
 
-        if ($invoice->currency_code == config('fi.baseCurrency')) {
+        if ($invoice->currency_code == config('ip.baseCurrency')) {
             $invoice->exchange_rate = 1;
         } elseif (!$invoice->exchange_rate) {
             $currencyConverter = CurrencyConverterFactory::create();
-            $invoice->exchange_rate = $currencyConverter->convert(config('fi.baseCurrency'), $invoice->currency_code);
+            $invoice->exchange_rate = $currencyConverter->convert(config('ip.baseCurrency'), $invoice->currency_code);
         }
 
         $invoice->url_key = str_random(32);

@@ -14,9 +14,9 @@
 
 namespace IP\Modules\Import\Importers;
 
+use Illuminate\Support\Facades\Validator;
 use IP\Modules\ItemLookups\Models\ItemLookup;
 use IP\Modules\TaxRates\Models\TaxRate;
-use Illuminate\Support\Facades\Validator;
 
 class ItemLookupImporter extends AbstractImporter
 {

@@ -20,9 +20,11 @@ class Invoices implements SourceInterface
 {
     public function getResults($params = [])
     {
-        $invoice = Invoice::select('invoices.number', 'invoices.created_at', 'invoices.updated_at', 'invoices.invoice_date',
+        $invoice = Invoice::select('invoices.number', 'invoices.created_at', 'invoices.updated_at',
+            'invoices.invoice_date',
             'invoices.due_at', 'invoices.terms', 'invoices.footer', 'invoices.url_key', 'invoices.currency_code',
-            'invoices.exchange_rate', 'invoices.template', 'invoices.summary', 'groups.name AS group', 'clients.name AS client_name',
+            'invoices.exchange_rate', 'invoices.template', 'invoices.summary', 'groups.name AS group',
+            'clients.name AS client_name',
             'clients.email AS client_email', 'clients.address AS client_address', 'clients.city AS client_city',
             'clients.state AS client_state', 'clients.zip AS client_zip', 'clients.country AS client_country',
             'users.name AS user_name', 'users.email AS user_email',

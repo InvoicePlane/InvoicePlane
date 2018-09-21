@@ -1,29 +1,14 @@
-html {
-  -webkit-font-smoothing: antialiased;
-}
-
-body {
-  color: #414141;
-}
-
-.box {
-  /*-webkit-box-shadow: inset hoff voff blur color;*/
-  /*-moz-box-shadow: inset hoff voff blur color;*/
-  /*box-shadow: inset hoff voff blur color;*/
-  box-shadow: 0 2px 4px rgba(0,0,0,.15), 0 0 1px rgba(0,0,0,.08);
-  /*-webkit-box-shadow: inset 0 1px 55px rgba(0,0,0,.15);*/
-  /*-moz-box-shadow: inset 0 1px 55px rgba(0,0,0,.15);*/
-  /*box-shadow: inset 0 1px 55px rgba(0,0,0,.15);*/
-}
-
-.clickable {
-  cursor: pointer;
-}
-
-.form-control.inline {
-  // Fix for inline select fields
-  width: auto;
-}
+/*
+ * InvoicePlane
+ *
+ * @package     InvoicePlane
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (C) 2014 - 2018 InvoicePlane
+ * @license     https://invoiceplane.com/license
+ * @link        https://invoiceplane.com
+ *
+ * Based on FusionInvoice by Jesse Terry (FusionInvoice, LLC)
+ */
 
 /* Twitter Typeahead */
 .tt-query {
@@ -137,9 +122,9 @@ body {
 
 .public-doc-wrapper {
   background-color: white;
-  -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 2px 2px 5px 0 rgba(0,0,0,0.75);
+  -moz-box-shadow: 2px 2px 5px 0 rgba(0,0,0,0.75);
+  box-shadow: 2px 2px 5px 0 rgba(0,0,0,0.75);
 }
 
 .direct-chat-scope {

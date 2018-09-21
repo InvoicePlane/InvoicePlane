@@ -115,7 +115,7 @@ class PayPal extends MerchantDriverPayable
                 $fiPayment = FIPayment::create([
                     'invoice_id' => $invoice->id,
                     'amount' => $transaction->getAmount()->getTotal(),
-                    'payment_method_id' => config('fi.onlinePaymentMethod'),
+                    'payment_method_id' => config('ip.onlinePaymentMethod'),
                 ]);
 
                 MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());

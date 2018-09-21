@@ -35,7 +35,7 @@ class ExpenseSavingListener
 
         if ($expense->company_profile) {
             if (!CompanyProfile::where('company', $expense->company_profile)->count()) {
-                $expense->company_profile_id = config('fi.defaultCompanyProfile');
+                $expense->company_profile_id = config('ip.defaultCompanyProfile');
             }
         }
 

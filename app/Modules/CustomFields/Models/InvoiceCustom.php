@@ -20,18 +20,21 @@ class InvoiceCustom extends Model
 {
     /**
      * The table name
+     *
      * @var string
      */
     protected $table = 'invoices_custom';
 
     /**
      * The primary key
+     *
      * @var string
      */
     protected $primaryKey = 'invoice_id';
 
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = [];

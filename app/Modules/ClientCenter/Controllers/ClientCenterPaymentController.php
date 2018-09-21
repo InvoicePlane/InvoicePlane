@@ -25,7 +25,7 @@ class ClientCenterPaymentController extends Controller
             ->whereHas('invoice', function ($invoice) {
                 $invoice->where('client_id', auth()->user()->client->id);
             })->orderBy('created_at', 'desc')
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('client_center.payments.index')
             ->with('payments', $payments);

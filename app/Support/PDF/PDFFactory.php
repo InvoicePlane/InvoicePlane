@@ -20,7 +20,7 @@ class PDFFactory
 {
     public static function create()
     {
-        $class = 'IP\Support\PDF\Drivers\\' . config('fi.pdfDriver');
+        $class = 'IP\Support\PDF\Drivers\\' . config('ip.pdfDriver');
 
         return new $class;
     }

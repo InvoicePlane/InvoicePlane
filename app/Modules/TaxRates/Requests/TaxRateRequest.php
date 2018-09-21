@@ -14,8 +14,8 @@
 
 namespace IP\Modules\TaxRates\Requests;
 
-use IP\Support\NumberFormatter;
 use Illuminate\Foundation\Http\FormRequest;
+use IP\Support\NumberFormatter;
 
 class TaxRateRequest extends FormRequest
 {

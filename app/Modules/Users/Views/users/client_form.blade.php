@@ -2,19 +2,19 @@
 
 @section('content')
 
-    <script type="text/javascript">
-      $(function () {
+    <script>
+        $(function () {
 
-        $('#client_id').change(function () {
-          $.post('{{ route('users.clientInfo') }}', {
-            id: $('#client_id').val()
-          }).done(function (response) {
-            $('#name').val(response.unique_name);
-            $('#email').val(response.email);
-          });
+            $('#client_id').change(function () {
+                $.post('{{ route('users.clientInfo') }}', {
+                    id: $('#client_id').val()
+                }).done(function (response) {
+                    $('#name').val(response.unique_name);
+                    $('#email').val(response.email);
+                });
+            });
+
         });
-
-      });
     </script>
 
     @if ($editMode == true)

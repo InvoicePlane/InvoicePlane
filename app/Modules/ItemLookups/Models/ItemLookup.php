@@ -14,11 +14,11 @@
 
 namespace IP\Modules\ItemLookups\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use IP\Support\CurrencyFormatter;
 use IP\Support\NumberFormatter;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class ItemLookup extends Model
 {
@@ -26,6 +26,7 @@ class ItemLookup extends Model
 
     /**
      * Guarded properties
+     *
      * @var array
      */
     protected $guarded = ['id'];

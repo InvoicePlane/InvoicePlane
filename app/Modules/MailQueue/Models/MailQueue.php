@@ -14,9 +14,9 @@
 
 namespace IP\Modules\MailQueue\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use IP\Support\DateFormatter;
 use IP\Traits\Sortable;
-use Illuminate\Database\Eloquent\Model;
 
 class MailQueue extends Model
 {

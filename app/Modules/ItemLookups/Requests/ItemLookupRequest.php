@@ -14,8 +14,8 @@
 
 namespace IP\Modules\ItemLookups\Requests;
 
-use IP\Support\NumberFormatter;
 use Illuminate\Foundation\Http\FormRequest;
+use IP\Support\NumberFormatter;
 
 class ItemLookupRequest extends FormRequest
 {

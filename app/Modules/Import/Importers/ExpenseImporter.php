@@ -14,8 +14,8 @@
 
 namespace IP\Modules\Import\Importers;
 
-use IP\Modules\Expenses\Models\Expense;
 use Illuminate\Support\Facades\Validator;
+use IP\Modules\Expenses\Models\Expense;
 
 class ExpenseImporter extends AbstractImporter
 {

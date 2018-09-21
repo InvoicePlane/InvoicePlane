@@ -1,37 +1,37 @@
 @extends('layouts.master')
 
 @section('javascript')
-    <script type="text/javascript">
-      $(function () {
-        $('.btn-bill-expense').click(function () {
-          $('#modal-placeholder').load("{{ route('expenseBill.create') }}", {
-            id: $(this).data('expense-id'),
-            redirectTo: '{{ request()->fullUrl() }}'
-          });
-        });
-
-        $('.expense_filter_options').change(function () {
-          $('form#filter').submit();
-        });
-
-        $('#btn-bulk-delete').click(function () {
-
-          var ids = [];
-
-          $('.bulk-record:checked').each(function () {
-            ids.push($(this).data('id'));
-          });
-
-          if (ids.length > 0) {
-            if (!confirm('{!! trans('ip.bulk_delete_record_warning') !!}')) return false;
-            $.post("{{ route('expenses.bulk.delete') }}", {
-              ids: ids
-            }).done(function () {
-              window.location = decodeURIComponent("{{ urlencode(request()->fullUrl()) }}");
+    <script>
+        $(function () {
+            $('.btn-bill-expense').click(function () {
+                $('#modal-placeholder').load("{{ route('expenseBill.create') }}", {
+                    id: $(this).data('expense-id'),
+                    redirectTo: '{{ request()->fullUrl() }}'
+                });
             });
-          }
+
+            $('.expense_filter_options').change(function () {
+                $('form#filter').submit();
+            });
+
+            $('#btn-bulk-delete').click(function () {
+
+                var ids = [];
+
+                $('.bulk-record:checked').each(function () {
+                    ids.push($(this).data('id'));
+                });
+
+                if (ids.length > 0) {
+                    if (!confirm('{!! trans('ip.bulk_delete_record_warning') !!}')) return false;
+                    $.post("{{ route('expenses.bulk.delete') }}", {
+                        ids: ids
+                    }).done(function () {
+                        window.location = decodeURIComponent("{{ urlencode(request()->fullUrl()) }}");
+                    });
+                }
+            });
         });
-      });
     </script>
 @stop
 
@@ -45,7 +45,7 @@
         <div class="pull-right">
 
             <a href="javascript:void(0)" class="btn btn-default bulk-actions" id="btn-bulk-delete"><i
-                        class="fa fa-trash"></i> @lang('ip.delete')</a>
+                    class="fa fa-trash"></i> @lang('ip.delete')</a>
 
             <div class="btn-group">
                 {!! Form::open(['method' => 'GET', 'id' => 'filter']) !!}
@@ -56,7 +56,7 @@
                 {!! Form::close() !!}
             </div>
             <a href="{{ route('expenses.create') }}" class="btn btn-primary"><i
-                        class="fa fa-plus"></i> @lang('ip.new')</a>
+                    class="fa fa-plus"></i> @lang('ip.new')</a>
         </div>
 
         <div class="clearfix"></div>
@@ -106,7 +106,7 @@
                                         @if ($expense->is_billable)
                                             @if ($expense->has_been_billed)
                                                 <br><a href="{{ route('invoices.edit', [$expense->invoice_id]) }}"><span
-                                                            class="label label-success">@lang('ip.billed')</span></a>
+                                                        class="label label-success">@lang('ip.billed')</span></a>
                                             @else
                                                 <br><span class="label label-danger">@lang('ip.not_billed')</span>
                                             @endif
@@ -117,27 +117,27 @@
                                     <td>
                                         @foreach ($expense->attachments as $attachment)
                                             <a href="{{ $attachment->download_url }}"><i
-                                                        class="fa fa-file-o"></i> {{ $attachment->filename }}</a><br>
+                                                    class="fa fa-file-o"></i> {{ $attachment->filename }}</a><br>
                                         @endforeach
                                     </td>
                                     <td>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
-                                                    data-toggle="dropdown">
+                                                data-toggle="dropdown">
                                                 @lang('ip.options') <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 @if ($expense->is_billable and !$expense->has_been_billed)
                                                     <li><a href="javascript:void(0)" class="btn-bill-expense"
-                                                           data-expense-id="{{ $expense->id }}"><i
-                                                                    class="fa fa-money"></i> @lang('ip.bill_this_expense')
+                                                            data-expense-id="{{ $expense->id }}"><i
+                                                                class="fa fa-money"></i> @lang('ip.bill_this_expense')
                                                         </a></li>
                                                 @endif
                                                 <li><a href="{{ route('expenses.edit', [$expense->id]) }}"><i
-                                                                class="fa fa-edit"></i> @lang('ip.edit')</a></li>
+                                                            class="fa fa-edit"></i> @lang('ip.edit')</a></li>
                                                 <li><a href="{{ route('expenses.delete', [$expense->id]) }}"
-                                                       onclick="return confirm('@lang('ip.delete_record_warning')');"><i
-                                                                class="fa fa-trash-o"></i> @lang('ip.delete')</a>
+                                                        onclick="return confirm('@lang('ip.delete_record_warning')');"><i
+                                                            class="fa fa-trash-o"></i> @lang('ip.delete')</a>
                                                 </li>
                                             </ul>
                                         </div>

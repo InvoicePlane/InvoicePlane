@@ -23,7 +23,7 @@ class MailLogController extends Controller
     {
         $mails = MailQueue::sortable(['created_at' => 'desc'])
             ->keywords(request('search'))
-            ->paginate(config('fi.resultsPerPage'));
+            ->paginate(config('ip.resultsPerPage'));
 
         return view('mail_log.index')
             ->with('mails', $mails)

@@ -27,7 +27,7 @@
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
                             <button class="btn btn-primary"><i
-                                        class="fa fa-download"></i> @lang('ip.export_clients')</button>
+                                    class="fa fa-download"></i> @lang('ip.export_clients')</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-quotes" class="tab-pane">
@@ -37,7 +37,7 @@
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
                             <button class="btn btn-primary"><i
-                                        class="fa fa-download"></i> @lang('ip.export_quotes')</button>
+                                    class="fa fa-download"></i> @lang('ip.export_quotes')</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-quote-items" class="tab-pane">
@@ -47,7 +47,7 @@
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
                             <button class="btn btn-primary"><i
-                                        class="fa fa-download"></i> @lang('ip.export_quote_items')</button>
+                                    class="fa fa-download"></i> @lang('ip.export_quote_items')</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-invoices" class="tab-pane">
@@ -57,7 +57,7 @@
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
                             <button class="btn btn-primary"><i
-                                        class="fa fa-download"></i> @lang('ip.export_invoices')</button>
+                                    class="fa fa-download"></i> @lang('ip.export_invoices')</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-invoice-items" class="tab-pane">
@@ -67,7 +67,7 @@
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
                             <button class="btn btn-primary"><i
-                                        class="fa fa-download"></i> @lang('ip.export_invoice_items')</button>
+                                    class="fa fa-download"></i> @lang('ip.export_invoice_items')</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-payments" class="tab-pane">
@@ -77,7 +77,7 @@
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
                             <button class="btn btn-primary"><i
-                                        class="fa fa-download"></i> @lang('ip.export_payments')</button>
+                                    class="fa fa-download"></i> @lang('ip.export_payments')</button>
                             {!! Form::close() !!}
                         </div>
                         <div id="tab-expenses" class="tab-pane">
@@ -87,7 +87,7 @@
                                 {!! Form::select('writer', $writers, null, ['class' => 'form-control']) !!}
                             </div>
                             <button class="btn btn-primary"><i
-                                        class="fa fa-download"></i> @lang('ip.export_expenses')</button>
+                                    class="fa fa-download"></i> @lang('ip.export_expenses')</button>
                             {!! Form::close() !!}
                         </div>
                     </div>
