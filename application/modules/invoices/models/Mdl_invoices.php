@@ -470,7 +470,7 @@ class Mdl_Invoices extends Response_Model
         delete_orphans();
     }
 
-    // Used from the guest module, excludes draft and paid
+    // Excludes draft and paid invoices, i.e. keeps unpaid invoices.
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', array(2, 3));
