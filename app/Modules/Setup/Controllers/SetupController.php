@@ -75,7 +75,26 @@ class SetupController extends Controller
      */
     public function dbConfig()
     {
-        return view('setup.dbconfig');
+        // generate a list of available drivers
+        $drivers = array();
+        foreach (\PDO::getAvailableDrivers() as $driver) {
+            // check if driver is supported by laravel
+            if(config('database.connections.' . $driver) != null) {
+                $drivers[$driver] = $driver;
+            }
+        }
+
+        // prepare the database name if we are using the sqlite driver
+        $current_settings = config('database.connections.mysql');
+        if (config('database.default') == 'sqlite') {
+            $current_settings['database'] = preg_replace('/\.sqlite$/i', '', basename($current_settings['database']));
+        }
+
+        return view('setup.dbconfig')->with([
+            'default' => $current_settings,
+            'default_driver' => config('database.default'),
+            'available_drivers' => $drivers,
+        ]);
     }
 
     /**
@@ -86,10 +105,20 @@ class SetupController extends Controller
     {
         $input = $request->all();
 
+        // check if given driver is supported
+        $config = config('database.connections.' . $input['db_connection']);
+        if($config == null) {
+            return redirect()->route('setup.dbconfig')->with('errors', collect(trans('ip.database_configuration_driver_unsupported')));
+        }
+
         // Create test configuration with new credentials
-        config(['database.connections.setup' => config('database.connections.mysql')]);
+        config(['database.connections.setup' => $config]);
         config(['database.connections.setup.host' => $input['db_host']]);
         config(['database.connections.setup.port' => $input['db_port']]);
+        if ($input['db_connection'] == 'sqlite') {
+           $input['db_database'] = database_path($input['db_database'].'.sqlite');
+           touch($input['db_database']);
+        }
         config(['database.connections.setup.database' => $input['db_database']]);
         config(['database.connections.setup.username' => $input['db_username']]);
         config(['database.connections.setup.password' => $input['db_password']]);
@@ -98,7 +127,7 @@ class SetupController extends Controller
         try {
             DB::connection('setup')->getPdo();
         } catch (\Exception $e) {
-            return view('setup.dbconfig')->with('errors', collect(trans('ip.database_configuration_failed')));
+            return redirect()->route('setup.dbconfig')->with('errors', collect(trans('ip.database_configuration_failed')));
         }
 
         // Save the new credentials to the .env file

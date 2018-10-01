@@ -18,6 +18,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class DBRequest extends FormRequest
 {
+    protected $redirectRoute = 'setup.dbconfig';
+
     public function authorize()
     {
         return true;
@@ -26,23 +28,25 @@ class DBRequest extends FormRequest
     public function attributes()
     {
         return [
-            'db_host' => trans('ip.db_host'),
-            'db_port' => trans('ip.db_port'),
-            'db_database' => trans('ip.db_database'),
-            'db_username' => trans('ip.db_user'),
-            'db_password' => trans('ip.db_pass'),
-            'db_prefix' => trans('ip.db_prefix'),
+            'db_connection' => trans('ip.database_connection'),
+            'db_host' => trans('ip.database_host'),
+            'db_port' => trans('ip.database_port'),
+            'db_database' => trans('ip.database_database'),
+            'db_username' => trans('ip.database_user'),
+            'db_password' => trans('ip.database_pass'),
+            'db_prefix' => trans('ip.database_prefix'),
         ];
     }
 
     public function rules()
     {
         return [
-            'db_host' => 'required',
-            'db_port' => 'required|numeric',
-            'db_database' => 'required',
-            'db_username' => 'required',
-            'db_password' => 'required',
+            'db_connection' => 'required|alpha_dash',
+            'db_host' => 'required_unless:db_connection,sqlite',
+            'db_port' => 'required_unless:db_connection,sqlite|numeric',
+            'db_database' => 'required|alpha_dash',
+            'db_username' => 'required_unless:db_connection,sqlite',
+            'db_password' => 'required_unless:db_connection,sqlite',
         ];
     }
 }
