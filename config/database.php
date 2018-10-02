@@ -45,8 +45,10 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix' => '',
+            // the database path is hardcoded for sqlite
+            // can be overriden for testing puposes
+            'database' => env('DB_SQLITE_FILE', database_path('invoiceplane.sqlite')),
+            'prefix' => env('DB_PREFIX', ''),
         ],
 
         'mysql' => [
@@ -72,7 +74,7 @@ return [
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
-            'prefix' => '',
+            'prefix' => env('DB_PREFIX', ''),
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
@@ -85,7 +87,7 @@ return [
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
-            'prefix' => '',
+            'prefix' => env('DB_PREFIX', ''),
         ],
 
     ],

@@ -55,6 +55,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'wiki_base_url' => 'https://wiki.invoiceplane.com/en/2.0/',
 
     /*
     |--------------------------------------------------------------------------
