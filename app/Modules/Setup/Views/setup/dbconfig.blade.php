@@ -52,64 +52,75 @@
 
                         <h4>@lang('ip.database_setup')</h4>
 
-                        <p>@lang('ip.database_configuration_info')</p>
+                        @if(empty($available_drivers))
 
-                        <div class="row">
-                            <div class="col-xs-12 col-md-6">
-
-                                <div class="form-group">
-                                    <label for="db_host">@lang('ip.database_connection')</label>
-                                    {!! Form::select('db_connection', $available_drivers, old('db_connection') ?: $default_driver, [
-                                        'class' => 'form-control form_db_connection'
-                                    ]) !!}
-                                </div>
-
-                                <div class="form-group form_db_host">
-                                    <label for="db_host">@lang('ip.database_host')</label>
-                                    {!! Form::text('db_host', old('db_host') ?: $default['host'], [
-                                        'class' => 'form-control', 'placeholder' => trans('ip.database_host')
-                                    ]) !!}
-                                </div>
-
-                                <div class="form-group form_db_port">
-                                    <label for="db_port">@lang('ip.database_port')</label>
-                                    {!! Form::text('db_port', old('db_port') ?: $default['port'], [
-                                        'class' => 'form-control', 'placeholder' => trans('ip.database_port')
-                                    ]) !!}
-                                </div>
-
-                                <div class="form-group form_db_database">
-                                    <label for="db_database">@lang('ip.database_database')</label>
-                                    {!! Form::text('db_database', old('db_database') ?: $default['database'], [
-                                        'class' => 'form-control', 'placeholder' => trans('ip.database_database')
-                                    ]) !!}
-                                </div>
-
-                                <div class="form-group form_db_username">
-                                    <label for="db_username">@lang('ip.database_user')</label>
-                                    {!! Form::text('db_username', old('db_username') ?: $default['username'], [
-                                        'class' => 'form-control', 'placeholder' => trans('ip.database_user')
-                                    ]) !!}
-                                </div>
-
-                                <div class="form-group form_db_password">
-                                    <label for="db_password">@lang('ip.database_pass')</label>
-                                    {!! Form::password('db_password', [
-                                        'class' => 'form-control', 'placeholder' => trans('ip.database_pass')
-                                    ]) !!}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="db_prefix">@lang('ip.database_prefix')</label>
-                                    {!! Form::text('db_prefix', old('db_prefix') ?: $default['prefix'], [
-                                        'class' => 'form-control', 'placeholder' => trans('ip.database_prefix')
-                                    ]) !!}
-                                </div>
-
+                            <div class="alert alert-danger">
+                                <p>@lang('ip.database_configuration_no_drivers')</p>
+                                <p><a href="{!! url_wiki('getting-started/requirements') !!}" target="_blank">@lang('ip.to_wiki')</a></p>
                             </div>
-                        </div>
 
-                        <button class="btn btn-primary" type="submit">@lang('ip.continue')</button>
+                        @else
+
+                            <p>@lang('ip.database_configuration_info')</p>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-md-6">
+
+                                    <div class="form-group">
+                                        <label for="db_host">@lang('ip.database_connection')</label>
+                                        {!! Form::select('db_connection', $available_drivers, old('db_connection') ?: $default_driver, [
+                                            'class' => 'form-control form_db_connection'
+                                        ]) !!}
+                                    </div>
+
+                                    <div class="form-group form_db_host">
+                                        <label for="db_host">@lang('ip.database_host')</label>
+                                        {!! Form::text('db_host', old('db_host') ?: $default['host'], [
+                                            'class' => 'form-control', 'placeholder' => trans('ip.database_host')
+                                        ]) !!}
+                                    </div>
+
+                                    <div class="form-group form_db_port">
+                                        <label for="db_port">@lang('ip.database_port')</label>
+                                        {!! Form::text('db_port', old('db_port') ?: $default['port'], [
+                                            'class' => 'form-control', 'placeholder' => trans('ip.database_port')
+                                        ]) !!}
+                                    </div>
+
+                                    <div class="form-group form_db_database">
+                                        <label for="db_database">@lang('ip.database_database')</label>
+                                        {!! Form::text('db_database', old('db_database') ?: $default['database'], [
+                                            'class' => 'form-control', 'placeholder' => trans('ip.database_database')
+                                        ]) !!}
+                                    </div>
+
+                                    <div class="form-group form_db_username">
+                                        <label for="db_username">@lang('ip.database_user')</label>
+                                        {!! Form::text('db_username', old('db_username') ?: $default['username'], [
+                                            'class' => 'form-control', 'placeholder' => trans('ip.database_user')
+                                        ]) !!}
+                                    </div>
+
+                                    <div class="form-group form_db_password">
+                                        <label for="db_password">@lang('ip.database_pass')</label>
+                                        {!! Form::password('db_password', [
+                                            'class' => 'form-control', 'placeholder' => trans('ip.database_pass')
+                                        ]) !!}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="db_prefix">@lang('ip.database_prefix')</label>
+                                        {!! Form::text('db_prefix', old('db_prefix') ?: $default['prefix'], [
+                                            'class' => 'form-control', 'placeholder' => trans('ip.database_prefix')
+                                        ]) !!}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">@lang('ip.continue')</button>
+
+                        @endif
 
                     </div>
 
