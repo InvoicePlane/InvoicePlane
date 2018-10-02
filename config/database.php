@@ -45,7 +45,9 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            // the database path is hardcoded for sqlite
+            // can be overriden for testing puposes
+            'database' => env('DB_SQLITE_FILE', database_path('invoiceplane.sqlite')),
             'prefix' => env('DB_PREFIX', ''),
         ],
 

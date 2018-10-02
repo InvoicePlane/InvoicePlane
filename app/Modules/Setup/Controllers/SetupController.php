@@ -84,14 +84,8 @@ class SetupController extends Controller
             }
         }
 
-        // prepare the database name if we are using the sqlite driver
-        $current_settings = config('database.connections.mysql');
-        if (config('database.default') == 'sqlite') {
-            $current_settings['database'] = preg_replace('/\.sqlite$/i', '', basename($current_settings['database']));
-        }
-
         return view('setup.dbconfig')->with([
-            'default' => $current_settings,
+            'default' => config('database.connections.mysql'),
             'default_driver' => config('database.default'),
             'available_drivers' => $drivers,
         ]);
@@ -115,11 +109,10 @@ class SetupController extends Controller
         config(['database.connections.setup' => $config]);
         config(['database.connections.setup.host' => $input['db_host']]);
         config(['database.connections.setup.port' => $input['db_port']]);
-        if ($input['db_connection'] == 'sqlite') {
-           $input['db_database'] = database_path($input['db_database'].'.sqlite');
-           touch($input['db_database']);
+        // the database path is hardcoded for sqlite see config/database.php
+        if ($input['db_connection'] != 'sqlite') {
+            config(['database.connections.setup.database' => $input['db_database']]);
         }
-        config(['database.connections.setup.database' => $input['db_database']]);
         config(['database.connections.setup.username' => $input['db_username']]);
         config(['database.connections.setup.password' => $input['db_password']]);
 

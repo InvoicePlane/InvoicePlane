@@ -44,7 +44,7 @@ class DBRequest extends FormRequest
             'db_connection' => 'required|alpha_dash',
             'db_host' => 'required_unless:db_connection,sqlite',
             'db_port' => 'required_unless:db_connection,sqlite|numeric',
-            'db_database' => 'required|alpha_dash',
+            'db_database' => 'required_unless:db_connection,sqlite|alpha_dash',
             'db_username' => 'required_unless:db_connection,sqlite',
             'db_password' => 'required_unless:db_connection,sqlite',
         ];

@@ -168,7 +168,6 @@ return [
     'database_port' => 'Database Port',
     'database_prefix' => 'Database Prefix',
     'database_setup' => 'Database Setup',
-    'database_sqlite_info' => 'This will be used as the filename of the SQLite database.',
     'database_user' => 'Database Username',
     'date' => 'Date',
     'date_format' => 'Date Format',

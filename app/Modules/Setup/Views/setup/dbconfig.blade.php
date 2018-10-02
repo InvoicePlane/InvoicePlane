@@ -8,7 +8,7 @@
                 form_host = $('.form_db_host'),
                 form_username = $('.form_db_username'),
                 form_password = $('.form_db_password'),
-                form_sqlite_info = $('.form_db_sqlite');
+                form_database = $('.form_db_database');
 
             function db_form_update () {
                 if(form_driver.val().trim().localeCompare('sqlite') === 0) {
@@ -16,13 +16,13 @@
                     form_port.hide();
                     form_username.hide();
                     form_password.hide();
-                    form_sqlite_info.show();
+                    form_database.hide();
                 } else {
                     form_host.show();
                     form_port.show();
                     form_username.show();
                     form_password.show();
-                    form_sqlite_info.hide();
+                    form_database.show();
                 }
             }
             db_form_update();
@@ -78,9 +78,8 @@
                                     ]) !!}
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group form_db_database">
                                     <label for="db_database">@lang('ip.database_database')</label>
-                                    <p class="form_db_sqlite">@lang('ip.database_sqlite_info')</p>
                                     {!! Form::text('db_database', old('db_database') ?: $default['database'], [
                                         'class' => 'form-control', 'placeholder' => trans('ip.database_database')
                                     ]) !!}
