@@ -11,15 +11,6 @@
                     <div class="col-xs-12 col-md-6">
 
                         <div class="form-group">
-                            <label for="settings[quotes_expire_after]">
-                                <?php _trans('quotes_expire_after'); ?>
-                            </label>
-                            <input type="number" name="settings[quotes_expire_after]" id="settings[quotes_expire_after]"
-                                class="form-control"
-                                value="<?php echo get_setting('quotes_expire_after'); ?>">
-                        </div>
-
-                        <div class="form-group">
                             <label for="settings[default_quote_group]">
                                 <?php _trans('default_quote_group'); ?>
                             </label>
@@ -36,21 +27,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="settings[mark_quotes_sent_pdf]">
-                                <?php _trans('mark_quotes_sent_pdf'); ?>
-                            </label>
-                            <select name="settings[mark_quotes_sent_pdf]" id="settings[mark_quotes_sent_pdf]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value="0">
-                                    <?php _trans('no'); ?>
-                                </option>
-                                <option value="1" <?php check_select(get_setting('mark_quotes_sent_pdf'), '1'); ?>>
-                                    <?php _trans('yes'); ?>
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
                             <label for="settings[default_quote_notes]">
                                 <?php _trans('default_notes'); ?>
                             </label>
@@ -62,11 +38,12 @@
                     <div class="col-xs-12 col-md-6">
 
                         <div class="form-group">
-                            <label for="settings[quote_pre_password]">
-                                <?php _trans('quote_pre_password'); ?>
+                            <label for="settings[quotes_expire_after]">
+                                <?php _trans('quotes_expire_after'); ?>
                             </label>
-                            <input type="text" name="settings[quote_pre_password]" id="settings[quote_pre_password]"
-                                class="form-control" value="<?php echo get_setting('quote_pre_password', '', true); ?>">
+                            <input type="number" name="settings[quotes_expire_after]" id="settings[quotes_expire_after]"
+                                class="form-control"
+                                value="<?php echo get_setting('quotes_expire_after'); ?>">
                         </div>
 
                         <div class="form-group">
@@ -87,6 +64,45 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <?php _trans('quote_templates'); ?>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label for="settings[mark_quotes_sent_pdf]">
+                                <?php _trans('mark_quotes_sent_pdf'); ?>
+                            </label>
+                            <select name="settings[mark_quotes_sent_pdf]" id="settings[mark_quotes_sent_pdf]"
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('mark_quotes_sent_pdf'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label for="settings[quote_pre_password]">
+                                <?php _trans('quote_pre_password'); ?>
+                            </label>
+                            <input type="text" name="settings[quote_pre_password]" id="settings[quote_pre_password]"
+                                class="form-control" value="<?php echo get_setting('quote_pre_password', '', true); ?>">
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
 
