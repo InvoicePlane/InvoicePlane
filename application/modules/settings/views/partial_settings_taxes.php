@@ -27,22 +27,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="settings[default_include_item_tax]">
-                                <?php _trans('default_invoice_tax_rate_placement'); ?>
-                            </label>
-                            <select name="settings[default_include_item_tax]" id="settings[default_include_item_tax]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <option value="0" <?php check_select(get_setting('default_include_item_tax'), '0'); ?>>
-                                    <?php _trans('apply_before_item_tax'); ?>
-                                </option>
-                                <option value="1" <?php check_select(get_setting('default_include_item_tax'), '1'); ?>>
-                                    <?php _trans('apply_after_item_tax'); ?>
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
                             <label for="settings[default_item_tax_rate]">
                                 <?php _trans('default_item_tax_rate'); ?>
                             </label>
@@ -55,6 +39,25 @@
                                         <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
                                     </option>
                                 <?php } ?>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label for="settings[default_include_item_tax]">
+                                <?php _trans('default_invoice_tax_rate_placement'); ?>
+                            </label>
+                            <select name="settings[default_include_item_tax]" id="settings[default_include_item_tax]"
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value=""><?php _trans('none'); ?></option>
+                                <option value="0" <?php check_select(get_setting('default_include_item_tax'), '0'); ?>>
+                                    <?php _trans('apply_before_item_tax'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('default_include_item_tax'), '1'); ?>>
+                                    <?php _trans('apply_after_item_tax'); ?>
+                                </option>
                             </select>
                         </div>
 

@@ -31,8 +31,8 @@
                                 <?php _trans('default_terms'); ?>
                             </label>
                             <textarea name="settings[default_invoice_terms]" id="settings[default_invoice_terms]"
-                                class="form-control"
-                                rows="3"><?php echo get_setting('default_invoice_terms', '', true); ?></textarea>
+                                class="form-control" rows="4"
+                                ><?php echo get_setting('default_invoice_terms', '', true); ?></textarea>
                         </div>
 
                     </div>
@@ -109,21 +109,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="settings[pdf_watermark]">
-                                <?php _trans('pdf_watermark'); ?>
-                            </label>
-                            <select name="settings[pdf_watermark]" id="settings[pdf_watermark]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value="0">
-                                    <?php _trans('no'); ?>
-                                </option>
-                                <option value="1" <?php check_select(get_setting('pdf_watermark'), '1'); ?>>
-                                    <?php _trans('yes'); ?>
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
                             <label for="settings[invoice_pre_password]">
                                 <?php _trans('invoice_pre_password'); ?>
                             </label>
@@ -152,9 +137,22 @@
                     <div class="col-xs-12 col-md-6">
 
                         <div class="form-group">
-                            <label>
-                                <?php _trans('invoice_logo'); ?>
+                            <label for="settings[pdf_watermark]">
+                                <?php _trans('pdf_watermark'); ?>
                             </label>
+                            <select name="settings[pdf_watermark]" id="settings[pdf_watermark]"
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('pdf_watermark'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label><?php _trans('invoice_logo'); ?></label>
                             <?php if (get_setting('invoice_logo')) { ?>
                                 <br/>
                                 <img class="personal_logo"

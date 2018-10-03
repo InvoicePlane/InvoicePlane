@@ -82,6 +82,7 @@
                                     <option value="<?php echo $date_format['setting']; ?>"
                                         <?php check_select(get_setting('date_format'), $date_format['setting']); ?>>
                                         <?php echo $current_date->format($date_format['setting']); ?>
+                                        (<?php echo $date_format['setting'] ?>)
                                     </option>
                                 <?php } ?>
                             </select>
