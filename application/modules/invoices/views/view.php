@@ -247,7 +247,7 @@ if ($this->config->item('disable_read_only') == true) {
                 <li>
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-repeat fa-margin"></i>
+                        <i class="fa fa-refresh fa-margin"></i>
                         <?php _trans('create_recurring'); ?>
                     </a>
                 </li>
@@ -278,7 +278,10 @@ if ($this->config->item('disable_read_only') == true) {
 
     <div class="headerbar-item invoice-labels pull-right">
         <?php if ($invoice->invoice_is_recurring) { ?>
-            <span class="label label-info"><?php _trans('recurring'); ?></span>
+            <span class="label label-info">
+                <i class="fa fa-refresh"></i>
+                <?php _trans('recurring'); ?>
+            </span>
         <?php } ?>
         <?php if ($invoice->is_read_only == 1) { ?>
             <span class="label label-danger">
