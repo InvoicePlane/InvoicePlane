@@ -330,7 +330,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php _trans('quote_password'); ?>
                                     </label>
                                     <input type="text" id="quote_password" class="form-control input-sm"
-                                           value="<?php echo $quote->quote_password; ?>">
+                                           value="<?php _htmlsc($quote->quote_password) ?>">
                                 </div>
 
                                 <?php if ($quote->quote_status_id != 1) { ?>
