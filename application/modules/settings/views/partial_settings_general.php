@@ -105,6 +105,17 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label for="default_list_limit">
+                            <?php _trans('default_list_limit'); ?>
+                        </label>
+                        <input type="number" name="settings[default_list_limit]" id="default_list_limit"
+                               class="form-control" minlength="1" min="1" required
+                               value="<?php echo get_setting('default_list_limit', 15, true) ?>">
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -190,39 +201,22 @@
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <div class="form-group">
-                        <label for="settings[thousands_separator]">
-                            <?php _trans('thousands_separator'); ?>
+                        <label for="settings[number_format]">
+                            <?php _trans('number_format'); ?>
                         </label>
-                        <input type="text" name="settings[thousands_separator]" id="settings[thousands_separator]"
-                               class="form-control"
-                               value="<?php echo get_setting('thousands_separator', '', true); ?>">
+                        <select name="settings[number_format]" id="settings[number_format]"
+                            class="form-control simple-select"
+                            data-minimum-results-for-search="Infinity">
+                            <?php foreach ($number_formats as $key => $value) { ?>
+                                <option value="<?php print($key); ?>"
+                                    <?php check_select(get_setting('number_format'), $value['label']); ?>>
+                                    <?php _trans($value['label']); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
                     </div>
                 </div>
-
-                <div class="col-xs-12 col-md-6">
-                    <div class="form-group">
-                        <label for="settings[decimal_point]">
-                            <?php _trans('decimal_point'); ?>
-                        </label>
-                        <input type="text" name="settings[decimal_point]" id="settings[decimal_point]"
-                               class="form-control"
-                               value="<?php echo get_setting('decimal_point', '', true); ?>">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <div class="form-group">
-                        <label for="default_list_limit">
-                            <?php _trans('default_list_limit'); ?>
-                        </label>
-                        <input type="number" name="settings[default_list_limit]" id="default_list_limit"
-                               class="form-control" minlength="1" min="1" required
-                               value="<?php echo get_setting('default_list_limit', 15, true) ?>">
-                    </div>
-                </div>
-            </div>
+			</div>
 
         </div>
     </div>
