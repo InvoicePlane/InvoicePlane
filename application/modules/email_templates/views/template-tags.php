@@ -14,10 +14,10 @@
                     <?php _trans('client_surname'); ?>
                 </option>
                 <option value="{{{client_address_1}}}">
-                    <?php _trans('address') . ' 1'; ?>
+                    <?php _trans('street_address'); ?>
                 </option>
                 <option value="{{{client_address_2}}}">
-                    <?php _trans('address') . ' 2'; ?>
+                    <?php _trans('street_address_2'); ?>
                 </option>
                 <option value="{{{client_city}}}">
                     <?php _trans('city'); ?>
@@ -51,10 +51,10 @@
                     <?php _trans('company'); ?>
                 </option>
                 <option value="{{{user_address_1}}}">
-                    <?php _trans('address') . ' 1'; ?>
+                    <?php _trans('street_address'); ?>
                 </option>
                 <option value="{{{user_address_2}}}">
-                    <?php _trans('address') . ' 2'; ?>
+                    <?php _trans('street_address_2'); ?>
                 </option>
                 <option value="{{{user_city}}}">
                     <?php _trans('city'); ?>
