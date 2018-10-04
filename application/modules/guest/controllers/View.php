@@ -178,7 +178,7 @@ class View extends Base_Controller
 
         // Get all custom fields
         $custom_fields = array(
-            'quote' => $this->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $quote->quote_id),
+            'quote' => $this->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
             'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
             'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
         );
