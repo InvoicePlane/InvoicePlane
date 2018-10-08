@@ -139,12 +139,11 @@ class Statements extends Admin_Controller
         /*
          * Load the opening balance
          */
-        // $statement_start_date = strtotime("-1 month");
         if (empty($statement_start_date)) {
             $statement_start_date = null;
         }
         if (empty($statement_end_date)) {
-            $statement_end_date = strtotime("-6 month");
+            $statement_end_date = strtotime("-1 month");
         }
 
 
@@ -171,9 +170,7 @@ class Statements extends Admin_Controller
 
         $this->mdl_statement->setOpening_balance($client_opening_balance);
 
-
-        // $statement_start_date = strtotime("-1 month");
-        $statement_start_date = strtotime("-6 month");
+        $statement_start_date = strtotime("-1 month");
         $statement_end_date   = time();
 
         $this->mdl_statement->setStatement_start_date(date('Y-m-d', $statement_start_date));
