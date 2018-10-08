@@ -1,7 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
@@ -182,6 +180,10 @@ class Invoices extends Admin_Controller
             }
         }
 
+        // Check whether there are payment custom fields
+        $payment_cf = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
+        $payment_cf_exist = ($payment_cf->num_rows() > 0) ? "yes" : "no";
+
         $this->layout->set(
             [
                 'invoice' => $invoice,
@@ -199,6 +201,7 @@ class Invoices extends Admin_Controller
                     'decimal_point' => get_setting('decimal_point'),
                 ],
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'payment_cf_exist' => $payment_cf_exist,
             ]
         );
 

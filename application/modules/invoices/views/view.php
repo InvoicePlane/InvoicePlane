@@ -224,7 +224,8 @@ if ($this->config->item('disable_read_only') == true) {
                         <a href="#" class="invoice-add-payment"
                            data-invoice-id="<?php echo $invoice_id; ?>"
                            data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
+                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
+                           data-payment-cf-exist="<?php echo $payment_cf_exist; ?>">
                             <i class="fa fa-credit-card fa-margin"></i>
                             <?php _trans('enter_payment'); ?>
                         </a>
