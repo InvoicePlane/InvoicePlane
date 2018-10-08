@@ -56,6 +56,11 @@
                                     </button>
                                 </form>
                             </li>
+                            <li>
+                                <a href="<?php echo site_url('statements/view/' . $client->client_id); ?>">
+                                    <i class="fa fa-eye fa-margin"></i> <?php _trans('statement'); ?>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </td>
