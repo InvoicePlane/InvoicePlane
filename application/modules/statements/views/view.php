@@ -131,6 +131,41 @@
                                         value ="<?php echo $statement_number; ?>"
                                         placeholder="statement number" >
                                 </div>
+
+                                <div class="quote-properties">
+                                    <label for="quote_password">
+                                        <?php _trans('quote_password'); ?>
+                                    </label>
+                                    <input type="text" id="quote_password" name="quote_password" class="form-control input-sm"
+                                           value="">
+                                </div>
+
+
+                                <!-- Custom fields -->
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if ($custom_field->custom_field_location != 1) {
+                                        continue;
+                                    } ?>
+                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
+                                <?php endforeach; ?>
+
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+
+                                <div class="quote-properties has-feedback">
+                                    <label for="statement_start_date">
+                                        <?php _trans('statement_start_date'); ?>
+                                    </label>
+                                    <div class="input-group">
+                                        <input name="statement_start_date" id="statement_start_date"
+                                               class="form-control input-sm datepicker"
+                                               value="<?php echo date_from_mysql($statement_start_date); ?>"/>
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
                                 <div class="quote-properties has-feedback">
                                     <label for="statement_date_created">
                                         <?php _trans('statement_date'); ?>
@@ -145,37 +180,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Custom fields -->
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 1) {
-                                        continue;
-                                    } ?>
-                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                <?php endforeach; ?>
 
-                            </div>
-                            <div class="col-xs-12 col-md-6">
-
-                                <div class="quote-properties has-feedback">
-                                    <label for="statement_date_created">
-                                        <?php _trans('statement_start_date'); ?>
-                                    </label>
-                                    <div class="input-group">
-                                        <input name="statement_start_date" id="statement_start_date"
-                                               class="form-control input-sm datepicker"
-                                               value="<?php echo date_from_mysql($statement_start_date); ?>"/>
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-calendar fa-fw"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="quote-properties">
-                                    <label for="quote_password">
-                                        <?php _trans('quote_password'); ?>
-                                    </label>
-                                    <input type="text" id="quote_password" name="quote_password" class="form-control input-sm"
-                                           value="">
-                                </div>
 
 								<br/>
                                 <div class="quote-properties">

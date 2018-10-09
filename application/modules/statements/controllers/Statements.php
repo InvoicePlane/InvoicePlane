@@ -66,12 +66,15 @@ class Statements extends Admin_Controller
         if($this->input->method() === 'post')
         {
 
-            // We should use the form value if supplied, otherwise the hidden field sdate
-            $statement_start_date   = strtotime($this->input->post('sdate'));
+            if (!empty($this->input->post('statement_start_date'))) {
+                $statement_start_date   = strtotime($this->input->post('statement_start_date'));
+            } else {
+                $statement_start_date   = strtotime($this->input->post('sdate'));
+            }
             $statement_end_date     = strtotime($this->input->post('edate'));
 
+            $statement_date         = strtotime($this->input->post('statement_date_created'));
             $statement_number       = $this->input->post('statement_number');
-            $statement_date         = $this->input->post('statement_date_created');
             $notes                  = $this->input->post('notes');
 
         } else {
@@ -87,8 +90,6 @@ class Statements extends Admin_Controller
 
         $statement = $this->build_statement($client_id, $statement_start_date, $statement_end_date, $statement_date, $statement_number);
 
-
-        // TODO: Send statement number
 
         $this->layout->set(
             array(
@@ -128,33 +129,53 @@ class Statements extends Admin_Controller
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('payments/mdl_payments');
 
-        if (!empty($statement_number)){
 
+        /*
+         * Use the user supplied start date, or set the start date to a month ago
+         */
+        if (empty($statement_start_date)) {
+            $statement_start_date = strtotime("-1 month");
+        }
+
+        /*
+         * Use the user supplied end date, or draw the statement up to now
+         */
+        if (empty($statement_end_date)) {
+            $statement_end_date = time();
+        }
+
+        /*
+         * Use the user supplied statament date, or use the current date
+         */
+        if (empty($statement_date)) {
+            $statement_date = time();
+        }
+
+        /*
+         * Create the statement number based on the client id and date, or overwrite it with the user value.
+         */
+        if (!empty($statement_number)) {
             $this->mdl_statement->setStatement_number($statement_number);
-
         } else {
             $this->mdl_statement->setStatement_number( 'STM-' . $client_id . '-' . date('ymd'));
         }
 
         /*
-         * Load the opening balance
+         * Set the statement date to now, or overwrite it with the user value.
          */
-        if (empty($statement_start_date)) {
-            $statement_start_date = null;
-        }
-        if (empty($statement_end_date)) {
-            $statement_end_date = strtotime("-1 month");
-        }
+        $this->mdl_statement->setStatement_date(date('Y-m-d', $statement_date));
 
 
-        $this->mdl_statement->setStatement_date( (!empty($statement_date)) ? $statement_date : date('Y-m-d'));
+        /*
+         * Calculate the opening statement as from the start of the user account to the start of the statement period
+         */
+        $opening_balance_start_date = null;
+        $opening_balance_end_date   = $statement_start_date;
 
 
-//         $this->mdl_statement->setStatement_start_date($statement_start_date);
-//         $this->mdl_statement->setStatement_end_date($statement_end_date);
+        $client_invoices = $this->mdl_invoices->by_client($client_id)->by_date_range($opening_balance_start_date, $opening_balance_end_date)->get()->result();
+        $client_payments = $this->mdl_payments->by_client($client_id)->by_date_range($opening_balance_start_date, $opening_balance_end_date)->get()->result();
 
-        $client_invoices = $this->mdl_invoices->by_client($client_id)->by_date_range($statement_start_date, $statement_end_date)->get()->result();
-        $client_payments = $this->mdl_payments->by_client($client_id)->by_date_range($statement_start_date, $statement_end_date)->get()->result();
 
         $client_invoice_total = 0;
         foreach ($client_invoices as $invoice_entry) {
@@ -170,8 +191,6 @@ class Statements extends Admin_Controller
 
         $this->mdl_statement->setOpening_balance($client_opening_balance);
 
-        $statement_start_date = strtotime("-1 month");
-        $statement_end_date   = time();
 
         $this->mdl_statement->setStatement_start_date(date('Y-m-d', $statement_start_date));
         $this->mdl_statement->setStatement_end_date(date('Y-m-d', $statement_end_date));
@@ -266,8 +285,11 @@ class Statements extends Admin_Controller
         $client_id              = $this->input->post('cid');
         $statement_number       = $this->input->post('statement_number');
 
-        // We should use the form value if supplied, otherwise the hidden field sdate
-        $statement_start_date   = strtotime($this->input->post('sdate'));
+        if (!empty($this->input->post('statement_start_date'))) {
+            $statement_start_date   = strtotime($this->input->post('statement_start_date'));
+        } else {
+            $statement_start_date   = strtotime($this->input->post('sdate'));
+        }
         $statement_end_date     = strtotime($this->input->post('edate'));
 
         $statement_date         = $this->input->post('statement_date_created');
