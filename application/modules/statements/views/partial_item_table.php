@@ -1,6 +1,6 @@
 <?php
 
-    $balance = (empty($statement_balance) ? 0 : $statement_balance)
+    $balance = (empty($opening_balance) ? 0 : $opening_balance)
 
 ?>
 
