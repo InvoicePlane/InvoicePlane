@@ -23,13 +23,12 @@ class Statements extends Admin_Controller
     const TRANSACTION_TYPE_PAYMENT      = 3;
 
     /**
-     * Quotes constructor.
+     * Statement constructor.
      */
     public function __construct()
     {
         parent::__construct();
 
-        // $this->load->model('mdl_quotes');
         $this->load->model('clients/mdl_clients');
 
     }
@@ -118,8 +117,15 @@ class Statements extends Admin_Controller
     }
 
     /**
-     * @param client_total_balance
-     * @param transaction
+     * Populate the Statement model
+     *
+     *
+     * @param Mdl_Clients $client
+     * @param $statement_start_date
+     * @param $statement_end_date
+     * @param $statement_date,
+     * @param $statement_number
+     *
      */
     private function build_statement($client_id, $statement_start_date = null, $statement_end_date = null, $statement_date = null, $statement_number = null)
     {
@@ -275,12 +281,14 @@ class Statements extends Admin_Controller
     }
 
 
-
-
     /**
+     * Controller action to print pdf. From POST action.
+     *
      */
     public function generate_pdf()
     {
+
+        $this->load->model('clients/mdl_clients');
 
         $client_id              = $this->input->post('cid');
         $statement_number       = $this->input->post('statement_number');
@@ -292,28 +300,9 @@ class Statements extends Admin_Controller
         }
         $statement_end_date     = strtotime($this->input->post('edate'));
 
-        $statement_date         = $this->input->post('statement_date_created');
+        $statement_date         = strtotime($this->input->post('statement_date_created'));
         $notes                  = $this->input->post('notes');
 
-
-        $this->generate_statement_pdf($client_id, $statement_number, $statement_start_date, $statement_end_date, $statement_date, $notes);
-    }
-
-    /**
-     * Generate the PDF for the statement
-     *
-     * @param $quote_id
-     * @param bool $stream
-     * @param null $quote_template
-     *
-     * @return string
-     * @throws \Mpdf\MpdfException
-     */
-    function generate_statement_pdf($client_id, $statement_number, $statement_start_date, $statement_end_date, $statement_date, $notes)
-    {
-
-
-        $this->load->model('custom_fields/mdl_client_custom');
 
         /*
          * Load the client
@@ -326,35 +315,14 @@ class Statements extends Admin_Controller
             show_404();
         }
 
-        $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
+        $statement = $this->build_statement($client->client_id, $statement_start_date, $statement_end_date);
 
-        $this->mdl_client_custom->prep_form($client_id);
 
-        $statement = $this->build_statement($client_id, $statement_start_date, $statement_end_date);
+        $this->load->helper('pdf');
 
-        // Override language with system language
-        set_language($client->client_language);
-
-        $statement_template = "InvoicePlane";
-        if (!$statement_template) {
-            $statement_template = $this->mdl_settings->setting('pdf_statement_template');
-        }
-
-        $data = array(
-            'client'        => $client,
-            'statement'     => $statement,
-            'notes'         => $notes,
-            // 'custom_fields' => $custom_fields,
-        );
-
-        $html = $this->load->view('statement_templates/pdf/' . $statement_template, $data, true);
-
-        $this->load->helper('mpdf');
-
-        $pdf_password = null;
-        $stream = true;
-        return pdf_create($html, trans('statement') . '_' . str_replace(array('\\', '/'), '_', $statement->GetStatement_number()), $stream, $pdf_password);
+        generate_statement_pdf($client, $statement, $notes);
     }
+
 
 
     /**

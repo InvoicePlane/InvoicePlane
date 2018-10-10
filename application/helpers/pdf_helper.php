@@ -258,3 +258,43 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 
     return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
 }
+
+/**
+ * Generate the PDF for the statement
+ *
+ * @param Mdl_Clients $client
+ * @param Mdl_Statement $statement
+
+
+ * @param $notes
+ *
+ * @return string
+ * @throws \Mpdf\MpdfException
+ */
+function generate_statement_pdf($client, $statement, $notes)
+{
+
+    $CI = &get_instance();
+
+    // Override language with system language
+    set_language($client->client_language);
+
+    $statement_template = "InvoicePlane";
+    if (!$statement_template) {
+        $statement_template = $CI->mdl_settings->setting('pdf_statement_template');
+    }
+
+    $data = array(
+        'client'        => $client,
+        'statement'     => $statement,
+        'notes'         => $notes,
+    );
+
+    $html = $CI->load->view('statement_templates/pdf/' . $statement_template, $data, true);
+
+    $CI->load->helper('mpdf');
+
+    $pdf_password = null;
+    $stream = true;
+    return pdf_create($html, trans('statement') . '_' . str_replace(array('\\', '/'), '_', $statement->GetStatement_number()), $stream, $pdf_password);
+}
