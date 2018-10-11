@@ -28,7 +28,7 @@
 						    window.location = "<?php echo site_url('payments/form'); ?>/" + response.payment_id;
 						}
 						else {
-                            // There are no payment custom fields, return to payments view
+                            // There are no payment custom fields, return to invoice view
 							window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
 						}
                     }
