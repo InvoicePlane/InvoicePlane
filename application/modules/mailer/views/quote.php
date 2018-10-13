@@ -18,6 +18,13 @@
         var selected_email_template = <?php echo $email_template ?>;
         inject_email_template(template_fields, selected_email_template);
     });
+
+    $(document).ready(function() {
+        // this is the email quote window, disable the invoice select
+        $('#tags_invoice').prop('disabled', 'disabled');
+        $('#tags_quote').prop('disabled', false);
+    });
+
 </script>
 
 <form method="post" action="<?php echo site_url('mailer/send_quote/' . $quote->quote_id) ?>">
