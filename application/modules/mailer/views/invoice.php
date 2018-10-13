@@ -125,6 +125,9 @@
                                 <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
                                     <i class="fa fa-paragraph"></i>
                                 </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-linebreak">
+                                    &lt;br&gt;
+                                </span>
                                 <span class="html-tag btn btn-default" data-tag-type="text-bold">
                                     <i class="fa fa-bold"></i>
                                 </span>
