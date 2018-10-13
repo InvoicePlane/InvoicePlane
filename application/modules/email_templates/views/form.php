@@ -217,4 +217,34 @@
             });
         }
     });
+
+    $(document).ready(function() {
+    	// find the type of template that has been loaded and enable/disable
+        // the invoice and quote selects as required
+        var inputValue = $('input[type="radio"]:checked').attr("value");
+
+        if (inputValue === 'quote') {
+            $('#tags_invoice').prop('disabled', 'disabled');
+            $('#tags_quote').prop('disabled', false);
+        } else {
+            // inputValue === 'invoice'
+            $('#tags_invoice').prop('disabled', false);
+            $('#tags_quote').prop('disabled', 'disabled');
+        }
+
+        // if the radio input for 'type of template' gets clicked, check the
+        // new value and enable/disable the invoice and quote selects as required.
+    	$('input[type="radio"]').click(function() {
+            var inputValue = $(this).attr("value");
+
+            if (inputValue === 'quote') {
+            	$('#tags_invoice').prop('disabled', 'disabled');
+            	$('#tags_quote').prop('disabled', false);
+            } else {
+                // inputValue === 'invoice'
+            	$('#tags_invoice').prop('disabled', false);
+            	$('#tags_quote').prop('disabled', 'disabled');
+            }
+        });
+    });
 </script>
