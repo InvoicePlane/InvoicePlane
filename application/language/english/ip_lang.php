@@ -272,6 +272,7 @@ $lang = array(
     'invoice_tax'                                  => 'Invoice Tax',
     'invoice_tax_rate'                             => 'Invoice Tax Rate',
     'invoice_template'                             => 'Invoice Template',
+    'invoice_templates'                            => 'Invoice Templates',
     'invoice_terms'                                => 'Invoice Terms',
     'invoiced'                                     => 'Invoiced',
     'invoiceplane_news'                            => 'InvoicePlane News',

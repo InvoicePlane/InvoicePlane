@@ -3,7 +3,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <?php _trans('general_settings'); ?>
+                <?php _trans('quote'); ?>
             </div>
             <div class="panel-body">
 
@@ -69,7 +69,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <?php _trans('quote_templates'); ?>
+                <?php _trans('pdf_settings'); ?>
             </div>
             <div class="panel-body">
                 <div class="row">
