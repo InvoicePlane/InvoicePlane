@@ -171,7 +171,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <?php _trans('invoice_template'); ?>
+                <?php _trans('invoice_templates'); ?>
             </div>
             <div class="panel-body">
 
