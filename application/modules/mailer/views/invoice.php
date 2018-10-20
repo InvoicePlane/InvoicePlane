@@ -18,9 +18,17 @@
         var selected_email_template = <?php echo $email_template ?>;
         inject_email_template(template_fields, selected_email_template);
     });
+
+    $(document).ready(function() {
+        // this is the email invoice window, disable the quote select
+        $('#tags_invoice').prop('disabled', false);
+        $('#tags_quote').prop('disabled', 'disabled');
+    });
+
 </script>
 
 <form method="post" action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
+
     <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
            value="<?php echo $this->security->get_csrf_hash() ?>">
 
@@ -94,7 +102,7 @@
                 <div class="form-group">
                     <label for="subject"><?php _trans('subject'); ?></label>
                     <input type="text" name="subject" id="subject" class="form-control"
-                           value="<?php echo trans('invoice') . ' #' . $invoice->invoice_number; ?>">
+                           value="<?php _trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?>">
                 </div>
 
                 <div class="form-group">
@@ -110,72 +118,74 @@
                     </select>
                 </div>
 
-            </div>
-        </div>
+                <br>
 
-        <br>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
 
-        <div class="row">
-            <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="body"><?php _trans('body'); ?></label>
 
-                <div class="form-group">
-                    <label for="body"><?php _trans('body'); ?></label>
+                            <br>
 
-                    <br>
-
-                    <div class="html-tags btn-group btn-group-sm">
-                        <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
-                            <i class="fa fa-paragraph"></i>
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-bold">
-                            <i class="fa fa-bold"></i>
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-italic">
-                            <i class="fa fa-italic"></i>
-                        </span>
-                    </div>
-                    <div class="html-tags btn-group btn-group-sm">
-                        <span class="html-tag btn btn-default" data-tag-type="text-h1">H1</span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-h2">H2</span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-h3">H3</span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-h4">H4</span>
-                    </div>
-                    <div class="html-tags btn-group btn-group-sm">
-                        <span class="html-tag btn btn-default" data-tag-type="text-code">
-                            <i class="fa fa-code"></i>
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-hr">
-                            &lt;hr/&gt;
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-css">
-                            CSS
-                        </span>
-                    </div>
-
-                    <textarea name="body" id="body" rows="8"
-                              class="email-template-body form-control taggable"></textarea>
-
-                    <br>
-
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <?php _trans('preview'); ?>
-                            <div id="email-template-preview-reload" class="pull-right cursor-pointer">
-                                <i class="fa fa-refresh"></i>
+                            <div class="html-tags btn-group btn-group-sm">
+                                <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
+                                    <i class="fa fa-paragraph"></i>
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-linebreak">
+                                    &lt;br&gt;
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-bold">
+                                    <i class="fa fa-bold"></i>
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-italic">
+                                    <i class="fa fa-italic"></i>
+                                </span>
                             </div>
+                            <div class="html-tags btn-group btn-group-sm">
+                                <span class="html-tag btn btn-default" data-tag-type="text-h1">H1</span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-h2">H2</span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-h3">H3</span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-h4">H4</span>
+                            </div>
+                            <div class="html-tags btn-group btn-group-sm">
+                                <span class="html-tag btn btn-default" data-tag-type="text-code">
+                                    <i class="fa fa-code"></i>
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-hr">
+                                    &lt;hr/&gt;
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-css">
+                                    CSS
+                                </span>
+                            </div>
+
+                            <textarea name="body" id="body" rows="8"
+                                      class="email-template-body form-control taggable"></textarea>
+
+                            <br>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <?php _trans('preview'); ?>
+                                    <div id="email-template-preview-reload" class="pull-right cursor-pointer">
+                                        <i class="fa fa-refresh"></i>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <iframe id="email-template-preview"></iframe>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="panel-body">
-                            <iframe id="email-template-preview"></iframe>
-                        </div>
+
                     </div>
+                    <div class="col-xs-12 col-md-6">
 
+                        <?php $this->layout->load_view('email_templates/template-tags'); ?>
+
+                    </div>
                 </div>
-
-            </div>
-            <div class="col-xs-12 col-md-6">
-
-                <?php $this->layout->load_view('email_templates/template-tags'); ?>
-
             </div>
         </div>
 
