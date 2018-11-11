@@ -17,7 +17,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Statements extends Admin_Controller
 {
-
     const TRANSACTION_TYPE_INVOICE      = 1;
     const TRANSACTION_TYPE_CREDIT_NOTE  = 2;
     const TRANSACTION_TYPE_PAYMENT      = 3;
@@ -30,7 +29,6 @@ class Statements extends Admin_Controller
         parent::__construct();
 
         $this->load->model('clients/mdl_clients');
-
     }
 
     public function index($client_id)
@@ -44,7 +42,6 @@ class Statements extends Admin_Controller
      */
     public function view($client_id)
     {
-
         $this->load->model('custom_fields/mdl_client_custom');
 
         /*
@@ -89,7 +86,6 @@ class Statements extends Admin_Controller
 
         $statement = $this->build_statement($client_id, $statement_start_date, $statement_end_date, $statement_date, $statement_number);
 
-
         $this->layout->set(
             array(
 
@@ -129,7 +125,6 @@ class Statements extends Admin_Controller
      */
     private function build_statement($client_id, $statement_start_date = null, $statement_end_date = null, $statement_date = null, $statement_number = null)
     {
-
         $this->load->model('mdl_statement');
 
         $this->load->model('invoices/mdl_invoices');
@@ -275,7 +270,6 @@ class Statements extends Admin_Controller
 
         $this->mdl_statement->setStatement_balance($client_total_balance);
 
-
         return $this->mdl_statement;
 
     }
@@ -287,8 +281,8 @@ class Statements extends Admin_Controller
      */
     public function generate_pdf()
     {
-
         $this->load->model('clients/mdl_clients');
+        $this->load->helper('country');
 
         $client_id              = $this->input->post('cid');
         $statement_number       = $this->input->post('statement_number');
@@ -303,7 +297,6 @@ class Statements extends Admin_Controller
         $statement_date         = strtotime($this->input->post('statement_date_created'));
         $notes                  = $this->input->post('notes');
 
-
         /*
          * Load the client
          */
@@ -316,7 +309,6 @@ class Statements extends Admin_Controller
         }
 
         $statement = $this->build_statement($client->client_id, $statement_start_date, $statement_end_date);
-
 
         $this->load->helper('pdf');
 

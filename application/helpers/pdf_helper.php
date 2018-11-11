@@ -264,8 +264,6 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
  *
  * @param Mdl_Clients $client
  * @param Mdl_Statement $statement
-
-
  * @param $notes
  *
  * @return string
@@ -273,7 +271,6 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
  */
 function generate_statement_pdf($client, $statement, $notes)
 {
-
     $CI = &get_instance();
 
     // Override language with system language
@@ -285,9 +282,9 @@ function generate_statement_pdf($client, $statement, $notes)
     }
 
     $data = array(
-        'client'        => $client,
-        'statement'     => $statement,
-        'notes'         => $notes,
+        'client'    => $client,
+        'statement' => $statement,
+        'notes'     => $notes,
     );
 
     $html = $CI->load->view('statement_templates/pdf/' . $statement_template, $data, true);
@@ -296,5 +293,6 @@ function generate_statement_pdf($client, $statement, $notes)
 
     $pdf_password = null;
     $stream = true;
+
     return pdf_create($html, trans('statement') . '_' . str_replace(array('\\', '/'), '_', $statement->GetStatement_number()), $stream, $pdf_password);
 }

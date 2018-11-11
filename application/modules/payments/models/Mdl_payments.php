@@ -222,7 +222,7 @@ class Mdl_Payments extends Response_Model
         $this->filter_where('ip_clients.client_id', $client_id);
         return $this;
     }
-    
+
     /**
      * Filter query in a date range.
      * The filter can be open ended on one end by not supplied a value
@@ -234,14 +234,13 @@ class Mdl_Payments extends Response_Model
      */
     public function by_date_range($start_date = null, $end_date = null)
     {
-        
         if (!empty($start_date)) {
             $this->filter_where("invoice_date_modified >= '" . date('Y-m-d', $start_date) . "' ");
         }
         if (!empty($end_date)) {
             $this->filter_where("invoice_date_modified <= '" . date('Y-m-d', $end_date) . "' ");
         }
-        
+
         return $this;
     }
 

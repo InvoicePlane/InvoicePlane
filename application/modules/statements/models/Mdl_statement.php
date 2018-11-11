@@ -16,9 +16,8 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * (Currently) a non-persistent store of a current client statement request
  *
  */
-class Mdl_Statement extends CI_Model {
-
-
+class Mdl_Statement extends CI_Model
+{
     private $statement_transactions;
 
     private $statement_start_date;
@@ -32,6 +31,10 @@ class Mdl_Statement extends CI_Model {
 
     private $statement_number;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * @return mixed
@@ -144,12 +147,4 @@ class Mdl_Statement extends CI_Model {
     {
         $this->statement_balance = $statement_balance;
     }
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-
-
 }
