@@ -55,10 +55,10 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
+        $this->load->model('custom_fields/mdl_payment_custom');
+
         if ($this->mdl_payments->run_validation()) {
             $id = $this->mdl_payments->save($id);
-
-            $this->load->model('custom_fields/mdl_payment_custom');
 
             $this->mdl_payment_custom->save_custom($id, $this->input->post('custom'));
 
@@ -72,7 +72,6 @@ class Payments extends Admin_Controller
                 show_404();
             }
 
-            $this->load->model('custom_fields/mdl_payment_custom');
             $this->load->model('custom_values/mdl_custom_values');
 
             $payment_custom = $this->mdl_payment_custom->where('payment_id', $id)->get();
