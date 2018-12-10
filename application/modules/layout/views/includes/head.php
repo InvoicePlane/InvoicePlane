@@ -97,5 +97,16 @@
             });
         });
 
+        $('.has-markdown').markdown({
+            iconlibrary: 'fa',
+            hiddenButtons: ['cmdImage', 'cmdCode'],
+            language: '<?php _trans('cldr'); ?>',
+        });
+
+        $('.cf-markdown').each(function(){
+            var md = $(this);
+            console.log(md.html());
+            md.html(markdown.toHTML(md.html().trim()));
+        });
     });
 </script>

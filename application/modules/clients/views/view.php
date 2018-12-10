@@ -311,7 +311,9 @@ foreach ($custom_fields as $custom_field) {
                                             $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                             ?>
                                             <th><?php _htmlsc($column); ?></th>
-                                            <td><?php _htmlsc($value); ?></td>
+                                            <td class="cf-<?php echo strtolower($custom_field->custom_field_type) ?>">
+                                                <?php _htmlsc($value); ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </table>

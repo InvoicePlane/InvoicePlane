@@ -34,7 +34,8 @@ class Mdl_Custom_Values extends MY_Model
         return array(
             'TEXT',
             'DATE',
-            'BOOLEAN'
+            'BOOLEAN',
+            'MARKDOWN'
         );
     }
 

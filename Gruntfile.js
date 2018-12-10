@@ -86,6 +86,8 @@ module.exports = function (grunt) {
                 'assets/core/js/jquery-ui.js',
                 'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
                 'node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js',
+                'node_modules/bootstrap-markdown/js/bootstrap-markdown.js',
+                'node_modules/markdown/lib/markdown.js',
                 'node_modules/select2/dist/js/select2.full.js',
                 'node_modules/dropzone/dist/dropzone.js',
                 'node_modules/clipboard/dist/clipboard.js'
@@ -112,11 +114,18 @@ module.exports = function (grunt) {
 
     grunt.config('copy', {
         datepickerlocale: {
-            expand: true,
-            flatten: true,
-            src: ['node_modules/bootstrap-datepicker/js/locales/**'],
-            dest: 'assets/core/js/locales/',
-            filter: 'isFile'
+          expand: true,
+          flatten: true,
+          src: ['node_modules/bootstrap-datepicker/js/locales/**'],
+          dest: 'assets/core/js/locales/',
+          filter: 'isFile'
+        },
+        markdownlocale: {
+          expand: true,
+          flatten: true,
+          src: ['node_modules/bootstrap-markdown/locale/**'],
+          dest: 'assets/core/js/locales/',
+          filter: 'isFile'
         },
         select2locale: {
             expand: true,
@@ -169,6 +178,7 @@ module.exports = function (grunt) {
         'concat:dependencies',
         'concat:zxcvbn',
         'copy:datepickerlocale',
+        'copy:markdownlocale',
         'copy:select2locale',
         'copy:fontawesome',
         'copy:devjs'
@@ -182,6 +192,7 @@ module.exports = function (grunt) {
         'concat:dependencies',
         'concat:zxcvbn',
         'copy:datepickerlocale',
+        'copy:markdownlocale',
         'copy:select2locale',
         'copy:fontawesome',
         'copy:devjs',
@@ -198,6 +209,7 @@ module.exports = function (grunt) {
         'uglify:build',
         'clean:build',
         'copy:datepickerlocale',
+        'copy:markdownlocale',
         'copy:select2locale',
         'copy:fontawesome'
     ]);
