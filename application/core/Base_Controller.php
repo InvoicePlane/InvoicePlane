@@ -1,26 +1,29 @@
 <?php
-
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Base_Controller
+ */
 class Base_Controller extends MX_Controller
 {
 
+    /** @var bool */
     public $ajax_controller = false;
 
+    /**
+     * Base_Controller constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -28,44 +31,58 @@ class Base_Controller extends MX_Controller
         $this->config->load('invoice_plane');
 
         // Don't allow non-ajax requests to ajax controllers
-        if ($this->ajax_controller and !$this->input->is_ajax_request()) {
+        if ($this->ajax_controller && !$this->input->is_ajax_request()) {
             exit;
         }
 
-        $this->load->library('session');
+        // Globally disallow GET requests to delete methods
         $this->load->helper('url');
-        $this->load->helper('trans');
+        if (strstr(current_url(), 'delete') && $this->input->method() !== 'post') {
+            show_404();
+        }
+
+        // Load basic stuff
+        $this->load->library('session');
+        $this->load->helper('redirect');
 
         // Check if database has been configured
-        if (!file_exists(APPPATH . 'config/database.php')) {
-
-            $this->load->helper('redirect');
+        if (!env_bool('SETUP_COMPLETED')) {
             redirect('/welcome');
-
         } else {
 
-            $this->load->database();
+            $this->load->library('encryption');
             $this->load->library('form_validation');
+            $this->load->library('session');
+            $this->load->database();
+
+            $this->load->helper('trans');
             $this->load->helper('number');
             $this->load->helper('pager');
             $this->load->helper('invoice');
             $this->load->helper('date');
-            $this->load->helper('redirect');
+            $this->load->helper('form');
+            $this->load->helper('echo');
+            $this->load->helper('client');
 
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
+            $this->load->helper('settings');
 
-            $this->lang->load('ip', $this->mdl_settings->setting('default_language'));
-            
-            $this->lang->load('form_validation', $this->mdl_settings->setting('default_language'));
-            $this->lang->load('custom', $this->mdl_settings->setting('default_language'));
+            // Load the language based on user config, fall back to system if needed
+            $user_lang = $this->session->userdata('user_language');
+
+            if (empty($user_lang) || $user_lang == 'system') {
+                set_language(get_setting('default_language'));
+            } else {
+                set_language($user_lang);
+            }
 
             $this->load->helper('language');
 
+            // Load the layout module to start building the app
             $this->load->module('layout');
 
         }
     }
-
 }

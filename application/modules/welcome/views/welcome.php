@@ -21,7 +21,7 @@
     <meta name="viewport" content="width=device-width">
 
     <!-- CSS: implied media=all -->
-    <link rel="stylesheet" href="/assets/default/css/welcome.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/invoiceplane/css/welcome.css">
     <!-- end CSS-->
 
 </head>

@@ -1,51 +1,76 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
-function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $cc = null, $bcc = null, $more_attachments = null)
-{
-    require FCPATH . 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
-
+/**
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $message
+ * @param null $attachment_path
+ * @param null $cc
+ * @param null $bcc
+ * @param null $more_attachments
+ * @return bool
+ */
+function phpmail_send(
+    $from,
+    $to,
+    $subject,
+    $message,
+    $attachment_path = null,
+    $cc = null,
+    $bcc = null,
+    $more_attachments = null
+) {
     $CI = &get_instance();
-    $CI->load->library('encrypt');
+    $CI->load->library('crypt');
 
     // Create the basic mailer object
-    $mail = new PHPMailer();
+    $mail = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
 
-    switch ($CI->mdl_settings->setting('email_send_method')) {
+    switch (get_setting('email_send_method')) {
         case 'smtp':
             $mail->IsSMTP();
 
             // Set the basic properties
-            $mail->Host = $CI->mdl_settings->setting('smtp_server_address');
-            $mail->Port = $CI->mdl_settings->setting('smtp_port');
+            $mail->Host = get_setting('smtp_server_address');
+            $mail->Port = get_setting('smtp_port');
 
             // Is SMTP authentication required?
-            if ($CI->mdl_settings->setting('smtp_authentication')) {
+            if (get_setting('smtp_authentication')) {
                 $mail->SMTPAuth = true;
-                $mail->Username = $CI->mdl_settings->setting('smtp_username');
-                $mail->Password = $CI->encrypt->decode($CI->mdl_settings->setting('smtp_password'));
+
+                $decoded = $CI->crypt->decode($CI->mdl_settings->get('smtp_password'));
+
+                $mail->Username = get_setting('smtp_username');
+                $mail->Password = $decoded;
             }
 
             // Is a security method required?
-            if ($CI->mdl_settings->setting('smtp_security')) {
-                $mail->SMTPSecure = $CI->mdl_settings->setting('smtp_security');
+            if (get_setting('smtp_security')) {
+                $mail->SMTPSecure = get_setting('smtp_security');
+            }
+
+            // Check if certificates should not be verified
+            if (!get_setting('smtp_verify_certs', true)) {
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
             }
 
             break;
@@ -60,7 +85,7 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
 
     $mail->Subject = $subject;
     $mail->Body = $message;
-
+    $mail->AltBody = $mail->normalizeBreaks($mail->html2text($message));
 
     if (is_array($from)) {
         // This array should be address, name
@@ -89,17 +114,15 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
     }
 
     if ($bcc) {
-
         // Allow multiple BCC's delimited by comma or semicolon
         $bcc = (strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
         // Add the BCC's
         foreach ($bcc as $address) {
             $mail->addBCC($address);
         }
-
     }
 
-    if ($CI->mdl_settings->setting('bcc_mails_to_admin') == 1) {
+    if (get_setting('bcc_mails_to_admin') == 1) {
         // Get email address of admin account and push it to the array
         $CI->load->model('users/mdl_users');
         $CI->db->where('user_id', 1);
@@ -108,12 +131,11 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
     }
 
     // Add the attachment if supplied
-    if ($attachment_path && $CI->mdl_settings->setting('email_pdf_attachment')) {
+    if ($attachment_path && get_setting('email_pdf_attachment')) {
         $mail->addAttachment($attachment_path);
     }
     // Add the other attachments if supplied
     if ($more_attachments) {
-
         foreach ($more_attachments as $paths) {
             $mail->addAttachment($paths['path'], $paths['filename']);
         }
@@ -128,4 +150,5 @@ function phpmail_send($from, $to, $subject, $message, $attachment_path = null, $
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
         return false;
     }
+
 }

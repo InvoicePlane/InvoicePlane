@@ -1,9 +1,11 @@
-<html lang="<?php echo trans('cldr'); ?>">
+<!DOCTYPE html>
+<html lang="<?php _trans('cldr'); ?>">
 <head>
     <meta charset="utf-8">
-    <title><?php echo trans('quote'); ?></title>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/templates.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/custom-pdf.css">
+    <title><?php _trans('quote'); ?></title>
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/templates.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom-pdf.css">
 </head>
 <body>
 <header class="clearfix">
@@ -14,7 +16,7 @@
 
     <div id="client">
         <div>
-            <b><?php echo $quote->client_name; ?></b>
+            <b><?php _htmlsc($quote->client_name); ?></b>
         </div>
         <?php if ($quote->client_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $quote->client_vat_id . '</div>';
@@ -23,23 +25,26 @@
             echo '<div>' . trans('tax_code_short') . ': ' . $quote->client_tax_code . '</div>';
         }
         if ($quote->client_address_1) {
-            echo '<div>' . $quote->client_address_1 . '</div>';
+            echo '<div>' . htmlsc($quote->client_address_1) . '</div>';
         }
         if ($quote->client_address_2) {
-            echo '<div>' . $quote->client_address_2 . '</div>';
+            echo '<div>' . htmlsc($quote->client_address_2) . '</div>';
         }
-        if ($quote->client_city && $quote->client_zip) {
-            echo '<div>' . $quote->client_city . ' ' . $quote->client_zip . '</div>';
-        } else {
+        if ($quote->client_city || $quote->client_state || $quote->client_zip) {
+            echo '<div>';
             if ($quote->client_city) {
-                echo '<div>' . $quote->client_city . '</div>';
+                echo htmlsc($quote->client_city) . ' ';
+            }
+            if ($quote->client_state) {
+                echo htmlsc($quote->client_state) . ' ';
             }
             if ($quote->client_zip) {
-                echo '<div>' . $quote->client_zip . '</div>';
+                echo htmlsc($quote->client_zip);
             }
+            echo '</div>';
         }
         if ($quote->client_state) {
-            echo '<div>' . $quote->client_state . '</div>';
+            echo '<div>' . htmlsc($quote->client_state) . '</div>';
         }
         if ($quote->client_country) {
             echo '<div>' . get_country_name(trans('cldr'), $quote->client_country) . '</div>';
@@ -48,12 +53,12 @@
         echo '<br/>';
 
         if ($quote->client_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . $quote->client_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($quote->client_phone) . '</div>';
         } ?>
 
     </div>
     <div id="company">
-        <div><b><?php echo $quote->user_name; ?></b></div>
+        <div><b><?php _htmlsc($quote->user_name); ?></b></div>
         <?php if ($quote->user_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $quote->user_vat_id . '</div>';
         }
@@ -61,23 +66,23 @@
             echo '<div>' . trans('tax_code_short') . ': ' . $quote->user_tax_code . '</div>';
         }
         if ($quote->user_address_1) {
-            echo '<div>' . $quote->user_address_1 . '</div>';
+            echo '<div>' . htmlsc($quote->user_address_1) . '</div>';
         }
         if ($quote->user_address_2) {
-            echo '<div>' . $quote->user_address_2 . '</div>';
+            echo '<div>' . htmlsc($quote->user_address_2) . '</div>';
         }
-        if ($quote->user_city && $quote->user_zip) {
-            echo '<div>' . $quote->user_city . ' ' . $quote->user_zip . '</div>';
-        } else {
+        if ($quote->user_city || $quote->user_state || $quote->user_zip) {
+            echo '<div>';
             if ($quote->user_city) {
-                echo '<div>' . $quote->user_city . '</div>';
+                echo htmlsc($quote->user_city) . ' ';
+            }
+            if ($quote->user_state) {
+                echo htmlsc($quote->user_state) . ' ';
             }
             if ($quote->user_zip) {
-                echo '<div>' . $quote->user_zip . '</div>';
+                echo htmlsc($quote->user_zip);
             }
-        }
-        if ($quote->user_state) {
-            echo '<div>' . $quote->user_state . '</div>';
+            echo '</div>';
         }
         if ($quote->user_country) {
             echo '<div>' . get_country_name(trans('cldr'), $quote->user_country) . '</div>';
@@ -86,10 +91,10 @@
         echo '<br/>';
 
         if ($quote->user_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . $quote->user_phone . '</div>';
+            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($quote->user_phone) . '</div>';
         }
         if ($quote->user_fax) {
-            echo '<div>' . trans('fax_abbr') . ': ' . $quote->user_fax . '</div>';
+            echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($quote->user_fax) . '</div>';
         }
         ?>
     </div>
@@ -120,14 +125,14 @@
     <table class="item-table">
         <thead>
         <tr>
-            <th class="item-name"><?php echo trans('item'); ?></th>
-            <th class="item-desc"><?php echo trans('description'); ?></th>
-            <th class="item-amount text-right"><?php echo trans('qty'); ?></th>
-            <th class="item-price text-right"><?php echo trans('price'); ?></th>
-            <?php if ($show_discounts) : ?>
-                <th class="item-discount text-right"><?php echo trans('discount'); ?></th>
+            <th class="item-name"><?php _trans('item'); ?></th>
+            <th class="item-desc"><?php _trans('description'); ?></th>
+            <th class="item-amount text-right"><?php _trans('qty'); ?></th>
+            <th class="item-price text-right"><?php _trans('price'); ?></th>
+            <?php if ($show_item_discounts) : ?>
+                <th class="item-discount text-right"><?php _trans('discount'); ?></th>
             <?php endif; ?>
-            <th class="item-total text-right"><?php echo trans('total'); ?></th>
+            <th class="item-total text-right"><?php _trans('total'); ?></th>
         </tr>
         </thead>
         <tbody>
@@ -135,15 +140,19 @@
         <?php
         foreach ($items as $item) { ?>
             <tr>
-                <td><?php echo $item->item_name; ?></td>
-                <td><?php echo nl2br($item->item_description); ?></td>
+                <td><?php _htmlsc($item->item_name); ?></td>
+                <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                 <td class="text-right">
                     <?php echo format_amount($item->item_quantity); ?>
+                    <?php if ($item->item_product_unit) : ?>
+                        <br>
+                        <small><?php _htmlsc($item->item_product_unit); ?></small>
+                    <?php endif; ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($item->item_price); ?>
                 </td>
-                <?php if ($show_discounts) : ?>
+                <?php if ($show_item_discounts) : ?>
                     <td class="text-right">
                         <?php echo format_currency($item->item_discount); ?>
                     </td>
@@ -158,15 +167,15 @@
         <tbody class="invoice-sums">
 
         <tr>
-            <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?>
-                class="text-right"><?php echo trans('subtotal'); ?></td>
+            <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?>
+                    class="text-right"><?php _trans('subtotal'); ?></td>
             <td class="text-right"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
         </tr>
 
         <?php if ($quote->quote_item_tax_total > 0) { ?>
             <tr>
-                <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
-                    <?php echo trans('item_tax'); ?>
+                <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+                    <?php _trans('item_tax'); ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($quote->quote_item_tax_total); ?>
@@ -176,7 +185,7 @@
 
         <?php foreach ($quote_tax_rates as $quote_tax_rate) : ?>
             <tr>
-                <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+                <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                     <?php echo $quote_tax_rate->quote_tax_rate_name . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
                 </td>
                 <td class="text-right">
@@ -185,9 +194,30 @@
             </tr>
         <?php endforeach ?>
 
+        <?php if ($quote->quote_discount_percent != '0.00') : ?>
+            <tr>
+                <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+                    <?php _trans('discount'); ?>
+                </td>
+                <td class="text-right">
+                    <?php echo format_amount($quote->quote_discount_percent); ?>%
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if ($quote->quote_discount_amount != '0.00') : ?>
+            <tr>
+                <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+                    <?php _trans('discount'); ?>
+                </td>
+                <td class="text-right">
+                    <?php echo format_currency($quote->quote_discount_amount); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+
         <tr>
-            <td <?php echo($show_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
-                <b><?php echo trans('total'); ?></b>
+            <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
+                <b><?php _trans('total'); ?></b>
             </td>
             <td class="text-right">
                 <b><?php echo format_currency($quote->quote_total); ?></b>
@@ -201,8 +231,8 @@
 <footer>
     <?php if ($quote->notes) : ?>
         <div class="notes">
-            <b><?php echo trans('notes'); ?></b><br/>
-            <?php echo nl2br($quote->notes); ?>
+            <b><?php _trans('notes'); ?></b><br/>
+            <?php echo nl2br(htmlsc($quote->notes)); ?>
         </div>
     <?php endif; ?>
 </footer>

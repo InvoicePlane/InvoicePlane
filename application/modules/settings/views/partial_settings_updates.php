@@ -1,113 +1,155 @@
-<script type="text/javascript">
+<script>
     // Update check
-    window.onload = function () {
+    $(function () {
         var checktime = 2000;
 
         // Get the current version
-        var current_version = "<?php echo $current_version; ?>";
-        current_version = current_version.replace(/\./g, ''); // Remove the dots from the version
+        var ip_version = "<?php echo get_setting('current_version'); ?>";
+        var current_version = ip_version.replace(/\./g, ''); // Remove the dots from the version
 
-        // Get the latest version from updates.invoiceplane.com
-        //$.getJSON("https://ids.invoiceplane.com/updatecheck", function (data) {	// ---it--- ORIGINALE
-		//$.getJSON("http://127.0.0.1:8080/invoiceplane.it/updatecheck?callback=?", function (data) {		// ---it--- Check versione italiana DEBUG
-		$.getJSON("https://api.github.com/repos/InvoicePlane-it/InvoicePlane/releases/latest?callback=?", function (response) {		// ---it--- Check versione italiana da GitHub
-			<?php //echo (IP_DEBUG ? 'console.log(data);' : ''); // ---it--- ORIGINALE ?>
-			<?php echo (IP_DEBUG ? 'console.log(response);' : ''); ?>
+     	// ---it---inizio
+        $.getJSON("https://api.github.com/repos/InvoicePlane-it/InvoicePlane/releases/latest?callback=?", function (response) {		// ---it--- Check versione italiana da GitHub
+			<?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
 			
 			var updatecheck = response.data.tag_name.replace(/\./g, '');		// ---it---
-            //var updatecheck = data.current_version.replace(/\./g, '');	// ---it--- ORIGINALE
-			
-            // Compare each versions and replace the placeholder with a download button
+            
+			// Compare each versions and replace the placeholder with a download button
             // or info label after 2 seconds
-            setTimeout(function () {
-                if (current_version < updatecheck) {
-                    $('#updatecheck-loading').addClass('hidden');
-                    $('#updatecheck-updates-available').removeClass('hidden');
-                } else {
-                    $('#updatecheck-loading').addClass('hidden');
-                    $('#updatecheck-no-updates').removeClass('hidden');
-                }
-            }, checktime);
+            setTimeout(function() {
+				if (current_version < updatecheck) {
+					$('#updatecheck-loading').addClass('hidden');
+					$('#updatecheck-updates-available').removeClass('hidden');
+ 				}
+				else {
+					$('#updatecheck-loading').addClass('hidden');
+					$('#updatecheck-no-updates').removeClass('hidden');
+				}
+			}, checktime);
         }).error(function (data) {
-            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-            $('#updatecheck-loading').addClass('hidden');
-            $('#updatecheck-failed').removeClass('hidden');
+			<?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+			$('#updatecheck-loading').addClass('hidden');
+			$('#updatecheck-failed').removeClass('hidden');
         });
+     	// ---it---fine
+     	
+		if (false) { //---it---
+        // Get the latest version from the InvoicePlane IDS
+        $.ajax({
+            'url': 'https://ids.invoiceplane.com/updatecheck?cv=' + ip_version,
+            'dataType': 'json',
+            success: function(data) {
+                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                var updatecheck = data.current_version.replace(/\./g, '');
 
+                // Compare each versions and replace the placeholder with a download button
+                // or info label after 2 seconds
+                setTimeout(function() {
+                    if (current_version < updatecheck) {
+                        $('#updatecheck-loading').addClass('hidden');
+                        $('#updatecheck-updates-available').removeClass('hidden');
+                    }
+                    else {
+                        $('#updatecheck-loading').addClass('hidden');
+                        $('#updatecheck-no-updates').removeClass('hidden');
+                    }
+                }, checktime);
+            },
+            error: function(data) {
+                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                $('#updatecheck-loading').addClass('hidden');
+                $('#updatecheck-failed').removeClass('hidden');
+            },
+        });
+		} //---it---
+		
         // Get the latest news
-        $.getJSON("https://ids.invoiceplane.com/get_news", function (data) {
-            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-
-            setTimeout(function () {
+        $.ajax({
+            'url': 'https://ids.invoiceplane.com/get_news',
+            'dataType': 'json',
+            'success': function(data) {
+                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                setTimeout(function() {
+                    $('#ipnews-loading').addClass('hidden');
+                    data.forEach(function(news) {
+                        var ipnews = '<div class="alert alert-' + news.type + '">';
+                        ipnews += '<b>' + news.title + '</b><br/>';
+                        ipnews += news.text + '<br/>';
+                        ipnews += '<small><?php echo trans('date')?>: ' + news.newsdate.date.substr(0, 11) +
+                            '</b><br/>';
+                        ipnews += '</div>';
+                        $('#ipnews-container').append(ipnews);
+                    });
+                }, checktime);
+            },
+            'error': function(data) {
+                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                 $('#ipnews-loading').addClass('hidden');
-                data.forEach(function (news) {
-                    var ipnews = '<div class="alert alert-' + news.type + '">';
-                    ipnews += '<b>' + news.title + '</b><br/>';
-                    ipnews += news.text + '<br/>';
-                    ipnews += '<small><?php echo trans('date')?>: ' + news.newsdate.date.substr(0, 11) + '</b><br/>';
-                    ipnews += '</div>';
-                    $('#ipnews-container').append(ipnews);
-                })
-            }, checktime);
-        }).error(function (data) {
-            <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-            $('#ipnews-loading').addClass('hidden');
-            $('#ipnews-failed').removeClass('hidden');
+                $('#ipnews-failed').removeClass('hidden');
+            },
         });
-    };
-
+    });
 </script>
 
-<div class="tab-info">
-	<?php if (FALSE): // ---it--- ORIGINALE ?>
-    <h4><?php echo lang('updatecheck'); ?></h4><br/>
-	<?php else:	// ---it--- titolo modificato ?>
-	<h4>Controllo aggiornamenti (edizione italiana)</h4><br/>
-	<?php endif; ?>
-	
-    <div class="form-group">
-        <input type="text" class="input-sm form-control"
-               value="<?php echo $current_version; ?>" readonly="readonly">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php _trans('updatecheck'); ?>
+            (edizione italiana)<?php //---it--- ?>
+        </div>
+        <div class="panel-body">
+
+            <div class="form-group">
+                <input type="text" class="form-control"
+                       value="<?php echo get_setting('current_version'); ?>" readonly="readonly">
+            </div>
+            <div id="updatecheck-results">
+                <div id="updatecheck-loading" class="btn btn-default btn-sm disabled">
+                    <i class="fa fa-circle-o-notch fa-spin"></i> <?php _trans('checking_for_updates'); ?>
+                </div>
+
+                <div id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
+                    <?php _trans('no_updates_available'); ?>
+                </div>
+
+                <div id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
+                    <?php _trans('updatecheck_failed'); ?>
+                </div>
+				
+				<?php if (FALSE):	// ---it--- ?>
+                <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
+                   class="btn btn-success btn-sm hidden" target="_blank">
+                    <?php _trans('updates_available'); ?>
+                </a>
+                <?php endif; 		// ---it--- ?>
+                
+                <?php // ---it---inizio ?>
+                <a href="http://invoiceplane.it/" id="updatecheck-updates-available"
+		           class="btn btn-success btn-sm hidden" target="_blank">
+		            <?php echo lang('updates_available'); ?>
+		        </a>
+		        <?php // ---it---fine ?>
+            </div>
+
+        </div>
     </div>
-    <div id="updatecheck-results">
-        <span id="updatecheck-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_updates'); ?>
-		</span>
 
-        <span id="updatecheck-no-updates" class="btn btn-default btn-sm disabled hidden">
-            <?php echo trans('no_updates_available'); ?>
-        </span>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php _trans('invoiceplane_news'); ?>
+            (internazionale)<?php //---it--- ?>
+        </div>
+        <div class="panel-body">
 
-        <span id="updatecheck-failed" class="btn btn-danger btn-sm disabled hidden">
-            <?php echo trans('updatecheck_failed'); ?>
-        </span>
-		
-		<?php if (FALSE):	// ---it--- ORIGINALE ?>
-        <a href="https://invoiceplane.com/downloads" id="updatecheck-updates-available"
-           class="btn btn-success btn-sm hidden" target="_blank">
-            <?php echo trans('updates_available'); ?>
-        </a>
-        <?php else:			// ---it--- download da invoiceplane.it ?>
-        <a href="http://invoiceplane.it/" id="updatecheck-updates-available"
-           class="btn btn-success btn-sm hidden" target="_blank">
-            <?php echo lang('updates_available'); ?>
-        </a>
-        <?php endif; ?>
+            <div id="ipnews-results">
+                <div id="ipnews-loading" class="btn btn-default btn-sm disabled">
+                    <i class="fa fa-circle-o-notch fa-spin"></i> <?php _trans('checking_for_news'); ?>
+                </div>
+
+                <div id="ipnews-container"></div>
+            </div>
+
+        </div>
     </div>
 
-    <hr/>
-	
-	<?php if (FALSE): // ---it--- ORIGINALE ?>
-    <h4><?php echo lang('invoiceplane_news'); ?></h4>
-	<?php else: // ---it--- modifica titolo ?>
-	<h4>InvoicePlane International News</h4>
-	<?php endif; ?>
-
-    <div id="ipnews-results">
-        <span id="ipnews-loading" class="btn btn-default btn-sm disabled">
-            <i class="fa fa-circle-o-notch fa-spin"></i> <?php echo trans('checking_for_news'); ?>
-		</span>
-
-        <div id="ipnews-container"></div>
-    </div>
 </div>

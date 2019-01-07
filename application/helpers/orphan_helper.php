@@ -1,21 +1,18 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
- * 
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
+/**
+ * Deletes orphaned entries in the database
+ */
 function delete_orphans()
 {
     $CI =& get_instance();
@@ -35,7 +32,10 @@ function delete_orphans()
         'DELETE FROM ip_invoice_item_amounts WHERE item_id NOT IN (SELECT item_id FROM ip_invoice_items)',
         'DELETE FROM ip_quote_items WHERE quote_id NOT IN (SELECT quote_id FROM ip_quotes)',
         'DELETE FROM ip_quote_item_amounts WHERE item_id NOT IN (SELECT item_id FROM ip_quote_items)',
-        'DELETE FROM ip_client_notes WHERE client_id NOT IN (SELECT client_id FROM ip_clients)'
+        'DELETE FROM ip_client_notes WHERE client_id NOT IN (SELECT client_id FROM ip_clients)',
+        'DELETE FROM ip_quote_tax_rates WHERE quote_id NOT IN (SELECT quote_id FROM ip_quotes)',
+        'DELETE FROM ip_invoice_tax_rates WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)',
+        'DELETE FROM ip_invoices_recurring WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)'
     );
 
     foreach ($queries as $query) {

@@ -202,12 +202,12 @@ WHERE setting_key = 'read_only_toggle' AND
       setting_value = 'paid';
 
 # IP-422 - Improve session security
-CREATE TABLE IF NOT EXISTS  `ip_sessions` (
-  session_id varchar(40) DEFAULT '0' NOT NULL,
-  ip_address varchar(45) DEFAULT '0' NOT NULL,
-  user_agent varchar(120) NOT NULL,
-  last_activity int(10) unsigned DEFAULT 0 NOT NULL,
-  user_data text NOT NULL,
+CREATE TABLE IF NOT EXISTS `ip_sessions` (
+  session_id    VARCHAR(40) DEFAULT '0'    NOT NULL,
+  ip_address    VARCHAR(45) DEFAULT '0'    NOT NULL,
+  user_agent    VARCHAR(120)               NOT NULL,
+  last_activity INT(10) UNSIGNED DEFAULT 0 NOT NULL,
+  user_data     TEXT                       NOT NULL,
   PRIMARY KEY (session_id),
   KEY `last_activity_idx` (`last_activity`)
 );

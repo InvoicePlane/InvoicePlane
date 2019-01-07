@@ -1,24 +1,26 @@
 <?php
-
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
+/**
+ * Class Form_Validation_Model
+ */
 class Form_Validation_Model extends MY_Model
 {
 
+    /**
+     * Form_Validation_Model constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -26,7 +28,4 @@ class Form_Validation_Model extends MY_Model
         $this->load->library('form_validation');
         $this->form_validation->CI =& $this;
     }
-
 }
-
-?>

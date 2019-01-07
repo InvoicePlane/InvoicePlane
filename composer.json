@@ -1,12 +1,23 @@
 {
+  "name": "invoiceplane",
+  "version": "1.5.9",
+  "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
+  "homepage": "https://invoiceplane.com",
+  "license": "MIT",
+  "type": "project",
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/kovah/mpdf"
+      "url": "https://github.com/InvoicePlane/mpdf.git"
     }
   ],
   "require": {
-    "phpmailer/phpmailer": "^5.2",
-    "kovah/mpdf": "dev-master"
+    "phpmailer/phpmailer": "^6.0.3",
+    "mpdf/mpdf": "dev-master",
+    "vlucas/phpdotenv": "^2.4",
+    "setasign/fpdi-fpdf": "^1.6.1",
+    "codeigniter/framework": "3.1.8",
+    "omnipay/omnipay": "~2.0",
+    "paragonie/random_compat": "^2.0"
   }
 }

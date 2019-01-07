@@ -1,12 +1,19 @@
-<html>
+<!DOCTYPE html>
+<html lang="<?php echo trans('cldr'); ?>">
 <head>
     <title><?php echo trans('sales_by_date'); ?></title>
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/default/css/reports.css" type="text/css">
+    <link rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/reports.css"
+          type="text/css">
 
 </head>
 
 <body>
-<h3 class="report_title"><?php echo trans('sales_by_date'); ?></h3>
+<h3 class="report_title">
+    <?php echo trans('sales_by_date'); ?>
+    <br/>
+    <small><?php echo $from_date . ' - ' . $to_date ?></small>
+</h3>
 
 <table>
 
@@ -24,7 +31,6 @@
     </tr>
 
     <?php
-
     $initial_year = 0;
     $final_year = 0;
     $numYears = 1;
@@ -39,8 +45,12 @@
 
             foreach ($result as $index => $value) {
 
-                if ($initial_year == 0) $initial_year = intval(substr($index, 11, 4));
+                if ($initial_year == 0) {
+                    $initial_year = intval(substr($index, 11, 4));
+                };
+
                 $aux = intval(substr($index, 11, 4));
+
                 if ($aux > $final_year) {
                     $final_year = $aux;
                 }
@@ -52,19 +62,19 @@
             $numYears = $final_year - $initial_year + 1;
             $contYears = 1;
         }
+
         if ($contRows == 0) {
             $numRows = $numRows + ($numYears * 4);
             $contRows = 1;
         }
-
         ?>
 
         <tr>
-            <td style="border-bottom: none;text-align:center;"> <?php echo $result->VAT_ID; ?> </td>
+            <td style="border-bottom: none;text-align:center;"><?php echo $result->VAT_ID; ?></td>
             <td style="border-bottom: none;text-align:center;" rowspan="<?php echo $numRows; ?>"
-                valign="top"> <?php echo $result->Name; ?> </td>
-            <td style="border-bottom: none;text-align:center;"> <?php echo trans('annual'); ?> </td>
-            <td style="border-bottom: none;text-align:center;"> <?php echo format_currency($result->total_payment); ?> </td>
+                valign="top"><?php _htmlsc($result->Name); ?></td>
+            <td style="border-bottom: none;text-align:center;"><?php echo trans('annual'); ?></td>
+            <td style="border-bottom: none;text-align:center;"><?php echo format_currency($result->total_payment); ?></td>
         </tr>
 
         <?php
@@ -80,30 +90,32 @@
                 <tr>
                     <td style="border-bottom: none;">&nbsp;</td>
                     <td style="border-bottom: none;text-align:center;"><?php
-                        if ($quarter == "t1") echo trans('Q1') . "/" . $year;
-                        else if ($quarter == "t2") echo trans('Q2') . "/" . $year;
-                        else if ($quarter == "t3") echo trans('Q3') . "/" . $year;
-                        else if ($quarter == "t4") echo trans('Q4') . "/" . $year;
+                        if ($quarter == "t1") {
+                            echo trans('Q1') . "/" . $year;
+                        } else if ($quarter == "t2") {
+                            echo trans('Q2') . "/" . $year;
+                        } else if ($quarter == "t3") {
+                            echo trans('Q3') . "/" . $year;
+                        } else if ($quarter == "t4") {
+                            echo trans('Q4') . "/" . $year;
+                        }
                         ?></td>
                     <td style="border-bottom: none;text-align:center;"><?php if ($value > 0) {
                             echo format_currency($value);
                         } ?></td>
                 </tr>
 
-                <?php
-            }
-        }
-        ?>
+            <?php }
+        } ?>
         <tr>
             <td colspan="4" style="border-bottom: none;">
                 <hr/>
             </td>
         </tr>
 
-        <?php
-    }
-    ?>
+    <?php } ?>
 
 </table>
+
 </body>
 </html>

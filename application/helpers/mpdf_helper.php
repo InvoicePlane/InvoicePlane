@@ -1,43 +1,61 @@
 <?php
-
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
  *
- * A free and open source web based invoicing system
- *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2015 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- *
  */
 
-function pdf_create($html, $filename, $stream = true, $password = null, $isInvoice = null, $isGuest = null, $zugferd_invoice = false, $associatedFiles = null)
-{
-	$CI = & get_instance();
-	
+/**
+ * Create a PDF
+ *
+ * @param $html
+ * @param $filename
+ * @param bool $stream
+ * @param null $password
+ * @param null $isInvoice
+ * @param null $is_guest
+ * @param bool $zugferd_invoice
+ * @param null $associated_files
+ *
+ * @return string
+ * @throws \Mpdf\MpdfException
+ */
+function pdf_create(
+    $html,
+    $filename,
+    $stream = true,
+    $password = null,
+    $isInvoice = null,
+    $is_guest = null,
+    $zugferd_invoice = false,
+    $associated_files = null
+) {
+    $CI = &get_instance();
+
     // ---it---inizio
     // Speciale motore stampa dompdf: primo motore stampa FI, poi tolto dalla versione originale e mantenuto nella versione italiana.
     // Questo motore PDF, infatti, mantiene il risultato visualizzato nell'anteprima PDF (a differenza del nuovo motore mPDF).
     if ($CI->mdl_settings->setting('it_print_engine') == 'dompdf')
     {
-        return pdf_create_dompdf($html, $filename, $stream);
+    	return pdf_create_dompdf($html, $filename, $stream);
     }
     // ---it---fine
-
+    
     // Get the invoice from the archive if available
     $invoice_array = array();
 
     // mPDF loading
-    define('_MPDF_TEMP_PATH', FCPATH . 'uploads/temp/mpdf/');
-    define('_MPDF_TTFONTDATAPATH', FCPATH . 'uploads/temp/mpdf/');
-    
-    require_once(FCPATH . 'vendor/kovah/mpdf/mpdf.php');
-    $mpdf = new mPDF();
+    if (!defined('_MPDF_TEMP_PATH')) {
+        define('_MPDF_TEMP_PATH', UPLOADS_TEMP_MPDF_FOLDER);
+        define('_MPDF_TTFONTDATAPATH', UPLOADS_TEMP_MPDF_FOLDER);
+    }
+
+    $mpdf = new \Mpdf\Mpdf();
 
     // mPDF configuration
     $mpdf->useAdobeCJK = true;
@@ -53,8 +71,8 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
         $CI->load->helper('zugferd');
         $mpdf->PDFA = true;
         $mpdf->PDFAauto = true;
-        $mpdf->SetAdditionalRdf(zugferd_rdf());
-        $mpdf->SetAssociatedFiles($associatedFiles);
+        $mpdf->SetAdditionalXmpRdf(zugferd_rdf());
+        $mpdf->SetAssociatedFiles($associated_files);
     }
 
     // Set a password if set for the voucher
@@ -63,25 +81,36 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     }
 
     // Check if the archive folder is available
-    if (!(is_dir('./uploads/archive/') || is_link('./uploads/archive/'))) {
-        mkdir('./uploads/archive/', '0777');
+    if (!(is_dir(UPLOADS_ARCHIVE_FOLDER) || is_link(UPLOADS_ARCHIVE_FOLDER))) {
+        mkdir(UPLOADS_ARCHIVE_FOLDER, '0777');
     }
 
     // Set the footer if voucher is invoice and if set in settings
-    if ($isInvoice && !empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
+    if (!empty($CI->mdl_settings->settings['pdf_invoice_footer']) && $isInvoice) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
 
-    $mpdf->WriteHTML($html);
+    // Set the footer if voucher is quote and if set in settings
+    if (!empty($CI->mdl_settings->settings['pdf_quote_footer']) && strpos($filename, trans('quote')) !== false) {
+        $mpdf->setAutoBottomMargin = 'stretch';
+        $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
+    }
+
+    // Watermark
+    if (get_setting('pdf_watermark')) {
+        $mpdf->showWatermarkText = true;
+    }
+
+    $mpdf->WriteHTML((string) $html);
 
     if ($isInvoice) {
 
-        foreach (glob(UPLOADS_FOLDER . 'archive/*' . $filename . '.pdf') as $file) {
+        foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf') as $file) {
             array_push($invoice_array, $file);
         }
 
-        if (!empty($invoice_array) && !is_null($isGuest)) {
+        if (!empty($invoice_array) && !is_null($is_guest)) {
             rsort($invoice_array);
 
             if ($stream) {
@@ -91,7 +120,7 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
             }
         }
 
-        $archived_file = UPLOADS_FOLDER . 'archive/' . date('Y-m-d') . '_' . $filename . '.pdf';
+        $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
         $mpdf->Output($archived_file, 'F');
 
         if ($stream) {
@@ -106,68 +135,51 @@ function pdf_create($html, $filename, $stream = true, $password = null, $isInvoi
     if ($stream) {
         return $mpdf->Output($filename . '.pdf', 'I');
     } else {
-
-        $mpdf->Output(UPLOADS_FOLDER . 'temp/' . $filename . '.pdf', 'F');
-
-        // Housekeeping
-        // Delete any files in temp/ directory that are >1 hrs old
-        $interval = 3600;
-        if ($handle = @opendir(preg_replace('/\/$/', '', './uploads/temp/'))) {
-            while (false !== ($file = readdir($handle))) {
-                if (($file != '..') && ($file != '.') && !is_dir($file) && ((filemtime('./uploads/temp/' . $file) + $interval) < time()) && (substr($file, 0, 1) !== '.') && ($file != 'remove.txt')) { // mPDF 5.7.3
-                    unlink(UPLOADS_FOLDER . 'temp/' . $file);
-                }
-            }
-            closedir($handle);
-        }
-
-        return UPLOADS_FOLDER . 'temp/' . $filename . '.pdf';
-
+        $mpdf->Output(UPLOADS_TEMP_FOLDER . $filename . '.pdf', 'F');
+        return UPLOADS_TEMP_FOLDER . $filename . '.pdf';
     }
 }
 
 // ---it---inizio Utilizza ancora dompdf: mpdf d� problemi (test con modello fattura s2 software)
 /*
  * FusionInvoice
-*
-* A free and open source web based invoicing system
-*
-* @package		FusionInvoice
-* @author		Jesse Terry
-* @copyright	Copyright (c) 2012 - 2013, Jesse Terry
-* @license		http://www.fusioninvoice.com/license.txt
-* @link		http://www.fusioninvoice.
-*
-*/
+ *
+ * A free and open source web based invoicing system
+ *
+ * @package		FusionInvoice
+ * @author		Jesse Terry
+ * @copyright	Copyright (c) 2012 - 2013, Jesse Terry
+ * @license		http://www.fusioninvoice.com/license.txt
+ * @link		http://www.fusioninvoice.
+ *
+ */
 function pdf_create_dompdf($html, $filename, $stream = TRUE) {
-
+	
 	require_once(APPPATH . 'helpers/dompdf/dompdf_config.inc.php');
-
+	
 	$dompdf = new DOMPDF();
-
+	
 	$dompdf->load_html($html);
-
+	
 	$dompdf->set_paper('a4');	//---it---
 	$dompdf->render();
-
+	
 	if ($stream) {
-
+		
 		$dompdf->stream($filename . '.pdf');
-
+		
 	}
-
+	
 	else {
-
+		
 		$CI =& get_instance();
-
+		
 		$CI->load->helper('file');
-
+		
 		write_file('./uploads/temp/' . $filename . '.pdf', $dompdf->output());
-
+		
 		return './uploads/temp/' . $filename . '.pdf';
 	}
-
+	
 }
 //---it---fine
-
-?>
