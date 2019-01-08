@@ -53,11 +53,6 @@ class Setup extends MX_Controller
         }
 
         $this->lang->load('ip', $this->session->userdata('ip_lang'));
-        
-        //---it---inizio - Carica frasi personalizzazione
-        if ($this->session->userdata('ip_lang') == 'italian')
-        	$this->lang->load('custom', $this->session->userdata('ip_lang'));
-        //---it---fine
     }
 
     public function index()
