@@ -64,8 +64,8 @@
                             </li>
                             <?php //---it---inizio ?>
 							<li>
-								<a href="<?php echo site_url('quotes/preview_pdf/' . $quote->quote_id); ?>">
-									<i class="fa fa-file fa-margin"></i> Anteprima PDF
+								<a href="<?php echo site_url('quotes/preview_pdf/' . $quote->quote_id); ?>" target="_blank">
+									<i class="fa fa-file fa-margin"></i> <?php _trans('it_preview_pdf'); ?>
 								</a>
 							</li>
 							<?php //---it---fine ?>

@@ -91,8 +91,8 @@
                             <?php } ?>
                             <?php //---it---inizio ?>
 							<li>
-								<a href="<?php echo site_url('invoices/preview_pdf/' . $invoice->invoice_id); ?>">
-									<i class="fa fa-file fa-margin"></i> Anteprima PDF
+								<a href="<?php echo site_url('invoices/preview_pdf/' . $invoice->invoice_id); ?>" target="_blank">
+									<i class="fa fa-file fa-margin"></i> <?php _trans('it_preview_pdf'); ?>
 								</a>
 							</li>
 							<?php //---it---fine ?>
