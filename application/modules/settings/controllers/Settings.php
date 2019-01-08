@@ -132,11 +132,6 @@ class Settings extends Admin_Controller
         // Get all themes
         $available_themes = $this->mdl_settings->get_themes();
 
-        //---it---inizio - Suffisso _it alla versione (se non già presente nella versione letta dal database)
-        if (strpos($current_version, '_it') === FALSE)
-        	$current_version .= '_it';
-        //---it---fine
-        
         // Set data in the layout
         $this->layout->set(
             array(

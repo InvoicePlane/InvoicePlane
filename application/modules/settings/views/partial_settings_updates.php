@@ -6,29 +6,36 @@
         // Get the current version
         var ip_version = "<?php echo get_setting('current_version'); ?>";
         var current_version = ip_version.replace(/\./g, ''); // Remove the dots from the version
-
-     	// ---it---inizio
-        $.getJSON("https://api.github.com/repos/InvoicePlane-it/InvoicePlane/releases/latest?callback=?", function (response) {		// ---it--- Check versione italiana da GitHub
-			<?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
-			
-			var updatecheck = response.data.tag_name.replace(/\./g, '');		// ---it---
-            
-			// Compare each versions and replace the placeholder with a download button
-            // or info label after 2 seconds
-            setTimeout(function() {
-				if (current_version < updatecheck) {
-					$('#updatecheck-loading').addClass('hidden');
-					$('#updatecheck-updates-available').removeClass('hidden');
- 				}
-				else {
-					$('#updatecheck-loading').addClass('hidden');
-					$('#updatecheck-no-updates').removeClass('hidden');
-				}
-			}, checktime);
-        }).error(function (data) {
-			<?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-			$('#updatecheck-loading').addClass('hidden');
-			$('#updatecheck-failed').removeClass('hidden');
+		
+	 	// ---it---inizio
+	 	var ip_it_version = "<?php echo @file_get_contents('versione.txt'); ?>";
+		$.ajax({
+			'url': 'https://api.github.com/repos/InvoicePlane-it/InvoicePlane/releases/latest',
+			'dataType': 'json',
+			success: function(data) {
+				console.log(data);
+				<?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
+				
+				var updatecheck = data.tag_name;		// ---it---
+				
+				// Compare each versions and replace the placeholder with a download button
+	            // or info label after 2 seconds
+	            setTimeout(function() {
+					if (ip_it_version < updatecheck) {
+						$('#updatecheck-loading').addClass('hidden');
+						$('#updatecheck-updates-available').removeClass('hidden');
+	 				}
+					else {
+						$('#updatecheck-loading').addClass('hidden');
+						$('#updatecheck-no-updates').removeClass('hidden');
+					}
+				}, checktime);
+            },
+			error: function(data) {
+				<?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+				$('#updatecheck-loading').addClass('hidden');
+				$('#updatecheck-failed').removeClass('hidden');
+			},
         });
      	// ---it---fine
      	
@@ -60,7 +67,7 @@
                 $('#updatecheck-failed').removeClass('hidden');
             },
         });
-		} //---it---
+		} //---it--- if false
 		
         // Get the latest news
         $.ajax({
@@ -95,13 +102,20 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <?php _trans('updatecheck'); ?>
-            (edizione italiana)<?php //---it--- ?>
         </div>
         <div class="panel-body">
 
             <div class="form-group">
+            	<?php if (FALSE): //---it--- ?>
                 <input type="text" class="form-control"
                        value="<?php echo get_setting('current_version'); ?>" readonly="readonly">
+                <?php endif; //---it--- ?>
+                
+				<?php // ---it---inizio ?>
+                <input type="text" class="form-control"
+                       value="<?php echo get_setting('current_version'); ?> (<?php echo @file_get_contents('versione.txt'); ?>)"
+                       readonly="readonly">
+				<?php // ---it---fine ?>
             </div>
             <div id="updatecheck-results">
                 <div id="updatecheck-loading" class="btn btn-default btn-sm disabled">
@@ -124,7 +138,7 @@
                 <?php endif; 		// ---it--- ?>
                 
                 <?php // ---it---inizio ?>
-                <a href="http://invoiceplane.it/" id="updatecheck-updates-available"
+                <a href="http://invoiceplane.it/downloads" id="updatecheck-updates-available"
 		           class="btn btn-success btn-sm hidden" target="_blank">
 		            <?php echo lang('updates_available'); ?>
 		        </a>
