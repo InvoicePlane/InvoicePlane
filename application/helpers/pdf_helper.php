@@ -266,6 +266,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null, $
     if ($preview)
     {
     	echo $html;
+    	return;
     }
     //---it---fine
     

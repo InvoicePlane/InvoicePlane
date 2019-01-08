@@ -171,6 +171,14 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
+				<?php //---it---inizio ?>
+				<li>
+					<a href="<?php echo site_url('quotes/preview_pdf/'.$quote->quote_id); ?>" id="btn_preview_pdf"
+					data-quote-id="<?php echo $quote_id; ?>" target="_blank">
+						<i class="fa fa-file fa-margin"></i> <?php _trans('it_preview_pdf'); ?>
+					</a>
+				</li>
+				<?php //---it---fine ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">

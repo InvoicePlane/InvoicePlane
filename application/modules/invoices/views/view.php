@@ -230,6 +230,14 @@ if ($this->config->item('disable_read_only') == true) {
                         </a>
                     </li>
                 <?php endif; ?>
+				<?php //---it---inizio ?>
+				<li>
+					<a href="<?php echo site_url('invoices/preview_pdf/'.$invoice->invoice_id); ?>" id="btn_preview_pdf"
+					data-invoice-id="<?php echo $invoice_id; ?>" target="_blank">
+						<i class="fa fa-file fa-margin"></i> <?php _trans('it_preview_pdf'); ?>
+					</a>
+				</li>
+				<?php //---it---fine ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">

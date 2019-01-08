@@ -11,5 +11,6 @@
 $lang['it_motore_stampa'] = 'Motore stampa PDF';
 $lang['it_motore_stampa_mpdf'] = 'mPDF';
 $lang['it_motore_stampa_dompdf'] = 'dompdf (legacy)';
+$lang['it_preview_pdf'] = 'Anteprima PDF';
 
 ?>
