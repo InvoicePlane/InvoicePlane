@@ -46,3 +46,21 @@ ENCRYPTION_CIPHER=AES-256
 
 # Set to true after the initial setup
 SETUP_COMPLETED=false
+
+# ---it---inizio
+# https://github.com/s2software/fatturapa
+# https://github.com/s2software/fatturapa/wiki/Costanti
+# Id campo custom Utente / Codice regime fiscale FatturaPA
+IT_UTENTE_REGIMEFISC_ID=9
+# Id campo custom Utente / Progressivo nome prossimo XML
+IT_UTENTE_PROGR_XML_ID=12
+# Id campo custom Cliente / Codice formato FatturaPA
+IT_CLIENTE_FORMATO_XML_ID=8
+# Id campo custom Cliente / Codice destinatario SdI
+IT_CLIENTE_SDI_CODICE_ID=6
+# Id campo custom Cliente / PEC destinatario SdI
+IT_CLIENTE_SDI_PEC_ID=7
+# Codice pagamento corrispondente al metodo con questo Id (al momento non esistono i campi custom per i metodi di pagamento)
+# "Bonifico bancario"
+IT_METODO_PAGAMENTO_ID_1_CODICE=MP05
+# ---it---fine

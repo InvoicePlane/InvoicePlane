@@ -102,6 +102,13 @@
                                     <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
                                 </a>
                             </li>
+                            <?php //---it---inizio ?>
+							<li>
+								<a href="<?php echo site_url('invoices/generate_xml/'.$invoice->invoice_id); ?>" target="_blank">
+									<i class="fa fa-file-code-o fa-margin"></i> <?php _trans('it_download_xml'); ?>
+								</a>
+							</li>
+							<?php //---it---fine ?>
                             <li>
                                 <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                                     <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>

@@ -1,0 +1,2 @@
+- FatturaPA_1.2.1.xsd: file XSD ufficiale scaricato da qui https://www.fatturapa.gov.it/export/fatturazione/it/normativa/f-2.htm
+- schema.xml: schema pulito generato dal costruttore della classe FatturaPA partendo dal file FatturaPA_1.2.1.xsd; da eliminare se si vuole rigenerare
