@@ -283,6 +283,7 @@ class Invoices extends Admin_Controller
     	// utente: regime fiscale
     	foreach ([
     	'IT_UTENTE_REGIMEFISC_ID' => 'utente_regimefisc',
+    	'IT_UTENTE_NATURA_IVA0_ID' => 'utente_natura_iva0',
     	'IT_UTENTE_PROGR_XML_ID' => 'utente_progr_xml',
     	] as $env => $key)
     	{
@@ -394,19 +395,14 @@ class Invoices extends Admin_Controller
     				'importo' => FatturaPA::dec($item->item_total), // imponibile riga
     				// % aliquota IVA
     				'perciva' => FatturaPA::dec($item->item_tax_rate_percent),	// NOTA: quindi per funzionare, l'iva va messa sulle righe
+    				// (natura IVA non indicata, se l'iva è a 0)
+    				'natura_iva0' => $item->item_tax_rate_percent == 0 ? $customs['utente_natura_iva0'] : NULL
     		]);
-    		if ($item->item_tax_rate_percent > 0)
-    		{
-    			$has_iva = TRUE;
-    		}
     	}
     	
     	// Totale
     	$merge = [];
-    	if ($has_iva)	// esigibilità IVA solo se viene applicata l'IVA
-    	{
-    		$merge['esigiva'] = 'I';
-    	}
+    	$merge['esigiva'] = 'I';	// esigibilità IVA (scritta nell'XML solo se viene applicata l'IVA)
     	$totale = $fatturapa->set_auto_totali($merge);
     	
     	// Pagamento
