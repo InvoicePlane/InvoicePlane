@@ -51,17 +51,17 @@ SETUP_COMPLETED=false
 # https://github.com/s2software/fatturapa
 # https://github.com/s2software/fatturapa/wiki/Costanti
 # Id campo custom Utente / Codice regime fiscale FatturaPA
-IT_UTENTE_REGIMEFISC_ID=9
+IT_UTENTE_REGIMEFISC_ID=0
 # Id campo custom Utente / Natura motivo IVA non indicata
-IT_UTENTE_NATURA_IVA0_ID=13
+IT_UTENTE_NATURA_IVA0_ID=0
 # Id campo custom Utente / Progressivo nome prossimo XML
-IT_UTENTE_PROGR_XML_ID=12
+IT_UTENTE_PROGR_XML_ID=0
 # Id campo custom Cliente / Codice formato FatturaPA
-IT_CLIENTE_FORMATO_XML_ID=8
+IT_CLIENTE_FORMATO_XML_ID=0
 # Id campo custom Cliente / Codice destinatario SdI
-IT_CLIENTE_SDI_CODICE_ID=6
+IT_CLIENTE_SDI_CODICE_ID=0
 # Id campo custom Cliente / PEC destinatario SdI
-IT_CLIENTE_SDI_PEC_ID=7
+IT_CLIENTE_SDI_PEC_ID=0
 # Codice pagamento corrispondente al metodo con questo Id (al momento non esistono i campi custom per i metodi di pagamento)
 # "Bonifico bancario"
 IT_METODO_PAGAMENTO_ID_1_CODICE=MP05
