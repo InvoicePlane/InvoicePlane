@@ -7,7 +7,7 @@ xsi:schemaLocation="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.
     <DatiTrasmissione>
       <IdTrasmittente>
         <IdPaese>IT</IdPaese>
-        <IdCodice>01234567890</IdCodice>
+        <IdCodice>CODFSC12A34H567U</IdCodice>
       </IdTrasmittente>
       <ProgressivoInvio>2019/01</ProgressivoInvio>
       <FormatoTrasmissione>FPR12</FormatoTrasmissione>
@@ -23,7 +23,7 @@ xsi:schemaLocation="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.
         <Anagrafica>
           <Denominazione>La Mia Ditta Srl</Denominazione>
         </Anagrafica>
-        <RegimeFiscale>RF19</RegimeFiscale>
+        <RegimeFiscale>RF01</RegimeFiscale>
       </DatiAnagrafici>
       <Sede>
         <Indirizzo>Via Italia 12</Indirizzo>

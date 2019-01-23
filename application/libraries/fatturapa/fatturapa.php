@@ -8,7 +8,7 @@
  */
 class FatturaPA {
 	
-	const VERSION = '0.1.0';
+	const VERSION = '0.1.2';
 	protected $_node = ['FatturaElettronicaHeader' => [], 'FatturaElettronicaBody' => []];
 	protected $_schema = [];	// schema .xsd (nella generazione dell'XML va rispettato anche l'ordine dei nodi)
 	
@@ -27,10 +27,14 @@ class FatturaPA {
 	 * Imposta dati trasmittente (es.: azienda o commercialista) (opzionale: copia dati mittente)
 	 * @param array $data
 	 */
-	public function set_trasmiettente($data)
+	public function set_trasmittente($data)
 	{
 		$map = array(
 				'paese' => 'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdPaese',
+				// il codice si può passare tramite 'codice', 'codfisc' o 'piva'
+				// (https://forum.italia.it/t/dati-trasmittente-p-iva-o-cf/6883/11) - In base a questo, deve essere un Codice Fiscale
+				'codice' => 'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdCodice',
+				'codfisc' => 'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdCodice',
 				'piva' => 'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdCodice',
 		);
 		$this->_fill_node($map, $data);
@@ -49,15 +53,28 @@ class FatturaPA {
 		
 		// default mittente
 		$this->_set_defaults([
-				// trasmiettente - default: copia dati del mittente
-				'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdPaese' =>
-					$this->_get_node('FatturaElettronicaHeader/CedentePrestatore/DatiAnagrafici/IdFiscaleIVA/IdPaese'),
-				'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdCodice' =>
-					$this->_get_node('FatturaElettronicaHeader/CedentePrestatore/DatiAnagrafici/IdFiscaleIVA/IdCodice'),
 				// regimefisc è opzionale: default: RF01 = ordinario
 				'FatturaElettronicaHeader/CedentePrestatore/DatiAnagrafici/RegimeFiscale' =>
 					'RF01',
 		]);
+		
+		// default trasmittente: codice fiscale o, se non impostato, partita iva
+		// impostando la partita iva, almeno nel mio caso, l'utility di controllo dà errore (1.1.1.2 <IdCodice> non valido)
+		// https://forum.italia.it/t/dati-trasmittente-p-iva-o-cf/6883/11
+		$cod_trasm = $this->_get_node('FatturaElettronicaHeader/CedentePrestatore/DatiAnagrafici/CodiceFiscale');
+		if (!$cod_trasm)
+		{
+			$cod_trasm = $this->_get_node('FatturaElettronicaHeader/CedentePrestatore/DatiAnagrafici/IdFiscaleIVA/IdCodice');
+		}
+		$this->_set_defaults([
+				// trasmiettente - default: copia dati del mittente
+				'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdPaese' =>
+					$this->_get_node('FatturaElettronicaHeader/CedentePrestatore/DatiAnagrafici/IdFiscaleIVA/IdPaese'),
+				'FatturaElettronicaHeader/DatiTrasmissione/IdTrasmittente/IdCodice' =>
+					$cod_trasm,
+		]);
+		
+		
 	}
 	
 	/**
@@ -164,6 +181,7 @@ class FatturaPA {
 				'qta' => 'Quantita',
 				'importo' => 'PrezzoTotale',
 				'perciva' => 'AliquotaIVA',
+				'natura_iva0' => 'Natura',
 		);
 		$node = [];
 		$this->_fill_node($map, $data, $node);
@@ -202,6 +220,7 @@ class FatturaPA {
 				'importo' => 'ImponibileImporto',
 				'perciva' => 'AliquotaIVA',
 				'iva' => 'Imposta',
+				'natura_iva0' => 'Natura',
 				'esigiva' => 'EsigibilitaIVA',
 		);
 		$node = [];
@@ -221,30 +240,39 @@ class FatturaPA {
 		$node = &$this->_set_node('FatturaElettronicaBody/DatiBeniServizi/DatiRiepilogo', []);
 		// raggruppo
 		$righe = $this->_get_node('FatturaElettronicaBody/DatiBeniServizi/DettaglioLinee');
-		$sommeImporti = [];	// somme importi suddivisi per aliquota iva
+		$sommeImporti = [];	// somme importi suddivisi per aliquota iva | natura
 		if ($righe)
 		{
 			foreach ($righe as $riga)
 			{
-				$perciva = isset($riga['AliquotaIVA']) ? $riga['AliquotaIVA'] : 0;
+				$perciva = isset($riga['AliquotaIVA']) ? $riga['AliquotaIVA'] : '0.00';
+				$natura_iva0 = isset($riga['Natura']) ? $riga['Natura'] : '';
+				$key = "{$perciva}|{$natura_iva0}";
 				$importo = isset($riga['PrezzoTotale']) ? $riga['PrezzoTotale'] : 0;
-				if (!isset($sommeImporti[$perciva]))
+				if (!isset($sommeImporti[$key]))
 				{
-					$sommeImporti[$perciva] = 0;
+					$sommeImporti[$key] = 0;
 				}
-				$sommeImporti[$perciva] += $importo;
+				$sommeImporti[$key] += $importo;
 			}
 		}
 		// aggiungo un gruppo di totale per ogni diversa aliquota IVA
 		$totale = 0;
-		foreach ($sommeImporti as $perciva => $sommaImporto)
+		foreach ($sommeImporti as $key => $sommaImporto)
 		{
+			list($perciva, $natura_iva0) = explode('|', $key);
 			$iva = round($sommaImporto * $perciva / 100, 2);	// è qui che l'iva va arrotondata
+			$_merge = $merge;
+			if ($perciva == 0)	// se l'iva è 0, toglie l'eventuale merge esigiva
+			{
+				unset($_merge['esigiva']);
+			}
 			$this->add_totali(array_merge([
 					'perciva' => FatturaPA::dec($perciva),
 					'importo' => FatturaPA::dec($sommaImporto),	// imponibile totale
-					'iva' => FatturaPA::dec($iva),			// calcolo iva
-			], $merge));
+					'iva' => FatturaPA::dec($iva),				// calcolo iva
+					'natura_iva0' => $natura_iva0 ? $natura_iva0 : NULL,	// (natura iva a 0)
+			], $_merge));
 			$totale += $sommaImporto + $iva;
 		}
 		// ritorna il totale fattura iva inclusa

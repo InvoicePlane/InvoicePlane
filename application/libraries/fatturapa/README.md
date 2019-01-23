@@ -1,5 +1,5 @@
 # FatturaPA
-Libreria SDK PHP per la generazione veloce di una Fattura elettronica in XML (formato FatturaPA)
+Libreria SDK PHP per la generazione veloce di una Fattura elettronica italiana in XML (formato FatturaPA)
 
 ## Esempio utilizzo
 
@@ -10,6 +10,14 @@ $fatturapa = new FatturaPA('FPR12');	// Formato - https://git.io/fhm9g (default:
 ```
 #### Costanti
 - [`formato`](https://github.com/s2software/fatturapa/wiki/Costanti#formato-trasmissione) (opzionale da passare al costruttore)
+
+### Imposta trasmittente (opzionale, altrimenti vengono presi i dati dal mittente)
+```php
+$fatturapa->set_trasmittente([
+  'paese' => "IT",
+  'codice' => "CODFSC12A34H567U", // https://forum.italia.it/t/dati-trasmittente-p-iva-o-cf/6883/14
+]);
+```
 
 ### Imposta mittente (fornitore)
 ```php
@@ -22,7 +30,8 @@ $fatturapa->set_mittente([
   'comune' => "Roma",
   'prov' => "RM",
   'paese' => "IT",
-  'piva' => '01234567890',
+  'piva' => "01234567890",
+  //'codfisc' => "CODFSC23A45H671U",
   // Regime fiscale - https://git.io/fhmMd (default: RF01 = ordinario)
   'regimefisc' => "RF19",
 ]);
@@ -40,10 +49,11 @@ $fatturapa->set_destinatario([
   'comune' => "Milano",
   'prov' => "MI",
   'paese' => "IT",
-  'piva' => '12345678901',
+  'piva' => "12345678901",
+  //'codfisc' => "CODFSC23A45H671U",
   // Dati SdI (Sistema di Interscambio) del destinatario/cliente
-  'sdi_codice' => '1234567',    // Codice destinatario - da impostare in alternativa alla PEC
-  'sdi_pec' => 'pec@test.com',  // PEC destinatario - da impostare in alternativa al Codice		
+  'sdi_codice' => "1234567",    // Codice destinatario - da impostare in alternativa alla PEC
+  'sdi_pec' => "pec@test.com",  // PEC destinatario - da impostare in alternativa al Codice		
 ]);
 ```
 
@@ -83,6 +93,8 @@ foreach ($imp as $n => $impX)
     'importo' => FatturaPA::dec($impX), // imponibile riga
     // % aliquota IVA
     'perciva' => FatturaPA::dec(22),
+    // (Natura IVA non indicata - https://goo.gl/93RW7v)
+    //'natura_iva0' => 'N2',
   ]);
   $impTot += $impX;
 }
@@ -96,12 +108,21 @@ $fatturapa->set_totali([
   'perciva' => FatturaPA::dec(22),
   'iva' => FatturaPA::dec($iva), // calcolo iva
   'esigiva' => 'I',              // Esigibilità IVA - https://git.io/fhmDq
+   //'natura_iva0' => 'N2',      // (Natura IVA non indicata - https://goo.gl/93RW7v)
 ]);
 ```
 #### Nota
 In caso di più aliquote IVA, è necessario impostare più totali raggruppando per aliquota: passare un array multiplo alla `set_totali` o utilizzare la `add_totali`.
 #### Costanti
 - [`esigiva`](https://github.com/s2software/fatturapa/wiki/Costanti#esigibilit%C3%A0-iva)
+
+### Impostazione automatica totali
+In alternativa alla `set_totali`, possiamo automaticamente generare i totali in base alle righe aggiunte in fattura.
+```php
+$totale = $fatturapa->set_auto_totali([
+  'esigiva' => 'I',	// Esigibilità IVA - https://git.io/fhmDq
+]);
+```
 
 ### Imposta dati pagamento (opzionale)
 ```php
