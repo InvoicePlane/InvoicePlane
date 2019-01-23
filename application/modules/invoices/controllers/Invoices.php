@@ -392,7 +392,7 @@ class Invoices extends Admin_Controller
     				// Quantità
     				'qta' => FatturaPA::dec($item->item_quantity),
     				// Prezzo totale (prezzo x qta)
-    				'importo' => FatturaPA::dec($item->item_total), // imponibile riga
+    				'importo' => FatturaPA::dec($item->item_subtotal), // imponibile riga
     				// % aliquota IVA
     				'perciva' => FatturaPA::dec($item->item_tax_rate_percent),	// NOTA: quindi per funzionare, l'iva va messa sulle righe
     				// (natura IVA non indicata, se l'iva è a 0)
