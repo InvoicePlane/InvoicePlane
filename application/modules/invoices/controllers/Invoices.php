@@ -372,7 +372,6 @@ class Invoices extends Admin_Controller
     	$items = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
     	
     	// Righe dettagli
-    	$has_iva = FALSE;
     	foreach ($items as $i => $item)
     	{
     		$description = trim($item->item_name) ? $item->item_name : '';
@@ -410,15 +409,19 @@ class Invoices extends Admin_Controller
     	{
     		$payment_method_id = $invoice->payment_method;
     		$env = "IT_METODO_PAGAMENTO_ID_{$payment_method_id}_CODICE";
-    		if (env($env) && !empty($user->user_iban))
+    		if (env($env))
     		{
     			// Modalità (possibile più di una) https://git.io/fhmDu
     			$modalita = [
     					'modalita' => env($env),	// codice pagamento corrispondente
     					'totale' => FatturaPA::dec($totale),	// totale iva inclusa
     					'scadenza' => $invoice->invoice_date_due,
-    					'iban' => $user->user_iban,
     			];
+    			
+    			if (env($env) == "MP05" && !empty($user->user_iban))	// bonifico: scrive anche l'iban
+    			{
+    				$modalita['iban'] = $user->user_iban;
+    			}
     			
     			$fatturapa->set_pagamento([
     					// Condizioni pagamento - https://git.io/fhmD8 (default: TP02 = completo)
