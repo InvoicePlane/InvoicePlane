@@ -21,7 +21,7 @@
         >
 
         <div class="row">
-            <div class="col-xs-12 col-md-6 col-md-offset-3">
+            <div class="col-xs-12 col-md-8 col-md-offset-2">
 
                 <div class="form-group">
                     <label for="email_template_title" class="control-label"><?php _trans('title'); ?></label>
@@ -41,7 +41,7 @@
                     </div>
                     <div class="radio">
                         <label>
-                            <input type="radio" name="email_template_type" id="email_template_type_invoice"
+                            <input type="radio" name="email_template_type" id="email_template_type_quote"
                                    value="quote">
                             <?php _trans('quote'); ?>
                         </label>
@@ -117,70 +117,75 @@
                     </select>
                 </div>
 
-            </div>
-        </div>
+                <hr>
 
-        <hr>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
 
-        <div class="row">
-            <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="email_template_body"><?php _trans('body'); ?></label>
 
-                <label for="email_template_body">
-                    <?php _trans('body'); ?>
-                </label>
-                <div class="form-group">
+                            <br>
 
-                    <div class="html-tags btn-group btn-group-sm">
-                        <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
-                            <i class="fa fa-fw fa-paragraph"></i>
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-bold">
-                            <i class="fa fa-fw fa-bold"></i>
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-italic">
-                            <i class="fa fa-fw fa-italic"></i>
-                        </span>
-                    </div>
-                    <div class="html-tags btn-group btn-group-sm">
-                        <span class="html-tag btn btn-default" data-tag-type="text-h1">H1</span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-h2">H2</span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-h3">H3</span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-h4">H4</span>
-                    </div>
-                    <div class="html-tags btn-group btn-group-sm">
-                        <span class="html-tag btn btn-default" data-tag-type="text-code">
-                            <i class="fa fa-fw fa-code"></i>
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-hr">
-                            &lt;hr/&gt;
-                        </span>
-                        <span class="html-tag btn btn-default" data-tag-type="text-css">
-                            CSS
-                        </span>
-                    </div>
+                            <div class="html-tags btn-group btn-group-sm">
+                                <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
+                                    <i class="fa fa-fw fa-paragraph"></i>
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-linebreak">
+                                    &lt;br&gt;
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-bold">
+                                    <i class="fa fa-fw fa-bold"></i>
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-italic">
+                                    <i class="fa fa-fw fa-italic"></i>
+                                </span>
+                            </div>
+                            <div class="html-tags btn-group btn-group-sm">
+                                <span class="html-tag btn btn-default" data-tag-type="text-h1">H1</span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-h2">H2</span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-h3">H3</span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-h4">H4</span>
+                            </div>
+                            <div class="html-tags btn-group btn-group-sm">
+                                <span class="html-tag btn btn-default" data-tag-type="text-code">
+                                    <i class="fa fa-fw fa-code"></i>
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-hr">
+                                    &lt;hr/&gt;
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-css">
+                                    CSS
+                                </span>
+                            </div>
 
-                    <textarea name="email_template_body" id="email_template_body" rows="5"
-                              class="email-template-body form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?></textarea>
-                    <br>
+                            <textarea name="email_template_body" id="email_template_body" rows="8"
+                                      class="email-template-body form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?>
+                            </textarea>
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <?php _trans('preview'); ?>
-                            <span id="email-template-preview-reload" class="pull-right cursor-pointer">
-                                <i class="fa fa-refresh"></i>
-                            </span>
+                            <br>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <?php _trans('preview'); ?>
+                                    <span id="email-template-preview-reload" class="pull-right cursor-pointer">
+                                        <i class="fa fa-refresh"></i>
+                                    </span>
+                                </div>
+                                <div class="panel-body">
+                                    <iframe id="email-template-preview"></iframe>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="panel-body">
-                            <iframe id="email-template-preview"></iframe>
-                        </div>
-                    </div>
 
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+
+                        <?php $this->layout->load_view('email_templates/template-tags'); ?>
+
+                    </div>
                 </div>
-
-            </div>
-            <div class="col-xs-12 col-md-6">
-
-                <?php $this->layout->load_view('email_templates/template-tags'); ?>
 
             </div>
         </div>
@@ -211,5 +216,35 @@
                 }
             });
         }
+    });
+
+    $(document).ready(function() {
+    	// find the type of template that has been loaded and enable/disable
+        // the invoice and quote selects as required
+        var inputValue = $('input[type="radio"]:checked').attr("value");
+
+        if (inputValue === 'quote') {
+            $('#tags_invoice').prop('disabled', 'disabled');
+            $('#tags_quote').prop('disabled', false);
+        } else {
+            // inputValue === 'invoice'
+            $('#tags_invoice').prop('disabled', false);
+            $('#tags_quote').prop('disabled', 'disabled');
+        }
+
+        // if the radio input for 'type of template' gets clicked, check the
+        // new value and enable/disable the invoice and quote selects as required.
+    	$('input[type="radio"]').click(function() {
+            var inputValue = $(this).attr("value");
+
+            if (inputValue === 'quote') {
+            	$('#tags_invoice').prop('disabled', 'disabled');
+            	$('#tags_quote').prop('disabled', false);
+            } else {
+                // inputValue === 'invoice'
+            	$('#tags_invoice').prop('disabled', false);
+            	$('#tags_quote').prop('disabled', 'disabled');
+            }
+        });
     });
 </script>

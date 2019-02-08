@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-bordered table-striped">
+    <table class="table table-hover table-bordered table-striped">
         <tr>
             <th>&nbsp;</th>
             <th><?php _trans('product_sku'); ?></th>

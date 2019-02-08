@@ -168,12 +168,20 @@ class View extends Base_Controller
 
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
+        $this->load->model('custom_fields/mdl_custom_fields');
 
         $quote = $quote->row();
 
         if ($this->session->userdata('user_type') <> 1 and $quote->quote_status_id == 2) {
             $this->mdl_quotes->mark_viewed($quote->quote_id);
         }
+
+        // Get all custom fields
+        $custom_fields = array(
+            'quote' => $this->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
+            'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
+            'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
+        );
 
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
@@ -203,6 +211,7 @@ class View extends Base_Controller
             'flash_message' => $this->session->flashdata('flash_message'),
             'is_expired' => $is_expired,
             'attachments' => $attachments,
+            'custom_fields' => $custom_fields,
         );
 
         $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);

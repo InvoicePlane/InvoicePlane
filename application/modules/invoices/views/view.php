@@ -224,7 +224,8 @@ if ($this->config->item('disable_read_only') == true) {
                         <a href="#" class="invoice-add-payment"
                            data-invoice-id="<?php echo $invoice_id; ?>"
                            data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
+                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
+                           data-payment-cf-exist="<?php echo $payment_cf_exist; ?>">
                             <i class="fa fa-credit-card fa-margin"></i>
                             <?php _trans('enter_payment'); ?>
                         </a>
@@ -247,7 +248,7 @@ if ($this->config->item('disable_read_only') == true) {
                 <li>
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-repeat fa-margin"></i>
+                        <i class="fa fa-refresh fa-margin"></i>
                         <?php _trans('create_recurring'); ?>
                     </a>
                 </li>
@@ -278,7 +279,10 @@ if ($this->config->item('disable_read_only') == true) {
 
     <div class="headerbar-item invoice-labels pull-right">
         <?php if ($invoice->invoice_is_recurring) { ?>
-            <span class="label label-info"><?php _trans('recurring'); ?></span>
+            <span class="label label-info">
+                <i class="fa fa-refresh"></i>
+                <?php _trans('recurring'); ?>
+            </span>
         <?php } ?>
         <?php if ($invoice->is_read_only == 1) { ?>
             <span class="label label-danger">
@@ -417,7 +421,7 @@ if ($this->config->item('disable_read_only') == true) {
                                         } ?>
                                     </label>
                                     <select name="invoice_status_id" id="invoice_status_id"
-                                            class="form-control input-sm simple-select"
+                                            class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity"
                                         <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
                                             echo 'disabled="disabled"';
                                         } ?>>
@@ -451,7 +455,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <div class="invoice-properties">
                                     <label><?php _trans('invoice_password'); ?></label>
                                     <input type="text" id="invoice_password" class="form-control input-sm"
-                                           value="<?php echo $invoice->invoice_password; ?>"
+                                           value="<?php _htmlsc($invoice->invoice_password); ?>"
                                         <?php if ($invoice->is_read_only == 1) {
                                             echo 'disabled="disabled"';
                                         } ?>>

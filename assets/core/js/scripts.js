@@ -73,6 +73,9 @@ function insert_html_tag(tag_type, destination_id) {
         case 'text-paragraph':
             text = ['<p>', '</p>'];
             break;
+        case 'text-linebreak':
+            text = ['<br>', ''];
+            break;
 
         case 'text-h1':
             text = ['<h1>', '</h1>'];

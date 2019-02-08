@@ -1,5 +1,7 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -36,7 +38,7 @@ class Ajax extends Admin_Controller
                 // Check if an item has either a quantity + price or name or description
                 if (!empty($item->item_name)) {
                     $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_quantity ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : floatval(0));
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
                     if (property_exists($item, 'item_date')) {

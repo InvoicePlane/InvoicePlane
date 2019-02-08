@@ -25,10 +25,19 @@ function trans($line, $id = '', $default = null)
 
     // Fall back to default language if the current language has no translated string
     if (empty($lang_string)) {
-        // Load the default language
+        // Save the current application language (code borrowed from Base_Controller.php)
+        $current_language = $CI->session->userdata('user_language');
+
+        if (empty($current_language) || $current_language == 'system') {
+            $current_language = get_setting('default_language');
+        }
+
+        // Load the default language and translate the string
         set_language('english');
         $lang_string = $CI->lang->line($line);
-        reset_language();
+
+        // Restore the application language to its previous setting
+        set_language($current_language);
     }
 
     // Fall back to the $line value if the default language has no translation either
@@ -65,27 +74,6 @@ function set_language($language)
     $CI->lang->load('form_validation', $new_language);
     $CI->lang->load('custom', $new_language);
     $CI->lang->load('gateway', $new_language);
-}
-
-/**
- * Reset the langauge to the default one
- *
- * @return void
- */
-function reset_language()
-{
-    // Clear the current loaded language
-    $CI =& get_instance();
-    $CI->lang->is_loaded = array();
-    $CI->lang->language = array();
-
-    // Reset to the default language
-    $default_lang = isset($CI->mdl_settings) ? $CI->mdl_settings->setting('default_language') : 'english';
-
-    $CI->lang->load('ip', $default_lang);
-    $CI->lang->load('form_validation', $default_lang);
-    $CI->lang->load('custom', $default_lang);
-    $CI->lang->load('gateway', $default_lang);
 }
 
 /**

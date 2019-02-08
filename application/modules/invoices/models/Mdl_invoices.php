@@ -53,25 +53,7 @@ class Mdl_Invoices extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_quotes.*,
-            ip_users.user_name,
-            ip_users.user_company,
-            ip_users.user_address_1,
-            ip_users.user_address_2,
-            ip_users.user_city,
-            ip_users.user_state,
-            ip_users.user_zip,
-            ip_users.user_country,
-            ip_users.user_phone,
-            ip_users.user_fax,
-            ip_users.user_mobile,
-            ip_users.user_email,
-            ip_users.user_web,
-            ip_users.user_vat_id,
-            ip_users.user_tax_code,
-            ip_users.user_subscribernumber,
-            ip_users.user_iban,
-            ip_users.user_gln,
-            ip_users.user_rcc,
+            ip_users.*,
             ip_clients.*,
             ip_invoice_sumex.*,
             ip_invoice_amounts.invoice_amount_id,
@@ -470,7 +452,7 @@ class Mdl_Invoices extends Response_Model
         delete_orphans();
     }
 
-    // Used from the guest module, excludes draft and paid
+    // Excludes draft and paid invoices, i.e. keeps unpaid invoices.
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', array(2, 3));

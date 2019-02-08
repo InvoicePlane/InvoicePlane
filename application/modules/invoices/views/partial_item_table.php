@@ -342,16 +342,16 @@
                             <form method="post"
                                 action="<?php echo site_url('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>
-                                <span class="amount">
-                                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
-                                </span>
-                                <span class="text-muted">
-                                    <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) ?>
-                                </span>
                                 <button type="submit" class="btn btn-xs btn-link"
                                         onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
+                                <span class="text-muted">
+                                    <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%' ?>
+                                </span>
+                                <span class="amount">
+                                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
+                                </span>
                             </form>
                         <?php }
                     } else {

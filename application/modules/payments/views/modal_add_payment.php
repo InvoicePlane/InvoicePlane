@@ -22,14 +22,23 @@
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful and payment was added
-                        window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
+                        if ($('#payment_cf_exist').val() === 'yes') {
+                            // There are payment custom fields, display the payment form
+                            // to allow completing the custom fields
+						    window.location = "<?php echo site_url('payments/form'); ?>/" + response.payment_id;
+						}
+						else {
+                            // There are no payment custom fields, return to invoice view
+							window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
+						}
                     }
                     else {
                         // The validation was not successful
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('has-error');
-
+                            if(response.validation_errors.hasOwnProperty(key)) {
+                                $('#' + key).parent().parent().addClass('has-error');
+                            }
                         }
                     }
                 });
@@ -109,6 +118,11 @@
                         <textarea name="payment_note" id="payment_note" class="form-control"></textarea>
                     </div>
                 </div>
+
+                <!-- Add a hidden input field to pass whether payment custom fields have been create -->
+                <input type="hidden" name="payment_cf_exist" id="payment_cf_exist"
+                    value="<?php echo $payment_cf_exist; ?>">
+
             </form>
         </div>
 
