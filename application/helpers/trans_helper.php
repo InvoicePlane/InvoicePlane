@@ -72,7 +72,7 @@ function set_language($language)
     // Set the new language
     $CI->lang->load('ip', $new_language);
     $CI->lang->load('form_validation', $new_language);
-    $CI->lang->load('custom', $new_language);
+    $CI->lang->load('custom', $new_language, false, true, APPPATH);
     $CI->lang->load('gateway', $new_language);
 }
 
