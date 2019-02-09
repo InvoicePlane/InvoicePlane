@@ -18,6 +18,13 @@
         var selected_email_template = <?php echo $email_template ?>;
         inject_email_template(template_fields, selected_email_template);
     });
+
+    $(document).ready(function() {
+        // this is the email quote window, disable the invoice select
+        $('#tags_invoice').prop('disabled', 'disabled');
+        $('#tags_quote').prop('disabled', false);
+    });
+
 </script>
 
 <form method="post" action="<?php echo site_url('mailer/send_quote/' . $quote->quote_id) ?>">
@@ -63,7 +70,7 @@
                         <option value=""><?php _trans('none'); ?></option>
                         <?php foreach ($email_templates as $email_template): ?>
                             <option value="<?php echo $email_template->email_template_id; ?>"
-                                    <?php if ($selected_email_template == $email_template->email_template_id) { ?>selected="selected"<?php } ?>>
+                                <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
                                 <?php _htmlsc($email_template->email_template_title); ?>
                             </option>
                         <?php endforeach; ?>
@@ -104,8 +111,7 @@
                         <option value=""><?php _trans('none'); ?></option>
                         <?php foreach ($pdf_templates as $pdf_template): ?>
                             <option value="<?php echo $pdf_template; ?>"
-                                    <?php if ($selected_pdf_template == $pdf_template):
-                                    ?>selected="selected"<?php endif; ?>>
+                                <?php check_select($selected_pdf_template, $pdf_template); ?>>
                                 <?php echo $pdf_template; ?>
                             </option>
                         <?php endforeach; ?>
@@ -124,13 +130,16 @@
 
                             <div class="html-tags btn-group btn-group-sm">
                                 <span class="html-tag btn btn-default" data-tag-type="text-paragraph">
-                                    <i class="fa fa-paragraph"></i>
+                                    <i class="fa fa-fw fa-paragraph"></i>
+                                </span>
+                                <span class="html-tag btn btn-default" data-tag-type="text-linebreak">
+                                    &lt;br&gt;
                                 </span>
                                 <span class="html-tag btn btn-default" data-tag-type="text-bold">
-                                    <i class="fa fa-bold"></i>
+                                    <i class="fa fa-fw fa-bold"></i>
                                 </span>
                                 <span class="html-tag btn btn-default" data-tag-type="text-italic">
-                                    <i class="fa fa-italic"></i>
+                                    <i class="fa fa-fw fa-italic"></i>
                                 </span>
                             </div>
                             <div class="html-tags btn-group btn-group-sm">
@@ -141,7 +150,7 @@
                             </div>
                             <div class="html-tags btn-group btn-group-sm">
                                 <span class="html-tag btn btn-default" data-tag-type="text-code">
-                                    <i class="fa fa-code"></i>
+                                    <i class="fa fa-fw fa-code"></i>
                                 </span>
                                 <span class="html-tag btn btn-default" data-tag-type="text-hr">
                                     &lt;hr/&gt;

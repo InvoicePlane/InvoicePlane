@@ -43,7 +43,7 @@
                     <span class="pull-right text-muted"><?php echo lang($quote_status_period); ?></span>
                 </div>
 
-                <table class="table table-bordered table-condensed no-margin">
+                <table class="table table-hover table-bordered table-condensed no-margin">
                     <?php foreach ($quote_status_totals as $total) { ?>
                         <tr>
                             <td>
@@ -71,7 +71,7 @@
                     <span class="pull-right text-muted"><?php echo lang($invoice_status_period); ?></span>
                 </div>
 
-                <table class="table table-bordered table-condensed no-margin">
+                <table class="table table-hover table-bordered table-condensed no-margin">
                     <?php foreach ($invoice_status_totals as $total) { ?>
                         <tr>
                             <td>
@@ -120,7 +120,7 @@
                     <b><i class="fa fa-history fa-margin"></i> <?php _trans('recent_quotes'); ?></b>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-striped table-condensed no-margin">
+                    <table class="table table-hover table-striped table-condensed no-margin">
                         <thead>
                         <tr>
                             <th><?php _trans('status'); ?></th>
@@ -180,7 +180,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-condensed no-margin">
+                    <table class="table table-hover table-striped table-condensed no-margin">
                         <thead>
                         <tr>
                             <th><?php _trans('status'); ?></th>
@@ -202,13 +202,14 @@
                                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
                                         <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
                                         if ($invoice->invoice_sign == '-1') { ?>
-                                            &nbsp;<i class="fa fa-credit-invoice"
-                                                     title="<?php _trans('credit_invoice') ?>"></i>
-                                        <?php }
-                                        if ($invoice->is_read_only == 1) { ?>
-                                            &nbsp;<i class="fa fa-read-only"
-                                                     title="<?php _trans('read_only') ?>"></i>
-                                        <?php }; ?>
+                                            &nbsp;<i class="fa fa-credit-invoice" title="<?php _trans('credit_invoice') ?>"></i>
+                                        <?php } ?>
+                                        <?php if ($invoice->is_read_only) { ?>
+                                            &nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i>
+                                        <?php } ?>
+                                        <?php if ($invoice->invoice_is_recurring) { ?>
+                                            &nbsp;<i class="fa fa-refresh" title="<?php echo trans('recurring') ?>"></i>
+                                        <?php } ?>
                                     </span>
                                 </td>
                                 <td>
@@ -264,7 +265,7 @@
                         <b><i class="fa fa-list fa-margin"></i> <?php _trans('projects'); ?></b>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-condensed no-margin">
+                        <table class="table table-hover table-striped table-condensed no-margin">
                             <thead>
                             <tr>
                                 <th><?php _trans('project_name'); ?></th>
@@ -283,6 +284,11 @@
                                     </td>
                                 </tr>
                             <?php } ?>
+                        		<tr>
+                            		<td colspan="6" class="text-right small">
+                                		<?php echo anchor('projects/index', trans('view_all')); ?>
+                            		</td>
+                        		</tr>
                             </tbody>
 
                         </table>
@@ -299,7 +305,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-condensed no-margin">
+                        <table class="table table-hover table-striped table-condensed no-margin">
 
                             <thead>
                             <tr>
@@ -322,7 +328,7 @@
                                         <?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?>
                                     </td>
                                     <td>
-                                    <span class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
+                                    <span class="<?php if ($task->is_overdue) { ?>font-overdue<?php } ?>">
                                         <?php echo date_from_mysql($task->task_finish_date); ?>
                                     </span>
                                     </td>
@@ -331,6 +337,11 @@
                                     </td>
                                 </tr>
                             <?php } ?>
+                        		<tr>
+                            		<td colspan="6" class="text-right small">
+                                		<?php echo anchor('tasks/index', trans('view_all')); ?>
+                            		</td>
+                        		</tr>
                             </tbody>
 
                         </table>

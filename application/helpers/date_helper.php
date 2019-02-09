@@ -19,60 +19,60 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function date_formats()
 {
-    return array(
-        'm/d/Y' => array(
-            'setting' => 'm/d/Y',
-            'datepicker' => 'mm/dd/yyyy'
-        ),
-        'm-d-Y' => array(
-            'setting' => 'm-d-Y',
-            'datepicker' => 'mm-dd-yyyy'
-        ),
-        'm.d.Y' => array(
-            'setting' => 'm.d.Y',
-            'datepicker' => 'mm.dd.yyyy'
-        ),
-        'Y/m/d' => array(
-            'setting' => 'Y/m/d',
-            'datepicker' => 'yyyy/mm/dd'
-        ),
-        'Y-m-d' => array(
-            'setting' => 'Y-m-d',
-            'datepicker' => 'yyyy-mm-dd'
-        ),
-        'Y.m.d' => array(
-            'setting' => 'Y.m.d',
-            'datepicker' => 'yyyy.mm.dd'
-        ),
-        'd/m/Y' => array(
+    return [
+        'd/m/Y' => [
             'setting' => 'd/m/Y',
-            'datepicker' => 'dd/mm/yyyy'
-        ),
-        'd-m-Y' => array(
+            'datepicker' => 'dd/mm/yyyy',
+        ],
+        'd-m-Y' => [
             'setting' => 'd-m-Y',
-            'datepicker' => 'dd-mm-yyyy'
-        ),
-        'd-M-Y' => array(
+            'datepicker' => 'dd-mm-yyyy',
+        ],
+        'd-M-Y' => [
             'setting' => 'd-M-Y',
-            'datepicker' => 'dd-M-yyyy'
-        ),
-        'd.m.Y' => array(
+            'datepicker' => 'dd-M-yyyy',
+        ],
+        'd.m.Y' => [
             'setting' => 'd.m.Y',
-            'datepicker' => 'dd.mm.yyyy'
-        ),
-        'j.n.Y' => array(
+            'datepicker' => 'dd.mm.yyyy',
+        ],
+        'j.n.Y' => [
             'setting' => 'j.n.Y',
-            'datepicker' => 'd.m.yyyy'
-        ),
-        'd M,Y' => array(
+            'datepicker' => 'd.m.yyyy',
+        ],
+        'd M,Y' => [
             'setting' => 'd M,Y',
-            'datepicker' => 'dd M,yyyy'
-        ),
-    );
+            'datepicker' => 'dd M,yyyy',
+        ],
+        'm/d/Y' => [
+            'setting' => 'm/d/Y',
+            'datepicker' => 'mm/dd/yyyy',
+        ],
+        'm-d-Y' => [
+            'setting' => 'm-d-Y',
+            'datepicker' => 'mm-dd-yyyy',
+        ],
+        'm.d.Y' => [
+            'setting' => 'm.d.Y',
+            'datepicker' => 'mm.dd.yyyy',
+        ],
+        'Y/m/d' => [
+            'setting' => 'Y/m/d',
+            'datepicker' => 'yyyy/mm/dd',
+        ],
+        'Y-m-d' => [
+            'setting' => 'Y-m-d',
+            'datepicker' => 'yyyy-mm-dd',
+        ],
+        'Y.m.d' => [
+            'setting' => 'Y.m.d',
+            'datepicker' => 'yyyy.mm.dd',
+        ],
+    ];
 }
 
 /**
- * @param $date
+ * @param      $date
  * @param bool $ignore_post_check
  * @return bool|DateTime|string
  */
@@ -159,7 +159,7 @@ function date_format_datepicker()
  * Adds interval to user formatted date and returns user formatted date
  * To be used when date is being output back to user.
  *
- * @param $date - user formatted date
+ * @param $date      - user formatted date
  * @param $increment - interval (1D, 2M, 1Y, etc)
  * @return string
  */
