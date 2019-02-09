@@ -77,13 +77,7 @@ class Admin_Controller extends User_Controller
             }
 
             // Format: "Security Warning: [flags]. [description] [instructions]"
-            $warning_message = sprintf(
-                '%s: %s. %s %s',
-                trans('security_warning'),
-                implode(' and ', $warning_parts),
-                trans('setup_wizard_accessible'),
-                trans('please_update_ipconfig')
-            );
+            $warning_message = sprintf('%s', trans('security_warning'));
 
             $this->session->set_flashdata('alert_warning', $warning_message);
         }
