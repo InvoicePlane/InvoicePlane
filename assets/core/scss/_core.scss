@@ -1113,3 +1113,12 @@ body.error {
     margin-left: 0;
   }
 }
+
+
+// Product modal popup - cater for scrollable content in modal body
+.product-list-modal-content 
+{
+   height:650px;
+   overflow-y:auto;
+}
+
