@@ -72,8 +72,8 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('products/form', trans('create_product')); ?></li>
                         <li><?php echo anchor('products/index', trans('view_products')); ?></li>
-                        <li><?php echo anchor('families/index', trans('view_product_families')); ?></li>
-                        <li><?php echo anchor('units/index', trans('view_product_units')); ?></li>
+                        <li><?php echo anchor('families/index', trans('product_families')); ?></li>
+                        <li><?php echo anchor('units/index', trans('product_units')); ?></li>
                     </ul>
                 </li>
 
@@ -85,10 +85,19 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('tasks/form', trans('create_task')); ?></li>
-                        <li><?php echo anchor('tasks/index', trans('view_tasks')); ?></li>
-						<li role="separator" class="divider"></li>
-                        <li><?php echo anchor('projects/form', trans('create_project')); ?></li>
-                        <li><?php echo anchor('projects/index', trans('view_projects')); ?></li>
+                        <li><?php echo anchor('tasks/index', trans('show_tasks')); ?></li>
+                        <li><?php echo anchor('projects/index', trans('projects')); ?></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('expenses'); ?></span><i
+                            class="visible-sm-inline fa fa-coin"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('expenses/form', lang('enter_expense')); ?></li>
+                        <li><?php echo anchor('expenses/index', lang('view_expenses')); ?></li>
                     </ul>
                 </li>
 
@@ -103,6 +112,7 @@
                         <li><?php echo anchor('reports/payment_history', trans('payment_history')); ?></li>
                         <li><?php echo anchor('reports/sales_by_client', trans('sales_by_client')); ?></li>
                         <li><?php echo anchor('reports/sales_by_year', trans('sales_by_date')); ?></li>
+                        <li><?php echo anchor('reports/yearly', lang('yearly_report')); ?></li>
                     </ul>
                 </li>
 

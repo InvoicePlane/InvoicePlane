@@ -17,7 +17,7 @@
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-    <table class="table table-hover table-striped">
+    <table class="table table-striped">
 
         <thead>
         <tr>
