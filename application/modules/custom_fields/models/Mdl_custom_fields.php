@@ -173,7 +173,6 @@ class Mdl_Custom_Fields extends MY_Model
             'ip_payment_custom' => 'payment',
             'ip_quote_custom' => 'quote',
             'ip_user_custom' => 'user',
-            'ip_expense_custom' => 'expense',
         ];
     }
 
