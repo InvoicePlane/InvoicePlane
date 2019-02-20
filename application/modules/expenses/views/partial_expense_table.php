@@ -28,7 +28,7 @@
                     </a>
                 </td>
                 <td><?php echo format_currency($expense->expense_amount); ?></td>
-                <td><?php echo format_currency($expense->expense_amount / (($expense->tax_rate_percent + 100)/100)); ?></td>
+                <td><?php echo format_currency($expense->expense_amount / (($expense->tax_rate_percent + 100)/10)); ?></td>
                 <td><?php echo $expense->tax_rate_name; ?></td>
                 <td><?php echo $expense->payment_method_name; ?></td>
                 <td>
