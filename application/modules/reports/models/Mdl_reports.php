@@ -733,7 +733,7 @@ class Mdl_Reports extends CI_Model
         $this->db->where('YEAR(ip_invoices.invoice_date_created) IS NOT NULL');
         $this->db->group_by('YEAR(ip_invoices.invoice_date_created), ip_clients.client_id');
         $invoice_data = $this->db->get('ip_clients')->result();
-        $this->db->select('ip_clients.client_name, SUM(ip_expenses.expense_amount) expense_total, ip_expenses.expense_amount / ((ip_tax_rates.tax_rate_percent + 100)/100) expense_tax_total, YEAR(ip_expenses.expense_date) year', FALSE);
+        $this->db->select('ip_clients.client_name, SUM(ip_expenses.expense_amount) expense_total, SUM(ip_expenses.expense_amount / ((ip_tax_rates.tax_rate_percent + 100)/10)) expense_tax_total, YEAR(ip_expenses.expense_date) year', FALSE);
 		//the calculation here is the total expense amount, divided by the tax rate percentage. ie, if tax rate =10%, then this divides expense mount by 11 (that is (100 + 10%)/10). That gives the correct taxable amount
         $this->db->join('ip_expenses', 'ip_expenses.client_id = ip_clients.client_id', 'left');
         $this->db->join('ip_tax_rates', 'ip_tax_rates.tax_rate_id = ip_expenses.tax_rate_id', 'left');
