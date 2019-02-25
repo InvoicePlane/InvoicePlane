@@ -725,7 +725,13 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
-	public function yearly()
+	public function yearly(
+				$from_date = null,
+				$to_date = null,
+				$minQuantity = null,
+				$maxQuantity = null,
+				$taxChecked = false
+				)
     {
         $this->db->select('ip_clients.client_name, SUM(ip_invoice_amounts.invoice_total) invoice_total, SUM(ip_invoice_amounts.invoice_tax_total) invoice_tax_total, SUM(ip_invoice_amounts.invoice_item_tax_total) item_tax_total, SUM(ip_invoice_amounts.invoice_paid) invoice_paid_total, YEAR(ip_invoices.invoice_date_created) year', FALSE);
         $this->db->join('ip_invoices', 'ip_invoices.client_id = ip_clients.client_id', 'left');
