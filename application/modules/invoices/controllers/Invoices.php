@@ -402,7 +402,7 @@ class Invoices extends Admin_Controller
     	// Totale
     	$merge = [];
     	$merge['esigiva'] = 'I';	// esigibilità IVA (scritta nell'XML solo se viene applicata l'IVA)
-    	$totale = $fatturapa->set_auto_totali($merge);
+    	$totale = $fatturapa->set_auto_totali($merge, ['autobollo' => TRUE]);
     	
     	// Pagamento
     	if ($invoice->payment_method)

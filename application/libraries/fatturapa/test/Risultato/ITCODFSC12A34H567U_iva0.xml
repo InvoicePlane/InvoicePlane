@@ -59,6 +59,10 @@ xsi:schemaLocation="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.
         <Divisa>EUR</Divisa>
         <Data>2019-01-07</Data>
         <Numero>2019/01</Numero>
+        <DatiBollo>
+          <BolloVirtuale>SI</BolloVirtuale>
+          <ImportoBollo>2.00</ImportoBollo>
+        </DatiBollo>
       </DatiGeneraliDocumento>
     </DatiGenerali>
     <DatiBeniServizi>

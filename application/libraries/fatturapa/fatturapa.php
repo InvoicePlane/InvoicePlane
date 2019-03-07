@@ -8,7 +8,7 @@
  */
 class FatturaPA {
 	
-	const VERSION = '0.1.2';
+	const VERSION = '0.2.0';
 	protected $_node = ['FatturaElettronicaHeader' => [], 'FatturaElettronicaBody' => []];
 	protected $_schema = [];	// schema .xsd (nella generazione dell'XML va rispettato anche l'ordine dei nodi)
 	
@@ -123,6 +123,9 @@ class FatturaPA {
 		);
 		$this->_fill_node($map, $data, $node);
 		
+		// paese: default IT
+		$this->_set_defaults(['Sede/Nazione' => 'IT'], $node);
+		
 		// se è una partita iva
 		if (isset($data['piva']))
 		{
@@ -131,6 +134,16 @@ class FatturaPA {
 					'DatiAnagrafici/IdFiscaleIVA/IdPaese' =>
 						$this->_get_node('Sede/Nazione', $node)
 			], $node);
+		}
+		
+		// se è estero, toglie provincia e imposta cap a 00000
+		// "<Provincia> Da valorizzare se l'elemento informativo 1.4,3.6 <Nazione> è uguale a IT"
+		// (https://forum.italia.it/t/schema-xml-per-fatture-a-clienti-estero/5374/6)
+		if ($this->_get_node('Sede/Nazione', $node) != 'IT')
+		{
+			$sede = &$this->_get_node('Sede', $node);
+			$sede['CAP'] = '00000';
+			unset($sede['Provincia']);
 		}
 	}
 	
@@ -232,10 +245,16 @@ class FatturaPA {
 	 * Genera automaticamente i totali raggruppati per aliquota IVA, ritorna il totale da pagare IVA inclusa
 	 * @param array $merge Merge campi calcolati con questi campi aggiuntivi
 	 * - esigiva: https://github.com/s2software/fatturapa/wiki/Costanti#esigibilita-iva
+	 * @param array $options (autobollo = FALSE / todo)
 	 * @return number
 	 */
-	public function set_auto_totali($merge)
+	public function set_auto_totali($merge, $options = [])
 	{
+		// default options
+		$options = array_merge([
+				'autobollo' => FALSE
+		], $options);	
+		
 		// reset eventuali totali già impostati
 		$node = &$this->_set_node('FatturaElettronicaBody/DatiBeniServizi/DatiRiepilogo', []);
 		// raggruppo
@@ -258,6 +277,7 @@ class FatturaPA {
 		}
 		// aggiungo un gruppo di totale per ogni diversa aliquota IVA
 		$totale = 0;
+		$sommaNonImponibile = 0;	// solo imponibili senza iva applicata (per calcolo bollo)
 		foreach ($sommeImporti as $key => $sommaImporto)
 		{
 			list($perciva, $natura_iva0) = explode('|', $key);
@@ -274,7 +294,25 @@ class FatturaPA {
 					'natura_iva0' => $natura_iva0 ? $natura_iva0 : NULL,	// (natura iva a 0)
 			], $_merge));
 			$totale += $sommaImporto + $iva;
+			if ($perciva == 0)
+			{
+				$sommaNonImponibile += $sommaImporto;
+			}
 		}
+		
+		// autobollo virtuale
+		// https://www.fiscoetasse.com/approfondimenti/12090-applicazione-della-marca-da-bollo-sulle-fatture.html
+		if ($options['autobollo'])
+		{
+			if ($sommaNonImponibile > 77.47)
+			{
+				$this->_set_node('FatturaElettronicaBody/DatiGenerali/DatiGeneraliDocumento/DatiBollo', [
+						'BolloVirtuale' => 'SI',
+						'ImportoBollo' => FatturaPA::dec(2),
+				]);
+			}
+		}
+		
 		// ritorna il totale fattura iva inclusa
 		return $totale;
 	}
@@ -552,7 +590,7 @@ class FatturaPA {
 	}
 	
 	/**
-	 * Applica default
+	 * Applica default per i nodi non impostati
 	 * @param array $defaults
 	 */
 	protected function _set_defaults($defaults, &$node = NULL)

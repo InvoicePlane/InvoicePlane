@@ -84,7 +84,7 @@ $fatturapa->set_totali([
 ]);*/
 $totale = $fatturapa->set_auto_totali([
 		'esigiva' => 'I',	// Esigibilità IVA - https://github.com/s2software/fatturapa/wiki/Costanti#esigibilit%C3%A0-iva
-]);
+], ['autobollo' => TRUE]);
 
 // Imposta dati pagamento (opzionale)
 //$totale = $impTot+$iva;
