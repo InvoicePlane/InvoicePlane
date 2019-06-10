@@ -101,7 +101,7 @@
                                         <div class="input-group">
                                             <input name="statement_start_date" id="statement_start_date"
                                                 class="form-control input-sm datepicker"
-                                                value="<?php echo date_from_mysql($statement_start_date); ?>" />
+                                                value="<?php echo date(date_format_setting(),$statement_start_date); ?>" />
                                             <span class="input-group-addon"> <i
                                                 class="fa fa-calendar fa-fw"></i>
                                             </span>
@@ -116,7 +116,7 @@
                                             <input name="statement_date_created"
                                                 id="statement_date_created"
                                                 class="form-control input-sm datepicker"
-                                                value="<?php echo date_from_mysql($statement_date); ?>" /> <span
+                                                value="<?php echo date(date_format_setting(),$statement_date); ?>" /> <span
                                                 class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
                                             </span>
                                         </div>

@@ -26,7 +26,7 @@
       <tr>
 				<td></td>
 				<td>
-               <?php echo $statement_start_date; ?>
+               <?php echo date('Y-m-d',$statement_start_date);$statement_start_date; ?>
           </td>
 				<td>
                <?php echo _trans('opening_balance'); ?>

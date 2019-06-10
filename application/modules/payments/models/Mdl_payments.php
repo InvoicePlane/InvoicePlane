@@ -235,10 +235,10 @@ class Mdl_Payments extends Response_Model
     public function by_date_range($start_date = null, $end_date = null)
     {
         if (!empty($start_date)) {
-            $this->filter_where("invoice_date_modified >= '" . date('Y-m-d', $start_date) . "' ");
+            $this->filter_where("payment_date >= '" . $start_date . "' ");
         }
         if (!empty($end_date)) {
-            $this->filter_where("invoice_date_modified <= '" . date('Y-m-d', $end_date) . "' ");
+            $this->filter_where("payment_date <= '" . $end_date . "' ");
         }
 
         return $this;

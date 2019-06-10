@@ -71,15 +71,15 @@
         <table>
             <tr>
                 <td><?php echo trans('statement_date') . ':'; ?></td>
-                <td><?php  echo date_from_mysql($statement->getStatement_date(), true); ?></td>
+                <td><?php echo date(date_format_setting(),$statement->getStatement_date()); ?></td>
             </tr>
             <tr>
                 <td><?php echo trans('statement_start_date') . ':'; ?></td>
-                <td><?php  echo date_from_mysql($statement->getStatement_start_date(), true); ?></td>
+                <td><?php echo date(date_format_setting(),$statement->getStatement_start_date()); ?></td>
             </tr>
             <tr>
                 <td><?php echo trans('statement_end_date') . ':'; ?></td>
-                <td><?php  echo date_from_mysql($statement->getStatement_end_date(), true); ?></td>
+                <td><?php echo date(date_format_setting(),$statement->getStatement_end_date()); ?></td>
             </tr>
 
         </table>
@@ -107,7 +107,7 @@
 
       <tr>
          <td>
-               <?php echo $statement->GetStatement_start_date(); ?>
+               <?php //echo $statement->GetStatement_start_date(); ?>
           </td>
          <td>
                <?php echo _trans('opening_balance'); ?>

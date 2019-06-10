@@ -63,13 +63,21 @@ class Statements extends Admin_Controller
         {
 
             if (!empty($this->input->post('statement_start_date'))) {
-                $statement_start_date   = strtotime($this->input->post('statement_start_date'));
+                // BUG : strtotime is not recognising the date format d M,Y" and changing the date
+                // $statement_start_date   = strtotime($this->input->post('statement_start_date'));
+                $date_time   = date_create_from_format("d M,Y", $this->input->post('statement_start_date'));
+                $statement_start_date   = $date_time->getTimestamp();
+
             } else {
                 $statement_start_date   = strtotime($this->input->post('sdate'));
             }
-            $statement_end_date     = strtotime($this->input->post('edate'));
+            $statement_end_date     = $this->input->post('edate');
 
-            $statement_date         = strtotime($this->input->post('statement_date_created'));
+            // BUG : strtotime is not recognising the date format d M,Y" and changing the date
+            // $statement_date         = strtotime($this->input->post('statement_date_created'));
+            $date_time   = date_create_from_format("d M,Y", $this->input->post('statement_date_created'));
+            $statement_date   = $date_time->getTimestamp();
+
             $statement_number       = $this->input->post('statement_number');
             $notes                  = $this->input->post('notes');
 
@@ -164,7 +172,7 @@ class Statements extends Admin_Controller
         /*
          * Set the statement date to now, or overwrite it with the user value.
          */
-        $this->mdl_statement->setStatement_date(date('Y-m-d', $statement_date));
+        $this->mdl_statement->setStatement_date($statement_date);
 
 
         /*
@@ -174,8 +182,16 @@ class Statements extends Admin_Controller
         $opening_balance_end_date   = $statement_start_date;
 
 
-        $client_invoices = $this->mdl_invoices->by_client($client_id)->by_date_range($opening_balance_start_date, $opening_balance_end_date)->get()->result();
-        $client_payments = $this->mdl_payments->by_client($client_id)->by_date_range($opening_balance_start_date, $opening_balance_end_date)->get()->result();
+        $client_invoices = $this->mdl_invoices
+            ->by_client($client_id)
+            ->by_date_range(date('Y-m-d', $opening_balance_start_date), date('Y-m-d', $opening_balance_end_date))
+            ->get()
+            ->result();
+        $client_payments = $this->mdl_payments
+            ->by_client($client_id)
+            ->by_date_range(date('Y-m-d', $opening_balance_start_date), date('Y-m-d', $opening_balance_end_date))
+            ->get()
+            ->result();
 
 
         $client_invoice_total = 0;
@@ -193,16 +209,24 @@ class Statements extends Admin_Controller
         $this->mdl_statement->setOpening_balance($client_opening_balance);
 
 
-        $this->mdl_statement->setStatement_start_date(date('Y-m-d', $statement_start_date));
-        $this->mdl_statement->setStatement_end_date(date('Y-m-d', $statement_end_date));
+        $this->mdl_statement->setStatement_start_date($statement_start_date);
+        $this->mdl_statement->setStatement_end_date($statement_end_date);
 
         /*
          * NOTE: These two calls brings back all invoices and payments over the
          * ...date range, and we manually sum up the totals
          */
 
-        $client_invoices = $this->mdl_invoices->by_client($client_id)->by_date_range($statement_start_date, $statement_end_date)->get()->result();
-        $client_payments = $this->mdl_payments->by_client($client_id)->by_date_range($statement_start_date, $statement_end_date)->get()->result();
+        $client_invoices = $this->mdl_invoices
+            ->by_client($client_id)
+            ->by_date_range(date('Y-m-d', $statement_start_date), date('Y-m-d', $statement_end_date))
+            ->get()
+            ->result();
+        $client_payments = $this->mdl_payments
+            ->by_client($client_id)
+            ->by_date_range(date('Y-m-d', $statement_start_date), date('Y-m-d', $statement_end_date))
+            ->get()
+            ->result();
 
 
         $statement_transactions = array();
@@ -288,13 +312,21 @@ class Statements extends Admin_Controller
         $statement_number       = $this->input->post('statement_number');
 
         if (!empty($this->input->post('statement_start_date'))) {
-            $statement_start_date   = strtotime($this->input->post('statement_start_date'));
+            //$statement_start_date   = strtotime($this->input->post('statement_start_date'));
+            $date_time   = date_create_from_format("d M,Y", $this->input->post('statement_start_date'));
+            $statement_start_date   = $date_time->getTimestamp();
+
         } else {
             $statement_start_date   = strtotime($this->input->post('sdate'));
         }
         $statement_end_date     = strtotime($this->input->post('edate'));
 
-        $statement_date         = strtotime($this->input->post('statement_date_created'));
+        // BUG : strtotime is not recognising the date format d M,Y" and changing the date
+        // $statement_date         = strtotime($this->input->post('statement_date_created'));
+        $date_time   = date_create_from_format("d M,Y", $this->input->post('statement_date_created'));
+        $statement_date   = $date_time->getTimestamp();
+
+
         $notes                  = $this->input->post('notes');
 
         /*

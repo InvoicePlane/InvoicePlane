@@ -538,10 +538,10 @@ class Mdl_Invoices extends Response_Model
     public function by_date_range($start_date = null, $end_date = null)
     {
         if (!empty($start_date)) {
-            $this->filter_where("invoice_date_created >= '" . date('Y-m-d', $start_date) . "' ");
+            $this->filter_where("invoice_date_created >= '" . $start_date . "' ");
         }
         if (!empty($end_date)) {
-            $this->filter_where("invoice_date_created <= '" . date('Y-m-d', $end_date) . "' ");
+            $this->filter_where("invoice_date_created <= '" . $end_date . "' ");
         }
 
         return $this;
