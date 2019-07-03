@@ -188,6 +188,7 @@ class Clients extends Admin_Controller
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
+        $this->load->model('cars/mdl_cars');
 
         $client = $this->mdl_clients
             ->with_total()
@@ -213,7 +214,8 @@ class Clients extends Admin_Controller
                 'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
                 'custom_fields' => $custom_fields,
                 'quote_statuses' => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses()
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'cars' => $this->mdl_cars->by_client($client_id)->limit(20)->get()->result()
             )
         );
 
@@ -230,6 +232,10 @@ class Clients extends Admin_Controller
                 array(
                     'payment_table',
                     'payments/partial_payment_table'
+                ),
+                array(
+                    'car_table',
+                    'cars/partial_car_table'
                 ),
                 array(
                     'partial_notes',

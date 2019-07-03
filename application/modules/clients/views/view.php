@@ -74,6 +74,7 @@ foreach ($custom_fields as $custom_field) {
     <li><a data-toggle="tab" href="#clientQuotes"><?php _trans('quotes'); ?></a></li>
     <li><a data-toggle="tab" href="#clientInvoices"><?php _trans('invoices'); ?></a></li>
     <li><a data-toggle="tab" href="#clientPayments"><?php _trans('payments'); ?></a></li>
+    <li><a data-toggle="tab" href="#clientCars"><?php _trans('cars'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
