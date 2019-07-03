@@ -82,6 +82,7 @@ class Mdl_Invoices extends Response_Model
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
+        $this->db->join('ip_cars', 'ip_cars.car_id = ip_invoices.car_id', 'left');
     }
 
     /**
@@ -121,6 +122,10 @@ class Mdl_Invoices extends Response_Model
                 'field' => 'payment_method',
                 'label' => trans('payment_method')
             ),
+            'car_id' => array(
+                'field' => 'car_id',
+                'label' => trans('car_id')
+            ),
         );
     }
 
@@ -151,7 +156,11 @@ class Mdl_Invoices extends Response_Model
             'invoice_password' => array(
                 'field' => 'invoice_password',
                 'label' => trans('invoice_password')
-            )
+            ),
+            'car_id' => array(
+                'field' => 'car_id',
+                'label' => trans('car_id')
+            ),
         );
     }
 
