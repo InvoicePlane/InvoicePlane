@@ -84,6 +84,7 @@ class Mdl_Quotes extends Response_Model
         $this->db->join('ip_users', 'ip_users.user_id = ip_quotes.user_id');
         $this->db->join('ip_quote_amounts', 'ip_quote_amounts.quote_id = ip_quotes.quote_id', 'left');
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_quotes.invoice_id', 'left');
+        $this->db->join('ip_cars', 'ip_cars.car_id = ip_quotes.car_id', 'left');
     }
 
     /**
@@ -115,7 +116,11 @@ class Mdl_Quotes extends Response_Model
                 'field' => 'user_id',
                 'label' => trans('user'),
                 'rule' => 'required'
-            )
+            ),
+            'car_id' => array(
+                'field' => 'car_id',
+                'label' => trans('car_id')
+            ),
         );
     }
 
