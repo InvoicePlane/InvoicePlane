@@ -124,7 +124,7 @@
                     <i class="fa fa-arrows cursor-move"></i>
                     <?php
                         if ($invoice->invoice_is_recurring) {
-                            if ($item->item_is_recurring || is_null($item->item_is_recurring)) {
+                            if ($item->item_is_recurring) {
                                 $itemRecurrenceState = '1';
                                 $itemRecurrenceClass = 'fa-calendar-check-o text-success';
                             } else {
