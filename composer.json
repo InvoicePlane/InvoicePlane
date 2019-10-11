@@ -18,6 +18,7 @@
     "setasign/fpdi-fpdf": "^1.6.2",
     "codeigniter/framework": "3.1.9",
     "omnipay/omnipay": "~2.0",
+    "transportersio/omnipay-square": "~1.0.7",
     "paragonie/random_compat": "^2.0"
   }
 }
