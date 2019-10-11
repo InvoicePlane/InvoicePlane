@@ -441,6 +441,16 @@ $config['payment_gateways'] = array(
             'label' => 'Test Mode',
         ),
     ),
+    'Square' => array(
+        'AccessToken' => array(
+            'type' => 'text',
+            'label' => 'Access Token',
+        ),
+        'LocationId' => array(
+            'type' => 'text',
+            'label' => 'Location Id',
+        ),
+    ),
     'Stripe' => array(
         'apiKey' => array(
             'type' => 'password',
