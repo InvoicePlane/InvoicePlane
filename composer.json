@@ -13,7 +13,7 @@
   ],
   "require": {
     "phpmailer/phpmailer": "^6.0.5",
-    "mpdf/mpdf": "dev-master",
+    "mpdf/mpdf": "^7.1.7",
     "vlucas/phpdotenv": "^2.4",
     "setasign/fpdi-fpdf": "^1.6.2",
     "codeigniter/framework": "3.1.9",

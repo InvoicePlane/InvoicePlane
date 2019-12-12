@@ -92,7 +92,6 @@
         </div>
 
     </div>
-
 </div>
 
 <div id="content" class="table-content">

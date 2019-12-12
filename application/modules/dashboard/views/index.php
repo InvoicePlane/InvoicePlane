@@ -3,6 +3,7 @@
 
     <div class="row <?php if (get_setting('disable_quickactions') == 1) echo 'hidden'; ?>">
         <div class="col-xs-12">
+
             <div id="panel-quick-actions" class="panel panel-default quick-actions">
 
                 <div class="panel-heading">
