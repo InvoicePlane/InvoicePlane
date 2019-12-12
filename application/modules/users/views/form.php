@@ -1,351 +1,384 @@
-<script type="text/javascript">
-    $(function()
-    {
+<?php
+$cv = $this->controller->view_data["custom_values"];
+?>
+<script>
+    $(function () {
         show_fields();
-        
-        $('#user_type').change(function()
-        {
+
+        $('#user_type').change(function () {
             show_fields();
         });
 
-        function show_fields()
-        {
+        function show_fields() {
             $('#administrator_fields').hide();
             $('#guest_fields').hide();
 
-            user_type = $('#user_type').val();
+            var user_type = $('#user_type').val();
 
-            if (user_type == 1)
-            {
+            if (user_type === '1') {
                 $('#administrator_fields').show();
-            }
-            else if (user_type == 2)
-            {
+            } else if (user_type === '2') {
                 $('#guest_fields').show();
             }
         }
 
-        $("#user_country").select2({allowClear: true});
+        $("#user_country").select2({
+            placeholder: "<?php _trans('country'); ?>",
+            allowClear: true
+        });
+
+        $('#add-user-client-modal').click(function () {
+            <?php $user_id = isset($id) ? $id : ''; ?>
+            $('#modal-placeholder').load("<?php echo site_url('users/ajax/modal_add_user_client/' . $user_id); ?>");
+        });
     });
 </script>
 
-<?php if (isset($modal_user_client)) { echo $modal_user_client; } ?>
+<form method="post">
 
-<form method="post" class="form-horizontal">
+    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
+           value="<?php echo $this->security->get_csrf_hash() ?>">
 
-    <div class="headerbar">
-        <h1><?php echo lang('user_form'); ?></h1>
+    <div id="headerbar">
+        <h1 class="headerbar-title"><?php _trans('user_form'); ?></h1>
         <?php echo $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-md-offset-3">
 
-        <?php echo $this->layout->load_view('layout/alerts'); ?>
+                <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-        <div id="userInfo">
+                <div id="userInfo">
 
-            <fieldset>
-                <legend><?php echo lang('account_information'); ?></legend>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><?php _trans('account_information'); ?></div>
 
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label><?php echo lang('name'); ?>: </label>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <input type="text" name="user_name" id="user_name" class="form-control"
-                               value="<?php echo $this->mdl_users->form_value('user_name'); ?>">
-                    </div>
-                </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="user_name">
+                                    <?php _trans('name'); ?>
+                                </label>
+                                <input type="text" name="user_name" id="user_name" class="form-control"
+                                       value="<?php echo $this->mdl_users->form_value('user_name', true); ?>">
+                            </div>
 
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label class="control-label">
-                            <?php echo lang('company'); ?>
-                        </label>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <input type="text" name="user_company" id="user_company" class="form-control"
-                               value="<?php echo $this->mdl_users->form_value('user_company'); ?>">
-                    </div>
-                </div>                
-                
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label class="control-label">
-                            <?php echo lang('email_address'); ?>
-                        </label>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <input type="text" name="user_email" id="user_email" class="form-control"
-                               value="<?php echo $this->mdl_users->form_value('user_email'); ?>">
-                    </div>
-                </div>
+                            <div class="form-group">
+                                <label for="user_company">
+                                    <?php _trans('company'); ?>
+                                </label>
+                                <input type="text" name="user_company" id="user_company" class="form-control"
+                                       value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
+                            </div>
 
-                <?php if (!$id) { ?>
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label class="control-label">
-                            <?php echo lang('password'); ?>
-                        </label>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <input type="password" name="user_password" id="user_password" class="form-control">
-                    </div>
-                </div>
+                            <div class="form-group">
+                                <label for="user_email">
+                                    <?php _trans('email_address'); ?>
+                                </label>
+                                <input type="text" name="user_email" id="user_email" class="form-control"
+                                       value="<?php echo $this->mdl_users->form_value('user_email', true); ?>">
+                            </div>
 
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label class="control-label">
-                            <?php echo lang('verify_password'); ?>
-                        </label>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <input type="password" name="user_passwordv" id="user_passwordv" class="form-control">
-                    </div>
-                </div>
-                <?php } else { ?>
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label>
-                            <?php echo lang('change_password'); ?>
-                        </label>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <?php echo anchor('users/change_password/' . $id, lang('change_password')); ?>
-                    </div>
-                </div>
-                <?php } ?>
+                            <?php if (!$id) { ?>
+                                <div class="form-group">
+                                    <label for="user_password">
+                                        <?php _trans('password'); ?>
+                                    </label>
+                                    <input type="password" name="user_password" id="user_password" class="form-control">
+                                </div>
 
-                <div class="form-group">
-                    <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                        <label class="control-label">
-                            <?php echo lang('user_type'); ?>
-                        </label>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <select name="user_type" id="user_type" class="form-control">
-                            <option value=""></option>
-                            <?php foreach ($user_types as $key => $type) { ?>
-                            <option value="<?php echo $key; ?>" <?php if ($this->mdl_users->form_value('user_type') == $key) { ?>selected="selected"<?php } ?>><?php echo $type; ?></option>
+                                <div class="form-group">
+                                    <label for="user_password">
+                                        <?php _trans('verify_password'); ?>
+                                    </label>
+                                    <input type="password" name="user_passwordv" id="user_passwordv"
+                                           class="form-control">
+                                </div>
+                            <?php } else { ?>
+                                <div class="form-group">
+                                    <a href="<?php echo site_url('users/change_password/' . $id); ?>"
+                                       class="btn btn-default">
+                                        <?php _trans('change_password'); ?>
+                                    </a>
+                                </div>
                             <?php } ?>
-                        </select>
+
+                            <div class="form-group">
+                                <label for="user_language">
+                                    <?php _trans('language'); ?>
+                                </label>
+                                <select name="user_language" id="user_language" class="form-control simple-select">
+                                    <option value="system">
+                                        <?php echo trans('use_system_language') ?>
+                                    </option>
+                                    <?php foreach ($languages as $language) {
+                                        $usr_lang = $this->session->userdata('user_language');
+                                        ?>
+                                        <option value="<?php echo $language; ?>"
+                                            <?php check_select($usr_lang, $language); ?>>
+                                            <?php echo ucfirst($language); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="user_type">
+                                    <?php _trans('user_type'); ?>
+                                </label>
+                                <select name="user_type" id="user_type" class="form-control simple-select">
+                                    <?php foreach ($user_types as $key => $type) { ?>
+                                        <option value="<?php echo $key; ?>"
+                                            <?php check_select($this->mdl_users->form_value('user_type'), $key); ?>>
+                                            <?php echo $type; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
+
+                    <div id="administrator_fields">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><?php _trans('address'); ?></div>
+
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_address_1">
+                                        <?php _trans('street_address'); ?>
+                                    </label>
+                                    <input type="text" name="user_address_1" id="user_address_1" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_address_1', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_address_2">
+                                        <?php _trans('street_address_2'); ?>
+                                    </label>
+                                    <input type="text" name="user_address_2" id="user_address_2" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_address_2', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_city">
+                                        <?php _trans('city'); ?>
+                                    </label>
+                                    <input type="text" name="user_city" id="user_city" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_city', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_state">
+                                        <?php _trans('state'); ?>
+                                    </label>
+                                    <input type="text" name="user_state" id="user_state" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_state', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_zip">
+                                        <?php _trans('zip_code'); ?>
+                                    </label>
+                                    <input type="text" name="user_zip" id="user_zip" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_zip', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_country">
+                                        <?php _trans('country'); ?>
+                                    </label>
+                                    <select name="user_country" id="user_country" class="form-control">
+                                        <option value=""><?php _trans('none'); ?></option>
+                                        <?php foreach ($countries as $cldr => $country) { ?>
+                                            <option value="<?php echo $cldr; ?>"
+                                                <?php check_select($selected_country, $cldr); ?>>
+                                                <?php echo $country ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+
+                                <!-- Custom fields -->
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if ($custom_field->custom_field_location != 2) {
+                                        continue;
+                                    } ?>
+                                    <?php
+                                    print_field(
+                                        $this->mdl_users,
+                                        $custom_field,
+                                        $cv
+                                    );
+                                    ?>
+                                <?php endforeach; ?>
+                            </div>
+
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><?php _trans('tax_information'); ?></div>
+
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_vat_id">
+                                        <?php _trans('vat_id'); ?>
+                                    </label>
+                                    <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_tax_code">
+                                        <?php _trans('tax_code'); ?>
+                                    </label>
+                                    <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_iban">
+                                        <?php _trans('user_iban'); ?>
+                                    </label>
+                                    <input type="text" name="user_iban" id="user_iban" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_subscribernumber">
+                                        <?php _trans('user_subscriber_number'); ?>
+                                    </label>
+                                    <input type="text" name="user_subscribernumber" id="user_subscribernumber"
+                                           class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_subscribernumber', true); ?>">
+                                </div>
+
+                                <!-- Custom fields -->
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if ($custom_field->custom_field_location != 3) {
+                                        continue;
+                                    } ?>
+                                    <?php
+                                    print_field(
+                                        $this->mdl_users,
+                                        $custom_field,
+                                        $cv
+                                    );
+                                    ?>
+                                <?php endforeach; ?>
+                            </div>
+
+                        </div>
+
+                        <?php if ($this->mdl_settings->setting('sumex') == '1'): ?>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><?php _trans('sumex_information'); ?></div>
+
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label for="user_gln">
+                                            <?php _trans('gln'); ?>
+                                        </label>
+                                        <input type="text" name="user_gln" id="user_gln" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_gln', true); ?>">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="user_rcc">
+                                            <?php _trans('sumex_rcc'); ?>
+                                        </label>
+                                        <input type="text" name="user_rcc" id="user_rcc" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_rcc', true); ?>">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        <?php endif; ?>
+
+                        <div class="panel panel-default">
+
+                            <div class="panel-heading"><?php _trans('contact_information'); ?></div>
+
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_phone">
+                                        <?php _trans('phone_number'); ?>
+                                    </label>
+                                    <input type="text" name="user_phone" id="user_phone" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_phone', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_fax">
+                                        <?php _trans('fax_number'); ?>
+                                    </label>
+                                    <input type="text" name="user_fax" id="user_fax" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_fax', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_mobile">
+                                        <?php _trans('mobile_number'); ?>
+                                    </label>
+                                    <input type="text" name="user_mobile" id="user_mobile" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_mobile', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_web">
+                                        <?php _trans('web_address'); ?>
+                                    </label>
+                                    <input type="text" name="user_web" id="user_web" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_web', true); ?>">
+                                </div>
+
+                                <!-- Custom fields -->
+                                <?php foreach ($custom_fields as $custom_field): ?>
+                                    <?php if ($custom_field->custom_field_location != 4) {
+                                        continue;
+                                    } ?>
+                                    <?php
+                                    print_field(
+                                        $this->mdl_users,
+                                        $custom_field,
+                                        $cv
+                                    );
+                                    ?>
+                                <?php endforeach; ?>
+                            </div>
+
+                        </div>
+                        <?php if ($custom_fields) : ?>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
+
+                                <div class="panel-body">
+                                    <?php
+                                    $cv = $this->controller->view_data["custom_values"];
+                                    foreach ($custom_fields as $custom_field) {
+                                        if ($custom_field->custom_field_location != 0) {
+                                            continue;
+                                        }
+                                        print_field(
+                                            $this->mdl_users,
+                                            $custom_field,
+                                            $cv
+                                        );
+                                    } ?>
+                                </div>
+
+                            </div>
+                        <?php endif; ?>
+
+                    </div>
+
                 </div>
 
-            </fieldset>
-
-            <div id="administrator_fields">
-                <fieldset>
-                    <legend><?php echo lang('address'); ?></legend>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('street_address'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6" >
-                            <input type="text" name="user_address_1" id="user_address_1" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_address_1'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('street_address_2'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_address_2" id="user_address_2" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_address_2'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('city'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_city" id="user_city" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_city'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('state'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_state" id="user_state" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_state'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('zip_code'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_zip" id="user_zip" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_zip'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('country'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <select name="user_country" id="user_country" class="form-control">
-                                <option></option>
-                                <?php foreach ($countries as $cldr => $country) { ?>
-                                    <option value="<?php echo $cldr; ?>" <?php if ($selected_country == $cldr) { ?>selected="selected"<?php } ?>><?php echo $country ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-
-                    <legend><?php echo lang('tax_information'); ?></legend>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('vat_id'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_vat_id'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('tax_code'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_tax_code'); ?>">
-                        </div>
-                    </div>
-
-                </fieldset>
-
-                <fieldset>
-
-                    <legend><?php echo lang('contact_information'); ?></legend>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('phone_number'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_phone" id="user_phone" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_phone'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('fax_number'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_fax" id="user_fax" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_fax'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('mobile_number'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_mobile" id="user_mobile" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_mobile'); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo lang('web_address'); ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" name="user_web" id="user_web" class="form-control"
-                                   value="<?php echo $this->mdl_users->form_value('user_web'); ?>">
-                        </div>
-                    </div>
-
-                </fieldset>
-                
-                <fieldset>
-
-                    <legend><?php echo lang('custom_fields'); ?></legend>
-
-                    <?php foreach ($custom_fields as $custom_field) { ?>
-                    <div class="form-group">
-                        <div class="col-xs-12 col-sm-3 text-right text-left-xs">
-                            <label class="control-label">
-                                <?php echo $custom_field->custom_field_label; ?>
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <input type="text" class="form-control"
-                                   name="custom[<?php echo $custom_field->custom_field_column; ?>]"
-                                   id="<?php echo $custom_field->custom_field_column; ?>"
-                                   value="<?php echo form_prep($this->mdl_users->form_value('custom[' . $custom_field->custom_field_column . ']')); ?>">
-                        </div>
-                    </div>
-                    <?php } ?>
-                </fieldset>
-
             </div>
-            
-            <div id="guest_fields">
-                
-				<div id="open_invoices" class="widget">
-
-                    <div class="widget-title">
-                        <h5 style="float: left;"><?php echo lang('client_access'); ?></h5>
-                        <div class="pull-right">
-                            <a href="#add-user-client" class="btn btn-default" data-toggle="modal">
-                                <i class="fa fa-plus"></i>
-                                <?php echo lang('add_client'); ?>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div id="div_user_client_table">
-                        <?php echo $user_client_table; ?>
-                    </div>
-
-				</div>
-                                
-            </div>
-
         </div>
-
     </div>
 
 </form>

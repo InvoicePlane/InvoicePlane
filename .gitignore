@@ -1,10 +1,17 @@
-/application/config/database.php
+# Configuration stuff
 /application/config/development
-/application/logs/*
-!/application/logs/index.html
-/uploads/temp/*
-!/uploads/temp/remove.txt
-/application/helpers/mpdf/ttfontdata/*
+/application/sessions
+/ipconfig.php
 
+# Dependencies
+/node_modules
+/vendor
+
+# Other files
+/.htaccess
 .idea
 .sass-cache
+adminer.php
+/nbproject
+/.php_cs.cache
+/doc

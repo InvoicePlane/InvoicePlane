@@ -1,43 +1,47 @@
-<div class="headerbar">
-	<h1><?php echo lang('payments'); ?></h1>
+<div id="headerbar">
+    <h1 class="headerbar-title"><?php _trans('payments'); ?></h1>
 
-	<div class="pull-right">
-		<?php echo pager(site_url('guest/payments/index'), 'mdl_payments'); ?>
-	</div>
+    <div class="headerbar-item pull-right">
+        <?php echo pager(site_url('guest/payments/index'), 'mdl_payments'); ?>
+    </div>
 
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
         <div class="table-responsive">
-        <table class="table table-striped">
+            <table class="table table-hover table-striped">
 
-            <thead>
+                <thead>
                 <tr>
-                    <th><?php echo lang('date'); ?></th>
-                    <th><?php echo lang('invoice'); ?></th>
-                    <th><?php echo lang('amount'); ?></th>
-                    <th><?php echo lang('payment_method'); ?></th>
-                    <th><?php echo lang('note'); ?></th>
+                    <th><?php _trans('date'); ?></th>
+                    <th><?php _trans('invoice'); ?></th>
+                    <th><?php _trans('amount'); ?></th>
+                    <th><?php _trans('payment_method'); ?></th>
+                    <th><?php _trans('note'); ?></th>
                 </tr>
-            </thead>
+                </thead>
 
-            <tbody>
+                <tbody>
                 <?php foreach ($payments as $payment) { ?>
-                <tr>
-                    <td><?php echo date_from_mysql($payment->payment_date); ?></td>
-                    <td><?php echo $payment->invoice_number; ?></td>
-                    <td><?php echo format_currency($payment->payment_amount); ?></td>
-                    <td><?php echo $payment->payment_method_name; ?></td>
-                    <td><?php echo $payment->payment_note; ?></td>
-                </tr>
+                    <tr>
+                        <td><?php echo date_from_mysql($payment->payment_date); ?></td>
+                        <td>
+                            <a href="<?php echo site_url('guest/invoices/view/' . $payment->invoice_id); ?>">
+                                <?php echo $payment->invoice_number; ?>
+                            </a>
+                        </td>
+                        <td><?php echo format_currency($payment->payment_amount); ?></td>
+                        <td><?php echo $payment->payment_method_name; ?></td>
+                        <td><?php _htmlsc($payment->payment_note); ?></td>
+                    </tr>
                 <?php } ?>
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
         </div>
     </div>
 

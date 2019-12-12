@@ -1,60 +1,66 @@
-<div class="headerbar">
-	<h1><?php echo lang('payment_history'); ?></h1>
+<div id="headerbar">
+    <h1 class="headerbar-title"><?php _trans('payment_history'); ?></h1>
 </div>
 
-<div class="content">
+<div id="content">
 
-	<?php $this->layout->load_view('layout/alerts'); ?>
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-md-offset-3">
 
-	<div id="report_options" class="panel panel-default">
+            <?php $this->layout->load_view('layout/alerts'); ?>
 
-		<div class="panel-heading">
-			<h3 class="panel-title">
-                <i class="fa fa-print"></i>
-                <?php echo lang('report_options'); ?>
-            </h3>
-		</div>
+            <div id="report_options" class="panel panel-default">
 
-		<div class="panel-body">
-
-			<form method="post"
-                  action="<?php echo site_url($this->uri->uri_string()); ?>" >
-
-				<div class="form-group has-feedback">
-					<label for="from_date">
-                        <?php echo lang('from_date'); ?>
-                    </label>
-
-          <div class="input-group">
-              <input name="from_date" id="from_date"
-                     class="form-control datepicker">
-              <span class="input-group-addon">
-                  <i class="fa fa-calendar fa-fw"></i>
-              </span>
-          </div>
-				</div>
-
-                <div class="form-group has-feedback">
-                    <label for="to_date">
-                        <?php echo lang('to_date'); ?>
-                    </label>
-
-					<div class="input-group">
-							<input name="to_date" id="to_date"
-										class="form-control datepicker">
-							<span class="input-group-addon">
-									<i class="fa fa-calendar fa-fw"></i>
-							</span>
-					</div>
+                <div class="panel-heading">
+                    <i class="fa fa-print"></i>
+                    <?php _trans('report_options'); ?>
                 </div>
 
-                <input type="submit" class="btn btn-success" name="btn_submit"
-                       value="<?php echo lang('run_report'); ?>">
+                <div class="panel-body">
 
-			</form>
+                    <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>"
+                        <?php echo get_setting('reports_in_new_tab', false) ? 'target="_blank"' : ''; ?>>
 
-		</div>
+                        <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
+                               value="<?php echo $this->security->get_csrf_hash() ?>">
 
-	</div>
+                        <div class="form-group has-feedback">
+                            <label for="from_date">
+                                <?php _trans('from_date'); ?>
+                            </label>
+
+                            <div class="input-group">
+                                <input name="from_date" id="from_date"
+                                       class="form-control datepicker">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar fa-fw"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <label for="to_date">
+                                <?php _trans('to_date'); ?>
+                            </label>
+
+                            <div class="input-group">
+                                <input name="to_date" id="to_date" class="form-control datepicker">
+                                <span class="input-group-addon">
+									<i class="fa fa-calendar fa-fw"></i>
+							    </span>
+                            </div>
+                        </div>
+
+                        <input type="submit" class="btn btn-success" name="btn_submit"
+                               value="<?php _trans('run_report'); ?>">
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 
 </div>

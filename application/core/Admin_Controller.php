@@ -1,28 +1,28 @@
 <?php
-
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
- * 
- * A free and open source web based invoicing system
  *
- * @package		InvoicePlane
- * @author		Kovah (www.kovah.de)
- * @copyright	Copyright (c) 2012 - 2014 InvoicePlane.com
+ * @author		InvoicePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
- * 
  */
 
-class Admin_Controller extends User_Controller {
+/**
+ * Class Admin_Controller
+ */
+class Admin_Controller extends User_Controller
+{
 
-	public function __construct()
-	{
-		parent::__construct('user_type', 1);
-	}
-
+    /**
+     * Admin_Controller constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct('user_type', 1);
+    }
 }
-
-?>

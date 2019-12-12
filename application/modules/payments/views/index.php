@@ -1,19 +1,19 @@
-<div class="headerbar">
-    <h1><?php echo lang('payments'); ?></h1>
+<div id="headerbar">
+    <h1 class="headerbar-title"><?php _trans('payments'); ?></h1>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <a class="btn btn-sm btn-primary" href="<?php echo site_url('payments/form'); ?>">
-            <i class="fa fa-plus"></i> <?php echo lang('new'); ?>
+            <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
 
-    <div class="pull-right">
+    <div class="headerbar-item pull-right">
         <?php echo pager(site_url('payments/index'), 'mdl_payments'); ?>
     </div>
 
 </div>
 
-<div class="table-content">
+<div id="content" class="table-content">
 
     <?php $this->layout->load_view('layout/alerts'); ?>
 

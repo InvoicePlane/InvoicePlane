@@ -1,68 +1,85 @@
-<form method="post" class="form-horizontal">
+<form method="post">
 
-    <div class="headerbar">
-        <h1><?php echo lang('invoice_group_form'); ?></h1>
+    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
+           value="<?php echo $this->security->get_csrf_hash() ?>">
+
+    <div id="headerbar">
+        <h1 class="headerbar-title"><?php _trans('invoice_group_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
-    <div class="content">
+    <div id="content">
 
-        <?php $this->layout->load_view('layout/alerts'); ?>
-
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                <label class="control-label" for="invoice_group_name"><?php echo lang('name'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-8 col-lg-8">
-                <input type="text" name="invoice_group_name" id="invoice_group_name" class="form-control"
-                       value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_name'); ?>">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                <label class="control-label" for="invoice_group_identifier_format"><?php echo lang('identifier_format'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-8 col-lg-8">
-                <input type="text" class="form-control taggable"
-                       name="invoice_group_identifier_format" id="invoice_group_identifier_format"
-                       value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_identifier_format'); ?>"
-                       placeholder="INV-{{{id}}}">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                <label class="control-label" for="invoice_group_next_id"><?php echo lang('next_id'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-8 col-lg-8">
-                <input type="text" name="invoice_group_next_id" id="invoice_group_next_id" class="form-control"
-                       value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_next_id'); ?>">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-3 col-lg-2 text-right text-left-xs">
-                <label class="control-label" for="invoice_group_left_pad"><?php echo lang('left_pad'); ?>: </label>
-            </div>
-            <div class="col-xs-12 col-sm-8 col-lg-8">
-                <input type="text" name="invoice_group_left_pad" id="invoice_group_left_pad" class="form-control"
-                       value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_left_pad'); ?>">
-            </div>
-        </div>
-        <br>
         <div class="row">
-            <div class="col-xs-12">
-                <h4><?php echo lang('identifier_format_template_tags'); ?></h4>
-                <p><?php echo lang('identifier_format_template_tags_instructions'); ?></p>
-            </div>
+            <div class="col-xs-12 col-md-6 col-md-offset-3">
 
-            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-                <a href="#" class="text-tag" data-tag="{{{id}}}"><?php echo lang('id'); ?></a><br>
-                <a href="#" class="text-tag" data-tag="{{{year}}}"><?php echo lang('current_year'); ?></a><br>
-                <a href="#" class="text-tag" data-tag="{{{month}}}"><?php echo lang('current_month'); ?></a><br>
-                <a href="#" class="text-tag" data-tag="{{{day}}}"><?php echo lang('current_day'); ?></a><br>
+                <?php $this->layout->load_view('layout/alerts'); ?>
+
+                <div class="form-group">
+                    <label class="control-label" for="invoice_group_name">
+                        <?php _trans('name'); ?>
+                    </label>
+                    <input type="text" name="invoice_group_name" id="invoice_group_name" class="form-control"
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_name', true); ?>">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="invoice_group_identifier_format">
+                        <?php _trans('identifier_format'); ?>
+                    </label>
+                    <input type="text" class="form-control taggable"
+                           name="invoice_group_identifier_format" id="invoice_group_identifier_format"
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_identifier_format', true); ?>"
+                           placeholder="INV-{{{id}}}">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="invoice_group_next_id">
+                        <?php _trans('next_id'); ?>
+                    </label>
+                    <input type="number" name="invoice_group_next_id" id="invoice_group_next_id" class="form-control"
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_next_id'); ?>">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="invoice_group_left_pad">
+                        <?php _trans('left_pad'); ?>
+                    </label>
+                    <input type="number" name="invoice_group_left_pad" id="invoice_group_left_pad" class="form-control"
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_left_pad'); ?>">
+                </div>
+
+                <hr>
+
+                <div class="form-group no-margin">
+
+                    <label for="tags_client"><?php _trans('identifier_format_template_tags'); ?></label>
+
+                    <p class="small"><?php _trans('identifier_format_template_tags_instructions'); ?></p>
+
+                    <select id="tags_client" class="tag-select form-control">
+                        <option value="{{{id}}}">
+                            <?php _trans('id'); ?>
+                        </option>
+                        <option value="{{{year}}}">
+                            <?php _trans('current_year'); ?>
+                        </option>
+                        <option value="{{{yy}}}">
+                            <?php _trans('current_yy'); ?>
+                        </option>
+                        <option value="{{{month}}}">
+                            <?php _trans('current_month'); ?>
+                        </option>
+                        <option value="{{{day}}}">
+                            <?php _trans('current_day'); ?>
+                        </option>
+                    </select>
+
+                </div>
+
             </div>
         </div>
+
     </div>
+
 </form>
