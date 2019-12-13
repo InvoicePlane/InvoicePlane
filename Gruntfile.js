@@ -33,7 +33,9 @@ module.exports = function (grunt) {
             },
             build: {
                 options: {
-                    outputStyle: 'compressed'
+                    implementation: sass,
+                    outputStyle: 'compressed',
+                    sourceMap: true
                 },
                 files: grunt.file.expandMapping(['assets/**/sass/*.scss'], 'css', {
                     rename: function (dest, matched) {
