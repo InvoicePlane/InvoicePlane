@@ -29,8 +29,8 @@ function trans($line, $id = '', $default = null)
         $current_language = $CI->session->userdata('user_language');
 
         if (empty($current_language) || $current_language == 'system') {
-            // todo gives error at startup, fix later
-            $current_language = 'english'; //get_setting('default_language'); 
+            //Fix : [origin]  = get_setting('default_language') : Error at startup : finded by @KirkBushman
+            $current_language = get_setting('default_language', 'english', false);
         }
 
         // Load the default language and translate the string
