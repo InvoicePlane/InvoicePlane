@@ -1,14 +1,16 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php
 
-/* load the MX core module class */
+(defined('BASEPATH')) or exit('No direct script access allowed');
+
+// load the MX core module class
 require dirname(__FILE__) . '/Modules.php';
 
 /**
- * Modular Extensions - HMVC
+ * Modular Extensions - HMVC.
  *
  * Adapted from the CodeIgniter Core Classes
  *
- * @link    http://codeigniter.com
+ * @see    http://codeigniter.com
  *
  * Description:
  * This library extends the CodeIgniter router class.
@@ -16,6 +18,7 @@ require dirname(__FILE__) . '/Modules.php';
  * Install this file as application/third_party/MX/Router.php
  *
  * @copyright    Copyright (c) 2015 Wiredesignz
+ *
  * @version    5.5
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,7 +41,6 @@ require dirname(__FILE__) . '/Modules.php';
  **/
 class MX_Router extends CI_Router
 {
-
     public $module;
 
     private $located = 0;
@@ -60,11 +62,13 @@ class MX_Router extends CI_Router
 
         if ($this->located == -1) {
             $this->_set_404override_controller();
+
             return;
         }
 
         if (empty($segments)) {
             $this->_set_default_controller();
+
             return;
         }
 
@@ -87,50 +91,51 @@ class MX_Router extends CI_Router
         $this->located = 0;
         $ext = $this->config->item('controller_suffix') . EXT;
 
-        /* use module route if available */
+        // use module route if available
         if (isset($segments[0]) && $routes = Modules::parse_routes($segments[0], implode('/', $segments))) {
             $segments = $routes;
         }
 
-        /* get the segments array elements */
+        // get the segments array elements
         list($module, $directory, $controller) = array_pad($segments, 3, null);
 
-        /* check modules */
+        // check modules
         foreach (Modules::$locations as $location => $offset) {
-            /* module exists? */
+            // module exists?
             if (is_dir($source = $location . $module . '/controllers/')) {
                 $this->module = $module;
                 $this->directory = $offset . $module . '/controllers/';
 
-                /* module sub-controller exists? */
+                // module sub-controller exists?
                 if ($directory) {
-                    /* module sub-directory exists? */
+                    // module sub-directory exists?
                     if (is_dir($source . $directory . '/')) {
                         $source .= $directory . '/';
                         $this->directory .= $directory . '/';
 
-                        /* module sub-directory controller exists? */
+                        // module sub-directory controller exists?
                         if ($controller) {
                             if (is_file($source . ucfirst($controller) . $ext)) {
                                 $this->located = 3;
+
                                 return array_slice($segments, 2);
-                            } else {
-                                $this->located = -1;
                             }
+                            $this->located = -1;
                         }
                     } else {
                         if (is_file($source . ucfirst($directory) . $ext)) {
                             $this->located = 2;
+
                             return array_slice($segments, 1);
-                        } else {
-                            $this->located = -1;
                         }
+                        $this->located = -1;
                     }
                 }
 
-                /* module controller exists? */
+                // module controller exists?
                 if (is_file($source . ucfirst($module) . $ext)) {
                     $this->located = 1;
+
                     return $segments;
                 }
             }
@@ -140,29 +145,32 @@ class MX_Router extends CI_Router
             return;
         }
 
-        /* application sub-directory controller exists? */
+        // application sub-directory controller exists?
         if ($directory) {
             if (is_file(APPPATH . 'controllers/' . $module . '/' . ucfirst($directory) . $ext)) {
                 $this->directory = $module . '/';
+
                 return array_slice($segments, 1);
             }
 
-            /* application sub-sub-directory controller exists? */
+            // application sub-sub-directory controller exists?
             if ($controller) {
                 if (is_file(APPPATH . 'controllers/' . $module . '/' . $directory . '/' . ucfirst($controller) . $ext)) {
                     $this->directory = $module . '/' . $directory . '/';
+
                     return array_slice($segments, 2);
                 }
             }
         }
 
-        /* application controllers sub-directory exists? */
+        // application controllers sub-directory exists?
         if (is_dir(APPPATH . 'controllers/' . $module . '/')) {
             $this->directory = $module . '/';
+
             return array_slice($segments, 1);
         }
 
-        /* application controller exists? */
+        // application controller exists?
         if (is_file(APPPATH . 'controllers/' . ucfirst($module) . $ext)) {
             return $segments;
         }
@@ -202,12 +210,12 @@ class MX_Router extends CI_Router
         }
     }
 
-    /* set module path */
+    // set module path
 
     protected function _set_default_controller()
     {
         if (empty($this->directory)) {
-            /* set the default controller module path */
+            // set the default controller module path
             $this->_set_module_path($this->default_controller);
         }
 
@@ -220,10 +228,16 @@ class MX_Router extends CI_Router
 
     public function set_class($class)
     {
-        $suffix = $this->config->item('controller_suffix');
+        // fixed error with HMVC plugin in Codeigniter and php 7
+        /*$suffix = $this->config->item('controller_suffix');
         if (strpos($class, $suffix) === false) {
+            $class .= $suffix;
+        }
+        parent::set_class($class);*/
+        $suffix = (string) $this->config->item('controller_suffix');
+        if ($suffix && strpos($class, $suffix) === false) {
             $class .= $suffix;
         }
         parent::set_class($class);
     }
-}	
+}
