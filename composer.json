@@ -1,6 +1,6 @@
 {
   "name": "invoiceplane/invoiceplane",
-  "version": "1.5.10-next",
+  "version": "1.5.10",
   "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
   "homepage": "https://invoiceplane.com",
   "license": "MIT",
