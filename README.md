@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="http://invoiceplane.com/content/logo/SVG/logo_small.svg">
+  <img src="/assets/core/img/logo.svg">
 </p>
 <p>&nbsp;</p>
 
 <p align="center">
 <a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1"></a>
-<a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Downloads&url=https%3A%2F%2Fids.invoiceplane.com%2Fapi%2Fget-stats&query=downloads.total_readable&colorB=429ae1&suffix=%20total"></a>
-<a href="https://translations.invoiceplane.com/project/fusioninvoice"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Localization%20Progress&url=https%3A%2F%2Fids.invoiceplane.com%2Fapi%2Fget-stats&query=%24.localization.details.total_progress&colorB=429ae1&suffix=%25"></a>
+<a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/github/downloads/invoiceplane/invoiceplane/total?colorB=%23429ae1"></a>
+<a href="https://translations.invoiceplane.com/project/fusioninvoice"><img src="https://img.shields.io/badge/Translations-%40%20Crowdin-429ae1"></a>
 </p>
 
 <p align="center" bgcolor="#429ae1"><b>InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.<br>
@@ -55,7 +55,6 @@ Please notice that InvoicePlane is **not** a commercial software but a small ope
 [![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)  
 [![Slack Chat](https://img.shields.io/badge/Development%3A-Slack%20Chat-429ae1.svg)](https://invoiceplane-slack.herokuapp.com/)  
 [![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://development.invoiceplane.com/)  
-[![Roadmap](https://img.shields.io/badge/Development%3A-Roadmap-429ae1.svg)](https://go.invoiceplane.com/roadmapv1)  
 [![Contribution Guide](https://img.shields.io/badge/Development%3A-Contribution%20Guide-429ae1.svg)](CONTRIBUTING.md)  
 
 ---
