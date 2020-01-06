@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: [ubuntu-latest, windows-latest]
+        operating-system: [ubuntu-latest]
         node: ['8', '10', '12']
     name: Node ${{ matrix.node }} build testing
     steps:
