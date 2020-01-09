@@ -1,0 +1,142 @@
+/*
+|   =========================================================
+|   InvoicePlane
+|   Templates Sass Stylesheet
+|   =========================================================
+*/
+
+$color_base: #3A3A3A;
+$color_base_light: lighten($color_base, 15%);
+$color_base_lighter: lighten($color_base_light, 15%);
+$color_base_dark: darken($color_base, 15%);
+$color_base_darker: darken($color_base_dark, 15%);
+$color_primary: #375bc8;
+$color_red: #ea5340;
+$color_green: #77b632;
+
+/*=========================================================*/
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+a {
+  color: $color_primary;
+  text-decoration: underline;
+}
+
+body {
+  position: relative;
+  width: 21cm;
+  height: 29.7cm;
+  margin: 0 auto;
+  color: $color_base;
+  background: #FFFFFF;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+header {
+  padding: 10px 0;
+  margin-bottom: 30px;
+}
+
+#logo {
+  text-align: right;
+  margin-bottom: 30px;
+}
+
+#invoice-logo {
+  max-height: 125px;
+  text-align: right;
+}
+
+.invoice-title {
+  color: $color_primary;
+  font-size: 2em;
+  line-height: 1.4em;
+  font-weight: normal;
+  margin: 20px 0;
+}
+
+#company {
+  float: right;
+  text-align: right;
+  width: 40%;
+}
+
+#client {
+  float: left;
+  width: 55%;
+  margin-right: 5%;
+}
+
+.invoice-details {
+  text-align: right;
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    text-align: right;
+    width: 40%;
+    margin: 0 0 0 auto;
+    font-size: 12px;
+
+    td {
+      width: auto;
+      margin: 0;
+      padding: 0 0 0.5em 0;
+    }
+  }
+}
+
+table.item-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 20px;
+  font-size: 12px;
+
+  tr:nth-child(2n-1) td {
+    background: #F5F5F5;
+  }
+
+  th {
+    padding: 10px 15px;
+    border-bottom: 1px solid $color_base_light;
+    white-space: nowrap;
+    text-align: left;
+    &.text-right {
+      text-align: right;
+    }
+  }
+
+  td {
+    padding: 10px 15px;
+  }
+
+  .invoice-sums {
+    text-align: right;
+  }
+}
+
+footer {
+  color: $color_base_lighter;
+  width: 100%;
+  border-top: 2px solid $color_base_lighter;
+  padding: 8px 0;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-red {
+  color: $color_red;
+}
+
+.text-green {
+  color: $color_green;
+}
