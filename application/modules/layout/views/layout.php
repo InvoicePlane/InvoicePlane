@@ -43,6 +43,7 @@ $this->layout->load_view('layout/includes/navbar');
 
 <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 <?php if (trans('cldr') != 'en') { ?>
     <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
