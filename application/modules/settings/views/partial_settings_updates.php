@@ -37,7 +37,7 @@
         var ip_version = "<?php echo get_setting('current_version'); ?>";
         // Get the latest version from the InvoicePlane IDS
         $.ajax({
-            'url': 'https://ids.invoiceplane.org/updatecheck?cv=' + ip_version,
+            'url': 'https://ids.invoiceplane.com/updatecheck?cv=' + ip_version,
             'dataType': 'json',
             success: function(data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -46,7 +46,7 @@
                 // or info label after 2 seconds
                 setTimeout(function() {
                     if (update(ip_version, updatecheck)) {
-                        $('#updatecheck-updates-available').attr("href", "https://www.invoiceplane.org/downloads")
+                        $('#updatecheck-updates-available').attr("href", "https://www.invoiceplane.com/downloads")
                         $('#updatecheck-loading').addClass('hidden');
                         $('#updatecheck-updates-available').removeClass('hidden');
                     }
@@ -58,7 +58,7 @@
             },
             error: function(data) {
                 $.ajax({
-                    'url': 'https://ids.invoiceplane.com/updatecheck?cv=' + ip_version,
+                    'url': 'https://ids.invoiceplane.org/updatecheck?cv=' + ip_version,
                     'dataType': 'json',
                     success: function(data) {
                         <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -67,7 +67,7 @@
                         // or info label after 2 seconds
                         setTimeout(function() {
                             if (update(ip_version, updatecheck)) {
-                                $('#updatecheck-updates-available').attr("href", "https://www.invoiceplane.com/downloads")
+                                $('#updatecheck-updates-available').attr("href", "https://www.invoiceplane.org/downloads")
                                 $('#updatecheck-loading').addClass('hidden');
                                 $('#updatecheck-updates-available').removeClass('hidden');
                             }
@@ -87,7 +87,7 @@
         });
         // Get the latest news
         $.ajax({
-            'url': 'https://ids.invoiceplane.org/get_news',
+            'url': 'https://ids.invoiceplane.com/get_news',
             'dataType': 'json',
             'success': function(data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -106,7 +106,7 @@
             },
             'error': function(data) {
                 $.ajax({
-                    'url': 'https://ids.invoiceplane.com/get_news',
+                    'url': 'https://ids.invoiceplane.org/get_news',
                     'dataType': 'json',
                     'success': function(data) {
                         <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
