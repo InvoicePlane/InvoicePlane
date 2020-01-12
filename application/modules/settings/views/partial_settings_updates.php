@@ -99,7 +99,7 @@
                         ipnews += news.text + '<br/>';
                         if(news.newsdate.date) ipnews += '<small><?php echo trans('date')?>: ' + news.newsdate.date.substr(0, 11) + '</b><br/>';
                         ipnews += '</div>';
-                        ipnews = ipnews.replace(/\n/g, "<br />")
+                        ipnews = ipnews.replace(/\n/g, "<br />");
                         $('#ipnews-container').append(ipnews);
                     });
                 }, checktime);
@@ -118,7 +118,7 @@
                                 ipnews += news.text + '<br/>';
                                 if(news.newsdate.date) ipnews += '<small><?php echo trans('date')?>: ' + news.newsdate.date.substr(0, 11) + '</b><br/>';
                                 ipnews += '</div>';
-                                ipnews = ipnews.replace(/\n/g, "<br />")
+                                ipnews = ipnews.replace(/\n/g, "<br />");
                                 $('#ipnews-container').append(ipnews);
                             });
                         }, checktime);
