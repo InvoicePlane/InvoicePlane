@@ -16,6 +16,7 @@
                 // or info label after 2 seconds
                 setTimeout(function() {
                     if (current_version < updatecheck) {
+                        $('#updatecheck-updates-available').attr("href", "https://www.invoiceplane.com/downloads")
                         $('#updatecheck-loading').addClass('hidden');
                         $('#updatecheck-updates-available').removeClass('hidden');
                     }
@@ -36,6 +37,7 @@
                         // or info label after 2 seconds
                         setTimeout(function() {
                             if (current_version < updatecheck) {
+                                $('#updatecheck-updates-available').attr("href", "https://www.invoiceplane.org/downloads")
                                 $('#updatecheck-loading').addClass('hidden');
                                 $('#updatecheck-updates-available').removeClass('hidden');
                             }
@@ -127,7 +129,7 @@
                     <?php _trans('updatecheck_failed'); ?>
                 </div>
 
-                <a href="https://invoiceplane.org/downloads" id="updatecheck-updates-available"
+                <a href="" id="updatecheck-updates-available"
                    class="btn btn-success btn-sm hidden" target="_blank">
                     <?php _trans('updates_available'); ?>
                 </a>
