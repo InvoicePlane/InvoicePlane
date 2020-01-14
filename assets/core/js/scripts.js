@@ -185,7 +185,7 @@ $(document).ready(function () {
     $('.simple-select').select2();
 
     // Enable clipboard toggles
-    var clipboards = new Clipboard('.to-clipboard');
+    var clipboards = new ClipboardJS('.to-clipboard');
 
     // Keep track of the last "taggable" input/textarea
     $('.taggable').on('focus', function () {
