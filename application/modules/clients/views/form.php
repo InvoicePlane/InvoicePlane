@@ -260,7 +260,8 @@ $cv = $this->controller->view_data['custom_values'];
                             <label for="client_gender"><?php _trans('gender'); ?></label>
 
                             <div class="controls">
-                                <select name="client_gender" id="client_gender" class="form-control simple-select">
+                                <select name="client_gender" id="client_gender"
+                                	class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                     <?php
                                     $genders = array(
                                         trans('gender_male'),

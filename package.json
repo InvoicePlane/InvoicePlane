@@ -1,8 +1,7 @@
 {
   "name": "invoiceplane",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/InvoicePlane/InvoicePlane.git"
@@ -14,27 +13,31 @@
   },
   "homepage": "https://invoiceplane.com",
   "devDependencies": {
-    "autoprefixer": "^7.2.6",
-    "bootstrap-datepicker": "^1.8.0",
-    "bootstrap-sass": "^3.3.7",
-    "clipboard": "^1.7.1",
-    "dropzone": "^5.4.0",
+    "autoprefixer": "^9.7.3",
+    "bootstrap-datepicker": "^1.9.0",
+    "bootstrap-sass": "^3.4.1",
+    "clipboard": "^2.0.4",
+    "dropzone": "^5.5.1",
     "font-awesome": "^4.7.0",
-    "grunt": "^1.0.2",
-    "grunt-contrib-clean": "^1.1.0",
+    "grunt": "^1.0.4",
+    "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-uglify": "^3.3.0",
-    "grunt-contrib-watch": "^1.0.0",
+    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-contrib-watch": "^1.1.0",
     "grunt-postcss": "^0.9.0",
     "grunt-sass": "^2.1.0",
     "html5shiv": "^3.7.3",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "jquery-ui": "^1.12.1",
-    "js-cookie": "^2.2.0",
-    "load-grunt-tasks": "^3.5.2",
-    "postcss": "^6.0.21",
-    "select2": "^4.0.3",
+    "js-cookie": "^2.2.1",
+    "load-grunt-tasks": "^5.1.0",
+    "node-sass": "^4.13.0",
+    "postcss": "^7.0.26",
+    "select2": "^4.0.12",
     "zxcvbn": "^4.4.2"
+  },
+  "scripts": {
+    "build": "grunt build"
   }
 }

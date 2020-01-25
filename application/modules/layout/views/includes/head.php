@@ -87,13 +87,15 @@
         });
 
         $(document).on('click', '.invoice-add-payment', function () {
-            invoice_id = $(this).data('invoice-id');
-            invoice_balance = $(this).data('invoice-balance');
-            invoice_payment_method = $(this).data('invoice-payment-method');
+            var invoice_id = $(this).data('invoice-id');
+            var invoice_balance = $(this).data('invoice-balance');
+            var invoice_payment_method = $(this).data('invoice-payment-method');
+            var payment_cf_exist =  $(this).data('payment-cf-exist');
             $('#modal-placeholder').load("<?php echo site_url('payments/ajax/modal_add_payment'); ?>", {
                 invoice_id: invoice_id,
                 invoice_balance: invoice_balance,
-                invoice_payment_method: invoice_payment_method
+                invoice_payment_method: invoice_payment_method,
+                payment_cf_exist: payment_cf_exist
             });
         });
 

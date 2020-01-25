@@ -1,0 +1,25 @@
+name: Frontend Testing
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  run:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        node: ['8', '10', '12']
+    name: Node ${{ matrix.node }} build testing
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install frontend dependencies
+        run: npm install
+      - name: Try to build the assets
+        run: npm run build

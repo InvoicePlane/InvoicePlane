@@ -100,10 +100,7 @@ class Payments extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
 
-        $open_invoices = $this->mdl_invoices
-            ->where('ip_invoice_amounts.invoice_balance >', 0)
-            ->or_where('ip_invoice_amounts.invoice_balance <', 0)
-            ->get()->result();
+        $open_invoices = $this->mdl_invoices->is_open()->get()->result();
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result();
         $custom_values = [];
