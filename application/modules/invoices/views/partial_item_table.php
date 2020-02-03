@@ -56,6 +56,12 @@
                            value="" data-toggle="tooltip" data-placement="bottom"
                            title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                 </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><?php _trans('item_discount_percent'); ?></span>
+                    <input type="text" name="item_discount_percent" class="input-sm form-control amount"
+                           value="" data-toggle="tooltip" data-placement="bottom"
+                           title="<?php echo '% ' . trans('per_item'); ?>">
+                </div>
             </td>
             <td>
                 <div class="input-group">
@@ -199,6 +205,16 @@
                                value="<?php echo format_amount($item->item_discount_amount); ?>"
                                data-toggle="tooltip" data-placement="bottom"
                                title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>"
+                            <?php if ($invoice->is_read_only == 1) {
+                                echo 'disabled="disabled"';
+                            } ?>>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon"><?php _trans('item_discount_percent'); ?></span>
+                        <input type="text" name="item_discount_percent" class="input-sm form-control amount"
+                               value="<?php echo format_amount($item->item_discount_percent); ?>"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="<?php echo '% ' . trans('per_item'); ?>"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>

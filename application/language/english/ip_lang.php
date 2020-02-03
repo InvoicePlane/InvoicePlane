@@ -286,6 +286,7 @@ $lang = array(
     'is_writable'                                  => 'is writable',
     'item'                                         => 'Item',
     'item_discount'                                => 'Item Discount',
+    'item_discount_percent'                        => 'Item Discount %',
     'item_lookup_form'                             => 'Item Lookup Form',
     'item_lookups'                                 => 'Item Lookups',
     'item_name'                                    => 'Item Name',
