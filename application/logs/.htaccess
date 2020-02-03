@@ -1,0 +1,4 @@
+<Files "sessionevents.log">
+Order Allow,Deny
+Deny from all
+</Files>

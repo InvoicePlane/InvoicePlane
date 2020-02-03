@@ -354,6 +354,18 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
                             <?php } ?>
 
+                            <?php if (isset($invoice->quote_id)) { ?>
+                                <div class="col-xs-12">
+                                    <div class="alert alert-success small">
+                                        <i class="fa fa-share"></i>&nbsp;
+                                        <?php
+                                        echo trans('invoice_generated_from_quote') . ' ';
+                                        echo anchor('/quotes/view/' . $invoice->quote_id, $invoice->quote_number);
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">

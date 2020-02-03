@@ -46,6 +46,10 @@
                class="btn <?php echo $status == 'canceled' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('canceled'); ?>
             </a>
+            <a href="<?php echo site_url('quotes/status/invoiced'); ?>"
+               class="btn <?php echo $status == 'invoiced' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('invoiced'); ?>
+            </a>
         </div>
     </div>
 

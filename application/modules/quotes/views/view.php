@@ -261,6 +261,18 @@ $cv = $this->controller->view_data["custom_values"];
                     <div class="details-box">
                         <div class="row">
 
+                            <?php if ($quote->quote_status_id == 7) { ?>
+                                <div class="col-xs-12">
+                                    <div class="alert alert-success small">
+                                        <i class="fa fa-check"></i>&nbsp;
+                                        <?php
+                                        echo trans('quote_invoiced_in') . ' ';
+                                        echo anchor('/invoices/view/' . $quote->invoice_id, $quote->invoice_number);
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="quote-properties">

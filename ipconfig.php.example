@@ -29,6 +29,11 @@ DB_PORT=
 # the default is 10 days.
 SESS_EXPIRATION=864000
 
+# Set this setting to 'true' if you want to enable session logs.
+# Session logs will create the file /application/logs/session_log.log and log events like
+# user logins and failed login attempts. This may be used for Fail2Ban.
+ENABLE_SESSIONLOGS=false
+
 # Enable the deletion of invoices
 ENABLE_INVOICE_DELETION=false
 
