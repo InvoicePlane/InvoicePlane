@@ -52,9 +52,22 @@ class Mdl_Invoice_Amounts extends CI_Model
 
         $invoice_amounts = $query->row();
 
-        $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
-        $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
-        $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
+        $invoice_item_subtotal = 0;
+        $invoice_subtotal = 0;
+        $invoice_total = 0;
+
+        // case before-tax
+        if (get_setting('default_include_item_tax') === "0") {
+
+            $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
+            $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
+
+        } else {
+
+            $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal;
+            $invoice_total = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+        }
 
         // Get the amount already paid
         $query = $this->db->query("

@@ -37,7 +37,7 @@ class Mdl_Item_Amounts extends CI_Model
         // If the setting is set to 0 or 'apply_before_item_tax', 
         // we calculate the item tax on the net amount.
         // total: ((subtotal - discount) + ((subtotal - discount) / 100 * tax_percent))
-        if(get_setting('default_invoice_tax_rate_placement') === "0") {
+        if(get_setting('default_include_item_tax') === "0") {
 
             $item_subtotal = $item->item_quantity * $item->item_price;
             $item_discount_total = ($item->item_discount_amount * $item->item_quantity) + ((($item->item_price / 100) * $item->item_discount_percent) * $item->item_quantity);
