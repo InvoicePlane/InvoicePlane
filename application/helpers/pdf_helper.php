@@ -35,7 +35,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
 
-    // Override language with system language
+    // Override system language with client language
     set_language($invoice->client_language);
 
     if (!$invoice_template) {

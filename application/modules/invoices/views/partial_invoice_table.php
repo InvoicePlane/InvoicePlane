@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped">
+    <table class="table table-hover table-striped">
 
         <thead>
         <tr>
@@ -32,13 +32,14 @@
                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
                         <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
                         if ($invoice->invoice_sign == '-1') { ?>
-                            &nbsp;<i class="fa fa-credit-invoice"
-                                     title="<?php echo trans('credit_invoice') ?>"></i>
-                        <?php }
-                        if ($invoice->is_read_only == 1) { ?>
-                            &nbsp;<i class="fa fa-read-only"
-                                     title="<?php echo trans('read_only') ?>"></i>
-                        <?php }; ?>
+                            &nbsp;<i class="fa fa-credit-invoice" title="<?php echo trans('credit_invoice') ?>"></i>
+                        <?php } ?>
+                        <?php if ($invoice->is_read_only) { ?>
+                            &nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i>
+                        <?php } ?>
+                        <?php if ($invoice->invoice_is_recurring) { ?>
+                            &nbsp;<i class="fa fa-refresh" title="<?php echo trans('recurring') ?>"></i>
+                        <?php } ?>
                     </span>
                 </td>
 

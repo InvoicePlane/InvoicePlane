@@ -56,6 +56,12 @@
                            value="" data-toggle="tooltip" data-placement="bottom"
                            title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
                 </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><?php _trans('item_discount_percent'); ?></span>
+                    <input type="text" name="item_discount_percent" class="input-sm form-control amount"
+                           value="" data-toggle="tooltip" data-placement="bottom"
+                           title="<?php echo '% ' . trans('per_item'); ?>">
+                </div>
             </td>
             <td>
                 <div class="input-group">
@@ -203,6 +209,16 @@
                                 echo 'disabled="disabled"';
                             } ?>>
                     </div>
+                    <div class="input-group">
+                        <span class="input-group-addon"><?php _trans('item_discount_percent'); ?></span>
+                        <input type="text" name="item_discount_percent" class="input-sm form-control amount"
+                               value="<?php echo format_amount($item->item_discount_percent); ?>"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="<?php echo '% ' . trans('per_item'); ?>"
+                            <?php if ($invoice->is_read_only == 1) {
+                                echo 'disabled="disabled"';
+                            } ?>>
+                    </div>
                 </td>
                 <td class="td-amount">
                     <div class="input-group">
@@ -342,16 +358,16 @@
                             <form method="post"
                                 action="<?php echo site_url('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>
-                                <span class="amount">
-                                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
-                                </span>
-                                <span class="text-muted">
-                                    <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) ?>
-                                </span>
                                 <button type="submit" class="btn btn-xs btn-link"
                                         onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
+                                <span class="text-muted">
+                                    <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%' ?>
+                                </span>
+                                <span class="amount">
+                                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
+                                </span>
                             </form>
                         <?php }
                     } else {

@@ -6,7 +6,7 @@
             </button>
         <?php endif; ?>
         <?php if (!isset($hide_cancel_button)) : ?>
-            <button id="btn-cancel" name="btn_cancel" class="btn btn-danger" value="1">
+            <button type="button" onclick="window.history.back()" id="btn-cancel" name="btn_cancel" class="btn btn-danger" value="1">
                 <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
             </button>
         <?php endif; ?>

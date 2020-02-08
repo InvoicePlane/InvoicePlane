@@ -14,7 +14,7 @@
         </form>
     </div>
 
-</div
+</div>
 <div id="content" class="table-content">
 
     <div id="filter_results">

@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table id="tasks_table" class="table table-bordered table-striped no-margin">
+    <table id="tasks_table" class="table table-hover table-bordered table-striped no-margin">
         <tr>
             <th>&nbsp;</th>
             <th><?php echo lang('project_name'); ?></th>

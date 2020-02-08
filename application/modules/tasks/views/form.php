@@ -90,7 +90,8 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
 
                         <div class="form-group">
                             <label for="task_status"><?php _trans('status'); ?></label>
-                            <select name="task_status" id="task_status" class="form-control simple-select">
+                            <select name="task_status" id="task_status" 
+                            	class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <?php foreach ($task_statuses as $key => $status) {
                                     if ($this->mdl_tasks->form_value('task_status') != 4 && $key == 4) {
                                         continue;

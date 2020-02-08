@@ -256,16 +256,16 @@
                             <form method="POST" class="form-inline"
                                   action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>
-                                <span class="amount">
-                                    <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
-                                </span>
-                                <span class="text-muted">
-                                    <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) ?>
-                                </span>
                                 <button type="submit" class="btn btn-xs btn-link"
                                         onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
+                                <span class="text-muted">
+                                    <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%' ?>
+                                </span>
+                                <span class="amount">
+                                    <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
+                                </span>
                             </form>
                         <?php }
                     } else {

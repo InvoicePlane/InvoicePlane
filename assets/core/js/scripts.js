@@ -73,6 +73,9 @@ function insert_html_tag(tag_type, destination_id) {
         case 'text-paragraph':
             text = ['<p>', '</p>'];
             break;
+        case 'text-linebreak':
+            text = ['<br>', ''];
+            break;
 
         case 'text-h1':
             text = ['<h1>', '</h1>'];
@@ -182,7 +185,7 @@ $(document).ready(function () {
     $('.simple-select').select2();
 
     // Enable clipboard toggles
-    var clipboards = new Clipboard('.to-clipboard');
+    var clipboards = new ClipboardJS('.to-clipboard');
 
     // Keep track of the last "taggable" input/textarea
     $('.taggable').on('focus', function () {

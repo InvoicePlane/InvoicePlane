@@ -42,10 +42,10 @@ class Mdl_Units extends Response_Model
             $units = $this->get()->result();
             foreach ($units as $unit) {
                 if ($unit->unit_id == $unit_id) {
-                    if ($quantity > 1) {
-                        return $unit->unit_name_plrl;
-                    } else {
+                    if ($quantity == -1 || $quantity == 1) {
                         return $unit->unit_name;
+                    } else {
+                        return $unit->unit_name_plrl;
                     }
                 }
             }

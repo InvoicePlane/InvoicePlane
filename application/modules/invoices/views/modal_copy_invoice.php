@@ -13,7 +13,7 @@
             $.post("<?php echo site_url('invoices/ajax/copy_invoice'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     client_id: $('#client_id').val(),
-                    invoice_date_created: $('#invoice_date_created').val(),
+                    invoice_date_created: $('#invoice_date_created_modal').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
@@ -63,10 +63,10 @@
             </div>
 
             <div class="form-group has-feedback">
-                <label for="invoice_date_created"><?php _trans('invoice_date'); ?>: </label>
+                <label for="invoice_date_created_modal"><?php _trans('invoice_date'); ?>: </label>
 
                 <div class="input-group">
-                    <input name="invoice_date_created" id="invoice_date_created" class="form-control datepicker"
+                    <input name="invoice_date_created_modal" id="invoice_date_created_modal" class="form-control datepicker"
                            value="<?php echo date_from_mysql(date('Y-m-d', time()), true) ?>">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
