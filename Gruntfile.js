@@ -192,3 +192,4 @@ module.exports = function(grunt) {
     "copy:fontawesome"
   ]);
 };
+console.log("Just Checkin InvoicePlane out");
