@@ -28,6 +28,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->model('invoices/mdl_invoice_tax_rates');
     $CI->load->model('custom_fields/mdl_custom_fields');
     $CI->load->model('payment_methods/mdl_payment_methods');
+    $CI->load->model('upload/mdl_uploads');
 
     $CI->load->helper('country');
     $CI->load->helper('client');
@@ -99,11 +100,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'custom_fields' => $custom_fields,
     );
 
+    // Prepare the attachments
+    $attachment_files = $CI->mdl_uploads->get_invoice_uploads($invoice_id);
+
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     $CI->load->helper('mpdf');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
+        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles, $attachment_files);
 }
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
