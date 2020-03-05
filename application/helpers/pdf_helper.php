@@ -17,9 +17,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param bool $stream
  * @param null $invoice_template
  * @param null $is_guest
+ * @param bool $with_attachments add attachments to pdf
  * @return string
  */
-function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null)
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null, $with_attachments = false)
 {
     $CI = &get_instance();
 
@@ -101,7 +102,10 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     );
 
     // Prepare the attachments
-    $attachment_files = $CI->mdl_uploads->get_invoice_uploads($invoice_id);
+    $attachment_files = null;
+    if ($with_attachments) {
+        $attachment_files = $CI->mdl_uploads->get_invoice_uploads($invoice_id);
+    }
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 

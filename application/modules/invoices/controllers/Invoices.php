@@ -262,6 +262,27 @@ class Invoices extends Admin_Controller
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
+        return $this->__inner_generate_pdf($invoice_id, $stream, $invoice_template);
+    }
+
+    /**
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     */
+    public function generate_pdf_with_attachments($invoice_id, $stream = true, $invoice_template = null)
+    {
+        return $this->__inner_generate_pdf($invoice_id, $stream, $invoice_template, true);
+    }
+
+    /**
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     * @param bool $with_attachments
+     */
+    public function __inner_generate_pdf($invoice_id, $stream = true, $invoice_template = null, $with_attachments = false)
+    {
         $this->load->helper('pdf');
 
         if (get_setting('mark_invoices_sent_pdf') == 1) {
@@ -269,7 +290,7 @@ class Invoices extends Admin_Controller
             $this->mdl_invoices->mark_sent($invoice_id);
         }
 
-        generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
+        generate_invoice_pdf($invoice_id, $stream, $invoice_template, null, $with_attachments);
     }
 
     /**
