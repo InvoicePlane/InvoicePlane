@@ -103,6 +103,9 @@ function pdf_create(
     // add attachments as extra pages
     if ($attachment_files != null) {
         foreach ($attachment_files as $file) {
+            if (!preg_match('*.pdf',$file['path'])) {
+                continue;
+            }
             $mpdf->AddPage();
             $pagecount = $mpdf->SetSourceFile($file['path']);
             $tplId = $mpdf->ImportPage($pagecount);
