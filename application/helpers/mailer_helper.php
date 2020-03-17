@@ -60,7 +60,7 @@ function email_invoice(
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
     if ($db_invoice->sumex_id == null) {
-        $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
+        $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template, null, true);
     } else {
         $invoice = generate_invoice_sumex($invoice_id, false, true);
     }
@@ -73,7 +73,7 @@ function email_invoice(
 
     $message = (empty($message) ? ' ' : $message);
 
-    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments);
+    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, null);
 }
 
 /**
