@@ -68,6 +68,29 @@ class Ajax extends Admin_Controller
                 $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
             }
 
+            $car_id = $this->input->post('car_id');
+            $this->load->model('cars/mdl_cars');
+            if($car_id >= '1')
+            {
+                $cars = $this->mdl_cars->by_id($car_id)->get()->result();
+                foreach ($cars as $car)
+                {
+                    $car_vehicle = $car->car_vehicle;
+                    $car_licenseplate = $car->car_licenseplate;
+                    $car_kmstand = $car->car_kmstand;
+                    $car_auhu = $car->car_auhu;
+                    $car_chassnr = $car->car_chassnr;
+                }
+            }
+            else
+            {
+                $car_vehicle = '-';
+                $car_licenseplate = '-';
+                $car_kmstand = '0';
+                $car_auhu = '0';
+                $car_chassnr = '-';
+            }
+
             $db_array = [
                 'quote_number' => $quote_number,
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
@@ -77,6 +100,12 @@ class Ajax extends Admin_Controller
                 'notes' => $this->input->post('notes'),
                 'quote_discount_amount' => standardize_amount($quote_discount_amount),
                 'quote_discount_percent' => standardize_amount($quote_discount_percent),
+                'car_id' => $car_id,
+                'car_vehicle' => $car_vehicle,
+                'car_licenseplate' => $car_licenseplate,
+                'car_kmstand' => $car_kmstand,
+                'car_auhu' => $car_auhu,
+                'car_chassnr' => $car_chassnr,
             ];
 
             $this->mdl_quotes->save($quote_id, $db_array);
@@ -332,6 +361,12 @@ class Ajax extends Admin_Controller
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_discount_amount', $quote->quote_discount_amount);
             $this->db->set('invoice_discount_percent', $quote->quote_discount_percent);
+            $this->db->set('car_id', $quote->car_id);
+            $this->db->set('car_vehicle', $quote->car_vehicle);
+            $this->db->set('car_licenseplate', $quote->car_licenseplate);
+            $this->db->set('car_kmstand', $quote->car_kmstand);
+            $this->db->set('car_auhu', $quote->car_auhu);
+            $this->db->set('car_chassnr', $quote->car_chassnr);
             $this->db->update('ip_invoices');
 
             // Save the invoice id to the quote

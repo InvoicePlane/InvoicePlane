@@ -124,7 +124,29 @@
     </div>
 
     <h1 class="invoice-title text-red"><?php echo trans('invoice') . ' ' . $invoice->invoice_number; ?></h1>
-
+    <?php if ($invoice->car_vehicle != '-') : ?>
+    <div>
+    	<table width="100%">
+	    	<tr>
+		    	<th align="left"><?php echo trans('car').':'?></th>
+			    <th align="left"><?php echo trans('car_chassnr').':'?></th>
+    			<?php if ($invoice->car_licenseplate != '-') : ?>
+	    		<th align="left">Kennzeichen:</th>
+		    	<?php endif; ?>
+			    <th align="left">Kilometerstand:</th>
+		    </tr>
+		    <tr>
+                <td><?php echo $invoice->car_vehicle; ?></td>
+    			<td><?php echo $invoice->car_chassnr; ?></td>
+	    		<?php if ($invoice->car_licenseplate != '-') : ?>
+		    	<td><?php echo $invoice->car_licenseplate ?></td>
+			    <?php endif; ?>
+			    <td><?php echo $invoice->car_kmstand ?></td>
+           </tr>
+	    </table>
+    </div>
+    <?php endif; ?>
+    <br>
     <table class="item-table">
         <thead>
         <tr>

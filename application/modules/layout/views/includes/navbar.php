@@ -24,6 +24,18 @@
                         <li><?php echo anchor('clients/index', trans('view_clients')); ?></li>
                     </ul>
                 </li>
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;<span
+                            class="hidden-sm"><?php echo lang('cars'); ?></span><i
+                            class="visible-sm-inline fa fa-coin"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('cars/form', lang('add_car')); ?></li>
+                        <li><?php echo anchor('cars/index', lang('view_cars')); ?></li>
+                    </ul>
+                </li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

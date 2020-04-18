@@ -83,6 +83,26 @@ class Mdl_Uploads extends Response_Model
         return $names;
     }
 
+    public function get_car_uploads($id)
+    {
+        $this->load->model('cars/mdl_cars');
+        $car = $this->mdl_invoices->get_by_id($id);
+        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $car->car_url_key . "'");
+
+        $names = array();
+
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                array_push($names, array(
+                    'path' => UPLOADS_CFILES_FOLDER . $row->file_name_new,
+                    'filename' => $row->file_name_original
+                ));
+            }
+        }
+
+        return $names;
+    }
+
     /**
      * @param $url_key
      * @param $filename

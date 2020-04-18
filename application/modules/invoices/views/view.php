@@ -78,6 +78,7 @@ $cv = $this->controller->view_data["custom_values"];
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val(),
+                    car_id: $('#car_id').val(),
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -333,6 +334,18 @@ if ($this->config->item('disable_read_only') == true) {
                         </div>
                     <?php endif; ?>
 
+                    <div>
+                         <label for="car_id" class="control-label"><?php echo lang('car'),':'; ?></label>
+                    </div>
+                    <div class="col-sm-6">
+                            <select name="car_id" id="car_id" class="form-control">
+                                            <option value=""></option>
+                                            <?php foreach ($cars as $car) { ?>
+                                                    <option value="<?php echo $car->car_id; ?>"
+                                                                    <?php if ($invoice->car_id == $car->car_id) { ?>selected="selected"<?php } ?>><?php echo $car->car_vehicle; ?></option>
+                                            <?php } ?>
+                            </select>
+		    </div>
                 </div>
 
                 <div class="col-xs-12 visible-xs"><br></div>

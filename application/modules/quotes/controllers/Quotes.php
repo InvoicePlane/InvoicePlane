@@ -90,6 +90,7 @@ class Quotes extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_quote_custom');
+        $this->load->model('cars/mdl_cars');
 
         $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
         $this->db->reset_query();
@@ -143,6 +144,7 @@ class Quotes extends Admin_Controller
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'units' => $this->mdl_units->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
+                'cars' => $this->mdl_cars->by_client($quote->client_id)->limit(20)->get()->result(),
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'custom_js_vars' => array(

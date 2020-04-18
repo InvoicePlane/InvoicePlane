@@ -135,6 +135,7 @@ class Invoices extends Admin_Controller
         $this->load->helper("client");
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
+        $this->load->model('cars/mdl_cars');
 
         $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_invoice_custom');
@@ -195,6 +196,7 @@ class Invoices extends Admin_Controller
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units' => $this->mdl_units->get()->result(),
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
+                'cars' => $this->mdl_cars->by_client($invoice->client_id)->limit(20)->get()->result(),
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'custom_js_vars' => [

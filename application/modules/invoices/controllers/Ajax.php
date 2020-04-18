@@ -96,6 +96,29 @@ class Ajax extends Admin_Controller
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
                 $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
             }
+ 
+            $car_id = $this->input->post('car_id');
+            $this->load->model('cars/mdl_cars');
+            if($car_id >= '1')
+            {
+                $cars = $this->mdl_cars->by_id($car_id)->get()->result();
+                foreach ($cars as $car)
+                {
+                    $car_vehicle = $car->car_vehicle;
+                    $car_licenseplate = $car->car_licenseplate;
+                    $car_kmstand = $car->car_kmstand;
+                    $car_auhu = $car->car_auhu;
+                    $car_chassnr = $car->car_chassnr;
+                }
+            }
+            else
+            {
+                $car_vehicle = '-';
+                $car_licenseplate = '-';
+                $car_kmstand = '0';
+                $car_auhu = '0';
+                $car_chassnr = '-';
+	        }
 
             $db_array = [
                 'invoice_number' => $invoice_number,
@@ -107,7 +130,13 @@ class Ajax extends Admin_Controller
                 'payment_method' => $this->input->post('payment_method'),
                 'invoice_discount_amount' => standardize_amount($invoice_discount_amount),
                 'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
-            ];
+                'car_id' => $car_id,
+                'car_vehicle' => $car_vehicle,
+                'car_licenseplate' => $car_licenseplate,
+                'car_kmstand' => $car_kmstand,
+                'car_auhu' => $car_auhu,
+                'car_chassnr' => $car_chassnr,
+	    ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
             if ($this->config->item('disable_read_only') === false) {

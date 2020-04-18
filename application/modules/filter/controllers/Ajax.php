@@ -103,4 +103,24 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('payments/partial_payment_table', $data);
     }
 
+    public function filter_cars()
+    {
+        $this->load->model('cars/mdl_cars');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_cars->like("CONCAT_WS('^',car_date_modified,LOWER(car_vehicle),LOWER(car_licenseplate),LOWER(client_name),LOWER(car_note))", $keyword);
+            }
+        }
+
+        $data = array(
+            'cars' => $this->mdl_cars->get()->result()
+        );
+
+        $this->layout->load_view('cars/partial_car_table', $data);
+    }
 }

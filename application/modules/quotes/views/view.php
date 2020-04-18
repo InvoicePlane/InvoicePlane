@@ -54,6 +54,7 @@ $cv = $this->controller->view_data["custom_values"];
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
+                    car_id: $('#car_id').val(),
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -252,7 +253,18 @@ $cv = $this->controller->view_data["custom_values"];
                             <?php _auto_link($quote->client_email); ?>
                         </div>
                     <?php endif; ?>
-
+		    <div>
+                         <label for="car_id" class="control-label"><?php echo lang('car'),':'; ?></label>
+                    </div>
+                    <div class="col-sm-6">
+                            <select name="car_id" id="car_id" class="form-control">
+                                            <option value=""></option>
+                                            <?php foreach ($cars as $car) { ?>
+                                                    <option value="<?php echo $car->car_id; ?>"
+                                                                    <?php if ($quote->car_id == $car->car_id) { ?>selected="selected"<?php } ?>><?php echo $car->car_vehicle; ?></option>
+                                            <?php } ?>
+                            </select>
+		   </div>
                 </div>
 
                 <div class="col-xs-12 visible-xs"><br></div>
