@@ -10,3 +10,6 @@
 !invoiceplane/**/*
 !invoiceplane_blue
 !invoiceplane_blue/**/*
+!invoiceplane_dpoper_blue
+invoiceplane_dpoper_blue/**/*
+
