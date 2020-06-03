@@ -19,9 +19,6 @@
             <b><?php _htmlsc(format_client($invoice)); ?></b>
         </div>
         <?php
-			if ($invoice->client_vat_id) {
-				echo '<div>' . trans('vat_id_short') . ': ' . $invoice->client_vat_id . '</div>';
-			}
 			if ($invoice->client_address_1) {
 				echo '<div>' . htmlsc($invoice->client_address_1) . '</div>';
 			}
@@ -49,7 +46,14 @@
     <div id="company">
         <div>
 			<b>
-			<?php _htmlsc($invoice->user_company); ?>
+			<?php
+				if ($custom_fields['client']['Unternehmenszuordnung'] == 'IT Systemhaus Poper') {
+					_htmlsc($invoice->user_company);
+				}
+				if ($custom_fields['client']['Unternehmenszuordnung'] == 'Ingenieurbüro Poper') {
+					_htmlsc($custom_fields['user']['2. Firma Name']);
+				}
+			?>
 			</b>
 		</div>
         <div>
@@ -85,7 +89,6 @@
         }
         ?>
     </div>
-
 </header>
 
 <main>
@@ -96,6 +99,12 @@
             <tr>
               <td><?php echo trans('vat_id_user') . ':'; ?></td>
               <td><?php _htmlsc($invoice->user_vat_id); ?></td>
+            </tr>
+          <?php endif; ?>
+          <?php if ($invoice->client_vat_id): ?>
+            <tr>
+              <td><?php echo trans('vat_id_client') . ':'; ?></td>
+              <td><?php _htmlsc($invoice->client_vat_id); ?></td>
             </tr>
           <?php endif; ?>
           <tr>
@@ -253,10 +262,33 @@
 </main>
 
 <footer>
-    <?php if ($invoice->invoice_terms) : ?>
+	<?php
+		if ($invoice->invoice_terms): ?>
+			<div class="notes">
+			<b>
+			<?php _trans('terms'); ?>
+			</b><br/>
+			<?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
+			</div>
+		<?php endif; ?>
+	<?php
+		if ($custom_fields['client']['Rechnungsbedingungen']): ?>
+			<div class="notes">
+			<b>
+			<?php _trans('terms_client'); ?>
+			</b><br/>
+			<?php echo nl2br(htmlsc($custom_fields['client']['Rechnungsbedingungen'])); ?>
+			</div>
+		<?php endif; ?>
+	<?php
+		if ($custom_fields['client']['Bankverbindung']):
+	?>
         <div class="notes">
-            <b><?php _trans('terms'); ?></b><br/>
-            <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
+            <b><br/>
+			<?php
+				_trans('bank_details');
+			?></b><br/>
+            <?php echo nl2br(htmlsc($custom_fields['client']['Bankverbindung'])); ?>
         </div>
     <?php endif; ?>
 </footer>

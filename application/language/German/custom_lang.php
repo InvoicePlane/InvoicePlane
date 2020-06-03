@@ -15,8 +15,11 @@
 $lang = array(
     'attachments_invoice'                          => 'Rechnungsanlagen',
 	'ban'                                          => 'Buchungskonto',
+	'bank_details'								   => 'Unsere Bankverbindung:',
     'cus_id'                                       => 'Kundennummer',
     'download_invoice_pdf'                         => 'Rechnung als PDF herunterladen',
+	'terms'								           => 'Informationen und Bedingungen',
+	'terms_client'								   => 'Hinweis(e)',
     'vat_id'                                       => 'UST-ID',
     'vat_id_short'                                 => 'UST-ID',
 	'vat_id_user'                                  => 'Meine UST-ID',
