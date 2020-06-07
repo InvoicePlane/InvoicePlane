@@ -1,3 +1,4 @@
 *.bak
 *.orig
+!.php
 !.gitignore
