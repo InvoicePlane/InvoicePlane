@@ -117,7 +117,7 @@
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
             <h4 class="panel-title"><?php _trans('add_product'); ?></h4>
         </div>
-        <div class="modal-body">
+        <div class="modal-body product-list-modal-content">
 
             <div class="form-inline">
                 <div class="form-group filter-form">
