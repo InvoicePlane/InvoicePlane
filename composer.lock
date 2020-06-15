@@ -1508,16 +1508,16 @@
         },
         {
             "name": "omnipay/paymentexpress",
-            "version": "v2.2.2",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-paymentexpress.git",
-                "reference": "d8f19103df0c3105872b105507b079822ab32c96"
+                "reference": "ffae669fa3833bfd07c111c390cf863b8db3c7d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-paymentexpress/zipball/d8f19103df0c3105872b105507b079822ab32c96",
-                "reference": "d8f19103df0c3105872b105507b079822ab32c96",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-paymentexpress/zipball/ffae669fa3833bfd07c111c390cf863b8db3c7d2",
+                "reference": "ffae669fa3833bfd07c111c390cf863b8db3c7d2",
                 "shasum": ""
             },
             "require": {
@@ -1567,7 +1567,7 @@
                 "pxpay",
                 "pxpost"
             ],
-            "time": "2018-05-14T09:09:08+00:00"
+            "time": "2020-06-05T07:06:48+00:00"
         },
         {
             "name": "omnipay/paypal",
