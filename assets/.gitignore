@@ -3,7 +3,13 @@
 
 # Core
 !core
-!core/**/*
+!core/css/*
+!core/fonts/*
+!core/img/overdue*.*
+!core/img/paid*.*
+!core/img/file-icons/*
+!core/js/*
+!core/scss/*
 
 # Base themes
 !invoiceplane
