@@ -198,7 +198,7 @@ class Mdl_Custom_Fields extends MY_Model
     /**
      * @param integer $field_id
      * @param string  $custom_field_model
-     * @param integer $model_id
+	 * @param db_invoice(object) $object
      * @return string
      */
     public function get_value_for_field($field_id, $custom_field_model, $object)

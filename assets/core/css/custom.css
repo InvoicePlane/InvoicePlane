@@ -4,3 +4,16 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
+	img.preview{
+		vertical-align:middle;
+		max-height: 100px;
+		margin-left: auto;
+		display: block;
+	}
+	.btn-topsm,.btn-primary>.btn{
+		padding:5px 10px;
+		font-size:12px;
+		line-height:1.5;
+		border-radius:3px;
+		display: block;
+	}
