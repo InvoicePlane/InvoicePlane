@@ -13,18 +13,21 @@
  */
 
 $lang = array(
-    'attachments_invoice'                          => 'Rechnungsanlagen',
-	'ban'                                          => 'Buchungskonto',
-	'bank_details'								   => 'Unsere Bankverbindung:',
-    'cus_id'                                       => 'Kundennummer',
-    'download_invoice_pdf'                         => 'Rechnung als PDF herunterladen',
-    'price'                                        => 'Preis (netto)',
-    'item_tax'                                     => 'Umsatzsteuer',
-	'terms'								           => 'Informationen und Bedingungen',
-	'terms_client'								   => 'Hinweis(e)',
-    'total'                                        => 'Summe (netto)',
-    'vat_id'                                       => 'UST-ID',
-    'vat_id_short'                                 => 'UST-ID',
-	'vat_id_user'                                  => 'Meine UST-ID',
-	'vat_id_client'                                => 'Ihre UST-ID'
+  'attachments_invoice'     => 'Rechnungsanlagen',
+  'ban'                     => 'Buchungskonto',
+  'bank_details'            => 'Meine Bankverbindung:',
+  'cus_id'                  => 'Kundennummer',
+  'download_invoice_pdf'    => 'Rechnung als PDF herunterladen',
+  'price'                   => 'Preis<br>netto',
+  'item_subtotal'           => 'Summe<br>netto',
+  'item_tax'                => 'Umsatzsteuer',
+  'item_tax_rate'           => 'Steuer-<br>satz',
+  'terms'                   => 'Informationen und Bedingungen',
+  'terms_client'            => 'Hinweis(e)',
+  'total'                   => 'Rechnungsumme',
+  'total_tax'               => 'Summe Umsatzsteuer',
+  'vat_id'                  => 'UST-ID',
+  'vat_id_short'            => 'UST-ID',
+  'vat_id_user'             => 'Meine UST-ID',
+  'vat_id_client'           => 'Ihre UST-ID'
 );

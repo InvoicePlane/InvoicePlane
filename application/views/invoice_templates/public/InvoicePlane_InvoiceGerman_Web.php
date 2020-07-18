@@ -10,11 +10,22 @@
     </title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
-
-    <link rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/custom.css">
+
 </head>
+<?php
+    // Discount settings
+    $show_item_discounts = false;
+	$colspan=4;
+    foreach ($items as $item) {
+        if ($item->item_discount != '0.00') {
+            $show_item_discounts = true;
+			$colspan=5;
+        }
+    }
+?>
 <body>
 
 <div class="container">
@@ -178,14 +189,17 @@
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
                         <thead>
-                        <tr>
-                            <th><?php echo trans('item'); ?></th>
-                            <th><?php echo trans('description'); ?></th>
-                            <th class="text-right"><?php echo trans('qty'); ?></th>
-                            <th class="text-right"><?php echo trans('price'); ?></th>
-                            <th class="text-right"><?php echo trans('discount'); ?></th>
-                            <th class="text-right"><?php echo trans('total'); ?></th>
-                        </tr>
+							<tr>
+								<th><?php echo trans('item'); ?></th>
+								<th><?php echo trans('description'); ?></th>
+								<th class="text-right"><?php echo trans('qty'); ?></th>
+								<th class="text-right"><?php echo trans('price'); ?></th>
+								<?php if ($show_item_discounts) : ?>
+									<th class="text-right"><?php _trans('discount'); ?></th>
+								<?php endif; ?>
+								<th class="text-right"><?php _trans('item_tax_rate'); ?></th>
+								<th class="text-right"><?php echo trans('item_subtotal'); ?></th>
+							</tr>
                         </thead>
                         <tbody>
                         <?php foreach ($items as $item) : ?>
@@ -200,19 +214,24 @@
                                     <?php endif; ?>
                                 </td>
                                 <td class="amount"><?php echo format_currency($item->item_price); ?></td>
-                                <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
+								<?php if ($show_item_discounts) : ?>
+									<td class="amount">
+										<?php echo format_currency($item->item_discount); ?>
+									</td>
+								<?php endif; ?>
+								<td class="amount"><?php echo format_amount($item->item_tax_rate_percent); ?>%</td>
                                 <td class="amount"><?php echo format_currency($item->item_subtotal); ?></td>
                             </tr>
                         <?php endforeach ?>
                         <tr>
-                            <td colspan="4"></td>
+                            <td colspan="<?php echo $colspan;?>"></td>
                             <td class="text-right"><?php echo trans('subtotal'); ?>:</td>
                             <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
                         </tr>
 
                         <?php if ($invoice->invoice_item_tax_total > 0) { ?>
                             <tr>
-                                <td class="no-bottom-border" colspan="4"></td>
+                                <td class="no-bottom-border" colspan="<?php echo $colspan;?>"></td>
                                 <td class="text-right"><?php echo trans('item_tax'); ?></td>
                                 <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
                             </tr>
@@ -220,7 +239,7 @@
 
                         <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
                             <tr>
-                                <td class="no-bottom-border" colspan="4"></td>
+                                <td class="no-bottom-border" colspan="<?php echo $colspan;?>"></td>
                                 <td class="text-right">
                                     <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent); ?>
                                     %
@@ -230,7 +249,7 @@
                         <?php endforeach ?>
 
                         <tr>
-                            <td class="no-bottom-border" colspan="4"></td>
+                            <td class="no-bottom-border" colspan="<?php echo $colspan;?>"></td>
                             <td class="text-right"><?php echo trans('discount'); ?>:</td>
                             <td class="amount">
                                 <?php
@@ -244,18 +263,18 @@
                         </tr>
 
                         <tr>
-                            <td class="no-bottom-border" colspan="4"></td>
+                            <td class="no-bottom-border" colspan="<?php echo $colspan;?>"></td>
                             <td class="text-right"><?php echo trans('total'); ?>:</td>
                             <td class="amount"><?php echo format_currency($invoice->invoice_total); ?></td>
                         </tr>
 
                         <tr>
-                            <td class="no-bottom-border" colspan="4"></td>
+                            <td class="no-bottom-border" colspan="<?php echo $colspan;?>"></td>
                             <td class="text-right"><?php echo trans('paid'); ?></td>
                             <td class="amount"><?php echo format_currency($invoice->invoice_paid) ?></td>
                         </tr>
                         <tr class="<?php echo ($invoice->invoice_balance > 0) ? 'overdue' : 'text-success'; ?>">
-                            <td class="no-bottom-border" colspan="4"></td>
+                            <td class="no-bottom-border" colspan="<?php echo $colspan;?>"></td>
                             <td class="text-right"><?php echo trans('balance'); ?></td>
                             <td class="amount">
                                 <b><?php echo format_currency($invoice->invoice_balance) ?></b>
@@ -278,11 +297,17 @@
 
             <div class="row">
                 <?php if ($invoice->invoice_terms) { ?>
-                    <div class="col-xs-12 col-md-6">
+                    <div class="col-xs-12 col-md-12">
                         <h4><?php echo trans('terms'); ?></h4>
                         <p><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></p>
                     </div>
-                <?php } ?>
+                <?php }
+				if ($custom_fields['client']['Rechnungsbedingungen']): ?>
+					<div class="col-xs-12 col-md-12">
+						<h4><?php _trans('terms_client'); ?></h4>
+						<p><?php echo nl2br(htmlsc($custom_fields['client']['Rechnungsbedingungen'])); ?></p>
+					</div>
+				<?php endif; ?>
             </div>
 
         </div><!-- .invoice-items -->
