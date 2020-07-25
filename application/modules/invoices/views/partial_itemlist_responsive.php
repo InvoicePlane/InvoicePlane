@@ -1,6 +1,6 @@
 <?php
-$invoice_disabled = "";
-if ($invoice->is_read_only == 1) $invoice_disabled = ' disabled="disabled"';
+    $invoice_disabled = "";
+    if ($invoice->is_read_only == 1) $invoice_disabled = ' disabled="disabled"';
 ?>
 
 <div class="row">
