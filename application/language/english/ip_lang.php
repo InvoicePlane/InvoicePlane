@@ -374,6 +374,7 @@ $lang = array(
     'payment_method_form'                          => 'Payment Method Form',
     'payment_methods'                              => 'Payment Methods',
     'payments'                                     => 'Payments',
+    'percentage'                                   => 'Percentage',
     'per_item'                                     => 'per Item',
     'pdf'                                          => 'PDF',
     'pdf_invoice_footer'                           => 'PDF Footer',
