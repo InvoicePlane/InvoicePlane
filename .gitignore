@@ -15,3 +15,6 @@ adminer.php
 /nbproject
 /.php_cs.cache
 /doc
+
+#My atrributes are my attributes
+.gitattributes
