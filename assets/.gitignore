@@ -3,10 +3,21 @@
 
 # Core
 !core
-!core/**/*
+!core/css/*
+!core/fonts/*
+!core/img/overdue*.*
+!core/img/paid*.*
+!core/img/file-icons/*
+!core/js/*
+!core/scss/*
 
 # Base themes
 !invoiceplane
 !invoiceplane/**/*
 !invoiceplane_blue
 !invoiceplane_blue/**/*
+
+# My themes
+!invoiceplane_dpoper_blue
+!invoiceplane_dpoper_blue/**/*
+
