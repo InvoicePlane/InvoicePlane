@@ -244,6 +244,14 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php _trans('send_email'); ?>
                     </a>
                 </li>
+                <?php if(get_setting('clicksend_api_username') && get_setting('clicksend_api_key')){ ?>
+                    <li>
+                        <a href="<?php echo site_url('clicksend/invoice/' . $invoice->invoice_id); ?>">
+                            <i class="fa fa-envelope fa-margin"></i>
+                            <?php _trans('send_letter'); ?>
+                        </a>
+                    </li>
+                <?php } ?>
                 <li class="divider"></li>
                 <li>
                     <a href="#" id="btn_create_recurring"
