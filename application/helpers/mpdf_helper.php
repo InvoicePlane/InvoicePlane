@@ -21,6 +21,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param null $is_guest
  * @param bool $zugferd_invoice
  * @param null $associated_files
+ * @param null $attachment_files
  *
  * @return string
  * @throws \Mpdf\MpdfException
@@ -33,7 +34,8 @@ function pdf_create(
     $isInvoice = null,
     $is_guest = null,
     $zugferd_invoice = false,
-    $associated_files = null
+    $associated_files = null,
+    $attachment_files = null
 ) {
     $CI = &get_instance();
 
@@ -97,6 +99,19 @@ function pdf_create(
     }
 
     $mpdf->WriteHTML((string) $html);
+
+    // add attachments as extra pages
+    if ($attachment_files != null) {
+        foreach ($attachment_files as $file) {
+            if (!preg_match('/^.*\.(pdf)$/i',$file['path'])) {
+                continue;
+            }
+            $mpdf->AddPage();
+            $pagecount = $mpdf->SetSourceFile($file['path']);
+            $tplId = $mpdf->ImportPage($pagecount);
+            $mpdf->UseTemplate($tplId);
+        }
+    }
 
     if ($isInvoice) {
 
