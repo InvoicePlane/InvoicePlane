@@ -38,6 +38,10 @@ function phpmail_send(
     $mail = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
+    // Remove unnecessary information disclosure
+    if (!IP_DEBUG) {
+        $mail->XMailer = null;
+    }
 
     switch (get_setting('email_send_method')) {
         case 'smtp':

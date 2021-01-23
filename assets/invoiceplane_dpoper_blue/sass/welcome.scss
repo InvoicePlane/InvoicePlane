@@ -1,0 +1,37 @@
+/*
+|   =========================================================
+|   InvoicePlane
+|   Sass Stylesheet
+|   for welcome screen and setup process
+|   =========================================================
+*/
+
+@import "ip_variables";
+@import "variables";
+
+/*
+|   =========================================================
+|   Import Bootstrap and other assets
+|   =========================================================
+*/
+
+// Dependencies
+@import "../../core/scss/bootstrap-welcome";
+@import "../../../node_modules/font-awesome/scss/font-awesome";
+@import "includes/select2";
+
+/*
+|   =========================================================
+|   Setup styles
+|   =========================================================
+*/
+
+@import "../../core/scss/welcome";
+
+/*
+|   =========================================================
+|   Custom styles
+|   =========================================================
+*/
+
+@import "custom_styles";

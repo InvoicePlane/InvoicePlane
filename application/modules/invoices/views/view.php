@@ -52,7 +52,7 @@ $cv = $this->controller->view_data["custom_values"];
         $('#btn_save_invoice').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tbody.item').each(function () {
+            $('#item_table .item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -99,8 +99,19 @@ $cv = $this->controller->view_data["custom_values"];
                 });
         });
 
-        $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
+        $('.btn_generate_pdf').click(function () {
+            var template = $(this).attr('data-invoice-template');
+            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id . '/true'); ?>/' + template, '_blank');
+        });
+
+        $('.dropdown-submenu > a').on("click", function(e){
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        $('#btn_generate_pdf_with_attachments').click(function () {
+            window.open('<?php echo site_url('invoices/generate_pdf_with_attachments/' . $invoice_id); ?>', '_blank');
         });
 
         $(document).on('click', '.btn_delete_item', function () {
@@ -127,20 +138,39 @@ $cv = $this->controller->view_data["custom_values"];
                 });
         });
 
-        <?php if ($invoice->is_read_only != 1): ?>
-        var fixHelper = function (e, tr) {
-            var $originals = tr.children();
-            var $helper = tr.clone();
-            $helper.children().each(function (index) {
-                $(this).width($originals.eq(index).width());
-            });
-            return $helper;
-        };
+        <?php if ($invoice->is_read_only != 1):
+          if (get_setting('show_responsive_itemlist') == 1) { ?>
+             function UpR(k) {
+               var parent = k.parents('.item');
+               var pos = parent.prev();
+               parent.insertBefore(pos);
+             }
+             function DownR(k) {
+               var parent = k.parents('.item');
+               var pos = parent.next();
+               parent.insertAfter(pos);
+             }
+             $(document).on('click', '.up', function () {
+               UpR($(this));
+             });
+             $(document).on('click', '.down', function () {
+               DownR($(this));
+             });
+        <?php } else { ?>
+            var fixHelper = function (e, tr) {
+                var $originals = tr.children();
+                var $helper = tr.clone();
+                $helper.children().each(function (index) {
+                    $(this).width($originals.eq(index).width());
+                });
+                return $helper;
+            };
 
-        $('#item_table').sortable({
-            items: 'tbody',
-            helper: fixHelper,
-        });
+            $('#item_table').sortable({
+                items: 'tbody',
+                helper: fixHelper,
+            });
+        <?php } ?>
 
         if ($('#invoice_discount_percent').val().length > 0) {
             $('#invoice_discount_amount').prop('disabled', true);
@@ -231,11 +261,32 @@ if ($this->config->item('disable_read_only') == true) {
                         </a>
                     </li>
                 <?php endif; ?>
-                <li>
-                    <a href="#" id="btn_generate_pdf"
+                <li class="dropdown-submenu">
+                    <a href="#"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
                         <?php _trans('download_pdf'); ?>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <?php
+                        $invoice_default_pdf = get_setting('pdf_invoice_template');
+                        foreach ($invoice_pdf_templates as $template) : ?>
+                            <li><a href="#" class="btn_generate_pdf"
+                                   data-invoice-template="<?php echo $template; ?>">
+                                    <i class="fa<?php if($template == $invoice_default_pdf) {
+                                        echo ' fa-chevron-right';
+                                    }?> fa-margin"></i>
+                                    <?php echo $template; ?>
+                                </a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" id="btn_generate_pdf_with_attachments"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-print fa-margin"></i>
+                        <?php _trans('download_pdf_with_attachments'); ?>
                     </a>
                 </li>
                 <li>
@@ -486,7 +537,12 @@ if ($this->config->item('disable_read_only') == true) {
 
             <br>
 
-            <?php $this->layout->load_view('invoices/partial_item_table'); ?>
+            <?php if (get_setting('show_responsive_itemlist') == 1) {
+                    $this->layout->load_view('invoices/partial_itemlist_responsive');
+                  } else {
+                    $this->layout->load_view('invoices/partial_itemlist_table');
+                  }
+            ?>
 
             <hr/>
 

@@ -4,6 +4,10 @@
         $('#btn_generate_pdf').click(function () {
             window.location = '<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>';
         });
+
+        $('#btn_generate_pdf_with_attachments').click(function () {
+            window.location = '<?php echo site_url('invoices/generate_pdf_with_attachments/' . $invoice_id); ?>';
+        });
     });
 
 </script>

@@ -97,6 +97,11 @@ class Payment_Handler extends Base_Controller
             // Send the request
             $response = $gateway->purchase($request)->send();
 
+            // Add transactionReference from resonse to session data
+            $data = $this->session->userdata($invoice->invoice_url_key . '_online_payment');
+            $data['transactionReference'] = $response->getTransactionReference();
+            $this->session->set_userdata($invoice->invoice_url_key . '_online_payment', $data);
+
             $reference = $response->getTransactionReference() ? $response->getTransactionReference() : '[no transation reference]';
 
             // Process the response
@@ -298,7 +303,12 @@ class Payment_Handler extends Base_Controller
 
             $this->db->insert('ip_merchant_responses', $db_array);
 
+            // Validate true if payment is succesful
+            if($response->isSuccessful()){
             return true;
+            }
+
+            return false;
         }
 
         return false;

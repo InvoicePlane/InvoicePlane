@@ -27,6 +27,20 @@ function invoice_logo()
 }
 
 /**
+ * Returns the invoice image for the web preview
+ *
+ * @return string
+ */
+function invoice_logo_web_preview()
+{
+    $CI = &get_instance();
+    if ($CI->mdl_settings->setting('invoice_logo')) {
+        return '<img class="preview" src="' . base_url() . 'uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';
+    }
+    return '';
+}
+
+/**
  * Returns the invoice logo for PDF files
  *
  * @return string
@@ -42,6 +56,29 @@ function invoice_logo_pdf()
     return '';
 }
 
+/**
+ * Returns true if the invoice was created after the upgrade to version 1.5.10 which
+ * implies that the new item discount calculation method should be used.
+ *
+ * @param string $invoice_creation_date
+ * @return bool
+ */
+function invoice_discountcalc($invoice_creation_date)
+{
+    $CI = &get_instance();
+    $CI->load->model('mdl_versions');
+    $version = $CI->mdl_versions->where('version_file', '033_1.5.10.sql')->row();
+
+    // Return false if version applied is not set because we cannot determine version status.
+    // No point in continuing here or doing additional conditionals if this fails!
+    if (!isset($version->version_date_applied)) {
+        return 0;
+    }
+
+    $patch_applied = strtotime($version->version_date_applied);
+
+    return ($invoice_creation_date >= $patch_applied ? 1 : 0);
+}
 
 /**
  * Returns a Swiss IS / IS+ code line
@@ -54,6 +91,7 @@ function invoice_logo_pdf()
  * @return string
  * @throws Error
  */
+
 function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
 {
     $isEur = false;

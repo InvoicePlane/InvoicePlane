@@ -355,6 +355,9 @@ class Mdl_Invoices extends Response_Model
         // Set default values
         $db_array['payment_method'] = (empty($db_array['payment_method']) ? 0 : $db_array['payment_method']);
 
+        // Check if the new discount calculation method should be used
+        $db_array['invoice_item_discount_calc'] = invoice_discountcalc($db_array['invoice_date_created']);
+
         // Generate the unique url key
         $db_array['invoice_url_key'] = $this->get_url_key();
 
@@ -505,6 +508,27 @@ class Mdl_Invoices extends Response_Model
     public function by_client($client_id)
     {
         $this->filter_where('ip_invoices.client_id', $client_id);
+        return $this;
+    }
+
+    /**
+     * Filter query in a date range.
+     * The filter can be open ended on one end by not supplied a value
+     * Dates must be in unixtime format
+     *
+     * @param time $start_date
+     * @param time $end_date
+     * @return Mdl_Invoices
+     */
+    public function by_date_range($start_date = null, $end_date = null)
+    {
+        if (!empty($start_date)) {
+            $this->filter_where("invoice_date_created >= '" . $start_date . "' ");
+        }
+        if (!empty($end_date)) {
+            $this->filter_where("invoice_date_created <= '" . $end_date . "' ");
+        }
+
         return $this;
     }
 

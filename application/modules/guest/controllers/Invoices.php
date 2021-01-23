@@ -103,6 +103,27 @@ class Invoices extends Guest_Controller
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
+        return $this->__inner_generate_pdf($invoice_id, $stream, $invoice_template);
+    }
+
+    /**
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     */
+    public function generate_pdf_with_attachments($invoice_id, $stream = true, $invoice_template = null)
+    {
+        return $this->__inner_generate_pdf($invoice_id, $stream, $invoice_template, true);
+    }
+
+    /**
+     * @param $invoice_id
+     * @param bool $stream
+     * @param null $invoice_template
+     * @param bool $with_attachments
+     */
+    private function __inner_generate_pdf($invoice_id, $stream = true, $invoice_template = null, $with_attachments = false)
+    {
         $this->load->helper('pdf');
 
         $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)
@@ -115,7 +136,7 @@ class Invoices extends Guest_Controller
 
         $this->mdl_invoices->mark_viewed($invoice_id);
 
-        generate_invoice_pdf($invoice_id, $stream, $invoice_template, true);
+        generate_invoice_pdf($invoice_id, $stream, $invoice_template, true, $with_attachments);
     }
 
     /**

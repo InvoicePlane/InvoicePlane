@@ -198,7 +198,7 @@ class Mdl_Custom_Fields extends MY_Model
     /**
      * @param integer $field_id
      * @param string  $custom_field_model
-     * @param integer $model_id
+	 * @param db_invoice(object) $object
      * @return string
      */
     public function get_value_for_field($field_id, $custom_field_model, $object)
@@ -215,6 +215,13 @@ class Mdl_Custom_Fields extends MY_Model
 
         $value_key = $cf_table . '_fieldvalue';
         $value_key_serialized = $cf_table . '_fieldvalue_serialized';
+
+        if ($value[0]->custom_field_type == 'SINGLE-CHOICE') {
+          $value2 = $this->get_values_for_fields($custom_field_model, $object->{$cf_model_name . '_id'});
+          $value[0]->$value_key = $value2[$value[0]->custom_field_label];
+        }
+        if ($value[0]->custom_field_type == 'MULTIPLE-CHOICE') {
+        }
 
         if (!isset($value[0]->$value_key)) {
             return '';
