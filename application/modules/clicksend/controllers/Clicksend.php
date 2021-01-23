@@ -173,7 +173,8 @@ class Clicksend extends Admin_Controller
         
         $response = clicksendapi_request($options);
 
-        /*var_dump($response);
+        /*header("Content-type: application/json");
+        echo json_encode($response);
         exit();*/
 
         if($response["error"]){
