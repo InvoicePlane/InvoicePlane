@@ -169,6 +169,7 @@ $lang = array(
     'documentation'                                => 'Documentation',
     'download'                                     => 'Download',
     'download_pdf'                                 => 'Download PDF',
+    'download_pdf_with_attachments'                => 'Download PDF with attachments',
     'draft'                                        => 'Draft',
     'drop_files_here'                              => 'Drop files here!',
     'due_date'                                     => 'Due Date',
