@@ -99,8 +99,15 @@ $cv = $this->controller->view_data["custom_values"];
                 });
         });
 
-        $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
+        $('.btn_generate_pdf').click(function () {
+            var template = $(this).attr('data-invoice-template');
+            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id . '/true'); ?>/' + template, '_blank');
+        });
+
+        $('.dropdown-submenu > a').on("click", function(e){
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
         });
 
         $(document).on('click', '.btn_delete_item', function () {
@@ -250,12 +257,26 @@ if ($this->config->item('disable_read_only') == true) {
                         </a>
                     </li>
                 <?php endif; ?>
-                <li>
-                    <a href="#" id="btn_generate_pdf"
+                <li class="dropdown-submenu">
+                    <a href="#"
                        data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
                         <?php _trans('download_pdf'); ?>
+                        <span class="caret"></span>
                     </a>
+                    <ul class="dropdown-menu">
+                        <?php
+                        $invoice_default_pdf = get_setting('pdf_invoice_template');
+                        foreach ($invoice_pdf_templates as $template) : ?>
+                            <li><a href="#" class="btn_generate_pdf"
+                                   data-invoice-template="<?php echo $template; ?>">
+                                    <i class="fa<?php if($template == $invoice_default_pdf) {
+                                        echo ' fa-chevron-right';
+                                    }?> fa-margin"></i>
+                                    <?php echo $template; ?>
+                                </a></li>
+                        <?php endforeach; ?>
+                    </ul>
                 </li>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">

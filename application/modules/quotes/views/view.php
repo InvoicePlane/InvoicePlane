@@ -105,8 +105,15 @@ $cv = $this->controller->view_data["custom_values"];
                 });
         });
 
-        $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
+        $('.btn_generate_pdf').click(function () {
+            var template = $(this).attr('data-quote-template');
+            window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id . '/true'); ?>/' + template, '_blank');
+        });
+
+        $('.dropdown-submenu > a').on("click", function(e){
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
         });
 
         $(document).ready(function () {
@@ -190,12 +197,23 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
-                <li>
+                <li class="dropdown-submenu">
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
                         <?php _trans('download_pdf'); ?>
+                        <span class="caret"></span>
                     </a>
+                    <ul class="dropdown-menu"><?php
+                        $quote_default_pdf = get_setting('pdf_quote_template');
+                        foreach ($quote_pdf_templates as $template) : ?>
+                            <li><a href="#" class="btn_generate_pdf"
+                                   data-quote-template="<?php echo $template; ?>">
+                                    <i class="fa<?php if($template == $quote_default_pdf) {echo ' fa-chevron-right';}?> fa-margin"></i>
+                                    <?php echo $template; ?>
+                                </a></li>
+                        <?php endforeach; ?>
+                    </ul>
                 </li>
                 <li>
                     <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
