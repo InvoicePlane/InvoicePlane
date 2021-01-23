@@ -17,9 +17,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param bool $stream
  * @param null $invoice_template
  * @param null $is_guest
+ * @param bool $with_attachments add attachments to pdf
  * @return string
  */
-function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null)
+function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null, $with_attachments = false)
 {
     $CI = &get_instance();
 
@@ -28,6 +29,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->model('invoices/mdl_invoice_tax_rates');
     $CI->load->model('custom_fields/mdl_custom_fields');
     $CI->load->model('payment_methods/mdl_payment_methods');
+    $CI->load->model('upload/mdl_uploads');
 
     $CI->load->helper('country');
     $CI->load->helper('client');
@@ -99,11 +101,17 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'custom_fields' => $custom_fields,
     );
 
+    // Prepare the attachments
+    $attachment_files = null;
+    if ($with_attachments) {
+        $attachment_files = $CI->mdl_uploads->get_invoice_uploads($invoice_id);
+    }
+
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     $CI->load->helper('mpdf');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
+        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles, $attachment_files);
 }
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
@@ -257,4 +265,42 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     $CI->load->helper('mpdf');
 
     return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
+}
+
+/**
+ * Generate the PDF for the statement
+ *
+ * @param Mdl_Clients $client
+ * @param Mdl_Statement $statement
+ * @param $notes
+ *
+ * @return string
+ * @throws \Mpdf\MpdfException
+ */
+function generate_statement_pdf($client, $statement, $notes)
+{
+    $CI = &get_instance();
+
+    // Override language with system language
+    set_language($client->client_language);
+
+    $statement_template = "InvoicePlane";
+    if (!$statement_template) {
+        $statement_template = $CI->mdl_settings->setting('pdf_statement_template');
+    }
+
+    $data = array(
+        'client'    => $client,
+        'statement' => $statement,
+        'notes'     => $notes,
+    );
+
+    $html = $CI->load->view('statement_templates/pdf/' . $statement_template, $data, true);
+
+    $CI->load->helper('mpdf');
+
+    $pdf_password = null;
+    $stream = true;
+
+    return pdf_create($html, trans('statement') . '_' . str_replace(array('\\', '/'), '_', $statement->GetStatement_number()), $stream, $pdf_password);
 }

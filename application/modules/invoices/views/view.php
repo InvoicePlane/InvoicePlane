@@ -110,6 +110,10 @@ $cv = $this->controller->view_data["custom_values"];
             e.preventDefault();
         });
 
+        $('#btn_generate_pdf_with_attachments').click(function () {
+            window.open('<?php echo site_url('invoices/generate_pdf_with_attachments/' . $invoice_id); ?>', '_blank');
+        });
+
         $(document).on('click', '.btn_delete_item', function () {
             var btn = $(this);
             var item_id = btn.data('item-id');
@@ -277,6 +281,13 @@ if ($this->config->item('disable_read_only') == true) {
                                 </a></li>
                         <?php endforeach; ?>
                     </ul>
+                </li>
+                <li>
+                    <a href="#" id="btn_generate_pdf_with_attachments"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-print fa-margin"></i>
+                        <?php _trans('download_pdf_with_attachments'); ?>
+                    </a>
                 </li>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">

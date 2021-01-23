@@ -223,4 +223,25 @@ class Mdl_Payments extends Response_Model
         return $this;
     }
 
+    /**
+     * Filter query in a date range.
+     * The filter can be open ended on one end by not supplied a value
+     * Dates must be in unixtime format
+     *
+     * @param time $start_date
+     * @param time $end_date
+     * @return Mdl_Payments
+     */
+    public function by_date_range($start_date = null, $end_date = null)
+    {
+        if (!empty($start_date)) {
+            $this->filter_where("payment_date >= '" . $start_date . "' ");
+        }
+        if (!empty($end_date)) {
+            $this->filter_where("payment_date <= '" . $end_date . "' ");
+        }
+
+        return $this;
+    }
+
 }
