@@ -355,6 +355,9 @@ class Mdl_Invoices extends Response_Model
         // Set default values
         $db_array['payment_method'] = (empty($db_array['payment_method']) ? 0 : $db_array['payment_method']);
 
+        // Check if the new discount calculation method should be used
+        $db_array['invoice_item_discount_calc'] = invoice_discountcalc($db_array['invoice_date_created']);
+
         // Generate the unique url key
         $db_array['invoice_url_key'] = $this->get_url_key();
 
