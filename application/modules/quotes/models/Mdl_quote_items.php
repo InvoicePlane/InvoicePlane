@@ -24,7 +24,8 @@ class Mdl_Quote_Items extends Response_Model
 
     public function default_select()
     {
-        $this->db->select('ip_quote_item_amounts.*, ip_quote_items.*, item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
+        $this->db->select('ip_quote_item_amounts.*, ip_products.*, ip_quote_items.*,
+            item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
     }
 
     public function default_order_by()
@@ -36,6 +37,7 @@ class Mdl_Quote_Items extends Response_Model
     {
         $this->db->join('ip_quote_item_amounts', 'ip_quote_item_amounts.item_id = ip_quote_items.item_id', 'left');
         $this->db->join('ip_tax_rates AS item_tax_rates', 'item_tax_rates.tax_rate_id = ip_quote_items.item_tax_rate_id', 'left');
+        $this->db->join('ip_products', 'ip_products.product_id = ip_quote_items.item_product_id', 'left');
     }
 
     /**
@@ -48,6 +50,11 @@ class Mdl_Quote_Items extends Response_Model
                 'field' => 'quote_id',
                 'label' => trans('quote'),
                 'rules' => 'required',
+            ],
+            'item_sku' => [
+                'field' => 'item_sku',
+                'label' => trans('item_sku'),
+                'rules' => 'required|unique',
             ],
             'item_name' => [
                 'field' => 'item_name',

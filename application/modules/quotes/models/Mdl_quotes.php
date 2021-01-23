@@ -257,6 +257,9 @@ class Mdl_Quotes extends Response_Model
             $db_array['quote_number'] = '';
         }
 
+        // Check if the new discount calculation method should be used
+        $db_array['quote_item_discount_calc'] = invoice_discountcalc($db_array['quote_date_created']);
+
         // Generate the unique url key
         $db_array['quote_url_key'] = $this->get_url_key();
 

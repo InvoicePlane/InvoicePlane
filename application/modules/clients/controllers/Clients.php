@@ -208,9 +208,9 @@ class Clients extends Admin_Controller
             array(
                 'client' => $client,
                 'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
-                'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
-                'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
+                'invoices' => $this->mdl_invoices->by_client($client_id)->limit(get_setting('default_list_limit', 20))->get()->result(),
+                'quotes' => $this->mdl_quotes->by_client($client_id)->limit(get_setting('default_list_limit', 20))->get()->result(),
+                'payments' => $this->mdl_payments->by_client($client_id)->limit(get_setting('default_list_limit', 20))->get()->result(),
                 'custom_fields' => $custom_fields,
                 'quote_statuses' => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses()
