@@ -55,6 +55,25 @@ function format_amount($amount = null)
 }
 
 /**
+ * Output the amount as a currency amount, e.g. 1.234,56
+ *
+ * @param null $amount
+ * @return null|string
+ */
+function format_quantity($amount = null)
+{
+    if ($amount) {
+        $CI =& get_instance();
+        $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
+        $decimal_point = $CI->mdl_settings->setting('decimal_point');
+
+        return number_format($amount, ($decimal_point) ? 3 : 0, $decimal_point, $thousands_separator);
+    }
+    return null;
+}
+
+
+/**
  * Standardize an amount based on the system settings
  *
  * @param $amount
