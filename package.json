@@ -9,7 +9,7 @@
   "author": "InvoicePlane Developers & Contributors",
   "license": "MIT",
   "bugs": {
-    "url": "https://development.invoiceplane.com"
+    "url": "https://github.com/InvoicePlane/InvoicePlane/issues"
   },
   "homepage": "https://www.invoiceplane.com",
   "devDependencies": {
