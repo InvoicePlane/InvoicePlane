@@ -87,7 +87,6 @@ class View extends Base_Controller
                     $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
                     $obj['fullname'] = $file;
                     $obj['size'] = filesize($path . '/' . $file);
-                    $obj['fullpath'] = base_url($path . '/' . $file);
                     $attachments[] = $obj;
                 }
             }
@@ -185,21 +184,6 @@ class View extends Base_Controller
 
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
-        /*$path = '/uploads/customer_files';
-        $files = scandir(getcwd() . $path);
-        $attachments = array();
-
-        if ($files !== false) {
-            foreach ($files as $file) {
-                if ('.' != $file && '..' != $file && strpos($file, $quote_url_key) !== false) {
-                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
-                    $obj['fullname'] = $file;
-                    $obj['size'] = filesize($path . '/' . $file);
-                    $obj['fullpath'] = base_url($path . '/' . $file);
-                    $attachments[] = $obj;
-                }
-            }
-        }*/
 
         $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
 
