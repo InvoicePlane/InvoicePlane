@@ -169,7 +169,7 @@ class Sessions extends Base_Controller
             if ($this->db->where('user_email', $email)) {
                 // Create a passwordreset token
                 $email = $this->input->post('email');
-                $token = md5(time() . $email);
+                $token = md5(uniqid() . time() . $email); // Added uniqid to improve the randomization. CVE-2021-29023
 
                 // Save the token to the database and set the user to inactive
                 $db_array = array(
