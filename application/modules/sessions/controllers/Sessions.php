@@ -166,10 +166,12 @@ class Sessions extends Base_Controller
             }
 
             // Test if a user with this email exists
-            if ($this->db->where('user_email', $email)) {
-                // Create a passwordreset token
+            if ($recovery_result = $this->db->where('user_email', $email)) {
+                // Create a passwordreset token. 
                 $email = $this->input->post('email');
-                $token = md5(time() . $email);
+                //get salt to make unique the reset token
+                $this->load->library('crypt');
+                $token = md5(time() . $email . $this->crypt->salt());
 
                 // Save the token to the database and set the user to inactive
                 $db_array = array(
