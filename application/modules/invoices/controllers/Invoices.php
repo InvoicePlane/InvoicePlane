@@ -28,7 +28,7 @@ class Invoices extends Admin_Controller
         $this->load->model('mdl_invoices');
     }
 
-    public function index(): void
+    public function index()
     {
         // Display all invoices by default
         redirect('invoices/status/all');
@@ -38,7 +38,7 @@ class Invoices extends Admin_Controller
      * @param string $status
      * @param int    $page
      */
-    public function status($status = 'all', $page = 0): void
+    public function status($status = 'all', $page = 0)
     {
         // Determine which group of invoices to load
         switch ($status) {
@@ -77,7 +77,7 @@ class Invoices extends Admin_Controller
         $this->layout->render();
     }
 
-    public function archive(): void
+    public function archive()
     {
         $invoice_array = [];
 
@@ -110,7 +110,7 @@ class Invoices extends Admin_Controller
     /**
      * @param $invoice
      */
-    public function download($invoice): void
+    public function download($invoice)
     {
         header('Content-type: application/pdf');
         header('Content-Disposition: attachment; filename="' . urldecode($invoice) . '"');
@@ -120,7 +120,7 @@ class Invoices extends Admin_Controller
     /**
      * @param $invoice_id
      */
-    public function view($invoice_id): void
+    public function view($invoice_id)
     {
         $this->load->model(
             [
@@ -237,7 +237,7 @@ class Invoices extends Admin_Controller
     /**
      * @param $invoice_id
      */
-    public function delete($invoice_id): void
+    public function delete($invoice_id)
     {
         // Get the status of the invoice
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
@@ -264,7 +264,7 @@ class Invoices extends Admin_Controller
      * @param bool $stream
      * @param null $invoice_template
      */
-    public function generate_pdf($invoice_id, $stream = true, $invoice_template = null): void
+    public function generate_pdf($invoice_id, $stream = true, $invoice_template = null)
     {
         return $this->__inner_generate_pdf($invoice_id, $stream, $invoice_template);
     }
@@ -302,7 +302,7 @@ class Invoices extends Admin_Controller
     /**
      * @param $invoice_id
      */
-    public function generate_zugferd_xml($invoice_id): void
+    public function generate_zugferd_xml($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
         $this->load->library('ZugferdXml', [
@@ -314,14 +314,14 @@ class Invoices extends Admin_Controller
         $this->output->set_output($this->zugferdxml->xml());
     }
 
-    public function generate_sumex_pdf($invoice_id): void
+    public function generate_sumex_pdf($invoice_id)
     {
         $this->load->helper('pdf');
 
         generate_invoice_sumex($invoice_id);
     }
 
-    public function generate_sumex_copy($invoice_id): void
+    public function generate_sumex_copy($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
         $this->load->library('Sumex', [
@@ -341,7 +341,7 @@ class Invoices extends Admin_Controller
      * @param $invoice_id
      * @param $invoice_tax_rate_id
      */
-    public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id): void
+    public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id)
     {
         $this->load->model('mdl_invoice_tax_rates');
         $this->mdl_invoice_tax_rates->delete($invoice_tax_rate_id);
@@ -352,7 +352,7 @@ class Invoices extends Admin_Controller
         redirect('invoices/view/' . $invoice_id);
     }
 
-    public function recalculate_all_invoices(): void
+    public function recalculate_all_invoices()
     {
         $this->db->select('invoice_id');
         $invoice_ids = $this->db->get('ip_invoices')->result();
