@@ -63,9 +63,6 @@
 					</a>
 				</form>
 			</div>
-			<footer>
-				<?php include $_SERVER['DOCUMENT_ROOT']."/assets/invoiceplane_dpoper_blue/inc/footer.php"; ?>
-			</footer>
 		</div>
 	</body>
 </html>

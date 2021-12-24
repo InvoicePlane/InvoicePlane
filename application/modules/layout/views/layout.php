@@ -36,13 +36,12 @@
 		</div>
 
 		<div id="modal-placeholder"></div>
-		<?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
-		<script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
-		<?php if (trans('cldr') != 'en') { ?>
-			<script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
-		<?php } ?>
-		<footer>
-			<?php include $_SERVER['DOCUMENT_ROOT']."/assets/invoiceplane_dpoper_blue/inc/footer.php"; ?>
-		</footer>
+
+        <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
+
+        <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
+        <?php if (trans('cldr') != 'en') { ?>
+            <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
+        <?php } ?>
 	</body>
 </html>
