@@ -370,7 +370,9 @@
                     </span>
                             </p>
                         </div>
+                      </div>
 
+                      <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="login_logo">
                                 <?php _trans('login_logo'); ?>
@@ -383,10 +385,11 @@
                             <?php } ?>
                             <input type="file" name="login_logo" id="login_logo" class="form-control"/>
                         </div>
-
                     </div>
-                    <div class="col-xs-12 col-md-6">
+                </div>
 
+              	<div class="row">
+                    <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[reports_in_new_tab]">
                                 <?php _trans('open_reports_in_new_tab'); ?>
@@ -399,7 +402,22 @@
                                 </option>
                             </select>
                         </div>
-
+ 				            </div>
+                    <div class="col-xs-12 col-md-6">
+    					          <div class="form-group">
+                            <label for="settings[show_responsive_itemlist]">
+                                <?php _trans('show_responsive_itemlist'); ?>
+                            </label>
+                            <select name="settings[show_responsive_itemlist]" id="settings[show_responsive_itemlist]"
+                                    class="form-control simple-select">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('show_responsive_itemlist'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
 
                     </div>
                 </div>

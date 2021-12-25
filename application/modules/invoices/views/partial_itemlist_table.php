@@ -307,14 +307,14 @@
     <div class="col-xs-12 col-md-4">
         <div class="btn-group">
             <?php if ($invoice->is_read_only != 1) { ?>
-                <a href="#" class="btn_add_row btn btn-sm btn-default">
+                <a href="javascript:void(0);" class="btn_add_row btn btn-sm btn-default">
                     <i class="fa fa-plus"></i> <?php _trans('add_new_row'); ?>
                 </a>
-                <a href="#" class="btn_add_product btn btn-sm btn-default">
+                <a href="javascript:void(0);" class="btn_add_product btn btn-sm btn-default">
                     <i class="fa fa-database"></i>
                     <?php _trans('add_product'); ?>
                 </a>
-                <a href="#" class="btn_add_task btn btn-sm btn-default">
+                <a href="javascript:void(0);" class="btn_add_task btn btn-sm btn-default">
                     <i class="fa fa-database"></i> <?php _trans('add_task'); ?>
                 </a>
             <?php } ?>
