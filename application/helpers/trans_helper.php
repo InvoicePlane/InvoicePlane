@@ -30,7 +30,7 @@ function trans($line, $id = '', $default = null)
     // Fall back to default language if the current language has no translated string
     if (empty($lang_string)) {
         // Save the current application language (code borrowed from Base_Controller.php)
-        // Fall back to default language if the current language has no translated string
+        // Fall back to default language if the current language isn't present
         /**
          * IP-785: When the language is set in the database, but not available locally, an error occurs
          * When people copy their databases with set languages into the IP database,

@@ -70,7 +70,7 @@ class Base_Controller extends MX_Controller
             $this->load->helper('settings');
             $this->load->helper('language');
 
-            // Fall back to default language if the current language has no translated string
+            // Fall back to default language if the current language isn't present
             /**
              * IP-785: When the language is set in the database, but not available locally, an error occurs
              * When people copy their databases with set languages into the IP database,
