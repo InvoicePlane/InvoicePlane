@@ -68,17 +68,36 @@ class Base_Controller extends MX_Controller
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->load_settings();
             $this->load->helper('settings');
+            $this->load->helper('language');
 
-            // Load the language based on user config, fall back to system if needed
+            // Fall back to default language if the current language has no translated string
+            /**
+             * IP-785: When the language is set in the database, but not available locally, an error occurs
+             * When people copy their databases with set languages into the IP database,
+             * languages like 'german' and 'greek' are set as users_language.
+             * When that language isn't available in /application/language, an error occurs
+             * The todo was to fix that error. This is an attempt:
+             * 1) Find available languages
+             * 2) Match with the users language
+             * 3) if users language is not available, fall back to 'default_language' from the settings
+             *
+             * Edge case:
+             * 1) If 'default_language' from the settings isn't available... fix that too?
+             * 2) Then fall back to english
+             */
+            $avail_languages = get_available_languages();
             $user_lang = $this->session->userdata('user_language');
+
+            if(!in_array($user_lang, $avail_languages)|| is_null($user_lang))
+            {
+                $current_language = $user_lang = get_setting('default_language');
+            }
 
             if (empty($user_lang) || $user_lang == 'system') {
                 set_language(get_setting('default_language'));
             } else {
                 set_language($user_lang);
             }
-
-            $this->load->helper('language');
 
             // Load the layout module to start building the app
             $this->load->module('layout');

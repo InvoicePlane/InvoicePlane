@@ -30,7 +30,28 @@ function trans($line, $id = '', $default = null)
     // Fall back to default language if the current language has no translated string
     if (empty($lang_string)) {
         // Save the current application language (code borrowed from Base_Controller.php)
+        // Fall back to default language if the current language has no translated string
+        /**
+         * IP-785: When the language is set in the database, but not available locally, an error occurs
+         * When people copy their databases with set languages into the IP database,
+         * languages like 'german' and 'greek' are set as users_language.
+         * When that language isn't available in /application/language, an error occurs
+         * The todo was to fix that error. This is an attempt:
+         * 1) Find available languages
+         * 2) Match with the users language
+         * 3) if users language is not available, fall back to 'default_language' from the settings
+         *
+         * Edge case:
+         * 1) If 'default_language' from the settings isn't available... fix that too?
+         * 2) Then fall back to english
+         */
         $current_language = $CI->session->userdata('user_language');
+        $avail_languages = get_available_languages();
+
+        if(!in_array($current_language, $avail_languages)|| is_null($current_language))
+        {
+            $current_language = get_setting('default_language');
+        }
 
         if (empty($current_language) || $current_language == 'system') {
             // todo gives error at startup, fix later
