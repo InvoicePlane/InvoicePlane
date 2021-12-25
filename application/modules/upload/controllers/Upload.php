@@ -122,7 +122,6 @@ class Upload extends Admin_Controller
                     $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
                     $obj['fullname'] = $file;
                     $obj['size'] = filesize($path . '/' . $file);
-                    $obj['fullpath'] = $path . '/' . $file;
                     $result[] = $obj;
                 }
             }
