@@ -28,9 +28,17 @@
     }
     });
 
-    function process_payment()
-    {
+    $('#getToken').click(()=>{
+        $("#fullpage-loader").fadeIn(200)
         stripe.createToken(card).then((result)=>{
+            if(result.error)
+            {
+                $("#fullpage-loader").fadeOut(200)
+            }
+            if(result.token)
+            {
+                $(["name=creditcard_number"]).val(result.token.id)
+            }
             console.log(result);
         })
-    }
+    });
