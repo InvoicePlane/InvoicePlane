@@ -1,4 +1,3 @@
-    var stripe = Stripe("pk_test_ruttiYWbopHL0a3ttNAf0aUf");
     var elements = stripe.elements();
     var style = {
         base: {
@@ -19,6 +18,7 @@
       };
     var card = elements.create("card",{style: style});
     card.mount("#card-element");
+    card.on('ready',()=>{$("#fullpage-loader").fadeOut(200)})
     card.on('change', function(event) {
     var displayError = document.getElementById('card-errors');
     if (event.error) {
