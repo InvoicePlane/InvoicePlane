@@ -82,6 +82,12 @@ class Payment_Information extends Base_Controller
             'is_overdue' => $is_overdue,
         );
 
+        //if stripe is active as payment gateway pass also the public api key
+        if(in_array('Stripe',$available_drivers))
+        {
+            $view_data['stripe_api_key'] = get_setting('gateway_stripe_apiKeyPublic');
+        }
+
         $this->load->view('guest/payment_information', $view_data);
 
     }
@@ -91,11 +97,4 @@ class Payment_Information extends Base_Controller
     {
         $this->load->view('guest/gateway/stripe');
     }
-
-    //endpoint to create the paymentIntent to passover to the stripe.js card form
-    public function stripe_paymentIntent()
-    {
-        
-    }
-
 }

@@ -10,4 +10,5 @@
 
   <a id="getToken" class="btn btn-success btn-lg">Pay now</a>
 </form>
+
 <script src="/application/modules/guest/views/gateway/stripe.js"></script>
