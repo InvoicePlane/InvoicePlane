@@ -86,4 +86,16 @@ class Payment_Information extends Base_Controller
 
     }
 
+    //endpoint to load the stripe.js card form
+    public function stripe()
+    {
+        $this->load->view('guest/gateway/stripe');
+    }
+
+    //endpoint to create the paymentIntent to passover to the stripe.js card form
+    public function stripe_paymentIntent()
+    {
+        
+    }
+
 }
