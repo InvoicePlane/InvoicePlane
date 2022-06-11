@@ -45,6 +45,7 @@
     <script>
         $('.simple-select').select2();
     </script>
+    <script src="https://js.stripe.com/v3/"></script>
 
 </head>
 <body>
@@ -157,6 +158,7 @@
 
                         <label for="gateway-select"><?php _trans('online_payment_method'); ?></label>
                         <select name="gateway" id="gateway-select" class="form-control simple-select">
+                            <option value="none"><?php _trans('- Select -'); ?></option>
                             <?php
                             // Display all available gateways
                             foreach ($gateways as $gateway) { ?>
@@ -168,71 +170,73 @@
                     </div>
 
                     <br>
+                    <div id="standard-card-form">
+                        <div class="panel panel-default">
 
-                    <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php _trans('creditcard_details'); ?>
+                            </div>
 
-                        <div class="panel-heading">
-                            <?php _trans('creditcard_details'); ?>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div class="alert alert-info no-margin small">
+                                        <?php _trans('online_payment_creditcard_hint'); ?>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">
+                                        <?php _trans('creditcard_number'); ?>
+                                    </label>
+                                    <input type="text" name="creditcard_number" class="input-sm form-control">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label">
+                                                <?php _trans('creditcard_expiry_month'); ?>
+                                            </label>
+                                            <input type="number" name="creditcard_expiry_month"
+                                                class="input-sm form-control"
+                                                min="1" max="12">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label">
+                                                <?php _trans('creditcard_expiry_year'); ?>
+                                            </label>
+                                            <input type="number" name="creditcard_expiry_year"
+                                                class="input-sm form-control"
+                                                min="<?php echo date('Y'); ?>" max="<?php echo date('Y') + 20; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label">
+                                                <?php _trans('creditcard_cvv'); ?>
+                                            </label>
+                                            <input type="number" name="creditcard_cvv" class="input-sm form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <div class="alert alert-info no-margin small">
-                                    <?php _trans('online_payment_creditcard_hint'); ?>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label">
-                                    <?php _trans('creditcard_number'); ?>
-                                </label>
-                                <input type="text" name="creditcard_number" class="input-sm form-control">
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-4">
-                                    <div class="form-group">
-                                        <label class="control-label">
-                                            <?php _trans('creditcard_expiry_month'); ?>
-                                        </label>
-                                        <input type="number" name="creditcard_expiry_month"
-                                               class="input-sm form-control"
-                                               min="1" max="12">
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="form-group">
-                                        <label class="control-label">
-                                            <?php _trans('creditcard_expiry_year'); ?>
-                                        </label>
-                                        <input type="number" name="creditcard_expiry_year"
-                                               class="input-sm form-control"
-                                               min="<?php echo date('Y'); ?>" max="<?php echo date('Y') + 20; ?>">
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="form-group">
-                                        <label class="control-label">
-                                            <?php _trans('creditcard_cvv'); ?>
-                                        </label>
-                                        <input type="number" name="creditcard_cvv" class="input-sm form-control">
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <button class="btn btn-success btn-lg ajax-loader" type="submit">
+                                <i class="fa fa-credit-card fa-margin"></i>
+                                <?php echo trans('pay_now') . ': ' . format_currency($invoice->invoice_balance); ?>
+                            </button>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <button class="btn btn-success btn-lg ajax-loader" type="submit">
-                            <i class="fa fa-credit-card fa-margin"></i>
-                            <?php echo trans('pay_now') . ': ' . format_currency($invoice->invoice_balance); ?>
-                        </button>
-                    </div>
+                    <div id="ajax-card-form"></div>
 
                     <br><br>
 
                 </form>
-
+                
             <?php } ?>
 
         </div>
@@ -248,6 +252,27 @@
 <?php if (trans('cldr') != 'en') { ?>
     <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
 <?php } ?>
+<script>
+    $('#gateway-select').change(()=>{
+        if($('#gateway-select').select2('data')[0].id == "Stripe")
+        {
+            load_stripe();
+        }
+        else
+        {
+            $('#ajax-card-form').hide();
+            $('#ajax-card-form').html('');
+            $('#standard-card-form').show();
+        }
+    });
+
+    function load_stripe()
+    {
+        $('#standard-card-form').hide();
+        $('#ajax-card-form').load('/guest/payment_information/stripe').after();
+        $('#ajax-card-form').show();
+    }
+</script>
 
 </body>
 </html>
