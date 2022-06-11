@@ -268,8 +268,11 @@
 
     function load_stripe()
     {
+        $("#fullpage-loader").fadeIn(200);
         $('#standard-card-form').hide();
-        $('#ajax-card-form').load('/guest/payment_information/stripe').after();
+        $('#ajax-card-form').load('/guest/payment_information/stripe',null,()=>{
+            $("#fullpage-loader").fadeOut(200);
+        });
         $('#ajax-card-form').show();
     }
 </script>
