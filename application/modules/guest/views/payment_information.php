@@ -170,7 +170,7 @@
                     </div>
 
                     <br>
-                    <div id="standard-card-form" class="hide">
+                    <div id="standard-card-form" style="display:none">
                         <div class="panel panel-default">
 
                             <div class="panel-heading">
@@ -254,9 +254,18 @@
 <?php } ?>
 <script>
     $('#gateway-select').change(()=>{
-        if($('#gateway-select').select2('data')[0].id == "Stripe")
+        if($('#gateway-select').select2('data')[0].id === "Stripe")
         {
-            load_stripe();
+            $("#fullpage-loader").fadeIn(200);
+            $('#standard-card-form').hide();
+            $('#ajax-card-form').show();
+            $('#ajax-card-form').load('/guest/payment_information/stripe');
+        }
+        else if($('#gateway-select').select2('data')[0].id === "none")
+        {
+            $('#ajax-card-form').hide();
+            $('#ajax-card-form').html('');
+            $('#standard-card-form').hide();
         }
         else
         {
@@ -265,14 +274,6 @@
             $('#standard-card-form').show();
         }
     });
-
-    function load_stripe()
-    {
-        $("#fullpage-loader").fadeIn(200);
-        $('#standard-card-form').hide();
-        $('#ajax-card-form').load('/guest/payment_information/stripe');
-        $('#ajax-card-form').show();
-    }
 </script>
 
 </body>
