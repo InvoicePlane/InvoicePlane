@@ -1,4 +1,4 @@
-<div id="payment-form">
+<form id="payment-form">
   <div id="card-element">
     <!-- Elements will create input elements here -->
   </div>
@@ -8,6 +8,6 @@
 
   <br></br>
 
-  <a onclick="process_payment()" class="btn btn-success btn-lg ajax-loader">Pay now</a>
-</div>
+  <a id="getToken" class="btn btn-success btn-lg">Pay now</a>
+</form>
 <script src="/application/modules/guest/views/gateway/stripe.js"></script>
