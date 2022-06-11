@@ -170,7 +170,7 @@
                     </div>
 
                     <br>
-                    <div id="standard-card-form">
+                    <div id="standard-card-form" class="hide">
                         <div class="panel panel-default">
 
                             <div class="panel-heading">
