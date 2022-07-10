@@ -444,7 +444,11 @@ $config['payment_gateways'] = array(
     'Stripe' => array(
         'apiKey' => array(
             'type' => 'password',
-            'label' => 'Api Key',
+            'label' => 'Secret key',
+        ),
+        'apiKeyPublic' => array(
+            'type' => 'text',
+            'label' => 'Publishable key'
         ),
     ),
     'TargetPay_Directebanking' => array(
