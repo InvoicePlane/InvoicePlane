@@ -17,10 +17,10 @@ services:
     volumes:
       - invoiceplane-db:/bitnami
 
-  # --- PHP 7.3
+  # --- PHP 7.4
   php:
     container_name: "invoiceplane-php"
-    image: bitnami/php-fpm:7.3
+    image: bitnami/php-fpm:7.4
     depends_on:
       - db
     volumes:
