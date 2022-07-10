@@ -219,7 +219,7 @@
                 </optgroup>
                 <optgroup label="<?php _trans('quote_amounts'); ?>">
                     <option value="{{{quote_item_subtotal}}}">
-                        <?php _trans('subtot al'); ?>
+                        <?php _trans('subtotal'); ?>
                     </option>
                     <option value="{{{quote_tax_total}}}">
                         <?php _trans('quote_tax'); ?>
