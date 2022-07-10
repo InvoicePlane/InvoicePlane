@@ -1,1 +1,1 @@
-Please email any security issues to info@invoiceplane.com
+Please email any security issues to ma@invoiceplane.com
