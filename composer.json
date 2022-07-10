@@ -6,12 +6,12 @@
   "license": "MIT",
   "type": "project",
   "require": {
-    "codeigniter/framework": "3.1.11",
-    "phpmailer/phpmailer": "^6.1.6",
-    "mpdf/mpdf": "^8.0.6",
-    "vlucas/phpdotenv": "^2.6.5",
-    "setasign/fpdf": "^1.8.2",
-    "league/omnipay": "~2.0",
+    "codeigniter/framework": "3.1.13",
+    "phpmailer/phpmailer": "^6.5",
+    "mpdf/mpdf": "^8.0.15",
+    "vlucas/phpdotenv": "^2.6",
+    "setasign/fpdf": "^1.8",
+    "league/omnipay": "~2.3",
     "paragonie/random_compat": "^2.0"
   }
 }

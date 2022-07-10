@@ -4,28 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ee4d54528d593e986cd0a391453512a",
+    "content-hash": "ebf51345257ef5eef0b47a5590faab2b",
     "packages": [
         {
             "name": "codeigniter/framework",
-            "version": "3.1.11",
+            "version": "3.1.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bcit-ci/CodeIgniter.git",
-                "reference": "b73eb19aed66190c10c9cad476da7c36c271d6dc"
+                "reference": "bcb17eb8ba53a85de154439d0ab8ff1bed047bc9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/b73eb19aed66190c10c9cad476da7c36c271d6dc",
-                "reference": "b73eb19aed66190c10c9cad476da7c36c271d6dc",
+                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/bcb17eb8ba53a85de154439d0ab8ff1bed047bc9",
+                "reference": "bcb17eb8ba53a85de154439d0ab8ff1bed047bc9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.7"
             },
             "require-dev": {
-                "mikey179/vfsstream": "1.1.*",
-                "phpunit/phpunit": "4.* || 5.*"
+                "mikey179/vfsstream": "1.6.*",
+                "phpunit/phpunit": "4.* || 5.* || 9.*"
             },
             "suggest": {
                 "paragonie/random_compat": "Provides better randomness in PHP 5.x"
@@ -44,7 +44,7 @@
                 "source": "https://github.com/bcit-ci/CodeIgniter",
                 "wiki": "https://github.com/bcit-ci/CodeIgniter/wiki"
             },
-            "time": "2019-09-19T12:08:45+00:00"
+            "time": "2022-03-03T13:21:49+00:00"
         },
         {
             "name": "guzzle/guzzle",
@@ -2859,5 +2859,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
