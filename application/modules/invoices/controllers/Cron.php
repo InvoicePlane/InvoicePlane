@@ -52,7 +52,9 @@ class Cron extends Base_Controller
                 'user_id' => $invoice->user_id,
                 'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
                 'invoice_url_key' => $this->mdl_invoices->get_url_key(),
-                'invoice_terms' => $invoice->invoice_terms
+                'invoice_terms' => $invoice->invoice_terms,
+                'invoice_discount_amount' => $invoice->invoice_discount_amount,
+                'invoice_discount_percent' => $invoice->invoice_discount_percent
             );
 
             // This is the new invoice id

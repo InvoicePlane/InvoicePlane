@@ -29,7 +29,7 @@ $cv = $this->controller->view_data["custom_values"];
         $('#btn_save_quote').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tbody.item').each(function () {
+            $('#item_table .item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -132,19 +132,38 @@ $cv = $this->controller->view_data["custom_values"];
             }
         });
 
-        var fixHelper = function (e, tr) {
-            var $originals = tr.children();
-            var $helper = tr.clone();
-            $helper.children().each(function (index) {
-                $(this).width($originals.eq(index).width());
+        <?php if (get_setting('show_responsive_itemlist') == 1) { ?>
+            function UpR(k) {
+              var parent = k.parents('.item');
+              var pos = parent.prev();
+              parent.insertBefore(pos);
+            }
+            function DownR(k) {
+              var parent = k.parents('.item');
+              var pos = parent.next();
+              parent.insertAfter(pos);
+            }
+            $(document).on('click', '.up', function () {
+              UpR($(this));
             });
-            return $helper;
-        };
+            $(document).on('click', '.down', function () {
+              DownR($(this));
+            });
+        <?php } else { ?>
+            var fixHelper = function (e, tr) {
+                var $originals = tr.children();
+                var $helper = tr.clone();
+                $helper.children().each(function (index) {
+                    $(this).width($originals.eq(index).width());
+                });
+                return $helper;
+            };
 
-        $('#item_table').sortable({
-            helper: fixHelper,
-            items: 'tbody',
-        });
+            $('#item_table').sortable({
+                helper: fixHelper,
+                items: 'tbody',
+            });
+        <?php } ?>
     });
 </script>
 
@@ -356,7 +375,12 @@ $cv = $this->controller->view_data["custom_values"];
 
         </div>
 
-        <?php $this->layout->load_view('quotes/partial_item_table'); ?>
+        <?php if (get_setting('show_responsive_itemlist') == 1) {
+             $this->layout->load_view('quotes/partial_itemlist_responsive');
+           } else {
+             $this->layout->load_view('quotes/partial_itemlist_table');
+           }
+         ?>
 
         <hr/>
 

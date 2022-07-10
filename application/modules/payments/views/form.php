@@ -8,7 +8,7 @@
         $invoice_id.change(function () {
             var invoice_identifier = "invoice" + $('#invoice_id').val();
             $('#payment_amount').val(amounts[invoice_identifier].replace("&nbsp;", " "));
-            $('#payment_method_id').find('option[value="' + invoice_payment_methods[invoice_identifier] + '"]').prop('selected', true);
+            $('#payment_method_id').val(invoice_payment_methods[invoice_identifier]).trigger('change');
 
             if (invoice_payment_methods[invoice_identifier] != 0) {
                 $('.payment-method-wrapper').append("<input type='hidden' name='payment_method_id' id='payment-method-id-hidden' class='hidden' value='" + invoice_payment_methods[invoice_identifier] + "'>");
