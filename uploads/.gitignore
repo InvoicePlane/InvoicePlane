@@ -4,3 +4,4 @@
 !import
 !temp
 !.gitignore
+!**/index.html
