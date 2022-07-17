@@ -52,7 +52,9 @@ class Payment_Handler extends Base_Controller
             $cc_expire_year = $this->input->post('creditcard_expiry_year');
             $cc_cvv = $this->input->post('creditcard_cvv');
 
-            if ($cc_number) {
+            print $d;
+
+            if ($cc_number && !in_array($d,['stripe'])) {
                 try {
                     $credit_card = new \Omnipay\Common\CreditCard([
                         'number' => $cc_number,
@@ -67,7 +69,11 @@ class Payment_Handler extends Base_Controller
                         trans('online_payment_card_invalid') . '<br/>' . $e->getMessage());
                     redirect('guest/payment_information/form/' . $invoice->invoice_url_key);
                 }
-            } else {
+            } 
+            elseif($cc_number && in_array($d,['stripe'])) {
+                $credit_card = $cc_number;
+            }
+            else {
                 $credit_card = [];
             }
 
@@ -90,6 +96,13 @@ class Payment_Handler extends Base_Controller
             if ($d === 'worldpay') {
                 // Additional param for WorldPay
                 $request['cartId'] = $invoice->invoice_number;
+            }
+
+            if($d === 'stripe')
+            {
+                //adapt request for Stripe to use token info
+                unset($request['card']);
+                $request['token'] = $credit_card;
             }
 
             $this->session->set_userdata($invoice->invoice_url_key . '_online_payment', $request);
