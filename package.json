@@ -29,7 +29,7 @@
     "grunt-sass": "^2.1.0",
     "html5shiv": "^3.7.3",
     "jquery": "~3.4.1",
-    "jquery-ui": "^1.12.1",
+    "jquery-ui": "^1.13.2",
     "js-cookie": "^2.2.1",
     "load-grunt-tasks": "^5.1.0",
     "node-sass": "^4.13.0",
