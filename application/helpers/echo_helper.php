@@ -31,6 +31,7 @@ function htmlsc($output)
  */
 function _htmlsc($output)
 {
+    if ($output==null) return '';
     echo htmlspecialchars($output, ENT_QUOTES);
 }
 
@@ -43,6 +44,7 @@ function _htmlsc($output)
  */
 function _htmle($output)
 {
+    if ($output==null) return '';
     echo htmlentities($output);
 }
 
