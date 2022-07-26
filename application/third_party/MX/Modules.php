@@ -58,6 +58,7 @@ class Modules
     public static function run($module)
     {
         $method = 'index';
+	$args = func_get_args();
 
         if (($pos = strrpos($module, '/')) != false) {
             $method = substr($module, $pos + 1);
@@ -67,7 +68,6 @@ class Modules
         if ($class = self::load($module)) {
             if (method_exists($class, $method)) {
                 ob_start();
-                $args = func_get_args();
                 $output = call_user_func_array([$class, $method], array_slice($args, 1));
                 $buffer = ob_get_clean();
                 return ($output !== null) ? $output : $buffer;
