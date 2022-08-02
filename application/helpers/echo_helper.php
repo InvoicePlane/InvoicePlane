@@ -19,7 +19,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function htmlsc($output)
 {
-    return htmlspecialchars($output, ENT_QUOTES);
+    return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
 }
 
 /**
@@ -32,7 +32,7 @@ function htmlsc($output)
 function _htmlsc($output)
 {
     if ($output==null) return '';
-    echo htmlspecialchars($output, ENT_QUOTES);
+    echo htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
 }
 
 /**
@@ -45,7 +45,7 @@ function _htmlsc($output)
 function _htmle($output)
 {
     if ($output==null) return '';
-    echo htmlentities($output);
+    echo htmlentities($output, ENT_COMPAT);
 }
 
 /**
