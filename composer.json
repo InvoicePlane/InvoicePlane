@@ -11,7 +11,18 @@
     "mpdf/mpdf": "^8.1.1",
     "vlucas/phpdotenv": "^5.4.1",
     "setasign/fpdf": "^1.8.4",
-    "league/omnipay": "~2.3",
-    "paragonie/random_compat": "^2.0"
+    "league/omnipay": "^3.1",
+    "paragonie/random_compat": "^2.0",
+    "omnipay/authorizenet": "^3.3",
+    "academe/omnipay-authorizenetapi": "^3.1",
+    "omnipay/eway": "^3.0",
+    "omnipay/paypal": "^3.0",
+    "omnipay/securepay": "^3.0",
+    "omnipay/stripe": "^3.2",
+    "omnipay/worldpay": "^3.0",
+    "omnipay/rabobank": "^3.1",
+    "omnipay/sagepay": "^4.0",
+    "omnipay/payflow": "^3.0",
+    "symfony/http-foundation":"^6"
   }
 }
