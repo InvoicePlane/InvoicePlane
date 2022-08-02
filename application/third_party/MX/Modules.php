@@ -58,7 +58,7 @@ class Modules
     public static function run($module)
     {
         $method = 'index';
-	$args = func_get_args();
+	    $args = func_get_args();
 
         if (($pos = strrpos($module, '/')) != false) {
             $method = substr($module, $pos + 1);
