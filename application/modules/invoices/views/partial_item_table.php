@@ -28,13 +28,11 @@
             </td>
             <td class="td-text">
                 <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
-                <input type="hidden" name="item_id" value="">
+                <input type="hidden"  name="item_id" value="">
                 <input type="hidden" name="item_product_id" value="">
                 <input type="hidden" name="item_task_id" class="item-task-id" value="">
 
-                <div class="input-group">
-                    <span class="input-group-addon"><?php _trans('item'); ?></span>
-                    <input type="text" name="item_name" class="input-sm form-control" value="">
+                    <input type="text" placeholder="<?php _trans('item'); ?>" name="item_name" class="input-sm form-control" value="">
                 </div>
             </td>
             <td class="td-amount td-quantity">
