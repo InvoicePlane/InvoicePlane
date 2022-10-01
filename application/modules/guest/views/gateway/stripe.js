@@ -38,8 +38,8 @@
             if(result.token)
             {
                 $('input[name="creditcard_number"]').val(result.token.id)
-                $("#payment-form").submit();
+                $("#payment-information-form").submit();
             }
-            console.log(result);
+            
         })
     });
