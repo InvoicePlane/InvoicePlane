@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
 </head>
 <body>
-
 <div class="container">
     <div id="content">
 
@@ -262,7 +261,7 @@
                 <?php if ($invoice->invoice_terms) { ?>
                     <div class="col-xs-12 col-md-6">
                         <h4><?php echo trans('terms'); ?></h4>
-                        <p><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></p>
+                        <div><?php echo $invoice->invoice_terms;#2022 nl2br(htmlsc($invoice->invoice_terms)); ?></div>
                     </div>
                 <?php } ?>
 

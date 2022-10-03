@@ -11,6 +11,39 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
+ * Replace [BANQUES] on invoice terms or quote notes into the PDF/Public template (2022)
+ * @author		Thomas I. @sudwebdesign
+ * @param str $invoice->invoice_terms OR $quote->notes
+ * @param str $custom_fields
+ * NOTES ::: REPLACE in application/view/[invoice|quote]_template/[pdf|public]/...
+    echo nl2br(htmlsc($invoice->invoice_terms));   by echo $invoice->invoice_terms;
+    echo nl2br(htmlsc($quote->notes));             by echo $quote->notes;
+ * @return string
+ */
+function custom_terms_or_notes($terms_or_notes, $custom_fields, $field = '[BANQUES]')
+{
+    $custom_rib = '';
+    if(isset($custom_fields['invoice'][$field]) || isset($custom_fields['quote'][$field])){
+        $ribs = '';
+        if(isset($custom_fields['quote'][$field])){
+            foreach($custom_fields['quote'][$field] as $id => $rib){
+                $float = $id%3===1?'right':'left';
+                $ribs .= '<div style="width:50%;float:'.$float.'">'.str_replace(' - ', '<br />', $rib).'</div>';
+            }
+        }
+        if(isset($custom_fields['invoice'][$field])){
+            $ribs = '';#RAZ
+            foreach($custom_fields['invoice'][$field] as $id => $rib){
+                $float = $id%3===1?'right':'left';
+                $ribs .= '<div style="width:50%;float:'.$float.'">'.str_replace(' - ', '<br />', $rib).'</div>';
+            }
+        }
+        $custom_rib = $ribs ? '<div>Virement bancaire<br />'.$ribs.'</div><br style="clear:both;" />' : '';
+    }
+    return nl2br(str_replace($field, $custom_rib, htmlsc($terms_or_notes)));
+}
+
+/**
  * Returns the invoice image
  *
  * @return string

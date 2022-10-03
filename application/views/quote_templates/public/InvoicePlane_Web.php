@@ -18,7 +18,6 @@
 
 </head>
 <body>
-
 <div class="container">
 
     <div id="content">
@@ -235,7 +234,7 @@
                     <?php if ($quote->notes) { ?>
                         <div class="col-xs-12 col-md-6">
                             <h4><?php echo trans('notes'); ?></h4>
-                            <p><?php echo nl2br(htmlsc($quote->notes)); ?></p>
+                            <div><?php echo $quote->notes;#2022  nl2br(htmlsc($quote->notes)); ?></div>
                         </div>
                     <?php } ?>
 

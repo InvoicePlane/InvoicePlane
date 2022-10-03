@@ -89,6 +89,9 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $associatedFiles = null;
     }
 
+    #Generate and replace invoice terms or quote notes into the PDF template #by swd 2022
+    $invoice->invoice_terms = custom_terms_or_notes($invoice->invoice_terms, $custom_fields);
+
     $data = array(
         'invoice' => $invoice,
         'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
@@ -100,7 +103,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     );
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
-
+    #echo $html;exit;#dbg
     $CI->load->helper('mpdf');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
         $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
@@ -243,6 +246,9 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         'user' => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
     );
 
+    #Generate and replace invoice terms or quote notes into the PDF template #by swd 2022
+    $quote->notes = custom_terms_or_notes($quote->notes, $custom_fields);
+
     $data = array(
         'quote' => $quote,
         'quote_tax_rates' => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
@@ -253,7 +259,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     );
 
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);
-
+    #echo $html;exit;#dbg
     $CI->load->helper('mpdf');
 
     return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);

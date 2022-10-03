@@ -60,6 +60,9 @@ class View extends Base_Controller
 
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
+        #Generate and replace invoice terms or quote notes into the PDF template #by swd 2022
+        $invoice->invoice_terms = custom_terms_or_notes($invoice->invoice_terms, $custom_fields);
+
         $data = array(
             'invoice' => $invoice,
             'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
@@ -202,6 +205,9 @@ class View extends Base_Controller
         }*/
 
         $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
+
+        #Generate and replace invoice terms or quote notes into the PDF template #by swd 2022
+        $quote->notes = custom_terms_or_notes($quote->notes, $custom_fields);
 
         $data = array(
             'quote' => $quote,
