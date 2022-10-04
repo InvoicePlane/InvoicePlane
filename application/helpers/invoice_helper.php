@@ -27,20 +27,19 @@ function invoice_logo()
 }
 
 /**
- * Returns the invoice logo for PDF files (legacy 1.5.11)
+ * Returns the invoice logo for PDF files
  *
  * @return string
  */
 function invoice_logo_pdf()
 {
-    return invoice_logo();#legacy
-/*  #memo Mpdf-8.0.4
     $CI = &get_instance();
+
     if ($CI->mdl_settings->setting('invoice_logo')) {
-        return '<img src="file://' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
+        return '<img src="' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
     }
+
     return '';
-*/
 }
 
 
