@@ -4,7 +4,7 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
-@media (min-height: 640px) {/* stycky navbars on good height screen ip.1.5.10 */
+@media (min-height: 640px) {/* stycky navbars on good height screen + z-index ip.1.5.11-1 */
 	.navbar, #headerbar{
 		position: fixed;
 		position: -webkit-sticky;
@@ -16,20 +16,27 @@
 	#headerbar {
 		top: 52.5px;
 		background-color: rgba(255,255,255,0.777);
+		z-index: 2;
+	}
+	.input-group .form-control
+	.input-group .form-control:focus {
+		z-index: 1;
 	}
 }
 .invoice img, .quote img {/* guest/view/invoice||quote/ */
 	float: right;
 }
 .navbar-inverse {
-	background: #36393d;
-	background: -moz-linear-gradient(45deg,  #36393d 0%, #000000 100%);
-	background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#36393d), color-stop(100%,#000000));
-	background: -webkit-linear-gradient(45deg,  #36393d 0%,#000000 100%);
-	background: -o-linear-gradient(45deg,  #36393d 0%,#000000 100%);
-	background: -ms-linear-gradient(45deg,  #36393d 0%,#000000 100%);
-	background: linear-gradient(45deg,  #36393d 0%,#000000 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#36393d', endColorstr='#000000',GradientType=1 );
+	background: #092448;
+	background: rgb(9, 36, 72);
+	background: rgba(9, 36, 72, .936);
+	background: -moz-linear-gradient(45deg,  #092448 0%, #000000 100%);
+	background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#092448), color-stop(100%,#000000));
+	background: -webkit-linear-gradient(45deg,  #092448 0%,#000000 100%);
+	background: -o-linear-gradient(45deg,  #092448 0%,#000000 100%);
+	background: -ms-linear-gradient(45deg,  #092448 0%,#000000 100%);
+	background: linear-gradient(45deg,  #092448 0%,#000000 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#092448', endColorstr='#000000',GradientType=1 );
 }
 .nav > li > a {
 	padding-left: 8px;
