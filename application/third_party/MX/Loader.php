@@ -14,7 +14,7 @@
  * Install this file as application/third_party/MX/Loader.php
  *
  * @copyright    Copyright (c) 2015 Wiredesignz
- * @version    5.5
+ * @version    5.5-1 PHP8.1
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -195,7 +195,7 @@ class MX_Loader extends CI_Loader
             return $this;
         }
 
-        ($_alias = strtolower($object_name)) OR $_alias = $class;
+        ($_alias = strtolower(strval($object_name))) OR $_alias = $class;
 
         list($path, $_library) = Modules::find($library, $this->_module, 'libraries/');
 
