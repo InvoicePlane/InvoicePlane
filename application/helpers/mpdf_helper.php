@@ -41,7 +41,7 @@ function pdf_create(
     $invoice_array = array();
 
     // mPDF loading
-    $mpdf = new \Mpdf\Mpdf(['tempDir' => UPLOADS_TEMP_MPDF_FOLDER]);#mpdf 8.0.5
+    $mpdf = new \Mpdf\Mpdf(['tempDir' => UPLOADS_TEMP_MPDF_FOLDER]);#mpdf 8.1.0
 
     // mPDF configuration
     $mpdf->useAdobeCJK = true;
