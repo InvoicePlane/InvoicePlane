@@ -19,6 +19,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 function format_currency($amount)
 {
     global $CI;
+    $amount = floatval($amount);
     $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
