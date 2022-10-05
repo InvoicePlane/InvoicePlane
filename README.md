@@ -1,7 +1,7 @@
 
 ![InvoicePlane francisé](https://web.archive.org/web/20181209043322/http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
 
-### InvoicePlane en Français pour PHP 7.3+ compatible PHP 8.1
+### InvoicePlane en Français pour PHP 7.3+ compatible PHP 8.1 : custom field [BANQUES]
 
 ajout de quelques retouches pour facilité l'interopérabilités entre les appareils (device friendly)
 InvoicePlane est une application internet (webapp) libre de gestion de devis, factures, clients et paiements (en lignes).
