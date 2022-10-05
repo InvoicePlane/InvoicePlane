@@ -61,8 +61,9 @@ $cv = $this->controller->view_data["custom_values"];
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
                     } else {
-                        $('#fullpage-loader').hide();
-                        $('.control-group').removeClass('has-error');
+                        // The validation was not successful
+                        $('.fullpage-loader-close').click();
+                        $('.has-error').removeClass('has-error');
                         $('div.alert[class*="alert-"]').remove();
                         var resp_errors = response.validation_errors,
                             all_resp_errors = '';
@@ -71,7 +72,7 @@ $cv = $this->controller->view_data["custom_values"];
                             all_resp_errors = resp_errors;
                         } else {
                             for (var key in resp_errors) {
-                                $('#' + key).parent().addClass('has-error');
+                                $('[name="' + key + '"]').parent().addClass('has-error');
                                 all_resp_errors += resp_errors[key];
                             }
                         }

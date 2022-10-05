@@ -28,10 +28,14 @@
                     }
                     else {
                         // The validation was not successful
-                        $('.control-group').removeClass('has-error');
+                        $('.fullpage-loader-close').click();
+                        $('.has-error').removeClass('has-error');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('has-error');
+                            $('[name="' + key + '"]').parent().parent().addClass('has-error');
                         }
+                        var iu = $('[name="' + key + '"]');
+                        if(iu.is('select')) iu.select2('open');
+                        else iu.focus();
                     }
                 });
         });
