@@ -46,8 +46,8 @@
                             <div class="input-group">
                                 <input name="to_date" id="to_date" class="form-control datepicker">
                                 <span class="input-group-addon">
-									<i class="fa fa-calendar fa-fw"></i>
-							    </span>
+                                    <i class="fa fa-calendar fa-fw"></i>
+                                </span>
                             </div>
                         </div>
 
@@ -64,3 +64,6 @@
     </div>
 
 </div>
+<?php if(get_setting('reports_in_new_tab', false)){?>
+<script>$('[name="btn_submit"]').click(function(){setTimeout(function(){window.location.reload();},333);});//new csrf_hash</script>
+<?php } ?>
