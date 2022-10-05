@@ -202,7 +202,6 @@ if ($this->config->item('disable_read_only') == true) {
     </h1>
 
     <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
-
         <div class="options btn-group btn-group-sm">
             <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
@@ -220,7 +219,7 @@ if ($this->config->item('disable_read_only') == true) {
                         <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->invoice_balance != 0) : ?>
+                <?php if ($invoice->invoice_balance != 0) { ?>
                     <li>
                         <a href="#" class="invoice-add-payment"
                            data-invoice-id="<?php echo $invoice_id; ?>"
@@ -231,7 +230,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php _trans('enter_payment'); ?>
                         </a>
                     </li>
-                <?php endif; ?>
+                <?php } ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">
