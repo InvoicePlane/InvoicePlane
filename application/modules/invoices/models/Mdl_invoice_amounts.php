@@ -100,7 +100,7 @@ class Mdl_Invoice_Amounts extends CI_Model
             if ($invoice->invoice_total != 0 || $invoice_is_credit) {
                 $this->db->where('invoice_id', $invoice_id);
                 $payment = $this->db->get('ip_payments')->row();
-                $payment_method_id = ($payment->payment_method_id ? $payment->payment_method_id : 0);
+                $payment_method_id = isset($payment->payment_method_id) ? $payment->payment_method_id : 0;#fixed warn : Attempt to read property "payment_method_id" on null
 
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 4);
