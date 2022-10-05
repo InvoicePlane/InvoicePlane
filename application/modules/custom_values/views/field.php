@@ -8,7 +8,7 @@
 
         <div class="headerbar-item pull-right">
             <div class="btn-group btn-group-sm">
-                <a class="btn btn-default" href="<?php echo site_url('custom_values'); ?>">
+                <a class="btn btn-default" href="<?php echo site_url('custom_fields/index'); ?>">
                     <i class="fa fa-arrow-left"></i> <?php _trans('back'); ?>
                 </a>
                 <a class="btn btn-primary" href="<?php echo site_url('custom_values/create/' . $id); ?>">
