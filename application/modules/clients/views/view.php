@@ -22,9 +22,10 @@
                             });
                     } else {
                         // The validation was not successful
+                        $('.fullpage-loader-close').click();
                         $('.has-error').removeClass('has-error');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().addClass('has-error');
+                            $('[name="' + key + '"]').parent().addClass('has-error');
                         }
                     }
                 });

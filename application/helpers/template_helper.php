@@ -84,7 +84,25 @@ function parse_template($object, $body)
                         if ($cf) {
                             // Get the values for the custom field
                             $cf_model = str_replace('ip_', 'mdl_', $cf->custom_field_table);
-                            $replace = $CI->mdl_custom_fields->get_value_for_field($cf_id[1], $cf_model, $object);
+                            $replace = $CI->mdl_custom_fields->get_value_for_field($cf_id[1], $cf_model, $object);//ids like csv
+
+                            // Get the real values for the custom field 1.5.11-1
+                            if ($values = $CI->mdl_custom_fields->get_values_for_fields($cf_model, $object->invoice_id)) {
+                                $rplc = '';
+                                $val = $values[$cf->custom_field_label];
+                                switch ($cf->custom_field_type) {
+                                    case 'BOOLEAN':
+                                        $rplc .= trans($val?'true':'false');
+                                    break;
+                                    case 'DATE':
+                                        $rplc .= date_from_mysql($val);
+                                    break;
+                                    default:#MULTIPLE-CHOICE, TEXT, SINGLE-CHOICE
+                                        $rplc .= is_array($val)? implode(', ', $val): $val;
+                                }
+                                $replace = $rplc?$rplc:$replace;
+                            }
+
                         } else {
                             $replace = '';
                         }

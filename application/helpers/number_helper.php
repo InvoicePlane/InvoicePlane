@@ -19,6 +19,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 function format_currency($amount)
 {
     global $CI;
+    $amount = floatval($amount);
     $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
@@ -62,9 +63,11 @@ function standardize_amount($amount)
     $CI =& get_instance();
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
-
-    $amount = str_replace($thousands_separator, '', $amount);
-    $amount = str_replace($decimal_point, '.', $amount);
+    #Fix on save : 3.3 goto 33 if sep = '.' & dec = ','
+    if($thousands_separator!='.')
+        $amount = str_replace($thousands_separator, '', $amount);
+    if($decimal_point!='.')
+        $amount = str_replace($decimal_point, '.', $amount);
 
     return $amount;
 }

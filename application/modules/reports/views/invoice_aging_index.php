@@ -35,3 +35,6 @@
     </div>
 
 </div>
+<?php if(get_setting('reports_in_new_tab', false)){?>
+<script>$('[name="btn_submit"]').click(function(){setTimeout(function(){window.location.reload();},333);});//new csrf_hash</script>
+<?php } ?>

@@ -35,6 +35,15 @@ function pdf_create(
     $zugferd_invoice = false,
     $associated_files = null
 ) {
+
+    // From Mpdf.php function AdjustHTML() : MpdfException.
+    $len = strlen($html);
+    $limit = intval(ini_get('pcre.backtrack_limit'));
+    if($len > $limit){// Fail
+        echo $html;
+        die();
+    }
+
     $CI = &get_instance();
 
     // Get the invoice from the archive if available

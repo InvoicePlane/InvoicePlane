@@ -85,9 +85,9 @@ class Mdl_Quote_Amounts extends CI_Model
         $this->db->where('quote_id', $quote_id);
         $quote_data = $this->db->get('ip_quotes')->row();
 
-        $total = (float)number_format($quote_total, 2, '.', '');
-        $discount_amount = (float)number_format($quote_data->quote_discount_amount, 2, '.', '');
-        $discount_percent = (float)number_format($quote_data->quote_discount_percent, 2, '.', '');
+        $total = number_format(floatval($quote_total), 2, '.', '');
+        $discount_amount = number_format(floatval($quote_data->quote_discount_amount), 2, '.', '');
+        $discount_percent = number_format(floatval($quote_data->quote_discount_percent), 2, '.', '');
 
         $total = $total - $discount_amount;
         $total = $total - round(($total / 100 * $discount_percent), 2);
@@ -174,31 +174,31 @@ class Mdl_Quote_Amounts extends CI_Model
         switch ($period) {
             case 'month':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes
-					WHERE MONTH(quote_date_created) = MONTH(NOW()) 
+					WHERE MONTH(quote_date_created) = MONTH(NOW())
 					AND YEAR(quote_date_created) = YEAR(NOW()))")->row()->total_quoted;
             case 'last_month':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes
 					WHERE MONTH(quote_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
 					AND YEAR(quote_date_created) = YEAR(NOW() - INTERVAL 1 MONTH))")->row()->total_quoted;
             case 'year':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes WHERE YEAR(quote_date_created) = YEAR(NOW()))")->row()->total_quoted;
             case 'last_year':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes WHERE YEAR(quote_date_created) = YEAR(NOW() - INTERVAL 1 YEAR))")->row()->total_quoted;
             default:
                 return $this->db->query("SELECT SUM(quote_total) AS total_quoted FROM ip_quote_amounts")->row()->total_quoted;

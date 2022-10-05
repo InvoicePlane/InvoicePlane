@@ -120,8 +120,9 @@ $cv = $this->controller->view_data["custom_values"];
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     }
                     else {
-                        $('#fullpage-loader').hide();
-                        $('.control-group').removeClass('has-error');
+                        // The validation was not successful
+                        $('.fullpage-loader-close').click();
+                        $('.has-error').removeClass('has-error');
                         $('div.alert[class*="alert-"]').remove();
                         var resp_errors = response.validation_errors,
                             all_resp_errors = '';

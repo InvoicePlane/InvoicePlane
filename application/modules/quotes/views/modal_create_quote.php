@@ -3,6 +3,7 @@
         // Display the create quote modal
         $('#create-quote').modal('show');
 
+        // Enable select2 for all selects
         $('.simple-select').select2();
 
         <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
@@ -28,7 +29,7 @@
 
         // Creates the quote
         $('#quote_create_confirm').click(function () {
-            console.log('clicked');
+             <?php echo(IP_DEBUG ? 'console.log("clicked");' : ''); ?>;
             // Posts the data to validate and create the quote;
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/create'); ?>", {
@@ -47,10 +48,14 @@
                     }
                     else {
                         // The validation was not successful
-                        $('.control-group').removeClass('has-error');
+                        $('.fullpage-loader-close').click();
+                        $('.has-error').removeClass('has-error');
                         for (var key in response.validation_errors) {
-                            $('#' + key).parent().parent().addClass('has-error');
+                            $('[name="' + key + '"]').parent().parent().addClass('has-error');
                         }
+                        var iu = $('[name="' + key + '"]');
+                        if(iu.is('select')) iu.select2('open');
+                        else iu.focus();
                     }
                 });
         });
