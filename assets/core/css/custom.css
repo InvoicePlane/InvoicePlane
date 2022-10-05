@@ -18,10 +18,10 @@
 		background-color: rgba(255,255,255,0.777);
 		z-index: 2;
 	}
-	.input-group .form-control
-	.input-group .form-control:focus {
-		z-index: 1;
-	}
+}
+.input-group .form-control,
+.input-group .form-control:focus {
+	z-index: 1;
 }
 .invoice img, .quote img {/* guest/view/invoice||quote/ */
 	float: right;
