@@ -1,7 +1,7 @@
 
 ![InvoicePlane francisé](https://web.archive.org/web/20181209043322/http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
 
-### InvoicePlane en Français pour PHP 7.3+
+### InvoicePlane en Français pour PHP 7.3+ compatible PHP 8.1
 
 ajout de quelques retouches pour facilité l'interopérabilités entre les appareils (device friendly)
 InvoicePlane est une application internet (webapp) libre de gestion de devis, factures, clients et paiements (en lignes).
@@ -19,7 +19,7 @@ Pour plus d'info (en anglais et archivé) [InvoicePlane.com](https://web.archive
 
 ![InvoicePlane](https://web.archive.org/web/20181209043322/http://invoiceplane.com/content/logo/PNG/logo_300x150.png)
 
-#### _Version 1.5.10.3-Fr
+#### _Version 1.5.11-1-Fr
 
 InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.
 For more information visit <del> __[InvoicePlane.com](https://invoiceplane.com)__ or take a look at the __[demo](https://demo.invoiceplane.com)__ </del>
