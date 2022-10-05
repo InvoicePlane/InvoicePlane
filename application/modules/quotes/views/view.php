@@ -160,12 +160,12 @@ $cv = $this->controller->view_data["custom_values"];
         ?>
     </h1>
 
-    <div class="headerbar-item pull-right">
-        <div class="btn-group btn-group-sm">
-            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                <?php _trans('options'); ?> <i class="fa fa-chevron-down"></i>
+    <div class="headerbar-item pull-right btn-group">
+        <div class="options btn-group btn-group-sm">
+            <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
-            <ul class="dropdown-menu dropdown-menu-right">
+            <ul class="dropdown-menu">
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
@@ -217,7 +217,9 @@ $cv = $this->controller->view_data["custom_values"];
 </div>
 
 <div id="content">
+
     <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <div id="quote_form">
         <div class="quote">
 
