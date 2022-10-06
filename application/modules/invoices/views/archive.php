@@ -4,6 +4,8 @@
 
     <div class="headerbar-item pull-right">
         <form action="<?php echo site_url('invoices/archive/'); ?>" method="post">
+           <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
+                   value="<?php echo $this->security->get_csrf_hash() ?>">
             <div class="input-group">
                 <input name="invoice_number" id="invoice_number" type="text" class="form-control input-sm">
                 <span class="input-group-btn">
