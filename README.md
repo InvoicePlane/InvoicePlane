@@ -3,7 +3,7 @@
 
 ### InvoicePlane en Français pour PHP 7.3+ compatible PHP 8.1 : custom field [BANQUES]
 
-ajout de quelques retouches pour facilité l'interopérabilités entre les appareils (device friendly)
+ajout de quelques retouches pour faciliter l'interopérabilités entre les appareils (device friendly)
 InvoicePlane est une application internet (webapp) libre de gestion de devis, factures, clients et paiements (en lignes).
 Son interface est simple de l'installation a l'utilisation, intuitive et s'adaptate au naviguateurs des mobiles.
 
