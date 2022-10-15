@@ -196,14 +196,13 @@ class MX_Loader extends CI_Loader
         }
 
 
-    	if ($object_name==null) {
-            $object_name = '';
-        }
 
-        if (empty($_alias = strtolower($object_name))) {
-            $_alias = $class;
-        }
-
+	if ($object_name == null) {
+		$_alias = $class;
+	}
+	else {
+		$_alias = strtolower($object_name);
+	}
 
         list($path, $_library) = Modules::find($library, $this->_module, 'libraries/');
 
@@ -213,8 +212,9 @@ class MX_Loader extends CI_Loader
             ($path2) && $params = Modules::load_file($file, $path2, 'config');
         }
 
-        if ($path === false) {
-            $this->_ci_load_library($library, $params, $object_name);
+	if ($path === false) {
+	    if ($this->_ci_load_library($library, $params, $object_name) == false)
+		return $this->libraries($library);
         } else {
             Modules::load_file($_library, $path);
 
@@ -229,9 +229,11 @@ class MX_Loader extends CI_Loader
     /** Load an array of libraries **/
     public function libraries($libraries)
     {
-        foreach ($libraries as $library => $alias) {
-            (is_int($library)) ? $this->library($alias) : $this->library($library, null, $alias);
-        }
+	if (is_array($libraries)) {
+            foreach ($libraries as $library => $alias) {
+                (is_int($library)) ? $this->library($alias) : $this->library($library, null, $alias);
+	    }
+	}
         return $this;
     }
 
