@@ -12,6 +12,13 @@ is_array(Modules::$locations = $CFG->item('modules_locations')) OR Modules::$loc
 /* PHP5 spl_autoload */
 spl_autoload_register('Modules::autoload');
 
+function myEach($arr) {
+    $key = key($arr);
+    $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
+    next($arr);
+    return $result;
+}
+
 /**
  * Modular Extensions - HMVC
  *
@@ -80,13 +87,14 @@ class Modules
     /** Load a module controller **/
     public static function load($module)
     {
-
-    	if (is_array($module)) {
-    		$params = current($module);
-    		$module = key($module);
-    	} else {
-    		$params = NULL;
-    	}	
+        if (is_array($module))
+	{
+                list($module, $params) = @myEach($module);
+	}
+        else
+	{
+		$params = null;
+	}
 
         /* get the requested controller class name */
     	if ($module==null) {
