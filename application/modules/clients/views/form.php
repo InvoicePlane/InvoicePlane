@@ -304,7 +304,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_avs" id="client_avs" class="form-control"
-                                           value="<?php echo htmlspecialchars(format_avs($avs), ENT_COMPAT); ?>">
+                                           value="<?php echo htmlspecialchars(format_avs($avs)); ?>">
                                 </div>
                             </div>
 
@@ -314,7 +314,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <div class="controls">
                                     <input type="text" name="client_insurednumber" id="client_insurednumber"
                                            class="form-control"
-                                           value="<?php echo htmlentities($insuredNumber, ENT_COMPAT); ?>">
+                                           value="<?php echo htmlentities($insuredNumber); ?>">
                                 </div>
                             </div>
 
@@ -323,7 +323,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_veka" id="client_veka" class="form-control"
-                                           value="<?php echo htmlentities($veka, ENT_COMPAT); ?>">
+                                           value="<?php echo htmlentities($veka); ?>">
                                 </div>
                             </div>
 

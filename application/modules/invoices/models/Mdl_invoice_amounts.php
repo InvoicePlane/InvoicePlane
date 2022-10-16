@@ -130,14 +130,6 @@ class Mdl_Invoice_Amounts extends CI_Model
         $this->db->where('invoice_id', $invoice_id);
         $invoice_data = $this->db->get('ip_invoices')->row();
 
-        if ($invoice_data->invoice_discount_amount==null) {
-            $invoice_data->invoice_discount_amount = 0.0;
-        }
-
-        if ($invoice_data->invoice_discount_percent==null) {
-            $invoice_data->invoice_discount_percent = 0.0;
-        }
-
         $total = (float)number_format($invoice_total, 2, '.', '');
         $discount_amount = (float)number_format($invoice_data->invoice_discount_amount, 2, '.', '');
         $discount_percent = (float)number_format($invoice_data->invoice_discount_percent, 2, '.', '');

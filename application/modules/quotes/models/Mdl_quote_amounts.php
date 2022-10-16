@@ -85,14 +85,6 @@ class Mdl_Quote_Amounts extends CI_Model
         $this->db->where('quote_id', $quote_id);
         $quote_data = $this->db->get('ip_quotes')->row();
 
-        if ($quote_data->quote_discount_amount==null) {
-            $quote_data->quote_discount_amount = 0.0;
-        }
-
-        if ($quote_data->quote_discount_percent==null) {
-            $quote_data->quote_discount_percent = 0.0;
-        }
-
         $total = (float)number_format($quote_total, 2, '.', '');
         $discount_amount = (float)number_format($quote_data->quote_discount_amount, 2, '.', '');
         $discount_percent = (float)number_format($quote_data->quote_discount_percent, 2, '.', '');
