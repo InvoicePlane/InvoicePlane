@@ -257,7 +257,7 @@ class Setup extends MX_Controller
     {
         // Reload the ipconfig.php file
         global $dotenv;
-        $dotenv->overload();
+        $dotenv->load();
 
         // Load the database config and configure it to test the connection
         include(APPPATH . 'config/database.php');

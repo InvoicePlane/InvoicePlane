@@ -46,6 +46,14 @@ spl_autoload_register('Modules::autoload');
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+function myEach($arr) {
+    $key = key($arr);
+    $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
+    next($arr);
+    return $result;
+}
+
 class Modules
 {
 
@@ -80,8 +88,16 @@ class Modules
     /** Load a module controller **/
     public static function load($module)
     {
-        // @TODO @each will suppress errors but needs to be replaced if the function is removed in PHP 7.3
-        is_array($module) ? list($module, $params) = @each($module) : $params = NULL;
+	// @TODO @each will suppress errors but needs to be replaced if the function is removed in PHP 7.3
+        //is_array($module) ? list($module, $params) = @myEach($module) : $params = NULL;
+	if (is_array($module))
+	{
+                list($module, $params) = myEach($module);
+	}
+        else
+	{
+		$params = null;
+	}
 
         /* get the requested controller class name */
         $alias = strtolower(basename($module));
