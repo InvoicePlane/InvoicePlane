@@ -1,44 +1,58 @@
 ---
 version: "3"
 
+networks:
+  invoiceplane:
+    driver: bridge
+
+volumes:
+  invoiceplane-db:
+    driver: local
+
 services:
 
-  # --- MariaDB 10.3
+  # --- MariaDB 10.9
   db:
     container_name: "invoiceplane-db"
-    image: bitnami/mariadb:10.3
+    image: bitnami/mariadb:10.9
     environment:
       - MARIADB_ROOT_PASSWORD=ipdevdb
       - MARIADB_USER=ipdevdb
       - MARIADB_PASSWORD=ipdevdb
       - MARIADB_DATABASE=ipdevdb
     ports:
-      - "127.0.0.1:3306:3306"
+      - "3306:3306"
+    networks:
+      - invoiceplane
     volumes:
       - invoiceplane-db:/bitnami
 
-  # --- PHP 7.4
+  # --- PHP 8.1
   php:
     container_name: "invoiceplane-php"
-    image: bitnami/php-fpm:7.4
+    image: bitnami/php-fpm:8.1
+    expose:
+      - "9000"
     depends_on:
       - db
+    networks:
+      - invoiceplane
     volumes:
       - .:/app:delegated
       - ./application/docker/php/php-dev.ini:/opt/bitnami/php/etc/conf.d/php.ini:ro
 
-  # --- nginx 1.16
+  # --- nginx 1.23
   nginx:
     container_name: "invoiceplane-nginx"
-    image: bitnami/nginx:1.16
+    image: bitnami/nginx:1.23
     ports:
-      - "80:8085"
+      - "80:80"
     depends_on:
       - php
+    networks:
+      - invoiceplane
     volumes:
       - .:/app:delegated
+      - ./application/logs:/opt/bitnami/nginx/logs
       - ./application/docker/nginx/site.conf:/opt/bitnami/nginx/conf/vhosts/site.conf:ro
 
-volumes:
-  invoiceplane-db:
-    driver: local
