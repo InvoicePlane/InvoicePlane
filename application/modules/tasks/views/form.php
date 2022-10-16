@@ -121,7 +121,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
                                 <?php foreach ($projects as $project) { ?>
                                     <option value="<?php echo $project->project_id; ?>"
                                         <?php check_select($this->mdl_tasks->form_value('project_id'), $project->project_id); ?>>
-                                        <?php echo htmlspecialchars($project->project_name, ENT_COMPAT); ?>
+                                        <?php echo htmlspecialchars($project->project_name); ?>
                                     </option>
                                 <?php } ?>
                             </select>

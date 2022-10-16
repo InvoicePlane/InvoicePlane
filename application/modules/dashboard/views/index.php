@@ -320,8 +320,8 @@
                             <?php foreach ($tasks as $task) { ?>
                                 <tr>
                                     <td>
-                                    <span class="label <?php if (isset($task_statuses["$task->task_status"]['class'])) echo $task_statuses["$task->task_status"]['class']; ?>">
-                                        <?php if (isset($task_statuses["$task->task_status"]['label'])) echo $task_statuses["$task->task_status"]['label']; ?>
+                                    <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
+                                        <?php echo $task_statuses["$task->task_status"]['label']; ?>
                                     </span>
                                     </td>
                                     <td>

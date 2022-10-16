@@ -72,7 +72,8 @@ class Mdl_Import extends Response_Model
      */
     public function __construct()
     {
-
+        // Provides better line ending detection
+        ini_set("auto_detect_line_endings", true);
     }
 
     public function default_select()
