@@ -82,13 +82,8 @@ function date_from_mysql($date, $ignore_post_check = false)
         if (!$_POST or $ignore_post_check) {
             $CI = &get_instance();
 
-            if ($date != null) {
-                $date = DateTime::createFromFormat('Y-m-d', $date);
-                return $date->format($CI->mdl_settings->setting('date_format'));
-            }
-            else {
-                return '';
-            }
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+            return $date->format($CI->mdl_settings->setting('date_format'));
         }
         return $date;
     }
@@ -115,9 +110,7 @@ function date_from_timestamp($timestamp)
 function date_to_mysql($date)
 {
     $CI = &get_instance();
-    if ($date == null) {
-        return '';
-    }
+
     $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
     return $date->format('Y-m-d');
 }
@@ -174,15 +167,11 @@ function increment_user_date($date, $increment)
 {
     $CI = &get_instance();
 
-    if ($date == null) {
-        return '';
-    }
-
     $mysql_date = date_to_mysql($date);
 
     $new_date = new DateTime($mysql_date);
-
     $new_date->add(new DateInterval('P' . $increment));
+
     return $new_date->format($CI->mdl_settings->setting('date_format'));
 }
 
@@ -195,11 +184,7 @@ function increment_user_date($date, $increment)
  */
 function increment_date($date, $increment)
 {
-    if ($date==null) {
-        return '';
-    }
     $new_date = new DateTime($date);
     $new_date->add(new DateInterval('P' . $increment));
     return $new_date->format('Y-m-d');
-
 }

@@ -5,9 +5,4 @@
     <a id="getToken" class="btn btn-success btn-lg">Pay now</a>
 </form>
 
-
-<script>
-<?php
-include "stripe.js"
-?>
-</script>
+<script src="/application/modules/guest/views/gateway/stripe.js"></script>
