@@ -148,9 +148,9 @@ class Mailer extends Admin_Controller
         $body = $this->input->post('body');
 
         if (strlen($body) != strlen(strip_tags($body))) {
-            $body = htmlspecialchars_decode($body, ENT_COMPAT);
+            $body = htmlspecialchars_decode($body);
         } else {
-            $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
+            $body = htmlspecialchars_decode(nl2br($body));
         }
 
         $cc = $this->input->post('cc');
@@ -198,9 +198,9 @@ class Mailer extends Admin_Controller
         $subject = $this->input->post('subject');
 
         if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
-            $body = htmlspecialchars_decode($this->input->post('body'), ENT_COMPAT);
+            $body = htmlspecialchars_decode($this->input->post('body'));
         } else {
-            $body = htmlspecialchars_decode(nl2br($this->input->post('body')), ENT_COMPAT);
+            $body = htmlspecialchars_decode(nl2br($this->input->post('body')));
         }
 
         $cc = $this->input->post('cc');
