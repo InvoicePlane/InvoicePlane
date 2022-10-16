@@ -195,7 +195,12 @@ class MX_Loader extends CI_Loader
             return $this;
         }
 
-        ($_alias = strtolower($object_name)) OR $_alias = $class;
+	if ($object_name == null) {
+		$_alias = $class;
+	}
+	else {
+		$_alias = strtolower($object_name);
+	}
 
         list($path, $_library) = Modules::find($library, $this->_module, 'libraries/');
 
@@ -206,7 +211,8 @@ class MX_Loader extends CI_Loader
         }
 
         if ($path === false) {
-            $this->_ci_load_library($library, $params, $object_name);
+		if ($this->_ci_load_library($library, $params, $object_name) == false)
+			return $this->libraries($library);
         } else {
             Modules::load_file($_library, $path);
 
