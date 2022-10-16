@@ -52,8 +52,6 @@ class Payment_Handler extends Base_Controller
             $cc_expire_year = $this->input->post('creditcard_expiry_year');
             $cc_cvv = $this->input->post('creditcard_cvv');
 
-            print $d;
-
             if ($cc_number && !in_array($d,['stripe'])) {
                 try {
                     $credit_card = new \Omnipay\Common\CreditCard([
