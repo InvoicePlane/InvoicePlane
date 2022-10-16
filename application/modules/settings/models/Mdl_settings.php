@@ -131,8 +131,8 @@ class Mdl_Settings extends CI_Model
             $info_file = $theme . '.theme';
 
             if (file_exists($info_path . $info_file)) {
-                $theme_info = new \Dotenv\Dotenv($info_path, $info_file);
-                $theme_info->overload();
+                $theme_info = Dotenv\Dotenv::createMutable($info_path, $info_file);
+                $theme_info->load();
                 $themes[$theme] = env('TITLE');
             }
         }
