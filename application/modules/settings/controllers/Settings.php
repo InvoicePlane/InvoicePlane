@@ -145,12 +145,6 @@ class Settings extends Admin_Controller
         // Get all themes
         $available_themes = $this->mdl_settings->get_themes();
 
-        $currencies = new ISOCurrencies();
-        $currencyCodes = array();
-        foreach ($currencies as $currency) {
-                $currencyCodes[] = $currency->getCode();
-        }
-
         // Set data in the layout
         $this->layout->set(
             array(
@@ -170,7 +164,7 @@ class Settings extends Admin_Controller
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
                 'gateway_drivers' => $gateways,
                 'number_formats' => $number_formats,
-                'gateway_currency_codes' => $currencyCodes,
+                'gateway_currency_codes' => \Omnipay\Common\Currency::all(),
                 'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))
             )
         );
