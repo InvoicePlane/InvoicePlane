@@ -94,9 +94,9 @@ class Cron extends Base_Controller
                 // Prepare the body
                 $body = $tpl->email_template_body;
                 if (strlen($body) != strlen(strip_tags($body))) {
-                    $body = htmlspecialchars_decode($body);
+                    $body = htmlspecialchars_decode($body, ENT_COMPAT);
                 } else {
-                    $body = htmlspecialchars_decode(nl2br($body));
+                    $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
                 }
 
                 $from = !empty($tpl->email_template_from_email) ?
