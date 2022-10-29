@@ -12,6 +12,7 @@
     "codeigniter/framework": "3.1.13",
     "league/omnipay": "^3.2",
     "mpdf/mpdf": "^8.1",
+    "omnipay/stripe": "*",
     "paragonie/random_compat": "^2.0",
     "phpmailer/phpmailer": "^6.6",
     "setasign/fpdf": "^1.8",
