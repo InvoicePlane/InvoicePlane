@@ -307,7 +307,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php if ($invoice->invoice_status_id == 1) { ?>
                                 <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
                                       data-toggle="tooltip" data-placement="bottom"
-                                      title="<?php echo htmlentities(trans('change_client')); ?>"></span>
+                                      title="<?php echo htmlentities(trans('change_client'), ENT_COMPAT); ?>"></span>
                             <?php } ?>
                         </h2><br>
                         <span>
@@ -417,7 +417,7 @@ if ($this->config->item('disable_read_only') == true) {
                                             <span class="input-group-addon"><?php _trans('case_number'); ?></span>
                                             <input id="invoice_sumex_casenumber" name="sumex_casenumber"
                                                    class="input-sm form-control"
-                                                   value="<?php echo htmlentities($invoice->sumex_casenumber); ?>"
+                                                   value="<?php echo htmlentities($invoice->sumex_casenumber, ENT_COMPAT); ?>"
                                                    type="text">
                                         </div>
                                     </td>
@@ -428,7 +428,7 @@ if ($this->config->item('disable_read_only') == true) {
                                             <span class="input-group-addon"><?php _trans('invoice_sumex_diagnosis'); ?></span>
                                             <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis"
                                                    class="input-sm form-control"
-                                                   value="<?php echo htmlentities($invoice->sumex_diagnosis); ?>"
+                                                   value="<?php echo htmlentities($invoice->sumex_diagnosis, ENT_COMPAT); ?>"
                                                    type="text" maxlength="500">
                                         </div>
                                     </td>

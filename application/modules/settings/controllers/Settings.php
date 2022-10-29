@@ -25,6 +25,7 @@ class Settings extends Admin_Controller
         $this->load->model('mdl_settings');
         $this->load->library('crypt');
         $this->load->library('form_validation');
+        $this->load->helper('payments_helper');
     }
 
     public function index()
@@ -162,7 +163,7 @@ class Settings extends Admin_Controller
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
                 'gateway_drivers' => $gateways,
                 'number_formats' => $number_formats,
-                'gateway_currency_codes' => \Omnipay\Common\Currency::all(),
+                'gateway_currency_codes' => get_currencies(),
                 'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))
             )
         );
