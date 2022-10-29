@@ -7,7 +7,7 @@
   "type": "project",
   "require": {
     "codeigniter/framework": "3.1.13",
-    "phpmailer/phpmailer": "^6.6.3",
+    "phpmailer/phpmailer": "^6.5",
     "mpdf/mpdf": "^8.1.1",
     "vlucas/phpdotenv": "^5.4.1",
     "setasign/fpdf": "^1.8.4",
