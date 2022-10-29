@@ -24,6 +24,9 @@ function format_currency($amount)
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
+    //prevent null format
+    if(is_null($amount)) $amount = 0;
+
     if ($currency_symbol_placement == 'before') {
         return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
     } elseif ($currency_symbol_placement == 'afterspace') {
