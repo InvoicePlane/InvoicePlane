@@ -5,13 +5,16 @@
   "homepage": "https://invoiceplane.com",
   "license": "MIT",
   "type": "project",
+  "config": {
+    "sort-packages": true
+  },
   "require": {
     "codeigniter/framework": "3.1.13",
-    "phpmailer/phpmailer": "^6.5",
-    "mpdf/mpdf": "^8.1.1",
-    "vlucas/phpdotenv": "^5.4.1",
-    "setasign/fpdf": "^1.8.4",
-    "league/omnipay": "^3.1",
-    "paragonie/random_compat": "^2.0"
+    "league/omnipay": "^3.2",
+    "mpdf/mpdf": "^8.1",
+    "paragonie/random_compat": "^2.0",
+    "phpmailer/phpmailer": "^6.6",
+    "setasign/fpdf": "^1.8",
+    "vlucas/phpdotenv": "^5.5"
   }
 }
