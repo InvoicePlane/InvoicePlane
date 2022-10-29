@@ -12,6 +12,13 @@ is_array(Modules::$locations = $CFG->item('modules_locations')) OR Modules::$loc
 /* PHP5 spl_autoload */
 spl_autoload_register('Modules::autoload');
 
+function myEach($arr) {
+    $key = key($arr);
+    $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
+    next($arr);
+    return $result;
+}
+
 /**
  * Modular Extensions - HMVC
  *
@@ -46,14 +53,6 @@ spl_autoload_register('Modules::autoload');
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
-function myEach($arr) {
-    $key = key($arr);
-    $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
-    next($arr);
-    return $result;
-}
-
 class Modules
 {
 
@@ -66,6 +65,7 @@ class Modules
     public static function run($module)
     {
         $method = 'index';
+	    $args = func_get_args();
 
         if (($pos = strrpos($module, '/')) != false) {
             $method = substr($module, $pos + 1);
@@ -75,7 +75,6 @@ class Modules
         if ($class = self::load($module)) {
             if (method_exists($class, $method)) {
                 ob_start();
-                $args = func_get_args();
                 $output = call_user_func_array([$class, $method], array_slice($args, 1));
                 $buffer = ob_get_clean();
                 return ($output !== null) ? $output : $buffer;
@@ -88,11 +87,9 @@ class Modules
     /** Load a module controller **/
     public static function load($module)
     {
-	// @TODO @each will suppress errors but needs to be replaced if the function is removed in PHP 7.3
-        //is_array($module) ? list($module, $params) = @myEach($module) : $params = NULL;
-	if (is_array($module))
+        if (is_array($module))
 	{
-                list($module, $params) = myEach($module);
+                list($module, $params) = @myEach($module);
 	}
         else
 	{
@@ -100,12 +97,20 @@ class Modules
 	}
 
         /* get the requested controller class name */
-        $alias = strtolower(basename($module));
+    	if ($module==null) {
+    		$alias = '';
+    	} else {
+            $alias = strtolower(basename($module));
+    	}
 
         /* create or return an existing controller from the registry */
         if (!isset(self::$registry[$alias])) {
             /* find the controller */
+            if ($module == null) {
+		    list($class) = CI::$APP->router->locate(array());
+	    } else {
             list($class) = CI::$APP->router->locate(explode('/', $module));
+	    }
 
             /* controller cannot be located */
             if (empty($class)) {
