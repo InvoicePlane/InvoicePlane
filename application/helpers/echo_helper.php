@@ -19,7 +19,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function htmlsc($output)
 {
+    if(!is_null($output))
     return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
+    return $output;
 }
 
 /**
