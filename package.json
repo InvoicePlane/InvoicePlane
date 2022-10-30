@@ -13,9 +13,9 @@
   },
   "homepage": "https://www.invoiceplane.com",
   "devDependencies": {
-    "autoprefixer": "^10.4.12",
+    "autoprefixer": "^9.8.6",
     "bootstrap-datepicker": "^1.9",
-    "bootstrap-sass": "3.4.3",
+    "bootstrap-sass": "3.4.1",
     "clipboard": "^2.0",
     "dropzone": "^6.0.0-beta.2",
     "font-awesome": "^4.7",
