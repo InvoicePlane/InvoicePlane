@@ -44,7 +44,7 @@
                             </a>
                         </td>
                         <td>
-                            <?php echo anchor('clients/view/' . $invoice->client_id, format_client($invoice)); ?>
+                            <?php echo anchor('clients/view/' . $invoice->client_id, htmlsc($invoice->client_name)); ?>
                         </td>
                         <td>
                             <?php echo date_from_mysql($invoice->recur_start_date); ?>
