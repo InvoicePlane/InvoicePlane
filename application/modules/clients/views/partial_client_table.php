@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped" id="sort">
         <thead>
         <tr>
             <th><?php _trans('active'); ?></th>
@@ -13,13 +13,13 @@
         <tbody>
         <?php foreach ($records as $client) : ?>
             <tr>
-				<td>
+				<td data-table-header="<?php _trans('active'); ?>">
 					<?php echo ($client->client_active) ? '<span class="label active">' . trans('yes') . '</span>' : '<span class="label inactive">' . trans('no') . '</span>'; ?>
 				</td>
-                <td><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
-                <td><?php _htmlsc($client->client_email); ?></td>
-                <td><?php _htmlsc($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : '')); ?></td>
-                <td class="amount"><?php echo format_currency($client->client_invoice_balance); ?></td>
+                <td data-table-header="<?php _trans('client_name'); ?>"><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
+                <td data-table-header="<?php _trans('email_address'); ?>"><?php _htmlsc($client->client_email); ?></td>
+                <td data-table-header="<?php _trans('phone_number'); ?>"><?php _htmlsc($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : '')); ?></td>
+                <td data-table-header="<?php _trans('balance'); ?>"class="amount"><?php echo format_currency($client->client_invoice_balance); ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
@@ -66,3 +66,16 @@
         </tbody>
     </table>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<script src "https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#sort").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+        });
+    });
+</script>

@@ -7,6 +7,7 @@
 
 <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>">
 <link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>">
 
