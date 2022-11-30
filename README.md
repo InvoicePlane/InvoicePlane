@@ -32,6 +32,32 @@ source software without an income, there are no professional audits of the app y
 
 _Notice: Please download InvoicePlane from our [website](https://www.invoiceplane.com/downloads) only as the packages contain additional needed components. If you are a developer, read the [development guide](CONTRIBUTING.md)._
 
+---
+
+#### Issues
+
+As soon as you run into issues and you want to report it, make sure we can replicate that issue.
+
+Something like "_It doesn't work_" will not help in finding your issue.
+
+We've improved the github issue template to help you answering the most common questions that are needed for reporting an issue.
+
+Try to report your issue on the forums first: https://community.invoiceplane.com
+
+Once the issue is _reproducable / replicatable_, you will be asked to create an issue in the issues list.
+
+---
+
+#### MariaDB
+
+We will be adopting **MariaDB** as database server.
+MySQL went to version 8 and that was for us the reason to **switch to MariaDB**.
+
+Any issue you run into, if you still have MySQL version 8, we could recommend to _switch_ to **MariaDB** instead.
+
+Of course, you're welcome to post your issue with MySQL version 8 on the forums: https://community.invoiceplane.com
+
+---
 
 #### Remove `index.php` from the URL
 
@@ -47,14 +73,14 @@ If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoicepla
 
 ### Support / Development / Chat
 
-Need some help or want to talk with other about InvoicePlane? Follow these links to get in touch.  
-Please notice that InvoicePlane is **not** a commercial software but a small open source project and we neither offer 
+Need some help or want to talk with other about InvoicePlane? Follow these links to get in touch.
+Please notice that InvoicePlane is **not** a commercial software but a small open source project and we neither offer
 24/7 support nor any form of SLA or paid help.
 
-[![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)  
-[![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)  
-[![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://github.com/invoiceplane/invoiceplane/issues/)  
-[![Contribution Guide](https://img.shields.io/badge/Development%3A-Contribution%20Guide-429ae1.svg)](CONTRIBUTING.md)  
+[![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)
+[![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)
+[![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://github.com/invoiceplane/invoiceplane/issues/)
+[![Contribution Guide](https://img.shields.io/badge/Development%3A-Contribution%20Guide-429ae1.svg)](CONTRIBUTING.md)
 
 ---
 
