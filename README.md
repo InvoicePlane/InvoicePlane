@@ -48,17 +48,6 @@ Once the issue is _reproducable / replicatable_, you will be asked to create an 
 
 ---
 
-#### MariaDB
-
-We will be adopting **MariaDB** as database server.
-MySQL went to version 8 and that was for us the reason to **switch to MariaDB**.
-
-Any issue you run into, if you still have MySQL version 8, we could recommend to _switch_ to **MariaDB** instead.
-
-Of course, you're welcome to post your issue with MySQL version 8 on the forums: https://community.invoiceplane.com
-
----
-
 #### Remove `index.php` from the URL
 
 If you want to remove `index.php` from the URL, follow these instructions. However, this is an _optional_ step and not a requirement. If it's not working correctly, take a step back and use the application with out removing that part from the URL.
