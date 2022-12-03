@@ -78,7 +78,7 @@ function date_formats()
  */
 function date_from_mysql($date, $ignore_post_check = false)
 {
-    if ($date <> '0000-00-00') {
+    if ($date) {
         if (!$_POST or $ignore_post_check) {
             $CI = &get_instance();
 
