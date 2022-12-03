@@ -382,6 +382,11 @@ class Mdl_Setup extends CI_Model
             {
                 $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
+            if($row->recur_next_date == '0000-00-00')
+            {
+                $this->db->set('recur_next_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+
+            }
         }
 
         //**client_bdate**
