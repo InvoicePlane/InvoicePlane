@@ -366,4 +366,21 @@ class Mdl_Setup extends CI_Model
 
         $this->mdl_settings->save('pdf_quote_footer', get_setting('pdf_invoice_footer'));
     }
+
+    public function upgrade_036_1_6()
+    {
+        //upgrade the recurring invoices data and replace 0000-00-00 invalid date with null in order to be compliant
+        //with the MySQL >= 5.8 defautl SQL Strict mode that is activated by default.
+        $rows = $this->db->query('SELECT * FROM `ip_invoices_recurring`');
+
+        //migrate the recur_end_date data from 0000-00-00 to NULL in order to allow SQL Strict mode. Becaues the new
+        //mysql default mode, the change must be done by PHP logic. 
+        foreach($rows->result() as $row)
+        {
+            if($row->recur_end_date == '0000-00-00')
+            {
+                $query = $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+            }
+        }
+    }
 }
