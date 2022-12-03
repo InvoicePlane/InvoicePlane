@@ -371,15 +371,26 @@ class Mdl_Setup extends CI_Model
     {
         //upgrade the recurring invoices data and replace 0000-00-00 invalid date with null in order to be compliant
         //with the MySQL >= 5.8 defautl SQL Strict mode that is activated by default.
-        $rows = $this->db->query('SELECT * FROM `ip_invoices_recurring`');
-
-        //migrate the recur_end_date data from 0000-00-00 to NULL in order to allow SQL Strict mode. Becaues the new
+        //migrate the dates data from 0000-00-00 to NULL in order to allow SQL Strict mode. Becaues the new
         //mysql default mode, the change must be done by PHP logic. 
-        foreach($rows->result() as $row)
+
+        //**recur_end_date**
+        $rows_recur_end_date = $this->db->query('SELECT * FROM `ip_invoices_recurring`');
+        foreach($rows_recur_end_date->result() as $row)
         {
             if($row->recur_end_date == '0000-00-00')
             {
-                $query = $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+                $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+            }
+        }
+
+        //**client_bdate**
+        $rows_client_bdate = $this->db->query('SELECT * FROM `ip_clients`');
+        foreach($rows_client_bdate->result() as $row_bdate)
+        {
+            if($row_bdate->client_birthdate == '0000-00-00')
+            {
+                $this->db->set('client_birthdate',NULL)->where('client_id',$row_bdate->client_id)->update('ip_clients');
             }
         }
     }
