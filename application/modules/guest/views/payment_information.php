@@ -266,7 +266,7 @@
             $("#fullpage-loader").fadeIn(200);
             $('#standard-card-form').hide();
             $('#ajax-card-form').show();
-            $('#ajax-card-form').load('<?php echo base_url(); ?>guest/payment_information/stripe');
+            $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/stripe');?>');
         }
         else if($('#gateway-select').select2('data')[0].id === "none")
         {
