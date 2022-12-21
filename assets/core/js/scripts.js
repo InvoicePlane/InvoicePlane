@@ -45,9 +45,7 @@ function inject_email_template(template_fields, email_template) {
         key = key.replace("email_template_", "");
         // if key is in template_fields, apply value to form field
         if (val && template_fields.indexOf(key) > -1) {
-            if (key === 'body') {
-                $("#" + key).val(val);
-            } else if (key === 'pdf_template') {
+            if (key === 'pdf_template') {
                 $("#" + key).val(val).trigger('change');
             } else {
                 $("#" + key).val(val);
