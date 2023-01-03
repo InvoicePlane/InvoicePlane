@@ -254,4 +254,18 @@ $(document).ready(function () {
             }
         });
     }
+
+    // Detect Ctrl + S on the whole document
+    $(document).on('keydown', function (e) {
+        if (e.ctrlKey && e.key === 's') {
+            // Detect if modal is open
+            if ($('.modal-footer .btn-success').length) {
+                e.preventDefault();
+                $('.modal-footer .btn-success').click();
+            } else if ($('#headerbar .btn-success').length) {
+                e.preventDefault();
+                $('#headerbar .btn-success').click();
+            }
+        }
+    });
 });
