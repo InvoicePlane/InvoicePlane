@@ -28,10 +28,12 @@ class Ajax extends Admin_Controller
 
         if (!empty($filter_family)) {
             $this->mdl_products->by_family($filter_family);
+            $filter_family = $this->security->xss_clean($filter_family);
         }
 
         if (!empty($filter_product)) {
             $this->mdl_products->by_product($filter_product);
+            $filter_product = $this->security->xss_clean($filter_product);
         }
 
         $products = $this->mdl_products->get()->result();
