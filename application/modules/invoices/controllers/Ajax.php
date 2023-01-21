@@ -281,7 +281,7 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_invoices_recurring');
 
         $data = [
-            'invoice_id' => $this->input->post('invoice_id'),
+            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
             'recur_frequencies' => $this->mdl_invoices_recurring->recur_frequencies,
         ];
 
@@ -303,7 +303,7 @@ class Ajax extends Admin_Controller
 
         $data = [
             'client_id' => $this->input->post('client_id'),
-            'invoice_id' => $this->input->post('invoice_id'),
+            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
             'clients' => $this->mdl_clients->get_latest(),
         ];
 
@@ -330,7 +330,7 @@ class Ajax extends Admin_Controller
 
             $response = [
                 'success' => 1,
-                'invoice_id' => $invoice_id,
+                'invoice_id' => $this->security->xss_clean($invoice_id),
             ];
         } else {
             $this->load->helper('json_error');
@@ -354,7 +354,7 @@ class Ajax extends Admin_Controller
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'invoice_id' => $this->input->post('invoice_id'),
+            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
             'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))
                 ->get()
                 ->row(),
@@ -401,7 +401,7 @@ class Ajax extends Admin_Controller
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'invoice_id' => $this->input->post('invoice_id'),
+            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
             'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))
                 ->get()
                 ->row(),

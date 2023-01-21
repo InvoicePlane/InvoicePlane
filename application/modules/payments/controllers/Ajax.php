@@ -51,7 +51,7 @@ class Ajax extends Admin_Controller
             'invoice_id' => $this->input->post('invoice_id'),
             'invoice_balance' => $this->input->post('invoice_balance'),
             'invoice_payment_method' => $this->input->post('invoice_payment_method'),
-            'payment_cf_exist' => $this->input->post('payment_cf_exist')
+            'payment_cf_exist' => $this->security->xss_clean($this->input->post('payment_cf_exist'))
         );
 
         $this->layout->load_view('payments/modal_add_payment', $data);
