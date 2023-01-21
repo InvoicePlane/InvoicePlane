@@ -241,10 +241,10 @@ class Setup extends MX_Controller
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
-        $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME=" . $hostname, $config);
-        $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME=" . $username, $config);
-        $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD=" . $password, $config);
-        $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE=" . $database, $config);
+        $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME='" . $hostname . "'", $config);
+        $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME='" . $username . "'", $config);
+        $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD='" . $password . "'", $config);
+        $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE='" . $database . "'", $config);
         $config = preg_replace("/DB_PORT=(.*)?/", "DB_PORT=" . $port, $config);
 
         write_file(IPCONFIG_FILE, $config);
