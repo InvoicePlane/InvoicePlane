@@ -372,6 +372,25 @@
                         </div>
 
                     </div>
+
+					<!-- Disable the update of invoice date and due date before emailing! -->
+                    <div class="col-xs-12 col-md-6">                    
+                    <div class="form-group">
+                            <label for="settings[no_update_invoice_due_date_mail]">
+                                <?php _trans('no_update_invoice_due_date_mail'); ?>
+                            </label>
+                            <select name="settings[no_update_invoice_due_date_mail]" class="form-control simple-select"
+                                id="settings[no_update_invoice_due_date_mail]" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('no_update_invoice_due_date_mail'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
