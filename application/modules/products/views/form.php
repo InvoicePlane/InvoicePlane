@@ -58,7 +58,7 @@
                             </label>
 
                             <input type="text" name="product_name" id="product_name" class="form-control" required
-                                   value="<?php echo $this->mdl_products->form_value('product_name', true); ?>">
+                                   value="<?php echo $this->mdl_products->form_value('product_name', true); ?>" required>
                         </div>
 
                         <div class="form-group">
@@ -77,7 +77,7 @@
 
                             <div class="input-group has-feedback">
                                 <input type="text" name="product_price" id="product_price" class="form-control"
-                                       value="<?php echo format_amount($this->mdl_products->form_value('product_price')); ?>">
+                                       value="<?php echo format_amount($this->mdl_products->form_value('product_price')); ?>" required>
                                 <span class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></span>
                             </div>
                         </div>
