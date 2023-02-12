@@ -59,9 +59,9 @@ $cv = $this->controller->view_data['custom_values'];
                             <label for="client_name">
                                 <?php _trans('client_name'); ?>
                             </label>
-                            <input id="client_name" name="client_name" type="text" class="form-control" required
+                            <input id="client_name" name="client_name" type="text" class="form-control"
                                    autofocus
-                                   value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>">
+                                   value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>" required>
                         </div>
 
                         <div class="form-group">
@@ -268,7 +268,7 @@ $cv = $this->controller->view_data['custom_values'];
                                         trans('gender_female'),
                                         trans('gender_other'),
                                     );
-                                    foreach ($genders as $key => $val) { ?>
+foreach ($genders as $key => $val) { ?>
                                         <option value=" <?php echo $key; ?>" <?php check_select($key, $this->mdl_clients->form_value('client_gender')) ?>>
                                             <?php echo $val; ?>
                                         </option>
@@ -281,12 +281,12 @@ $cv = $this->controller->view_data['custom_values'];
                             <label for="client_birthdate"><?php _trans('birthdate'); ?></label>
                             <?php
                             $bdate = $this->mdl_clients->form_value('client_birthdate');
-                            if ($bdate && $bdate != "0000-00-00") {
-                                $bdate = date_from_mysql($bdate);
-                            } else {
-                                $bdate = '';
-                            }
-                            ?>
+if ($bdate && $bdate != "0000-00-00") {
+    $bdate = date_from_mysql($bdate);
+} else {
+    $bdate = '';
+}
+?>
                             <div class="input-group">
                                 <input type="text" name="client_birthdate" id="client_birthdate"
                                        class="form-control datepicker"
