@@ -31,7 +31,7 @@
 
                 <div class="form-group">
                     <label for="custom_values_value"><?php _trans('value'); ?></label>
-                    <input type="text" class="form-control" name="custom_values_value" id="custom_values_value"/>
+                    <input type="text" class="form-control" name="custom_values_value" id="custom_values_value" required/>
                 </div>
 
             </div>
