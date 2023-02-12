@@ -6,7 +6,10 @@
   "license": "MIT",
   "type": "project",
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   },
   "require": {
     "codeigniter/framework": "3.1.13",
