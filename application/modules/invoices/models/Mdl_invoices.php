@@ -591,7 +591,7 @@ class Mdl_Invoices extends Response_Model
         $invoice = $this->get_by_id($invoice_id);
         
         if (!empty($invoice)) {
-						$invoice_date_created = date_to_mysql(date(date_format_setting()));          
+            $invoice_date_created = date_to_mysql(date(date_format_setting()));          
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_date_created', $invoice_date_created);
             $this->db->set('invoice_date_due', $this->get_date_due($invoice_date_created));            
