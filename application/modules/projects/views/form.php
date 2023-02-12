@@ -21,7 +21,7 @@
         <div class="form-group">
             <label for="project_name"><?php _trans('project_name'); ?></label>
             <input type="text" name="project_name" id="project_name" class="form-control"
-                   value="<?php echo $this->mdl_projects->form_value('project_name', true); ?>">
+                   value="<?php echo $this->mdl_projects->form_value('project_name', true); ?>" required>
         </div>
         <div class="form-group">
             <label for="client_id"><?php _trans('client'); ?></label>
