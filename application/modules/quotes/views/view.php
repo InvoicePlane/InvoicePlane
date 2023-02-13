@@ -190,6 +190,7 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
+                <?php if (get_setting('show_menu_item_preview_pdf') != 1) { ?>                
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
@@ -197,6 +198,17 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php _trans('download_pdf'); ?>
                     </a>
                 </li>
+                <?php } ?>
+                <?php if (get_setting('show_menu_item_preview_pdf') == 1) { ?>
+                    <li>
+                        <a href="#" id="btn_generate_pdf"
+                           data-quote-id="<?php echo $quote_id; ?>">
+                            <i class="fa fa-file-pdf-o fa-margin"></i> 
+                            <?php _trans('preview_pdf'); ?>
+                        </a>
+                    </li>
+                <?php } ?> 
+
                 <li>
                     <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
