@@ -43,9 +43,6 @@
             }
             echo '</div>';
         }
-        if ($quote->client_state) {
-            echo '<div>' . htmlsc($quote->client_state) . '</div>';
-        }
         if ($quote->client_country) {
             echo '<div>' . get_country_name(trans('cldr'), $quote->client_country) . '</div>';
         }
