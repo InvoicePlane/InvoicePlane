@@ -404,7 +404,7 @@
                         </div>
  				    </div>
                     <div class="col-xs-12 col-md-6">
-    					          <div class="form-group">
+    					<div class="form-group">
                             <label for="settings[show_responsive_itemlist]">
                                 <?php _trans('show_responsive_itemlist'); ?>
                             </label>
