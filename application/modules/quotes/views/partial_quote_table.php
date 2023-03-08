@@ -1,3 +1,12 @@
+<script>
+    $(function () {
+		$(document).on('click', '#quote_preview_pdf', function () {
+            var quote_id = $(this).data('quote-id');
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_preview_pdf'); ?>", {quote_id: quote_id});
+        });
+    });
+</script>
+
 <div class="table-responsive">
     <table class="table table-hover table-striped">
 
@@ -72,8 +81,7 @@
                             <?php } ?>                            
                             <?php if (get_setting('show_menu_item_preview_pdf') == 1) { ?>
                                 <li>
-                                    <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
-                                       target="_blank">
+                                    <a href="#" id="quote_preview_pdf" data-quote-id="<?php echo $quote->quote_id; ?>">
                                        <i class="fa fa-file-pdf-o fa-margin"></i> <?php _trans('preview_pdf'); ?>
                                     </a>
                                 </li>

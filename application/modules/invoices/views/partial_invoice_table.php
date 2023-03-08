@@ -1,3 +1,12 @@
+<script>
+    $(function () {
+				$(document).on('click', '#invoice_preview_pdf', function () {
+            var invoice_id = $(this).data('invoice-id');
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_preview_pdf'); ?>", {invoice_id: invoice_id});
+        });
+    });
+</script>
+
 <div class="table-responsive">
     <table class="table table-hover table-striped">
 
@@ -100,8 +109,7 @@
                             <?php } ?> 
                             <?php if (get_setting('show_menu_item_preview_pdf') == 1) { ?>
                             <li>
-                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-                                   target="_blank">
+                                <a href="#" id="invoice_preview_pdf" data-invoice-id="<?php echo $invoice->invoice_id; ?>">
                                     <i class="fa fa-file-pdf-o fa-margin"></i> <?php _trans('preview_pdf'); ?>
                                 </a>
                             </li> 
