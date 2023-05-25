@@ -23,6 +23,7 @@ class Clients extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_clients');
+        $this->load->helper('payments_helper');
     }
 
     public function index()
@@ -170,7 +171,9 @@ class Clients extends Admin_Controller
                 'countries' => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
                 'languages' => get_available_languages(),
-            )
+                'currencies' => get_currencies(),
+                'selected_currency' => $this->mdl_clients->form_value('client_currency_code') ?: get_setting('currency_code'),
+            ) 
         );
 
         $this->layout->buffer('content', 'clients/form');

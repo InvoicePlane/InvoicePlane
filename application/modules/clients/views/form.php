@@ -1,5 +1,6 @@
 <?php
 $cv = $this->controller->view_data['custom_values'];
+$activeCurrency = $this->mdl_clients->form_value('client_currency_code');
 ?>
 
 <script type="text/javascript">
@@ -86,6 +87,39 @@ $cv = $this->controller->view_data['custom_values'];
                                     <option value="<?php echo $language; ?>"
                                         <?php check_select($client_lang, $language) ?>>
                                         <?php echo ucfirst($language); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading form-inline clearfix">
+                        <?php _trans('amount_information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="form-group no-margin">
+                            <label for="client_currency_code">
+                                <?php _trans('currency_code'); ?>
+                            </label>
+                            <select name="client_currency_code" id="client_currency_code" class="form-control simple-select">
+                                <option value="system">
+                                    <?php _trans('use_system_currency') ?>
+                                </option>
+                                <?php foreach ($currencies as $currency) {
+                                    $client_currency_code = $activeCurrency ? $activeCurrency : $selected_currency;
+                                    ?>
+                                    <option value="<?php echo $currency; ?>"
+                                        <?php check_select($client_currency_code, $currency) ?>>
+                                        <?php echo strtoupper($currency); ?>
                                     </option>
                                 <?php } ?>
                             </select>
