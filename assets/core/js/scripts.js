@@ -45,7 +45,9 @@ function inject_email_template(template_fields, email_template) {
         key = key.replace("email_template_", "");
         // if key is in template_fields, apply value to form field
         if (val && template_fields.indexOf(key) > -1) {
-            if (key === 'pdf_template') {
+            if (key === 'body') {
+                $("#" + key).html(val);
+            } else if (key === 'pdf_template') {
                 $("#" + key).val(val).trigger('change');
             } else {
                 $("#" + key).val(val);
@@ -254,18 +256,4 @@ $(document).ready(function () {
             }
         });
     }
-
-    // Detect Ctrl + S on the whole document
-    $(document).on('keydown', function (e) {
-        if (e.ctrlKey && e.key === 's') {
-            // Detect if modal is open
-            if ($('.modal-footer .btn-success').length) {
-                e.preventDefault();
-                $('.modal-footer .btn-success').click();
-            } else if ($('#headerbar .btn-success').length) {
-                e.preventDefault();
-                $('#headerbar .btn-success').click();
-            }
-        }
-    });
 });
