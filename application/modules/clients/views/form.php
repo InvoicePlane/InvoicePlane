@@ -1,6 +1,8 @@
 <?php
 $cv = $this->controller->view_data['custom_values'];
 $activeCurrency = $this->mdl_clients->form_value('client_currency_code');
+$clientCurrencySymbol = $this->mdl_clients->form_value('client_currency_symbol');;
+$currencySymbol = $clientCurrencySymbol ? $clientCurrencySymbol : $selected_currency_symbol;
 ?>
 
 <script type="text/javascript">
@@ -105,6 +107,14 @@ $activeCurrency = $this->mdl_clients->form_value('client_currency_code');
                     </div>
 
                     <div class="panel-body">
+
+                        <div class="form-group">
+                            <label for="client_currency_symbol">
+                                <?php _trans('currency_symbol'); ?>
+                            </label>
+                            <input id="client_currency_symbol" name="client_currency_symbol" type="text" class="form-control"
+                                   value="<?php echo $currencySymbol; ?>">
+                        </div>
 
                         <div class="form-group no-margin">
                             <label for="client_currency_code">

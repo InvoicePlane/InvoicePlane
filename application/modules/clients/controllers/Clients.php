@@ -173,6 +173,7 @@ class Clients extends Admin_Controller
                 'languages' => get_available_languages(),
                 'currencies' => get_currencies(),
                 'selected_currency' => $this->mdl_clients->form_value('client_currency_code') ?: get_setting('currency_code'),
+                'selected_currency_symbol' => $this->mdl_clients->form_value('client_currency_symbol') ?: get_setting('currency_symbol'),
             ) 
         );
 
