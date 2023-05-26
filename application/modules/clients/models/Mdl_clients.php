@@ -52,6 +52,14 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_language',
                 'label' => trans('language'),
             ),
+            'client_currency_symbol' => array(
+                'field' => 'client_currency_symbol',
+                'label' => trans('currency_symbol'),
+            ),
+            'client_currency_code' => array(
+                'field' => 'client_currency_code',
+                'label' => trans('currency_code'),
+            ),
             'client_address_1' => array(
                 'field' => 'client_address_1'
             ),
