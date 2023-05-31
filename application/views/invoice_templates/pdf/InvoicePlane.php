@@ -1,3 +1,9 @@
+<?php 
+    $currencySymbol = get_setting('currency_symbol');
+    if($invoice->client_currency_symbol != null){
+        $currencySymbol = $invoice->client_currency_symbol;
+    }
+?>
 <!DOCTYPE html>
 <html lang="<?php _trans('cldr'); ?>">
 <head>
@@ -112,7 +118,7 @@
             </tr>
             <tr>
                 <td><?php echo trans('amount_due') . ': '; ?></td>
-                <td><?php echo format_currency($invoice->invoice_balance); ?></td>
+                <td><?php echo format_currency($invoice->invoice_balance, $currencySymbol); ?></td>
             </tr>
             <?php if ($payment_method): ?>
                 <tr>
@@ -153,15 +159,15 @@
                     <?php endif; ?>
                 </td>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_price); ?>
+                    <?php echo format_currency($item->item_price, $currencySymbol); ?>
                 </td>
                 <?php if ($show_item_discounts) : ?>
                     <td class="text-right">
-                        <?php echo format_currency($item->item_discount); ?>
+                        <?php echo format_currency($item->item_discount, $currencySymbol); ?>
                     </td>
                 <?php endif; ?>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_total); ?>
+                    <?php echo format_currency($item->item_total, $currencySymbol); ?>
                 </td>
             </tr>
         <?php } ?>
@@ -173,7 +179,7 @@
             <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                 <?php _trans('subtotal'); ?>
             </td>
-            <td class="text-right"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
+            <td class="text-right"><?php echo format_currency($invoice->invoice_item_subtotal, $currencySymbol); ?></td>
         </tr>
 
         <?php if ($invoice->invoice_item_tax_total > 0) { ?>
@@ -182,7 +188,7 @@
                     <?php _trans('item_tax'); ?>
                 </td>
                 <td class="text-right">
-                    <?php echo format_currency($invoice->invoice_item_tax_total); ?>
+                    <?php echo format_currency($invoice->invoice_item_tax_total, $currencySymbol); ?>
                 </td>
             </tr>
         <?php } ?>
@@ -193,7 +199,7 @@
                     <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%)'; ?>
                 </td>
                 <td class="text-right">
-                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
+                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount, $currencySymbol); ?>
                 </td>
             </tr>
         <?php endforeach ?>
@@ -214,7 +220,7 @@
                     <?php _trans('discount'); ?>
                 </td>
                 <td class="text-right">
-                    <?php echo format_currency($invoice->invoice_discount_amount); ?>
+                    <?php echo format_currency($invoice->invoice_discount_amount, $currencySymbol); ?>
                 </td>
             </tr>
         <?php endif; ?>
@@ -224,7 +230,7 @@
                 <b><?php _trans('total'); ?></b>
             </td>
             <td class="text-right">
-                <b><?php echo format_currency($invoice->invoice_total); ?></b>
+                <b><?php echo format_currency($invoice->invoice_total, $currencySymbol); ?></b>
             </td>
         </tr>
         <tr>
@@ -232,7 +238,7 @@
                 <?php _trans('paid'); ?>
             </td>
             <td class="text-right">
-                <?php echo format_currency($invoice->invoice_paid); ?>
+                <?php echo format_currency($invoice->invoice_paid, $currencySymbol); ?>
             </td>
         </tr>
         <tr>
@@ -240,7 +246,7 @@
                 <b><?php _trans('balance'); ?></b>
             </td>
             <td class="text-right">
-                <b><?php echo format_currency($invoice->invoice_balance); ?></b>
+                <b><?php echo format_currency($invoice->invoice_balance, $currencySymbol); ?></b>
             </td>
         </tr>
         </tbody>

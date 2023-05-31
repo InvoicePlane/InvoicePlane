@@ -70,11 +70,11 @@
                 <td class="amount <?php if ($invoice->invoice_sign == '-1') {
                     echo 'text-danger';
                 }; ?>">
-                    <?php echo format_currency($invoice->invoice_total); ?>
+                    <?php echo format_currency($invoice->invoice_total, $invoice->client_currency_symbol); ?>
                 </td>
 
                 <td class="amount">
-                    <?php echo format_currency($invoice->invoice_balance); ?>
+                    <?php echo format_currency($invoice->invoice_balance, $invoice->client_currency_symbol); ?>
                 </td>
 
                 <td>

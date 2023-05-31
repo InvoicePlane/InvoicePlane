@@ -8,6 +8,15 @@
 
 </script>
 
+<?php 
+
+    $currencySymbol = get_setting('currency_symbol');
+    if($invoice->client_currency_symbol != null){
+        $currencySymbol = $invoice->client_currency_symbol;
+    }
+
+?>
+
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
 
@@ -122,13 +131,13 @@
                             <td>
                                 <span class="pull-left"><?php _trans('item_discount'); ?></span>
                                 <span class="pull-right amount">
-                                    <?php echo format_currency($item->item_discount); ?>
+                                    <?php echo format_currency($item->item_discount, $currencySymbol); ?>
                                 </span>
                             </td>
                             <td>
                                 <span class="pull-left"><?php _trans('subtotal'); ?></span>
                                 <span class="pull-right amount">
-                                    <?php echo format_currency($item->item_subtotal); ?>
+                                    <?php echo format_currency($item->item_subtotal, $currencySymbol); ?>
                                 </span>
                             </td>
                         </tr>
@@ -137,19 +146,19 @@
                             <td>
                                 <span class="pull-left"><?php _trans('price'); ?></span>
                                 <span class="pull-right amount">
-                                    <?php echo format_currency($item->item_price); ?>
+                                    <?php echo format_currency($item->item_price, $currencySymbol); ?>
                                 </span>
                             </td>
                             <td>
                                 <span class="pull-left"><?php _trans('tax'); ?></span>
                                 <span class="pull-right amount">
-                                    <?php echo format_currency($item->item_tax_total); ?>
+                                    <?php echo format_currency($item->item_tax_total, $currencySymbol); ?>
                                 </span>
                             </td>
                             <td>
                                 <span class="pull-left"><?php _trans('total'); ?></span>
                                 <span class="pull-right amount">
-                                    <?php echo format_currency($item->item_total); ?>
+                                    <?php echo format_currency($item->item_total, $currencySymbol); ?>
                                 </span>
                             </td>
                         </tr>
@@ -173,29 +182,29 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
+                        <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal, $currencySymbol); ?></td>
+                        <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total, $currencySymbol); ?></td>
                         <td class="amount">
                             <?php if ($invoice_tax_rates) {
                                 foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
                                     <?php echo $invoice_tax_rate->invoice_tax_rate_name . ' ' . $invoice_tax_rate->invoice_tax_rate_percent; ?>%:
-                                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?><br>
+                                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount, $currencySymbol); ?><br>
                                 <?php }
                             } else {
-                                echo format_currency('0');
+                                echo format_currency('0', $currencySymbol);
                             } ?>
                         </td>
                         <td class="amount"><?php
                             if ($invoice->invoice_discount_amount == floatval(0)) {
                                 echo $invoice->invoice_discount_percent . '%';
                             } else {
-                                echo format_currency($invoice->invoice_discount_amount);
+                                echo format_currency($invoice->invoice_discount_amount, $currencySymbol);
                             }
                             ?>
                         </td>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_total); ?></td>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_paid); ?></td>
-                        <td class="amount"><?php echo format_currency($invoice->invoice_balance); ?></td>
+                        <td class="amount"><?php echo format_currency($invoice->invoice_total, $currencySymbol); ?></td>
+                        <td class="amount"><?php echo format_currency($invoice->invoice_paid, $currencySymbol); ?></td>
+                        <td class="amount"><?php echo format_currency($invoice->invoice_balance, $currencySymbol); ?></td>
                     </tr>
                     </tbody>
                 </table>

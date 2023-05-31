@@ -16,10 +16,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param $amount
  * @return string
  */
-function format_currency($amount)
+function format_currency($amount, $clientCurrencySymbol = null)
 {
     global $CI;
-    $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
+    $currency_symbol = $clientCurrencySymbol != null ? $clientCurrencySymbol : $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point = $CI->mdl_settings->setting('decimal_point');

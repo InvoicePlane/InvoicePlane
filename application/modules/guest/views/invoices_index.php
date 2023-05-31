@@ -1,3 +1,12 @@
+<?php 
+
+    $currencySymbol = get_setting('currency_symbol');
+    if($invoice->client_currency_symbol != null){
+        $currencySymbol = $invoice->client_currency_symbol;
+    }
+
+?>
+
 <div id="headerbar">
 
     <h1 class="headerbar-title"><?php _trans('invoices'); ?></h1>
@@ -59,10 +68,10 @@
                             <?php _htmlsc(format_client($invoice)); ?>
                         </td>
                         <td>
-                            <?php echo format_currency($invoice->invoice_total); ?>
+                            <?php echo format_currency($invoice->invoice_total, $currencySymbol); ?>
                         </td>
                         <td>
-                            <?php echo format_currency($invoice->invoice_balance); ?>
+                            <?php echo format_currency($invoice->invoice_balance, $currencySymbol); ?>
                         </td>
                         <td>
                             <div class="options btn-group btn-group-sm">
