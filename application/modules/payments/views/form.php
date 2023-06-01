@@ -21,7 +21,9 @@
 
     });
 </script>
-
+<?php 
+$currencySymbol = get_setting('currency_symbol');
+?>
 <form method="post" class="form-horizontal">
 
     <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
@@ -46,16 +48,24 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="invoice_id" id="invoice_id" class="form-control simple-select" required>
-                    <?php if (!$payment_id) { ?>
-                        <?php foreach ($open_invoices as $invoice) { ?>
+                    <?php if (!$payment_id) {?>
+                        <?php foreach ($open_invoices as $invoice) { 
+                            if($invoice->client_currency_symbol != null){
+                                $currencySymbol = $invoice->client_currency_symbol;
+                            }
+                            ?>
                             <option value="<?php echo $invoice->invoice_id; ?>"
                                 <?php check_select($this->mdl_payments->form_value('invoice_id'), $invoice->invoice_id); ?>>
-                                <?php echo $invoice->invoice_number . ' - ' . format_client($invoice) . ' - ' . format_currency($invoice->invoice_balance); ?>
+                                <?php echo $invoice->invoice_number . ' - ' . format_client($invoice) . ' - ' . format_currency($invoice->invoice_balance, $currencySymbol); ?>
                             </option>
                         <?php } ?>
-                    <?php } else { ?>
+                    <?php } else { 
+                        if($payment->client_currency_symbol != null){
+                            $currencySymbol = $payment->client_currency_symbol;
+                        }
+                        ?>
                         <option value="<?php echo $payment->invoice_id; ?>">
-                            <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance); ?>
+                            <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance, $currencySymbol); ?>
                         </option>
                     <?php } ?>
                 </select>

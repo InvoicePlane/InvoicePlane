@@ -31,8 +31,13 @@
         });
     });
 </script>
-
 <?php
+
+$currencySymbol = get_setting('currency_symbol');
+if($client->client_currency_symbol != null){
+    $currencySymbol = $client->client_currency_symbol;
+}
+
 $locations = array();
 foreach ($custom_fields as $custom_field) {
     if (array_key_exists($custom_field->custom_field_location, $locations)) {
@@ -108,7 +113,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php _trans('total_billed'); ?>
                             </th>
                             <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_total); ?>
+                                <?php echo format_currency($client->client_invoice_total, $currencySymbol); ?>
                             </td>
                         </tr>
                         <tr>
@@ -116,7 +121,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php _trans('total_paid'); ?>
                             </th>
                             <th class="td-amount">
-                                <?php echo format_currency($client->client_invoice_paid); ?>
+                                <?php echo format_currency($client->client_invoice_paid, $currencySymbol); ?>
                             </th>
                         </tr>
                         <tr>
@@ -124,7 +129,7 @@ foreach ($custom_fields as $custom_field) {
                                 <?php _trans('total_balance'); ?>
                             </th>
                             <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_balance); ?>
+                                <?php echo format_currency($client->client_invoice_balance, $currencySymbol); ?>
                             </td>
                         </tr>
                     </table>

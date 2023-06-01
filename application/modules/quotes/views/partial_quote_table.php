@@ -1,3 +1,6 @@
+<?php
+    $currencySymbol = get_setting('currency_symbol');
+?>
 <div class="table-responsive">
     <table class="table table-hover table-striped">
 
@@ -20,6 +23,9 @@
         $quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
 
         foreach ($quotes as $quote) {
+            if($quote->client_currency_symbol != null){
+                $currencySymbol = $quote->client_currency_symbol;
+            }
             // Convert the dropdown menu to a dropup if quote is after the invoice split
             $dropup = $quote_idx > $quote_list_split ? true : false;
             ?>
@@ -48,7 +54,7 @@
                     </a>
                 </td>
                 <td style="text-align: right; padding-right: 25px;">
-                    <?php echo format_currency($quote->quote_total); ?>
+                    <?php echo format_currency($quote->quote_total, $currencySymbol); ?>
                 </td>
                 <td>
                     <div class="options btn-group<?php echo $dropup ? ' dropup' : ''; ?>">

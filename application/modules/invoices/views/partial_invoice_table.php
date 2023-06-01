@@ -19,7 +19,11 @@
         $invoice_idx = 1;
         $invoice_count = count($invoices);
         $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
+        $currencySymbol = get_setting('currency_symbol');
         foreach ($invoices as $invoice) {
+            if($invoice->client_currency_symbol != null){
+                $currencySymbol = $invoice->client_currency_symbol;
+            }
             // Disable read-only if not applicable
             if ($this->config->item('disable_read_only') == true) {
                 $invoice->is_read_only = 0;
@@ -70,11 +74,11 @@
                 <td class="amount <?php if ($invoice->invoice_sign == '-1') {
                     echo 'text-danger';
                 }; ?>">
-                    <?php echo format_currency($invoice->invoice_total, $invoice->client_currency_symbol); ?>
+                    <?php echo format_currency($invoice->invoice_total, $currencySymbol); ?>
                 </td>
 
                 <td class="amount">
-                    <?php echo format_currency($invoice->invoice_balance, $invoice->client_currency_symbol); ?>
+                    <?php echo format_currency($invoice->invoice_balance, $currencySymbol); ?>
                 </td>
 
                 <td>

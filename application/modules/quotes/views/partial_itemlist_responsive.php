@@ -1,3 +1,9 @@
+<?php
+    $currencySymbol = get_setting('currency_symbol');
+    if($quote->client_currency_symbol != null){
+        $currencySymbol = $quote->client_currency_symbol;
+    }
+?>
 <div class="row">
     <div id="item_table" class="items table col-xs-12">
         <div id="new_row" class="form-group details-box" style="display: none;">
@@ -48,14 +54,14 @@
                             <div class="input-group">
                                 <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
                                 <input type="text" name="item_price" id="item_price" class="input-sm form-control" value="">
-                                <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                <div class="input-group-addon"><?php echo $currencySymbol; ?></div>
                             </div>
                             <div class="input-group">
                                 <label for="item_discount_amount" class="input-group-addon ig-addon-aligned"><?php _trans('item_discount'); ?></label>
                                 <input type="text" name="item_discount_amount" id="item_discount_amount" class="input-sm form-control"
                                        value="" data-toggle="tooltip" data-placement="bottom"
-                                       title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
-                                <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                       title="<?php echo $currencySymbol . ' ' . trans('per_item'); ?>">
+                                <div class="input-group-addon"><?php echo $currencySymbol; ?></div>
                             </div>
                             <div class="input-group">
                                 <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
@@ -170,15 +176,15 @@
                                     <label for="item_price_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
                                     <input type="text" name="item_price" id="item_price_<?php echo $item->item_id; ?>" class="input-sm form-control"
                                            value="<?php echo format_amount($item->item_price); ?>">
-                                    <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                    <div class="input-group-addon"><?php echo $currencySymbol; ?></div>
                                 </div>
                                 <div class="input-group">
                                     <label for="item_discount_amount_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('item_discount'); ?></label>
                                     <input type="text" name="item_discount_amount" id="item_discount_amount_<?php echo $item->item_id; ?>" class="input-sm form-control"
                                            value="<?php echo format_amount($item->item_discount_amount); ?>"
                                            data-toggle="tooltip" data-placement="bottom"
-                                           title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
-                                    <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                           title="<?php echo $currencySymbol . ' ' . trans('per_item'); ?>">
+                                    <div class="input-group-addon"><?php echo $currencySymbol; ?></div>
                                 </div>
                                 <div class="input-group">
                                     <label for="item_tax_rate_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
@@ -200,7 +206,7 @@
                                         <?php _trans('subtotal'); ?>:
                                     </div>
                                     <div class="col-xs-3 col-sm-4">
-                                        <?php echo format_currency($item->item_subtotal); ?>
+                                        <?php echo format_currency($item->item_subtotal, $currencySymbol); ?>
                                     </div>
                                 </div>
                                 <div class="row mb-1">
@@ -208,7 +214,7 @@
                                         <?php _trans('discount'); ?>:
                                     </div>
                                     <div class="col-xs-3 col-sm-4">
-                                        <?php echo format_currency($item->item_discount); ?>
+                                        <?php echo format_currency($item->item_discount, $currencySymbol); ?>
                                     </div>
                                 </div>
                                 <div class="row mb-1">
@@ -216,7 +222,7 @@
                                         <?php _trans('tax'); ?>:
                                     </div>
                                     <div class="col-xs-3 col-sm-4">
-                                        <?php echo format_currency($item->item_tax_total); ?>
+                                        <?php echo format_currency($item->item_tax_total, $currencySymbol); ?>
                                     </div>
                                 </div>
                                 <div class="row mb-1">
@@ -224,7 +230,7 @@
                                         <b><?php _trans('total'); ?>:</b>
                                     </div>
                                     <div class="col-xs-3 col-sm-4">
-                                        <b><?php echo format_currency($item->item_total); ?></b>
+                                        <b><?php echo format_currency($item->item_total, $currencySymbol); ?></b>
                                     </div>
                                 </div>
                             </div>
@@ -258,11 +264,11 @@
             <tr>
                 <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
                 <td style="width: 60%;" 
-                class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
+                class="amount"><?php echo format_currency($quote->quote_item_subtotal, $currencySymbol); ?></td>
             </tr>
             <tr>
                 <td><?php _trans('item_tax'); ?></td>
-                <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
+                <td class="amount"><?php echo format_currency($quote->quote_item_tax_total, $currencySymbol); ?></td>
             </tr>
             <tr>
                 <td><?php _trans('quote_tax'); ?></td>
@@ -273,7 +279,7 @@
                                   action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
                             <?php _csrf_field(); ?>
                             <span class="amount">
-                                <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
+                                <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount, $currencySymbol); ?>
                             </span>
                             <span class="text-muted">
                                 <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) ?>
@@ -284,7 +290,7 @@
                         </form>
                     <?php }
                         } else {
-                            echo format_currency('0');
+                            echo format_currency('0', $currencySymbol);
                         } ?>
                 </td>
             </tr>
@@ -297,7 +303,7 @@
                             <input type="text" id="quote_discount_amount" name="quote_discount_amount"
                                    class="discount-option form-control input-sm amount"
                                    value="<?php echo format_amount($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
-                            <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                            <div class="input-group-addon"><?php echo $currencySymbol; ?></div>
                         </div>
                     </div>
                     <div class="discount-field">
@@ -313,7 +319,7 @@
             </tr>
             <tr>
                 <td><b><?php _trans('total'); ?></b></td>
-                <td class="amount"><b><?php echo format_currency($quote->quote_total); ?></b></td>
+                <td class="amount"><b><?php echo format_currency($quote->quote_total, $currencySymbol); ?></b></td>
             </tr>
         </table>
     </div>

@@ -15,7 +15,13 @@
         </thead>
 
         <tbody>
-        <?php foreach ($payments as $payment) { ?>
+        <?php 
+        $currencySymbol = get_setting('currency_symbol');
+        foreach ($payments as $payment) { 
+            if($payment->client_currency_symbol != null){
+                $currencySymbol = $payment->client_currency_symbol;
+            }
+            ?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
                 <td><?php echo date_from_mysql($payment->invoice_date_created); ?></td>
@@ -26,7 +32,7 @@
                         <?php _htmlsc(format_client($payment)); ?>
                     </a>
                 </td>
-                <td class="amount"><?php echo format_currency($payment->payment_amount); ?></td>
+                <td class="amount"><?php echo format_currency($payment->payment_amount, $currencySymbol); ?></td>
                 <td><?php _htmlsc($payment->payment_method_name); ?></td>
                 <td><?php _htmlsc($payment->payment_note); ?></td>
                 <td>

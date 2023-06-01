@@ -1,3 +1,6 @@
+<?php 
+$currencySymbol = get_setting('currency_symbol');
+?>
 <div class="table-responsive">
     <table class="table table-hover table-striped">
         <thead>
@@ -11,7 +14,12 @@
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($records as $client) : ?>
+        <?php 
+        foreach ($records as $client) : 
+            if($client->client_currency_symbol != null){
+                $currencySymbol = $client->client_currency_symbol;
+            }
+        ?>
             <tr>
 				<td>
 					<?php echo ($client->client_active) ? '<span class="label active">' . trans('yes') . '</span>' : '<span class="label inactive">' . trans('no') . '</span>'; ?>
@@ -19,7 +27,7 @@
                 <td><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
                 <td><?php _htmlsc($client->client_email); ?></td>
                 <td><?php _htmlsc($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : '')); ?></td>
-                <td class="amount"><?php echo format_currency($client->client_invoice_balance); ?></td>
+                <td class="amount"><?php echo format_currency($client->client_invoice_balance, $currencySymbol); ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">

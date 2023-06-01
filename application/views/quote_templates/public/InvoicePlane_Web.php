@@ -1,3 +1,9 @@
+<?php 
+    $currencySymbol = get_setting('currency_symbol');
+    if($quote->client_currency_symbol != null){
+        $currencySymbol = $quote->client_currency_symbol;
+    }
+?>
 <!DOCTYPE html>
 <html lang="<?php echo trans('cldr'); ?>">
 <head>
@@ -142,7 +148,7 @@
                         </tr>
                         <tr>
                             <td><?php echo trans('total'); ?></td>
-                            <td class="text-right"><?php echo format_currency($quote->quote_total); ?></td>
+                            <td class="text-right"><?php echo format_currency($quote->quote_total, $currencySymbol); ?></td>
                         </tr>
                         </tbody>
                     </table>
@@ -177,22 +183,22 @@
                                         <small><?php _htmlsc($item->item_product_unit); ?></small>
                                     <?php endif; ?>
                                 </td>
-                                <td class="amount"><?php echo format_currency($item->item_price); ?></td>
-                                <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
-                                <td class="amount"><?php echo format_currency($item->item_total); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_price, $currencySymbol); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_discount, $currencySymbol); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_total, $currencySymbol); ?></td>
                             </tr>
                         <?php endforeach ?>
                         <tr>
                             <td colspan="4"></td>
                             <td class="text-right"><?php echo trans('subtotal'); ?>:</td>
-                            <td class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
+                            <td class="amount"><?php echo format_currency($quote->quote_item_subtotal, $currencySymbol); ?></td>
                         </tr>
 
                         <?php if ($quote->quote_item_tax_total > 0) { ?>
                             <tr>
                                 <td class="no-bottom-border" colspan="4"></td>
                                 <td class="text-right"><?php echo trans('item_tax'); ?></td>
-                                <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
+                                <td class="amount"><?php echo format_currency($quote->quote_item_tax_total, $currencySymbol); ?></td>
                             </tr>
                         <?php } ?>
 
@@ -203,7 +209,7 @@
                                     <?php echo $quote_tax_rate->quote_tax_rate_name . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent); ?>
                                     %
                                 </td>
-                                <td class="amount"><?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?></td>
+                                <td class="amount"><?php echo format_currency($quote_tax_rate->quote_tax_rate_amount, $currencySymbol); ?></td>
                             </tr>
                         <?php endforeach ?>
 
@@ -224,7 +230,7 @@
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
                             <td class="text-right"><?php echo trans('total'); ?></td>
-                            <td class="amount"><?php echo format_currency($quote->quote_total) ?></td>
+                            <td class="amount"><?php echo format_currency($quote->quote_total, $currencySymbol) ?></td>
                         </tr>
                         </tbody>
                     </table>
