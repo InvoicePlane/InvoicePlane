@@ -415,12 +415,20 @@ class Setup extends MX_Controller
             redirect('setup/prerequisites');
         }
 
+        $this->load_ci_database();
+        $users = $this->db->query('SELECT * FROM ip_users');
+        if ($users->num_rows() === 0) {
+            log_message('error', 'there was already one or more users in the database');
+            $this->session->set_flashdata('alert_error', 'Something went wrong, check the log file for errors');
+            $this->session->set_userdata('install_step', 'create_user');
+            redirect('setup/create_user');
+        }
+
         // Additional tasks after setup is completed
         $this->post_setup_tasks();
 
         // Check if this is an update or the first install
         // First get all version entries from the database and format them
-        $this->load_ci_database();
         $versions = $this->db->query('SELECT * FROM ip_versions');
         if ($versions->num_rows() > 0) {
             foreach ($versions->result() as $row):
