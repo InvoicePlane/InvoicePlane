@@ -104,19 +104,20 @@ class Sessions extends Base_Controller
     {
         // Check if a token was provided
         if ($token) {
+            if(!preg_match("/[^[:alnum:]\-_]/", $token)) {
+                log_message('error', 'Incoming token is not alphanumeric ' . $token);
+                redirect('/');
+            }
 
             //prevent brute force attacks by counting times a token is used
             $login_log_check = $this->_login_log_check($token);
-            if(!empty($login_log_check) && $login_log_check->log_count>10)
-            {
+            if (!empty($login_log_check) && $login_log_check->log_count > 10) {
                 redirect($_SERVER['HTTP_REFERER']);
-            }
-            else
-            {
+            } else {
                 //the use of a token counts as a failure
                 $this->_login_log_addfailure($token);
             }
-            
+
             $this->db->where('user_passwordreset_token', $token);
             $user = $this->db->get('ip_users');
             $user = $user->row();
@@ -125,9 +126,7 @@ class Sessions extends Base_Controller
                 // Redirect back to the login screen with an alert
                 $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                 redirect('sessions/passwordreset');
-            }
-            else
-            {
+            } else {
                 //if token is valid, delete the failure attempt from
                 //the login_log table
                 $this->_login_log_reset($token);
@@ -143,8 +142,8 @@ class Sessions extends Base_Controller
 
         // Check if the form for a new password was used
         if ($this->input->post('btn_new_password')) {
-            $new_password = $this->input->post('new_password');
-            $user_id = $this->input->post('user_id');
+            $new_password = $this->input->post('new_password', true);
+            $user_id = $this->input->post('user_id', true);
 
             if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
@@ -189,8 +188,13 @@ class Sessions extends Base_Controller
         }
 
         // Check if the password reset form was used
-        if ($this->input->post('btn_reset')) {
-            $email = $this->input->post('email');
+        if ($this->input->post('btn_reset', true)) {
+            $email = $this->input->post('email', true);
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                log_message('error', 'Incoming email is not a valid email address in passwordreset ' . $email);
+                redirect('/');
+            }
 
             if (empty($email)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
@@ -199,23 +203,26 @@ class Sessions extends Base_Controller
 
             //prevent brute force attacks by counting password resets
             $login_log_check = $this->_login_log_check($email);
-            if(!empty($login_log_check) && $login_log_check->log_count>10)
-            {
+            if (!empty($login_log_check) && $login_log_check->log_count > 10) {
                 redirect($_SERVER['HTTP_REFERER']);
-            }
-            else
-            {
+            } else {
                 //a password recovery attempt counts as failed login
                 $this->_login_log_addfailure($email);
             }
 
             // Test if a user with this email exists
             if ($recovery_result = $this->db->where('user_email', $email)) {
-                // Create a passwordreset token. 
-                $email = $this->input->post('email');
+                // Create a passwordreset token.
+                $email = $this->input->post('email', true);
+
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    log_message('error', 'Incoming email is not a valid email address in passwordreset ' . $email);
+                    redirect('/');
+                }
+
                 //use salt to prevent predictability of the reset token (CVE-2021-29023)
-                $this->load->library('crypt'); 
-                $token = md5(time() . $email . $this->crypt->salt()); 
+                $this->load->library('crypt');
+                $token = md5(time() . $email . $this->crypt->salt());
 
                 // Save the token to the database and set the user to inactive
                 $db_array = array(
@@ -228,7 +235,7 @@ class Sessions extends Base_Controller
                 // Send the email with reset link
                 $this->load->helper('mailer');
 
-                // Preprare some variables for the email
+                // Prepare some variables for the email
                 $email_resetlink = site_url('sessions/passwordreset/' . $token);
                 $email_message = $this->load->view('emails/passwordreset', array(
                     'resetlink' => $email_resetlink
@@ -293,7 +300,7 @@ class Sessions extends Base_Controller
     private function _login_log_check($username)
     {
         $login_log_query =  $this->db->where('login_name',$username)->get('ip_login_log')->row();
-        
+
         if(!empty($login_log_query) && $login_log_query->log_count > 10)
         {
             $current_time = new DateTime();
