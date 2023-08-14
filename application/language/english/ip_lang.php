@@ -270,6 +270,7 @@ $lang = array(
     'invoice_pdf_include_zugferd'                  => 'Include ZUGFeRD',
     'invoice_pdf_include_zugferd_help'             => 'Enabling this option will include ZUGFeRD XML in invoice PDFs, which is an XML standard for invoices. <a href="https://go.invoiceplane.com/zugferdinfo">More information</a>',
     'invoice_pre_password'                         => 'Invoice standard PDF password (optional)',
+    'invoice_remittance'                           => 'Invoice Remittance info (optional)',    
     'invoice_sumex'                                => 'Sumex',
     'invoice_sumex_help'                           => 'This options adds a menu entry in invoices to generate a TARMED / SUMEX1 semi compatible invoice. TARMED / SUMEX1 is a swiss standard for healthcares. <a href="http://sumex1.net/">More Info</a>',
     'invoice_tax'                                  => 'Invoice Tax',
@@ -718,6 +719,8 @@ $lang = array(
     'sumex_insurednumber'                          => 'Insured Number',
     'sumex_veka'                                   => 'VEKA',
     'user_iban'                                    => 'IBAN',
+    'user_bic'                                     => 'BIC',    
+    'user_remittance_tmpl'                         => 'Remittance Invoice Template tag(s)',        
     'user_subscriber_number'                       => 'Subscriber Number',
 
     // Errors

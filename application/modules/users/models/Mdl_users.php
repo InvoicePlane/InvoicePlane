@@ -123,6 +123,12 @@ class Mdl_Users extends Response_Model
             'user_iban' => array(
                 'field' => 'user_iban'
             ),
+            'user_bic' => array(
+                'field' => 'user_bic'
+            ),
+            'user_remittance_tmpl' => array(
+                'field' => 'user_remittance'
+            ),
             # SUMEX
             'user_gln' => array(
                 'field' => 'user_gln'
@@ -204,6 +210,12 @@ class Mdl_Users extends Response_Model
             ),
             'user_iban' => array(
                 'field' => 'user_iban'
+            ),
+            'user_bic' => array(
+                'field' => 'user_bic'
+            ),
+            'user_remittance_tmpl' => array(
+                'field' => 'user_remittance'
             ),
             # SUMEX
             'user_gln' => array(
