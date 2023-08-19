@@ -252,14 +252,14 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_bic" id="user_bic" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_bic', true); ?>">
                                 </div>
-<!-- 
+
                                 <div class="form-group">
                                     <label for="user_remittance_tmpl">
-                                        <?php //_trans('user_remittance_tmpl'); ?>
+                                        <?php _trans('user_remittance_tmpl'); ?>
                                     </label>
-                                    <input type="text" name="user_remittance_tmpl" id="user_remittance_tmpl" class="form-control"
-                                           value="<?php //echo $this->mdl_users->form_value('user_remittance_tmpl', true); ?>">
-                                </div> -->
+                                    <input type="text" name="user_remittance_tmpl" id="user_remittance_tmpl" class="form-control" placeholder="{{{invoice_number}}} {{{invoice_date_due}}}"
+                                           value="<?php echo $this->mdl_users->form_value('user_remittance_tmpl', true); ?>">
+                                </div>
 
                                 <div class="form-group">
                                     <label for="user_subscribernumber">
