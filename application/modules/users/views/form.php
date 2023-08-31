@@ -379,6 +379,49 @@ $cv = $this->controller->view_data["custom_values"];
                             </div>
                         </div>
                         <!-- /e-Invoicing++ -->
+
+                        <!-- e-Invoicing++ -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><?php _trans('bank_information'); ?></div>
+
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_vat_id">
+                                        <?php _trans('bank'); ?>
+                                    </label>
+                                    <input type="text" name="user_bank" id="user_bank" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_iban">
+                                        <?php echo 'IBAN'; ?>
+                                    </label>
+                                    <input type="text" name="user_iban" id="user_iban" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_bic">
+                                        <?php echo 'BIC'; ?>
+                                    </label>
+                                    <input type="text" name="user_bic" id="user_bic"
+                                           class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_bic', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_remittance_tmpl">
+                                        <?php _trans('user_remittance_tmpl'); ?>
+                                    </label>
+                                    <input type="text" name="user_remittance_tmpl" id="user_remittance_tmpl" class="form-control" placeholder="{{{invoice_number}}} {{{invoice_date_due}}}"
+                                           value="<?php echo $this->mdl_users->form_value('user_remittance_tmpl', true); ?>">
+                                </div>
+                            </div>
+
+                        </div>
+
+
                         <?php if ($custom_fields) : ?>
                             <div class="panel panel-default">
                                 <div class="panel-heading"><?php _trans('custom_fields'); ?></div>

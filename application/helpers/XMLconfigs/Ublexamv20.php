@@ -1,6 +1,6 @@
 <?php
 
-//  Filename      => 'Ublexamv20.php'     -> "Shortid" + "version" + ".php" 
+//  Filename      => 'Ublexamv20.php'     -> "Shortid" + "version" + ".php"
 //                                            (preferably without spaces " ", dots ".", hyphen "-", underscore "_" or special characters)
 
 //  'full-name'   => 'UBL example v2.0',  -> UBL version name visible in the clients drop-down menu
@@ -11,4 +11,3 @@ $xml_setting = [
     'full-name'   => 'UBL example v2.0',
     'countrycode' => 'EX',
     'embedXML'    => false,
-];

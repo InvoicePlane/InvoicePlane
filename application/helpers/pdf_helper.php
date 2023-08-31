@@ -126,7 +126,6 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // END eInvoicing++ changes
     return $retval;
-
 }
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)

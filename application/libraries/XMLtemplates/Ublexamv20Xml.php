@@ -1,8 +1,4 @@
-<?php
-
-if ( ! defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
@@ -34,7 +30,7 @@ class Ublexamv20Xml
         $this->currencyCode = get_setting('currency_code'); // $CI->mdl_settings->setting('currency_code');
     }
 
-    public function xml(): void
+    public function xml()
     {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->preserveWhiteSpace = false;
@@ -136,20 +132,12 @@ class Ublexamv20Xml
         $contactPhone = $this->invoice->user_phone;
         $contactFax = $this->invoice->user_fax;
         $contactEmail = $this->invoice->user_email;
-        if ($contactName . $contactPhone . $contactFax . $contactEmail) {
+        if ($contactName.$contactPhone.$contactFax.$contactEmail) {
             $node = $this->doc->createElement('cac:Contact');
-            if ($contactName) {
-                $node->appendChild($this->doc->createElement('cbc:Name', $contactName));
-            }
-            if ($contactPhone) {
-                $node->appendChild($this->doc->createElement('cbc:Telephone', $contactPhone));
-            }
-            if ($contactFax) {
-                $node->appendChild($this->doc->createElement('cbc:Telefax', $contactFax));
-            }
-            if ($contactEmail) {
-                $node->appendChild($this->doc->createElement('cbc:ElectronicMail', $contactEmail));
-            }
+            if ($contactName) {$node->appendChild($this->doc->createElement('cbc:Name', $contactName));}
+            if ($contactPhone) {$node->appendChild($this->doc->createElement('cbc:Telephone', $contactPhone));}
+            if ($contactFax) {$node->appendChild($this->doc->createElement('cbc:Telefax', $contactFax));}
+            if ($contactEmail) {$node->appendChild($this->doc->createElement('cbc:ElectronicMail', $contactEmail));}
         }
 
         return $node;
@@ -217,14 +205,9 @@ class Ublexamv20Xml
         $nodePMC->setAttribute('listID', 'UN/ECE 4461');
         $nodePMC->setAttribute('listName', 'Payment Means');
         $node->appendChild($nodePMC);
-        if ($PaymentDueDate) {
-            $node->appendChild($this->doc->createElement('cbc:PaymentDueDate', $PaymentDueDate));
-        }
-        if ($InstructionNote) {
-            $node->appendChild($this->doc->createElement('cbc:InstructionNote', $InstructionNote));
-        }
+        if ($PaymentDueDate) {$node->appendChild($this->doc->createElement('cbc:PaymentDueDate', $PaymentDueDate));}
+        if ($InstructionNote) {$node->appendChild($this->doc->createElement('cbc:InstructionNote', $InstructionNote));}
         $node->appendChild($this->xmlPFAccount());
-
         return $node;
     }
 
@@ -319,6 +302,7 @@ class Ublexamv20Xml
         return $node;
     }
 
+
     // ===========================================================================
     // helpers
     // ===========================================================================
@@ -329,4 +313,10 @@ class Ublexamv20Xml
 
         return $el;
     }
+
+    function ublFormattedFloat($amount, $nb_decimals = 2)
+    {
+        return number_format((float)$amount, $nb_decimals);
+    }
+
 }

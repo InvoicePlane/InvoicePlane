@@ -16,7 +16,7 @@ require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 #[AllowDynamicProperties]
 =======
 /**
- * Class Clients
+ * Class Clients.
  */
 >>>>>>> 4c04c8ce (939: Prep for incoming merge-request)
 class Clients extends Admin_Controller
@@ -41,35 +41,24 @@ class Clients extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'active', $page = 0)
     {
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
-            $this->mdl_clients->$function();
+            $this->mdl_clients->{$function}();
         }
 
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
 
-<<<<<<< HEAD
         $this->layout->set([
-            'records'            => $clients,
+            'records' => $clients,
             'filter_display'     => true,
             'filter_placeholder' => trans('filter_clients'),
             'filter_method'      => 'filter_clients',
         ]);
-=======
-        $this->layout->set(
-            [
-                'records' => $clients,
-                'filter_display' => true,
-                'filter_placeholder' => trans('filter_clients'),
-                'filter_method' => 'filter_clients'
-            ]
-        );
->>>>>>> d2738fb2 (939: Prep for incoming merge-request)
 
         $this->layout->buffer('content', 'clients/index');
         $this->layout->render();
@@ -90,11 +79,11 @@ class Clients extends Admin_Controller
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', [
-                'client_name' => $this->input->post('client_name'),
-                'client_surname' => $this->input->post('client_surname')
+                'client_name'    => $this->input->post('client_name'),
+                'client_surname' => $this->input->post('client_surname'),
             ])->result();
 
-            if (!empty($check)) {
+            if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
             } else {
@@ -122,18 +111,7 @@ class Clients extends Admin_Controller
                 $this->session->set_flashdata('alert_error', $result);
                 $this->session->set_flashdata('alert_success', null);
                 redirect('clients/form/' . $id);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-
-=======
->>>>>>> d2738fb2 (939: Prep for incoming merge-request)
-=======
-
->>>>>>> cf5d220c (939: Just style fixes for now)
-=======
->>>>>>> 6c379438 (939: Prep for incoming merge-request)
                 return;
             }
             redirect('clients/view/' . $id);
@@ -198,7 +176,6 @@ class Clients extends Admin_Controller
         $this->load->helper('custom_values');
         $this->load->helper('e-invoice'); //eInvoicing++
 
-<<<<<<< HEAD
         $this->layout->set([
             'custom_fields'        => $custom_fields,
             'custom_values'        => $custom_values,
@@ -208,18 +185,6 @@ class Clients extends Admin_Controller
             'client_title_choices' => $this->get_client_title_choices(),
             'xml_templates'        => get_xml_template_files(), //eInvoicing++
         ]);
-=======
-        $this->layout->set(
-            [
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'countries' => get_country_list(trans('cldr')),
-                'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-                'languages'        => get_available_languages(),
-                'xml_templates'    => get_xml_template_files(), //eInvoicing++
-            ]
-        );
->>>>>>> d2738fb2 (939: Prep for incoming merge-request)
 
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
@@ -228,7 +193,7 @@ class Clients extends Admin_Controller
     /**
      * @param int $client_id
      */
-    public function view($client_id)
+    public function view($client_id, $activeTab = 'detail', $page = 0)
     {
         $this->load->model('clients/mdl_client_notes');
         $this->load->model('invoices/mdl_invoices');
@@ -254,7 +219,6 @@ class Clients extends Admin_Controller
             show_404();
         }
 
-<<<<<<< HEAD
         $this->mdl_invoices->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/invoices'), $page, 5);
         $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
@@ -293,45 +257,6 @@ class Clients extends Admin_Controller
                 'clients/view',
             ],
         ]);
-=======
-        $this->layout->set(
-            [
-                'client' => $client,
-                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
-                'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
-                'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
-                'custom_fields' => $custom_fields,
-                'quote_statuses' => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
-            ]
-        );
-
-        $this->layout->buffer(
-            [
-                [
-                    'invoice_table',
-                    'invoices/partial_invoice_table',
-                ],
-                [
-                    'quote_table',
-                    'quotes/partial_quote_table',
-                ],
-                [
-                    'payment_table',
-                    'payments/partial_payment_table',
-                ],
-                [
-                    'partial_notes',
-                    'clients/partial_notes',
-                ],
-                [
-                    'content',
-                    'clients/view',
-                ],
-            ]
-        );
->>>>>>> d2738fb2 (939: Prep for incoming merge-request)
 
         $this->layout->render();
     }
@@ -344,9 +269,7 @@ class Clients extends Admin_Controller
         $this->mdl_clients->delete($client_id);
         redirect('clients');
     }
-<<<<<<< HEAD
 
-<<<<<<< HEAD
     private function get_client_title_choices(): array
     {
         return array_map(
@@ -354,8 +277,4 @@ class Clients extends Admin_Controller
             ClientTitleEnum::cases()
         );
     }
-=======
->>>>>>> d2738fb2 (939: Prep for incoming merge-request)
-=======
->>>>>>> cf5d220c (939: Just style fixes for now)
 }
