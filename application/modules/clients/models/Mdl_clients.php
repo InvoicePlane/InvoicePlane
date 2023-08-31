@@ -93,6 +93,12 @@ class Mdl_Clients extends Response_Model
             'client_tax_code' => array(
                 'field' => 'client_tax_code'
             ),
+            'client_invoicing_contact' => array(      
+                'field' => 'client_invoicing_contact'
+            ), 
+            'client_einvoice_version' => array(
+                'field' => 'client_einvoice_version'
+            ),
             // SUMEX
             'client_birthdate' => array(
                 'field' => 'client_birthdate',
