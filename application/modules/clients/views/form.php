@@ -184,6 +184,15 @@ $cv = $this->controller->view_data['custom_values'];
 
                     <div class="panel-body">
                         <div class="form-group">
+                            <label for="client_invoicing_contact"><?php echo trans('invoicing') . ' ' . trans('contact'); ?></label>
+
+                            <div class="controls">
+                                <input type="text" name="client_invoicing_contact" id="client_invoicing_contact" class="form-control"
+                                    value="<?php echo htmlsc($this->mdl_clients->form_value('client_invoicing_contact')); ?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">                            
                             <label for="client_phone"><?php _trans('phone_number'); ?></label>
 
                             <div class="controls">
@@ -404,6 +413,37 @@ $cv = $this->controller->view_data['custom_values'];
 
             </div>
         </div>
+
+        <!-- eInvoicing++ panel added -->
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo 'e-' . trans('invoicing') . ' ' . trans('information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <label><?php echo 'UBL / CII '. trans('version'); ?></label>
+                                <select name="client_einvoice_version" id="client_einvoice_version" class="form-control">
+                                    <option value=""><?php echo trans('none'); ?></option>
+                                    <?php foreach ($xml_templates as $xml_key => $xml_template) { ?>
+                                        <option value="<?php echo $xml_key; ?>"
+                                            <?php check_select($xml_key, $this->mdl_clients->form_value('client_einvoice_version')) ?>>
+                                            <?php echo $xml_template; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            <p class="help-block"><?php echo trans('ubl_cii_select_help'); ?></p>
+                        </div> 
+
+                    </div>
+                </div>                
+            </div>
+
+        </div>
+        
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
