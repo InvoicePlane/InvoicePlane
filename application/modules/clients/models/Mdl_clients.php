@@ -156,7 +156,16 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_einvoice_version',
                 'rules' => 'trim|xss_clean',
             ],
+<<<<<<< HEAD
 >>>>>>> cf5d220c (939: Just style fixes for now)
+=======
+            'client_invoicing_contact' => array(
+                'field' => 'client_invoicing_contact'
+            ),
+            'client_einvoice_version' => array(
+                'field' => 'client_einvoice_version'
+            ),
+>>>>>>> bbfd9c9c (Implementing e-invoicing flow #939)
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
