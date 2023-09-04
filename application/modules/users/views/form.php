@@ -358,7 +358,7 @@ $cv = $this->controller->view_data["custom_values"];
 
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <label for="user_vat_id">
+                                    <label for="user_bank">
                                         <?php _trans('bank'); ?>
                                     </label>
                                     <input type="text" name="user_bank" id="user_bank" class="form-control"
