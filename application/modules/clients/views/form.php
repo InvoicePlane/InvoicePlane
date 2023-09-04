@@ -425,7 +425,7 @@ $cv = $this->controller->view_data['custom_values'];
                     <div class="panel-body">
 
                         <div class="form-group">
-                            <label><?php echo 'UBL / CII '. trans('version'); ?></label>
+                            <label for="client_einvoice_version"><?php echo 'UBL / CII '. trans('version'); ?></label>
                                 <select name="client_einvoice_version" id="client_einvoice_version" class="form-control">
                                     <option value=""><?php echo trans('none'); ?></option>
                                     <?php foreach ($xml_templates as $xml_key => $xml_template) { ?>
