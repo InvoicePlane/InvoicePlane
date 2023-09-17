@@ -141,9 +141,6 @@ class Ajax extends Admin_Controller
                 'success' => 1,
             ];
         } else {
-
-            log_message('error', '980: I wasnt able to run the validation validation_rules_save_invoice');
-
             $this->load->helper('json_error');
             $response = [
                 'success' => 0,
