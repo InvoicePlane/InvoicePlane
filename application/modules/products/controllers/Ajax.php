@@ -45,8 +45,8 @@ class Ajax extends Admin_Controller
         $data = array(
             'products' => $products,
             'families' => $families,
-            'filter_product' => $this->security->xss_clean($filter_product),
-            'filter_family' => $this->security->xss_clean($filter_family),
+            'filter_product' => $filter_product,
+            'filter_family' => $filter_family,
             'default_item_tax_rate' => $default_item_tax_rate,
         );
 
