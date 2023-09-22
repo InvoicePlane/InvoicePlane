@@ -60,7 +60,7 @@
                     </div>
                     <!--- Logo Ends --->
                     <div class="col-lg-2">
-                        <!--- This is empty space--->
+                    <!--- This is empty space--->
                     </div>
                     <!--- Company Address --->
                     <div class="col-sm-12 col-md-6 col-lg-5 text-right">
@@ -150,7 +150,6 @@
                     <div class="col-lg-2"><!-- This is empty space --></div>
                     <div class="col-sm-12 col-md-6 col-lg-5 text-right">
                         <h2 class="text-bold"> <?php _htmlsc($quote->client_name); ?> </h2>
-                        <h5 class="text-bold"> <?php if (isset($custom_fields['client']['Client Code'])): ?> <?php echo trans('Client Code:'); ?> <?php echo htmlspecialchars($custom_fields['client']['Client Code']); ?> <?php endif; ?> </h5>
                     </div>
                 </div>
                 <!--- Ends --->
@@ -158,11 +157,6 @@
                 <!--- Client Section --->
                 <div class="row">
                     <div class="col-sm-12 col-md-6 col-lg-5">
-                        <!--- Custom Field Comany Name & Client's Phone --->
-                        <?php if (isset($custom_fields['client']['Company Name'])): ?>
-                        <h5 class="text-bold"><?php echo htmlspecialchars($custom_fields['client']['Company Name']); ?><br><?php if ($quote->client_phone) { echo htmlsc($quote->client_phone); ?> <?php } ?> </h5>
-                        <?php endif; ?>
-                        <!--- Custom Field Ends --->
                         <br>
                         <!--- Client Details --->
                         <?php if ($quote->client_vat_id) { echo lang('vat_id_short') . ': ' . $quote->client_vat_id . '<br>'; } ?>

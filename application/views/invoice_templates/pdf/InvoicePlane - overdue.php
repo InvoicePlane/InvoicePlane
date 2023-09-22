@@ -62,60 +62,7 @@
                 <table class="w-10 mt-5">
                     <tr>
                         <td class="w-5">
-                            <table class="w-10 table">
-                                <?php if (isset($custom_fields['invoice']['Account Title'])): ?>
-                                    <tr>
-                                        <td class="text-bold text-left">
-                                            <?php echo trans('Account Title'); ?>
-                                        </td>
-                                        <td class="text-right">
-                                            <?php echo htmlspecialchars($custom_fields['invoice']['Account Title']); ?>
-                                        </td>
-
-                                    </tr>
-                                <?php endif; ?>
-                                <?php if (isset($custom_fields['invoice']['Account Number'])): ?>
-                                    <tr>
-                                        <td class="text-bold text-left bt">
-                                            <?php echo trans('Account Number') . ':'; ?>
-                                        </td>
-                                        <td class="text-right bt">
-                                            <?php echo htmlspecialchars($custom_fields['invoice']['Account Number']); ?>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                                <?php if (isset($custom_fields['invoice']['IBAN'])): ?>
-                                    <tr>
-                                        <td class="text-bold text-left bt">
-                                            <?php echo trans('IBAN') . ': '; ?>
-                                        </td>
-                                        <td class="text-right bt">
-                                            <?php echo htmlspecialchars($custom_fields['invoice']['IBAN']); ?>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                                <?php if (isset($custom_fields['invoice']['Branch'])): ?>
-                                    <tr>
-                                        <td class="text-bold text-left bt">
-                                            <?php echo trans('Branch') . ': '; ?>
-                                        </td>
-                                        <td class="text-right bt">                                        
-                                            <?php echo htmlspecialchars($custom_fields['invoice']['Branch']); ?>
-                                            
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                                <?php if (isset($custom_fields['invoice']['Bank Name'])): ?>
-                                    <tr>
-                                        <td class="text-bold text-left bt">
-                                            <?php echo trans('Bank Name') . ': '; ?>
-                                        </td>
-                                        <td class="text-right bt">
-                                            <?php echo htmlspecialchars($custom_fields['invoice']['Bank Name']); ?>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </table>
+                        <!--- Empty Space --->
                         </td>
                         <!-- Empty Space -->
                         <td class="w-1"></td>
@@ -153,11 +100,6 @@
                         <td class="w-2"></td>
                         <td class="w-4 text-right text-bold mt-3">
                             <h3><?php _htmlsc($invoice->client_name); ?></h3>
-                            <h5>
-                                <?php if (isset($custom_fields['client']['Client Code'])): ?>
-                                    <?php echo trans('Client Code:'); ?> <?php echo htmlspecialchars($custom_fields['client']['Client Code']); ?>
-                                <?php endif; ?>
-                            </h5>
                         </td>
                     </tr>
                 </table>
@@ -168,16 +110,6 @@
                 <table class="w-10 mt-3">
                     <tr>
                         <td class="w-6">
-                            <!-- Custom Field Company Name & Client's Phone -->
-                            <?php if (isset($custom_fields['client']['Company Name'])): ?>
-                                <h4 class="text-bold"><?php echo htmlspecialchars($custom_fields['client']['Company Name']); ?>
-                                    <br/>
-                                    <?php if ($invoice->client_phone) {
-                                        echo htmlsc($invoice->client_phone);
-                                    } ?>
-                                </h4>
-                            <?php endif; ?>
-                            <!-- Custom Field Ends -->
                             <br>
                             <!-- Client Details -->
                             <?php if ($invoice->client_vat_id) {
@@ -207,28 +139,7 @@
                         <td class="w-2"></td>
                             <!-- Custom Section -->
                         <td class="w-4">
-                           <table class="w-10 table mt-3">
-                                <?php if (isset($custom_fields['invoice']['Lead Source'])): ?>     
-                                    <tr>                                    
-                                        <td class="text-bold bt px-1">
-                                            <?php echo trans('Lead Source:'); ?>
-                                        </td>
-                                        <td class="text-right bt px-1">
-                                            <?php echo htmlspecialchars($custom_fields['invoice']['Lead Source']); ?>
-                                        </td>                                    
-                                    </tr>
-                                <?php endif; ?>
-                                <?php if (isset($custom_fields['invoice']['Lead Source'])): ?>     
-                                    <tr>                                    
-                                        <td class="text-bold bt px-1">
-                                           <?php echo trans('Sales Person:'); ?>
-                                        </td>
-                                        <td class="text-right bt px-1">
-                                           <?php echo $custom_fields['invoice']['Sales Person'] ?>
-                                        </td>                                    
-                                    </tr>
-                                <?php endif; ?>
-                            </table>
+                            <!--- Empty Space --->
                         </td>
                     </tr>
                 </table>

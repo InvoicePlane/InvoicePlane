@@ -67,26 +67,7 @@
                         <td class="w-1"></td>
                         <!-- Invoice Table -->
                         <td class="w-4 pt-3">
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td class="text-bold bt py-1 px-1"><?php echo trans('invoice_date') . ':'; ?></td>
-                                    <td class="text-right bt py-1 px-1"><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-bold bt py-1 px-1 text-green"><?php echo trans('due_date') . ': '; ?></td>
-                                    <td class="text-right bt py-1 px-1 text-green"><?php echo date_from_mysql($invoice->invoice_date_due, true); ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-bold bt py-1 px-1 text-green"><?php echo trans('amount_due') . ': '; ?></td>
-                                    <td class="text-right bt py-1 px-1 text-green"><?php echo format_currency($invoice->invoice_balance); ?></td>
-                                </tr>
-                                <?php if ($payment_method): ?>
-                                <tr>
-                                    <td class="text-bold bt py-1 px-1"><?php echo trans('payment_method') . ': '; ?></td>
-                                    <td class="text-right bt py-1 px-1"><?php _htmlsc($payment_method->payment_method_name); ?></td>
-                                </tr>
-                                <?php endif; ?>
-                            </table>
+                        <!--- Empty Space --->
                         </td>
                     </tr>
                 </table>
@@ -99,11 +80,6 @@
                         <td class="w-2"></td>
                         <td class="w-4 text-right text-bold mt-3">
                             <h3><?php _htmlsc($invoice->client_name); ?></h3>
-                            <h5>
-                                <?php if (isset($custom_fields['client']['Client Code'])): ?>
-                                    <?php echo trans('Client Code:'); ?> <?php echo htmlspecialchars($custom_fields['client']['Client Code']); ?>
-                                <?php endif; ?>
-                            </h5>
                         </td>
                     </tr>
                 </table>
@@ -114,16 +90,6 @@
                 <table class="w-10 mt-3">
                     <tr>
                         <td class="w-6">
-                            <!-- Custom Field Company Name & Client's Phone -->
-                            <?php if (isset($custom_fields['client']['Company Name'])): ?>
-                                <h4 class="text-bold"><?php echo htmlspecialchars($custom_fields['client']['Company Name']); ?>
-                                    <br/>
-                                    <?php if ($invoice->client_phone) {
-                                        echo htmlsc($invoice->client_phone);
-                                    } ?>
-                                </h4>
-                            <?php endif; ?>
-                            <!-- Custom Field Ends -->
                             <br>
                             <!-- Client Details -->
                             <?php if ($invoice->client_vat_id) {
@@ -153,28 +119,7 @@
                         <td class="w-2"></td>
                             <!-- Custom Section -->
                         <td class="w-4">
-                           <table class="w-10 table mt-3">
-                                <?php if (isset($custom_fields['invoice']['Lead Source'])): ?>     
-                                    <tr>                                    
-                                        <td class="text-bold bt px-1">
-                                            <?php echo trans('Lead Source:'); ?>
-                                        </td>
-                                        <td class="text-right bt px-1">
-                                            <?php echo htmlspecialchars($custom_fields['invoice']['Lead Source']); ?>
-                                        </td>                                    
-                                    </tr>
-                                <?php endif; ?>
-                                <?php if (isset($custom_fields['invoice']['Lead Source'])): ?>     
-                                    <tr>                                    
-                                        <td class="text-bold bt px-1">
-                                           <?php echo trans('Sales Person:'); ?>
-                                        </td>
-                                        <td class="text-right bt px-1">
-                                           <?php echo $custom_fields['invoice']['Sales Person'] ?>
-                                        </td>                                    
-                                    </tr>
-                                <?php endif; ?>
-                            </table>
+                            <!--- Empty Space --->
                         </td>
                     </tr>
                 </table>
