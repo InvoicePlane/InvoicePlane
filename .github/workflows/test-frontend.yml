@@ -3,7 +3,7 @@ name: Frontend Testing
 on:
   pull_request:
     branches:
-      - master
+      - development
 
 jobs:
   run:
@@ -11,12 +11,12 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        node: ['8', '10', '12']
+        node: ['16', '18']
     name: Node ${{ matrix.node }} build testing
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
       - name: Install frontend dependencies
