@@ -55,6 +55,11 @@ class Mdl_Invoices extends Response_Model
                 'class' => 'overdue',
                 'href' => 'invoices/status/overdue'
             ),
+            '7' => array(
+                'label' => trans('Unpaid'),
+                'class' => 'unpaid',
+                'href' => 'invoices/status/unpaid'
+            ),
             '99' => array(
                 'label' => trans('Archived'),
                 'class' => 'archived',
@@ -504,21 +509,27 @@ class Mdl_Invoices extends Response_Model
         $this->filter_where('invoice_status_id', 3);
         return $this;
     }
-
-    public function is_partial()
-    {
-        $this->filter_where('invoice_status_id', 5);
-        return $this;
-    }
-    
+        
     public function is_paid()
     {
         $this->filter_where('invoice_status_id', 4);
         return $this;
     }
 
-    public function is_overdue()
+    public function is_partial()
     {
+        $this->filter_where('invoice_status_id', 5);
+        return $this;
+    }
+
+    public function is_unpaid()
+    {
+        $this->filter_where('invoice_status_id', 7);
+        return $this;
+    }
+
+    public function is_overdue()
+    {   // DO NOT change the ID it causes issues on dashboard filter
         $this->filter_having('is_overdue', 1);
         return $this;
     }

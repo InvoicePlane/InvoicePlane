@@ -243,6 +243,22 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="settings[pdf_invoice_template_unpaid]">
+                                <?php _trans('pdf_template_unpaid'); ?>
+                            </label>
+                            <select name="settings[pdf_invoice_template_unpaid]" class="form-control simple-select"
+                                id="settings[pdf_invoice_template_unpaid]" data-minimum-results-for-search="Infinity">
+                                <option value=""><?php _trans('none'); ?></option>
+                                <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                                    <option value="<?php echo $invoice_template; ?>"
+                                        <?php check_select(get_setting('pdf_invoice_template_unpaid'), $invoice_template); ?>>
+                                        <?php echo $invoice_template; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="settings[public_invoice_template]">
                                 <?php _trans('default_public_template'); ?>
                             </label>

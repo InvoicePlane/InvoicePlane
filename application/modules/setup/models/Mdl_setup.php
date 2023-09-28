@@ -119,6 +119,7 @@ class Mdl_Setup extends CI_Model
             'tax_rate_decimal_places' => 2,
             'pdf_invoice_template' => 'InvoicePlane',
             'pdf_invoice_template_paid' => 'InvoicePlane - paid',
+            'pdf_invoice_template_unpaid' => 'InvoicePlane - unpaid',
             'pdf_invoice_template_partial' => 'InvoicePlane - partial',
             'pdf_invoice_template_overdue' => 'InvoicePlane - overdue',
             'pdf_quote_template' => 'InvoicePlane',

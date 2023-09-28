@@ -20,19 +20,19 @@
         <div class="btn-group btn-group-sm index-options">
             <a href="<?php echo site_url('invoices/status/all'); ?>"
                class="btn <?php echo $status == 'all' ? 'btn-primary' : 'btn-default' ?>">
-                <?php _trans('all'); ?>
+                <?php _trans('All'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/draft'); ?>"
                class="btn  <?php echo $status == 'draft' ? 'btn-primary' : 'btn-default' ?>">
-                <?php _trans('draft'); ?>
+                <?php _trans('Draft'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/sent'); ?>"
                class="btn  <?php echo $status == 'sent' ? 'btn-primary' : 'btn-default' ?>">
-                <?php _trans('sent'); ?>
+                <?php _trans('Sent'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/viewed'); ?>"
                class="btn  <?php echo $status == 'viewed' ? 'btn-primary' : 'btn-default' ?>">
-                <?php _trans('viewed'); ?>
+                <?php _trans('Viewed'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/partial'); ?>"
                class="btn  <?php echo $status == 'partial' ? 'btn-primary' : 'btn-default' ?>">
@@ -40,11 +40,15 @@
             </a>
             <a href="<?php echo site_url('invoices/status/paid'); ?>"
                class="btn  <?php echo $status == 'paid' ? 'btn-primary' : 'btn-default' ?>">
-                <?php _trans('paid'); ?>
+                <?php _trans('Paid'); ?>
+            </a>
+            <a href="<?php echo site_url('invoices/status/unpaid'); ?>"
+               class="btn  <?php echo $status == 'unpaid' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('Unpaid'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/overdue'); ?>"
                class="btn  <?php echo $status == 'overdue' ? 'btn-primary' : 'btn-default' ?>">
-                <?php _trans('overdue'); ?>
+                <?php _trans('Overdue'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/archived'); ?>"
                class="btn  <?php echo $status == 'archived' ? 'btn-primary' : 'btn-default' ?>">
@@ -66,19 +70,19 @@
             <div class="btn-group btn-group-sm index-options">
                 <a href="<?php echo site_url('invoices/status/all'); ?>"
                    class="btn <?php echo $status == 'all' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php _trans('all'); ?>
+                    <?php _trans('All'); ?>
                 </a>
                 <a href="<?php echo site_url('invoices/status/draft'); ?>"
                    class="btn  <?php echo $status == 'draft' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php _trans('draft'); ?>
+                    <?php _trans('Draft'); ?>
                 </a>
                 <a href="<?php echo site_url('invoices/status/sent'); ?>"
                    class="btn  <?php echo $status == 'sent' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php _trans('sent'); ?>
+                    <?php _trans('Sent'); ?>
                 </a>
                 <a href="<?php echo site_url('invoices/status/viewed'); ?>"
                    class="btn  <?php echo $status == 'viewed' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php _trans('viewed'); ?>
+                    <?php _trans('Viewed'); ?>
                 </a>
                 <a href="<?php echo site_url('invoices/status/partial'); ?>"
                    class="btn  <?php echo $status == 'partial' ? 'btn-primary' : 'btn-default' ?>">
@@ -86,11 +90,15 @@
                 </a>
                 <a href="<?php echo site_url('invoices/status/paid'); ?>"
                    class="btn  <?php echo $status == 'paid' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php _trans('paid'); ?>
+                    <?php _trans('Paid'); ?>
+                </a>
+                <a href="<?php echo site_url('invoices/status/unpaid'); ?>"
+                   class="btn  <?php echo $status == 'unpaid' ? 'btn-primary' : 'btn-default' ?>">
+                    <?php _trans('Unpaid'); ?>
                 </a>
                 <a href="<?php echo site_url('invoices/status/overdue'); ?>"
                    class="btn  <?php echo $status == 'overdue' ? 'btn-primary' : 'btn-default' ?>">
-                    <?php _trans('overdue'); ?>
+                    <?php _trans('Overdue'); ?>
                 </a>
                 <a href="<?php echo site_url('invoices/status/archived'); ?>"
                    class="btn  <?php echo $status == 'archived' ? 'btn-primary' : 'btn-default' ?>">

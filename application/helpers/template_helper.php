@@ -112,6 +112,7 @@ function parse_template($object, $body)
     $defaultTemplate = $CI->mdl_settings->setting('pdf_invoice_template');
     $overdueTemplate = $CI->mdl_settings->setting('pdf_invoice_template_overdue');
     $paidTemplate = $CI->mdl_settings->setting('pdf_invoice_template_paid');
+    $unpaidTemplate = $CI->mdl_settings->setting('pdf_invoice_template_unpaid');
     $partialTemplate = $CI->mdl_settings->setting('pdf_invoice_template_partial');
 
     if ($invoice->is_overdue || $invoice->invoice_status_id == 6) {
@@ -123,6 +124,9 @@ function parse_template($object, $body)
     } elseif ($invoice->invoice_status_id == 5) {
         // Use the Partial template
         return $partialTemplate;
+    } elseif ($invoice->invoice_status_id == 7) {
+        // Use the unpiad template
+        return $unpaidTemplate;
     } else {
         // Use the default template
         return $defaultTemplate;
