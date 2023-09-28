@@ -31,7 +31,7 @@ class Mdl_Invoices extends Response_Model
                 'href' => 'invoices/status/draft'
             ),
             '2' => array(
-                'label' => trans('sent'),
+                'label' => trans('Sent'),
                 'class' => 'sent',
                 'href' => 'invoices/status/sent'
             ),
@@ -44,7 +44,22 @@ class Mdl_Invoices extends Response_Model
                 'label' => trans('paid'),
                 'class' => 'paid',
                 'href' => 'invoices/status/paid'
-            )
+            ),
+            '5' => array(
+                'label' => trans('Partial'),
+                'class' => 'partial',
+                'href' => 'invoices/status/partial'
+            ),
+            '6' => array(
+                'label' => trans('overdue'),
+                'class' => 'overdue',
+                'href' => 'invoices/status/overdue'
+            ),
+            '99' => array(
+                'label' => trans('Archived'),
+                'class' => 'archived',
+                'href' => 'invoices/status/archived'
+            ),
         );
     }
 
@@ -64,7 +79,7 @@ class Mdl_Invoices extends Response_Model
             IFnull(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
             IFnull(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
             ip_invoice_amounts.invoice_sign AS invoice_sign,
-            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
+            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,5) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
             DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
             ip_invoices.*", false);
@@ -490,6 +505,12 @@ class Mdl_Invoices extends Response_Model
         return $this;
     }
 
+    public function is_partial()
+    {
+        $this->filter_where('invoice_status_id', 5);
+        return $this;
+    }
+    
     public function is_paid()
     {
         $this->filter_where('invoice_status_id', 4);

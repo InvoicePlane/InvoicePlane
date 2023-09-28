@@ -12,16 +12,17 @@ $color_grey: #999999;
 $color_blue: #3A87AD;
 $color_yellow: #F89406;
 $color_green: #468847;
-$color_red: #B94A48;
+$color_red: #FB110F;
 
 $color_status_draft: #999999;
 $color_status_sent: #3A87AD;
-$color_status_viewed: #F89406;
+$color_status_partial: #FF951B;
+$color_status_viewed: #F85306;
 $color_status_paid_approved: #468847;
-$color_status_rejected_overdue: #B94A48;
+$color_status_rejected_overdue: #FB110F;
 $color_status_canceled: #333333;
 $color_status_active: #468847;
-$color_status_inactive: #B94A48;
+$color_status_inactive: #FB110F;
 
 // Fonts
 $font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;

@@ -106,19 +106,26 @@ function parse_template($object, $body)
  * @param $invoice
  * @return mixed
  */
-function select_pdf_invoice_template($invoice)
+*/function select_pdf_invoice_template($invoice)
 {
     $CI =& get_instance();
+    $defaultTemplate = $CI->mdl_settings->setting('pdf_invoice_template');
+    $overdueTemplate = $CI->mdl_settings->setting('pdf_invoice_template_overdue');
+    $paidTemplate = $CI->mdl_settings->setting('pdf_invoice_template_paid');
+    $partialTemplate = $CI->mdl_settings->setting('pdf_invoice_template_partial');
 
-    if ($invoice->is_overdue) {
+    if ($invoice->is_overdue || $invoice->invoice_status_id == 6) {
         // Use the overdue template
-        return $CI->mdl_settings->setting('pdf_invoice_template_overdue');
+        return $overdueTemplate;
     } elseif ($invoice->invoice_status_id == 4) {
         // Use the paid template
-        return $CI->mdl_settings->setting('pdf_invoice_template_paid');
+        return $paidTemplate;
+    } elseif ($invoice->invoice_status_id == 5) {
+        // Use the Partial template
+        return $partialTemplate;
     } else {
         // Use the default template
-        return $CI->mdl_settings->setting('pdf_invoice_template');
+        return $defaultTemplate;
     }
 }
 
