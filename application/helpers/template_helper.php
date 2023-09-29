@@ -106,7 +106,7 @@ function parse_template($object, $body)
  * @param $invoice
  * @return mixed
  */
-*/function select_pdf_invoice_template($invoice)
+function select_pdf_invoice_template($invoice)
 {
     $CI =& get_instance();
     $defaultTemplate = $CI->mdl_settings->setting('pdf_invoice_template');
