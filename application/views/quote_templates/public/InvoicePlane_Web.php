@@ -228,19 +228,21 @@
                                     <td class="amount"><?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?></td>
                                 </tr>
                                 <?php endforeach ?>
-                                <tr>
-                                    <td class="no-bottom-border" colspan="4"></td>
-                                    <td class="text-right"><?php echo trans('discount'); ?>:</td>
-                                    <td class="amount">
-                                <?php
-                                    if ($quote->quote_discount_percent > 0) {
-                                        echo format_amount($quote->quote_discount_percent) . ' %';
-                                    } else {
-                                        echo format_amount($quote->quote_discount_amount);
-                                    }
-                                ?>
-                                    </td>
-                                </tr>
+                                <?php if ($quote->quote_discount_percent > 0 || $quote->quote_discount_amount > 0) : ?>
+                                        <tr>
+                                            <td class="no-bottom-border py-2 px-2 bt" colspan="4"></td>
+                                            <td class="text-right py-2 px-2 bt"><?php echo trans('discount'); ?>:</td>
+                                            <td class="amount py-2 px-2 bt">
+                                                <?php
+                                                if ($quote->quote_discount_percent > 0) {
+                                                    echo format_amount($quote->quote_discount_percent) . ' %';
+                                                } else {
+                                                    echo format_amount($quote->quote_discount_amount);
+                                                }
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="text-right"><?php echo trans('total'); ?></td>
@@ -282,5 +284,21 @@
             <!--- Ends --->
         </div>
         <!--- Ends --->
+        <?php if ($quote->notes) { ?>
+            <table class="w-10 table item-table bt">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-2"><?php echo trans('notes'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 px-2 bt">
+                            <?php echo nl2br(strip_tags($quote->notes, '<p><br><a><strong><em><ul><li><ol><h1><h2><h3><h4><h5><h6>')); ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        <?php } ?>
     </body>
 </html>
