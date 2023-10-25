@@ -125,7 +125,7 @@ function invoice_qrcode($invoice_id) {
         $CI->load->library('QrCode', [ 'invoice' => $invoice ]);
         $qrcode_data_uri = $CI->qrcode->generate();
 
-        return '<img src="' . $qrcode_data_uri . '" alt="QR Code">';
+        return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
     }
 
     return '';
