@@ -122,6 +122,17 @@ table.item-table {
   }
 }
 
+table.invoice-qr-code-table {
+  width: 100%;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+img#invoice-qr-code {
+  width: 100px;
+  height: auto;
+}
+
 footer {
   color: $color_base_lighter;
   width: 100%;
