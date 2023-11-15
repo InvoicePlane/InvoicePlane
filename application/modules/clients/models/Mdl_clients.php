@@ -51,7 +51,7 @@ class Mdl_Clients extends Response_Model
             'client_language' => array(
                 'field' => 'client_language',
                 'label' => trans('language'),
-                'rules' => 'trim|xss_clean'
+                'rules' => 'trim'
             ),
             'client_address_1' => array(
                 'field' => 'client_address_1'
@@ -70,7 +70,7 @@ class Mdl_Clients extends Response_Model
             ),
             'client_country' => array(
                 'field' => 'client_country',
-                'rules' => 'trim|xss_clean'
+                'rules' => 'trim'
             ),
             'client_phone' => array(
                 'field' => 'client_phone'
