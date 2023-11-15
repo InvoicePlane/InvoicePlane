@@ -159,9 +159,12 @@
                                 </span>
                             </div>
 
-                            <textarea name="email_template_body" id="email_template_body" rows="8"
-                                      class="email-template-body form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?>
-                            </textarea>
+                            <textarea
+                                name="email_template_body"
+                                id="email_template_body"
+                                rows="8"
+                                class="email-template-body form-control taggable"
+                            ><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?></textarea>
 
                             <br>
 

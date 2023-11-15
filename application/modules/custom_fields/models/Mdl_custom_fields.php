@@ -81,7 +81,7 @@ class Mdl_Custom_Fields extends MY_Model
             'custom_field_location' => [
                 'field' => 'custom_field_location',
                 'label' => trans('position'),
-                'rules' => 'is_natural|xss_clean',
+                'rules' => 'is_natural',
             ],
         ];
     }

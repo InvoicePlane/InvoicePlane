@@ -268,4 +268,20 @@ $(document).ready(function () {
             }
         }
     });
+
+    // Open/close QR code settings depending on checked QR code checkbox
+    const checkboxQrCode = document.getElementById('settings[qr_code]');
+    const panelQrCodeSettings = document.getElementById('panel-qr-code-settings');
+
+    if (checkboxQrCode && panelQrCodeSettings) {
+        checkboxQrCode.addEventListener('click', () => {
+            panelQrCodeSettings.querySelectorAll('.row').forEach((row) => {
+                if (checkboxQrCode.checked) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        });
+    }
 });
