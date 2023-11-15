@@ -27,7 +27,7 @@ class Ajax extends Admin_Controller
         $this->load->model('units/mdl_units');
         $this->load->model('invoices/mdl_invoice_sumex');
 
-        $invoice_id = $this->input->post('invoice_id');
+        $invoice_id = $this->security->xss_clean($this->input->post('invoice_id', true));
 
         $this->mdl_invoices->set_id($invoice_id);
 
@@ -99,12 +99,12 @@ class Ajax extends Admin_Controller
 
             $db_array = [
                 'invoice_number' => $invoice_number,
-                'invoice_terms' => $this->input->post('invoice_terms'),
+                'invoice_terms' => $this->security->xss_clean($this->input->post('invoice_terms')),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_password' => $this->input->post('invoice_password'),
+                'invoice_password' => $this->security->xss_clean($this->input->post('invoice_password')),
                 'invoice_status_id' => $invoice_status,
-                'payment_method' => $this->input->post('payment_method'),
+                'payment_method' => $this->security->xss_clean($this->input->post('payment_method')),
                 'invoice_discount_amount' => standardize_amount($invoice_discount_amount),
                 'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
             ];
@@ -141,6 +141,9 @@ class Ajax extends Admin_Controller
                 'success' => 1,
             ];
         } else {
+
+            log_message('error', '980: I wasnt able to run the validation validation_rules_save_invoice');
+
             $this->load->helper('json_error');
             $response = [
                 'success' => 0,
@@ -252,7 +255,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_items');
 
-        $item = $this->mdl_items->get_by_id($this->input->post('item_id'));
+        $item = $this->mdl_items->get_by_id($this->security->xss_clean($this->input->post('item_id', true)));
 
         echo json_encode($item);
     }
@@ -302,7 +305,7 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         $data = [
-            'client_id' => $this->input->post('client_id'),
+            'client_id' => $this->security->xss_clean($this->input->post('client_id')),
             'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
             'clients' => $this->mdl_clients->get_latest(),
         ];
@@ -316,11 +319,11 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         // Get the client ID
-        $client_id = $this->input->post('client_id');
+        $client_id = $this->security->xss_clean($this->input->post('client_id'));
         $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if (!empty($client)) {
-            $invoice_id = $this->input->post('invoice_id');
+            $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
             $db_array = [
                 'client_id' => $client_id,
@@ -355,7 +358,7 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))
+            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))
                 ->get()
                 ->row(),
         ];
@@ -371,7 +374,7 @@ class Ajax extends Admin_Controller
 
         if ($this->mdl_invoices->run_validation()) {
             $target_id = $this->mdl_invoices->save();
-            $source_id = $this->input->post('invoice_id');
+            $source_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
             $this->mdl_invoices->copy_invoice($source_id, $target_id);
 
@@ -402,7 +405,7 @@ class Ajax extends Admin_Controller
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->input->post('invoice_id'))
+            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))
                 ->get()
                 ->row(),
         ];
@@ -418,7 +421,7 @@ class Ajax extends Admin_Controller
 
         if ($this->mdl_invoices->run_validation()) {
             $target_id = $this->mdl_invoices->save();
-            $source_id = $this->input->post('invoice_id');
+            $source_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
             $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
@@ -456,7 +459,7 @@ class Ajax extends Admin_Controller
     public function delete_item($invoice_id)
     {
         $success = 0;
-        $item_id = $this->input->post('item_id');
+        $item_id = $this->security->xss_clean($this->input->post('item_id'));
         $this->load->model('mdl_invoices');
 
         // Only continue if the invoice exists or no item id was provided
