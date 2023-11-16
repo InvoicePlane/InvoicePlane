@@ -95,7 +95,7 @@ class Mdl_Clients extends Response_Model
             ),
             'client_invoicing_contact' => array(      
                 'field' => 'client_invoicing_contact',
-                'rules' => 'trim|xss_clean'
+                'rules' => 'trim'
             ), 
             'client_einvoice_version' => array(
                 'field' => 'client_einvoice_version'
