@@ -122,19 +122,23 @@ class Mdl_Users extends Response_Model
                 'field' => 'user_subscribernumber'
             ),
             'user_invoicing_contact' => array(
-                'field' => 'user_invoicing_contact'
+                'field' => 'user_invoicing_contact',
+                'rules' => 'trim|xss_clean'
             ), 
             'user_bank' => array(
-                'field' => 'user_bank'
+                'field' => 'user_bank',
+                'rules' => 'trim|xss_clean'
             ), 
             'user_iban' => array(
                 'field' => 'user_iban'
             ),
             'user_bic' => array(
-                'field' => 'user_bic'
+                'field' => 'user_bic',
+                'rules' => 'trim|xss_clean'
             ),
             'user_remittance_tmpl' => array(
-                'field' => 'user_remittance'
+                'field' => 'user_remittance',
+                'rules' => 'trim|xss_clean'
             ),                         
             # SUMEX
             'user_gln' => array(

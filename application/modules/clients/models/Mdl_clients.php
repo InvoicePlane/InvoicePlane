@@ -79,6 +79,7 @@ class Mdl_Clients extends Response_Model
             ],
             'client_country' => [
                 'field' => 'client_country',
+<<<<<<< HEAD
                 'rules' => 'trim',
             ],
             'client_phone' => [
@@ -108,6 +109,38 @@ class Mdl_Clients extends Response_Model
             'client_einvoice_version' => [
                 'field' => 'client_einvoice_version',
             ],
+=======
+                'rules' => 'trim'
+            ),
+            'client_phone' => array(
+                'field' => 'client_phone'
+            ),
+            'client_fax' => array(
+                'field' => 'client_fax'
+            ),
+            'client_mobile' => array(
+                'field' => 'client_mobile'
+            ),
+            'client_email' => array(
+                'field' => 'client_email'
+            ),
+            'client_web' => array(
+                'field' => 'client_web'
+            ),
+            'client_vat_id' => array(
+                'field' => 'client_vat_id'
+            ),
+            'client_tax_code' => array(
+                'field' => 'client_tax_code'
+            ),
+            'client_invoicing_contact' => array(      
+                'field' => 'client_invoicing_contact',
+                'rules' => 'trim|xss_clean'
+            ), 
+            'client_einvoice_version' => array(
+                'field' => 'client_einvoice_version'
+            ),
+>>>>>>> a185f8e7 (Added validation rules: 'xss_clean' and 'trim')
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
