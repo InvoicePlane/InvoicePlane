@@ -28,6 +28,7 @@ DB_PORT=
 # The number represents the amount of minutes after that IP will automatically log out users,
 # the default is 10 days.
 SESS_EXPIRATION=864000
+SESS_MATCH_IP=true
 
 # Enable the deletion of invoices
 ENABLE_INVOICE_DELETION=false

@@ -49,7 +49,8 @@ class Mdl_Email_Templates extends Response_Model
             ),
             'email_template_from_name' => array(
                 'field' => 'email_template_from_name',
-                'label' => trans('from_name')
+                'label' => trans('from_name'),
+                'rules' => 'trim'
             ),
             'email_template_from_email' => array(
                 'field' => 'email_template_from_email',

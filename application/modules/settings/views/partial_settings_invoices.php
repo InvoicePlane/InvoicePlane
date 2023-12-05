@@ -314,6 +314,108 @@
             </div>
         </div>
 
+        <div class="panel panel-default" id="panel-qr-code-settings">
+            <div class="panel-heading">
+                <?php _trans('qr_code_settings'); ?>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input
+                                type="hidden"
+                                name="settings[qr_code]"
+                                value="0"
+                            >
+                            <input
+                                type="checkbox"
+                                name="settings[qr_code]"
+                                id="settings[qr_code]"
+                                value="1"
+                                <?php check_select(get_setting('qr_code'), 1, '==', true) ?>
+                            >
+                            <?php _trans('qr_code_settings_enable'); ?>
+                        </label>
+                        <p class="help-block"><?php _trans('qr_code_settings_enable_hint'); ?></p>
+                    </div>
+                </div>
+
+                <div class="row <?php echo !get_setting('qr_code') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_recipient]">
+                                <?php _trans('qr_code_settings_recipient'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_recipient]"
+                                id="settings[qr_code_recipient]"
+                                class="form-control"
+                                value="<?php echo get_setting('qr_code_recipient'); ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_iban]">
+                                <?php _trans('qr_code_settings_iban'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_iban]"
+                                id="settings[qr_code_iban]"
+                                class="form-control"
+                                value="<?php echo get_setting('qr_code_iban'); ?>"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row <?php echo !get_setting('qr_code') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_bic]">
+                                <?php _trans('qr_code_settings_bic'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_bic]"
+                                id="settings[qr_code_bic]"
+                                class="form-control"
+                                value="<?php echo get_setting('qr_code_bic'); ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_remittance_text]">
+                                <?php _trans('qr_code_settings_remittance_text'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_remittance_text]"
+                                id="settings[qr_code_remittance_text]"
+                                class="form-control taggable"
+                                value="<?php echo get_setting('qr_code_remittance_text'); ?>"
+                                placeholder="{{{invoice_number}}}"
+                            >
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php _trans('qr_code_settings_remittance_text_tags'); ?>
+                            </div>
+                            <div class="panel-body">
+                                <?php $this->layout->load_view('email_templates/template-tags-invoices'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('email_settings'); ?>
@@ -374,7 +476,7 @@
                     </div>
 
                     <!-- Disable the update of invoice date and due date before emailing! -->
-                    <div class="col-xs-12 col-md-6">                    
+                    <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[no_update_invoice_due_date_mail]">
                                 <?php _trans('no_update_invoice_due_date_mail'); ?>
@@ -383,7 +485,7 @@
                                 id="settings[no_update_invoice_due_date_mail]" data-minimum-results-for-search="Infinity">
                                 <option value="0" <?php check_select(get_setting('no_update_invoice_due_date_mail'), '0'); ?>>
                                     <?php _trans('no'); ?>
-                                </option>                                
+                                </option>
                                 <option value="1" <?php check_select(get_setting('no_update_invoice_due_date_mail'), '1'); ?>>
                                     <?php _trans('yes'); ?>
                                 </option>

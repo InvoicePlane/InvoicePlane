@@ -36,6 +36,7 @@ class View extends Base_Controller
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->load->model('payment_methods/mdl_payment_methods');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->helper('template');
 
         $invoice = $invoice->row();
 

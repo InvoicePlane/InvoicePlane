@@ -253,6 +253,36 @@
 
             <hr>
 
+            <?php if (get_setting('qr_code')) : ?>
+                <table class="invoice-qr-code-table">
+                    <tr>
+                        <td>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
+                                <?php echo get_setting('qr_code_recipient'); ?>
+                            </div>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
+                                <?php echo get_setting('qr_code_iban'); ?>
+                            </div>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
+                                <?php echo get_setting('qr_code_bic'); ?>
+                            </div>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
+                                <?php echo parse_template($invoice, get_setting('qr_code_remittance_text')); ?>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <?php echo invoice_qrcode($invoice->invoice_id); ?>
+                        </td>
+                    </tr>
+                </table>
+
+                <hr>
+            <?php endif; ?>
+
             <div class="row">
 
                 <?php if ($invoice->invoice_terms) { ?>

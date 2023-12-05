@@ -54,10 +54,10 @@ class Mailer extends Admin_Controller
         if (get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
             // Save original 'invoice_date_created' and 'invoice_date_due' for an (eventually) reset later
             $this->load->model('settings/mdl_settings');
-            $this->mdl_settings->save('tmp_invoice_date', $invoice->invoice_date_created); 
-            $this->mdl_settings->save('tmp_due_date', $invoice->invoice_date_due); 
+            $this->mdl_settings->save('tmp_invoice_date', $invoice->invoice_date_created);
+            $this->mdl_settings->save('tmp_due_date', $invoice->invoice_date_due);
             $this->mdl_invoices->update_invoice_due_dates($invoice_id);
-        } 
+        }
 
         $email_template_id = select_email_invoice_template($invoice);
 
@@ -131,6 +131,9 @@ class Mailer extends Admin_Controller
      */
     public function send_invoice($invoice_id)
     {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('to_email', 'Email', 'required|valid_email|xss_clean');
+
         if ($this->input->post('btn_cancel')) {
             // reset the original invoice_date_created & invoice_due_date if setting['...'] == 0 and invoice is NOT read only
             $this->load->model('invoices/mdl_invoices');
@@ -138,12 +141,12 @@ class Mailer extends Admin_Controller
             if (get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
                 $org_invoice_date = get_setting('tmp_invoice_date');
                 $org_due_date = get_setting('tmp_due_date');
-                $this->mdl_invoices->reset_invoice_due_dates($invoice_id, $org_invoice_date, $org_due_date); 									
-                // delete setting 'tmp_invoice_date' and 'tmp_due_date'	
+                $this->mdl_invoices->reset_invoice_due_dates($invoice_id, $org_invoice_date, $org_due_date);
+                // delete setting 'tmp_invoice_date' and 'tmp_due_date'
                 $this->load->model('settings/mdl_settings');
-                $this->mdl_settings->delete('tmp_invoice_date'); 
-                $this->mdl_settings->delete('tmp_due_date'); 						
-            } 
+                $this->mdl_settings->delete('tmp_invoice_date');
+                $this->mdl_settings->delete('tmp_due_date');
+            }
             redirect('invoices/view/' . $invoice_id);
         }
 
@@ -151,7 +154,7 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $to = $this->input->post('to_email');
+        $to = $this->input->post('to_email', true);
 
         if (empty($to)) {
             $this->session->set_flashdata('alert_danger', trans('email_to_address_missing'));
@@ -164,7 +167,7 @@ class Mailer extends Admin_Controller
             $this->input->post('from_name')
         );
 
-        $pdf_template = $this->input->post('pdf_template');
+        $pdf_template = $this->input->post('pdf_template', true);
         $subject = $this->input->post('subject');
         $body = $this->input->post('body');
 
@@ -182,10 +185,10 @@ class Mailer extends Admin_Controller
 
         if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_invoices->mark_sent($invoice_id);
-            // Clean-up: delete setting 'tmp_invoice_date' and 'tmp_due_date'	
+            // Clean-up: delete setting 'tmp_invoice_date' and 'tmp_due_date'
             $this->load->model('settings/mdl_settings');
-            $this->mdl_settings->delete('tmp_invoice_date'); 
-            $this->mdl_settings->delete('tmp_due_date'); 
+            $this->mdl_settings->delete('tmp_invoice_date');
+            $this->mdl_settings->delete('tmp_due_date');
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
             redirect('invoices/view/' . $invoice_id);
         } else {
