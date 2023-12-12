@@ -1,8 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 require dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 
@@ -30,7 +28,7 @@ class Clients extends Admin_Controller
         $this->load->model('mdl_clients');
     }
 
-    public function index()
+    public function index(): void
     {
         // Display active clients by default
         redirect('clients/status/active');
@@ -40,7 +38,7 @@ class Clients extends Admin_Controller
      * @param string $status
      * @param int    $page
      */
-    public function status($status = 'active', $page = 0)
+    public function status($status = 'active', $page = 0): void
     {
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
@@ -66,7 +64,7 @@ class Clients extends Admin_Controller
     /**
      * @param null $id
      */
-    public function form($id = null)
+    public function form($id = null): void
     {
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
@@ -104,7 +102,6 @@ $this->filter_input();  // <<<--- filters _POST array for nastiness
                 $this->session->set_flashdata('alert_error', $result);
                 $this->session->set_flashdata('alert_success', null);
                 redirect('clients/form/' . $id);
-
 
                 return;
             }
@@ -186,7 +183,7 @@ $this->filter_input();  // <<<--- filters _POST array for nastiness
     /**
      * @param int $client_id
      */
-    public function view($client_id, $activeTab = 'detail', $page = 0)
+    public function view($client_id, $activeTab = 'detail', $page = 0): void
     {
         $this->load->model('clients/mdl_client_notes');
         $this->load->model('invoices/mdl_invoices');
@@ -259,7 +256,7 @@ $this->filter_input();  // <<<--- filters _POST array for nastiness
     /**
      * @param int $client_id
      */
-    public function delete($client_id)
+    public function delete($client_id): void
     {
         $this->mdl_clients->delete($client_id);
         redirect('clients');
@@ -268,7 +265,7 @@ $this->filter_input();  // <<<--- filters _POST array for nastiness
     private function get_client_title_choices(): array
     {
         return array_map(
-            fn(ClientTitleEnum $clientTitleEnum) => $clientTitleEnum->value,
+            fn (ClientTitleEnum $clientTitleEnum) => $clientTitleEnum->value,
             ClientTitleEnum::cases()
         );
     }
