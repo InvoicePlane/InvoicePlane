@@ -4,6 +4,8 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
+
 /*
  * InvoicePlane
  *
@@ -71,8 +73,7 @@ class Clients extends Admin_Controller
         }
 
         $new_client = false;
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
-
+$this->filter_input();  // <<<--- filters _POST array for nastiness
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', [
@@ -262,5 +263,13 @@ class Clients extends Admin_Controller
     {
         $this->mdl_clients->delete($client_id);
         redirect('clients');
+    }
+
+    private function get_client_title_choices(): array
+    {
+        return array_map(
+            fn(ClientTitleEnum $clientTitleEnum) => $clientTitleEnum->value,
+            ClientTitleEnum::cases()
+        );
     }
 }
