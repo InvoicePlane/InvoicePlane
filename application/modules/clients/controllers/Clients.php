@@ -1,8 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 
@@ -32,7 +30,7 @@ class Clients extends Admin_Controller
         $this->load->model('mdl_clients');
     }
 
-    public function index()
+    public function index(): void
     {
         // Display active clients by default
         redirect('clients/status/active');
@@ -42,7 +40,7 @@ class Clients extends Admin_Controller
      * @param string $status
      * @param int    $page
      */
-    public function status($status = 'active', $page = 0)
+    public function status($status = 'active', $page = 0): void
     {
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
@@ -68,7 +66,7 @@ class Clients extends Admin_Controller
     /**
      * @param null $id
      */
-    public function form($id = null)
+    public function form($id = null): void
     {
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
@@ -191,7 +189,7 @@ class Clients extends Admin_Controller
     /**
      * @param int $client_id
      */
-    public function view($client_id, $activeTab = 'detail', $page = 0)
+    public function view($client_id, $activeTab = 'detail', $page = 0): void
     {
         $this->load->model('clients/mdl_client_notes');
         $this->load->model('invoices/mdl_invoices');
@@ -264,7 +262,7 @@ class Clients extends Admin_Controller
     /**
      * @param int $client_id
      */
-    public function delete($client_id)
+    public function delete($client_id): void
     {
         $this->mdl_clients->delete($client_id);
         redirect('clients');
