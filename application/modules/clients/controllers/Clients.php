@@ -175,11 +175,11 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             [
-                'custom_fields'        => $custom_fields,
-                'custom_values'        => $custom_values,
-                'countries'            => get_country_list(trans('cldr')),
-                'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-                'languages'            => get_available_languages(),
+                'custom_fields'    => $custom_fields,
+                'custom_values'    => $custom_values,
+                'countries'        => get_country_list(trans('cldr')),
+                'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+                'languages' => get_available_languages(),
                 'client_title_choices' => $this->get_client_title_choices(),
             ]
         );
