@@ -5,5 +5,6 @@ enum ClientTitleEnum: string
     case MISTER = 'mr';
     case MISSUS = 'mrs';
     case DOCTOR = 'doctor';
-    case professor = 'professor';
+    case PROFESSOR = 'professor';
+    case CUSTOM = 'custom';
 }

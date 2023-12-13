@@ -18,6 +18,8 @@ require dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
  */
 class Clients extends Admin_Controller
 {
+    private const CLIENT_TITLE = 'client_title';
+
     /**
      * Clients constructor.
      */
@@ -88,6 +90,11 @@ class Clients extends Admin_Controller
         }
 
         if ($this->mdl_clients->run_validation()) {
+            $client_title_custom = $this->input->post('client_title_custom');
+            if('' !== $client_title_custom) {
+                $_POST[self::CLIENT_TITLE] = $client_title_custom;
+                $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
+            }
             $id = $this->mdl_clients->save($id);
 
             if ($new_client) {
@@ -127,11 +134,9 @@ class Clients extends Admin_Controller
                     $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
                 }
             }
-        } elseif ($this->input->post('btn_submit')) {
-            if ($this->input->post('custom')) {
-                foreach ($this->input->post('custom') as $key => $val) {
-                    $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
-                }
+        } elseif ($this->input->post('btn_submit') && $this->input->post('custom')) {
+            foreach ($this->input->post('custom') as $key => $val) {
+                $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
             }
         }
 

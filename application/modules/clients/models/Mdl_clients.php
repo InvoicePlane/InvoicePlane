@@ -36,6 +36,11 @@ class Mdl_Clients extends Response_Model
     public function validation_rules()
     {
         return array(
+            'client_title' => array(
+                'field' => 'client_title',
+                'label' => trans('client_title'),
+                'rules' => 'required'
+            ),
             'client_name' => array(
                 'field' => 'client_name',
                 'label' => trans('client_name'),

@@ -8,6 +8,8 @@ $cv = $this->controller->view_data['custom_values'];
             placeholder: "<?php _trans('country'); ?>",
             allowClear: true
         });
+
+        <?php $this->layout->load_view('clients/js/script_select_client_title.js'); ?>
     });
 </script>
 
@@ -59,11 +61,22 @@ $cv = $this->controller->view_data['custom_values'];
                             <select name="client_title" id="client_title" class="form-control simple-select">
                                 <?php $client_title = $this->mdl_clients->form_value('client_title'); ?>
                                 <?php foreach ($client_title_choices as $client_title_choice) : ?>
-                                    <option value="<?php echo $client_title; ?>">
+                                    <option value="<?php echo $client_title_choice; ?>">
                                         <?php echo ucfirst($client_title_choice); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input
+                                id="client_title_custom"
+                                name="client_title_custom"
+                                type="text"
+                                class="form-control hidden"
+                                placeholder='Custom title'
+                                value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
+                            />
                         </div>
 
                         <div class="form-group">
