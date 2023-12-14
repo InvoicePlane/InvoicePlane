@@ -1,5 +1,8 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+require dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 
 /*
  * InvoicePlane
@@ -15,6 +18,8 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Clients extends Admin_Controller
 {
+    private const CLIENT_TITLE = 'client_title';
+
     /**
      * Clients constructor.
      */
@@ -66,9 +71,9 @@ class Clients extends Admin_Controller
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
         }
-        
+
         $new_client = false;
-        
+
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', array(
@@ -83,15 +88,20 @@ class Clients extends Admin_Controller
                 $new_client = true;
             }
         }
-        
+
         if ($this->mdl_clients->run_validation()) {
+            $client_title_custom = $this->input->post('client_title_custom');
+            if('' !== $client_title_custom) {
+                $_POST[self::CLIENT_TITLE] = $client_title_custom;
+                $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
+            }
             $id = $this->mdl_clients->save($id);
-            
+
             if ($new_client) {
                 $this->load->model('user_clients/mdl_user_clients');
                 $this->mdl_user_clients->get_users_all_clients();
             }
-            
+
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
 
@@ -124,11 +134,9 @@ class Clients extends Admin_Controller
                     $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
                 }
             }
-        } elseif ($this->input->post('btn_submit')) {
-            if ($this->input->post('custom')) {
-                foreach ($this->input->post('custom') as $key => $val) {
-                    $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
-                }
+        } elseif ($this->input->post('btn_submit') && $this->input->post('custom')) {
+            foreach ($this->input->post('custom') as $key => $val) {
+                $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
             }
         }
 
@@ -170,6 +178,7 @@ class Clients extends Admin_Controller
                 'countries' => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
                 'languages' => get_available_languages(),
+                'client_title_choices' => $this->get_client_title_choices()
             )
         );
 
@@ -254,4 +263,11 @@ class Clients extends Admin_Controller
         redirect('clients');
     }
 
+    private function get_client_title_choices(): array
+    {
+        return array_map(
+            fn(ClientTitleEnum $clientTitleEnum) => $clientTitleEnum->value,
+            ClientTitleEnum::cases()
+        );
+    }
 }
