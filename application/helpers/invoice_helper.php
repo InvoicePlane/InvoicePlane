@@ -20,8 +20,7 @@ function invoice_logo()
     $CI = &get_instance();
 
     if ($CI->mdl_settings->setting('invoice_logo')) {
-        $absolutePath = dirname(dirname(__DIR__));
-        return '<img src="' . $absolutePath . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';
+        return '<img src="' . base_url() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '">';
     }
 
     return '';
