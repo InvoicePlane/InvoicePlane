@@ -214,7 +214,11 @@ if ($this->config->item('disable_read_only') == true) {
 <div id="headerbar">
     <h1 class="headerbar-title">
         <?php
-        echo trans('invoice') . ' ';
+        if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ';
+        } else {
+            echo trans('invoice') . ' ';
+        }
         echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
         ?>
     </h1>
@@ -233,11 +237,13 @@ if ($this->config->item('disable_read_only') == true) {
                         </a>
                     </li>
                 <?php } ?>
-                <li>
-                    <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
-                    </a>
-                </li>
+                <?php if ($invoice->invoice_sign != -1) { ?>
+                    <li>
+                        <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
+                            <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
+                        </a>
+                    </li>
+                <?php } ?>
                 <?php if ($invoice->invoice_balance != 0) : ?>
                     <li>
                         <a href="#" class="invoice-add-payment"
@@ -376,7 +382,13 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
-                                    <label><?php _trans('invoice'); ?> #</label>
+                                    <label><?php 
+                                            if ($invoice->invoice_sign == -1) {
+                                                echo _trans('credit_invoice');
+                                            } else {
+                                                echo _trans('invoice');
+                                            } 
+                                    ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control input-sm"
                                         <?php if ($invoice->invoice_number) : ?>
                                             value="<?php echo $invoice->invoice_number; ?>"
@@ -393,8 +405,8 @@ if ($this->config->item('disable_read_only') == true) {
 
                                     <div class="input-group">
                                         <input name="invoice_date_created" id="invoice_date_created"
-                                               class="form-control input-sm datepicker"
-                                               value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
+                                            class="form-control input-sm datepicker"
+                                            value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
                                             <?php if ($invoice->is_read_only == 1) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
@@ -409,11 +421,11 @@ if ($this->config->item('disable_read_only') == true) {
 
                                     <div class="input-group">
                                         <input name="invoice_date_due" id="invoice_date_due"
-                                               class="form-control input-sm datepicker"
-                                               value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
-                                            <?php if ($invoice->is_read_only == 1) {
+                                            class="form-control input-sm datepicker"
+                                            value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"                                              
+                                            <?php if ($invoice->is_read_only == 1 || $invoice->invoice_sign == -1) {
                                                 echo 'disabled="disabled"';
-                                            } ?>>
+                                            } ?>>                                               
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar fa-fw"></i>
                                         </span>
@@ -519,7 +531,13 @@ if ($this->config->item('disable_read_only') == true) {
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
-                            <?php _trans('invoice_terms'); ?>
+                            <?php 
+                                if ($invoice->invoice_sign == -1) {
+                                    echo _trans('credit_invoice_terms');
+                                } else {
+                                    echo _trans('invoice_terms');
+                                }                            
+                            ?>
                         </div>
                         <div class="panel-body">
                             <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"

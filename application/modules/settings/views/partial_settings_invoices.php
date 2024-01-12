@@ -81,6 +81,28 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">                
+                        
+                        <div class="form-group">
+                            <label for="settings[default_creditnote_group]">
+                                <?php _trans('default_credit_invoice_group'); ?>
+                            </label>
+                            <select name="settings[default_creditnote_group]" id="settings[default_creditnote_group]"
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value=""><?php _trans('none'); ?></option>
+                                <?php foreach ($invoice_groups as $invoice_group) { ?>
+                                    <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                                        <?php check_select(get_setting('default_creditnote_group'), $invoice_group->invoice_group_id); ?>>
+                                        <?php echo $invoice_group->invoice_group_name; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
