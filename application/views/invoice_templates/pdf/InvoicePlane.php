@@ -138,7 +138,7 @@
     <?php if ($invoice->invoice_sign == -1) {
             echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
           } else {
-            echo trans('invoice') . ' ' . $invoice->invoice_number;;
+            echo trans('invoice') . ' ' . $invoice->invoice_number;
           } ?>    
     </h1>        
 
