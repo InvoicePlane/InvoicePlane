@@ -335,8 +335,16 @@ if ($this->config->item('disable_read_only') == true) {
                     </h3>
                     <br>
 		    <div class="client-address">
-                       <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
-			    autofocus="autofocus">
+                       <label>
+                          <?php
+                              echo ' <span class="small">(' . trans('service_name') . ')</span>';
+                          ?>
+                       </label>
+                       <select name="service_id" id="service_id"
+                               class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity"
+                          <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                              echo 'disabled="disabled"';
+                          } ?>>
                                <option value="0" selected><?php _trans('select service'); ?></option>
                                <?php
                                  foreach($services as $service)

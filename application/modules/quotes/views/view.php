@@ -255,8 +255,13 @@ $cv = $this->controller->view_data["custom_values"];
                     </h3>
                     <br>
                     <div class="client-address">
-                       <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
-			    autofocus="autofocus">
+                       <label>
+                          <?php
+                              echo ' <span class="small">(' . trans('service_name') . ')</span>';
+                          ?>
+                       </label>
+                       <select name="service_id" id="service_id"
+                               class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
                                <option value="0" selected><?php _trans('select service'); ?></option>
                                <?php
                                  foreach($services as $service)
