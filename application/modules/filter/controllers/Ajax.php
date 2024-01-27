@@ -31,8 +31,17 @@ class Ajax extends Admin_Controller
             }
         }
 
+	$invoices = $this->mdl_invoices->get()->result();
+
+	foreach ($invoices as $invoice) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $invoice->service_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $invoice->service_name = $service[0]['service_name'];
+	}
+
+        //     'invoices' => $this->mdl_invoices->get()->result(),
         $data = array(
-            'invoices' => $this->mdl_invoices->get()->result(),
+            'invoices' => $invoices,
             'invoice_statuses' => $this->mdl_invoices->statuses()
         );
 
@@ -53,8 +62,17 @@ class Ajax extends Admin_Controller
             }
         }
 
+	$quotes = $this->mdl_quotes->get()->result();
+
+	foreach ($quotes as $quote) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $quote->service_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $quote->service_name = $service[0]['service_name'];
+	}
+
+        //    'quotes' => $this->mdl_quotes->get()->result(),
         $data = array(
-            'quotes' => $this->mdl_quotes->get()->result(),
+            'quotes' => $quotes,
             'quote_statuses' => $this->mdl_quotes->statuses()
         );
 

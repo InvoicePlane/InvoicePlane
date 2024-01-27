@@ -257,4 +257,10 @@ class Mdl_Clients extends Response_Model
         return $this;
     }
 
+    public function service_by_client ()
+    {
+        $query = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name');
+        return $query->result_array();
+    }
+
 }

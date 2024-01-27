@@ -63,7 +63,14 @@
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"
                        title="<?php _trans('view_client'); ?>">
-                        <?php _htmlsc(format_client($invoice)); ?>
+                    <?php
+	                 _htmlsc(format_client($invoice)); 
+	                 if ($invoice->service_name) {
+	     	             echo '&nbsp(';
+			     _htmlsc($invoice->service_name);
+			     echo ')';
+      			}
+                    ?>
                     </a>
                 </td>
 

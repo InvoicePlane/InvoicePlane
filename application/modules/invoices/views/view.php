@@ -78,6 +78,7 @@ $cv = $this->controller->view_data["custom_values"];
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val(),
+                    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -333,7 +334,22 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php } ?>
                     </h3>
                     <br>
-                    <div class="client-address">
+		    <div class="client-address">
+                       <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
+			    autofocus="autofocus">
+                               <option value="0" selected><?php _trans('select service'); ?></option>
+                               <?php
+                                 foreach($services as $service)
+				 {
+				     if ($service['service_name']) {
+                                         echo '<option value="' . $service['service_id'] .'" ';
+                                         if ($service['service_id'] == $invoice->service_id)
+                                            echo 'selected';
+                                         echo '>' . $service['service_name'] .'</option>';
+				     }
+                                 }
+                               ?>
+                       </select><br>
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
                     </div>
                     <?php if ($invoice->client_phone || $invoice->client_email) : ?>

@@ -44,7 +44,14 @@
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"
                        title="<?php _trans('view_client'); ?>">
-                        <?php _htmlsc(format_client($quote)); ?>
+                        <?php
+	                 _htmlsc(format_client($quote)); 
+	                 if ($quote->service_name) {
+	     	             echo '&nbsp(';
+			     _htmlsc($quote->service_name);
+			     echo ')';
+      			}
+                       ?>
                     </a>
                 </td>
                 <td style="text-align: right; padding-right: 25px;">

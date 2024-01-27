@@ -24,12 +24,15 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
+        $this->load->model('services/mdl_services');
         $this->load->model('units/mdl_units');
         $this->load->model('invoices/mdl_invoice_sumex');
 
         $invoice_id = $this->security->xss_clean($this->input->post('invoice_id', true));
+        $service_id = $this->security->xss_clean($this->input->post('service_id', true));
 
         $this->mdl_invoices->set_id($invoice_id);
+        $this->mdl_invoices->set_invoice_service($invoice_id, $service_id);
 
         if ($this->mdl_invoices->run_validation('validation_rules_save_invoice')) {
             $items = json_decode($this->input->post('items'));
@@ -107,6 +110,7 @@ class Ajax extends Admin_Controller
                 'payment_method' => $this->security->xss_clean($this->input->post('payment_method')),
                 'invoice_discount_amount' => standardize_amount($invoice_discount_amount),
                 'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
+                'service_id' => $this->security->xss_clean($this->input->post('service_id')),
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
@@ -267,11 +271,15 @@ class Ajax extends Admin_Controller
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('clients/mdl_clients');
 
+        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'client' => $this->mdl_clients->get_by_id($this->input->post('client_id')),
             'clients' => $this->mdl_clients->get_latest(),
+            'service_id' => $this->security->xss_clean($this->input->post('client_id')),
+            'services' => $services,
         ];
 
         $this->layout->load_view('invoices/modal_create_invoice', $data);
@@ -308,6 +316,7 @@ class Ajax extends Admin_Controller
             'client_id' => $this->security->xss_clean($this->input->post('client_id')),
             'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
             'clients' => $this->mdl_clients->get_latest(),
+            'services' => $this->mdl_clients->service_by_client(),
         ];
 
         $this->layout->load_view('invoices/modal_change_client', $data);
@@ -353,6 +362,10 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('invoice_groups/mdl_invoice_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
+        $this->load->model('clients/mdl_clients');
+        $this->load->model('services/mdl_services');
+
+        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
@@ -361,6 +374,8 @@ class Ajax extends Admin_Controller
             'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))
                 ->get()
                 ->row(),
+            'service_id' => intval($this->input->post('service_id')),
+            'services' => $services,
         ];
 
         $this->layout->load_view('invoices/modal_copy_invoice', $data);

@@ -54,6 +54,7 @@ $cv = $this->controller->view_data["custom_values"];
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
+                    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -254,6 +255,21 @@ $cv = $this->controller->view_data["custom_values"];
                     </h3>
                     <br>
                     <div class="client-address">
+                       <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
+			    autofocus="autofocus">
+                               <option value="0" selected><?php _trans('select service'); ?></option>
+                               <?php
+                                 foreach($services as $service)
+				 {
+				     if ($service['service_name']) {
+                                         echo '<option value="' . $service['service_id'] .'" ';
+                                         if ($service['service_id'] == $quote->service_id)
+                                            echo 'selected';
+                                         echo '>' . $service['service_name'] .'</option>';
+				     }
+                                 }
+                               ?>
+                       </select><br>
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>
                     <?php if ($quote->client_phone || $quote->client_email) : ?>

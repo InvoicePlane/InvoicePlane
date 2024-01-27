@@ -38,7 +38,8 @@
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_password: $('#invoice_password').val(),
                     user_id: '<?php echo $this->session->userdata('user_id'); ?>',
-                    payment_method: $('#payment_method_id').val()
+                    payment_method: $('#payment_method_id').val(),
+                    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -90,6 +91,28 @@
                     </span>
                 </div>
             </div>
+
+            <div class="form-group has-feedback">
+                <label for="service_id"><?php _trans('service'); ?></label>
+                <div class="input-group" style="width: 100%;">
+                    <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
+			    autofocus="autofocus">
+                               <?php
+                                 foreach($services as $service)
+				 {
+				     $value = 'Sélectionner un service';
+				     if ($service['service_name']) {
+					 $value = $service['service_name'];
+                                         echo '<option value="' . $service['service_id'] .'">' . $value .'</option>';
+				     }
+				     else {
+                                         echo '<option value="' . $service['service_id'] .'" selected>' . $value .'</option>';
+				     }
+                                 }
+                               ?>
+                    </select>
+                </div>
+	    </div>
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php _trans('invoice_date'); ?></label>
