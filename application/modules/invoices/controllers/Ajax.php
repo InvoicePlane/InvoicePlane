@@ -278,7 +278,6 @@ class Ajax extends Admin_Controller
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'client' => $this->mdl_clients->get_by_id($this->input->post('client_id')),
             'clients' => $this->mdl_clients->get_latest(),
-            'service_id' => $this->security->xss_clean($this->input->post('client_id')),
             'services' => $services,
         ];
 
