@@ -255,7 +255,7 @@ $cv = $this->controller->view_data["custom_values"];
                     </h3>
                     <br>
                     <div class="client-address">
-                       <label>
+                       <label for="service_id">
                           <?php
                               echo ' <span class="small">(' . trans('service_name') . ')</span>';
                           ?>
