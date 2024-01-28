@@ -1,6 +1,7 @@
 <?php
 $lang = array(
     'account_information'                          => 'Account Information',
+    'client_number'                                => 'Customer No',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
     'add_client'                                   => 'Add Client',
