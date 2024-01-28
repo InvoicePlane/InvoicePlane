@@ -370,10 +370,9 @@ if ($this->config->item('disable_read_only') == true) {
                                 <div class="col-xs-12">
                                     <div class="alert alert-warning small">
                                         <i class="fa fa-credit-invoice"></i>&nbsp;
-                                        <?php
-                                        echo trans('credit_invoice_for_invoice') . ' ';
-                                        $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-                                        echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
+                                        <?php echo trans('credit_invoice_for_invoice') . ' ';
+                                        	$parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
+                                        	echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
                                         ?>
                                     </div>
                                 </div>
@@ -382,13 +381,13 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
-                                    <label><?php 
-                                            if ($invoice->invoice_sign == -1) {
+                                    <label>
+                                        <?php if ($invoice->invoice_sign == -1) {
                                                 echo _trans('credit_invoice');
                                             } else {
                                                 echo _trans('invoice');
-                                            } 
-                                    ?> #</label>
+                                        } ?> #
+                                    </label>
                                     <input type="text" id="invoice_number" class="form-control input-sm"
                                         <?php if ($invoice->invoice_number) : ?>
                                             value="<?php echo $invoice->invoice_number; ?>"
@@ -531,13 +530,11 @@ if ($this->config->item('disable_read_only') == true) {
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
-                            <?php 
-                                if ($invoice->invoice_sign == -1) {
-                                    echo _trans('credit_invoice_terms');
+                            <?php if ($invoice->invoice_sign == -1) {
+                                _trans('credit_invoice_terms');
                                 } else {
-                                    echo _trans('invoice_terms');
-                                }                            
-                            ?>
+                                _trans('invoice_terms');
+                            } ?>
                         </div>
                         <div class="panel-body">
                             <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"

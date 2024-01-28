@@ -86,7 +86,7 @@
                         
                         <div class="form-group">
                             <label for="settings[default_creditnote_group]">
-                                <?php _trans('default_credit_invoice_group'); ?>
+                                <?php _trans('default_creditnote_group'); ?>
                             </label>
                             <select name="settings[default_creditnote_group]" id="settings[default_creditnote_group]"
                                 class="form-control simple-select" data-minimum-results-for-search="Infinity">
@@ -100,6 +100,16 @@
                             </select>
                         </div>
 
+                    </div>
+                    <div class="col-xs-12 col-md-6"> 
+                        <div class="form-group">
+                            <label for="settings[default_creditnote_terms]">
+                                <?php _trans('default_creditnote_terms'); ?>
+                            </label>
+                            <textarea name="settings[default_creditnote_terms]" id="settings[default_creditnote_terms]"
+                                class="form-control" rows="1"><?php echo get_setting('default_creditnote_terms', '', true); ?>
+                            </textarea>
+                        </div>
                     </div>
                 </div>
 

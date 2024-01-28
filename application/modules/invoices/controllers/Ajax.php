@@ -435,6 +435,10 @@ class Ajax extends Admin_Controller
             $this->mdl_invoices->where('invoice_id', $target_id);
             $this->mdl_invoices->update('ip_invoices', ['creditinvoice_parent_id' => $source_id]);
 
+            // Change invoice terms to credit note terms
+            $this->mdl_invoices->where('invoice_id', $target_id);
+            $this->mdl_invoices->update('ip_invoices', ['invoice_terms' => get_setting('default_creditnote_terms')]);
+
             $this->mdl_invoices->where('invoice_id', $target_id);
             $this->mdl_invoices->update('ip_invoice_amounts', ['invoice_sign' => '-1']);
 
