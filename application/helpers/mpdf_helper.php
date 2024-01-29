@@ -95,7 +95,7 @@ function pdf_create(
 
     $mpdf->WriteHTML((string) $html);
 
-    if (get_setting('qr_code_swiss')) {
+    if (file_exists(UPLOADS_TEMP_MPDF_FOLDER . "qr_swiss.pdf")) {
         $mpdf->AddPage();
         $pageId = $mpdf->SetSourceFile(UPLOADS_TEMP_MPDF_FOLDER . "qr_swiss.pdf");
         $tplId = $mpdf->ImportPage($pageId);

@@ -103,7 +103,10 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
-    if (get_setting('qr_code_swiss')) {
+    if ($CI->mdl_settings->setting('qr_code_swiss') &&
+        $CI->mdl_settings->setting('qr_code_swiss_currency') &&
+        $invoice->user_iban != ""
+    ) {
         $qrBill = invoice_qr_code_swiss($invoice->invoice_id);
         $fpdf = new \Fpdf\Fpdf('P', 'mm', 'A4');
         $fpdf->AddPage();
