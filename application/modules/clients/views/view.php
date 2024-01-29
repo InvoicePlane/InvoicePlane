@@ -97,6 +97,14 @@ foreach ($custom_fields as $custom_field) {
                     <table class="table table-bordered no-margin">
                         <tr>
                             <th>
+                                <?php _trans('client_number'); ?>
+                            </th>
+                            <th class="td-amount">
+                                <?php echo $client->client_number; ?>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
                                 <?php _trans('language'); ?>
                             </th>
                             <td class="td-amount">
