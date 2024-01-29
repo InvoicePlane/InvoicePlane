@@ -320,7 +320,7 @@ if ($this->config->item('disable_read_only') == true) {
         <div class="invoice">
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-5">
+                <div class="col-xs-12 col-sm-6 col-md-3">
 
                     <h3>
                         <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>">
@@ -343,6 +343,7 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php _htmlsc($invoice->client_number); ?>
                         </div>
                     <?php endif; ?>
+
                     <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                         <hr>
                     <?php endif; ?>
@@ -363,7 +364,7 @@ if ($this->config->item('disable_read_only') == true) {
 
                 <div class="col-xs-12 visible-xs"><br></div>
 
-                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1">
+                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-8 col-md-offset-1">
                     <div class="details-box panel panel-default panel-body">
                         <div class="row">
 
@@ -380,7 +381,32 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
                             <?php } ?>
 
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="invoice-properties">
+                                    <label><?php _trans('quote_number'); ?></label>
+                                    <input type="text" id="invoice_quote_number" class="form-control input-sm"
+                                        <?php if ($invoice->invoice_quote_number) : ?>
+                                            value="<?php echo $invoice->invoice_quote_number; ?>"
+                                        <?php endif; ?>>
+                                </div>
+                                <div class="invoice-properties">
+                                    <label><?php _trans('work_order'); ?></label>
+                                    <input type="text" id="invoice_work_order" class="form-control input-sm"
+                                        <?php if ($invoice->invoice_work_order) : ?>
+                                            value="<?php echo $invoice->invoice_work_order; ?>"
+                                        <?php endif; ?>>
+
+                                </div>
+                                <div class="invoice-properties">
+                                    <label><?php _trans('agreement'); ?></label>
+                                    <input type="text" id="invoice_agreement" class="form-control input-sm"
+                                        <?php if ($invoice->invoice_agreement) : ?>
+                                            value="<?php echo $invoice->invoice_agreement; ?>"
+                                        <?php endif; ?>>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="invoice-properties">
                                     <label><?php _trans('invoice'); ?> #</label>
@@ -437,7 +463,7 @@ if ($this->config->item('disable_read_only') == true) {
 
                             </div>
 
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="invoice-properties">
                                     <label>
