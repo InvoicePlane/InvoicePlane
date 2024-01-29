@@ -336,6 +336,13 @@ if ($this->config->item('disable_read_only') == true) {
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
                     </div>
+                    <br>
+                    <?php if ($invoice->client_number): ?>
+                        <div class="client-number">
+                            <?php _trans('client_number'); ?>:&nbsp;
+                            <?php _htmlsc($invoice->client_number); ?>
+                        </div>
+                    <?php endif; ?>
                     <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                         <hr>
                     <?php endif; ?>
