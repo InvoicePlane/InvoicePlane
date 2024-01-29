@@ -72,6 +72,14 @@ $cv = $this->controller->view_data['custom_values'];
                                    value="<?php echo $this->mdl_clients->form_value('client_surname', true); ?>">
                         </div>
 
+                        <div class="form-group">
+                            <label for="client_number">
+                                <?php _trans('client_number'); ?>
+                            </label>
+                            <input id="client_number" name="client_number" type="text" class="form-control"
+                                   value="<?php echo $this->mdl_clients->form_value('client_number', true); ?>">
+                        </div>
+
                         <div class="form-group no-margin">
                             <label for="client_language">
                                 <?php _trans('language'); ?>
