@@ -128,5 +128,21 @@ function invoice_qrcode($invoice_id) {
         return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
     }
 
-    return '';
+    return ''
+    ;
+}
+/**
+ * Returns a QR Swiss code for invoice payments
+ *
+ * @param number invoice-id
+ * @return object QrBill
+ */
+function invoice_qr_code_swiss($invoice_id) {
+    $CI = &get_instance();
+
+    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+    $CI->load->library('QrCodeSwiss', [ 'invoice' => $invoice ]);
+    $qrcode = $CI->qrcodeswiss->generate();
+
+    return $qrcode;
 }

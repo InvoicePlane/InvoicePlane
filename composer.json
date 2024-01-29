@@ -13,14 +13,16 @@
   },
   "require": {
     "codeigniter/framework": "3.1.13",
-    "endroid/qr-code": "^4.8.5",
+    "endroid/qr-code": "^4.8.5",    
+    "fpdf/fpdf": "^1.86",
     "league/omnipay": "^3.2.1",
     "mpdf/mpdf": "^8.2",
     "omnipay/stripe": "*",
     "paragonie/random_compat": "^2.0.21",
     "phpmailer/phpmailer": "^6.8.1",
     "setasign/fpdf": "^1.8.6",
-    "smhg/sepa-qr-data": "^1.2",
+    "smhg/sepa-qr-data": "^1.2",    
+    "sprain/swiss-qr-bill": "^4.12",
     "vlucas/phpdotenv": "^5.5"
   }
 }

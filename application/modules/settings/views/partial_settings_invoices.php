@@ -415,6 +415,65 @@
 
             </div>
         </div>
+        
+        <div class="panel panel-default" id="panel-qr-code-swiss-settings">
+            <div class="panel-heading">
+                <?php _trans('qr_code_swiss_settings'); ?>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input
+                                type="hidden"
+                                name="settings[qr_code_swiss]"
+                                value="0"
+                            >
+                            <input
+                                type="checkbox"
+                                name="settings[qr_code_swiss]"
+                                id="settings[qr_code_swiss]"
+                                value="1"
+                                <?php check_select(get_setting('qr_code_swiss'), 1, '==', true) ?>
+                            >
+                            <?php _trans('qr_code_swiss_settings_enable'); ?>
+                        </label>
+                        <p class="help-block"><?php _trans('qr_code_swiss_settings_enable_hint'); ?></p>
+                    </div>
+                </div>
+                <div class="row <?php echo !get_setting('qr_code_swiss') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_swiss_besrid]">
+                                <?php _trans('qr_code_swiss_settings_besrid'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_swiss_besrid]"
+                                id="settings[qr_code_swiss_besrid]"
+                                class="form-control"
+                                value="<?php echo get_setting('qr_code_swiss_besrid'); ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_swiss_currency]">
+                                <?php _trans('qr_code_swiss_settings_currency'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_swiss_currency]"
+                                id="settings[qr_code_swiss_currency]"
+                                class="form-control"
+                                value="<?php echo get_setting('qr_code_swiss_currency', 'CHF', true); ?>"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -422,7 +481,7 @@
             </div>
             <div class="panel-body">
 
-                <div class="row">
+                 <div class="row">
                     <div class="col-xs-12 col-md-6">
 
                         <div class="form-group">
