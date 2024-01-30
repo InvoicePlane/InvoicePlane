@@ -8,6 +8,7 @@
             <th><?php _trans('created'); ?></th>
             <th><?php _trans('due_date'); ?></th>
             <th><?php _trans('client_name'); ?></th>
+            <th><?php _trans('client_number'); ?></th>
             <th style="text-align: right; padding-right: 25px;"><?php _trans('amount'); ?></th>
             <th><?php _trans('options'); ?></th>
         </tr>
@@ -46,6 +47,9 @@
                        title="<?php _trans('view_client'); ?>">
                         <?php _htmlsc(format_client($quote)); ?>
                     </a>
+                </td>
+                <td>
+                    <?php echo anchor('clients/view/' . $quote->client_id, htmlsc(format_client_number($quote))); ?>
                 </td>
                 <td style="text-align: right; padding-right: 25px;">
                     <?php echo format_currency($quote->quote_total); ?>
