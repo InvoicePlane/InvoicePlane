@@ -2,6 +2,9 @@
 $lang = array(
     'account_information'                          => 'Account Information',
     'client_number'                                => 'Customer No',
+    'quote_number'                                 => 'Quote No',
+    'work_order'                                   => 'Work Order',
+    'agreement'                                    => 'Agreement',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
     'add_client'                                   => 'Add Client',
