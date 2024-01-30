@@ -95,6 +95,18 @@ class Mdl_Invoices extends Response_Model
                 'label' => trans('client'),
                 'rules' => 'required'
             ),
+            'invoice_quote_number' => array(
+                'field' => 'invoice_quote_number',
+                'label' => trans('related_quote_number'),
+            ),
+            'invoice_work_order' => array(
+                'field' => 'invoice_work_order',
+                'label' => trans('work_order'),
+            ),
+            'invoice_agreement' => array(
+                'field' => 'invoice_agreement',
+                'label' => trans('agreement'),
+            ),
             'invoice_date_created' => array(
                 'field' => 'invoice_date_created',
                 'label' => trans('invoice_date'),
