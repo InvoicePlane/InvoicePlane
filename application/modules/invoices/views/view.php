@@ -383,7 +383,7 @@ if ($this->config->item('disable_read_only') == true) {
 
                             <div class="col-xs-12 col-md-4">
                                 <div class="invoice-properties">
-                                    <label><?php _trans('quote_number'); ?></label>
+                                    <label><?php _trans('related_quote_number'); ?></label>
                                     <input type="text" id="invoice_quote_number" class="form-control input-sm"
                                         <?php if ($invoice->invoice_quote_number) : ?>
                                             value="<?php echo $invoice->invoice_quote_number; ?>"
