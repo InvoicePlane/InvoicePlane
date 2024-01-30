@@ -97,6 +97,14 @@ class Mdl_Quotes extends Response_Model
                 'label' => trans('client'),
                 'rules' => 'required'
             ),
+            'quote_work_order' => array(
+                'field' => 'quote_work_order',
+                'label' => trans('work_order'),
+            ),
+            'quote_agreement' => array(
+                'field' => 'quote_agreement',
+                'label' => trans('agreement'),
+            ),
             'quote_date_created' => array(
                 'field' => 'quote_date_created',
                 'label' => trans('quote_date'),
