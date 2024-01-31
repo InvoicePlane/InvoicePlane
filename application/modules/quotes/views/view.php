@@ -49,6 +49,8 @@ $cv = $this->controller->view_data["custom_values"];
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
                     quote_password: $('#quote_password').val(),
+                    quote_work_order: $('#quote_work_order').val(),
+                    quote_agreement: $('#quote_agreement').val(),
                     items: JSON.stringify(items),
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
