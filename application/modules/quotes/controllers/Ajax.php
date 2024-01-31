@@ -63,6 +63,9 @@ class Ajax extends Admin_Controller
             $quote_number = $this->input->post('quote_number');
             $quote_status_id = $this->input->post('quote_status_id');
 
+            $quote_work_order = $this->input->post('quote_work_order');
+            $quote_agreement = $this->input->post('quote_agreement');
+
             if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
                 $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
@@ -70,6 +73,8 @@ class Ajax extends Admin_Controller
 
             $db_array = [
                 'quote_number' => $quote_number,
+                'quote_work_order' => $quote_work_order,
+                'quote_agreement' => $quote_agreement,
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
                 'quote_status_id' => $quote_status_id,
