@@ -332,6 +332,24 @@ class Mdl_Quotes extends Response_Model
     /**
      * @return $this
      */
+    public function is_related_quote($quote_id)
+    {
+        $this->filter_where('ip_quotes.quote_id', $quote_id);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function related_is_open()
+    {
+        $this->filter_where_in('quote_status_id', array(2, 3, 4));
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
     public function is_draft()
     {
         $this->filter_where('quote_status_id', 1);
