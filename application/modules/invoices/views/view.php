@@ -18,10 +18,15 @@ $cv = $this->controller->view_data["custom_values"];
             );
         });
 
+        $('.btn_related_quote').click(function () {
+            $('#modal-placeholder').load(
+                "<?php echo site_url('quotes/ajax/modal_quote_lookups/' . $invoice->client_id); ?>/" + Math.floor(Math.random() * 1000)
+            );
+        });
+
         $('.btn_add_task').click(function () {
             $('#modal-placeholder').load(
-                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" +
-                Math.floor(Math.random() * 1000)
+                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000)
             );
         });
 
@@ -387,7 +392,15 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-12 col-md-4">
                                 <div class="invoice-properties">
                                     <label><?php _trans('related_quote_number'); ?></label>
-                                    <input type="text" id="invoice_quote_number" class="form-control input-sm"
+                                    <?php if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) { ?>
+
+                                    <a href="javascript:void(0);" class="btn_related_quote btn btn-sm btn-default" style="margin-left: 10px; margin-bottom: 5px;">
+                                        <i class="fa fa-database"></i>
+                                        <?php _trans('change_related_quote'); ?>
+                                    </a>
+
+                                    <?php } ?>
+                                    <input type="text" id="invoice_quote_number" class="form-control input-sm"  
                                         <?php if ($invoice->invoice_quote_number) : ?>
                                             value="<?php echo $invoice->invoice_quote_number; ?>"
                                         <?php endif; ?>>
