@@ -18,6 +18,45 @@ class Ajax extends Admin_Controller
 
     public $ajax_controller = true;
 
+    public function modal_quote_lookups($client_id = null)
+    {
+        $this->load->model('quotes/mdl_quotes');
+
+        $client_id = $this->security->xss_clean($client_id);
+
+        if (!empty($client_id)) {
+            $this->mdl_quotes->by_client($client_id);
+            $this->mdl_quotes->related_is_open();
+            $this->mdl_quotes->statuses();
+
+            $quotes = $this->mdl_quotes->get()->result();
+            $quote_statuses = $this->mdl_quotes->statuses();
+
+            $data = array(
+                'related_quotes' => $quotes,
+                'client_id' => $client_id,
+                'quote_statuses' => $quote_statuses,
+            );
+        }
+
+        $this->layout->load_view('quotes/modal_quote_lookups', $data);
+    }
+
+    public function modal_quote_lookups_select()
+    {
+        $this->load->model('quotes/mdl_quotes');
+
+        $quote_id = $this->security->xss_clean($this->input->post('quote_id'));
+
+        if (!empty($quote_id)) {
+            $this->mdl_quotes->is_related_quote($quote_id);
+            $this->mdl_quotes->statuses();
+            $quote = $this->mdl_quotes->get()->result();
+
+            echo json_encode($quote);
+        }
+    }
+
     public function save()
     {
         $this->load->model('quotes/mdl_quote_items');
