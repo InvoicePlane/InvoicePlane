@@ -248,9 +248,7 @@ $cv = $this->controller->view_data["custom_values"];
                             <?php _htmlsc(format_client($quote)) ?>
                         </a>
                         <?php if ($quote->quote_status_id == 1) { ?>
-                            <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
-                                  data-toggle="tooltip" data-placement="bottom"
-                                  title="<?php _trans('change_client'); ?>"></span>
+                            <span id="quote_change_client" class="fa fa-edit cursor-pointer small" data-toggle="tooltip" data-placement="bottom" title="<?php _trans('change_client'); ?>"></span>
                         <?php } ?>
                     </h3>
                     <br>
@@ -359,8 +357,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <label for="quote_status_id">
                                         <?php _trans('status'); ?>
                                     </label>
-                                    <select name="quote_status_id" id="quote_status_id"
-                                            class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
+                                    <select name="quote_status_id" id="quote_status_id" class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
                                         <?php foreach ($quote_statuses as $key => $status) { ?>
                                             <option value="<?php echo $key; ?>"
                                                     <?php if ($key == $quote->quote_status_id) { ?>selected="selected"
