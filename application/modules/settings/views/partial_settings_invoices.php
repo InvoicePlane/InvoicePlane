@@ -405,6 +405,7 @@
             </div>
         </div>
 
+        <?php foreach ($payment_method_types as $key => $type) { ?>
         <div class="panel panel-default" id="panel-qr-code-swiss-settings">
             <div class="panel-heading">
                 <?php _trans('qr_code_swiss_settings'); ?>
@@ -463,7 +464,7 @@
                 </div>
             </div>
         </div>
-
+        <?php } ?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('email_settings'); ?>

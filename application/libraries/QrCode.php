@@ -3,9 +3,9 @@ if (!defined('BASEPATH')) {
   exit('No direct script access allowed');
 }
 
-use SepaQr\Data;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
+use SepaQr\Data;
 
 class QrCode {
   public $invoice;

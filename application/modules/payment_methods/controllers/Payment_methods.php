@@ -67,6 +67,9 @@ class Payment_Methods extends Admin_Controller
             $this->mdl_payment_methods->set_form_value('is_update', true);
         }
 
+        $this->layout->set([
+            'payment_method_types' => $this->mdl_payment_methods->types(),
+        ]);
         $this->layout->buffer('content', 'payment_methods/form');
         $this->layout->render();
     }
