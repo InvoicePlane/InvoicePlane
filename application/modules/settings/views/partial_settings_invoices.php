@@ -361,7 +361,37 @@
                                 <?php $this->layout->load_view('email_templates/template-tags-invoices'); ?>
                             </div>
                         </div>
-                        <?php } ?>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <?php foreach ($payment_method_types as $key => $type) { ?>
+        <div class="panel panel-default" id="panel-qr-code-swiss-settings">
+            <div class="panel-heading">
+                <?php _trans('qr_code_swiss_settings'); ?>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input
+                                type="hidden"
+                                name="settings[qr_code_swiss]"
+                                value="0"
+                            >
+                            <input
+                                type="checkbox"
+                                name="settings[qr_code_swiss]"
+                                id="settings[qr_code_swiss]"
+                                value="1"
+                                <?php check_select(get_setting('qr_code_swiss'), 1, '==', true) ?>
+                            >
+                            <?php _trans('qr_code_swiss_settings_enable'); ?>
+                        </label>
+                        <p class="help-block"><?php _trans('qr_code_swiss_settings_enable_hint'); ?></p>
                     </div>
                     <?php } ?>
                 </div>

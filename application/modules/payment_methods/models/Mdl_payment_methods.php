@@ -1,5 +1,7 @@
 <?php
 
+use types\AbstractType;
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
