@@ -138,15 +138,19 @@ class Mailer extends Admin_Controller
             // reset the original invoice_date_created & invoice_due_date if setting['...'] == 0 and invoice is NOT read only
             $this->load->model('invoices/mdl_invoices');
             $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+
             if (get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
                 $org_invoice_date = get_setting('tmp_invoice_date');
                 $org_due_date = get_setting('tmp_due_date');
+
                 $this->mdl_invoices->reset_invoice_due_dates($invoice_id, $org_invoice_date, $org_due_date);
+
                 // delete setting 'tmp_invoice_date' and 'tmp_due_date'
                 $this->load->model('settings/mdl_settings');
                 $this->mdl_settings->delete('tmp_invoice_date');
                 $this->mdl_settings->delete('tmp_due_date');
             }
+
             redirect('invoices/view/' . $invoice_id);
         }
 
