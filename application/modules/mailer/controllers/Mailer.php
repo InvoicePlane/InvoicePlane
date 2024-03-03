@@ -56,7 +56,7 @@ class Mailer extends Admin_Controller
             $this->load->model('settings/mdl_settings');
             $this->mdl_settings->save('tmp_invoice_date', $invoice->invoice_date_created);
             $this->mdl_settings->save('tmp_due_date', $invoice->invoice_date_due);
-            $this->mdl_invoices->update_invoice_due_dates($invoice_id);
+            $this->mdl_invoices->update_invoice_due_date($invoice_id);
         }
 
         $email_template_id = select_email_invoice_template($invoice);
