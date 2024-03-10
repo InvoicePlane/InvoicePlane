@@ -18,10 +18,15 @@ $cv = $this->controller->view_data["custom_values"];
             );
         });
 
+        $('.btn_related_quote').click(function () {
+            $('#modal-placeholder').load(
+                "<?php echo site_url('quotes/ajax/modal_quote_lookups/' . $invoice->client_id); ?>/" + Math.floor(Math.random() * 1000)
+            );
+        });
+
         $('.btn_add_task').click(function () {
             $('#modal-placeholder').load(
-                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" +
-                Math.floor(Math.random() * 1000)
+                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000)
             );
         });
 
@@ -72,6 +77,9 @@ $cv = $this->controller->view_data["custom_values"];
                     invoice_date_due: $('#invoice_date_due').val(),
                     invoice_status_id: $('#invoice_status_id').val(),
                     invoice_password: $('#invoice_password').val(),
+                    invoice_quote_number: $('#invoice_quote_number').val(),
+                    invoice_work_order: $('#invoice_work_order').val(),
+                    invoice_agreement: $('#invoice_agreement').val(),
                     items: JSON.stringify(items),
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
@@ -320,7 +328,7 @@ if ($this->config->item('disable_read_only') == true) {
         <div class="invoice">
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-5">
+                <div class="col-xs-12 col-sm-6 col-md-3">
 
                     <h3>
                         <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>">
@@ -336,6 +344,14 @@ if ($this->config->item('disable_read_only') == true) {
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
                     </div>
+                    <br>
+                    <?php if ($invoice->client_number): ?>
+                        <div class="client-number">
+                            <?php _trans('client_number'); ?>:&nbsp;
+                            <?php _htmlsc($invoice->client_number); ?>
+                        </div>
+                    <?php endif; ?>
+
                     <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                         <hr>
                     <?php endif; ?>
@@ -356,7 +372,7 @@ if ($this->config->item('disable_read_only') == true) {
 
                 <div class="col-xs-12 visible-xs"><br></div>
 
-                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1">
+                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-8 col-md-offset-1">
                     <div class="details-box panel panel-default panel-body">
                         <div class="row">
 
@@ -373,7 +389,40 @@ if ($this->config->item('disable_read_only') == true) {
                                 </div>
                             <?php } ?>
 
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="invoice-properties">
+                                    <label><?php _trans('related_quote_number'); ?></label>
+                                    <?php if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) { ?>
+
+                                    <a href="javascript:void(0);" class="btn_related_quote btn btn-sm btn-default" style="margin-left: 10px; margin-bottom: 5px;">
+                                        <i class="fa fa-database"></i>
+                                        <?php _trans('change_related_quote'); ?>
+                                    </a>
+
+                                    <?php } ?>
+                                    <input type="text" id="invoice_quote_number" class="form-control input-sm"  
+                                        <?php if ($invoice->invoice_quote_number) : ?>
+                                            value="<?php echo $invoice->invoice_quote_number; ?>"
+                                        <?php endif; ?>>
+                                </div>
+                                <div class="invoice-properties">
+                                    <label><?php _trans('work_order'); ?></label>
+                                    <input type="text" id="invoice_work_order" class="form-control input-sm"
+                                        <?php if ($invoice->invoice_work_order) : ?>
+                                            value="<?php echo $invoice->invoice_work_order; ?>"
+                                        <?php endif; ?>>
+
+                                </div>
+                                <div class="invoice-properties">
+                                    <label><?php _trans('agreement'); ?></label>
+                                    <input type="text" id="invoice_agreement" class="form-control input-sm"
+                                        <?php if ($invoice->invoice_agreement) : ?>
+                                            value="<?php echo $invoice->invoice_agreement; ?>"
+                                        <?php endif; ?>>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="invoice-properties">
                                     <label><?php _trans('invoice'); ?> #</label>
@@ -430,7 +479,7 @@ if ($this->config->item('disable_read_only') == true) {
 
                             </div>
 
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="invoice-properties">
                                     <label>
