@@ -102,28 +102,45 @@
 
     <div class="invoice-details clearfix">
         <table>
-            <tr>
-                <td><?php echo trans('invoice_date') . ':'; ?></td>
-                <td><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
-            </tr>
-            <tr>
-                <td><?php echo trans('due_date') . ': '; ?></td>
-                <td><?php echo date_from_mysql($invoice->invoice_date_due, true); ?></td>
-            </tr>
-            <tr>
-                <td><?php echo trans('amount_due') . ': '; ?></td>
-                <td><?php echo format_currency($invoice->invoice_balance); ?></td>
-            </tr>
-            <?php if ($payment_method): ?>
+            <?php if ($invoice->invoice_sign == -1)  : ?>
                 <tr>
-                    <td><?php echo trans('payment_method') . ': '; ?></td>
-                    <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
+                    <td><?php echo trans('credit_invoice_date') . ':'; ?></td>
+                    <td><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
                 </tr>
-            <?php endif; ?>
+                <tr>
+                    <td><?php echo trans('amount_due') . ': '; ?></td>
+                    <td><?php echo format_currency($invoice->invoice_balance); ?></td>
+                </tr>
+            <?php else : ?>
+                <tr>
+                    <td><?php echo trans('invoice_date') . ':'; ?></td>
+                    <td><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo trans('due_date') . ': '; ?></td>
+                    <td><?php echo date_from_mysql($invoice->invoice_date_due, true); ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo trans('amount_due') . ': '; ?></td>
+                    <td><?php echo format_currency($invoice->invoice_balance); ?></td>
+                </tr>
+                <?php if ($payment_method): ?>
+                    <tr>
+                        <td><?php echo trans('payment_method') . ': '; ?></td>
+                        <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
+                    </tr>
+                <?php endif; ?>
+            <?php endif; ?>   
         </table>
     </div>
 
-    <h1 class="invoice-title"><?php echo trans('invoice') . ' ' . $invoice->invoice_number; ?></h1>
+    <h1 class="invoice-title">
+    <?php if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
+          } else {
+            echo trans('invoice') . ' ' . $invoice->invoice_number;
+          } ?>    
+    </h1>        
 
     <table class="item-table">
         <thead>
@@ -247,39 +264,41 @@
     </table>
 </main>
 
-<?php if (get_setting('qr_code')) : ?>
-    <table class="invoice-qr-code-table">
-        <tr>
-            <td>
-                <div>
-                    <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
-                    <?php echo get_setting('qr_code_recipient'); ?>
-                </div>
-                <div>
-                    <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
-                    <?php echo get_setting('qr_code_iban'); ?>
-                </div>
-                <div>
-                    <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
-                    <?php echo get_setting('qr_code_bic'); ?>
-                </div>
-                <div>
-                    <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
-                    <?php echo parse_template($invoice, get_setting('qr_code_remittance_text')); ?>
-                </div>
-            </td>
-            <td class="text-right">
-                <?php echo invoice_qrcode($invoice->invoice_id); ?>
-            </td>
-        </tr>
-    </table>
+<?php if ($invoice->invoice_sign != -1)  : ?>
+    <?php if (get_setting('qr_code')) : ?>
+        <table class="invoice-qr-code-table">
+            <tr>
+                <td>
+                    <div>
+                        <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
+                        <?php echo get_setting('qr_code_recipient'); ?>
+                    </div>
+                    <div>
+                        <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
+                        <?php echo get_setting('qr_code_iban'); ?>
+                    </div>
+                    <div>
+                        <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
+                        <?php echo get_setting('qr_code_bic'); ?>
+                    </div>
+                    <div>
+                        <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
+                        <?php echo parse_template($invoice, get_setting('qr_code_remittance_text')); ?>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <?php echo invoice_qrcode($invoice->invoice_id); ?>
+                </td>
+            </tr>
+        </table>
+    <?php endif; ?>
 <?php endif; ?>
 
 <footer>
     <?php if ($invoice->invoice_terms) : ?>
         <div class="notes">
             <b><?php _trans('terms'); ?></b><br/>
-            <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
+            <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?><br/>
         </div>
     <?php endif; ?>
 </footer>

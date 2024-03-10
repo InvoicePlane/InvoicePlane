@@ -7,7 +7,7 @@
                     client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
-                    invoice_time_created: '<?php echo date('H:i:s') ?>',
+                    invoice_time_created: '<?php echo date('H:i:s'); ?>',
                     invoice_password: $('#invoice_password').val(),
                     user_id: $('#user_id').val()
                 },
@@ -62,7 +62,7 @@
                 <select name="invoice_group_id" id="invoice_group_id" class="hidden">
                     <?php foreach ($invoice_groups as $invoice_group) { ?>
                         <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                            <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) {
+                            <?php if (get_setting('default_creditnote_group') == $invoice_group->invoice_group_id) {
                                 echo 'selected="selected"';
                                 $credit_invoice_group = htmlsc($invoice_group->invoice_group_name);
                             } ?>>
@@ -75,22 +75,33 @@
             <p><strong><?php _trans('credit_invoice_details'); ?></strong></p>
 
             <ul>
-                <li><?php _trans('client') . ': ' . htmlsc($invoice->client_name); ?></li>
+                <li><?php echo trans('client') . ': ' . htmlsc($invoice->client_name); ?></li>
                 <li><?php echo trans('credit_invoice_date') . ': ' . $credit_date; ?></li>
-                <li><?php echo trans('invoice_group') . ': ' . $credit_invoice_group; ?></li>
+                <li><?php if (isset($credit_invoice_group)) {
+                            echo trans('invoice_group') . ': ' . $credit_invoice_group; 
+                        } else {
+                            echo trans('invoice_group') . ': <b>' . trans('none') . '</b>';
+                        } ?>
+                </li>
             </ul>
 
             <div class="alert alert-danger no-margin">
-                <?php _trans('create_credit_invoice_alert'); ?>
+                <?php if (isset($credit_invoice_group)) {
+                        _trans('create_credit_invoice_alert'); 
+                    } else {  
+                        _trans('create_credit_invoice_select');  
+                    } ?>
             </div>
 
         </div>
 
         <div class="modal-footer">
             <div class="btn-group">
+                <?php if (isset($credit_invoice_group)) : ?>
                 <button class="btn btn-success" id="create-credit-confirm" type="button">
                     <i class="fa fa-check"></i> <?php _trans('confirm'); ?>
                 </button>
+                <?php endif; ?> 
                 <button class="btn btn-danger" type="button" data-dismiss="modal">
                     <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
                 </button>
