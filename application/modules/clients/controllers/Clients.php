@@ -162,6 +162,7 @@ class Clients extends Admin_Controller
 
         $this->load->helper('country');
         $this->load->helper('custom_values');
+        $this->load->helper('e-invoice'); //eInvoicing++          
 
         $this->layout->set(
             array(
@@ -170,6 +171,7 @@ class Clients extends Admin_Controller
                 'countries' => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
                 'languages' => get_available_languages(),
+                'xml_templates' => get_xml_template_files(), //eInvoicing++ 
             )
         );
 
@@ -188,6 +190,8 @@ class Clients extends Admin_Controller
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
+
+        $this->load->helper('e-invoice'); //eInvoicing++   
 
         $client = $this->mdl_clients
             ->with_total()
