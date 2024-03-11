@@ -228,13 +228,8 @@ class Mdl_Quotes extends Response_Model
 
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_quote_custom');
-        $custom_fields = $this->mdl_quote_custom->where('quote_id', $source_id)->get()->result() ?? [];
-
-        $form_data = array();
-        foreach ($custom_fields as $field) {
-            $form_data[$field->quote_custom_fieldid] = $field->quote_custom_fieldvalue;
-        }
-        $this->mdl_quote_custom->save_custom($target_id, $form_data);
+        $db_array = $this->mdl_quote_custom->where('quote_id', $source_id)->get()->row_array() ?? [];
+        $this->mdl_quote_custom->save_custom($target_id, $db_array);
     }
 
     /**
