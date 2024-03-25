@@ -537,7 +537,7 @@ class Mdl_Invoices extends Response_Model
      */
     public function mark_sent($invoice_id)
     {
-        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice = $this->get_by_id($invoice_id);
 
         if (!empty($invoice)) {
             if ($invoice->invoice_status_id == 1) {
@@ -549,6 +549,8 @@ class Mdl_Invoices extends Response_Model
                 $this->db->set('invoice_status_id', 2);
                 $this->db->set('invoice_number', $invoice_number);
                 $this->db->update('ip_invoices');
+
+                $this->update_invoice_due_date($invoice_id);
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is sent
@@ -590,30 +592,11 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if (!empty($invoice)) {
+        if (!empty($invoice) && get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
 			$current_date = date_to_mysql(date(date_format_setting()));
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));
             $this->db->update('ip_invoices');
         }
     }
-
-    /**
-	 * Reset the invoice and due date to their former values
-     * @param $invoice_id
-	 * @param $org_invoice_date
-	 * @param $org_due_date
-     */
-    public function reset_invoice_due_dates($invoice_id, $org_invoice_date, $org_due_date)
-    {
-        $invoice = $this->get_by_id($invoice_id);
-
-        if (!empty($invoice)) {
-            $this->db->where('invoice_id', $invoice_id);
-            $this->db->set('invoice_date_created', $org_invoice_date);
-            $this->db->set('invoice_date_due', $org_due_date);
-            $this->db->update('ip_invoices');
-        }
-    }
-
 }
