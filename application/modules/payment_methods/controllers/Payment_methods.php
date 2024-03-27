@@ -31,9 +31,11 @@ class Payment_Methods extends Admin_Controller
     public function index($page = 0)
     {
         $this->mdl_payment_methods->paginate(site_url('payment_methods/index'), $page);
-        $payment_methods = $this->mdl_payment_methods->result();
 
-        $this->layout->set('payment_methods', $payment_methods);
+        $this->layout->set([
+            'payment_method_types' => $this->mdl_payment_methods->types(),
+            'payment_methods' => $this->mdl_payment_methods->result()
+        ]);
         $this->layout->buffer('content', 'payment_methods/index');
         $this->layout->render();
     }

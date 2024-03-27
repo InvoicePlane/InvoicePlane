@@ -69,6 +69,29 @@ class Mdl_qr_code extends Response_Model
 
     public function getInvoiceOptions(): array
     {
-        return [];
+        return [
+            "recipient" => [
+                "type" => "text",
+                "label" => trans("payment_method_type_qr_code_recipient"),
+                "required" => false,
+            ],
+            "iban" => [
+                "type" => "text",
+                "label" => trans("payment_method_type_qr_code_iban"),
+                "required" => false,
+            ],
+            "bic" => [
+                "type" => "text",
+                "label" => trans("payment_method_type_qr_code_bic"),
+                "required" => false,
+            ],
+            "remittance_text" => [
+                "type" => "text",
+                "label" => trans("payment_method_type_qr_code_remittance_text"),
+                "default" => "{{{invoice_number}}}",
+                "required" => false,
+                "tags" => true,
+            ]
+        ];
     }
 }

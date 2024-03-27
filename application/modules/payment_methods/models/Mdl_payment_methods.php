@@ -32,14 +32,17 @@ class Mdl_Payment_Methods extends Response_Model
     public function types(): array
     {
         return array(
-            'custom' => array(
+            0 => array(
+                'name' => 'custom',
                 'label' => trans('payment_method_type_custom'),
             ),
-            'qr_code' => array(
+            1 => array(
+                'name' => 'qr_code',
                 'label' => trans('payment_method_type_qr_code'),
                 'class' => $this->Mdl_qr_code,
             ),
-            'qr_code_swiss' => array(
+            2 => array(
+                'name' => 'qr_code_swiss',
                 'label' => trans('payment_method_type_qr_code_swiss'),
                 'class' => $this->Mdl_qr_code_swiss,
             )

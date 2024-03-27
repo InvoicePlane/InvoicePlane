@@ -195,6 +195,7 @@ class Invoices extends Admin_Controller
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units' => $this->mdl_units->get()->result(),
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
+                'payment_method_types' => $this->mdl_payment_methods->types(),
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'custom_js_vars' => [
@@ -212,6 +213,7 @@ class Invoices extends Admin_Controller
                 [
                     ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
                     ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
+                    ['payment_method_options', 'invoices/payment_method_options'],
                     ['modal_add_payment', 'payments/modal_add_payment'],
                     ['content', 'invoices/view_sumex'],
                 ]
@@ -221,6 +223,7 @@ class Invoices extends Admin_Controller
                 [
                     ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
                     ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
+                    ['modal_payment_method_options', 'invoices/modal_payment_method_options'],
                     ['modal_add_payment', 'payments/modal_add_payment'],
                     ['content', 'invoices/view'],
                 ]
