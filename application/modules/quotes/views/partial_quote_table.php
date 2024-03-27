@@ -1,3 +1,12 @@
+<script>
+    $(function () {
+		$(document).on('click', '#quote_preview_pdf', function () {
+            var quote_id = $(this).data('quote-id');
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_preview_pdf'); ?>", {quote_id: quote_id});
+        });
+    });
+</script>
+
 <div class="table-responsive">
     <table class="table table-hover table-striped">
 
@@ -62,12 +71,22 @@
                                     <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
                                 </a>
                             </li>
-                            <li>
-                                <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
-                                   target="_blank">
-                                    <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
-                                </a>
-                            </li>
+                            <?php if (get_setting('show_menu_item_preview_pdf') != 1) { ?>                            
+                                <li>
+                                    <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
+                                    target="_blank">
+                                        <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
+                                    </a>
+                                </li>
+                            <?php } ?>                            
+                            <?php if (get_setting('show_menu_item_preview_pdf') == 1) { ?>
+                                <li>
+                                    <a href="#" id="quote_preview_pdf" data-quote-id="<?php echo $quote->quote_id; ?>">
+                                       <i class="fa fa-file-pdf-o fa-margin"></i> <?php _trans('preview_pdf'); ?>
+                                    </a>
+                                </li>
+                            <?php } ?>
+
                             <li>
                                 <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
                                     <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>

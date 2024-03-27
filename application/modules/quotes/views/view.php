@@ -108,6 +108,9 @@ $cv = $this->controller->view_data["custom_values"];
         $('#btn_generate_pdf').click(function () {
             window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
         });
+        $('#btn_preview_pdf').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_preview_pdf'); ?>", {quote_id: <?php echo $quote_id; ?>});
+        });   
 
         $(document).ready(function () {
             if ($('#quote_discount_percent').val().length > 0) {
@@ -190,6 +193,7 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
+                <?php if (get_setting('show_menu_item_preview_pdf') != 1) { ?>                
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
@@ -197,6 +201,17 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php _trans('download_pdf'); ?>
                     </a>
                 </li>
+                <?php } ?>
+                <?php if (get_setting('show_menu_item_preview_pdf') == 1) { ?>
+                    <li>
+                        <a href="#" id="btn_preview_pdf"
+                           data-quote-id="<?php echo $quote_id; ?>">
+                            <i class="fa fa-file-pdf-o fa-margin"></i> 
+                            <?php _trans('preview_pdf'); ?>
+                        </a>
+                    </li>
+                <?php } ?> 
+
                 <li>
                     <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
