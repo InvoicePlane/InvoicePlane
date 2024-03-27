@@ -128,5 +128,6 @@ function invoice_qrcode($invoice_id) {
         return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
     }
 
-    return '';
+    return ''
+    ;
 }

@@ -208,6 +208,38 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    public function save_payment_method_options_rate()
+    {
+        $this->load->model('payment_methods/Mdl_payment_methods');
+
+        $invoiceId = $this->input->post('invoice_id');
+        $key = $this->input->post('key');
+        $success = 1;
+
+        if ($invoiceId && isset($this->Mdl_payment_methods->types()[$key])) {
+            $type = $this->Mdl_payment_methods->types()[$key];
+
+            if (isset($type['class'])) {
+
+                foreach ($type['class']->getInvoiceOptions() as $fKey => $value) {
+                    if ($this->input->post($fKey)) {
+                        $this->mdl_settings->save('payment_method_' . $key . '_' . $invoiceId . '_' . $fKey, $this->input->post($fKey));
+                    }
+                }
+            } else {
+                $success = 0;
+            }
+        } else {
+            $success = 0;
+        }
+
+        $response = [
+            'success' => $success,
+        ];
+
+        echo json_encode($response);
+    }
+
     public function create()
     {
         $this->load->model('invoices/mdl_invoices');

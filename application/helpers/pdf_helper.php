@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+use Sprain\SwissQrBill as QrBill;
+
 /*
  * InvoicePlane
  *

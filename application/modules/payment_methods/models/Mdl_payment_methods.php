@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -17,6 +18,36 @@ class Mdl_Payment_Methods extends Response_Model
 {
     public $table = 'ip_payment_methods';
     public $primary_key = 'ip_payment_methods.payment_method_id';
+
+    public function __construct()
+    {
+        $this->load->helper('payment_methods/payment_method_types');
+        $this->load->model('payment_methods/Mdl_qr_code');
+        $this->load->model('payment_methods/Mdl_qr_code_swiss');
+    }
+
+    /**
+     * @return array
+     */
+    public function types(): array
+    {
+        return array(
+            0 => array(
+                'name' => 'custom',
+                'label' => trans('payment_method_type_custom'),
+            ),
+            1 => array(
+                'name' => 'qr_code',
+                'label' => trans('payment_method_type_qr_code'),
+                'class' => $this->Mdl_qr_code,
+            ),
+            2 => array(
+                'name' => 'qr_code_swiss',
+                'label' => trans('payment_method_type_qr_code_swiss'),
+                'class' => $this->Mdl_qr_code_swiss,
+            )
+        );
+    }
 
     public function default_select()
     {
@@ -37,6 +68,11 @@ class Mdl_Payment_Methods extends Response_Model
             'payment_method_name' => array(
                 'field' => 'payment_method_name',
                 'label' => trans('payment_method'),
+                'rules' => 'required'
+            ),
+            'payment_method_type_id' => array(
+                'field' => 'payment_method_type_id',
+                'label' => trans('payment_method_type'),
                 'rules' => 'required'
             )
         );
