@@ -33,6 +33,7 @@
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/create'); ?>", {
                     client_id: $('#create_quote_client_id').val(),
+                    service_id: $('#service_id').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     quote_password: $('#quote_password').val(),
                     user_id: '<?php echo $this->session->userdata('user_id'); ?>',
@@ -80,6 +81,28 @@
                     <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
                         <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
                     </span>
+                </div>
+            </div>
+
+            <div class="form-group has-feedback">
+                <label for="service_id"><?php _trans('service'); ?></label>
+                <div class="input-group" style="width: 100%;">
+                    <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
+			    autofocus="autofocus">
+                               <?php
+                                 foreach($services as $service)
+				 {
+				     $value = _trans('select service');
+				     if ($service['service_name']) {
+					 $value = $service['service_name'];
+                                         echo '<option value="' . $service['service_id'] .'">' . $value .'</option>';
+				     }
+				     else {
+                                         echo '<option value="' . $service['service_id'] .'" selected>' . $value .'</option>';
+				     }
+                                 }
+                               ?>
+                    </select>
                 </div>
             </div>
 

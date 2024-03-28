@@ -204,6 +204,27 @@ class Clients extends Admin_Controller
             show_404();
         }
 
+        // $invoices = $this->mdl_invoices->result();
+        $invoices = $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result();
+
+	foreach ($invoices as $invoice) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $invoice->service_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $invoice->service_name = $service[0]['service_name'];
+	    else
+	       $invoice->service_name = null;
+	}
+
+	$quotes = $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result();
+
+	foreach ($quotes as $quote) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $quote->service_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $quote->service_name = $service[0]['service_name'];
+	    else
+	       $quote->service_name = null;
+	}
+
         $this->layout->set(
             array(
                 'client' => $client,

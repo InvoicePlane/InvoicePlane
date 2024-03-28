@@ -55,6 +55,7 @@ class Mdl_Invoices extends Response_Model
             ip_quotes.*,
             ip_users.*,
             ip_clients.*,
+            ip_services.*,
             ip_invoice_sumex.*,
             ip_invoice_amounts.invoice_amount_id,
             IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
@@ -78,6 +79,7 @@ class Mdl_Invoices extends Response_Model
     public function default_join()
     {
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+        $this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id');
         $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
@@ -94,6 +96,10 @@ class Mdl_Invoices extends Response_Model
                 'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required'
+            ),
+            'service_id' => array(
+                'field' => 'service_id',
+                'label' => trans('service')
             ),
             'invoice_date_created' => array(
                 'field' => 'invoice_date_created',
@@ -277,9 +283,12 @@ class Mdl_Invoices extends Response_Model
 
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
+        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+
         foreach ($invoice_items as $invoice_item) {
             $db_array = array(
                 'invoice_id' => $target_id,
+                'service_id' => $invoice_item->service_id,
                 'item_tax_rate_id' => $invoice_item->item_tax_rate_id,
                 'item_product_id' => $invoice_item->item_product_id,
                 'item_task_id' => $invoice_item->item_task_id,
@@ -292,6 +301,7 @@ class Mdl_Invoices extends Response_Model
                 'item_is_recurring' => $invoice_item->item_is_recurring,
                 'item_product_unit' => $invoice_item->item_product_unit,
                 'item_product_unit_id' => $invoice_item->item_product_unit_id,
+                'services' => $services,
             );
 
             $this->mdl_items->save(null, $db_array);
@@ -330,6 +340,11 @@ class Mdl_Invoices extends Response_Model
 
         // Get the client id for the submitted invoice
         $this->load->model('clients/mdl_clients');
+        $this->load->model('services/mdl_services');
+        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+        // $sid = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row()->service_id;
+        $db_array['client_id'] = $cid;
+        $db_array['service_id'] = 0; //$sid;
 
         // Check if is SUMEX
         $this->load->model('invoice_groups/mdl_invoice_groups');
