@@ -66,9 +66,9 @@ class Clients extends Admin_Controller
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
         }
-        
+
         $new_client = false;
-        
+
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', array(
@@ -83,15 +83,15 @@ class Clients extends Admin_Controller
                 $new_client = true;
             }
         }
-        
+
         if ($this->mdl_clients->run_validation()) {
             $id = $this->mdl_clients->save($id);
-            
+
             if ($new_client) {
                 $this->load->model('user_clients/mdl_user_clients');
                 $this->mdl_user_clients->get_users_all_clients();
             }
-            
+
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
 
@@ -253,5 +253,4 @@ class Clients extends Admin_Controller
         $this->mdl_clients->delete($client_id);
         redirect('clients');
     }
-
 }
