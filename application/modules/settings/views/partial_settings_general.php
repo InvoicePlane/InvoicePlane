@@ -123,7 +123,7 @@
 		<div class="row">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[default_reverse_customer_company]">
+                            <label name="label_reverse_customer_company" id="label_reverse_customer_company" for="settings[default_reverse_customer_company]">
                                 <?php _trans('default_reverse_customer_company'); ?>
 			    </label>
 
@@ -141,7 +141,7 @@
 
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[default_reverse_logo]">
+                            <label name="label_reverse_logo" id="label_reverse_logo" for="settings[default_reverse_logo]">
                                 <?php _trans('default_reverse_logo'); ?>
                             </label>
                             <select name="settings[default_reverse_logo]" class="form-control simple-select"
