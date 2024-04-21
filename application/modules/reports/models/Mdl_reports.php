@@ -187,6 +187,25 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
+    public function invoices_per_client($from_date = null, $to_date = null)
+    {
+        $from_date = date_to_mysql($from_date);
+        $to_date = date_to_mysql($to_date);
+
+        $this->db->select('*');
+        $this->db->from('ip_clients');
+
+        $this->db->join('ip_invoices', 'ip_invoices.client_id = ip_clients.client_id', 'inner');
+        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'inner');
+
+        $this->db->where('ip_invoices.invoice_date_created >=', $from_date);
+        $this->db->where('ip_invoices.invoice_date_created <=', $to_date);
+
+        $this->db->order_by('ip_clients.client_name');
+
+        return $this->db->get()->result();
+    }
+
     /**
      * @param null $from_date
      * @param null $to_date
