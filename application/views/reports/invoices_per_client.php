@@ -15,16 +15,17 @@
 <?php
     // var_dump($results);
     // die();
-    $clientname = '';
+    $client_id = '';
 ?>
 </pre>
 
 <table>
-    <?php foreach ($results as $result) {  ?>
-            <?php if ($clientname != $result->client_name) {
-                $clientname = $result->client_name; ?>
+    <?php $client_id = '';
+        foreach ($results as $result) {  ?>
+            <?php if ($client_id != $result->client_id) {
+                $client_id = $result->client_id; ?>
                 <tr>
-                    <th><?php _htmlsc($result->client_name); ?></th>
+                    <th><?php _htmlsc($result->client_custom_fieldvalue); ?></th>
                     <th></th>
                     <th></th>
                 </tr>
