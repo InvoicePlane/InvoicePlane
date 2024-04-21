@@ -203,7 +203,7 @@ class Mdl_Reports extends CI_Model
         $this->db->where('ip_invoices.invoice_date_created >=', $from_date);
         $this->db->where('ip_invoices.invoice_date_created <=', $to_date);
 
-        $this->db->order_by('ip_clients.client_name');
+        $this->db->order_by('ip_clients.client_id');
 
         return $this->db->get()->result();
     }
