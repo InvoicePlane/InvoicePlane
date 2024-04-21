@@ -11,14 +11,6 @@
     <small><?php echo $from_date . ' - ' . $to_date ?></small>
 </h3>
 
-<pre>
-<?php
-    // var_dump($results);
-    // die();
-    $client_id = '';
-?>
-</pre>
-
 <table>
     <?php $client_id = '';
         foreach ($results as $result) {  ?>
