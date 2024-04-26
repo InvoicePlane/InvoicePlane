@@ -7,7 +7,7 @@
 </form>
 
 <script>
-    let stripe;
+    var stripe;
     $.getScript("https://js.stripe.com/v3/").done(()=>{
        stripe = Stripe('<?php echo($stripe_api_key); ?>');
        loadStripe();
