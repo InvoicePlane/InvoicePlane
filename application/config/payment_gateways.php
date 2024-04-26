@@ -451,6 +451,16 @@ $config['payment_gateways'] = array(
             'label' => 'Publishable key'
         ),
     ),
+    'PayPal' => array(
+        'clientId' => array(
+            'type'  => 'text',
+            'label' => 'Client ID'
+        ),
+        'clientSecret' => array(
+            'type'  => 'password',
+            'label' => 'Secret'
+        )
+    ),
     /* 'TargetPay_Directebanking' => array(
         'subAccountId' => array(
             'type' => 'text',
