@@ -45,8 +45,6 @@
     <script>
         $('.simple-select').select2();
     </script>
-    <script src="https://js.stripe.com/v3/"></script>
-
 </head>
 <body>
 
@@ -253,13 +251,6 @@
     <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
 <?php } ?>
 <script type="text/javascript">
-    <?php if(isset($stripe_api_key))
-    {?>
-    var stripe = Stripe("<?php print $stripe_api_key; ?>");
-
-    <?php
-    }?>
-
     $('#gateway-select').change(()=>{
         if($('#gateway-select').select2('data')[0].id === "Stripe")
         {
