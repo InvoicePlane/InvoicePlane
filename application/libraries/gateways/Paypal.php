@@ -26,6 +26,11 @@ class Paypal {
         $this->authorize();
     }
 
+    /**
+     * Generate the authentication token
+     *
+     * @return void
+     */
     protected function authorize() {
         try {
         $response = $this->client->request('post','v1/oauth2/token',[
@@ -43,6 +48,14 @@ class Paypal {
         }
     }
 
+    /**
+     * Create an order on paypal
+     * 
+     * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
+     *
+     * @param array $order_information
+     * @return String
+     */
     public function createOrder($order_information) : String {
         $response = $this->client->request('POST','v2/checkout/orders',[
             'headers'   => [
@@ -65,6 +78,14 @@ class Paypal {
         return $response->getBody()->getContents(); //TODO: handle errors
     }
 
+    /**
+     * Capture the payment of the order
+     * 
+     * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
+     *
+     * @param string $order_id
+     * @return array
+     */
     public function captureOrder($order_id) : array {
         try {
         $response = $this->client->request('POST','v2/checkout/orders/'.$order_id.'/capture',[
@@ -78,5 +99,28 @@ class Paypal {
         catch(ClientException $e) {
             return ['status' => false, 'error' => $e];
         }
+    }
+
+    /**
+     * Get the details of a paypal order by order id
+     * 
+     * @see https://developer.paypal.com/docs/api/orders/v2/#orders_get
+     *
+     * @param string $order_id
+     * @return void
+     */
+    public function showOrderDetails($order_id) {
+        try {
+            $response = $this->client->request('GET','v2/checkout/orders/'.$order_id,[
+                'headers'   => [
+                    'Content-Type'  =>  'application/json',
+                    'Authorization' =>  'Bearer '.$this->bearer_token
+                ]
+                ]);
+                return ['status' => true, 'response' => $response];
+            }
+            catch(ClientException $e) {
+                return ['status' => false, 'error' => $e];
+            }
     }
 }
