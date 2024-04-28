@@ -459,7 +459,11 @@ $config['payment_gateways'] = array(
         'clientSecret' => array(
             'type'  => 'password',
             'label' => 'Secret'
-        )
+        ),
+        'testMode' => array(
+            'type' => 'checkbox',
+            'label' => 'Test Mode',
+        ),
     ),
     /* 'TargetPay_Directebanking' => array(
         'subAccountId' => array(
