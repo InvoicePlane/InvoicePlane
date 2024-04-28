@@ -144,6 +144,9 @@ if ($logo) {
 
             <?php if ($disable_form === false) { ?>
                 <br>
+                    <?php if (count ($gateways) > 1 )
+                    //if more gateways are available
+                    {?>
                     <div class="form-group">
                         <label for="gateway-select"><?php _trans('online_payment_method'); ?></label>
                         <select name="gateway" id="gateway-select" class="form-control simple-select">
@@ -157,9 +160,8 @@ if ($logo) {
                             <?php } ?>
                         </select>
                     </div>
-
+                    <?php } ?>
                     <br>
-
                     <div id="ajax-card-form"></div>
                 </form>
 
@@ -176,6 +178,7 @@ if ($logo) {
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
 
 <script type="text/javascript">
+<?php if (count ($gateways) > 1 ) {?>
     $('#gateway-select').change(()=>{
         if($('#gateway-select').select2('data')[0].id === "Stripe")
         {
@@ -195,7 +198,16 @@ if ($logo) {
             $('#ajax-card-form').html('');
         }
     });
+<?php } else {?>
+    $(document).ready(()=>{
+        $("#fullpage-loader").fadeIn(200);
+        $('#ajax-card-form').show();
+        $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/'.strtolower($gateways[0]).'/'.$invoice_url_key);?>');
+    });
+<?php }?>
 </script>
+
+
 
 </body>
 </html>
