@@ -33,7 +33,7 @@ class Stripe extends Base_Controller
         ->get()->row();
 
         // Check if the invoice is payable
-        if ($invoice->invoice_balance == 0) {
+        if ($invoice->invoice_balance <= 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
 
             redirect(site_url('guest/view/invoice/'.$invoice->invoice_url_key));
