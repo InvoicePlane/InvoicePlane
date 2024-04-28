@@ -31,6 +31,7 @@ class Stripe extends Base_Controller
     {
         $this->load->model('invoices/mdl_invoices');
 
+        //retrive the invoice
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)
             ->get()->row();
 
