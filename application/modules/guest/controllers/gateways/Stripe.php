@@ -55,4 +55,59 @@ class Stripe extends Base_Controller
 
         echo json_encode(array('clientSecret' => $checkout_session->client_secret)); //TODO create a well formatted answer
     }
+
+    public function callback($checkout_session_id) {
+        try {
+            $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
+
+            //get invoice id
+            $invoice_id = $session->client_reference_id;
+
+            $this->load->model('invoices/mdl_invoices');
+
+            //retrive the invoice
+            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)
+            ->get()->row();
+
+
+            $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'),$invoice->invoice_number));
+            $this->session->keep_flashdata('alert_success');
+
+            //record the payment
+            //TODO: refractor and abstract this code for all transactions
+            $this->load->model('payments/mdl_payments');
+
+            $db_array = [
+                'invoice_id' => $invoice_id,
+                'payment_date' => date('Y-m-d'),
+                'payment_amount' => $session->amount_total/100,
+                'payment_method_id' => get_setting('gateway_stripe_payment_method'),
+                'payment_note' => 'payment intent ID: '.$session->payment_intent,
+            ];
+    
+            $this->mdl_payments->save(null,$db_array);
+
+            $db_array = [
+                'invoice_id' => $invoice_id,
+                'merchant_response_successful' => true,
+                'merchant_response_date' => date('Y-m-d'),
+                'merchant_response_driver' => 'stripe',
+                'merchant_response' => '',
+                'merchant_response_reference' => 'payment intent ID: '.$session->payment_intent,
+            ];
+    
+            $this->db->insert('ip_merchant_responses', $db_array);
+
+            redirect(site_url('guest/view/invoice/'.$invoice->invoice_url_key));
+        }
+        catch(Error $e) {
+            //TODO: log error
+
+            $this->session->set_flashdata('alert_error',
+            trans('online_payment_payment_failed') . '<br/>' . $$e->getMessage());
+            $this->session->keep_flashdata('alert_error');
+
+            redirect(site_url('guest/view/invoice/'.$invoice->invoice_url_key));
+        }
+    }
 }
