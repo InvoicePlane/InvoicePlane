@@ -1,6 +1,6 @@
 {
   "name": "invoiceplane/invoiceplane",
-  "version": "1.7",
+  "version": "1.6",
   "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
   "homepage": "https://invoiceplane.com",
   "license": "MIT",
@@ -14,6 +14,7 @@
   "require": {
     "codeigniter/framework": "3.1.13",
     "endroid/qr-code": "^4.8.5",
+    "guzzlehttp/guzzle": "^7.0",
     "fpdf/fpdf": "^1.86",
     "guzzlehttp/guzzle": "^7.9.2",
     "moneyphp/money": "^4.5.1",
