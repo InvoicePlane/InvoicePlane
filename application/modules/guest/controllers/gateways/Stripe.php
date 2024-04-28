@@ -24,14 +24,13 @@ class Stripe extends Base_Controller
      * Creates a checkout session on Stripe
      * that is then retrived to execute the payment
      *
-     * @param  string  $invoice_url_key  the url key that is used to retrive the invoice
+     * @param string $invoice_url_key the url key that is used to retrive the invoice
      * @return json the client secret in a json format
      */
     public function create_checkout_session($invoice_url_key)
     {
         $this->load->model('invoices/mdl_invoices');
 
-        //retrive the invoice
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)
             ->get()->row();
 
@@ -39,7 +38,7 @@ class Stripe extends Base_Controller
         if ($invoice->invoice_balance <= 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
 
-            redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
+            redirect(site_url('guest/view/invoice/'.$invoice->invoice_url_key));
         }
 
         $checkout_session = $this->stripe->checkout->sessions->create([
@@ -66,6 +65,13 @@ class Stripe extends Base_Controller
         $this->output->set_output(json_encode(['clientSecret' => $checkout_session->client_secret]));
     }
 
+    /**
+     * The callback endpoint called by stripe once the
+     * card trasnaction has been completed or aborted
+     *
+     * @param string $checkout_session_id
+     * @return void
+     */
     public function callback($checkout_session_id) {
         try {
             $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
