@@ -33,7 +33,7 @@ class Paypal extends Base_Controller {
         ->get()->row();
 
         // Check if the invoice is payable
-        if ($invoice->invoice_balance == 0) {
+        if ($invoice->invoice_balance <= 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
             redirect(site_url('guest/view/invoice/'.$invoice->invoice_url_key));
         }
@@ -41,7 +41,7 @@ class Paypal extends Base_Controller {
         //create the order
         $paypal_client = $this->lib_paypal->createOrder([
             'invoice_id' => $invoice->invoice_id,
-            'currency_code' => $this->mdl_settings->setting('gateway_paypal_currency'),
+            'currency_code' => get_setting('gateway_paypal_currency'),
             'value' => $invoice->invoice_balance,
             'custom_id' => $invoice_url_key
         ]);
