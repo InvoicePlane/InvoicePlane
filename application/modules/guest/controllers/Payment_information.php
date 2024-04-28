@@ -136,7 +136,7 @@ class Payment_Information extends Base_Controller
         $view_data['paypal_client_id'] = get_setting('gateway_paypal_clientId');
         $view_data['invoice_url_key'] = $invoice_url_key;
         $view_data['currency'] = $this->mdl_settings->setting('gateway_paypal_currency');
-        $this->load->view('guest/gateway/paypal',$view_data);
+        $this->load->view('guest/gateways/paypal',$view_data);
     }
 
     public function paypal_create_order($invoice_url_key) {
