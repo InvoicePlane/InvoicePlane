@@ -259,6 +259,13 @@
             $('#ajax-card-form').show();
             $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/stripe');?>');
         }
+        else if($('#gateway-select').select2('data')[0].id === "PayPal")
+        {
+            $("#fullpage-loader").fadeIn(200);
+            $('#standard-card-form').hide();
+            $('#ajax-card-form').show();
+            $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/paypal/'.$invoice_url_key);?>');
+        }
         else if($('#gateway-select').select2('data')[0].id === "none")
         {
             $('#ajax-card-form').hide();
