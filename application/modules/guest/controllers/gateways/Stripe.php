@@ -88,29 +88,25 @@ class Stripe extends Base_Controller
             $this->session->keep_flashdata('alert_success');
 
             //record the payment
-            //TODO: refractor and abstract this code for all transactions
             $this->load->model('payments/mdl_payments');
-
-            $db_array = [
+    
+            $this->mdl_payments->save(null,[
                 'invoice_id' => $invoice_id,
                 'payment_date' => date('Y-m-d'),
                 'payment_amount' => $session->amount_total/100,
                 'payment_method_id' => get_setting('gateway_stripe_payment_method'),
                 'payment_note' => 'payment intent ID: '.$session->payment_intent,
-            ];
-    
-            $this->mdl_payments->save(null,$db_array);
+            ]);
 
-            $db_array = [
+            //record the online payment
+            $this->db->insert('ip_merchant_responses', [
                 'invoice_id' => $invoice_id,
                 'merchant_response_successful' => true,
                 'merchant_response_date' => date('Y-m-d'),
                 'merchant_response_driver' => 'stripe',
                 'merchant_response' => '',
                 'merchant_response_reference' => 'payment intent ID: '.$session->payment_intent,
-            ];
-    
-            $this->db->insert('ip_merchant_responses', $db_array);
+            ]);
 
             redirect(site_url('guest/view/invoice/'.$invoice->invoice_url_key));
         }
