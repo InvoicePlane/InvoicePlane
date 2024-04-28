@@ -185,7 +185,7 @@ class Payment_Information extends Base_Controller
             $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)
             ->get()->row();
 
-            $this->session->set_flashdata('alert_success', trans('online_payment_payment_successful',$invoice->invoice_number));
+            $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'),$invoice->invoice_number));
             $this->session->keep_flashdata('alert_success');
 
                 //save online transaction
