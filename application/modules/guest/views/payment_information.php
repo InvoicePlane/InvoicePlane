@@ -141,15 +141,28 @@ if ($logo) {
 
                 </div>
             </div>
-            <?php if ($payment_provider == null) { ?>
-                <div>
-                    <p><?php echo trans('select_payment_method'); ?></p>
-                </div>
-                <ul class="list-group">
-                    <?php foreach ($gateways as $gateway) { ?>
-                        <a class="list-group-item list-group-item-action" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway); ?>"><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></a>
-                    <?php } ?>
-                </ul>
+
+            <?php if ($disable_form === false) { ?>
+                <br>
+                    <div class="form-group">
+                        <label for="gateway-select"><?php _trans('online_payment_method'); ?></label>
+                        <select name="gateway" id="gateway-select" class="form-control simple-select">
+                            <option value="none"><?php _trans('- Select -'); ?></option>
+                            <?php
+                            // Display all available gateways
+                            foreach ($gateways as $gateway) { ?>
+                                <option value="<?php echo $gateway; ?>">
+                                    <?php echo ucwords(str_replace('_', ' ', $gateway)); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <br>
+
+                    <div id="ajax-card-form"></div>
+                </form>
+
             <?php } ?>
         </div>
     </div>
