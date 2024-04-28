@@ -144,16 +144,7 @@
 
             <?php if ($disable_form === false) { ?>
                 <br>
-
-                <form action="<?php echo site_url('guest/payment_handler/make_payment/'); ?>"
-                      method="post" id="payment-information-form">
-
-                    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>" value="<?php echo $this->security->get_csrf_hash() ?>">
-
                     <div class="form-group">
-                        <input type="hidden" name="invoice_url_key"
-                               value="<?php echo $invoice->invoice_url_key; ?>">
-
                         <label for="gateway-select"><?php _trans('online_payment_method'); ?></label>
                         <select name="gateway" id="gateway-select" class="form-control simple-select">
                             <option value="none"><?php _trans('- Select -'); ?></option>
