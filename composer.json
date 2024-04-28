@@ -20,6 +20,7 @@
     "phpmailer/phpmailer": "^6.8.1",
     "setasign/fpdf": "^1.8.6",
     "smhg/sepa-qr-data": "^1.2",
+    "stripe/stripe-php": "^14.4",
     "vlucas/phpdotenv": "^5.5"
   }
 }
