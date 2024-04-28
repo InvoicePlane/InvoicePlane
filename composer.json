@@ -14,9 +14,7 @@
   "require": {
     "codeigniter/framework": "3.1.13",
     "endroid/qr-code": "^4.8.5",
-    "league/omnipay": "^3.2.1",
     "mpdf/mpdf": "^8.2",
-    "omnipay/stripe": ">=3.2",
     "paragonie/random_compat": "^2.0.21",
     "phpmailer/phpmailer": "^6.8.1",
     "setasign/fpdf": "^1.8.6",
