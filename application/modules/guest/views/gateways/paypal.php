@@ -38,7 +38,7 @@
 function initPayPal() {
     paypal.Buttons({
         createOrder() {
-            return fetch('<?php echo site_url('guest/payment_information/paypal_create_order/'.$invoice_url_key); ?>',
+            return fetch('<?php echo site_url('guest/gateways/paypal/paypal_create_order/'.$invoice_url_key); ?>',
             {
                 method: "GET"
             })
@@ -46,7 +46,7 @@ function initPayPal() {
             .then((order) => order.id)
         },
         onApprove: function (data) {
-            return fetch('<?php echo site_url('guest/payment_information/paypal_capture_payment/');?>'+data.orderID,{
+            return fetch('<?php echo site_url('guest/gateways/paypal/paypal_capture_payment/');?>'+data.orderID,{
                 method: 'GET'
             })
             .then((response) => window.location.replace('<?php echo site_url('guest/view/invoice/'.$invoice_url_key); ?>'));
