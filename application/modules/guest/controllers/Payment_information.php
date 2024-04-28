@@ -155,7 +155,7 @@ class Payment_Information extends Base_Controller
         $this->load->library('gateways/paypal',[
             'client_id' => get_setting('gateway_paypal_clientId'),
             'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
-            'demo' => true
+            'demo' => get_setting('gateway_paypal_testMode') == 1 ? true : false
         ]);
 
         $order_information = [
@@ -178,7 +178,7 @@ class Payment_Information extends Base_Controller
         $this->load->library('gateways/paypal',[
             'client_id' => get_setting('gateway_paypal_clientId'),
             'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
-            'demo' => true
+            'demo' => get_setting('gateway_paypal_testMode') == 1 ? true : false
         ]);
 
         $paypal_response = $this->paypal->captureOrder($order_id);
