@@ -161,36 +161,25 @@ if ($logo) {
 <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
-<?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
-<?php } ?>
+
 <script type="text/javascript">
     $('#gateway-select').change(()=>{
         if($('#gateway-select').select2('data')[0].id === "Stripe")
         {
             $("#fullpage-loader").fadeIn(200);
-            $('#standard-card-form').hide();
             $('#ajax-card-form').show();
             $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/stripe/'.$invoice_url_key);?>');
         }
         else if($('#gateway-select').select2('data')[0].id === "PayPal")
         {
             $("#fullpage-loader").fadeIn(200);
-            $('#standard-card-form').hide();
             $('#ajax-card-form').show();
             $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/paypal/'.$invoice_url_key);?>');
-        }
-        else if($('#gateway-select').select2('data')[0].id === "none")
-        {
-            $('#ajax-card-form').hide();
-            $('#ajax-card-form').html('');
-            $('#standard-card-form').hide();
         }
         else
         {
             $('#ajax-card-form').hide();
             $('#ajax-card-form').html('');
-            $('#standard-card-form').show();
         }
     });
 </script>
