@@ -257,7 +257,7 @@
             $("#fullpage-loader").fadeIn(200);
             $('#standard-card-form').hide();
             $('#ajax-card-form').show();
-            $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/stripe');?>');
+            $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/stripe/'.$invoice_url_key);?>');
         }
         else if($('#gateway-select').select2('data')[0].id === "PayPal")
         {
