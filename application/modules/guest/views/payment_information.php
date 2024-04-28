@@ -168,71 +168,8 @@
                     </div>
 
                     <br>
-                    <div id="standard-card-form" style="display:none">
-                        <div class="panel panel-default">
-
-                            <div class="panel-heading">
-                                <?php _trans('creditcard_details'); ?>
-                            </div>
-
-                            <div class="panel-body">
-                                <div class="form-group">
-                                    <div class="alert alert-info no-margin small">
-                                        <?php _trans('online_payment_creditcard_hint'); ?>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="control-label">
-                                        <?php _trans('creditcard_number'); ?>
-                                    </label>
-                                    <input type="text" name="creditcard_number" class="input-sm form-control">
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-xs-4">
-                                        <div class="form-group">
-                                            <label class="control-label">
-                                                <?php _trans('creditcard_expiry_month'); ?>
-                                            </label>
-                                            <input type="number" name="creditcard_expiry_month"
-                                                class="input-sm form-control"
-                                                min="1" max="12">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <div class="form-group">
-                                            <label class="control-label">
-                                                <?php _trans('creditcard_expiry_year'); ?>
-                                            </label>
-                                            <input type="number" name="creditcard_expiry_year"
-                                                class="input-sm form-control"
-                                                min="<?php echo date('Y'); ?>" max="<?php echo date('Y') + 20; ?>">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <div class="form-group">
-                                            <label class="control-label">
-                                                <?php _trans('creditcard_cvv'); ?>
-                                            </label>
-                                            <input type="number" name="creditcard_cvv" class="input-sm form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <button class="btn btn-success btn-lg ajax-loader" type="submit">
-                                <i class="fa fa-credit-card fa-margin"></i>
-                                <?php echo trans('pay_now') . ': ' . format_currency($invoice->invoice_balance); ?>
-                            </button>
-                        </div>
-                    </div>
+                    
                     <div id="ajax-card-form"></div>
-
-                    <br><br>
-
                 </form>
                 
             <?php } ?>
@@ -247,36 +184,25 @@
 <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
-<?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
-<?php } ?>
+
 <script type="text/javascript">
     $('#gateway-select').change(()=>{
         if($('#gateway-select').select2('data')[0].id === "Stripe")
         {
             $("#fullpage-loader").fadeIn(200);
-            $('#standard-card-form').hide();
             $('#ajax-card-form').show();
             $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/stripe/'.$invoice_url_key);?>');
         }
         else if($('#gateway-select').select2('data')[0].id === "PayPal")
         {
             $("#fullpage-loader").fadeIn(200);
-            $('#standard-card-form').hide();
             $('#ajax-card-form').show();
             $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/paypal/'.$invoice_url_key);?>');
-        }
-        else if($('#gateway-select').select2('data')[0].id === "none")
-        {
-            $('#ajax-card-form').hide();
-            $('#ajax-card-form').html('');
-            $('#standard-card-form').hide();
         }
         else
         {
             $('#ajax-card-form').hide();
             $('#ajax-card-form').html('');
-            $('#standard-card-form').show();
         }
     });
 </script>
