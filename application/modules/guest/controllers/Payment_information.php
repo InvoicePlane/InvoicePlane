@@ -95,11 +95,12 @@ class Payment_Information extends Base_Controller
      *
      * @return View the stripe page view
      */
-    public function stripe()
+    public function stripe($invoice_url_key)
     {
         //get the api key for which the card token must be generated
         $view_data['stripe_api_key'] = get_setting('gateway_stripe_apiKeyPublic');
-        $this->load->view('guest/gateway/stripe',$view_data);
+        $view_data['invoice_url_key'] = $invoice_url_key;
+        $this->load->view('guest/gateways/stripe',$view_data);
     }
 
     /**
@@ -114,7 +115,7 @@ class Payment_Information extends Base_Controller
         $view_data['paypal_client_id'] = get_setting('gateway_paypal_clientId');
         $view_data['invoice_url_key'] = $invoice_url_key;
         $view_data['currency'] = $this->mdl_settings->setting('gateway_paypal_currency');
-        $this->load->view('guest/gateway/paypal',$view_data);
+        $this->load->view('guest/gateways/paypal',$view_data);
     }
 
     public function paypal_create_order($invoice_url_key) {
