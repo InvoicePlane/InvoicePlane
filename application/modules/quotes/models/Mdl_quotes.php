@@ -63,14 +63,14 @@ class Mdl_Quotes extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_users.*,
-			ip_clients.*,
-			ip_quote_amounts.quote_amount_id,
-			IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
-			IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
-			IFnull(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
-			IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
+            ip_clients.*,
+            ip_quote_amounts.quote_amount_id,
+            IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
+            IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
+            IFnull(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
+            IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
             ip_invoices.invoice_number,
-			ip_quotes.*", false);
+            ip_quotes.*", false);
     }
 
     public function default_order_by()
@@ -96,6 +96,14 @@ class Mdl_Quotes extends Response_Model
                 'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required'
+            ),
+            'quote_work_order' => array(
+                'field' => 'quote_work_order',
+                'label' => trans('work_order'),
+            ),
+            'quote_agreement' => array(
+                'field' => 'quote_agreement',
+                'label' => trans('agreement'),
             ),
             'quote_date_created' => array(
                 'field' => 'quote_date_created',
@@ -143,6 +151,14 @@ class Mdl_Quotes extends Response_Model
             'quote_password' => array(
                 'field' => 'quote_password',
                 'label' => trans('quote_password')
+            ),
+            'quote_work_order' => array(
+                'field' => 'quote_work_order',
+                'label' => trans('work_order'),
+            ),
+            'quote_agreement' => array(
+                'field' => 'quote_agreement',
+                'label' => trans('agreement'),
             )
         );
     }
@@ -311,6 +327,24 @@ class Mdl_Quotes extends Response_Model
 
         $this->load->helper('orphan');
         delete_orphans();
+    }
+
+    /**
+     * @return $this
+     */
+    public function is_related_quote($quote_id)
+    {
+        $this->filter_where('ip_quotes.quote_id', $quote_id);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function related_is_open()
+    {
+        $this->filter_where_in('quote_status_id', array(2, 3, 4));
+        return $this;
     }
 
     /**

@@ -92,6 +92,10 @@ class Ajax extends Admin_Controller
             // Generate new invoice number if needed
             $invoice_number = $this->input->post('invoice_number');
 
+            $invoice_quote_number = $this->input->post('invoice_quote_number');
+            $invoice_work_order = $this->input->post('invoice_work_order');
+            $invoice_agreement = $this->input->post('invoice_agreement');
+
             if (empty($invoice_number) && $invoice_status != 1) {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
                 $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
@@ -99,6 +103,9 @@ class Ajax extends Admin_Controller
 
             $db_array = [
                 'invoice_number' => $invoice_number,
+                'invoice_quote_number' => $invoice_quote_number,
+                'invoice_work_order' => $invoice_work_order,
+                'invoice_agreement' => $invoice_agreement,
                 'invoice_terms' => $this->security->xss_clean($this->input->post('invoice_terms')),
                 'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
                 'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),

@@ -49,6 +49,8 @@ $cv = $this->controller->view_data["custom_values"];
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
                     quote_password: $('#quote_password').val(),
+                    quote_work_order: $('#quote_work_order').val(),
+                    quote_agreement: $('#quote_agreement').val(),
                     items: JSON.stringify(items),
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
@@ -240,22 +242,26 @@ $cv = $this->controller->view_data["custom_values"];
         <div class="quote">
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-5">
-
+                <div class="col-xs-12 col-sm-6 col-md-3">
                     <h3>
                         <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>">
                             <?php _htmlsc(format_client($quote)) ?>
                         </a>
                         <?php if ($quote->quote_status_id == 1) { ?>
-                            <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
-                                  data-toggle="tooltip" data-placement="bottom"
-                                  title="<?php _trans('change_client'); ?>"></span>
+                            <span id="quote_change_client" class="fa fa-edit cursor-pointer small" data-toggle="tooltip" data-placement="bottom" title="<?php _trans('change_client'); ?>"></span>
                         <?php } ?>
                     </h3>
                     <br>
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>
+                    <br>
+                    <?php if ($quote->client_number): ?>
+                        <div class="client-number">
+                            <?php _trans('client_number'); ?>:&nbsp;
+                            <?php _htmlsc($quote->client_number); ?>
+                        </div>
+                    <?php endif; ?>
                     <?php if ($quote->client_phone || $quote->client_email) : ?>
                         <hr>
                     <?php endif; ?>
@@ -276,11 +282,29 @@ $cv = $this->controller->view_data["custom_values"];
 
                 <div class="col-xs-12 visible-xs"><br></div>
 
-                <div class="col-xs-12 col-sm-6 col-md-7">
+                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-8 col-md-offset-1">
                     <div class="details-box">
                         <div class="row">
 
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="quote-properties">
+                                    <label><?php _trans('work_order'); ?></label>
+                                    <input type="text" id="quote_work_order" class="form-control input-sm"
+                                        <?php if ($quote->quote_work_order) : ?>
+                                            value="<?php echo $quote->quote_work_order; ?>"
+                                        <?php endif; ?>>
+
+                                </div>
+                                <div class="quote-properties">
+                                    <label><?php _trans('agreement'); ?></label>
+                                    <input type="text" id="quote_agreement" class="form-control input-sm"
+                                        <?php if ($quote->quote_agreement) : ?>
+                                            value="<?php echo $quote->quote_agreement; ?>"
+                                        <?php endif; ?>>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="quote-properties">
                                     <label for="quote_number">
@@ -327,14 +351,13 @@ $cv = $this->controller->view_data["custom_values"];
                                 <?php endforeach; ?>
 
                             </div>
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="quote-properties">
                                     <label for="quote_status_id">
                                         <?php _trans('status'); ?>
                                     </label>
-                                    <select name="quote_status_id" id="quote_status_id"
-                                            class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
+                                    <select name="quote_status_id" id="quote_status_id" class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
                                         <?php foreach ($quote_statuses as $key => $status) { ?>
                                             <option value="<?php echo $key; ?>"
                                                     <?php if ($key == $quote->quote_status_id) { ?>selected="selected"
@@ -374,6 +397,8 @@ $cv = $this->controller->view_data["custom_values"];
             </div>
 
         </div>
+
+        <br>
 
         <?php if (get_setting('show_responsive_itemlist') == 1) {
              $this->layout->load_view('quotes/partial_itemlist_responsive');

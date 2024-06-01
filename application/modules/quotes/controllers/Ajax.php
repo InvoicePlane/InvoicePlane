@@ -18,6 +18,45 @@ class Ajax extends Admin_Controller
 
     public $ajax_controller = true;
 
+    public function modal_quote_lookups($client_id = null)
+    {
+        $this->load->model('quotes/mdl_quotes');
+
+        $client_id = $this->security->xss_clean($client_id);
+
+        if (!empty($client_id)) {
+            $this->mdl_quotes->by_client($client_id);
+            $this->mdl_quotes->related_is_open();
+            $this->mdl_quotes->statuses();
+
+            $quotes = $this->mdl_quotes->get()->result();
+            $quote_statuses = $this->mdl_quotes->statuses();
+
+            $data = array(
+                'related_quotes' => $quotes,
+                'client_id' => $client_id,
+                'quote_statuses' => $quote_statuses,
+            );
+        }
+
+        $this->layout->load_view('quotes/modal_quote_lookups', $data);
+    }
+
+    public function modal_quote_lookups_select()
+    {
+        $this->load->model('quotes/mdl_quotes');
+
+        $quote_id = $this->security->xss_clean($this->input->post('quote_id'));
+
+        if (!empty($quote_id)) {
+            $this->mdl_quotes->is_related_quote($quote_id);
+            $this->mdl_quotes->statuses();
+            $quote = $this->mdl_quotes->get()->result();
+
+            echo json_encode($quote);
+        }
+    }
+
     public function save()
     {
         $this->load->model('quotes/mdl_quote_items');
@@ -63,6 +102,9 @@ class Ajax extends Admin_Controller
             $quote_number = $this->input->post('quote_number');
             $quote_status_id = $this->input->post('quote_status_id');
 
+            $quote_work_order = $this->input->post('quote_work_order');
+            $quote_agreement = $this->input->post('quote_agreement');
+
             if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
                 $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
@@ -70,6 +112,8 @@ class Ajax extends Admin_Controller
 
             $db_array = [
                 'quote_number' => $quote_number,
+                'quote_work_order' => $quote_work_order,
+                'quote_agreement' => $quote_agreement,
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires' => date_to_mysql($this->input->post('quote_date_expires')),
                 'quote_status_id' => $quote_status_id,

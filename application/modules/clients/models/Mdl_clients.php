@@ -45,6 +45,10 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_surname',
                 'label' => trans('client_surname')
             ),
+            'client_number' => array(
+                'field' => 'client_number',
+                'label' => trans('client_number')
+            ),
             'client_active' => array(
                 'field' => 'client_active'
             ),

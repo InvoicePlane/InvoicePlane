@@ -24,6 +24,19 @@ function format_client($client)
 }
 
 /**
+ * @param object $client
+ * @return string
+ */
+function format_client_number($client)
+{
+    if ($client->client_number != "") {
+        return $client->client_number;
+    }
+
+    return "00-00000";
+}
+
+/**
  * @param string $gender
  * @return string
  */

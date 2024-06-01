@@ -8,6 +8,7 @@
             <th><?php _trans('created'); ?></th>
             <th><?php _trans('due_date'); ?></th>
             <th><?php _trans('client_name'); ?></th>
+            <th><?php _trans('client_number'); ?></th>
             <th style="text-align: right;"><?php _trans('amount'); ?></th>
             <th style="text-align: right;"><?php _trans('balance'); ?></th>
             <th><?php _trans('options'); ?></th>
@@ -65,6 +66,10 @@
                        title="<?php _trans('view_client'); ?>">
                         <?php _htmlsc(format_client($invoice)); ?>
                     </a>
+                </td>
+
+                <td>
+                    <?php echo anchor('clients/view/' . $invoice->client_id, htmlsc(format_client_number($invoice))); ?>
                 </td>
 
                 <td class="amount <?php if ($invoice->invoice_sign == '-1') {
