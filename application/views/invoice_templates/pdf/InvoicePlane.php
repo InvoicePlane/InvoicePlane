@@ -1,5 +1,96 @@
 <!DOCTYPE html>
 <html lang="<?php _trans('cldr'); ?>">
+<?php
+
+    /* retrieve the locale from clients language settings or use a default
+        Returns: $locale
+    */
+    function getLocaleByDisplayName($displayName, $default_locale = 'en') {
+        // get all available locales
+        $allLocales = ResourceBundle::getLocales('');
+        foreach ($allLocales as $locale) {
+            $currentName = Locale::getDisplayLanguage($locale, $localeToSearch);
+            if (strncmp($currentName, $displayName, strlen($currentName)) === 0) {
+                return $locale;
+            }
+        }
+        return $default_locale;
+    }
+
+    /* Replace tags within item description with useful real date values
+        Tags: can have the form {{{month}}}, {{{date}}}, {{{year}}}, {{{month+1}}} etc.
+        Returns: $item_description
+    */
+    function replaceDateTags($invoice_date_created, $client_language, $item_description) {
+        $INVOICE_DATE_CREATED = new DateTime(date_from_mysql($invoice_date_created, true));
+        
+        if ( 'system' == $client_language ) $DATE_LANGUAGE = get_setting('default_country');
+        else $DATE_LANGUAGE = getLocaleByDisplayName($client_language, get_setting('default_country'));
+
+        // start with a fresh date
+        $PRINT_DATE = clone($INVOICE_DATE_CREATED);
+        // get the tags
+        $replacements = explode('{{{', $item->item_description);
+        foreach ($replacements as $replacement) {
+            // find tags end
+            $replace = stristr($replacement, '}}}', true);
+            // nothing to do here
+            if (empty($replace)) continue;
+
+            // we will handle full date/month/year, nothing else
+            $request = strtoupper(substr($replace,0,1));  
+            // take only first letter, ignore if not within our service
+            if (strpos('DMY', $request) === false) continue;
+
+            // reconstruct original replacement
+            $replacement='{{{'.$replace.'}}}';
+
+            // needs to reset if a new relative date occurs
+            try {
+                // calculate additions/substractions
+                if ($pos = strpos($replace, '+')) {
+                    $num = substr($replace,$pos+1);
+                    // refresh date to calculate with
+                    $PRINT_DATE = clone($INVOICE_DATE_CREATED);
+                    $PRINT_DATE->add(new DateInterval( 'P' . $num . $request ));
+                }
+                elseif ($pos = strpos($replace, '-')) {
+                    $num = substr($replace,$pos+1);
+                    $PRINT_DATE = clone($INVOICE_DATE_CREATED);
+                    // refresh date to calculate with
+                    $PRINT_DATE->sub(new DateInterval( 'P' . $num . $request ));
+                }
+                
+                // prepare replacement format string
+                $DT_FORMAT = new IntlDateFormatter(
+                                        $DATE_LANGUAGE,
+                                        IntlDateFormatter::SHORT,
+                                        IntlDateFormatter::SHORT
+                                        );
+                if ('D' != $request) {
+                    // create sql iso format date, ignore language here
+                    $DT_FORMAT->setPattern('yyyy-mm-dd');
+                    // use ip's function to create a visible date
+                    $replace = date_from_mysql(datefmt_format($DT_FORMAT, $PRINT_DATE));
+                }
+                else {
+                    if ('M' == $request) $pattern = 'MMM yyyy'; // short month year
+                    elseif ('Y' == $request) $pattern = 'yyyy';     // year only
+                    $DT_FORMAT->setPattern($pattern);
+                    $replace = datefmt_format($DT_FORMAT, $PRINT_DATE);
+                }
+
+                // replace within item description
+                $item_description = str_replace($replacement, $replace, $item_description);
+
+            }
+            catch (Exception $e) {
+                echo 'ERROR Message: ' .$e->getMessage();
+            }
+                    
+        return $item_description;
+    }
+?>
 <head>
     <meta charset="utf-8">
     <title><?php _trans('invoice'); ?></title>
@@ -141,7 +232,11 @@
         <tbody>
 
         <?php
-        foreach ($items as $item) { ?>
+        foreach ($items as $item) { 
+            $item->item_description = replaceDateTags($invoice->invoice_date_created, 
+                                                      $invoice->client_language, 
+                                                      $item->item_description);
+            ?>
             <tr>
                 <td><?php _htmlsc($item->item_name); ?></td>
                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
