@@ -129,3 +129,107 @@ function invoice_qrcode($invoice_id) {
 
     return '';
 }
+
+/**
+ * Retrieve locale for clear text language
+ *
+ * @param string displayName
+ * @param string default_locale
+ * @return string
+ */
+function getLocaleByDisplayName($displayName, $default_locale = 'en') {
+    $CI = &get_instance();
+
+    // get all available locales
+    $allLocales = ResourceBundle::getLocales('');
+    foreach ($allLocales as $locale) {
+        $currentName = Locale::getDisplayLanguage($locale, $localeToSearch);
+        if (strncmp($currentName, $displayName, strlen($currentName)) === 0) {
+
+            return $locale;
+        }
+    }
+
+    return $default_locale;
+}
+
+/**
+ * Replace date tags within description with useful real date values
+ *
+ * @param date invoice_date_created
+ * @param string client_language
+ * @param string item_description
+ *   Tags: can have the form {{{month}}}, {{{date}}}, {{{year}}}, {{{month+1}}} etc.
+ * @return string
+*/
+function replaceDateTags($invoice_date_created, $client_language, $item_description) {
+    $CI = &get_instance();
+
+    $INVOICE_DATE_CREATED = new DateTime(date_from_mysql($invoice_date_created, true));
+    
+    if ( 'system' == $client_language ) $DATE_LANGUAGE = get_setting('default_country');
+    else $DATE_LANGUAGE = getLocaleByDisplayName($client_language, get_setting('default_country'));
+
+    // start with a fresh date
+    $PRINT_DATE = clone($INVOICE_DATE_CREATED);
+    // get the tags
+    $replacements = explode('{{{', $item->item_description);
+    foreach ($replacements as $replacement) {
+        // find tags end
+        $replace = stristr($replacement, '}}}', true);
+        // nothing to do here
+        if (empty($replace)) continue;
+
+        // we will handle full date/month/year, nothing else
+        $request = strtoupper(substr($replace,0,1));  
+        // take only first letter, ignore if not within our service
+        if (strpos('DMY', $request) === false) continue;
+
+        // reconstruct original replacement
+        $replacement='{{{'.$replace.'}}}';
+
+        // needs to reset if a new relative date occurs
+        try {
+            // calculate additions/substractions
+            if ($pos = strpos($replace, '+')) {
+                $num = substr($replace,$pos+1);
+                // refresh date to calculate with
+                $PRINT_DATE = clone($INVOICE_DATE_CREATED);
+                $PRINT_DATE->add(new DateInterval( 'P' . $num . $request ));
+            }
+            elseif ($pos = strpos($replace, '-')) {
+                $num = substr($replace,$pos+1);
+                $PRINT_DATE = clone($INVOICE_DATE_CREATED);
+                // refresh date to calculate with
+                $PRINT_DATE->sub(new DateInterval( 'P' . $num . $request ));
+            }
+            
+            // prepare replacement format string
+            $DT_FORMAT = new IntlDateFormatter(
+                                    $DATE_LANGUAGE,
+                                    IntlDateFormatter::SHORT,
+                                    IntlDateFormatter::SHORT
+                                    );
+            if ('D' != $request) {
+                // create sql iso format date, ignore language here
+                $DT_FORMAT->setPattern('yyyy-mm-dd');
+                // use ip's function to create a visible date
+                $replace = date_from_mysql(datefmt_format($DT_FORMAT, $PRINT_DATE));
+            }
+            else {
+                if ('M' == $request) $pattern = 'MMM yyyy'; // short month year
+                elseif ('Y' == $request) $pattern = 'yyyy';     // year only
+                $DT_FORMAT->setPattern($pattern);
+                $replace = datefmt_format($DT_FORMAT, $PRINT_DATE);
+            }
+
+            // replace within item description
+            $item_description = str_replace($replacement, $replace, $item_description);
+
+        }
+        catch (Exception $e) {
+            echo 'ERROR Message: ' .$e->getMessage();
+        }
+                
+    return $item_description;
+}
