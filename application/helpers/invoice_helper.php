@@ -210,7 +210,7 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
                                     IntlDateFormatter::SHORT,
                                     IntlDateFormatter::SHORT
                                     );
-            if ('D' != $request) {
+            if ('D' == $request) {
                 // create sql iso format date, ignore language here
                 $DT_FORMAT->setPattern('yyyy-mm-dd');
                 // use ip's function to create a visible date
