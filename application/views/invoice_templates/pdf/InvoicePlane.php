@@ -87,7 +87,7 @@
             catch (Exception $e) {
                 echo 'ERROR Message: ' .$e->getMessage();
             }
-                    
+        }       
         return $item_description;
     }
 ?>
