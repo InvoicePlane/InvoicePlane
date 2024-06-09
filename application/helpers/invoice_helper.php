@@ -143,8 +143,9 @@ function getLocaleByDisplayName($displayName, $default_locale = 'en') {
     // get all available locales
     $allLocales = ResourceBundle::getLocales('');
     foreach ($allLocales as $locale) {
-        $currentName = Locale::getDisplayLanguage($locale, $localeToSearch);
+        $currentName = Locale::getDisplayLanguage($locale, $default_locale);
         if (strncmp($currentName, $displayName, strlen($currentName)) === 0) {
+            // use first/shortest locale match
 
             return $locale;
         }
@@ -167,20 +168,20 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
 
     $INVOICE_DATE_CREATED = new DateTime(date_from_mysql($invoice_date_created, true));
     
-    if ( 'system' == $client_language ) $DATE_LANGUAGE = get_setting('default_country');
-    else $DATE_LANGUAGE = getLocaleByDisplayName($client_language, get_setting('default_country'));
+    if ( 'system' == $client_language ) $DATE_LANGUAGE_LOCALE = get_setting('default_country');
+    else $DATE_LANGUAGE_LOCALE = getLocaleByDisplayName($client_language);
 
-    // start with a fresh date
+    // initialize based date
     $PRINT_DATE = clone($INVOICE_DATE_CREATED);
     // get the tags
-    $replacements = explode('{{{', $item->item_description);
+    $replacements = explode('{{{', $item_description);
     foreach ($replacements as $replacement) {
         // find tags end
         $replace = stristr($replacement, '}}}', true);
         // nothing to do here
         if (empty($replace)) continue;
 
-        // we will handle full date/month/year, nothing else
+        // here we do D(ate), M(onth and year) and Y(ear) nothing else
         $request = strtoupper(substr($replace,0,1));  
         // take only first letter, ignore if not within our service
         if (strpos('DMY', $request) === false) continue;
@@ -205,20 +206,19 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
             }
             
             // prepare replacement format string
-            $DT_FORMAT = new IntlDateFormatter(
-                                    $DATE_LANGUAGE,
-                                    IntlDateFormatter::SHORT,
-                                    IntlDateFormatter::SHORT
-                                    );
             if ('D' == $request) {
-                // create sql iso format date, ignore language here
-                $DT_FORMAT->setPattern('yyyy-mm-dd');
-                // use ip's function to create a visible date
-                $replace = date_from_mysql(datefmt_format($DT_FORMAT, $PRINT_DATE));
+                // ignore locale and create sql Y-m-d format date
+                // and use ip's function to create a visible date
+                $replace = date_from_mysql(date_format($PRINT_DATE, 'Y-m-d'));
             }
             else {
                 if ('M' == $request) $pattern = 'MMM yyyy'; // short month year
                 elseif ('Y' == $request) $pattern = 'yyyy';     // year only
+                $DT_FORMAT = new IntlDateFormatter(
+                                    $DATE_LANGUAGE_LOCALE,
+                                    IntlDateFormatter::SHORT,
+                                    IntlDateFormatter::SHORT
+                                    );
                 $DT_FORMAT->setPattern($pattern);
                 $replace = datefmt_format($DT_FORMAT, $PRINT_DATE);
             }
