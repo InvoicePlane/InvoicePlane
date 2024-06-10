@@ -25,7 +25,7 @@
       <pre><?php print_r(get_setting('default_country')); ?></pre>
       <hr>
       <p>Date Replacement<p>
-      <pre>You must have something like {{{Month-3}}} {{{Month+1}}} in your item description to see test results here:<br />
+      <pre>You must have something like {{{Month-3}}} {{{Month+1}}} in your last item description to see test results here:<br />
       <?php
         // this should come from a helper function
         print_r(replaceDateTags($invoice->invoice_date_created, 
