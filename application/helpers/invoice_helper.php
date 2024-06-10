@@ -226,8 +226,7 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
             // replace within item description
             $item_description = str_replace($replacement, $replace, $item_description);
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo 'ERROR Message: ' .$e->getMessage();
         }
                 
