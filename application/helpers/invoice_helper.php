@@ -200,8 +200,8 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
             }
             elseif ($pos = strpos($replace, '-')) {
                 $num = substr($replace,$pos+1);
-                $PRINT_DATE = clone($INVOICE_DATE_CREATED);
                 // refresh date to calculate with
+                $PRINT_DATE = clone($INVOICE_DATE_CREATED);
                 $PRINT_DATE->sub(new DateInterval( 'P' . $num . $request ));
             }
             
