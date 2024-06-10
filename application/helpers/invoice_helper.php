@@ -140,9 +140,12 @@ function invoice_qrcode($invoice_id) {
 function getLocaleByDisplayName($displayName, $default_locale = 'en') {
     $CI = &get_instance();
 
+    // https://www.php.net/manual/de/class.resourcebundle.php
     // get all available locales
     $allLocales = ResourceBundle::getLocales('');
     foreach ($allLocales as $locale) {
+        // https://www.php.net/manual/de/class.locale.php
+        // get string with langauge part for locale
         $currentName = Locale::getDisplayLanguage($locale, $default_locale);
         if (strncmp($currentName, $displayName, strlen($currentName)) === 0) {
             // use first/shortest locale match
