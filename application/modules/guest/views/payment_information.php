@@ -142,9 +142,12 @@ if ($logo) {
                 </div>
             </div>
             <?php if($payment_provider == null) { ?>
-                <ul>
+                <div>
+                    <p><?php echo trans('select_payment_method'); ?></p>
+                </div>
+                <ul class="list-group">
                     <?php foreach($gateways as $gateway) { ?>
-                        <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway);?>"><li><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></li></a>
+                        <a class="list-group-item list-group-item-action" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway);?>"><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></a>
                     <?php } ?>
                 </ul>
             <?php } ?>
