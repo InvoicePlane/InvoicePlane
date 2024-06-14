@@ -67,6 +67,10 @@ class Payment_Information extends Base_Controller
             }
         }
 
+        //If only one provider is available, serve it without showing options
+        if(count($available_drivers) == 1)
+            $payment_provider=$available_drivers[0];
+
         // Get additional invoice information
         $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
         if ($invoice->payment_method == 0) {
