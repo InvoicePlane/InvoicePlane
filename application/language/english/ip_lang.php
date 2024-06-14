@@ -1,4 +1,5 @@
 <?php
+
 $lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
@@ -276,7 +277,6 @@ $lang = [
     'invoice_tax_rate'                             => 'Invoice Tax Rate',
     'invoice_template'                             => 'Invoice Template',
     'invoice_templates'                            => 'Invoice Templates',
-    'invoice_templates_info'                       => 'You can extend the available templates by downloading other templates provided by the community (see <a href="https://www.invoiceplane.com/themes" target="_blank">www.invoiceplane.com/themes</a>).',
     'invoice_terms'                                => 'Invoice Terms',
     'invoiced'                                     => 'Invoiced',
     'invoiceplane_news'                            => 'InvoicePlane News',
@@ -434,10 +434,11 @@ $lang = [
     'payment_method_type_qr_code_iban'             => 'IBAN',
     'payment_method_type_qr_code_recipient'        => 'Recipient',
     'payment_method_type_qr_code_remittance_text'  => 'Remittance Text',
-    'payment_method_type_qr_code_remittance_text_t'=> 'Remittance Text Tags',
+    'payment_method_type_qr_code_remittance_text_t' => 'Remittance Text Tags',
     'payment_method_type_qr_code_swiss'            => 'QR Code Swiss',
     'payment_method_type_qr_code_swiss_enable'     => 'Enable QR Code Swiss',
-    'payment_method_type_qr_code_swiss_enable_hint'=> 'Enabling this option will include a QR Code Swiss page after the invoice.You must fill in the user\'s IBAN as well as the currency to use (CHF or EUR only). Otherwise, the QR Code Swiss page will not be displayed.',
+    'payment_method_type_qr_code_swiss_enable_hint' => 'Enabling this option will include a QR Code Swiss page after the invoice.You must fill in the user\'s IBAN as well as the currency to use (CHF or EUR only). Otherwise, the QR Code Swiss page will not be displayed.',
+    'invoice_templates_info'                       => 'You can extend the available templates by downloading other templates provided by the community (see <a href="https://www.invoiceplane.com/themes" target="_blank">www.invoiceplane.com/themes</a>).',
     'payment_method_type_qr_code_swiss_besrid'     => 'BESR-ID',
     'payment_method_type_qr_code_swiss_additional_text' => 'Additional Text',
     'payment_method_type_qr_code_swiss_additional_text_t' => 'Additional Text Tags',
