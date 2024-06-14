@@ -52,7 +52,7 @@ function initPayPal() {
             .then((response) => window.location.replace('<?php echo site_url('guest/view/invoice/'.$invoice_url_key); ?>'));
         },
         onError: function (error) {
-            window.location.replace('<?php echo site_url('guest/payment_information/form/'.$invoice_url_key); ?>')
+            window.location.replace('<?php echo site_url('guest/payment_information/form/'.$invoice_url_key .'/paypal'); ?>')
         }
     }).render('#paypal-buttons');
     $("#fullpage-loader").fadeOut(200);
