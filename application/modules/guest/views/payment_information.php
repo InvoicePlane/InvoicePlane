@@ -158,38 +158,5 @@
 <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
 <script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
-
-<script type="text/javascript">
-<?php if (count ($gateways) > 1 ) {?>
-    $('#gateway-select').change(()=>{
-        if($('#gateway-select').select2('data')[0].id === "Stripe")
-        {
-            $("#fullpage-loader").fadeIn(200);
-            $('#ajax-card-form').show();
-            $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/stripe/'.$invoice_url_key);?>');
-        }
-        else if($('#gateway-select').select2('data')[0].id === "PayPal")
-        {
-            $("#fullpage-loader").fadeIn(200);
-            $('#ajax-card-form').show();
-            $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/paypal/'.$invoice_url_key);?>');
-        }
-        else
-        {
-            $('#ajax-card-form').hide();
-            $('#ajax-card-form').html('');
-        }
-    });
-<?php } else {?>
-    $(document).ready(()=>{
-        $("#fullpage-loader").fadeIn(200);
-        $('#ajax-card-form').show();
-        $('#ajax-card-form').load('<?php echo site_url('guest/payment_information/'.strtolower($gateways[0]).'/'.$invoice_url_key);?>');
-    });
-<?php }?>
-</script>
-
-
-
 </body>
 </html>
