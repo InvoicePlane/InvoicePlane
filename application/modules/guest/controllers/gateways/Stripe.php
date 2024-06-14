@@ -60,7 +60,7 @@ class Stripe extends Base_Controller
 
         //TODO: handle exceptions in checkout session
 
-        echo json_encode(array('clientSecret' => $checkout_session->client_secret)); //TODO create a well formatted answer
+        $this->output->set_output(json_encode(array('clientSecret' => $checkout_session->client_secret)));
     }
 
     /**
