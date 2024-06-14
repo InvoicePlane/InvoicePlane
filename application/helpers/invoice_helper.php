@@ -138,7 +138,7 @@ function invoice_qrcode($invoice_id)
  * @param string default_locale
  * @return string
  */
-function getLocaleByDisplayName($displayName, $default_locale = 'en')
+function invoice_get_locale_by_displayname($displayName, $default_locale = 'en')
 {
     $CI = &get_instance();
 
@@ -168,14 +168,14 @@ function getLocaleByDisplayName($displayName, $default_locale = 'en')
  *   Tags: can have the form {{{month}}}, {{{date}}}, {{{year}}}, {{{month+1}}} etc.
  * @return string
 */
-function replaceDateTags($invoice_date_created, $client_language, $item_description)
+function invoice_replace_date_tags($invoice_date_created, $client_language, $item_description)
 {
     $CI = &get_instance();
 
     $invoiceDateCreated = new DateTime(date_from_mysql($invoice_date_created, true));
     
     if ( 'system' == $client_language ) $dateLanguageLocale = get_setting('default_country');
-    else $dateLanguageLocale = getLocaleByDisplayName($client_language);
+    else $dateLanguageLocale = invoice_get_locale_by_displayname($client_language);
 
     // initialize based date
     $printDate = clone($invoiceDateCreated);
