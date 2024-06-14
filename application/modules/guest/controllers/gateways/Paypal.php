@@ -8,10 +8,14 @@ class Paypal extends Base_Controller {
     public function __construct()
     {
         parent::__construct();
+        $this->_create_client();
+    }
+
+    protected function _create_client() : void {
         $this->load->library('crypt');
 
         //load the REST API consumer library
-        $this->load->library('gateways/Paypal',[
+        $this->load->library('gateways/PaypalLib',[
             'client_id' => get_setting('gateway_paypal_clientId'),
             'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
             'demo' => get_setting('gateway_paypal_testMode') == 1 ? true : false
@@ -46,8 +50,7 @@ class Paypal extends Base_Controller {
             'custom_id' => $invoice_url_key
         ]);
 
-       echo $paypal_client; //TODO: make proper response
-
+       return $this->output->set_output($paypal_client); //TODO: make proper response
     }
 
     /**
