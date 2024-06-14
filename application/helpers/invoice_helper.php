@@ -168,7 +168,7 @@ function getLocaleByDisplayName($displayName, $default_locale = 'en')
  *   Tags: can have the form {{{month}}}, {{{date}}}, {{{year}}}, {{{month+1}}} etc.
  * @return string
 */
-function replacementateTags($invoice_date_created, $client_language, $item_description)
+function replaceDateTags($invoice_date_created, $client_language, $item_description)
 {
     $CI = &get_instance();
 
