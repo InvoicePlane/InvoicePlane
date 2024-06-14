@@ -142,9 +142,9 @@
 
         <?php
         foreach ($items as $item) { 
-            $item->item_description = replaceDateTags($invoice->invoice_date_created, 
-                                                      $invoice->client_language, 
-                                                      $item->item_description);
+            $item->item_description = invoice_replace_date_tags($invoice->invoice_date_created, 
+                                                                $invoice->client_language, 
+                                                                $item->item_description);
             ?>
             <tr>
                 <td><?php _htmlsc($item->item_name); ?></td>
