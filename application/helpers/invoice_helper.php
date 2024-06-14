@@ -112,7 +112,8 @@ function invoice_recMod10($in)
  * @param number invoice-id
  * @return string
  */
-function invoice_qrcode($invoice_id) {
+function invoice_qrcode($invoice_id)
+{
     $CI = &get_instance();
 
     if (
@@ -137,7 +138,8 @@ function invoice_qrcode($invoice_id) {
  * @param string default_locale
  * @return string
  */
-function getLocaleByDisplayName($displayName, $default_locale = 'en') {
+function getLocaleByDisplayName($displayName, $default_locale = 'en')
+{
     $CI = &get_instance();
 
     // https://www.php.net/manual/de/class.resourcebundle.php
@@ -166,7 +168,8 @@ function getLocaleByDisplayName($displayName, $default_locale = 'en') {
  *   Tags: can have the form {{{month}}}, {{{date}}}, {{{year}}}, {{{month+1}}} etc.
  * @return string
 */
-function replaceDateTags($invoice_date_created, $client_language, $item_description) {
+function replacementateTags($invoice_date_created, $client_language, $item_description)
+{
     $CI = &get_instance();
 
     $invoiceDateCreated = new DateTime(date_from_mysql($invoice_date_created, true));
@@ -177,35 +180,35 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
     // initialize based date
     $printDate = clone($invoiceDateCreated);
     // get the tags
-    $replacements = explode('{{{', $item_description);
-    foreach ($replacements as $replacement) {
+    $tags = explode('{{{', $item_description);
+    foreach ($tags as $tag) {
         // find tags end
-        $replace = stristr($replacement, '}}}', true);
+        $rawTag = stristr($tag, '}}}', true);
         // nothing to do here
-        if (empty($replace)) continue;
+        if (empty($rawTag)) continue;
 
         // here we do D(ate), M(onth and year) and Y(ear) nothing else
-        $request = strtoupper(substr($replace,0,1));  
+        $request = strtoupper(substr($rawTag,0,1));  
         // take only first letter, ignore if not within our service
         if (strpos('DMY', $request) === false) continue;
 
-        // reconstruct original replacement
-        $replacement='{{{'.$replace.'}}}';
+        // reconstruct original request pattern
+        $replaceThis='{{{'.$rawTag.'}}}';
 
         // needs to reset if a new/second relative date occurs
         // within same item description
         try {
             // calculate additions/substractions
-            if ($pos = strpos($replace, '+')) {
-                $num = substr($replace,$pos+1);
+            if ($pos = strpos($rawTag, '+')) {
+                $num = substr($rawTag,$pos+1);
                 // refresh date to calculate with
-                $printDate = clone($invoiceDateCreated);
+                $printDate = clone($invoice_date_created);
                 $printDate->add(new DateInterval( 'P' . $num . $request ));
             }
-            elseif ($pos = strpos($replace, '-')) {
-                $num = substr($replace,$pos+1);
+            elseif ($pos = strpos($rawTag, '-')) {
+                $num = substr($rawTag,$pos+1);
                 // refresh date to calculate with
-                $printDate = clone($invoiceDateCreated);
+                $printDate = clone($invoice_date_created);
                 $printDate->sub(new DateInterval( 'P' . $num . $request ));
             }
             
@@ -213,22 +216,22 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
             if ('D' == $request) {
                 // ignore locale and create sql Y-m-d format date
                 // and use ip's function to create a visible date
-                $replace = date_from_mysql(date_format($printDate, 'Y-m-d'));
+                $withReplacement = date_from_mysql(date_format($printDate, 'Y-m-d'));
             }
             else {
-                if ('M' == $request) $pattern = 'MMM yyyy'; // short month year
-                elseif ('Y' == $request) $pattern = 'yyyy';     // year only
-                $DT_FORMAT = new IntlDateFormatter(
+                $dateFormat = new IntlDateFormatter(
                                     $dateLanguageLocale,
                                     IntlDateFormatter::SHORT,
                                     IntlDateFormatter::SHORT
                                     );
-                $DT_FORMAT->setPattern($pattern);
-                $replace = datefmt_format($DT_FORMAT, $printDate);
+                if ('M' == $request) $pattern = 'MMM yyyy'; // short month year
+                elseif ('Y' == $request) $pattern = 'yyyy';     // year only
+                $dateFormat->setPattern($pattern);
+                $withReplacement = datefmt_format($dateFormat, $printDate);
             }
 
             // replace within item description
-            $item_description = str_replace($replacement, $replace, $item_description);
+            $item_description = str_replace($replaceThis, $withReplacement, $item_description);
 
         } catch (Exception $e) {
             echo 'ERROR Message: ' .$e->getMessage();
