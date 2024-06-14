@@ -28,7 +28,7 @@ class Payment_Information extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
     }
 
-    public function form($invoice_url_key)
+    public function form($invoice_url_key,$payment_provider = null)
     {
         $this->load->model('payment_methods/mdl_payment_methods');
         $disable_form = false;
@@ -82,11 +82,11 @@ class Payment_Information extends Base_Controller
             'gateways' => $available_drivers,
             'payment_method' => $payment_method,
             'is_overdue' => $is_overdue,
-            'invoice_url_key' => $invoice_url_key
+            'invoice_url_key' => $invoice_url_key,
+            'payment_provider' => $payment_provider
         );
-
-        $this->load->view('guest/payment_information', $view_data);
-
+        
+        $this->load->view('guest/payment_information', $view_data) . $payment_provider && $this->$payment_provider($invoice_url_key);
     }
 
     /**
