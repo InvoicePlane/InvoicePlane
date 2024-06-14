@@ -169,13 +169,13 @@ function getLocaleByDisplayName($displayName, $default_locale = 'en') {
 function replaceDateTags($invoice_date_created, $client_language, $item_description) {
     $CI = &get_instance();
 
-    $INVOICE_DATE_CREATED = new DateTime(date_from_mysql($invoice_date_created, true));
+    $invoiceDateCreated = new DateTime(date_from_mysql($invoice_date_created, true));
     
-    if ( 'system' == $client_language ) $DATE_LANGUAGE_LOCALE = get_setting('default_country');
-    else $DATE_LANGUAGE_LOCALE = getLocaleByDisplayName($client_language);
+    if ( 'system' == $client_language ) $dateLanguageLocale = get_setting('default_country');
+    else $dateLanguageLocale = getLocaleByDisplayName($client_language);
 
     // initialize based date
-    $PRINT_DATE = clone($INVOICE_DATE_CREATED);
+    $printDate = clone($invoiceDateCreated);
     // get the tags
     $replacements = explode('{{{', $item_description);
     foreach ($replacements as $replacement) {
@@ -192,38 +192,39 @@ function replaceDateTags($invoice_date_created, $client_language, $item_descript
         // reconstruct original replacement
         $replacement='{{{'.$replace.'}}}';
 
-        // needs to reset if a new relative date occurs
+        // needs to reset if a new/second relative date occurs
+        // within same item description
         try {
             // calculate additions/substractions
             if ($pos = strpos($replace, '+')) {
                 $num = substr($replace,$pos+1);
                 // refresh date to calculate with
-                $PRINT_DATE = clone($INVOICE_DATE_CREATED);
-                $PRINT_DATE->add(new DateInterval( 'P' . $num . $request ));
+                $printDate = clone($invoiceDateCreated);
+                $printDate->add(new DateInterval( 'P' . $num . $request ));
             }
             elseif ($pos = strpos($replace, '-')) {
                 $num = substr($replace,$pos+1);
                 // refresh date to calculate with
-                $PRINT_DATE = clone($INVOICE_DATE_CREATED);
-                $PRINT_DATE->sub(new DateInterval( 'P' . $num . $request ));
+                $printDate = clone($invoiceDateCreated);
+                $printDate->sub(new DateInterval( 'P' . $num . $request ));
             }
             
             // prepare replacement format string
             if ('D' == $request) {
                 // ignore locale and create sql Y-m-d format date
                 // and use ip's function to create a visible date
-                $replace = date_from_mysql(date_format($PRINT_DATE, 'Y-m-d'));
+                $replace = date_from_mysql(date_format($printDate, 'Y-m-d'));
             }
             else {
                 if ('M' == $request) $pattern = 'MMM yyyy'; // short month year
                 elseif ('Y' == $request) $pattern = 'yyyy';     // year only
                 $DT_FORMAT = new IntlDateFormatter(
-                                    $DATE_LANGUAGE_LOCALE,
+                                    $dateLanguageLocale,
                                     IntlDateFormatter::SHORT,
                                     IntlDateFormatter::SHORT
                                     );
                 $DT_FORMAT->setPattern($pattern);
-                $replace = datefmt_format($DT_FORMAT, $PRINT_DATE);
+                $replace = datefmt_format($DT_FORMAT, $printDate);
             }
 
             // replace within item description
