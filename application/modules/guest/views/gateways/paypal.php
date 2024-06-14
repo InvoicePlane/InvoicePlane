@@ -3,6 +3,9 @@
 </div>
 <div id="paypal-buttons"></div>
 
+<div class="container">
+    <div id="paypal-buttons" class="col-xs-12 col-md-8 col-md-offset-2"></div>
+</div>
 <script>
     $.ajax({
         url: "https://www.paypal.com/sdk/js?client-id=<?php echo $paypal_client_id; ?>&currency=<?php echo $currency; ?>",
