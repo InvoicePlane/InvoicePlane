@@ -45,6 +45,7 @@ class Payment_Information extends Base_Controller
         if ($invoice->invoice_balance == 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
             $disable_form = true;
+            show_404();
         }
 
         // Get all payment gateways
