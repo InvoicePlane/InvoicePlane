@@ -235,6 +235,6 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
         } catch (Exception $e) {
             echo 'ERROR Message: ' .$e->getMessage();
         }
-                
+    }            
     return $item_description;
 }
