@@ -58,7 +58,6 @@ class PaypalLib
             log_message('debug', 'Paypal library authorization obtained');
         } catch (ClientException $e) {
             log_message('error', 'Paypal library authorization failed');
-
             return $e->getResponse()->getBody();
         }
     }
@@ -90,14 +89,12 @@ class PaypalLib
                         'custom_id' => $order_information['custom_id'],
                     ]],
                     'intent' => 'CAPTURE',
-                    ]),
+                ]),
             ]);
             log_message('debug', 'Paypal library order creation completed');
-
             return $response->getBody()->getContents();
         } catch (ClientException $e) {
             log_message('debug', 'Paypal library order creation failed');
-
             return ['status' => false, 'error' => $e];
         }
     }
@@ -113,7 +110,7 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library order capturing started');
         try {
-            $response = $this->client->request('POST', 'v2/checkout/orders/'.$order_id.'/capture', [
+            $response = $this->client->request('POST', 'v2/checkout/orders/' . $order_id . '/capture', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $this->bearer_token
@@ -124,7 +121,6 @@ class PaypalLib
             return ['status' => true, 'response' => $response];
         } catch (ClientException $e) {
             log_message('debug', 'Paypal library order capturing failed');
-
             return ['status' => false, 'error' => $e];
         }
     }
@@ -140,18 +136,16 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library show order started');
         try {
-            $response = $this->client->request('GET', 'v2/checkout/orders/'.$order_id, [
+            $response = $this->client->request('GET', 'v2/checkout/orders/' . $order_id, [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $this->bearer_token
                 ]
             ]);
             log_message('debug', 'Paypal library show order completed');
-
             return ['status' => true, 'response' => $response];
         } catch (ClientException $e) {
             log_message('debug', 'Paypal library show order failed');
-
             return ['status' => false, 'error' => $e];
         }
     }
