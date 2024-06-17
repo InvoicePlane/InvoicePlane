@@ -202,13 +202,13 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
             if ($pos = strpos($rawTag, '+')) {
                 $num = substr($rawTag,$pos+1);
                 // refresh date to calculate with
-                $printDate = clone($invoice_date_created);
+                $printDate = clone($invoiceDateCreated);
                 $printDate->add(new DateInterval( 'P' . $num . $request ));
             }
             elseif ($pos = strpos($rawTag, '-')) {
                 $num = substr($rawTag,$pos+1);
                 // refresh date to calculate with
-                $printDate = clone($invoice_date_created);
+                $printDate = clone($invoiceDateCreated);
                 $printDate->sub(new DateInterval( 'P' . $num . $request ));
             }
             
