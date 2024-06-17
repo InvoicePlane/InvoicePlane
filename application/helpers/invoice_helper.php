@@ -232,8 +232,8 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
             // replace within item description
             $item_description = str_replace($replaceThis, $withReplacement, $item_description);
 
-        } catch (Exception $e) {
-            echo 'ERROR Message: ' .$e->getMessage();
+        } catch (\Exception $e) {
+            $item_description = str_replace($replaceThis, trans('invoice_replace_date_tag_invalid'), $item_description);
         }
     }            
     return $item_description;
