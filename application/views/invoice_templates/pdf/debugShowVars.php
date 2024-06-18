@@ -28,7 +28,7 @@
       <pre>You must have something like {{{Month-3}}} {{{Month+1}}} in your last item description to see test results here:<br />
       <?php
         // this should come from a helper function
-        print_r(replaceDateTags($invoice->invoice_date_created, 
+        print_r(invoice_replace_date_tags($invoice->invoice_date_created, 
                                      $invoice->client_language, 
                                        $item->item_description));
         ?></pre>
