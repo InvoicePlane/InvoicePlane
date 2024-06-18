@@ -145,6 +145,7 @@
             $item->item_description = invoice_replace_date_tags($invoice->invoice_date_created, 
                                                                 $invoice->client_language, 
                                                                 $item->item_description);
+            /* $item.save() would fix the description in database, but not be resilient for recurring invoices */
             ?>
             <tr>
                 <td><?php _htmlsc($item->item_name); ?></td>
