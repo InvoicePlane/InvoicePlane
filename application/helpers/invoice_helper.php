@@ -200,15 +200,15 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
         try {
             // calculate additions/substractions
             if ($pos = strpos($rawTag, '+')) {
-                $num = substr($rawTag,$pos+1);
+                $num = max(substr($rawTag,$pos+1),1);
                 // refresh date to calculate with
-                $printDate = clone($invoice_date_created);
+                $printDate = clone($invoiceDateCreated);
                 $printDate->add(new DateInterval( 'P' . $num . $request ));
             }
             elseif ($pos = strpos($rawTag, '-')) {
-                $num = substr($rawTag,$pos+1);
+                $num = max(substr($rawTag,$pos+1),1);
                 // refresh date to calculate with
-                $printDate = clone($invoice_date_created);
+                $printDate = clone($invoiceDateCreated);
                 $printDate->sub(new DateInterval( 'P' . $num . $request ));
             }
             
@@ -234,7 +234,7 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
             $item_description = str_replace($replaceThis, $withReplacement, $item_description);
 
         } catch (Exception $e) {
-            echo 'ERROR Message: ' .$e->getMessage();
+            $item_description = str_replace($replaceThis, trans('invoice_replace_date_tag_invalid'), $item_description);
         }
                 
     return $item_description;
