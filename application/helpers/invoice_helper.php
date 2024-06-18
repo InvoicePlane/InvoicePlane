@@ -150,7 +150,7 @@ function invoice_get_locale_by_displayname($displayName, $default_locale = 'en')
         // get string with langauge part for locale
         $currentName = Locale::getDisplayLanguage($locale, $default_locale);
         if (strncmp($currentName, $displayName, strlen($currentName)) === 0) {
-            // use first/shortest locale match
+            // use first/shortest locale match, could be a static within class
 
             return $locale;
         }
