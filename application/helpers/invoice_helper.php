@@ -188,7 +188,7 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
         if (empty($rawTag)) continue;
 
         // here we do D(ate), M(onth and year) and Y(ear) nothing else
-        $request = strtoupper(substr($rawTag,0,1));  
+        $request = strtoupper(substr($rawTag, 0, 1));  
         // take only first letter, ignore if not within our service
         if (strpos('DMY', $request) === false) continue;
 
@@ -200,13 +200,13 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
         try {
             // calculate additions/substractions
             if ($pos = strpos($rawTag, '+')) {
-                $num = max(substr($rawTag,$pos+1),1);
+                $num = max(substr($rawTag, $pos+1), 1);
                 // refresh date to calculate with
                 $printDate = clone($invoiceDateCreated);
                 $printDate->add(new DateInterval( 'P' . $num . $request ));
             }
             elseif ($pos = strpos($rawTag, '-')) {
-                $num = max(substr($rawTag,$pos+1),1);
+                $num = max(substr($rawTag, $pos+1), 1);
                 // refresh date to calculate with
                 $printDate = clone($invoiceDateCreated);
                 $printDate->sub(new DateInterval( 'P' . $num . $request ));
