@@ -224,16 +224,15 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
                                     IntlDateFormatter::SHORT,
                                     IntlDateFormatter::SHORT
                                     );
-                if ('M' == $request) $pattern = 'MMM yyyy'; // short month year
-                elseif ('Y' == $request) $pattern = 'yyyy';     // year only
-                $dateFormat->setPattern($pattern);
+                if ('M' == $request) $dateFormat->setPattern('MMM yyyy'); // short month year
+                elseif ('Y' == $request) $dateFormat->setPattern('yyyy');     // year only
                 $withReplacement = datefmt_format($dateFormat, $printDate);
             }
 
             // replace within item description
             $item_description = str_replace($replaceThis, $withReplacement, $item_description);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $item_description = str_replace($replaceThis, trans('invoice_replace_date_tag_invalid'), $item_description);
         }
                 
