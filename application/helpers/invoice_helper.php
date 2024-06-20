@@ -167,6 +167,7 @@ function invoice_get_locale_by_displayname($displayName, $default_locale = 'en')
  * @param string item_description
  *   Tags: can have the form {{{month}}}, {{{date}}}, {{{year}}}, {{{month+1}}} etc.
  * @return string
+ * in case of trouble contact markus . neubauer (at) email - online . org
 */
 function invoice_replace_date_tags($invoice_date_created, $client_language, $item_description)
 {
