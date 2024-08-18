@@ -104,7 +104,7 @@ class Sessions extends Base_Controller
     {
         // Check if a token was provided
         if ($token) {
-            if(!preg_match("/[^[:alnum:]\-_]/", $token)) {
+            if(preg_match("/[^[:alnum:]\-_]/", $token)) {
                 log_message('error', 'Incoming token is not alphanumeric ' . $token);
                 redirect('/');
             }
