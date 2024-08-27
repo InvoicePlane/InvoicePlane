@@ -280,7 +280,11 @@
                                         <?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?>
                                     </td>
                                     <td>
-                                        <?php echo anchor('clients/view/' . $project->client_id, htmlsc(format_client($project))); ?>
+                                        <?php if ($project->client_id != null): ?>
+                                            <?php echo anchor('clients/view/' . $project->client_id, htmlsc(format_client($project))); ?>
+                                        <?php else: ?>
+                                            -
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php } ?>
