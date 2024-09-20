@@ -22,6 +22,8 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', trans('add_client')); ?></li>
                         <li><?php echo anchor('clients/index', trans('view_clients')); ?></li>
+                        <li><?php echo anchor('services/form', trans('add_service')); ?></li>
+                        <li><?php echo anchor('services/index', trans('view_services')); ?></li>
                     </ul>
                 </li>
 
