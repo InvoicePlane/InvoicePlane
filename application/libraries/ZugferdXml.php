@@ -123,7 +123,13 @@ class ZugferdXml
     protected function xmlSellerTradeParty($index = '', $item = '')
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
-        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+
+        if (!empty($this->invoice->user_company)) {
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_company)));
+            $node->appendChild($this->doc->createElement('ram:DefinedTradeContact', htmlsc($this->invoice->user_name)));
+        } else {
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+        }
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
