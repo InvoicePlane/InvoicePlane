@@ -125,6 +125,8 @@ class Sumex
         'copy' => "0",
         'storno' => "0"
     );
+    private $currencyCode;
+    private $items;
 
     public function __construct($params)
     {

@@ -1,4 +1,4 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php (defined('BASEPATH')) or exit('No direct script access allowed');
 
 /** load the CI class for Modular Extensions **/
 require dirname(__FILE__) . '/Base.php';
@@ -41,12 +41,12 @@ class MX_Controller
 {
 
     public $autoload = [];
+    private $load;
 
     public function __construct()
     {
-
-	if (CI::$APP->config->item('controller_suffix')==null) $class = str_replace('', '', get_class($this));
-	else $class = str_replace(CI::$APP->config->item('controller_suffix'), '', get_class($this));
+        if (CI::$APP->config->item('controller_suffix') == null) $class = str_replace('', '', get_class($this));
+        else $class = str_replace(CI::$APP->config->item('controller_suffix'), '', get_class($this));
 
         log_message('debug', $class . " MX_Controller Initialized");
         Modules::$registry[strtolower($class)] = $this;

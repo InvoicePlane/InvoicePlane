@@ -18,6 +18,8 @@ class ZugferdXml
     var $invoice;
     var $doc;
     var $root;
+    private $currencyCode;
+    private $items;
 
     public function __construct($params)
     {

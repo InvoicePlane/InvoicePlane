@@ -17,6 +17,7 @@ if (!defined('BASEPATH')) {
  */
 class Validator extends MY_Model
 {
+    private $_formdata;
 
     /**
      * @return bool
