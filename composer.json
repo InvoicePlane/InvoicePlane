@@ -1,6 +1,6 @@
 {
   "name": "invoiceplane/invoiceplane",
-  "version": "1.6",
+  "version": "1.7",
   "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
   "homepage": "https://invoiceplane.com",
   "license": "MIT",
@@ -12,15 +12,26 @@
     }
   },
   "require": {
-    "codeigniter/framework": "3.1.13",
     "endroid/qr-code": "^4.8.5",
     "league/omnipay": "^3.2.1",
-    "mpdf/mpdf": "^8.2",
+    "mpdf/mpdf": "^8.2.4",
     "omnipay/stripe": ">=3.2",
     "paragonie/random_compat": "^2.0.21",
-    "phpmailer/phpmailer": "^6.8.1",
+    "phpmailer/phpmailer": "^6.9.1",
+    "pocketarc/codeigniter": "^3.2.1",
     "setasign/fpdf": "^1.8.6",
     "smhg/sepa-qr-data": "^1.2",
-    "vlucas/phpdotenv": "^5.5"
+    "vlucas/phpdotenv": "^5.6.1"
+  },
+  "require-dev": {
+    "filp/whoops": "^2.15",
+    "laravel/pint": "^1.16",
+    "rector/rector": "0.14.8",
+    "symfony/var-dumper": "^6.4"
+  },
+  "scripts": {
+    "pint": [
+      "vendor/bin/pint"
+    ]
   }
 }
