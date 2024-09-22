@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -11,15 +14,19 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class ZugferdXml
+ * Class ZugferdXml.
  */
 class ZugferdXml
 {
-    var $invoice;
-    var $doc;
-    var $root;
-    private $currencyCode;
-    private $items;
+    public $invoice;
+
+    public $doc;
+
+    public $root;
+
+    public $currencyCode;
+
+    public $items;
 
     public function __construct($params)
     {
@@ -40,7 +47,48 @@ class ZugferdXml
         $this->root->appendChild($this->xmlSpecifiedSupplyChainTradeTransaction());
 
         $this->doc->appendChild($this->root);
+
         return $this->doc->saveXML();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function zugferdFormattedDate($date)
+    {
+        if ($date) {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+
+            return $date->format('Ymd');
+        }
+
+        return '';
+    }
+
+    public function itemsSubtotalGroupedByTaxPercent()
+    {
+        $result = [];
+        foreach ($this->items as $item) {
+            if ($item->item_tax_rate_percent == 0) {
+                continue;
+            }
+
+            if ( ! isset($result[$item->item_tax_rate_percent])) {
+                $result[$item->item_tax_rate_percent] = 0;
+            }
+            $result[$item->item_tax_rate_percent] += $item->item_subtotal;
+        }
+
+        return $result;
+    }
+
+    // ===========================================================================
+    // elements helpers
+    // ===========================================================================
+
+    public function zugferdFormattedFloat($amount, $nb_decimals = 2)
+    {
+        return number_format((float) $amount, $nb_decimals);
     }
 
     protected function xmlRoot()
@@ -50,6 +98,7 @@ class ZugferdXml
         $node->setAttribute('xmlns:rsm', 'urn:ferd:CrossIndustryDocument:invoice:1p0');
         $node->setAttribute('xmlns:ram', 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12');
         $node->setAttribute('xmlns:udt', 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15');
+
         return $node;
     }
 
@@ -59,6 +108,7 @@ class ZugferdXml
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:ferd:CrossIndustryDocument:invoice:1p0:basic'));
         $node->appendChild($guidelineNode);
+
         return $node;
     }
 
@@ -87,19 +137,8 @@ class ZugferdXml
     {
         $el = $this->doc->createElement('udt:DateTimeString', $this->zugferdFormattedDate($date));
         $el->setAttribute('format', 102);
-        return $el;
-    }
 
-    /**
-     * @return string|null
-     */
-    function zugferdFormattedDate($date)
-    {
-        if ($date) {
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-            return $date->format('Ymd');
-        }
-        return '';
+        return $el;
     }
 
     protected function xmlSpecifiedSupplyChainTradeTransaction()
@@ -111,6 +150,7 @@ class ZugferdXml
         foreach ($this->items as $index => $item) {
             $node->appendChild($this->xmlIncludedSupplyChainTradeLineItem($index + 1, $item));
         }
+
         return $node;
     }
 
@@ -119,6 +159,7 @@ class ZugferdXml
         $node = $this->doc->createElement('ram:ApplicableSupplyChainTradeAgreement');
         $node->appendChild($this->xmlSellerTradeParty());
         $node->appendChild($this->xmlBuyerTradeParty());
+
         return $node;
     }
 
@@ -126,7 +167,7 @@ class ZugferdXml
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
 
-        if (!empty($this->invoice->user_company)) {
+        if ( ! empty($this->invoice->user_company)) {
             $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_company)));
             $node->appendChild($this->doc->createElement('ram:DefinedTradeContact', htmlsc($this->invoice->user_name)));
         } else {
@@ -142,6 +183,7 @@ class ZugferdXml
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->user_country)));
 
         $node->appendChild($addressNode);
+
         return $node;
     }
 
@@ -175,6 +217,7 @@ class ZugferdXml
         $el = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
         $node->appendChild($el);
+
         return $node;
     }
 
@@ -189,6 +232,7 @@ class ZugferdXml
         $eventNode->appendChild($dateNode);
 
         $node->appendChild($eventNode);
+
         return $node;
     }
 
@@ -210,22 +254,6 @@ class ZugferdXml
         return $node;
     }
 
-    function itemsSubtotalGroupedByTaxPercent()
-    {
-        $result = [];
-        foreach ($this->items as $item) {
-            if ($item->item_tax_rate_percent == 0) {
-                continue;
-            }
-
-            if (!isset($result[$item->item_tax_rate_percent])) {
-                $result[$item->item_tax_rate_percent] = 0;
-            }
-            $result[$item->item_tax_rate_percent] += $item->item_subtotal;
-        }
-        return $result;
-    }
-
     protected function xmlApplicableTradeTax($percent, $subtotal)
     {
         $node = $this->doc->createElement('ram:ApplicableTradeTax');
@@ -234,6 +262,7 @@ class ZugferdXml
         $node->appendChild($this->currencyElement('ram:BasisAmount', $subtotal));
         $node->appendChild($this->doc->createElement('ram:CategoryCode', 'S'));
         $node->appendChild($this->doc->createElement('ram:ApplicablePercent', $percent));
+
         return $node;
     }
 
@@ -244,16 +273,8 @@ class ZugferdXml
     {
         $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
         $el->setAttribute('currencyID', $this->currencyCode);
+
         return $el;
-    }
-
-    // ===========================================================================
-    // elements helpers
-    // ===========================================================================
-
-    function zugferdFormattedFloat($amount, $nb_decimals = 2)
-    {
-        return number_format((float)$amount, $nb_decimals);
     }
 
     protected function xmlSpecifiedTradeSettlementMonetarySummation()
@@ -267,6 +288,7 @@ class ZugferdXml
         $node->appendChild($this->currencyElement('ram:GrandTotalAmount', $this->invoice->invoice_total));
         $node->appendChild($this->currencyElement('ram:TotalPrepaidAmount', $this->invoice->invoice_paid));
         $node->appendChild($this->currencyElement('ram:DuePayableAmount', $this->invoice->invoice_balance));
+
         return $node;
     }
 
@@ -326,6 +348,7 @@ class ZugferdXml
     {
         $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));
         $el->setAttribute('unitCode', 'C62');
+
         return $el;
     }
 
