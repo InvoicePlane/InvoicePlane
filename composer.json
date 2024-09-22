@@ -12,15 +12,15 @@
     }
   },
   "require": {
-    "codeigniter/framework": "3.1.13",
     "endroid/qr-code": "^4.8.5",
     "league/omnipay": "^3.2.1",
-    "mpdf/mpdf": "^8.2",
+    "mpdf/mpdf": "^8.2.4",
     "omnipay/stripe": ">=3.2",
     "paragonie/random_compat": "^2.0.21",
-    "phpmailer/phpmailer": "^6.8.1",
+    "phpmailer/phpmailer": "^6.9.1",
+    "pocketarc/codeigniter": "^3.2.1",
     "setasign/fpdf": "^1.8.6",
     "smhg/sepa-qr-data": "^1.2",
-    "vlucas/phpdotenv": "^5.5"
+    "vlucas/phpdotenv": "^5.6.1"
   }
 }
