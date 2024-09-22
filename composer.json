@@ -22,5 +22,16 @@
     "setasign/fpdf": "^1.8.6",
     "smhg/sepa-qr-data": "^1.2",
     "vlucas/phpdotenv": "^5.5"
+  },
+  "require-dev": {
+    "filp/whoops": "^2.15",
+    "laravel/pint": "^1.16",
+    "rector/rector": "0.14.8",
+    "symfony/var-dumper": "^6.4"
+  },
+  "scripts": {
+    "pint": [
+      "vendor/bin/pint"
+    ]
   }
 }
