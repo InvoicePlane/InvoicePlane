@@ -70,16 +70,16 @@ foreach ($custom_fields as $custom_field) {
 </div>
 
 <ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
-    <li class="active"><a data-toggle="tab" href="#clientDetails"><?php _trans('details'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientQuotes"><?php _trans('quotes'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientInvoices"><?php _trans('invoices'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientPayments"><?php _trans('payments'); ?></a></li>
+    <li<?php if ($tab === 'detail') echo ' class="active"'; ?>><a data-toggle="tab" href="#clientDetails"><?php _trans('details'); ?></a></li>
+    <li<?php if ($tab === 'quotes') echo ' class="active"'; ?>><a data-toggle="tab" href="#clientQuotes"><?php _trans('quotes'); ?></a></li>
+    <li<?php if ($tab === 'invoices') echo ' class="active"'; ?>><a data-toggle="tab" href="#clientInvoices"><?php _trans('invoices'); ?></a></li>
+    <li<?php if ($tab === 'payments') echo ' class="active"'; ?>><a data-toggle="tab" href="#clientPayments"><?php _trans('payments'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
-    <div class="tab-content no-padding">
+    <div class="tab-content no-padding"s>
 
-        <div id="clientDetails" class="tab-pane tab-rich-content active">
+        <div id="clientDetails" class="tab-pane tab-rich-content<?php if ($tab === 'detail') echo ' active'; ?>">
 
             <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -351,16 +351,34 @@ foreach ($custom_fields as $custom_field) {
 
         </div>
 
-        <div id="clientQuotes" class="tab-pane table-content">
+        <div id="clientQuotes" class="tab-pane table-content<?php if ($tab === 'quotes') echo ' active'; ?>">
             <?php echo $quote_table; ?>
+
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/quotes'), 'mdl_quotes'); ?>
+                </div>
+            </div>
         </div>
 
-        <div id="clientInvoices" class="tab-pane table-content">
+        <div id="clientInvoices" class="tab-pane table-content<?php if ($tab === 'invoices') echo ' active'; ?>">
             <?php echo $invoice_table; ?>
+
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/invoices'), 'mdl_invoices'); ?>
+                </div>
+            </div>
         </div>
 
-        <div id="clientPayments" class="tab-pane table-content">
+        <div id="clientPayments" class="tab-pane table-content<?php if ($tab === 'payments') echo ' active'; ?>">
             <?php echo $payment_table; ?>
+
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/payments'), 'mdl_payments'); ?>
+                </div>
+            </div>
         </div>
     </div>
 
