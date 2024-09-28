@@ -121,7 +121,7 @@
                             class="input-sm form-control simple-select">
                             <?php foreach ($gateway_currency_codes as $val => $key) { ?>
                                 <option value="<?php echo $val; ?>"
-                                    <?php check_select(get_setting('gateway_' . $d . '_currency'), $val); ?>>
+                                    <?php check_select(get_setting('gateway_' . $d . '_currency') ?: get_setting('currency_code'), $val); ?>>
                                     <?php echo $val; ?>
                                 </option>
                             <?php } ?>
