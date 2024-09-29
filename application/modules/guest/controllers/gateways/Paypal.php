@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -27,7 +28,7 @@ class Paypal extends Base_Controller
      * Create the order on PayPal that is then processed when
      * the user inserts the payment method
      *
-     * @param string $invoice_url_key
+     * @param  string  $invoice_url_key
      * @return json the PayPal object to be loaded in the JS SDK script
      */
     public function paypal_create_order($invoice_url_key)
@@ -59,7 +60,7 @@ class Paypal extends Base_Controller
      * Capture the payment which is put on hold on PayPal
      * after the user has set the card details
      *
-     * @param string $order_id
+     * @param  string  $order_id
      * @return void
      */
     public function paypal_capture_payment($order_id)
@@ -96,7 +97,7 @@ class Paypal extends Base_Controller
                 'merchant_response_date' => date('Y-m-d'),
                 'merchant_response_driver' => 'paypal',
                 'merchant_response' => $paypal_object->status,
-                'merchant_response_reference' => 'Resource ID:' . $paypal_object->id,
+                'merchant_response_reference' => 'Resource ID:'.$paypal_object->id,
             ]);
         } else {
             $response_error = json_decode($paypal_response['error']->getResponse()->getBody());
@@ -110,13 +111,13 @@ class Paypal extends Base_Controller
                 'merchant_response_successful' => true,
                 'merchant_response_date' => date('Y-m-d'),
                 'merchant_response_driver' => 'paypal',
-                'merchant_response' => "name: " . $response_error->name . "; details: " . $response_error->details[0]->description,
+                'merchant_response' => 'name: ' . $response_error->name . '; details: ' . $response_error->details[0]->description,
                 'merchant_response_reference' => 'Resource ID:' . $order_id,
             ]);
 
             //set error message to be flashed
             $this->session->set_flashdata('alert_error',
-                trans('online_payment_payment_failed') . '<br/>' . $response_error->details[0]->description);
+                trans('online_payment_payment_failed').'<br/>' . $response_error->details[0]->description);
             $this->session->keep_flashdata('alert_error');
         }
     }
