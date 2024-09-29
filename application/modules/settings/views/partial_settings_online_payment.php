@@ -49,7 +49,7 @@
         </div>
 
         <?php
-        foreach ($gateway_drivers as $driver => $fields) :
+        foreach ($gateway_drivers as $driver => $fields) {
             $d = strtolower($driver);
             ?>
             <div id="gateway-settings-<?php echo $d; ?>"
@@ -73,7 +73,7 @@
                 <div class="panel-body small">
 
                     <?php foreach ($fields as $key => $setting) { ?>
-                        <?php if ($setting['type'] == 'checkbox') : ?>
+                        <?php if ($setting['type'] == 'checkbox') { ?>
 
                             <div class="checkbox">
                                 <label>
@@ -86,7 +86,7 @@
                                 </label>
                             </div>
 
-                        <?php else : ?>
+                        <?php } else { ?>
 
                             <div class="form-group">
                                 <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]">
@@ -95,19 +95,19 @@
                                 <input type="<?php echo $setting['type']; ?>" class="input-sm form-control"
                                     name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     id="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
-                                    <?php if ($setting['type'] == 'password') : ?>
-                                        value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
-                                    <?php else : ?>
+                                    <?php if ($setting['type'] == 'password') { ?>
+                                        value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_'.$key)); ?>"
+                                    <?php } else { ?>
                                         value="<?php echo get_setting('gateway_' . $d . '_' . $key); ?>"
-                                    <?php endif; ?>
+                                    <?php } ?>
                                 >
-                                <?php if ($setting['type'] == 'password') : ?>
+                                <?php if ($setting['type'] == 'password') { ?>
                                     <input type="hidden" value="1"
                                         name="settings[gateway_<?php echo $d . '_' . $key ?>_field_is_password]">
-                                <?php endif; ?>
+                                <?php } ?>
                             </div>
 
-                        <?php endif; ?>
+                        <?php } ?>
                     <?php } ?>
 
                     <hr>
@@ -148,7 +148,7 @@
                 </div>
 
             </div>
-        <?php endforeach; ?>
+        <?php } ?>
 
     </div>
 </div>

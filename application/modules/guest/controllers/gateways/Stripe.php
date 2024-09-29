@@ -2,13 +2,14 @@
 
 use Stripe\StripeClient;
 
-if (!defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 class Stripe extends Base_Controller
 {
     protected StripeClient $stripe;
+
     protected $Mdl_settings;
 
     public function __construct()
@@ -23,7 +24,7 @@ class Stripe extends Base_Controller
      * Creates a checkout session on Stripe
      * that is then retrived to execute the payment
      *
-     * @param string $invoice_url_key the url key that is used to retrive the invoice
+     * @param  string  $invoice_url_key  the url key that is used to retrive the invoice
      * @return json the client secret in a json format
      */
     public function create_checkout_session($invoice_url_key)
@@ -44,7 +45,7 @@ class Stripe extends Base_Controller
             'ui_mode' => 'embedded',
             'return_url' => site_url('guest/gateways/stripe/callback/{CHECKOUT_SESSION_ID}'),
             'client_reference_id' => $invoice->invoice_id,
-            'line_items' => array(
+            'line_items' => [
                 [
                     'price_data' => [
                         'currency' => get_setting('gateway_stripe_currency'),
@@ -55,20 +56,20 @@ class Stripe extends Base_Controller
                     ],
                     'quantity' => 1
                 ],
-            ),
+            ],
             'mode' => 'payment',
         ]);
 
         //TODO: handle exceptions in checkout session
 
-        $this->output->set_output(json_encode(array('clientSecret' => $checkout_session->client_secret)));
+        $this->output->set_output(json_encode(['clientSecret' => $checkout_session->client_secret]));
     }
 
     /**
      * The callback endpoint called by stripe once the
      * card transaction has been completed or aborted
      *
-     * @param string $checkout_session_id
+     * @param  string  $checkout_session_id
      * @return void
      */
     public function callback($checkout_session_id)
@@ -84,7 +85,6 @@ class Stripe extends Base_Controller
             //retrieve the invoice
             $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)
                 ->get()->row();
-
 
             $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
             $this->session->keep_flashdata('alert_success');

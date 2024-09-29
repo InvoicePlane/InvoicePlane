@@ -74,10 +74,10 @@
             <br>
             <?php
             $logo = invoice_logo();
-            if ($logo) {
-                echo $logo . '<br><br>';
-            }
-            ?>
+if ($logo) {
+    echo $logo . '<br><br>';
+}
+?>
 
             <div class="form-group">
                 <?php echo $this->layout->load_view('layout/alerts', ['without_margin' => true]); ?>
@@ -93,7 +93,7 @@
                                 <?php _htmlsc(format_client($invoice)) ?>
                             </h4>
                             <div class="client-address">
-                                <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
+                                <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
                             </div>
                         </div>
 
@@ -106,48 +106,48 @@
                                         <td><?php echo trans('invoice_date'); ?></td>
                                         <td class="text-right"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                                     </tr>
-                                    <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                                    <tr class="<?php echo $is_overdue ? 'overdue' : '' ?>">
                                         <td><?php echo trans('due_date'); ?></td>
                                         <td class="text-right">
                                             <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                                         </td>
                                     </tr>
-                                    <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                                    <tr class="<?php echo $is_overdue ? 'overdue' : '' ?>">
                                         <td><?php echo trans('total'); ?></td>
                                         <td class="text-right"><?php echo format_currency($invoice->invoice_total); ?></td>
                                     </tr>
-                                    <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                                    <tr class="<?php echo $is_overdue ? 'overdue' : '' ?>">
                                         <td><?php echo trans('balance'); ?></td>
                                         <td class="text-right"><?php echo format_currency($invoice->invoice_balance); ?></td>
                                     </tr>
-                                    <?php if ($payment_method): ?>
+                                    <?php if ($payment_method) { ?>
                                         <tr>
                                             <td><?php echo trans('payment_method') . ': '; ?></td>
                                             <td class="text-right"><?php _htmlsc($payment_method->payment_method_name); ?></td>
                                         </tr>
-                                    <?php endif; ?>
+                                    <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <?php if (!empty($invoice->invoice_terms)) : ?>
+                        <?php if (! empty($invoice->invoice_terms)) { ?>
                             <div class="col-xs-12 text-muted">
                                 <br>
                                 <h4><?php echo trans('terms'); ?></h4>
                                 <div><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></div>
                             </div>
-                        <?php endif; ?>
+                        <?php } ?>
                     </div>
 
                 </div>
             </div>
-            <?php if($payment_provider == null) { ?>
+            <?php if ($payment_provider == null) { ?>
                 <div>
                     <p><?php echo trans('select_payment_method'); ?></p>
                 </div>
                 <ul class="list-group">
-                    <?php foreach($gateways as $gateway) { ?>
-                        <a class="list-group-item list-group-item-action" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway);?>"><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></a>
+                    <?php foreach ($gateways as $gateway) { ?>
+                        <a class="list-group-item list-group-item-action" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway); ?>"><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></a>
                     <?php } ?>
                 </ul>
             <?php } ?>
