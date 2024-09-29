@@ -21,7 +21,7 @@
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
@@ -56,7 +56,7 @@
             <div class="form-group">
                 <label for="copy_invoice_client_id"><?php _trans('client'); ?></label>
                 <select name="client_id" id="copy_invoice_client_id" class="client-id-select form-control" autofocus="autofocus">
-                <?php if (!empty($client)) : ?>
+                <?php if ( ! empty($client)) : ?>
                         <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
                     <?php endif; ?>
                 </select>
