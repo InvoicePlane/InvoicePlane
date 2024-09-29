@@ -1,5 +1,14 @@
 <?php
+<<<<<<< HEAD
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+=======
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
+>>>>>>> 44a388fe (fix formatting)
 
 /*
  * InvoicePlane
@@ -46,12 +55,21 @@ class Clients extends Admin_Controller
         $clients = $this->mdl_clients->result();
 
         $this->layout->set(
+<<<<<<< HEAD
             array(
                 'records' => $clients,
                 'filter_display' => true,
                 'filter_placeholder' => trans('filter_clients'),
                 'filter_method' => 'filter_clients'
             )
+=======
+            [
+                'records'            => $clients,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_clients'),
+                'filter_method'      => 'filter_clients',
+            ]
+>>>>>>> 44a388fe (fix formatting)
         );
 
         $this->layout->buffer('content', 'clients/index');
@@ -71,10 +89,17 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
+<<<<<<< HEAD
             $check = $this->db->get_where('ip_clients', array(
                 'client_name' => $this->input->post('client_name'),
                 'client_surname' => $this->input->post('client_surname')
             ))->result();
+=======
+            $check = $this->db->get_where('ip_clients', [
+                'client_name'    => $this->input->post('client_name'),
+                'client_surname' => $this->input->post('client_surname'),
+            ])->result();
+>>>>>>> 44a388fe (fix formatting)
 
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
@@ -114,6 +139,10 @@ class Clients extends Admin_Controller
             } else {
                 redirect('clients/view/' . $id);
             }
+<<<<<<< HEAD
+=======
+            redirect('clients/view/' . $id);
+>>>>>>> 44a388fe (fix formatting)
         }
 
         if ($id and !$this->input->post('btn_submit')) {
@@ -220,6 +249,7 @@ class Clients extends Admin_Controller
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
 
         $this->layout->set(
+<<<<<<< HEAD
             array(
                 'client' => $client,
                 'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
@@ -231,6 +261,19 @@ class Clients extends Admin_Controller
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'tab' => $tab
             )
+=======
+            [
+                'client'           => $client,
+                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices'         => $this->mdl_invoices->result(),
+                'quotes'           => $this->mdl_quotes->result(),
+                'payments'         => $this->mdl_payments->result(),
+                'custom_fields'    => $custom_fields,
+                'quote_statuses'   => $this->mdl_quotes->statuses(),
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'tab'              => $tab,
+            ]
+>>>>>>> 44a388fe (fix formatting)
         );
 
         $this->layout->buffer(
