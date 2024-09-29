@@ -197,18 +197,18 @@ class Mdl_Quotes extends Response_Model
 
         foreach ($quote_items as $quote_item) {
             $db_array = [
-                'quote_id'         => $target_id,
-                'item_tax_rate_id' => $quote_item->item_tax_rate_id,
-                'item_product_id'   => $quote_item?->item_product_id,
-                'item_name' => $quote_item->item_name,
-                'item_description' => $quote_item->item_description,
-                'item_quantity' => $quote_item->item_quantity,
-                'item_price' => $quote_item->item_price,
+                'quote_id'             => $target_id,
+                'item_tax_rate_id'     => $quote_item->item_tax_rate_id,
+                'item_product_id'      => $quote_item?->item_product_id,
+                'item_name'            => $quote_item->item_name,
+                'item_description'     => $quote_item->item_description,
+                'item_quantity'        => $quote_item->item_quantity,
+                'item_price'           => $quote_item->item_price,
                 'item_discount_amount' => $quote_item?->item_discount_amount,
-                'item_order' => $quote_item->item_order,
-                'item_product_unit' => $quote_item?->item_product_unit,
+                'item_order'           => $quote_item->item_order,
+                'item_product_unit'    => $quote_item?->item_product_unit,
                 'item_product_unit_id' => $quote_item?->item_product_unit_id,
-            );
+            ];
 
             $this->mdl_quote_items->save(null, $db_array);
         }
