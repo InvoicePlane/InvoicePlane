@@ -24,7 +24,7 @@ class Stripe extends Base_Controller
      * Creates a checkout session on Stripe
      * that is then retrived to execute the payment
      *
-     * @param string $invoice_url_key the url key that is used to retrive the invoice
+     * @param  string  $invoice_url_key  the url key that is used to retrive the invoice
      * @return json the client secret in a json format
      */
     public function create_checkout_session($invoice_url_key)
@@ -69,7 +69,7 @@ class Stripe extends Base_Controller
      * The callback endpoint called by stripe once the
      * card transaction has been completed or aborted
      *
-     * @param string $checkout_session_id
+     * @param  string  $checkout_session_id
      * @return void
      */
     public function callback($checkout_session_id)
@@ -85,7 +85,6 @@ class Stripe extends Base_Controller
             //retrieve the invoice
             $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)
                 ->get()->row();
-
 
             $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
             $this->session->keep_flashdata('alert_success');

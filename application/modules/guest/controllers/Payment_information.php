@@ -1,7 +1,5 @@
 <?php
 
-use GuzzleHttp\Client;
-
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
@@ -28,7 +26,7 @@ class Payment_Information extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
     }
 
-    public function form($invoice_url_key,$payment_provider = null)
+    public function form($invoice_url_key, $payment_provider = null)
     {
         $this->load->model('payment_methods/mdl_payment_methods');
         $disable_form = false;

@@ -89,7 +89,7 @@ class PaypalLib
                         'custom_id' => $order_information['custom_id'],
                     ]],
                     'intent' => 'CAPTURE',
-                ]),
+                    ]),
             ]);
             log_message('debug', 'Paypal library order creation completed');
             return $response->getBody()->getContents();
@@ -110,7 +110,7 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library order capturing started');
         try {
-            $response = $this->client->request('POST', 'v2/checkout/orders/' . $order_id . '/capture', [
+            $response = $this->client->request('POST', 'v2/checkout/orders/'.$order_id.'/capture', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $this->bearer_token
@@ -136,7 +136,7 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library show order started');
         try {
-            $response = $this->client->request('GET', 'v2/checkout/orders/' . $order_id, [
+            $response = $this->client->request('GET', 'v2/checkout/orders/'.$order_id, [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $this->bearer_token
