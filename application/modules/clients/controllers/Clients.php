@@ -4,9 +4,7 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
-
-require dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
+require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 
 /*
  * InvoicePlane
@@ -56,10 +54,10 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             [
-                'records' => $clients,
-                'filter_display' => true,
+                'records'            => $clients,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_clients'),
-                'filter_method' => 'filter_clients',
+                'filter_method'      => 'filter_clients',
             ]
         );
 
@@ -81,7 +79,7 @@ class Clients extends Admin_Controller
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', [
-                'client_name' => $this->input->post('client_name'),
+                'client_name'    => $this->input->post('client_name'),
                 'client_surname' => $this->input->post('client_surname'),
             ])->result();
 
@@ -117,7 +115,6 @@ class Clients extends Admin_Controller
                 return;
             }
             redirect('clients/view/' . $id);
-
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
@@ -224,15 +221,15 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             [
-                'client' => $client,
-                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices' => $this->mdl_invoices->result(),
-                'quotes' => $this->mdl_quotes->result(),
-                'payments' => $this->mdl_payments->result(),
-                'custom_fields' => $custom_fields,
-                'quote_statuses' => $this->mdl_quotes->statuses(),
+                'client'           => $client,
+                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices'         => $this->mdl_invoices->result(),
+                'quotes'           => $this->mdl_quotes->result(),
+                'payments'         => $this->mdl_payments->result(),
+                'custom_fields'    => $custom_fields,
+                'quote_statuses'   => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
-                'tab' => $tab
+                'tab'              => $tab,
             ]
         );
 
