@@ -85,7 +85,7 @@ $locations = [];
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
-    <div class="tab-content no-padding"s>
+    <div class="tab-content no-padding">
 
         <div id="clientDetails" class="tab-pane tab-rich-content <?php if ($activeTab === 'detail') {
             echo ' active';
