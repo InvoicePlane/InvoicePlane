@@ -26,6 +26,13 @@
             }
         });
 
+        // Checks if esc is pressed, if yes close modal
+        $(document).on('keydown', function (event) {
+        if (event.key === 'Escape') {
+            $('#create-quote').modal('hide');
+            } 
+        })
+
         // Creates the quote
         $('#quote_create_confirm').click(function () {
             console.log('clicked');

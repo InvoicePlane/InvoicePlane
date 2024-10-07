@@ -27,6 +27,13 @@
             }
         });
 
+        // Checks if esc is pressed, if yes close modal
+        $(document).on('keydown', function (event) {
+        if (event.key === 'Escape') {
+            $('#create-invoice').modal('hide');
+            } 
+        })
+
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
