@@ -418,4 +418,25 @@ class Ajax extends Admin_Controller
         ]);
     }
 
+    // Modal preview PDF
+    public function modal_preview_pdf()
+    {
+        $this->load->module('layout');
+
+        $this->load->model('quotes/mdl_quotes');
+        $this->load->model('invoice_groups/mdl_invoice_groups');
+        $this->load->model('tax_rates/mdl_tax_rates');
+        $this->load->model('clients/mdl_clients'); 
+
+        $data = [
+            'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
+            'tax_rates' => $this->mdl_tax_rates->get()->result(),
+            'quote_id' => $this->input->post('quote_id'),
+            'quote' => $this->mdl_quotes->where('ip_quotes.quote_id', $this->input->post('quote_id'))->get()->row(),
+            'client' => $this->mdl_clients->get_by_id($this->input->post('client_id')),
+        ];
+
+        $this->layout->load_view('quotes/modal_preview_pdf', $data);
+    }
+    
 }
