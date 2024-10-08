@@ -10,11 +10,11 @@
 <body>
 <header class="clearfix">
 
-    <div id="logo">
+    <div id="logo<?php if (get_setting('default_reverse_logo') == 1) echo '-invert'; ?>">
         <?php echo invoice_logo_pdf(); ?>
     </div>
 
-    <div id="client">
+    <div id="client<?php if (get_setting('default_reverse_customer_company') == 1) echo '-invert'; ?>">
         <div>
             <b><?php _htmlsc($quote->client_name); ?></b>
         </div>
@@ -54,7 +54,7 @@
         } ?>
 
     </div>
-    <div id="company">
+    <div id="company<?php if (get_setting('default_reverse_customer_company') == 1) echo '-invert'; ?>">
         <div><b><?php _htmlsc($quote->user_name); ?></b></div>
         <?php if ($quote->user_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . $quote->user_vat_id . '</div>';

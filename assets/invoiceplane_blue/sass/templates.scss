@@ -48,6 +48,11 @@ header {
   margin-bottom: 30px;
 }
 
+#logo-invert {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
 #invoice-logo {
   max-height: 125px;
   text-align: right;
@@ -67,10 +72,22 @@ header {
   width: 40%;
 }
 
+#company-invert {
+  float: left;
+  width: 55%;
+  margin-right: 5%;
+}
+
 #client {
   float: left;
   width: 55%;
   margin-right: 5%;
+}
+
+#client-invert {
+  float: right;
+  text-align: right;
+  width: 40%;
 }
 
 .invoice-details {
