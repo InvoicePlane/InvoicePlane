@@ -36,6 +36,13 @@ class Clients extends Admin_Controller
         redirect('clients/status/active');
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param string $status
+     * @param int    $page
+     */
+>>>>>>> 284992de (Add filter_input function and filter_input in the Clients module)
     public function status($status = 'active', $page = 0)
     {
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
@@ -48,10 +55,17 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             [
+<<<<<<< HEAD
                 'records'            => $clients,
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_clients'),
                 'filter_method'      => 'filter_clients',
+=======
+                'records' => $clients,
+                'filter_display' => true,
+                'filter_placeholder' => trans('filter_clients'),
+                'filter_method' => 'filter_clients',
+>>>>>>> 284992de (Add filter_input function and filter_input in the Clients module)
             ]
         );
 
@@ -66,11 +80,16 @@ class Clients extends Admin_Controller
         }
 
         $new_client = false;
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', [
+<<<<<<< HEAD
                 'client_name'    => $this->input->post('client_name'),
+=======
+                'client_name' => $this->input->post('client_name'),
+>>>>>>> 284992de (Add filter_input function and filter_input in the Clients module)
                 'client_surname' => $this->input->post('client_surname'),
             ])->result();
 
@@ -164,6 +183,7 @@ class Clients extends Admin_Controller
         $this->load->helper('country');
         $this->load->helper('custom_values');
 
+<<<<<<< HEAD
         $this->layout->set([
                 'custom_fields'        => $custom_fields,
                 'custom_values'        => $custom_values,
@@ -172,6 +192,17 @@ class Clients extends Admin_Controller
                 'languages'            => get_available_languages(),
                 'client_title_choices' => $this->get_client_title_choices(),
             ]);
+=======
+        $this->layout->set(
+            [
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
+                'countries' => get_country_list(trans('cldr')),
+                'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+                'languages' => get_available_languages(),
+            ]
+        );
+>>>>>>> 284992de (Add filter_input function and filter_input in the Clients module)
 
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
@@ -201,6 +232,7 @@ class Clients extends Admin_Controller
             show_404();
         }
 
+<<<<<<< HEAD
         $this->mdl_invoices->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/invoices'), $page, 5);
         $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
@@ -218,6 +250,23 @@ class Clients extends Admin_Controller
             ]);
 
         $this->layout->buffer([
+=======
+        $this->layout->set(
+            [
+                'client' => $client,
+                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
+                'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
+                'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
+                'custom_fields' => $custom_fields,
+                'quote_statuses' => $this->mdl_quotes->statuses(),
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+            ]
+        );
+
+        $this->layout->buffer(
+            [
+>>>>>>> 284992de (Add filter_input function and filter_input in the Clients module)
                 [
                     'invoice_table',
                     'invoices/partial_invoice_table',
@@ -238,7 +287,12 @@ class Clients extends Admin_Controller
                     'content',
                     'clients/view',
                 ],
+<<<<<<< HEAD
             ]);
+=======
+            ]
+        );
+>>>>>>> 284992de (Add filter_input function and filter_input in the Clients module)
 
         $this->layout->render();
     }
