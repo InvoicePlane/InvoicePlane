@@ -141,5 +141,4 @@ function pdf_create(
     $mpdf->Output(UPLOADS_TEMP_FOLDER . $filename . '.pdf', 'F');
 
     return UPLOADS_TEMP_FOLDER . $filename . '.pdf';
-
 }
