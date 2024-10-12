@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -102,9 +105,9 @@ class Clients extends Admin_Controller
                 redirect('clients/form/' . $id);
 
                 return;
-            } else {
-                redirect('clients/view/' . $id);
             }
+            redirect('clients/view/' . $id);
+
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
