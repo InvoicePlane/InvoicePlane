@@ -206,6 +206,7 @@ $cv = $this->controller->view_data["custom_values"];
 <?php
 echo $modal_delete_invoice;
 echo $modal_add_invoice_tax;
+echo $modal_payment_method_options;
 if ($this->config->item('disable_read_only') == true) {
     $invoice->is_read_only = 0;
 }
@@ -465,10 +466,15 @@ if ($this->config->item('disable_read_only') == true) {
                                             <option <?php check_select($invoice->payment_method,
                                                 $payment_method->payment_method_id) ?>
                                                 value="<?php echo $payment_method->payment_method_id; ?>">
-                                                <?php echo $payment_method->payment_method_name; ?>
+                                                <?= $payment_method->payment_method_name ?>
                                             </option>
                                         <?php } ?>
                                     </select>
+                                </div>
+                                <div class="invoice-properties">
+                                    <a href="#payment_method_options" class="btn btn-sm btn-default" data-toggle="modal">
+                                        <?php _trans('payment_method_type_invoice_options'); ?>
+                                    </a>
                                 </div>
 
                                 <div class="invoice-properties">
