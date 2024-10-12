@@ -1,6 +1,12 @@
 <?php
 
+<<<<<<< HEAD
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+=======
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+>>>>>>> 9e46a5d2 (Add filter_input for all the controllers that have the form() function)
 
 require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 
@@ -125,6 +131,10 @@ class Clients extends Admin_Controller
                 return;
             }
             redirect('clients/view/' . $id);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9e46a5d2 (Add filter_input for all the controllers that have the form() function)
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
