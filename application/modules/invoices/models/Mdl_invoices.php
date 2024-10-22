@@ -371,11 +371,6 @@ class Mdl_Invoices extends Response_Model
 
         $this->db->where('invoice_id', $invoice->invoice_id);
         $payment_results = $this->db->get('ip_payments');
-
-        if ($payment_results->num_rows()) {
-            return $invoice;
-        }
-
         $invoice->payments = $payment_results->result();
 
         return $invoice;
