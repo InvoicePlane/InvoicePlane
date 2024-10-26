@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Payment_Methods
+ * @AllowDynamicProperties
  */
 class Payment_Methods extends Admin_Controller
 {

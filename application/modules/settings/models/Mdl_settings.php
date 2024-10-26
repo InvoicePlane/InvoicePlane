@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Settings
+ * @AllowDynamicProperties
  */
 class Mdl_Settings extends CI_Model
 {

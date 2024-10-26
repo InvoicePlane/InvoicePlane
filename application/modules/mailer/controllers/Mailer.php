@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mailer
+ * @AllowDynamicProperties
  */
 class Mailer extends Admin_Controller
 {

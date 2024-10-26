@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Invoice_Groups
+ * @AllowDynamicProperties
  */
 class Invoice_Groups extends Admin_Controller
 {

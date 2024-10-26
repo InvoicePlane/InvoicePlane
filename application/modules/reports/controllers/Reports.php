@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Reports
+ * @AllowDynamicProperties
  */
 class Reports extends Admin_Controller
 {

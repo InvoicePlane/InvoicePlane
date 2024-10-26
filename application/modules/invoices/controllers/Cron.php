@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Cron
+ * @AllowDynamicProperties
  */
 class Cron extends Base_Controller
 {

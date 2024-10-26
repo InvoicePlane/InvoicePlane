@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Custom_Fields
+ * @AllowDynamicProperties
  */
 class Custom_Fields extends Admin_Controller
 {

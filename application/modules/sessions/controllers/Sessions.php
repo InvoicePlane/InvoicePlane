@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Sessions
+ * @AllowDynamicProperties
  */
 class Sessions extends Base_Controller
 {

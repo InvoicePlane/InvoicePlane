@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) {
  */
 
 /**
- * Class Setup
+ * @AllowDynamicProperties
  */
 class Setup extends MX_Controller
 {

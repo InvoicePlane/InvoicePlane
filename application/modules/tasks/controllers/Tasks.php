@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Tasks
+ * @AllowDynamicProperties
  */
 class Tasks extends Admin_Controller
 {

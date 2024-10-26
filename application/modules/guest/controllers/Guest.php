@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Guest
+ * @AllowDynamicProperties
  */
 class Guest extends Guest_Controller
 {

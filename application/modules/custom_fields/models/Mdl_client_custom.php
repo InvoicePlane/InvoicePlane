@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Client_Custom
+ * @AllowDynamicProperties
  */
 class Mdl_Client_Custom extends Validator
 {

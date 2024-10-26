@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) {
  */
 
 /**
- * Class Invoices
+ * @AllowDynamicProperties
  */
 class Invoices extends Admin_Controller
 {

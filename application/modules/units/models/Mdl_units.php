@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Units
+ * @AllowDynamicProperties
  */
 class Mdl_Units extends Response_Model
 {

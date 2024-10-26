@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Invoices_Recurring
+ * @AllowDynamicProperties
  */
 class Mdl_Invoices_Recurring extends Response_Model
 {

@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Tax_Rates
+ * @AllowDynamicProperties
  */
 class Mdl_Tax_Rates extends Response_Model
 {

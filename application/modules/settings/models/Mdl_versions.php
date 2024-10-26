@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) {
  */
 
 /**
- * Class Mdl_Versions
+ * @AllowDynamicProperties
  */
 class Mdl_Versions extends Response_Model
 {

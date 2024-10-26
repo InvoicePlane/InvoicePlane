@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Invoice_Custom
+ * @AllowDynamicProperties
  */
 class Mdl_Invoice_Custom extends Validator
 {

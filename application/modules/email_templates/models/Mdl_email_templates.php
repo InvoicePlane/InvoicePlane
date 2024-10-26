@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Email_Templates
+ * @AllowDynamicProperties
  */
 class Mdl_Email_Templates extends Response_Model
 {
@@ -74,5 +74,4 @@ class Mdl_Email_Templates extends Response_Model
             )
         );
     }
-
 }
