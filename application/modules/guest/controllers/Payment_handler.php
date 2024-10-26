@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Payment_Handler
+ * @AllowDynamicProperties
  */
 class Payment_Handler extends Base_Controller
 {
@@ -67,7 +67,7 @@ class Payment_Handler extends Base_Controller
                         trans('online_payment_card_invalid') . '<br/>' . $e->getMessage());
                     redirect('guest/payment_information/form/' . $invoice->invoice_url_key);
                 }
-            } 
+            }
             elseif($cc_number && in_array($d,['stripe'])) {
                 $credit_card = $cc_number;
             }

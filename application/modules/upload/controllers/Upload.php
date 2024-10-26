@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Upload
+ * @AllowDynamicProperties
  */
 class Upload extends Admin_Controller
 {

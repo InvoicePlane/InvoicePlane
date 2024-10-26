@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Settings
+ * @AllowDynamicProperties
  */
 class Settings extends Admin_Controller
 {

@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Import
+ * @AllowDynamicProperties
  */
 class Import extends Admin_Controller
 {

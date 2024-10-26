@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Dashboard
+ * @AllowDynamicProperties
  */
 class Dashboard extends Admin_Controller
 {

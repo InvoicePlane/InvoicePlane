@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Recurring
+ * @AllowDynamicProperties
  */
 class Recurring extends Admin_Controller
 {

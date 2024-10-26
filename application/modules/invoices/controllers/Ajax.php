@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) {
  */
 
 /**
- * Class Ajax
+ * @AllowDynamicProperties
  */
 class Ajax extends Admin_Controller
 {

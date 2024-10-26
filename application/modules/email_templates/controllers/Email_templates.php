@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Email_Templates
+ * @AllowDynamicProperties
  */
 class Email_Templates extends Admin_Controller
 {
