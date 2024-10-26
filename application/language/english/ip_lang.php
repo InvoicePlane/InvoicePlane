@@ -1,5 +1,5 @@
 <?php
-$lang = array(
+$lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
@@ -631,7 +631,6 @@ $lang = array(
     'yes'                                          => 'Yes',
     'zip'                                          => 'Zip Code',
     'zip_code'                                     => 'Zip Code',
-
     //Time Management
     'default_hourly_rate'                          => 'Default hourly rate',
     'add_task'                                     => 'Add task',
@@ -660,7 +659,6 @@ $lang = array(
     'alert_task_delete'                            => 'Caution! You want to delete a task that was used to generate an invoice.',
     'info_task_readonly'                           => 'This task cannot be altered anymore because it is already invoiced.',
     'enable_projects'                              => 'Enable the Projects module',
-
     // Sumex
     'sumex_settings'                               => 'Sumex Settings',
     'birthdate'                                    => 'Birthdate',
@@ -727,11 +725,9 @@ $lang = array(
     'sumex_veka'                                   => 'VEKA',
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
-
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
-
     // Types
     'true'                                         => 'True',
-    'false'                                        => 'False'
-);
+    'false'                                        => 'False',
+];
