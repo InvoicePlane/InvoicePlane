@@ -15,7 +15,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Payment_Handler extends Base_Controller
 {
-
     /**
      * Payment_Handler constructor.
      */
@@ -330,5 +329,4 @@ class Payment_Handler extends Base_Controller
         // Redirect to guest invoice view with flash message
         redirect('guest/view/invoice/' . $invoice_url_key);
     }
-
 }

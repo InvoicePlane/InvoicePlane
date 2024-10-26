@@ -500,5 +500,4 @@ class Mdl_Quotes extends Response_Model
             }
         }
     }
-
 }

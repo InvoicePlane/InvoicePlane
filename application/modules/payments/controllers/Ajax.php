@@ -56,5 +56,4 @@ class Ajax extends Admin_Controller
 
         $this->layout->load_view('payments/modal_add_payment', $data);
     }
-
 }

@@ -84,5 +84,4 @@ class Products extends Admin_Controller
         $this->mdl_products->delete($id);
         redirect('products');
     }
-
 }

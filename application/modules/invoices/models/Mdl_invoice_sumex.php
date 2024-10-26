@@ -79,5 +79,4 @@ class Mdl_invoice_sumex extends Response_Model
             )
         );
     }
-
 }

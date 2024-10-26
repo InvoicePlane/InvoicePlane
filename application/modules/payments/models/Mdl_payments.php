@@ -222,5 +222,4 @@ class Mdl_Payments extends Response_Model
         $this->filter_where('ip_clients.client_id', $client_id);
         return $this;
     }
-
 }

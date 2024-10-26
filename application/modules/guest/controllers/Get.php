@@ -46,5 +46,4 @@ class Get extends Base_Controller
         show_404();
         exit;
     }
-
 }

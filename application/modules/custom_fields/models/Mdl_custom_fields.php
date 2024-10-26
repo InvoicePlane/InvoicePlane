@@ -15,7 +15,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Custom_Fields extends MY_Model
 {
-
     public $table = 'ip_custom_fields';
 
     public $primary_key = 'ip_custom_fields.custom_field_id';
@@ -316,5 +315,4 @@ class Mdl_Custom_Fields extends MY_Model
 
         $this->dbforge->add_column($table_name, $column);
     }
-
 }

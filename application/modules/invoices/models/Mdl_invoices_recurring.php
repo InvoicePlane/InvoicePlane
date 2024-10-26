@@ -149,5 +149,4 @@ class Mdl_Invoices_Recurring extends Response_Model
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
         $this->db->update('ip_invoices_recurring', $db_array);
     }
-
 }

@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) {
  */
 
 /**
- * Class Response_Model
+ * @AllowDynamicProperties
  */
 class Response_Model extends Form_Validation_Model
 {

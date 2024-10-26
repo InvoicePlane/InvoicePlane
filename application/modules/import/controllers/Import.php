@@ -114,5 +114,4 @@ class Import extends Admin_Controller
         $this->mdl_import->delete($id);
         redirect('import');
     }
-
 }

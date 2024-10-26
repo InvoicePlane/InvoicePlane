@@ -15,7 +15,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Quote_Items extends Response_Model
 {
-
     public $table = 'ip_quote_items';
 
     public $primary_key = 'ip_quote_items.item_id';
@@ -139,5 +138,4 @@ class Mdl_Quote_Items extends Response_Model
 
         return true;
     }
-
 }

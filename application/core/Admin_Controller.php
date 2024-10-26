@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) {
  */
 
 /**
- * Class Admin_Controller
+ * @AllowDynamicProperties
  */
 class Admin_Controller extends User_Controller
 {

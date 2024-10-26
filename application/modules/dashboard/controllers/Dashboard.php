@@ -47,5 +47,4 @@ class Dashboard extends Admin_Controller
         $this->layout->buffer('content', 'dashboard/index');
         $this->layout->render();
     }
-
 }

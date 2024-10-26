@@ -724,5 +724,4 @@ class Mdl_Reports extends CI_Model
         $this->db->order_by('client_namesurname');
         return $this->db->get('ip_clients')->result();
     }
-
 }

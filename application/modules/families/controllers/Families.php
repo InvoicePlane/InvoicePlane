@@ -81,5 +81,4 @@ class Families extends Admin_Controller
         $this->mdl_families->delete($id);
         redirect('families');
     }
-
 }

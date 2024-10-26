@@ -420,5 +420,4 @@ class Mdl_Import extends Response_Model
         $this->load->helper('orphan');
         delete_orphans();
     }
-
 }

@@ -114,5 +114,4 @@ class User_Clients extends Admin_Controller
         $this->mdl_user_clients->delete($user_client_id);
         redirect('user_clients/user/' . $ref->user_id);
     }
-
 }

@@ -46,5 +46,4 @@ class Payments extends Guest_Controller
         $this->layout->buffer('content', 'guest/payments_index');
         $this->layout->render('layout_guest');
     }
-
 }

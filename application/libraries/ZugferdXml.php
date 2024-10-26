@@ -11,13 +11,15 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class ZugferdXml
+ * @AllowDynamicProperties
  */
 class ZugferdXml
 {
     var $invoice;
     var $doc;
     var $root;
+    private $currencyCode;
+    private mixed $items;
 
     public function __construct($params)
     {

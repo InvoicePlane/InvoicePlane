@@ -13,7 +13,7 @@ if (!defined('BASEPATH')) {
  */
 
 /**
- * Class Base_Controller
+ * @AllowDynamicProperties
  */
 class Base_Controller extends MX_Controller
 {

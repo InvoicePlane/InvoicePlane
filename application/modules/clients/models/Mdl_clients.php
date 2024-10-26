@@ -256,5 +256,4 @@ class Mdl_Clients extends Response_Model
         $this->filter_where('client_active', 1);
         return $this;
     }
-
 }

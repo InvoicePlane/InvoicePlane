@@ -17,7 +17,6 @@ if (!defined('BASEPATH')) {
  */
 class Ajax extends Admin_Controller
 {
-
     public $ajax_controller = true;
 
     public function save()
@@ -488,5 +487,4 @@ class Ajax extends Admin_Controller
             'success' => $success
         ]);
     }
-
 }
