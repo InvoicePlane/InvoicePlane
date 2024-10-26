@@ -51,7 +51,7 @@ class Units extends Admin_Controller
             && $this->input->post('unit_name') != ''
             && $this->input->post('unit_name_plrl') != ''
         ) {
-            $check = $this->db->get_where('ip_units', array('unit_name' => $this->input->post('unit_name')))->result();
+            $check = $this->db->get_where('ip_units', ['unit_name' => $this->input->post('unit_name')])->result();
 
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('unit_already_exists'));

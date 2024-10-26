@@ -90,16 +90,11 @@ class Quotes extends Guest_Controller
         $this->mdl_quotes->mark_viewed($quote->quote_id);
 
         $this->layout->set(
-            array(
-                'quote' => $quote,
-                'items' => $this->mdl_quote_items
-                    ->where('quote_id', $quote_id)
-                    ->get()->result(),
-                'quote_tax_rates' => $this->mdl_quote_tax_rates
-                    ->where('quote_id', $quote_id)
-                    ->get()->result(),
-                'quote_id' => $quote_id
-            )
+            ['quote' => $quote, 'items' => $this->mdl_quote_items
+                ->where('quote_id', $quote_id)
+                ->get()->result(), 'quote_tax_rates' => $this->mdl_quote_tax_rates
+                ->where('quote_id', $quote_id)
+                ->get()->result(), 'quote_id' => $quote_id]
         );
 
         $this->layout->buffer('content', 'guest/quotes_view');

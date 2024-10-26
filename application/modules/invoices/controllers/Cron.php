@@ -64,18 +64,7 @@ class Cron extends Base_Controller
             $invoice = $this->mdl_invoices->get_by_id($source_id);
 
             // Create the new invoice
-            $db_array = array(
-                'client_id' => $invoice->client_id,
-                'invoice_date_created' => $invoice_recurring->recur_next_date,
-                'invoice_date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date),
-                'invoice_group_id' => $invoice->invoice_group_id,
-                'user_id' => $invoice->user_id,
-                'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
-                'invoice_url_key' => $this->mdl_invoices->get_url_key(),
-                'invoice_terms' => $invoice->invoice_terms,
-                'invoice_discount_amount' => $invoice->invoice_discount_amount,
-                'invoice_discount_percent' => $invoice->invoice_discount_percent
-            );
+            $db_array = ['client_id' => $invoice->client_id, 'invoice_date_created' => $invoice_recurring->recur_next_date, 'invoice_date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date), 'invoice_group_id' => $invoice->invoice_group_id, 'user_id' => $invoice->user_id, 'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id), 'invoice_url_key' => $this->mdl_invoices->get_url_key(), 'invoice_terms' => $invoice->invoice_terms, 'invoice_discount_amount' => $invoice->invoice_discount_amount, 'invoice_discount_percent' => $invoice->invoice_discount_percent];
 
             // This is the new invoice id
             $target_id = $this->mdl_invoices->create($db_array, false);
@@ -129,8 +118,8 @@ class Cron extends Base_Controller
                 }
 
                 $from = !empty($tpl->email_template_from_email) ?
-                    array($tpl->email_template_from_email, $tpl->email_template_from_name) :
-                    array($invoice->user_email, "");
+                    [$tpl->email_template_from_email, $tpl->email_template_from_name] :
+                    [$invoice->user_email, ""];
 
                 $subject = !empty($tpl->email_template_subject) ?
                     $tpl->email_template_subject :

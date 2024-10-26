@@ -18,15 +18,7 @@ class Upload extends Admin_Controller
     public $targetPath;
 
     public $ctype_default = "application/octet-stream";
-    public $content_types = array(
-        'gif' => 'image/gif',
-        'jpg' => 'image/jpeg',
-        'jpeg' => 'image/jpeg',
-        'pdf' => 'application/pdf',
-        'png' => 'image/png',
-        'txt' => 'text/plain',
-        'xml' => 'application/xml',
-    );
+    public $content_types = ['gif' => 'image/gif', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'pdf' => 'application/pdf', 'png' => 'image/png', 'txt' => 'text/plain', 'xml' => 'application/xml'];
 
     /**
      * Upload constructor.
@@ -54,12 +46,7 @@ class Upload extends Admin_Controller
 
             if (!$file_exists) {
                 // If file does not exists then upload
-                $data = array(
-                    'client_id' => $customerId,
-                    'url_key' => $url_key,
-                    'file_name_original' => $fileName,
-                    'file_name_new' => $url_key . '_' . $fileName
-                );
+                $data = ['client_id' => $customerId, 'url_key' => $url_key, 'file_name_original' => $fileName, 'file_name_new' => $url_key . '_' . $fileName];
 
                 $this->mdl_uploads->create($data);
 
@@ -104,7 +91,7 @@ class Upload extends Admin_Controller
      */
     public function show_files($url_key, $customerId = null)
     {
-        $result = array();
+        $result = [];
         $path = $this->targetPath;
 
         $files = scandir($path);
@@ -112,7 +99,7 @@ class Upload extends Admin_Controller
         if ($files !== false) {
 
             foreach ($files as $file) {
-                if (in_array($file, array(".", ".."))) {
+                if (in_array($file, [".", ".."])) {
                     continue;
                 }
                 if (strpos($file, $url_key) !== 0) {

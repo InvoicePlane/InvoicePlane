@@ -64,11 +64,7 @@ class Tasks extends Admin_Controller
         $this->load->model('tax_rates/mdl_tax_rates');
 
         $this->layout->set(
-            array(
-                'projects' => $this->mdl_projects->get()->result(),
-                'task_statuses' => $this->mdl_tasks->statuses(),
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            )
+            ['projects' => $this->mdl_projects->get()->result(), 'task_statuses' => $this->mdl_tasks->statuses(), 'tax_rates' => $this->mdl_tax_rates->get()->result()]
         );
         $this->layout->buffer('content', 'tasks/form');
         $this->layout->render();

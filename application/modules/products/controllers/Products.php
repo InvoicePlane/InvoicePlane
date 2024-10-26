@@ -65,11 +65,7 @@ class Products extends Admin_Controller
         $this->load->model('tax_rates/mdl_tax_rates');
 
         $this->layout->set(
-            array(
-                'families' => $this->mdl_families->get()->result(),
-                'units' => $this->mdl_units->get()->result(),
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            )
+            ['families' => $this->mdl_families->get()->result(), 'units' => $this->mdl_units->get()->result(), 'tax_rates' => $this->mdl_tax_rates->get()->result()]
         );
 
         $this->layout->buffer('content', 'products/form');

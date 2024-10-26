@@ -31,10 +31,7 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
-            'invoices' => $this->mdl_invoices->get()->result(),
-            'invoice_statuses' => $this->mdl_invoices->statuses()
-        );
+        $data = ['invoices' => $this->mdl_invoices->get()->result(), 'invoice_statuses' => $this->mdl_invoices->statuses()];
 
         $this->layout->load_view('invoices/partial_invoice_table', $data);
     }
@@ -53,10 +50,7 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
-            'quotes' => $this->mdl_quotes->get()->result(),
-            'quote_statuses' => $this->mdl_quotes->statuses()
-        );
+        $data = ['quotes' => $this->mdl_quotes->get()->result(), 'quote_statuses' => $this->mdl_quotes->statuses()];
 
         $this->layout->load_view('quotes/partial_quote_table', $data);
     }
@@ -75,9 +69,7 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
-            'records' => $this->mdl_clients->with_total_balance()->get()->result()
-        );
+        $data = ['records' => $this->mdl_clients->with_total_balance()->get()->result()];
 
         $this->layout->load_view('clients/partial_client_table', $data);
     }
@@ -96,9 +88,7 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
-            'payments' => $this->mdl_payments->get()->result()
-        );
+        $data = ['payments' => $this->mdl_payments->get()->result()];
 
         $this->layout->load_view('payments/partial_payment_table', $data);
     }

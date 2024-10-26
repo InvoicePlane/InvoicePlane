@@ -50,28 +50,14 @@ class View extends Base_Controller
         }
 
         // Get all custom fields
-        $custom_fields = array(
-            'invoice' => $this->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
-            'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
-            'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
-        );
+        $custom_fields = ['invoice' => $this->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id), 'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id), 'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id)];
 
         // Attachments
         $attachments = $this->get_attachments($invoice_url_key);
 
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
-        $data = array(
-            'invoice' => $invoice,
-            'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_url_key' => $invoice_url_key,
-            'flash_message' => $this->session->flashdata('flash_message'),
-            'payment_method' => $payment_method,
-            'is_overdue' => $is_overdue,
-            'attachments' => $attachments,
-            'custom_fields' => $custom_fields,
-        );
+        $data = ['invoice' => $invoice, 'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(), 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(), 'invoice_url_key' => $invoice_url_key, 'flash_message' => $this->session->flashdata('flash_message'), 'payment_method' => $payment_method, 'is_overdue' => $is_overdue, 'attachments' => $attachments, 'custom_fields' => $custom_fields];
 
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
     }
@@ -80,7 +66,7 @@ class View extends Base_Controller
     {
         $path = UPLOADS_FOLDER . '/customer_files';
         $files = scandir($path);
-        $attachments = array();
+        $attachments = [];
 
         if ($files !== false) {
             foreach ($files as $file) {
@@ -179,27 +165,14 @@ class View extends Base_Controller
         }
 
         // Get all custom fields
-        $custom_fields = array(
-            'quote' => $this->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
-            'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
-            'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
-        );
+        $custom_fields = ['quote' => $this->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id), 'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id), 'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id)];
 
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
 
         $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
 
-        $data = array(
-            'quote' => $quote,
-            'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
-            'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
-            'quote_url_key' => $quote_url_key,
-            'flash_message' => $this->session->flashdata('flash_message'),
-            'is_expired' => $is_expired,
-            'attachments' => $attachments,
-            'custom_fields' => $custom_fields,
-        );
+        $data = ['quote' => $quote, 'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(), 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(), 'quote_url_key' => $quote_url_key, 'flash_message' => $this->session->flashdata('flash_message'), 'is_expired' => $is_expired, 'attachments' => $attachments, 'custom_fields' => $custom_fields];
 
         $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
     }

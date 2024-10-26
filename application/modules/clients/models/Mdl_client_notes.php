@@ -25,18 +25,7 @@ class Mdl_Client_Notes extends Response_Model
 
     public function validation_rules()
     {
-        return array(
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => trans('client'),
-                'rules' => 'required'
-            ),
-            'client_note' => array(
-                'field' => 'client_note',
-                'label' => trans('note'),
-                'rules' => 'required'
-            )
-        );
+        return ['client_id' => ['field' => 'client_id', 'label' => trans('client'), 'rules' => 'required'], 'client_note' => ['field' => 'client_note', 'label' => trans('note'), 'rules' => 'required']];
     }
 
     public function db_array()

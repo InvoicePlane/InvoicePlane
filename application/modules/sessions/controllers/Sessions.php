@@ -22,9 +22,7 @@ class Sessions extends Base_Controller
 
     public function login()
     {
-        $view_data = array(
-            'login_logo' => get_setting('login_logo')
-        );
+        $view_data = ['login_logo' => get_setting('login_logo')];
 
         if ($this->input->post('btn_login')) {
 
@@ -132,10 +130,7 @@ class Sessions extends Base_Controller
                 $this->_login_log_reset($token);
             }
 
-            $formdata = array(
-                'token' => $token,
-                'user_id' => $user->user_id,
-            );
+            $formdata = ['token' => $token, 'user_id' => $user->user_id];
 
             return $this->load->view('session_new_password', $formdata);
         }
@@ -171,9 +166,7 @@ class Sessions extends Base_Controller
             );
 
             // Update the user and set him active again
-            $db_array = array(
-                'user_passwordreset_token' => '',
-            );
+            $db_array = ['user_passwordreset_token' => ''];
 
             //delete failed attempts from login_log table
             $user = $this->db->where('user_id',$user_id)->get('ip_users')->row();
@@ -225,9 +218,7 @@ class Sessions extends Base_Controller
                 $token = md5(time() . $email . $this->crypt->salt());
 
                 // Save the token to the database and set the user to inactive
-                $db_array = array(
-                    'user_passwordreset_token' => $token,
-                );
+                $db_array = ['user_passwordreset_token' => $token];
 
                 $this->db->where('user_email', $email);
                 $this->db->update('ip_users', $db_array);
@@ -237,9 +228,7 @@ class Sessions extends Base_Controller
 
                 // Prepare some variables for the email
                 $email_resetlink = site_url('sessions/passwordreset/' . $token);
-                $email_message = $this->load->view('emails/passwordreset', array(
-                    'resetlink' => $email_resetlink
-                ), true);
+                $email_message = $this->load->view('emails/passwordreset', ['resetlink' => $email_resetlink], true);
 
                 $email_from = get_setting('smtp_mail_from');
                 if (empty($email_from)) {

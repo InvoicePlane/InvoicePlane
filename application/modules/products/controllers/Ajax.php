@@ -42,13 +42,7 @@ class Ajax extends Admin_Controller
         $default_item_tax_rate = get_setting('default_item_tax_rate');
         $default_item_tax_rate = $default_item_tax_rate !== '' ?: 0;
 
-        $data = array(
-            'products' => $products,
-            'families' => $families,
-            'filter_product' => $filter_product,
-            'filter_family' => $filter_family,
-            'default_item_tax_rate' => $default_item_tax_rate,
-        );
+        $data = ['products' => $products, 'families' => $families, 'filter_product' => $filter_product, 'filter_family' => $filter_family, 'default_item_tax_rate' => $default_item_tax_rate];
 
         if ($filter_product || $filter_family || $reset_table) {
             $this->layout->load_view('products/partial_product_table_modal', $data);

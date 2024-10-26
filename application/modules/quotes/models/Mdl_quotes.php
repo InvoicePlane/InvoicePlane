@@ -24,38 +24,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function statuses()
     {
-        return array(
-            '1' => array(
-                'label' => trans('draft'),
-                'class' => 'draft',
-                'href' => 'quotes/status/draft'
-            ),
-            '2' => array(
-                'label' => trans('sent'),
-                'class' => 'sent',
-                'href' => 'quotes/status/sent'
-            ),
-            '3' => array(
-                'label' => trans('viewed'),
-                'class' => 'viewed',
-                'href' => 'quotes/status/viewed'
-            ),
-            '4' => array(
-                'label' => trans('approved'),
-                'class' => 'approved',
-                'href' => 'quotes/status/approved'
-            ),
-            '5' => array(
-                'label' => trans('rejected'),
-                'class' => 'rejected',
-                'href' => 'quotes/status/rejected'
-            ),
-            '6' => array(
-                'label' => trans('canceled'),
-                'class' => 'canceled',
-                'href' => 'quotes/status/canceled'
-            )
-        );
+        return ['1' => ['label' => trans('draft'), 'class' => 'draft', 'href' => 'quotes/status/draft'], '2' => ['label' => trans('sent'), 'class' => 'sent', 'href' => 'quotes/status/sent'], '3' => ['label' => trans('viewed'), 'class' => 'viewed', 'href' => 'quotes/status/viewed'], '4' => ['label' => trans('approved'), 'class' => 'approved', 'href' => 'quotes/status/approved'], '5' => ['label' => trans('rejected'), 'class' => 'rejected', 'href' => 'quotes/status/rejected'], '6' => ['label' => trans('canceled'), 'class' => 'canceled', 'href' => 'quotes/status/canceled']];
     }
 
     public function default_select()
@@ -91,32 +60,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => trans('client'),
-                'rules' => 'required'
-            ),
-            'quote_date_created' => array(
-                'field' => 'quote_date_created',
-                'label' => trans('quote_date'),
-                'rules' => 'required'
-            ),
-            'invoice_group_id' => array(
-                'field' => 'invoice_group_id',
-                'label' => trans('quote_group'),
-                'rules' => 'required'
-            ),
-            'quote_password' => array(
-                'field' => 'quote_password',
-                'label' => trans('quote_password')
-            ),
-            'user_id' => array(
-                'field' => 'user_id',
-                'label' => trans('user'),
-                'rule' => 'required'
-            )
-        );
+        return ['client_id' => ['field' => 'client_id', 'label' => trans('client'), 'rules' => 'required'], 'quote_date_created' => ['field' => 'quote_date_created', 'label' => trans('quote_date'), 'rules' => 'required'], 'invoice_group_id' => ['field' => 'invoice_group_id', 'label' => trans('quote_group'), 'rules' => 'required'], 'quote_password' => ['field' => 'quote_password', 'label' => trans('quote_password')], 'user_id' => ['field' => 'user_id', 'label' => trans('user'), 'rule' => 'required']];
     }
 
     /**
@@ -124,27 +68,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function validation_rules_save_quote()
     {
-        return array(
-            'quote_number' => array(
-                'field' => 'quote_number',
-                'label' => trans('quote') . ' #',
-                'rules' => 'is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'
-            ),
-            'quote_date_created' => array(
-                'field' => 'quote_date_created',
-                'label' => trans('date'),
-                'rules' => 'required'
-            ),
-            'quote_date_expires' => array(
-                'field' => 'quote_date_expires',
-                'label' => trans('due_date'),
-                'rules' => 'required'
-            ),
-            'quote_password' => array(
-                'field' => 'quote_password',
-                'label' => trans('quote_password')
-            )
-        );
+        return ['quote_number' => ['field' => 'quote_number', 'label' => trans('quote') . ' #', 'rules' => 'is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']'], 'quote_date_created' => ['field' => 'quote_date_created', 'label' => trans('date'), 'rules' => 'required'], 'quote_date_expires' => ['field' => 'quote_date_expires', 'label' => trans('due_date'), 'rules' => 'required'], 'quote_password' => ['field' => 'quote_password', 'label' => trans('quote_password')]];
     }
 
     /**
@@ -156,20 +80,13 @@ class Mdl_Quotes extends Response_Model
         $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
-        $db_array = array(
-            'quote_id' => $quote_id
-        );
+        $db_array = ['quote_id' => $quote_id];
 
         $this->db->insert('ip_quote_amounts', $db_array);
 
         // Create the default invoice tax record if applicable
         if (get_setting('default_invoice_tax_rate')) {
-            $db_array = array(
-                'quote_id' => $quote_id,
-                'tax_rate_id' => get_setting('default_invoice_tax_rate'),
-                'include_item_tax' => get_setting('default_include_item_tax'),
-                'quote_tax_rate_amount' => 0
-            );
+            $db_array = ['quote_id' => $quote_id, 'tax_rate_id' => get_setting('default_invoice_tax_rate'), 'include_item_tax' => get_setting('default_include_item_tax'), 'quote_tax_rate_amount' => 0];
 
             $this->db->insert('ip_quote_tax_rates', $db_array);
         }
@@ -189,15 +106,7 @@ class Mdl_Quotes extends Response_Model
         $quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
 
         foreach ($quote_items as $quote_item) {
-            $db_array = array(
-                'quote_id' => $target_id,
-                'item_tax_rate_id' => $quote_item->item_tax_rate_id,
-                'item_name' => $quote_item->item_name,
-                'item_description' => $quote_item->item_description,
-                'item_quantity' => $quote_item->item_quantity,
-                'item_price' => $quote_item->item_price,
-                'item_order' => $quote_item->item_order
-            );
+            $db_array = ['quote_id' => $target_id, 'item_tax_rate_id' => $quote_item->item_tax_rate_id, 'item_name' => $quote_item->item_name, 'item_description' => $quote_item->item_description, 'item_quantity' => $quote_item->item_quantity, 'item_price' => $quote_item->item_price, 'item_order' => $quote_item->item_order];
 
             $this->mdl_quote_items->save(null, $db_array);
         }
@@ -205,12 +114,7 @@ class Mdl_Quotes extends Response_Model
         $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $source_id)->get()->result();
 
         foreach ($quote_tax_rates as $quote_tax_rate) {
-            $db_array = array(
-                'quote_id' => $target_id,
-                'tax_rate_id' => $quote_tax_rate->tax_rate_id,
-                'include_item_tax' => $quote_tax_rate->include_item_tax,
-                'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
-            );
+            $db_array = ['quote_id' => $target_id, 'tax_rate_id' => $quote_tax_rate->tax_rate_id, 'include_item_tax' => $quote_tax_rate->include_item_tax, 'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount];
 
             $this->mdl_quote_tax_rates->save(null, $db_array);
         }
@@ -374,7 +278,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function is_open()
     {
-        $this->filter_where_in('quote_status_id', array(2, 3));
+        $this->filter_where_in('quote_status_id', [2, 3]);
         return $this;
     }
 
@@ -383,7 +287,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function guest_visible()
     {
-        $this->filter_where_in('quote_status_id', array(2, 3, 4, 5));
+        $this->filter_where_in('quote_status_id', [2, 3, 4, 5]);
         return $this;
     }
 
@@ -402,7 +306,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function approve_quote_by_key($quote_url_key)
     {
-        $this->db->where_in('quote_status_id', array(2, 3));
+        $this->db->where_in('quote_status_id', [2, 3]);
         $this->db->where('quote_url_key', $quote_url_key);
         $this->db->set('quote_status_id', 4);
         $this->db->update('ip_quotes');
@@ -413,7 +317,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function reject_quote_by_key($quote_url_key)
     {
-        $this->db->where_in('quote_status_id', array(2, 3));
+        $this->db->where_in('quote_status_id', [2, 3]);
         $this->db->where('quote_url_key', $quote_url_key);
         $this->db->set('quote_status_id', 5);
         $this->db->update('ip_quotes');
@@ -424,7 +328,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function approve_quote_by_id($quote_id)
     {
-        $this->db->where_in('quote_status_id', array(2, 3));
+        $this->db->where_in('quote_status_id', [2, 3]);
         $this->db->where('quote_id', $quote_id);
         $this->db->set('quote_status_id', 4);
         $this->db->update('ip_quotes');
@@ -435,7 +339,7 @@ class Mdl_Quotes extends Response_Model
      */
     public function reject_quote_by_id($quote_id)
     {
-        $this->db->where_in('quote_status_id', array(2, 3));
+        $this->db->where_in('quote_status_id', [2, 3]);
         $this->db->where('quote_id', $quote_id);
         $this->db->set('quote_status_id', 5);
         $this->db->update('ip_quotes');

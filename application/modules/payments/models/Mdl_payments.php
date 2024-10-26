@@ -51,31 +51,7 @@ class Mdl_Payments extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'invoice_id' => array(
-                'field' => 'invoice_id',
-                'label' => trans('invoice'),
-                'rules' => 'required'
-            ),
-            'payment_date' => array(
-                'field' => 'payment_date',
-                'label' => trans('date'),
-                'rules' => 'required'
-            ),
-            'payment_amount' => array(
-                'field' => 'payment_amount',
-                'label' => trans('payment'),
-                'rules' => 'required|callback_validate_payment_amount'
-            ),
-            'payment_method_id' => array(
-                'field' => 'payment_method_id',
-                'label' => trans('payment_method')
-            ),
-            'payment_note' => array(
-                'field' => 'payment_note',
-                'label' => trans('note')
-            )
-        );
+        return ['invoice_id' => ['field' => 'invoice_id', 'label' => trans('invoice'), 'rules' => 'required'], 'payment_date' => ['field' => 'payment_date', 'label' => trans('date'), 'rules' => 'required'], 'payment_amount' => ['field' => 'payment_amount', 'label' => trans('payment'), 'rules' => 'required|callback_validate_payment_amount'], 'payment_method_id' => ['field' => 'payment_method_id', 'label' => trans('payment_method')], 'payment_note' => ['field' => 'payment_note', 'label' => trans('note')]];
     }
 
     /**

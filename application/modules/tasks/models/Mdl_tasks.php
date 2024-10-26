@@ -55,42 +55,7 @@ class Mdl_Tasks extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'task_name' => array(
-                'field' => 'task_name',
-                'label' => trans('task_name'),
-                'rules' => 'required'
-            ),
-            'task_description' => array(
-                'field' => 'task_description',
-                'label' => trans('task_description'),
-                'rules' => ''
-            ),
-            'task_price' => array(
-                'field' => 'task_price',
-                'label' => trans('task_price'),
-                'rules' => 'required'
-            ),
-            'task_finish_date' => array(
-                'field' => 'task_finish_date',
-                'label' => trans('task_finish_date'),
-                'rules' => 'required'
-            ),
-            'project_id' => array(
-                'field' => 'project_id',
-                'label' => trans('project'),
-                'rules' => ''
-            ),
-            'task_status' => array(
-                'field' => 'task_status',
-                'label' => lang('status')
-            ),
-            'tax_rate_id' => array(
-                'field' => 'tax_rate_id',
-                'label' => lang('tax_rate'),
-                'rules' => 'numeric'
-            ),
-        );
+        return ['task_name' => ['field' => 'task_name', 'label' => trans('task_name'), 'rules' => 'required'], 'task_description' => ['field' => 'task_description', 'label' => trans('task_description'), 'rules' => ''], 'task_price' => ['field' => 'task_price', 'label' => trans('task_price'), 'rules' => 'required'], 'task_finish_date' => ['field' => 'task_finish_date', 'label' => trans('task_finish_date'), 'rules' => 'required'], 'project_id' => ['field' => 'project_id', 'label' => trans('project'), 'rules' => ''], 'task_status' => ['field' => 'task_status', 'label' => lang('status')], 'tax_rate_id' => ['field' => 'tax_rate_id', 'label' => lang('tax_rate'), 'rules' => 'numeric']];
     }
 
     /**
@@ -154,7 +119,7 @@ class Mdl_Tasks extends Response_Model
      */
     public function get_tasks_to_invoice($invoice_id)
     {
-        $result = array();
+        $result = [];
 
         if (!$invoice_id) {
             return $result;
@@ -219,7 +184,7 @@ class Mdl_Tasks extends Response_Model
     {
         $statuses_ok = $this->statuses();
         if (isset($statuses_ok[$new_status])) {
-            parent::save($task_id, array('task_status' => $new_status));
+            parent::save($task_id, ['task_status' => $new_status]);
         }
     }
 
@@ -228,24 +193,7 @@ class Mdl_Tasks extends Response_Model
      */
     public function statuses()
     {
-        return array(
-            '1' => array(
-                'label' => trans('not_started'),
-                'class' => 'draft'
-            ),
-            '2' => array(
-                'label' => trans('in_progress'),
-                'class' => 'viewed'
-            ),
-            '3' => array(
-                'label' => trans('complete'),
-                'class' => 'sent'
-            ),
-            '4' => array(
-                'label' => trans('invoiced'),
-                'class' => 'paid'
-            )
-        );
+        return ['1' => ['label' => trans('not_started'), 'class' => 'draft'], '2' => ['label' => trans('in_progress'), 'class' => 'viewed'], '3' => ['label' => trans('complete'), 'class' => 'sent'], '4' => ['label' => trans('invoiced'), 'class' => 'paid']];
     }
 
     /**
@@ -263,7 +211,7 @@ class Mdl_Tasks extends Response_Model
             ->get();
 
         foreach ($query->result() as $task) {
-            parent::save($task->task_id, array('project_id' => null));
+            parent::save($task->task_id, ['project_id' => null]);
         }
     }
 }

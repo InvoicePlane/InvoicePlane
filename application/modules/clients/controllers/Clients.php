@@ -37,7 +37,7 @@ class Clients extends Admin_Controller
      */
     public function status($status = 'active', $page = 0)
     {
-        if (is_numeric(array_search($status, array('active', 'inactive')))) {
+        if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
             $this->mdl_clients->$function();
         }
@@ -46,12 +46,7 @@ class Clients extends Admin_Controller
         $clients = $this->mdl_clients->result();
 
         $this->layout->set(
-            array(
-                'records' => $clients,
-                'filter_display' => true,
-                'filter_placeholder' => trans('filter_clients'),
-                'filter_method' => 'filter_clients'
-            )
+            ['records' => $clients, 'filter_display' => true, 'filter_placeholder' => trans('filter_clients'), 'filter_method' => 'filter_clients']
         );
 
         $this->layout->buffer('content', 'clients/index');
@@ -71,10 +66,7 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
-            $check = $this->db->get_where('ip_clients', array(
-                'client_name' => $this->input->post('client_name'),
-                'client_surname' => $this->input->post('client_surname')
-            ))->result();
+            $check = $this->db->get_where('ip_clients', ['client_name' => $this->input->post('client_name'), 'client_surname' => $this->input->post('client_surname')])->result();
 
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
@@ -164,13 +156,7 @@ class Clients extends Admin_Controller
         $this->load->helper('custom_values');
 
         $this->layout->set(
-            array(
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'countries' => get_country_list(trans('cldr')),
-                'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-                'languages' => get_available_languages(),
-            )
+            ['custom_fields' => $custom_fields, 'custom_values' => $custom_values, 'countries' => get_country_list(trans('cldr')), 'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'), 'languages' => get_available_languages()]
         );
 
         $this->layout->buffer('content', 'clients/form');
@@ -205,41 +191,11 @@ class Clients extends Admin_Controller
         }
 
         $this->layout->set(
-            array(
-                'client' => $client,
-                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(),
-                'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(),
-                'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(),
-                'custom_fields' => $custom_fields,
-                'quote_statuses' => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses()
-            )
+            ['client' => $client, 'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(), 'invoices' => $this->mdl_invoices->by_client($client_id)->limit(20)->get()->result(), 'quotes' => $this->mdl_quotes->by_client($client_id)->limit(20)->get()->result(), 'payments' => $this->mdl_payments->by_client($client_id)->limit(20)->get()->result(), 'custom_fields' => $custom_fields, 'quote_statuses' => $this->mdl_quotes->statuses(), 'invoice_statuses' => $this->mdl_invoices->statuses()]
         );
 
         $this->layout->buffer(
-            array(
-                array(
-                    'invoice_table',
-                    'invoices/partial_invoice_table'
-                ),
-                array(
-                    'quote_table',
-                    'quotes/partial_quote_table'
-                ),
-                array(
-                    'payment_table',
-                    'payments/partial_payment_table'
-                ),
-                array(
-                    'partial_notes',
-                    'clients/partial_notes'
-                ),
-                array(
-                    'content',
-                    'clients/view'
-                )
-            )
+            [['invoice_table', 'invoices/partial_invoice_table'], ['quote_table', 'quotes/partial_quote_table'], ['payment_table', 'payments/partial_payment_table'], ['partial_notes', 'clients/partial_notes'], ['content', 'clients/view']]
         );
 
         $this->layout->render();

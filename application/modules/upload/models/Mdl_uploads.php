@@ -45,14 +45,11 @@ class Mdl_Uploads extends Response_Model
         $quote = $this->mdl_quotes->get_by_id($id);
         $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $quote->quote_url_key . "'");
 
-        $names = array();
+        $names = [];
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                array_push($names, array(
-                    'path' => UPLOADS_CFILES_FOLDER . $row->file_name_new,
-                    'filename' => $row->file_name_original
-                ));
+                array_push($names, ['path' => UPLOADS_CFILES_FOLDER . $row->file_name_new, 'filename' => $row->file_name_original]);
             }
         }
 
@@ -69,14 +66,11 @@ class Mdl_Uploads extends Response_Model
         $invoice = $this->mdl_invoices->get_by_id($id);
         $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $invoice->invoice_url_key . "'");
 
-        $names = array();
+        $names = [];
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                array_push($names, array(
-                    'path' => UPLOADS_CFILES_FOLDER . $row->file_name_new,
-                    'filename' => $row->file_name_original
-                ));
+                array_push($names, ['path' => UPLOADS_CFILES_FOLDER . $row->file_name_new, 'filename' => $row->file_name_original]);
             }
         }
 

@@ -55,13 +55,7 @@
                 <label for="custom_field_location"><?php _trans('position'); ?></label>
 
                 <?php
-                $positions = array(
-                    'client' => Mdl_client_custom::$positions,
-                    'invoice' => Mdl_invoice_custom::$positions,
-                    'payment' => Mdl_payment_custom::$positions,
-                    'quote' => Mdl_quote_custom::$positions,
-                    'user' => Mdl_user_custom::$positions,
-                );
+                $positions = ['client' => Mdl_client_custom::$positions, 'invoice' => Mdl_invoice_custom::$positions, 'payment' => Mdl_payment_custom::$positions, 'quote' => Mdl_quote_custom::$positions, 'user' => Mdl_user_custom::$positions];
 
     foreach ($positions as $key => $val) {
         foreach ($val as $key2 => $val2) {

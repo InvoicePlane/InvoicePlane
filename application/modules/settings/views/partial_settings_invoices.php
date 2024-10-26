@@ -522,7 +522,7 @@
                             <select name="settings[sumex_sliptype]" id="settings[sumex_sliptype]"
                                 class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <?php
-                                $slipTypes = array("esr9", "esrRed");
+                                $slipTypes = ["esr9", "esrRed"];
                                 foreach ($slipTypes as $k => $v): ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_sliptype'), $k) ?>>
                                         <?php _trans('invoice_sumex_sliptype-' . $v); ?>

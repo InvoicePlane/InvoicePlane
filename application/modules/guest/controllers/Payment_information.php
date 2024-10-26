@@ -50,7 +50,7 @@ class Payment_Information extends Base_Controller
         $this->config->load('payment_gateways');
         $gateways = $this->config->item('payment_gateways');
 
-        $available_drivers = array();
+        $available_drivers = [];
         foreach ($gateways as $driver => $fields) {
 
             $d = strtolower($driver);
@@ -74,13 +74,7 @@ class Payment_Information extends Base_Controller
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
         // Return the view
-        $view_data = array(
-            'disable_form' => $disable_form,
-            'invoice' => $invoice,
-            'gateways' => $available_drivers,
-            'payment_method' => $payment_method,
-            'is_overdue' => $is_overdue,
-        );
+        $view_data = ['disable_form' => $disable_form, 'invoice' => $invoice, 'gateways' => $available_drivers, 'payment_method' => $payment_method, 'is_overdue' => $is_overdue];
 
         //if stripe is active as payment gateway pass also the public api key
         if(in_array('Stripe',$available_drivers))

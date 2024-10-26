@@ -33,28 +33,7 @@ class Mdl_Invoice_Groups extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'invoice_group_name' => array(
-                'field' => 'invoice_group_name',
-                'label' => trans('name'),
-                'rules' => 'required'
-            ),
-            'invoice_group_identifier_format' => array(
-                'field' => 'invoice_group_identifier_format',
-                'label' => trans('identifier_format'),
-                'rules' => 'required'
-            ),
-            'invoice_group_next_id' => array(
-                'field' => 'invoice_group_next_id',
-                'label' => trans('next_id'),
-                'rules' => 'required'
-            ),
-            'invoice_group_left_pad' => array(
-                'field' => 'invoice_group_left_pad',
-                'label' => trans('left_pad'),
-                'rules' => 'required'
-            )
-        );
+        return ['invoice_group_name' => ['field' => 'invoice_group_name', 'label' => trans('name'), 'rules' => 'required'], 'invoice_group_identifier_format' => ['field' => 'invoice_group_identifier_format', 'label' => trans('identifier_format'), 'rules' => 'required'], 'invoice_group_next_id' => ['field' => 'invoice_group_next_id', 'label' => trans('next_id'), 'rules' => 'required'], 'invoice_group_left_pad' => ['field' => 'invoice_group_left_pad', 'label' => trans('left_pad'), 'rules' => 'required']];
     }
 
     /**

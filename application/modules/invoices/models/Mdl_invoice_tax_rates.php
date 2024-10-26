@@ -59,22 +59,6 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'invoice_id' => array(
-                'field' => 'invoice_id',
-                'label' => trans('invoice'),
-                'rules' => 'required'
-            ),
-            'tax_rate_id' => array(
-                'field' => 'tax_rate_id',
-                'label' => trans('tax_rate'),
-                'rules' => 'required'
-            ),
-            'include_item_tax' => array(
-                'field' => 'include_item_tax',
-                'label' => trans('tax_rate_placement'),
-                'rules' => 'required'
-            )
-        );
+        return ['invoice_id' => ['field' => 'invoice_id', 'label' => trans('invoice'), 'rules' => 'required'], 'tax_rate_id' => ['field' => 'tax_rate_id', 'label' => trans('tax_rate'), 'rules' => 'required'], 'include_item_tax' => ['field' => 'include_item_tax', 'label' => trans('tax_rate_placement'), 'rules' => 'required']];
     }
 }

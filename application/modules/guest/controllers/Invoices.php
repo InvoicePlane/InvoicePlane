@@ -52,10 +52,7 @@ class Invoices extends Guest_Controller
         $invoices = $this->mdl_invoices->result();
 
         $this->layout->set(
-            array(
-                'invoices' => $invoices,
-                'status' => $status
-            )
+            ['invoices' => $invoices, 'status' => $status]
         );
 
         $this->layout->buffer('content', 'guest/invoices_index');
@@ -79,18 +76,11 @@ class Invoices extends Guest_Controller
         $this->mdl_invoices->mark_viewed($invoice->invoice_id);
 
         $this->layout->set(
-            array(
-                'invoice' => $invoice,
-                'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_id' => $invoice_id
-            )
+            ['invoice' => $invoice, 'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(), 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(), 'invoice_id' => $invoice_id]
         );
 
         $this->layout->buffer(
-            array(
-                array('content', 'guest/invoices_view')
-            )
+            [['content', 'guest/invoices_view']]
         );
 
         $this->layout->render('layout_guest');

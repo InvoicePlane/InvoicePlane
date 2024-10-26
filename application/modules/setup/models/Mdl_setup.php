@@ -15,7 +15,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Setup extends CI_Model
 {
-    public $errors = array();
+    public $errors = [];
 
     /**
      * @return bool
@@ -60,11 +60,7 @@ class Mdl_Setup extends CI_Model
      */
     private function save_version($sql_file)
     {
-        $version_db_array = array(
-            'version_date_applied' => time(),
-            'version_file' => $sql_file,
-            'version_sql_errors' => count($this->errors)
-        );
+        $version_db_array = ['version_date_applied' => time(), 'version_file' => $sql_file, 'version_sql_errors' => count($this->errors)];
 
         $this->db->insert('ip_versions', $version_db_array);
     }
@@ -74,26 +70,15 @@ class Mdl_Setup extends CI_Model
      */
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array(
-                'invoice_group_name' => 'Invoice Default',
-                'invoice_group_next_id' => 1
-            )
+        $this->db->insert('ip_invoice_groups', ['invoice_group_name' => 'Invoice Default', 'invoice_group_next_id' => 1]
         );
 
-        $this->db->insert('ip_invoice_groups', array(
-                'invoice_group_name' => 'Quote Default',
-                'invoice_group_prefix' => 'QUO',
-                'invoice_group_next_id' => 1
-            )
+        $this->db->insert('ip_invoice_groups', ['invoice_group_name' => 'Quote Default', 'invoice_group_prefix' => 'QUO', 'invoice_group_next_id' => 1]
         );
 
-        $this->db->insert('ip_payment_methods', array(
-            'payment_method_name' => 'Cash',
-        ));
+        $this->db->insert('ip_payment_methods', ['payment_method_name' => 'Cash']);
 
-        $this->db->insert('ip_payment_methods', array(
-            'payment_method_name' => 'Credit Card',
-        ));
+        $this->db->insert('ip_payment_methods', ['payment_method_name' => 'Credit Card']);
     }
 
     /**
@@ -103,37 +88,13 @@ class Mdl_Setup extends CI_Model
     {
         $this->load->helper('string');
 
-        $default_settings = array(
-            'default_language' => $this->session->userdata('ip_lang'),
-            'date_format' => 'm/d/Y',
-            'currency_symbol' => '$',
-            'currency_symbol_placement' => 'before',
-            'currency_code' => 'USD',
-            'invoices_due_after' => 30,
-            'quotes_expire_after' => 15,
-            'default_invoice_group' => 3,
-            'default_quote_group' => 4,
-            'thousands_separator' => ',',
-            'decimal_point' => '.',
-            'cron_key' => random_string('alnum', 16),
-            'tax_rate_decimal_places' => 2,
-            'pdf_invoice_template' => 'InvoicePlane',
-            'pdf_invoice_template_paid' => 'InvoicePlane - paid',
-            'pdf_invoice_template_overdue' => 'InvoicePlane - overdue',
-            'pdf_quote_template' => 'InvoicePlane',
-            'public_invoice_template' => 'InvoicePlane_Web',
-            'public_quote_template' => 'InvoicePlane_Web',
-            'disable_sidebar' => 1,
-        );
+        $default_settings = ['default_language' => $this->session->userdata('ip_lang'), 'date_format' => 'm/d/Y', 'currency_symbol' => '$', 'currency_symbol_placement' => 'before', 'currency_code' => 'USD', 'invoices_due_after' => 30, 'quotes_expire_after' => 15, 'default_invoice_group' => 3, 'default_quote_group' => 4, 'thousands_separator' => ',', 'decimal_point' => '.', 'cron_key' => random_string('alnum', 16), 'tax_rate_decimal_places' => 2, 'pdf_invoice_template' => 'InvoicePlane', 'pdf_invoice_template_paid' => 'InvoicePlane - paid', 'pdf_invoice_template_overdue' => 'InvoicePlane - overdue', 'pdf_quote_template' => 'InvoicePlane', 'public_invoice_template' => 'InvoicePlane_Web', 'public_quote_template' => 'InvoicePlane_Web', 'disable_sidebar' => 1];
 
         foreach ($default_settings as $setting_key => $setting_value) {
             $this->db->where('setting_key', $setting_key);
 
             if (!$this->db->get('ip_settings')->num_rows()) {
-                $db_array = array(
-                    'setting_key' => $setting_key,
-                    'setting_value' => $setting_value
-                );
+                $db_array = ['setting_key' => $setting_key, 'setting_value' => $setting_value];
 
                 $this->db->insert('ip_settings', $db_array);
             }
@@ -203,15 +164,12 @@ class Mdl_Setup extends CI_Model
          * therefore check if it's an update, if the time difference between v1.1.2 and v1.2.0 is
          * greater than 100 and if v1.2.0 was not installed within this update process
          */
-        $this->db->where_in("version_file", array("006_1.2.0.sql", "005_1.1.2.sql"));
+        $this->db->where_in("version_file", ["006_1.2.0.sql", "005_1.1.2.sql"]);
         $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
 
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
-            $setup_notice = array(
-                'type' => 'alert-danger',
-                'content' => trans('setup_v120_alert'),
-            );
+            $setup_notice = ['type' => 'alert-danger', 'content' => trans('setup_v120_alert')];
             $this->session->set_userdata('setup_notice', $setup_notice);
         }
     }
@@ -222,15 +180,12 @@ class Mdl_Setup extends CI_Model
          * but only display the warning when the previous version is 1.4.6 or lower and it's an update
          * (see above for details)
          */
-        $this->db->where_in("version_file", array("018_1.4.6.sql", "019_1.4.7.sql"));
+        $this->db->where_in("version_file", ["018_1.4.6.sql", "019_1.4.7.sql"]);
         $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
 
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
-            $setup_notice = array(
-                'type' => 'alert-danger',
-                'content' => trans('setup_v147_alert'),
-            );
+            $setup_notice = ['type' => 'alert-danger', 'content' => trans('setup_v147_alert')];
             $this->session->set_userdata('setup_notice', $setup_notice);
         }
     }
@@ -238,23 +193,13 @@ class Mdl_Setup extends CI_Model
     public function upgrade_023_1_5_0()
     {
         $res = $this->db->query('SELECT * FROM ip_custom_fields');
-        $drop_columns = array();
+        $drop_columns = [];
 
-        $tables = array(
-            'client',
-            'invoice',
-            'quote',
-            'payment',
-            'user',
-        );
+        $tables = ['client', 'invoice', 'quote', 'payment', 'user'];
 
         if ($res->num_rows()) {
             foreach ($res->result() as $row) {
-                $drop_columns[] = array(
-                    'field_id' => $row->custom_field_id,
-                    'column' => $row->custom_field_column,
-                    'table' => $row->custom_field_table,
-                );
+                $drop_columns[] = ['field_id' => $row->custom_field_id, 'column' => $row->custom_field_column, 'table' => $row->custom_field_table];
             }
         }
 

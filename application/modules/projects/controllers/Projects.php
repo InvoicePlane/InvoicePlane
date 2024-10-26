@@ -61,9 +61,7 @@ class Projects extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         $this->layout->set(
-            array(
-                'clients' => $this->mdl_clients->where('client_active', 1)->get()->result()
-            )
+            ['clients' => $this->mdl_clients->where('client_active', 1)->get()->result()]
         );
 
         $this->layout->buffer('content', 'projects/form');
@@ -88,11 +86,7 @@ class Projects extends Admin_Controller
 
         $this->load->model('tasks/mdl_tasks');
 
-        $this->layout->set(array(
-            'project' => $project,
-            'tasks' => $this->mdl_projects->get_tasks($project->project_id),
-            'task_statuses' => $this->mdl_tasks->statuses(),
-        ));
+        $this->layout->set(['project' => $project, 'tasks' => $this->mdl_projects->get_tasks($project->project_id), 'task_statuses' => $this->mdl_tasks->statuses()]);
         $this->layout->buffer('content', 'projects/view');
         $this->layout->render();
     }

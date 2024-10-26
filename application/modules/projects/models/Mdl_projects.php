@@ -44,22 +44,12 @@ class Mdl_Projects extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'project_name' => array(
-                'field' => 'project_name',
-                'label' => trans('project_name'),
-                'rules' => 'required'
-            ),
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => trans('client'),
-            )
-        );
+        return ['project_name' => ['field' => 'project_name', 'label' => trans('project_name'), 'rules' => 'required'], 'client_id' => ['field' => 'client_id', 'label' => trans('client')]];
     }
 
     public function get_tasks($project_id)
     {
-        $result = array();
+        $result = [];
 
         if (!$project_id) {
             return $result;

@@ -57,17 +57,6 @@ class Mdl_Units extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'unit_name' => array(
-                'field' => 'unit_name',
-                'label' => trans('unit_name'),
-                'rules' => 'required'
-            ),
-            'unit_name_plrl' => array(
-                'field' => 'unit_name_plrl',
-                'label' => trans('unit_name_plrl'),
-                'rules' => 'required'
-            )
-        );
+        return ['unit_name' => ['field' => 'unit_name', 'label' => trans('unit_name'), 'rules' => 'required'], 'unit_name_plrl' => ['field' => 'unit_name_plrl', 'label' => trans('unit_name_plrl'), 'rules' => 'required']];
     }
 }

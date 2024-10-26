@@ -60,7 +60,7 @@ class Mailer extends Admin_Controller
 
         // Get all custom fields
         $this->load->model('custom_fields/mdl_custom_fields');
-        $custom_fields = array();
+        $custom_fields = [];
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
@@ -100,7 +100,7 @@ class Mailer extends Admin_Controller
 
         // Get all custom fields
         $this->load->model('custom_fields/mdl_custom_fields');
-        $custom_fields = array();
+        $custom_fields = [];
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
@@ -140,10 +140,7 @@ class Mailer extends Admin_Controller
         }
 
         $this->load->model('upload/mdl_uploads');
-        $from = array(
-            $this->input->post('from_email'),
-            $this->input->post('from_name')
-        );
+        $from = [$this->input->post('from_email'), $this->input->post('from_name')];
 
         $pdf_template = $this->input->post('pdf_template', true);
         $subject = $this->input->post('subject');
@@ -191,10 +188,7 @@ class Mailer extends Admin_Controller
         }
 
         $this->load->model('upload/mdl_uploads');
-        $from = array(
-            $this->input->post('from_email'),
-            $this->input->post('from_name')
-        );
+        $from = [$this->input->post('from_email'), $this->input->post('from_name')];
 
         $pdf_template = $this->input->post('pdf_template');
         $subject = $this->input->post('subject');

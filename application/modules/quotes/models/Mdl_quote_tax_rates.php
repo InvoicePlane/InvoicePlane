@@ -54,22 +54,6 @@ class Mdl_Quote_Tax_Rates extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'quote_id' => array(
-                'field' => 'quote_id',
-                'label' => trans('quote'),
-                'rules' => 'required'
-            ),
-            'tax_rate_id' => array(
-                'field' => 'tax_rate_id',
-                'label' => trans('tax_rate'),
-                'rules' => 'required'
-            ),
-            'include_item_tax' => array(
-                'field' => 'include_item_tax',
-                'label' => trans('tax_rate_placement'),
-                'rules' => 'required'
-            )
-        );
+        return ['quote_id' => ['field' => 'quote_id', 'label' => trans('quote'), 'rules' => 'required'], 'tax_rate_id' => ['field' => 'tax_rate_id', 'label' => trans('tax_rate'), 'rules' => 'required'], 'include_item_tax' => ['field' => 'include_item_tax', 'label' => trans('tax_rate_placement'), 'rules' => 'required']];
     }
 }

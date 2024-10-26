@@ -58,14 +58,7 @@ class Users extends Admin_Controller
             if ($this->session->userdata('user_id') == $id) {
                 $new_details = $this->mdl_users->get_by_id($id);
 
-                $session_data = array(
-                    'user_type' => $new_details->user_type,
-                    'user_id' => $new_details->user_id,
-                    'user_name' => $new_details->user_name,
-                    'user_email' => $new_details->user_email,
-                    'user_company' => $new_details->user_company,
-                    'user_language' => isset($new_details->user_language) ? $new_details->user_language : 'system',
-                );
+                $session_data = ['user_type' => $new_details->user_type, 'user_id' => $new_details->user_id, 'user_name' => $new_details->user_name, 'user_email' => $new_details->user_email, 'user_company' => $new_details->user_company, 'user_language' => isset($new_details->user_language) ? $new_details->user_language : 'system'];
 
                 $this->session->set_userdata($session_data);
             }
@@ -134,17 +127,7 @@ class Users extends Admin_Controller
         }
 
         $this->layout->set(
-            array(
-                'id' => $id,
-                'user_types' => $this->mdl_users->user_types(),
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'countries' => get_country_list(trans('cldr')),
-                'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'),
-                'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
-                'languages' => get_available_languages(),
-            )
+            ['id' => $id, 'user_types' => $this->mdl_users->user_types(), 'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(), 'custom_fields' => $custom_fields, 'custom_values' => $custom_values, 'countries' => get_country_list(trans('cldr')), 'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'), 'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(), 'languages' => get_available_languages()]
         );
 
         $this->layout->buffer('content', 'users/form');

@@ -54,12 +54,7 @@ class Mdl_Quote_Amounts extends CI_Model
         $quote_total = $this->calculate_discount($quote_id, $quote_subtotal);
 
         // Create the database array and insert or update
-        $db_array = array(
-            'quote_id' => $quote_id,
-            'quote_item_subtotal' => $quote_item_subtotal,
-            'quote_item_tax_total' => $quote_amounts->quote_item_tax_total,
-            'quote_total' => $quote_total,
-        );
+        $db_array = ['quote_id' => $quote_id, 'quote_item_subtotal' => $quote_item_subtotal, 'quote_item_tax_total' => $quote_amounts->quote_item_tax_total, 'quote_total' => $quote_total];
 
         $this->db->where('quote_id', $quote_id);
         if ($this->db->get('ip_quote_amounts')->num_rows()) {
@@ -128,9 +123,7 @@ class Mdl_Quote_Amounts extends CI_Model
                 }
 
                 // Update the quote tax rate record
-                $db_array = array(
-                    'quote_tax_rate_amount' => $quote_tax_rate_amount
-                );
+                $db_array = ['quote_tax_rate_amount' => $quote_tax_rate_amount];
                 $this->db->where('quote_tax_rate_id', $quote_tax_rate->quote_tax_rate_id);
                 $this->db->update('ip_quote_tax_rates', $db_array);
             }
@@ -155,18 +148,14 @@ class Mdl_Quote_Amounts extends CI_Model
             $quote_total = $this->calculate_discount($quote_id, $quote_total);
 
             // Update the quote amount record
-            $db_array = array(
-                'quote_total' => $quote_total
-            );
+            $db_array = ['quote_total' => $quote_total];
 
             $this->db->where('quote_id', $quote_id);
             $this->db->update('ip_quote_amounts', $db_array);
         } else {
             // No quote taxes applied
 
-            $db_array = array(
-                'quote_tax_total' => '0.00'
-            );
+            $db_array = ['quote_tax_total' => '0.00'];
 
             $this->db->where('quote_id', $quote_id);
             $this->db->update('ip_quote_amounts', $db_array);
@@ -287,17 +276,10 @@ class Mdl_Quote_Amounts extends CI_Model
                 break;
         }
 
-        $return = array();
+        $return = [];
 
         foreach ($this->mdl_quotes->statuses() as $key => $status) {
-            $return[$key] = array(
-                'quote_status_id' => $key,
-                'class' => $status['class'],
-                'label' => $status['label'],
-                'href' => $status['href'],
-                'sum_total' => 0,
-                'num_total' => 0
-            );
+            $return[$key] = ['quote_status_id' => $key, 'class' => $status['class'], 'label' => $status['label'], 'href' => $status['href'], 'sum_total' => 0, 'num_total' => 0];
         }
 
         foreach ($results as $result) {

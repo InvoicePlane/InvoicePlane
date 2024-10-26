@@ -66,14 +66,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         $invoice_paid = $query->row()->invoice_paid ? floatval($query->row()->invoice_paid) : 0;
 
         // Create the database array and insert or update
-        $db_array = array(
-            'invoice_id' => $invoice_id,
-            'invoice_item_subtotal' => $invoice_item_subtotal,
-            'invoice_item_tax_total' => $invoice_amounts->invoice_item_tax_total,
-            'invoice_total' => $invoice_total,
-            'invoice_paid' => $invoice_paid,
-            'invoice_balance' => $invoice_total - $invoice_paid
-        );
+        $db_array = ['invoice_id' => $invoice_id, 'invoice_item_subtotal' => $invoice_item_subtotal, 'invoice_item_tax_total' => $invoice_amounts->invoice_item_tax_total, 'invoice_total' => $invoice_total, 'invoice_paid' => $invoice_paid, 'invoice_balance' => $invoice_total - $invoice_paid];
 
         $this->db->where('invoice_id', $invoice_id);
 
@@ -173,9 +166,7 @@ class Mdl_Invoice_Amounts extends CI_Model
                 }
 
                 // Update the invoice tax rate record
-                $db_array = array(
-                    'invoice_tax_rate_amount' => $invoice_tax_rate_amount
-                );
+                $db_array = ['invoice_tax_rate_amount' => $invoice_tax_rate_amount];
                 $this->db->where('invoice_tax_rate_id', $invoice_tax_rate->invoice_tax_rate_id);
                 $this->db->update('ip_invoice_tax_rates', $db_array);
             }
@@ -198,19 +189,14 @@ class Mdl_Invoice_Amounts extends CI_Model
             $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
 
             // Update the invoice amount record
-            $db_array = array(
-                'invoice_total' => $invoice_total,
-                'invoice_balance' => $invoice_balance
-            );
+            $db_array = ['invoice_total' => $invoice_total, 'invoice_balance' => $invoice_balance];
 
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('ip_invoice_amounts', $db_array);
         } else {
             // No invoice taxes applied
 
-            $db_array = array(
-                'invoice_tax_total' => '0.00'
-            );
+            $db_array = ['invoice_tax_total' => '0.00'];
 
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('ip_invoice_amounts', $db_array);
@@ -392,17 +378,10 @@ class Mdl_Invoice_Amounts extends CI_Model
                 break;
         }
 
-        $return = array();
+        $return = [];
 
         foreach ($this->mdl_invoices->statuses() as $key => $status) {
-            $return[$key] = array(
-                'invoice_status_id' => $key,
-                'class' => $status['class'],
-                'label' => $status['label'],
-                'href' => $status['href'],
-                'sum_total' => 0,
-                'num_total' => 0
-            );
+            $return[$key] = ['invoice_status_id' => $key, 'class' => $status['class'], 'label' => $status['label'], 'href' => $status['href'], 'sum_total' => 0, 'num_total' => 0];
         }
 
         foreach ($results as $result) {

@@ -18,7 +18,7 @@
 <div id="content" class="table-content">
 
     <div id="filter_results">
-        <?php $this->layout->load_view('invoices/partial_invoice_archive', array('invoices_archive' => $invoices_archive)); ?>
+        <?php $this->layout->load_view('invoices/partial_invoice_archive', ['invoices_archive' => $invoices_archive]); ?>
     </div>
 
 </div>

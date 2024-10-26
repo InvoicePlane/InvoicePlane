@@ -64,13 +64,7 @@ function phpmail_send(
 
             // Check if certificates should not be verified
             if (!get_setting('smtp_verify_certs', true)) {
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
+                $mail->SMTPOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
             }
 
             break;

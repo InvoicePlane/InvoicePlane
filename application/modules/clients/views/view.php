@@ -33,7 +33,7 @@
 </script>
 
 <?php
-$locations = array();
+$locations = [];
 foreach ($custom_fields as $custom_field) {
     if (array_key_exists($custom_field->custom_field_location, $locations)) {
         $locations[$custom_field->custom_field_location] += 1;
@@ -286,7 +286,7 @@ foreach ($custom_fields as $custom_field) {
 
                     </div>
                 </div>
-            <?php endif; ?>
+<?php endif; ?>
 
             <?php
             if ($custom_fields) : ?>

@@ -24,28 +24,7 @@ class Mdl_Invoices extends Response_Model
      */
     public function statuses()
     {
-        return array(
-            '1' => array(
-                'label' => trans('draft'),
-                'class' => 'draft',
-                'href' => 'invoices/status/draft'
-            ),
-            '2' => array(
-                'label' => trans('sent'),
-                'class' => 'sent',
-                'href' => 'invoices/status/sent'
-            ),
-            '3' => array(
-                'label' => trans('viewed'),
-                'class' => 'viewed',
-                'href' => 'invoices/status/viewed'
-            ),
-            '4' => array(
-                'label' => trans('paid'),
-                'class' => 'paid',
-                'href' => 'invoices/status/paid'
-            )
-        );
+        return ['1' => ['label' => trans('draft'), 'class' => 'draft', 'href' => 'invoices/status/draft'], '2' => ['label' => trans('sent'), 'class' => 'sent', 'href' => 'invoices/status/sent'], '3' => ['label' => trans('viewed'), 'class' => 'viewed', 'href' => 'invoices/status/viewed'], '4' => ['label' => trans('paid'), 'class' => 'paid', 'href' => 'invoices/status/paid']];
     }
 
     public function default_select()
@@ -89,39 +68,7 @@ class Mdl_Invoices extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => trans('client'),
-                'rules' => 'required'
-            ),
-            'invoice_date_created' => array(
-                'field' => 'invoice_date_created',
-                'label' => trans('invoice_date'),
-                'rules' => 'required'
-            ),
-            'invoice_time_created' => array(
-                'rules' => 'required'
-            ),
-            'invoice_group_id' => array(
-                'field' => 'invoice_group_id',
-                'label' => trans('invoice_group'),
-                'rules' => 'required'
-            ),
-            'invoice_password' => array(
-                'field' => 'invoice_password',
-                'label' => trans('invoice_password')
-            ),
-            'user_id' => array(
-                'field' => 'user_id',
-                'label' => trans('user'),
-                'rule' => 'required'
-            ),
-            'payment_method' => array(
-                'field' => 'payment_method',
-                'label' => trans('payment_method')
-            ),
-        );
+        return ['client_id' => ['field' => 'client_id', 'label' => trans('client'), 'rules' => 'required'], 'invoice_date_created' => ['field' => 'invoice_date_created', 'label' => trans('invoice_date'), 'rules' => 'required'], 'invoice_time_created' => ['rules' => 'required'], 'invoice_group_id' => ['field' => 'invoice_group_id', 'label' => trans('invoice_group'), 'rules' => 'required'], 'invoice_password' => ['field' => 'invoice_password', 'label' => trans('invoice_password')], 'user_id' => ['field' => 'user_id', 'label' => trans('user'), 'rule' => 'required'], 'payment_method' => ['field' => 'payment_method', 'label' => trans('payment_method')]];
     }
 
     /**
@@ -129,30 +76,7 @@ class Mdl_Invoices extends Response_Model
      */
     public function validation_rules_save_invoice()
     {
-        return array(
-            'invoice_number' => array(
-                'field' => 'invoice_number',
-                'label' => trans('invoice') . ' #',
-                'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'
-            ),
-            'invoice_date_created' => array(
-                'field' => 'invoice_date_created',
-                'label' => trans('date'),
-                'rules' => 'required'
-            ),
-            'invoice_date_due' => array(
-                'field' => 'invoice_date_due',
-                'label' => trans('due_date'),
-                'rules' => 'required'
-            ),
-            'invoice_time_created' => array(
-                'rules' => 'required'
-            ),
-            'invoice_password' => array(
-                'field' => 'invoice_password',
-                'label' => trans('invoice_password')
-            )
-        );
+        return ['invoice_number' => ['field' => 'invoice_number', 'label' => trans('invoice') . ' #', 'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']'], 'invoice_date_created' => ['field' => 'invoice_date_created', 'label' => trans('date'), 'rules' => 'required'], 'invoice_date_due' => ['field' => 'invoice_date_due', 'label' => trans('due_date'), 'rules' => 'required'], 'invoice_time_created' => ['rules' => 'required'], 'invoice_password' => ['field' => 'invoice_password', 'label' => trans('invoice_password')]];
     }
 
     /**
@@ -169,21 +93,14 @@ class Mdl_Invoices extends Response_Model
         $invoice_group = $inv->invoice_group_id;
 
         // Create an invoice amount record
-        $db_array = array(
-            'invoice_id' => $invoice_id
-        );
+        $db_array = ['invoice_id' => $invoice_id];
 
         $this->db->insert('ip_invoice_amounts', $db_array);
 
         if ($include_invoice_tax_rates) {
             // Create the default invoice tax record if applicable
             if (get_setting('default_invoice_tax_rate')) {
-                $db_array = array(
-                    'invoice_id' => $invoice_id,
-                    'tax_rate_id' => get_setting('default_invoice_tax_rate'),
-                    'include_item_tax' => get_setting('default_include_item_tax', 0),
-                    'invoice_tax_rate_amount' => 0
-                );
+                $db_array = ['invoice_id' => $invoice_id, 'tax_rate_id' => get_setting('default_invoice_tax_rate'), 'include_item_tax' => get_setting('default_include_item_tax', 0), 'invoice_tax_rate_amount' => 0];
 
                 $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
@@ -194,9 +111,7 @@ class Mdl_Invoices extends Response_Model
             $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
             if (preg_match("/sumex/i", $invgroup->invoice_group_name)) {
                 // If the Invoice Group includes "Sumex", make the invoice a Sumex one
-                $db_array = array(
-                    'sumex_invoice' => $invoice_id
-                );
+                $db_array = ['sumex_invoice' => $invoice_id];
                 $this->db->insert('ip_invoice_sumex', $db_array);
             }
         }
@@ -219,21 +134,7 @@ class Mdl_Invoices extends Response_Model
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_items as $invoice_item) {
-            $db_array = array(
-                'invoice_id' => $target_id,
-                'item_tax_rate_id' => $invoice_item->item_tax_rate_id,
-                'item_product_id' => $invoice_item->item_product_id,
-                'item_task_id' => $invoice_item->item_task_id,
-                'item_name' => $invoice_item->item_name,
-                'item_description' => $invoice_item->item_description,
-                'item_quantity' => $invoice_item->item_quantity,
-                'item_price' => $invoice_item->item_price,
-                'item_discount_amount' => $invoice_item->item_discount_amount,
-                'item_order' => $invoice_item->item_order,
-                'item_is_recurring' => $invoice_item->item_is_recurring,
-                'item_product_unit' => $invoice_item->item_product_unit,
-                'item_product_unit_id' => $invoice_item->item_product_unit_id,
-            );
+            $db_array = ['invoice_id' => $target_id, 'item_tax_rate_id' => $invoice_item->item_tax_rate_id, 'item_product_id' => $invoice_item->item_product_id, 'item_task_id' => $invoice_item->item_task_id, 'item_name' => $invoice_item->item_name, 'item_description' => $invoice_item->item_description, 'item_quantity' => $invoice_item->item_quantity, 'item_price' => $invoice_item->item_price, 'item_discount_amount' => $invoice_item->item_discount_amount, 'item_order' => $invoice_item->item_order, 'item_is_recurring' => $invoice_item->item_is_recurring, 'item_product_unit' => $invoice_item->item_product_unit, 'item_product_unit_id' => $invoice_item->item_product_unit_id];
 
             if (!$copy_recurring_items_only || $invoice_item->item_is_recurring) {
                 $this->mdl_items->save(null, $db_array);
@@ -244,12 +145,7 @@ class Mdl_Invoices extends Response_Model
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_tax_rates as $invoice_tax_rate) {
-            $db_array = array(
-                'invoice_id' => $target_id,
-                'tax_rate_id' => $invoice_tax_rate->tax_rate_id,
-                'include_item_tax' => $invoice_tax_rate->include_item_tax,
-                'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
-            );
+            $db_array = ['invoice_id' => $target_id, 'tax_rate_id' => $invoice_tax_rate->tax_rate_id, 'include_item_tax' => $invoice_tax_rate->include_item_tax, 'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount];
 
             $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
@@ -258,7 +154,7 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('custom_fields/mdl_invoice_custom');
         $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
-        $form_data = array();
+        $form_data = [];
         foreach ($custom_fields as $field) {
             $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
@@ -278,21 +174,7 @@ class Mdl_Invoices extends Response_Model
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_items as $invoice_item) {
-            $db_array = array(
-                'invoice_id' => $target_id,
-                'item_tax_rate_id' => $invoice_item->item_tax_rate_id,
-                'item_product_id' => $invoice_item->item_product_id,
-                'item_task_id' => $invoice_item->item_task_id,
-                'item_name' => $invoice_item->item_name,
-                'item_description' => $invoice_item->item_description,
-                'item_quantity' => $invoice_item->item_quantity * -1,
-                'item_price' => $invoice_item->item_price,
-                'item_discount_amount' => $invoice_item->item_discount_amount,
-                'item_order' => $invoice_item->item_order,
-                'item_is_recurring' => $invoice_item->item_is_recurring,
-                'item_product_unit' => $invoice_item->item_product_unit,
-                'item_product_unit_id' => $invoice_item->item_product_unit_id,
-            );
+            $db_array = ['invoice_id' => $target_id, 'item_tax_rate_id' => $invoice_item->item_tax_rate_id, 'item_product_id' => $invoice_item->item_product_id, 'item_task_id' => $invoice_item->item_task_id, 'item_name' => $invoice_item->item_name, 'item_description' => $invoice_item->item_description, 'item_quantity' => $invoice_item->item_quantity * -1, 'item_price' => $invoice_item->item_price, 'item_discount_amount' => $invoice_item->item_discount_amount, 'item_order' => $invoice_item->item_order, 'item_is_recurring' => $invoice_item->item_is_recurring, 'item_product_unit' => $invoice_item->item_product_unit, 'item_product_unit_id' => $invoice_item->item_product_unit_id];
 
             $this->mdl_items->save(null, $db_array);
         }
@@ -300,12 +182,7 @@ class Mdl_Invoices extends Response_Model
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_tax_rates as $invoice_tax_rate) {
-            $db_array = array(
-                'invoice_id' => $target_id,
-                'tax_rate_id' => $invoice_tax_rate->tax_rate_id,
-                'include_item_tax' => $invoice_tax_rate->include_item_tax,
-                'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount
-            );
+            $db_array = ['invoice_id' => $target_id, 'tax_rate_id' => $invoice_tax_rate->tax_rate_id, 'include_item_tax' => $invoice_tax_rate->include_item_tax, 'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount];
 
             $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
@@ -314,7 +191,7 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('custom_fields/mdl_invoice_custom');
         $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
 
-        $form_data = array();
+        $form_data = [];
         foreach ($custom_fields as $field) {
             $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
@@ -455,7 +332,7 @@ class Mdl_Invoices extends Response_Model
     // Excludes draft and paid invoices, i.e. keeps unpaid invoices.
     public function is_open()
     {
-        $this->filter_where_in('invoice_status_id', array(2, 3));
+        $this->filter_where_in('invoice_status_id', [2, 3]);
         return $this;
     }
 
@@ -468,7 +345,7 @@ class Mdl_Invoices extends Response_Model
 
     public function guest_visible()
     {
-        $this->filter_where_in('invoice_status_id', array(2, 3, 4));
+        $this->filter_where_in('invoice_status_id', [2, 3, 4]);
         return $this;
     }
 

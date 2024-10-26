@@ -17,7 +17,7 @@ class Ajax extends Admin_Controller
      */
     public function modal_task_lookups($invoice_id = null)
     {
-        $data['tasks'] = array();
+        $data['tasks'] = [];
         $this->load->model('mdl_tasks');
 
         if (!empty($invoice_id)) {

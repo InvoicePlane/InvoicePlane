@@ -31,11 +31,7 @@ class Mdl_Custom_Values extends MY_Model
      */
     public static function user_input_types()
     {
-        return array(
-            'TEXT',
-            'DATE',
-            'BOOLEAN'
-        );
+        return ['TEXT', 'DATE', 'BOOLEAN'];
     }
 
     /**
@@ -43,10 +39,7 @@ class Mdl_Custom_Values extends MY_Model
      */
     public static function custom_value_fields()
     {
-        return array(
-            'SINGLE-CHOICE',
-            'MULTIPLE-CHOICE'
-        );
+        return ['SINGLE-CHOICE', 'MULTIPLE-CHOICE'];
     }
 
     /**
@@ -74,13 +67,7 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function validation_rules()
     {
-        return array(
-            'custom_values_value' => array(
-                'field' => 'custom_values_value',
-                'label' => 'Value',
-                'rules' => 'required'
-            )
-        );
+        return ['custom_values_value' => ['field' => 'custom_values_value', 'label' => 'Value', 'rules' => 'required']];
     }
 
     /**
@@ -88,13 +75,7 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function custom_tables()
     {
-        return array(
-            'ip_client_custom' => 'client',
-            'ip_invoice_custom' => 'invoice',
-            'ip_payment_custom' => 'payment',
-            'ip_quote_custom' => 'quote',
-            'ip_user_custom' => 'user'
-        );
+        return ['ip_client_custom' => 'client', 'ip_invoice_custom' => 'invoice', 'ip_payment_custom' => 'payment', 'ip_quote_custom' => 'quote', 'ip_user_custom' => 'user'];
     }
 
     /**

@@ -85,13 +85,7 @@ class Settings extends Admin_Controller
 
             }
 
-            $upload_config = array(
-                'upload_path' => './uploads/',
-                'allowed_types' => 'gif|jpg|jpeg|png|svg',
-                'max_size' => '9999',
-                'max_width' => '9999',
-                'max_height' => '9999'
-            );
+            $upload_config = ['upload_path' => './uploads/', 'allowed_types' => 'gif|jpg|jpeg|png|svg', 'max_size' => '9999', 'max_width' => '9999', 'max_height' => '9999'];
 
             // Check for invoice logo upload
             if ($_FILES['invoice_logo']['name']) {
@@ -146,26 +140,7 @@ class Settings extends Admin_Controller
 
         // Set data in the layout
         $this->layout->set(
-            array(
-                'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
-                'payment_methods' => $this->mdl_payment_methods->get()->result(),
-                'public_invoice_templates' => $public_invoice_templates,
-                'pdf_invoice_templates' => $pdf_invoice_templates,
-                'public_quote_templates' => $public_quote_templates,
-                'pdf_quote_templates' => $pdf_quote_templates,
-                'languages' => get_available_languages(),
-                'countries' => get_country_list(trans('cldr')),
-                'date_formats' => date_formats(),
-                'current_date' => new DateTime(),
-                'available_themes' => $available_themes,
-                'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'gateway_drivers' => $gateways,
-                'number_formats' => $number_formats,
-                'gateway_currency_codes' => get_currencies(),
-                'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))
-            )
+            ['invoice_groups' => $this->mdl_invoice_groups->get()->result(), 'tax_rates' => $this->mdl_tax_rates->get()->result(), 'payment_methods' => $this->mdl_payment_methods->get()->result(), 'public_invoice_templates' => $public_invoice_templates, 'pdf_invoice_templates' => $pdf_invoice_templates, 'public_quote_templates' => $public_quote_templates, 'pdf_quote_templates' => $pdf_quote_templates, 'languages' => get_available_languages(), 'countries' => get_country_list(trans('cldr')), 'date_formats' => date_formats(), 'current_date' => new DateTime(), 'available_themes' => $available_themes, 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(), 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(), 'gateway_drivers' => $gateways, 'number_formats' => $number_formats, 'gateway_currency_codes' => get_currencies(), 'first_days_of_weeks' => ['0' => lang('sunday'), '1' => lang('monday')]]
         );
 
         $this->layout->buffer('content', 'settings/index');

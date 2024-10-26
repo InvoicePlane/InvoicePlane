@@ -39,18 +39,7 @@ class Mdl_User_Clients extends MY_Model
      */
     public function validation_rules()
     {
-        return array(
-            'user_id' => array(
-                'field' => 'user_id',
-                'label' => trans('user'),
-                'rules' => 'required'
-            ),
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => trans('client'),
-                'rules' => 'required'
-            ),
-        );
+        return ['user_id' => ['field' => 'user_id', 'label' => trans('user'), 'rules' => 'required'], 'client_id' => ['field' => 'client_id', 'label' => trans('client'), 'rules' => 'required']];
     }
 
     /**
@@ -75,10 +64,7 @@ class Mdl_User_Clients extends MY_Model
             $clients = $this->mdl_clients->get_not_assigned_to_user($users_id[$x]);
 
             for ($i = 0; $i < count($clients); $i++) {
-                $user_client = array(
-                    'user_id' => $users_id[$x],
-                    'client_id' => $clients[$i]->client_id
-                );
+                $user_client = ['user_id' => $users_id[$x], 'client_id' => $clients[$i]->client_id];
 
                 $this->db->insert('ip_user_clients', $user_client);
             }
@@ -90,7 +76,7 @@ class Mdl_User_Clients extends MY_Model
         $this->load->model('users/mdl_users');
         $users = $this->mdl_users->where('user_all_clients', 1)->get()->result();
 
-        $new_users = array();
+        $new_users = [];
 
         for ($i = 0; $i < count($users); $i++) {
             array_push($new_users, $users[$i]->user_id);
