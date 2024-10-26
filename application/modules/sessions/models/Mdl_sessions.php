@@ -85,5 +85,4 @@ class Mdl_Sessions extends CI_Model
 
         return false;
     }
-
 }

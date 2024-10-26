@@ -15,7 +15,6 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Mdl_Items extends Response_Model
 {
-
     public $table = 'ip_invoice_items';
 
     public $primary_key = 'ip_invoice_items.item_id';

@@ -306,5 +306,4 @@ class Mdl_Quote_Amounts extends CI_Model
 
         return $return;
     }
-
 }

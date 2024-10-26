@@ -83,5 +83,4 @@ class Mdl_Quote_Custom extends Validator
         $this->db->where('ip_quote_custom.quote_id', $quote_id);
         return $this;
     }
-
 }

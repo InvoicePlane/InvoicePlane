@@ -160,5 +160,4 @@ class Mdl_Client_Custom extends Validator
 
         return $db_array;
     }
-
 }

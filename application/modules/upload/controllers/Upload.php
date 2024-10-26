@@ -189,5 +189,4 @@ class Upload extends Admin_Controller
         show_404();
         exit;
     }
-
 }

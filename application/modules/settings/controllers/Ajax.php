@@ -25,5 +25,4 @@ class Ajax extends Admin_Controller
         $this->load->helper('string');
         echo random_string('alnum', 16);
     }
-
 }

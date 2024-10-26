@@ -17,7 +17,6 @@ if (!defined('BASEPATH')) {
  */
 class Setup extends MX_Controller
 {
-
     public $errors = 0;
 
     /**
@@ -456,5 +455,4 @@ class Setup extends MX_Controller
         $config = preg_replace("/SETUP_COMPLETED=(.*)?/", "SETUP_COMPLETED=true", $config);
         write_file(IPCONFIG_FILE, $config);
     }
-
 }

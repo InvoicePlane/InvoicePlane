@@ -139,5 +139,4 @@ class Invoices extends Guest_Controller
 
         generate_invoice_sumex($invoice_id);
     }
-
 }

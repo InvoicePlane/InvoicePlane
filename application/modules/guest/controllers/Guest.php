@@ -31,5 +31,4 @@ class Guest extends Guest_Controller
         $this->layout->buffer('content', 'guest/index');
         $this->layout->render('layout_guest');
     }
-
 }

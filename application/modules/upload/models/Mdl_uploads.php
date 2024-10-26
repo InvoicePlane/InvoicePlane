@@ -103,5 +103,4 @@ class Mdl_Uploads extends Response_Model
         $this->filter_where('ip_uploads.client_id', $client_id);
         return $this;
     }
-
 }

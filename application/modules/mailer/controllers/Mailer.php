@@ -220,5 +220,4 @@ class Mailer extends Admin_Controller
             redirect('mailer/quote/' . $quote_id);
         }
     }
-
 }

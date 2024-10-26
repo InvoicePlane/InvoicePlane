@@ -77,5 +77,4 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
             )
         );
     }
-
 }

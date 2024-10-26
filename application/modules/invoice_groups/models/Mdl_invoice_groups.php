@@ -125,5 +125,4 @@ class Mdl_Invoice_Groups extends Response_Model
         $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', false);
         $this->db->update($this->table);
     }
-
 }

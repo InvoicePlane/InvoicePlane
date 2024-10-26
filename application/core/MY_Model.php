@@ -35,7 +35,6 @@ if (!defined('BASEPATH')) {
  */
 class MY_Model extends CI_Model
 {
-
     public $table;
 
     public $primary_key;

@@ -156,5 +156,4 @@ class Quotes extends Guest_Controller
 
         redirect_to('guest/quotes');
     }
-
 }

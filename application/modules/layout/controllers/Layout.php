@@ -80,5 +80,4 @@ class Layout extends MX_Controller
 
         $this->load->view($view, $data);
     }
-
 }

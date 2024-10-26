@@ -81,5 +81,4 @@ class Custom_Fields extends Admin_Controller
         $this->mdl_custom_fields->delete($id);
         redirect('custom_fields');
     }
-
 }

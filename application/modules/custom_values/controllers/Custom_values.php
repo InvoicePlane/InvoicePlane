@@ -122,5 +122,4 @@ class Custom_Values extends Admin_Controller
         $this->mdl_custom_values->delete($id);
         redirect('custom_values');
     }
-
 }

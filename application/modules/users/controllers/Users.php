@@ -192,5 +192,4 @@ class Users extends Admin_Controller
 
         redirect('users/form/' . $user_id);
     }
-
 }

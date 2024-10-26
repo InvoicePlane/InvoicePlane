@@ -310,5 +310,4 @@ class Mdl_Users extends Response_Model
         $this->load->helper('orphan');
         delete_orphans();
     }
-
 }

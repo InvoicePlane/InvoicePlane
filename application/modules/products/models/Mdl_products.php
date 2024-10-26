@@ -124,5 +124,4 @@ class Mdl_Products extends Response_Model
 
         return $db_array;
     }
-
 }

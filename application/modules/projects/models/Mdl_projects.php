@@ -76,5 +76,4 @@ class Mdl_Projects extends Response_Model
 
         return $result;
     }
-
 }

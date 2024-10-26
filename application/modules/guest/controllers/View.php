@@ -255,5 +255,4 @@ class View extends Base_Controller
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
-
 }

@@ -56,5 +56,4 @@ class Recurring extends Admin_Controller
         $this->mdl_invoices_recurring->delete($invoice_recurring_id);
         redirect('invoices/recurring/index');
     }
-
 }

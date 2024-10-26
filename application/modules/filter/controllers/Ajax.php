@@ -102,5 +102,4 @@ class Ajax extends Admin_Controller
 
         $this->layout->load_view('payments/partial_payment_table', $data);
     }
-
 }

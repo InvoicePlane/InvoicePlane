@@ -75,5 +75,4 @@ class Mdl_Invoice_Custom extends Validator
         $this->db->where('ip_invoice_custom.invoice_id', $invoice_id);
         return $this;
     }
-
 }
