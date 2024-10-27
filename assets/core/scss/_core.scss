@@ -431,8 +431,11 @@ div.table-content {
 |   =========================================================
 */
 
-.tabbable .table {
-  margin-bottom: 15px;
+.tabbable {
+  .table,
+  .model-pager {
+    margin-bottom: 15px;
+  }
 }
 
 /*
