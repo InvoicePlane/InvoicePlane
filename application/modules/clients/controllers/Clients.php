@@ -220,7 +220,7 @@ class Clients extends Admin_Controller
     /**
      * @param int $client_id
      */
-    public function view($client_id, $tab = 'detail', $page = 0)
+    public function view($client_id, $activeTab = 'detail', $page = 0)
     {
         $this->load->model('clients/mdl_client_notes');
         $this->load->model('invoices/mdl_invoices');
@@ -271,7 +271,7 @@ class Clients extends Admin_Controller
                 'custom_fields'    => $custom_fields,
                 'quote_statuses'   => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
-                'tab'              => $tab,
+                'activeTab'        => $activeTab,
             ]
 >>>>>>> 44a388fe (fix formatting)
         );
