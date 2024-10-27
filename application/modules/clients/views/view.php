@@ -70,16 +70,16 @@ $locations = [];
 </div>
 
 <ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
-    <li<?php if ($tab === 'detail') {
+    <li<?php if ($activeTab === 'detail') {
         echo ' class="active"';
     } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
-    <li<?php if ($tab === 'quotes') {
+    <li<?php if ($activeTab === 'quotes') {
         echo ' class="active"';
     } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
-    <li<?php if ($tab === 'invoices') {
+    <li<?php if ($activeTab === 'invoices') {
         echo ' class="active"';
     } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
-    <li<?php if ($tab === 'payments') {
+    <li<?php if ($activeTab === 'payments') {
         echo ' class="active"';
     } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
 </ul>
@@ -87,7 +87,7 @@ $locations = [];
 <div id="content" class="tabbable tabs-below no-padding">
     <div class="tab-content no-padding">
 
-        <div id="clientDetails" class="tab-pane tab-rich-content <?php if ($tab === 'detail') {
+        <div id="clientDetails" class="tab-pane tab-rich-content <?php if ($activeTab === 'detail') {
             echo ' active';
         } ?>">
 
@@ -361,7 +361,7 @@ $locations = [];
 
         </div>
 
-        <div id="clientQuotes" class="tab-pane table-content<?php if ($tab === 'quotes') {
+        <div id="clientQuotes" class="tab-pane table-content<?php if ($activeTab === 'quotes') {
             echo ' active';
         } ?>">
             <?php echo $quote_table; ?>
@@ -373,7 +373,7 @@ $locations = [];
             </div>
         </div>
 
-        <div id="clientInvoices" class="tab-pane table-content<?php if ($tab === 'invoices') {
+        <div id="clientInvoices" class="tab-pane table-content<?php if ($activeTab === 'invoices') {
             echo ' active';
         } ?>">
             <?php echo $invoice_table; ?>
@@ -385,7 +385,7 @@ $locations = [];
             </div>
         </div>
 
-        <div id="clientPayments" class="tab-pane table-content<?php if ($tab === 'payments') {
+        <div id="clientPayments" class="tab-pane table-content<?php if ($activeTab === 'payments') {
             echo ' active';
         } ?>">
             <?php echo $payment_table; ?>
