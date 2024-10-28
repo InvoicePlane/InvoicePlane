@@ -284,4 +284,20 @@ $(document).ready(function () {
             });
         });
     }
+
+    // Open/close QR code Swiss settings depending on checked QR code checkbox
+    const checkboxQrCodeSwiss = document.getElementById('settings[qr_code_swiss]');
+    const panelQrCodeSwissSettings = document.getElementById('panel-qr-code-swiss-settings');
+
+    if (checkboxQrCodeSwiss && panelQrCodeSwissSettings) {
+        checkboxQrCodeSwiss.addEventListener('click', () => {
+            panelQrCodeSwissSettings.querySelectorAll('.row').forEach((row) => {
+                if (checkboxQrCodeSwiss.checked) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        });
+    }
 });
