@@ -1,5 +1,5 @@
 <?php
-$lang = array(
+$lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
@@ -333,7 +333,7 @@ $lang = array(
     'no_overdue_invoices'                          => 'No overdue Invoices',
     'no_quotes_requiring_approval'                 => 'There are no quotes requiring approval.',
     'no_updates_available'                         => 'No updates available.',
-		'no_update_invoice_due_date_mail'							 => 'Disable the change of invoice date and due date before emailing',
+    'no_update_invoice_due_date_mail'			   => 'Disable the change of invoice date and due date before emailing',
     'none'                                         => 'None',
     'note'                                         => 'Note',
     'notes'                                        => 'Notes',
@@ -430,6 +430,11 @@ $lang = array(
     'qr_code_settings_recipient'                   => 'Recipient',
     'qr_code_settings_remittance_text'             => 'Remittance Text',
     'qr_code_settings_remittance_text_tags'        => 'Remittance Text Tags',
+    'qr_code_swiss_settings'                       => 'QR Code Swiss Settings',
+    'qr_code_swiss_settings_enable'                => 'Enable QR Code Swiss',
+    'qr_code_swiss_settings_enable_hint'           => 'Enabling this option will include a QR Code Swiss page after the invoice.',
+    'qr_code_swiss_settings_besrid'                => 'BESR-ID',
+    'qr_code_swiss_settings_currency'              => 'Currency',
     'qty'                                          => 'Qty',
     'quantity'                                     => 'Quantity',
     'quarter'                                      => 'Quarter',
@@ -734,5 +739,5 @@ $lang = array(
 
     // Types
     'true'                                         => 'True',
-    'false'                                        => 'False'
-);
+    'false'                                        => 'False',
+];
