@@ -2,7 +2,7 @@
 
 use Stripe\StripeClient;
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -22,9 +22,10 @@ class Stripe extends Base_Controller
 
     /**
      * Creates a checkout session on Stripe
-     * that is then retrived to execute the payment
+     * that is then retrieved to execute the payment.
      *
-     * @param  string  $invoice_url_key  the url key that is used to retrive the invoice
+     * @param string $invoice_url_key the url key that is used to retrive the invoice
+     *
      * @return json the client secret in a json format
      */
     public function create_checkout_session($invoice_url_key)
@@ -50,29 +51,29 @@ class Stripe extends Base_Controller
                     'price_data' => [
                         'currency' => get_setting('gateway_stripe_currency'),
                         'product_data' => [
-                            'name' => 'invoice nr. ' . $invoice->invoice_number
+                            'name' => 'invoice nr. ' . $invoice->invoice_number,
                         ],
-                        'unit_amount' => $invoice->invoice_balance * 100
+                        'unit_amount' => $invoice->invoice_balance * 100,
                     ],
-                    'quantity' => 1
+                    'quantity' => 1,
                 ],
             ],
             'mode' => 'payment',
         ]);
 
         //TODO: handle exceptions in checkout session
-
-        $this->output->set_output(json_encode(['clientSecret' => $checkout_session->client_secret])));
+        $this->output->set_output(json_encode(['clientSecret' => $checkout_session->client_secret]));
     }
 
     /**
      * The callback endpoint called by stripe once the
-     * card transaction has been completed or aborted
+     * card transaction has been completed or aborted.
      *
-     * @param  string  $checkout_session_id
+     * @param string $checkout_session_id
+     *
      * @return void
      */
-    public function callback($checkout_session_id)
+    public function callback($checkout_session_id): void
     {
         try {
             $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
@@ -114,8 +115,10 @@ class Stripe extends Base_Controller
         } catch (Error|Exception|ErrorException $e) {
             //TODO: log error
 
-            $this->session->set_flashdata('alert_error',
-                trans('online_payment_payment_failed') . '<br/>' . $$e->getMessage());
+            $this->session->set_flashdata(
+                'alert_error',
+                trans('online_payment_payment_failed') . '<br/>' . ${$e}->getMessage()
+            );
             $this->session->keep_flashdata('alert_error');
 
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
