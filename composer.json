@@ -1,41 +1,40 @@
 {
-  "name": "invoiceplane/invoiceplane",
-  "version": "1.7",
-  "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
-  "homepage": "https://invoiceplane.com",
-  "license": "MIT",
-  "type": "project",
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "php-http/discovery": true
+    "name": "invoiceplane/invoiceplane",
+    "version": "1.7",
+    "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
+    "homepage": "https://invoiceplane.com",
+    "license": "MIT",
+    "type": "project",
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "require": {
+        "codeigniter/framework": "3.1.13",
+        "endroid/qr-code": "^4.8.5",
+        "fpdf/fpdf": "^1.86",
+        "guzzlehttp/guzzle": "^7.9.2",
+        "moneyphp/money": "^4.5.1",
+        "mpdf/mpdf": "^8.2.4",
+        "paragonie/random_compat": "^2.0.21",
+        "phpmailer/phpmailer": "^6.9.2",
+        "setasign/fpdf": "^1.8.6",
+        "smhg/sepa-qr-data": "^1.2",
+        "sprain/swiss-qr-bill": "^4.15",
+        "stripe/stripe-php": "^14.10",
+        "vlucas/phpdotenv": "^5.6.1"
+    },
+    "require-dev": {
+        "filp/whoops": "^2.16",
+        "laravel/pint": "^1.18.1",
+        "rector/rector": "0.14.8",
+        "symfony/var-dumper": "^6.4.13"
+    },
+    "scripts": {
+        "pint": [
+            "vendor/bin/pint"
+        ]
     }
-  },
-  "require": {
-    "codeigniter/framework": "3.1.13",
-    "endroid/qr-code": "^4.8.5",
-    "guzzlehttp/guzzle": "^7.0",
-    "fpdf/fpdf": "^1.86",
-    "guzzlehttp/guzzle": "^7.9.2",
-    "moneyphp/money": "^4.5.1",
-    "mpdf/mpdf": "^8.2.4",
-    "paragonie/random_compat": "^2.0.21",
-    "phpmailer/phpmailer": "^6.9.2",
-    "setasign/fpdf": "^1.8.6",
-    "smhg/sepa-qr-data": "^1.2","stripe/stripe-php": "^14.4",
-    "sprain/swiss-qr-bill": "^4.15",
-    "stripe/stripe-php": "^14.10",
-    "vlucas/phpdotenv": "^5.6.1"
-  },
-  "require-dev": {
-    "filp/whoops": "^2.16",
-    "laravel/pint": "^1.18.1",
-    "rector/rector": "0.14.8",
-    "symfony/var-dumper": "^6.4.13"
-  },
-  "scripts": {
-    "pint": [
-      "vendor/bin/pint"
-    ]
-  }
 }
