@@ -1,15 +1,12 @@
 <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
-
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('invoices'); ?>
             </div>
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[default_invoice_group]">
                                 <?php _trans('default_invoice_group'); ?>
@@ -37,7 +34,6 @@
 
                     </div>
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[invoice_default_payment_method]">
                                 <?php _trans('default_payment_method'); ?>
@@ -62,7 +58,6 @@
                             <input type="number" name="settings[invoices_due_after]" id="settings[invoices_due_after]"
                                 class="form-control" value="<?php echo get_setting('invoices_due_after'); ?>">
                         </div>
-
                         <div class="form-group">
                             <label for="settings[generate_invoice_number_for_draft]">
                                 <?php _trans('generate_invoice_number_for_draft'); ?>
@@ -77,22 +72,17 @@
                                 </option>
                             </select>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
-
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('pdf_settings'); ?>
             </div>
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[mark_invoices_sent_pdf]">
                                 <?php _trans('mark_invoices_sent_pdf'); ?>
@@ -107,7 +97,6 @@
                                 </option>
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label for="settings[invoice_pre_password]">
                                 <?php _trans('invoice_pre_password'); ?>
@@ -116,7 +105,6 @@
                                 class="form-control"
                                 value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                         </div>
-
                         <div class="form-group">
                             <label for="settings[include_zugferd]">
                                 <?php _trans('invoice_pdf_include_zugferd'); ?>
@@ -132,7 +120,6 @@
                             </select>
                             <p class="help-block"><?php _trans('invoice_pdf_include_zugferd_help'); ?></p>
                         </div>
-
                     </div>
                     <div class="col-xs-12 col-md-6">
 
@@ -343,7 +330,7 @@
                     </div>
                 </div>
 
-                <div class="row <?php echo !get_setting('qr_code') ? 'hidden' : ''; ?>">
+                <div class="row <?php echo ! get_setting('qr_code') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_recipient]">
@@ -374,7 +361,7 @@
                     </div>
                 </div>
 
-                <div class="row <?php echo !get_setting('qr_code') ? 'hidden' : ''; ?>">
+                <div class="row <?php echo ! get_setting('qr_code') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_bic]">
@@ -418,13 +405,72 @@
             </div>
         </div>
 
+        <div class="panel panel-default" id="panel-qr-code-swiss-settings">
+            <div class="panel-heading">
+                <?php _trans('qr_code_swiss_settings'); ?>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input
+                                type="hidden"
+                                name="settings[qr_code_swiss]"
+                                value="0"
+                            >
+                            <input
+                                type="checkbox"
+                                name="settings[qr_code_swiss]"
+                                id="settings[qr_code_swiss]"
+                                value="1"
+                                <?php check_select(get_setting('qr_code_swiss'), 1, '==', true) ?>
+                            >
+                            <?php _trans('qr_code_swiss_settings_enable'); ?>
+                        </label>
+                        <p class="help-block"><?php _trans('qr_code_swiss_settings_enable_hint'); ?></p>
+                    </div>
+                </div>
+                <div class="row <?php echo ! get_setting('qr_code_swiss') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_swiss_besrid]">
+                                <?php _trans('qr_code_swiss_settings_besrid'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_swiss_besrid]"
+                                id="settings[qr_code_swiss_besrid]"
+                                class="form-control"
+                                value="<?php echo get_setting('qr_code_swiss_besrid'); ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[qr_code_swiss_currency]">
+                                <?php _trans('qr_code_swiss_settings_currency'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[qr_code_swiss_currency]"
+                                id="settings[qr_code_swiss_currency]"
+                                class="form-control"
+                                value="<?php echo get_setting('qr_code_swiss_currency', 'CHF', true); ?>"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('email_settings'); ?>
             </div>
             <div class="panel-body">
 
-                <div class="row">
+                 <div class="row">
                     <div class="col-xs-12 col-md-6">
 
                         <div class="form-group">
@@ -524,12 +570,12 @@
                             <select name="settings[sumex_sliptype]" id="settings[sumex_sliptype]"
                                 class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <?php
-                                $slipTypes = array("esr9", "esrRed");
-                                foreach ($slipTypes as $k => $v): ?>
+                                $slipTypes = ['esr9', 'esrRed'];
+                foreach ($slipTypes as $k => $v) { ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_sliptype'), $k) ?>>
                                         <?php _trans('invoice_sumex_sliptype-' . $v); ?>
                                     </option>
-                                <?php endforeach; ?>
+                                <?php } ?>
                             </select>
                             <p class="help-block"><?php _trans('invoice_sumex_sliptype_help'); ?></p>
                         </div>
@@ -542,12 +588,12 @@
                             <select name="settings[sumex_role]" id="settings[sumex_role]"
                                 class="form-control simple-select">
                                 <?php
-                                $roles = Sumex::ROLES;
-                                foreach ($roles as $k => $v): ?>
+                $roles = Sumex::ROLES;
+                foreach ($roles as $k => $v) { ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_role'), $k) ?>>
                                         <?php _trans('invoice_sumex_role_' . $v); ?>
                                     </option>
-                                <?php endforeach; ?>
+                                <?php } ?>
                             </select>
                         </div>
 
@@ -558,12 +604,12 @@
                             <select name="settings[sumex_place]" id="settings[sumex_place]"
                                 class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <?php
-                                $places = Sumex::PLACES;
-                                foreach ($places as $k => $v): ?>
+                                    $places = Sumex::PLACES;
+                foreach ($places as $k => $v) { ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_place'), $k); ?>>
                                         <?php _trans('invoice_sumex_place_' . $v); ?>
                                     </option>
-                                <?php endforeach; ?>
+                                <?php } ?>
                             </select>
                         </div>
 
@@ -574,12 +620,12 @@
                             <select name="settings[sumex_canton]" id="settings[sumex_canton]"
                                 class="form-control simple-select">
                                 <?php
-                                $cantons = Sumex::CANTONS;
-                                foreach ($cantons as $k => $v): ?>
+                $cantons = Sumex::CANTONS;
+                foreach ($cantons as $k => $v) { ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_canton'), $k); ?>>
                                         <?php echo $v; ?>
                                     </option>
-                                <?php endforeach; ?>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -587,6 +633,5 @@
 
             </div>
         </div>
-
     </div>
 </div>
