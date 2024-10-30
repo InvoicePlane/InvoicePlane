@@ -6,7 +6,7 @@
                     client_id: $('#client_id').val(),
                     client_note: $('#client_note').val()
                 }, function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful
@@ -18,7 +18,7 @@
                             {
                                 client_id: <?php echo $client->client_id; ?>
                             }, function (response) {
-                                <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
+                                <?php echo IP_DEBUG ? 'console.log(response);' : ''; ?>
                             });
                     } else {
                         // The validation was not successful
@@ -33,15 +33,15 @@
 </script>
 
 <?php
-$locations = array();
-foreach ($custom_fields as $custom_field) {
-    if (array_key_exists($custom_field->custom_field_location, $locations)) {
-        $locations[$custom_field->custom_field_location] += 1;
-    } else {
-        $locations[$custom_field->custom_field_location] = 1;
-    }
-}
-?>
+$locations = [];
+            foreach ($custom_fields as $custom_field) {
+                if (array_key_exists($custom_field->custom_field_location, $locations)) {
+                    $locations[$custom_field->custom_field_location] += 1;
+                } else {
+                    $locations[$custom_field->custom_field_location] = 1;
+                }
+            }
+            ?>
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _htmlsc(format_client($client)); ?></h1>
@@ -70,16 +70,26 @@ foreach ($custom_fields as $custom_field) {
 </div>
 
 <ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
-    <li class="active"><a data-toggle="tab" href="#clientDetails"><?php _trans('details'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientQuotes"><?php _trans('quotes'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientInvoices"><?php _trans('invoices'); ?></a></li>
-    <li><a data-toggle="tab" href="#clientPayments"><?php _trans('payments'); ?></a></li>
+    <li<?php if ($activeTab === 'detail') {
+        echo ' class="active"';
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
+    <li<?php if ($activeTab === 'quotes') {
+        echo ' class="active"';
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
+    <li<?php if ($activeTab === 'invoices') {
+        echo ' class="active"';
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
+    <li<?php if ($activeTab === 'payments') {
+        echo ' class="active"';
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
     <div class="tab-content no-padding">
 
-        <div id="clientDetails" class="tab-pane tab-rich-content active">
+        <div id="clientDetails" class="tab-pane tab-rich-content <?php if ($activeTab === 'detail') {
+            echo ' active';
+        } ?>">
 
             <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -185,8 +195,8 @@ foreach ($custom_fields as $custom_field) {
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                        ?>
+                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
                                     </tr>
@@ -222,8 +232,8 @@ foreach ($custom_fields as $custom_field) {
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                        ?>
+                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
                                     </tr>
@@ -254,7 +264,7 @@ foreach ($custom_fields as $custom_field) {
 
             </div>
 
-            <?php if ($client->client_surname != ""): //Client is not a company ?>
+            <?php if ($client->client_surname != ''): //Client is not a company?>
                 <hr>
 
                 <div class="row">
@@ -299,8 +309,8 @@ foreach ($custom_fields as $custom_field) {
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                            $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                            ?>
+                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
                                         </tr>
@@ -333,8 +343,8 @@ foreach ($custom_fields as $custom_field) {
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                            $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                            ?>
+                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
                                         </tr>
@@ -376,16 +386,40 @@ foreach ($custom_fields as $custom_field) {
 
         </div>
 
-        <div id="clientQuotes" class="tab-pane table-content">
+        <div id="clientQuotes" class="tab-pane table-content<?php if ($activeTab === 'quotes') {
+            echo ' active';
+        } ?>">
             <?php echo $quote_table; ?>
+
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/quotes'), 'mdl_quotes'); ?>
+                </div>
+            </div>
         </div>
 
-        <div id="clientInvoices" class="tab-pane table-content">
+        <div id="clientInvoices" class="tab-pane table-content<?php if ($activeTab === 'invoices') {
+            echo ' active';
+        } ?>">
             <?php echo $invoice_table; ?>
+
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/invoices'), 'mdl_invoices'); ?>
+                </div>
+            </div>
         </div>
 
-        <div id="clientPayments" class="tab-pane table-content">
+        <div id="clientPayments" class="tab-pane table-content<?php if ($activeTab === 'payments') {
+            echo ' active';
+        } ?>">
             <?php echo $payment_table; ?>
+
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/payments'), 'mdl_payments'); ?>
+                </div>
+            </div>
         </div>
     </div>
 

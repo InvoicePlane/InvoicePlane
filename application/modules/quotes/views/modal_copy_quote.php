@@ -12,12 +12,12 @@
             $.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
                     client_id: $('#create_quote_client_id').val(),
-                    quote_date_created: $('#quote_date_created').val(),
-                    invoice_group_id: $('#invoice_group_id').val(),
-                    user_id: $('#user_id').val()
+                    quote_date_created: $('#quote_date_created_modal').val(),
+                    user_id: $('#user_id').val(),
+                    invoice_group_id: $('#invoice_group_id').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + response.quote_id;
@@ -49,21 +49,21 @@
                 <label for="create_quote_client_id"><?php _trans('client'); ?></label>
                 <select name="client_id" id="create_quote_client_id" class="client-id-select form-control"
                         autofocus="autofocus">
-                    <?php if (!empty($client)) : ?>
+                    <?php if ( ! empty($client)) : ?>
                         <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
                     <?php endif; ?>
                 </select>
             </div>
 
             <div class="form-group has-feedback">
-                <label for="quote_date_created">
+                <label for="quote_date_created_modal">
                     <?php _trans('quote_date'); ?>
                 </label>
 
                 <div class="input-group">
-                    <input name="quote_date_created" id="quote_date_created"
+                    <input name="quote_date_created_modal" id="quote_date_created_modal"
                            class="form-control datepicker"
-                           value="<?php echo date_from_mysql($quote->quote_date_created, true); ?>">
+                           value="<?php echo date_from_mysql(date('Y-m-d', time()), true); ?>">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>

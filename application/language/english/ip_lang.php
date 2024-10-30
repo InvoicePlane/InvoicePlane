@@ -279,6 +279,7 @@ $lang = array(
     'invoice_tax_rate'                             => 'Invoice Tax Rate',
     'invoice_template'                             => 'Invoice Template',
     'invoice_templates'                            => 'Invoice Templates',
+    'invoice_templates_info'                       => 'You can extend the available templates by downloading other templates provided by the community (see <a href="https://www.invoiceplane.com/themes" target="_blank">www.invoiceplane.com/themes</a>).',
     'invoice_terms'                                => 'Invoice Terms',
     'invoiced'                                     => 'Invoiced',
     'invoiceplane_news'                            => 'InvoicePlane News',

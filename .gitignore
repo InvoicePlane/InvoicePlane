@@ -16,3 +16,5 @@ adminer.php
 /.php_cs.cache
 /doc
 *.bak
+npm-debug.log
+yarn-error.log
