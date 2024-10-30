@@ -41,10 +41,13 @@ class Mdl_Clients extends Response_Model
     public function validation_rules()
     {
         return [
+<<<<<<< HEAD
             'client_title' => [
                 'field' => 'client_title',
                 'label' => trans('client_title'),
             ],
+=======
+>>>>>>> cf5d220c (939: Just style fixes for now)
             'client_name' => [
                 'field' => 'client_name',
                 'label' => trans('client_name'),
@@ -80,6 +83,9 @@ class Mdl_Clients extends Response_Model
             'client_country' => [
                 'field' => 'client_country',
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> cf5d220c (939: Just style fixes for now)
                 'rules' => 'trim',
             ],
             'client_phone' => [
@@ -104,6 +110,7 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_tax_code',
             ],
             'client_invoicing_contact' => [
+<<<<<<< HEAD
                 'field' => 'client_invoicing_contact',
             ],
             'client_einvoice_version' => [
@@ -141,6 +148,15 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_einvoice_version'
             ),
 >>>>>>> a185f8e7 (Added validation rules: 'xss_clean' and 'trim')
+=======
+                'field' => 'client_invoicing_contact',
+                'rules' => 'trim|xss_clean',
+            ],
+            'client_einvoice_version' => [
+                'field' => 'client_einvoice_version',
+                'rules' => 'trim|xss_clean',
+            ],
+>>>>>>> cf5d220c (939: Just style fixes for now)
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
