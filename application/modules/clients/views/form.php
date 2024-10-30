@@ -192,7 +192,7 @@ $cv = $this->controller->view_data['custom_values'];
                             </div>
                         </div>
 
-                        <div class="form-group">                            
+                        <div class="form-group">
                             <label for="client_phone"><?php _trans('phone_number'); ?></label>
 
                             <div class="controls">
@@ -436,14 +436,14 @@ $cv = $this->controller->view_data['custom_values'];
                                     <?php } ?>
                                 </select>
                             <p class="help-block"><?php echo trans('ubl_cii_select_help'); ?></p>
-                        </div> 
+                        </div>
 
                     </div>
-                </div>                
+                </div>
             </div>
 
         </div>
-        
+
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
