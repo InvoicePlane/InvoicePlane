@@ -13,7 +13,7 @@ require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
  */
 
 /**
- * Class Clients.
+ * Class Clients
  */
 class Clients extends Admin_Controller
 {
@@ -37,24 +37,32 @@ class Clients extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int    $page
+     * @param int $page
      */
     public function status($status = 'active', $page = 0)
     {
-        if (is_numeric(array_search($status, ['active', 'inactive']))) {
+        if (is_numeric(array_search($status, array('active', 'inactive')))) {
             $function = 'is_' . $status;
-            $this->mdl_clients->{$function}();
+            $this->mdl_clients->$function();
         }
 
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
 
         $this->layout->set([
+<<<<<<< HEAD
             'records' => $clients,
             'filter_display'     => true,
             'filter_placeholder' => trans('filter_clients'),
             'filter_method'      => 'filter_clients',
         ]);
+=======
+                'records' => $clients,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_clients'),
+                'filter_method' => 'filter_clients'
+            ));
+>>>>>>> 9c8f31f4 (939: Prep for incoming merge-request)
 
         $this->layout->buffer('content', 'clients/index');
         $this->layout->render();
@@ -74,12 +82,12 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
-            $check = $this->db->get_where('ip_clients', [
-                'client_name'    => $this->input->post('client_name'),
-                'client_surname' => $this->input->post('client_surname'),
-            ])->result();
+            $check = $this->db->get_where('ip_clients', array(
+                'client_name' => $this->input->post('client_name'),
+                'client_surname' => $this->input->post('client_surname')
+            ))->result();
 
-            if ( ! empty($check)) {
+            if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
             } else {
@@ -109,12 +117,13 @@ class Clients extends Admin_Controller
                 redirect('clients/form/' . $id);
 
                 return;
+            } else {
+                redirect('clients/view/' . $id);
             }
-            redirect('clients/view/' . $id);
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_clients->prep_form($id)) {
+        if ($id and !$this->input->post('btn_submit')) {
+            if (!$this->mdl_clients->prep_form($id)) {
                 show_404();
             }
 
@@ -211,7 +220,7 @@ class Clients extends Admin_Controller
 
         $this->mdl_client_custom->prep_form($client_id);
 
-        if ( ! $client) {
+        if (!$client) {
             show_404();
         }
 
@@ -219,6 +228,7 @@ class Clients extends Admin_Controller
         $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
 
+<<<<<<< HEAD
         $this->layout->set([
             'client'           => $client,
             'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
@@ -230,6 +240,21 @@ class Clients extends Admin_Controller
             'invoice_statuses' => $this->mdl_invoices->statuses(),
             'activeTab'        => $activeTab,
         ]);
+=======
+        $this->layout->set(
+            [
+                'client'           => $client,
+                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices'         => $this->mdl_invoices->result(),
+                'quotes'           => $this->mdl_quotes->result(),
+                'payments'         => $this->mdl_payments->result(),
+                'custom_fields'    => $custom_fields,
+                'quote_statuses'   => $this->mdl_quotes->statuses(),
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'activeTab'        => $activeTab,
+            ]
+        );
+>>>>>>> 9c8f31f4 (939: Prep for incoming merge-request)
 
         $this->layout->buffer([
             [
@@ -253,6 +278,10 @@ class Clients extends Admin_Controller
                 'clients/view',
             ],
         ]);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9c8f31f4 (939: Prep for incoming merge-request)
 
         $this->layout->render();
     }

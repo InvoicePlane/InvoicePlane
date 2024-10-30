@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -12,16 +11,13 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Clients.
+ * Class Mdl_Clients
  */
 class Mdl_Clients extends Response_Model
 {
     public $table = 'ip_clients';
-
     public $primary_key = 'ip_clients.client_id';
-
     public $date_created_field = 'client_date_created';
-
     public $date_modified_field = 'client_date_modified';
 
     public function default_select()
@@ -41,13 +37,6 @@ class Mdl_Clients extends Response_Model
     public function validation_rules()
     {
         return [
-<<<<<<< HEAD
-            'client_title' => [
-                'field' => 'client_title',
-                'label' => trans('client_title'),
-            ],
-=======
->>>>>>> cf5d220c (939: Just style fixes for now)
             'client_name' => [
                 'field' => 'client_name',
                 'label' => trans('client_name'),
@@ -82,10 +71,6 @@ class Mdl_Clients extends Response_Model
             ],
             'client_country' => [
                 'field' => 'client_country',
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> cf5d220c (939: Just style fixes for now)
                 'rules' => 'trim',
             ],
             'client_phone' => [
@@ -110,62 +95,13 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_tax_code',
             ],
             'client_invoicing_contact' => [
-<<<<<<< HEAD
-                'field' => 'client_invoicing_contact',
-            ],
-            'client_einvoice_version' => [
-                'field' => 'client_einvoice_version',
-            ],
-=======
-                'rules' => 'trim'
-            ),
-            'client_phone' => array(
-                'field' => 'client_phone'
-            ),
-            'client_fax' => array(
-                'field' => 'client_fax'
-            ),
-            'client_mobile' => array(
-                'field' => 'client_mobile'
-            ),
-            'client_email' => array(
-                'field' => 'client_email'
-            ),
-            'client_web' => array(
-                'field' => 'client_web'
-            ),
-            'client_vat_id' => array(
-                'field' => 'client_vat_id'
-            ),
-            'client_tax_code' => array(
-                'field' => 'client_tax_code'
-            ),
-            'client_invoicing_contact' => array(      
-                'field' => 'client_invoicing_contact',
-                'rules' => 'trim'
-            ), 
-            'client_einvoice_version' => array(
-                'field' => 'client_einvoice_version'
-            ),
->>>>>>> a185f8e7 (Added validation rules: 'xss_clean' and 'trim')
-=======
                 'field' => 'client_invoicing_contact',
                 'rules' => 'trim|xss_clean',
             ],
             'client_einvoice_version' => [
                 'field' => 'client_einvoice_version',
-                'rules' => 'trim|xss_clean',
+                'rules' => 'trim',
             ],
-<<<<<<< HEAD
->>>>>>> cf5d220c (939: Just style fixes for now)
-=======
-            'client_invoicing_contact' => array(
-                'field' => 'client_invoicing_contact'
-            ),
-            'client_einvoice_version' => array(
-                'field' => 'client_einvoice_version'
-            ),
->>>>>>> bbfd9c9c (Implementing e-invoicing flow #939)
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
@@ -192,7 +128,6 @@ class Mdl_Clients extends Response_Model
 
     /**
      * @param int $amount
-     *
      * @return mixed
      */
     public function get_latest($amount = 10)
@@ -256,7 +191,7 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * Returns client_id of existing client.
+     * Returns client_id of existing client
      *
      * @return int|null
      */
@@ -280,28 +215,24 @@ class Mdl_Clients extends Response_Model
     public function with_total()
     {
         $this->filter_select('IFnull((SELECT SUM(invoice_total) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_total', false);
-
         return $this;
     }
 
     public function with_total_paid()
     {
         $this->filter_select('IFnull((SELECT SUM(invoice_paid) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_paid', false);
-
         return $this;
     }
 
     public function with_total_balance()
     {
         $this->filter_select('IFnull((SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE ip_invoices.client_id = ip_clients.client_id)), 0) AS client_invoice_balance', false);
-
         return $this;
     }
 
     public function is_inactive()
     {
         $this->filter_where('client_active', 0);
-
         return $this;
     }
 
@@ -324,14 +255,12 @@ class Mdl_Clients extends Response_Model
         }
 
         $this->is_active();
-
         return $this->get()->result();
     }
 
     public function is_active()
     {
         $this->filter_where('client_active', 1);
-
         return $this;
     }
 }
