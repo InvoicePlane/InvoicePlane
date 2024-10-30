@@ -47,5 +47,4 @@ class Mdl_Client_Notes extends Response_Model
 
         return $db_array;
     }
-
 }
