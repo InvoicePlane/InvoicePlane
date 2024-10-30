@@ -37,13 +37,13 @@ class Clients extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int    $page
+     * @param int $page
      */
     public function status($status = 'active', $page = 0)
     {
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
-            $this->mdl_clients->{$function}();
+            $this->mdl_clients->$function();
         }
 
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
@@ -62,7 +62,7 @@ class Clients extends Admin_Controller
                 'records' => $clients,
                 'filter_display' => true,
                 'filter_placeholder' => trans('filter_clients'),
-                'filter_method' => 'filter_clients',
+                'filter_method' => 'filter_clients'
             ]
         );
 >>>>>>> d2738fb2 (939: Prep for incoming merge-request)
@@ -87,10 +87,10 @@ class Clients extends Admin_Controller
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
             $check = $this->db->get_where('ip_clients', [
                 'client_name' => $this->input->post('client_name'),
-                'client_surname' => $this->input->post('client_surname'),
+                'client_surname' => $this->input->post('client_surname')
             ])->result();
 
-            if ( ! empty($check)) {
+            if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
             } else {
@@ -120,6 +120,7 @@ class Clients extends Admin_Controller
                 redirect('clients/form/' . $id);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
@@ -127,6 +128,8 @@ class Clients extends Admin_Controller
 =======
 
 >>>>>>> cf5d220c (939: Just style fixes for now)
+=======
+>>>>>>> 6c379438 (939: Prep for incoming merge-request)
                 return;
             }
             redirect('clients/view/' . $id);
