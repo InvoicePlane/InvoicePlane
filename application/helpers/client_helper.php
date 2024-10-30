@@ -16,8 +16,8 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function format_client($client)
 {
-    if ($client->client_surname !== "") {
-        return ucfirst($client->client_title ?? '') . ' ' . $client->client_name . " " . $client->client_surname;
+    if ($client->client_surname !== '') {
+        return ucfirst($client->client_title ?? '') . ' ' . $client->client_name . ' ' . $client->client_surname;
     }
 
     return ucfirst($client->client_title ?? '') . ' ' . $client->client_name;
