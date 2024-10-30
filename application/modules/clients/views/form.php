@@ -192,8 +192,7 @@ $cv = $this->controller->view_data['custom_values'];
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="client_invoicing_contact"><?php echo trans('invoicing') . ' ' . trans('contact'); ?></label>
+                        <div class="form-group"><label for="client_invoicing_contact"><?php echo trans('invoicing') . ' ' . trans('contact'); ?></label>
 
                             <div class="controls">
                                 <input type="text" name="client_invoicing_contact" id="client_invoicing_contact" class="form-control"

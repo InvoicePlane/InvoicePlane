@@ -400,7 +400,6 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_iban" id="user_iban" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
                                 </div>
-
                                 <div class="form-group">
                                     <label for="user_bic">
                                         <?php echo 'BIC'; ?>
@@ -409,7 +408,6 @@ $cv = $this->controller->view_data["custom_values"];
                                            class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_bic', true); ?>">
                                 </div>
-
                                 <div class="form-group">
                                     <label for="user_remittance_tmpl">
                                         <?php _trans('user_remittance_tmpl'); ?>
@@ -418,10 +416,7 @@ $cv = $this->controller->view_data["custom_values"];
                                            value="<?php echo $this->mdl_users->form_value('user_remittance_tmpl', true); ?>">
                                 </div>
                             </div>
-
                         </div>
-
-
                         <?php if ($custom_fields) : ?>
                             <div class="panel panel-default">
                                 <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
