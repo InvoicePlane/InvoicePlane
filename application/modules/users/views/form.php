@@ -236,7 +236,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
                                 </div>
-
+                                <!-- user_iban field was moved due to the e-invoicing stuff -->
                                 <div class="form-group">
                                     <label for="user_subscribernumber">
                                         <?php _trans('user_subscriber_number'); ?>
@@ -356,7 +356,7 @@ $cv = $this->controller->view_data["custom_values"];
                                 </div>
                                 <div class="form-group">
                                     <label for="user_iban">
-                                        <?php echo 'IBAN'; ?>
+                                        <?php _trans('user_iban'); ?>
                                     </label>
                                     <input type="text" name="user_iban" id="user_iban" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
@@ -378,6 +378,7 @@ $cv = $this->controller->view_data["custom_values"];
                                 </div>
                             </div>
                         </div>
+                        <!-- /e-Invoicing++ -->
                         <?php if ($custom_fields) : ?>
                             <div class="panel panel-default">
                                 <div class="panel-heading"><?php _trans('custom_fields'); ?></div>

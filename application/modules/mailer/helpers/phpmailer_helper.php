@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) { exit('No direct script access allowed'); }
 
 /*
  * InvoicePlane
@@ -11,14 +12,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * @param $from
- * @param $to
- * @param $subject
- * @param $message
  * @param null $attachment_path
  * @param null $cc
  * @param null $bcc
  * @param null $more_attachments
+ *
  * @return bool
  */
 function phpmail_send(
@@ -63,14 +61,14 @@ function phpmail_send(
             }
 
             // Check if certificates should not be verified
-            if (!get_setting('smtp_verify_certs', true)) {
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
+            if ( ! get_setting('smtp_verify_certs', true)) {
+                $mail->SMTPOptions = [
+                    'ssl' => [
                         'verify_peer' => false,
                         'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
+                        'allow_self_signed' => true,
+                    ],
+                ];
             }
 
             break;
@@ -96,7 +94,7 @@ function phpmail_send(
     }
 
     // Allow multiple recipients delimited by comma or semicolon
-    $to = (strpos($to, ',')) ? explode(',', $to) : explode(';', $to);
+    $to = (mb_strpos($to, ',')) ? explode(',', $to) : explode(';', $to);
 
     // Add the addresses
     foreach ($to as $address) {
@@ -105,7 +103,7 @@ function phpmail_send(
 
     if ($cc) {
         // Allow multiple CC's delimited by comma or semicolon
-        $cc = (strpos($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
+        $cc = (mb_strpos($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
 
         // Add the CC's
         foreach ($cc as $address) {
@@ -115,7 +113,7 @@ function phpmail_send(
 
     if ($bcc) {
         // Allow multiple BCC's delimited by comma or semicolon
-        $bcc = (strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
+        $bcc = (mb_strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
         // Add the BCC's
         foreach ($bcc as $address) {
             $mail->addBCC($address);
@@ -130,26 +128,26 @@ function phpmail_send(
         $mail->addBCC($admin->user_email);
     }
 
-    // Add the attachments if needed - eInvoicing++        
+    // Add the attachments if needed - eInvoicing++
     if ($attachment_path && get_setting('email_pdf_attachment')) {
-        $attachfile = pathinfo($attachment_path); 
-        $dirname = $attachfile['dirname']; 
-        $filename = $attachfile['filename'];                             
-        $file = $dirname .'/'. $filename; 
+        $attachFile = pathinfo($attachment_path);
+        $dirname = $attachFile['dirname'];
+        $filename = $attachFile['filename'];
+        $file = $dirname . '/' . $filename;
         // check the date prefix: '2017-02-01'_ == today, then strip, copy and attach the new file)
-        if (substr($filename, 0, 10) == date('Y-m-d')) {
-            $file = $dirname.'/'.substr_replace($filename, '', 0, 11);                                                 
-            copy($attachment_path, $file.'.pdf');   
-        }  
-        $mail->addAttachment($file.'.pdf');          
-        
+        if (mb_substr($filename, 0, 10) == date('Y-m-d')) {
+            $file = $dirname . '/' . substr_replace($filename, '', 0, 11);
+            copy($attachment_path, $file . '.pdf');
+        }
+        $mail->addAttachment($file . '.pdf');
+
         // attach the UBL+ file
-        $fullUblname = $dirname.'/'.$filename.'.xml';  
-        if (file_exists($file.'.xml')) {
-            $mail->addAttachment($file.'.xml'); 
+        $fullUblname = $dirname . '/' . $filename . '.xml';
+        if (file_exists($file . '.xml')) {
+            $mail->addAttachment($file . '.xml');
         } elseif (file_exists($fullUblname)) {
             $mail->addAttachment($fullUblname);
-        }                 
+        }
     }
     // Add the other attachments if supplied
     if ($more_attachments) {
@@ -161,11 +159,11 @@ function phpmail_send(
     // And away it goes...
     if ($mail->send()) {
         $CI->session->set_flashdata('alert_success', 'The email has been sent');
-        return true;
-    } else {
-        // Or not...
-        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-        return false;
-    }
 
+        return true;
+    }
+    // Or not...
+    $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+
+    return false;
 }
