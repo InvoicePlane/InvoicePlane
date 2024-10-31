@@ -29,6 +29,7 @@ function generate_invoice_zugferd_xml_temp_file($invoice, $items)
     $CI->load->library('zugferdXml', array('invoice' => $invoice, 'items' => $items));
 
     write_file($path, $CI->zugferdxml->xml());
+
     return $path;
 }
 
@@ -44,5 +45,6 @@ function zugferd_rdf()
     $s .= '  <zf:Version>1.0</zf:Version>' . "\n";
     $s .= '  <zf:ConformanceLevel>COMFORT</zf:ConformanceLevel>' . "\n";
     $s .= '</rdf:Description>' . "\n";
+
     return $s;
 }

@@ -117,6 +117,23 @@
                                 value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                         </div>
 
+                        <!-- Old ZugFerd stuff -->
+                        <div class="form-group">
+                            <label for="settings[include_zugferd]">
+                                <?php _trans('invoice_pdf_include_zugferd'); ?>
+                            </label>
+                            <select name="settings[include_zugferd]" id="settings[include_zugferd]"
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('include_zugferd'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                            <p class="help-block"><?php _trans('invoice_pdf_include_zugferd_help'); ?></p>
+                        </div>
+                        <!-- /Old ZugFerd stuff -->
                     </div>
                     <div class="col-xs-12 col-md-6">
 

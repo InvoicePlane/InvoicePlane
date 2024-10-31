@@ -1,4 +1,5 @@
 <?php
+
 $lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
@@ -35,7 +36,7 @@ $lang = [
     'automatic_email_on_recur'                     => 'Automatically Email recurring invoices',
     'balance'                                      => 'Balance',
     'back'                                         => 'Back',
-    'bank'                                         => 'Bank',    
+    'bank'                                         => 'Bank',
     'bank_information'                             => 'Bank Information',
     'base_invoice'                                 => 'Base Invoice',
     'bcc'                                          => 'BCC',
@@ -99,7 +100,7 @@ $lang = [
     'company'                                      => 'Company',
     'confirm'                                      => 'Confirm',
     'confirm_deletion'                             => 'Confirm deletion',
-    'contact'                                      => 'Contact',    
+    'contact'                                      => 'Contact',
     'contact_information'                          => 'Contact Information',
     'continue'                                     => 'Continue',
     'copy_invoice'                                 => 'Copy Invoice',
@@ -339,7 +340,7 @@ $lang = [
     'no_overdue_invoices'                          => 'No overdue Invoices',
     'no_quotes_requiring_approval'                 => 'There are no quotes requiring approval.',
     'no_updates_available'                         => 'No updates available.',
-	'no_update_invoice_due_date_mail'			   => 'Disable the change of invoice date and due date before emailing',
+    'no_update_invoice_due_date_mail'			   => 'Disable the change of invoice date and due date before emailing',
     'none'                                         => 'None',
     'note'                                         => 'Note',
     'notes'                                        => 'Notes',
@@ -473,7 +474,7 @@ $lang = [
     'reject'                                       => 'Reject',
     'reject_this_quote'                            => 'Reject This Quote',
     'rejected'                                     => 'Rejected',
-    'remittance'                                   => 'Remittance',  
+    'remittance'                                   => 'Remittance',
     'remove'                                       => 'Remove',
     'remove_logo'                                  => 'Remove Logo',
     'report_options'                               => 'Report Options',
@@ -591,7 +592,7 @@ $lang = [
     'total_paid'                                   => 'Total Paid',
     'try_again'                                    => 'Try Again',
     'type'                                         => 'Type',
-    'ubl_cii_select_help'                          => 'Select the correct UBL or CII version for your customer or his country. The application will create and send the Pdf and XML-file.', 
+    'ubl_cii_select_help'                          => 'Select the correct UBL or CII version for your customer or his country. The application will create and send the Pdf and XML-file.',
     'unknown'                                      => 'Unknown',
     'updatecheck'                                  => 'Updatecheck',
     'updatecheck_failed'                           => 'Updatecheck failed! Check your network connection.',
@@ -744,5 +745,5 @@ $lang = [
 
     // Types
     'true'                                         => 'True',
-    'false'                                        => 'False'
+    'false'                                        => 'False',
 ];
