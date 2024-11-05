@@ -281,7 +281,7 @@ table.item-table {
             <td class="text-right"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
         </tr>
        
-        <?php if ($invoice->invoice_item_tax_total > null) {
+        <?php if ($invoice->invoice_item_tax_total > 0) {
             foreach($taxarray2 as $key => $value ) :?>
                 <tr>
                     <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right"></td>
