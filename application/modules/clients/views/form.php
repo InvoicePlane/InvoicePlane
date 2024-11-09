@@ -41,7 +41,6 @@ $cv = $this->controller->view_data['custom_values'];
                 <div class="panel panel-default">
                     <div class="panel-heading form-inline clearfix">
                         <?php _trans('personal_information'); ?>
-
                         <div class="pull-right">
                             <label for="client_active" class="control-label">
                                 <?php _trans('active_client'); ?>
@@ -54,39 +53,7 @@ $cv = $this->controller->view_data['custom_values'];
                             </label>
                         </div>
                     </div>
-
                     <div class="panel-body">
-                        <div class="form-group">
-                            <?php $client_title = $this->mdl_clients->form_value('client_title'); ?>
-                            <?php $is_custom_title = is_null(ClientTitleEnum::tryFrom($client_title)) ?>
-                            <label for="client_title"><?php _trans('client_title'); ?></label>
-                            <select name="client_title" id="client_title" class="form-control simple-select">
-                                <?php foreach ($client_title_choices as $client_title_choice) : ?>
-                                    <option
-                                        value="<?php echo $client_title_choice; ?>"
-                                        <?php echo $client_title === $client_title_choice ? 'selected' : '' ?>
-                                        <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM->value
-                                            ? 'selected'
-                                            : ''
-                                        ?>
-                                    >
-                                        <?php echo ucfirst($client_title_choice); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <input
-                                id="client_title_custom"
-                                name="client_title_custom"
-                                type="text"
-                                class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM->value || $is_custom_title ? '' : 'hidden' ?>"
-                                placeholder='Custom title'
-                                value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
-                            />
-                        </div>
-
                         <div class="form-group">
                             <label for="client_name">
                                 <?php _trans('client_name'); ?>
@@ -95,7 +62,6 @@ $cv = $this->controller->view_data['custom_values'];
                                    autofocus
                                    value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>" required>
                         </div>
-
                         <div class="form-group">
                             <label for="client_surname">
                                 <?php _trans('client_surname_optional'); ?>
@@ -103,7 +69,6 @@ $cv = $this->controller->view_data['custom_values'];
                             <input id="client_surname" name="client_surname" type="text" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_surname', true); ?>">
                         </div>
-
                         <div class="form-group no-margin">
                             <label for="client_language">
                                 <?php _trans('language'); ?>
@@ -122,7 +87,6 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php } ?>
                             </select>
                         </div>
-
                     </div>
                 </div>
 
@@ -290,7 +254,6 @@ $cv = $this->controller->view_data['custom_values'];
                     <div class="panel-body">
                         <div class="form-group">
                             <label for="client_gender"><?php _trans('gender'); ?></label>
-
                             <div class="controls">
                                 <select name="client_gender" id="client_gender"
                                         class="form-control simple-select" data-minimum-results-for-search="Infinity">
@@ -309,7 +272,35 @@ $cv = $this->controller->view_data['custom_values'];
                                 </select>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <?php $client_title = $this->mdl_clients->form_value('client_title'); ?>
+                            <?php $is_custom_title = is_null(ClientTitleEnum::tryFrom($client_title)) ?>
+                            <label for="client_title"><?php _trans('client_title'); ?></label>
+                            <select name="client_title" id="client_title" class="form-control simple-select">
+                                <?php foreach ($client_title_choices as $client_title_choice) : ?>
+                                    <option
+                                        value="<?php echo $client_title_choice; ?>"
+                                        <?php echo $client_title === $client_title_choice ? 'selected' : '' ?>
+                                        <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM->value
+                                            ? 'selected'
+                                            : ''
+                                        ?>
+                                    >
+                                        <?php echo ucfirst($client_title_choice); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input
+                                id="client_title_custom"
+                                name="client_title_custom"
+                                type="text"
+                                class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM->value || $is_custom_title ? '' : 'hidden' ?>"
+                                placeholder='Custom title'
+                                value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
+                            />
+                        </div>
                         <div class="form-group has-feedback">
                             <label for="client_birthdate"><?php _trans('birthdate'); ?></label>
                             <?php
