@@ -140,7 +140,7 @@
                 <td><?php _htmlsc($item->item_name); ?></td>
                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                 <td class="text-right">
-                    <?php echo format_amount($item->item_quantity); ?>
+                    <?php echo format_quantity($item->item_quantity); ?>
                     <?php if ($item->item_product_unit) : ?>
                         <br>
                         <small><?php _htmlsc($item->item_product_unit); ?></small>
