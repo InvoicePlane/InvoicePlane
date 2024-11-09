@@ -23,7 +23,7 @@ class Import extends Admin_Controller
         1 => 'invoices.csv',
         2 => 'invoice_items.csv',
         3 => 'payments.csv'
-    );
+    ];
 
     /**
      * Import constructor.
