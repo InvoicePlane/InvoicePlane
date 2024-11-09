@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -47,16 +50,18 @@ class Invoice_Groups extends Admin_Controller
             redirect('invoice_groups');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_invoice_groups->run_validation()) {
             $this->mdl_invoice_groups->save($id);
             redirect('invoice_groups');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_invoice_groups->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_invoice_groups->prep_form($id)) {
                 show_404();
             }
-        } elseif (!$id) {
+        } elseif ( ! $id) {
             $this->mdl_invoice_groups->set_form_value('invoice_group_left_pad', 0);
             $this->mdl_invoice_groups->set_form_value('invoice_group_next_id', 1);
         }
