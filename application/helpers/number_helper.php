@@ -67,7 +67,7 @@ function format_quantity($amount = null)
         $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
         $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
-        return number_format($amount, ($decimal_point) ? 3 : 0, $decimal_point, $thousands_separator);
+        return number_format($amount, ($decimal_point) ? get_setting('default_item_decimals') : 0, $decimal_point, $thousands_separator);
     }
     return null;
 }
