@@ -142,6 +142,7 @@ $lang = array(
     'default_invoice_group'                        => 'Default Invoice Group',
     'default_invoice_tax_rate'                     => 'Default Invoice Tax Rate',
     'default_invoice_tax_rate_placement'           => 'Default Invoice Tax Rate Placement',
+    'default_item_decimals'                        => 'Default decimals for items',
     'default_item_tax_rate'                        => 'Default Item Tax Rate',
     'default_list_limit'                           => 'Number of Items in Lists',
     'default_notes'                                => 'Default Notes',
