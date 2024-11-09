@@ -1,1 +1,2 @@
-ALTER table `ip_clients` ADD `client_title` VARCHAR(50) DEFAULT NULL AFTER `client_surname`
+ALTER table `ip_invoice_items` MODIFY `item_quantity` DECIMAL(20,8) NULL;
+ALTER table `ip_quote_items` MODIFY `item_quantity` DECIMAL(20,8) NULL;
