@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
@@ -13,7 +15,7 @@
  *
  */
 
-class Ublexamv20Xml
+class AbstractXmlTemplate
 {
     public $invoice;
 
@@ -30,7 +32,7 @@ class Ublexamv20Xml
         $this->currencyCode = get_setting('currency_code'); // $CI->mdl_settings->setting('currency_code');
     }
 
-    public function xml()
+    public function xml(): void
     {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->preserveWhiteSpace = false;
@@ -132,12 +134,20 @@ class Ublexamv20Xml
         $contactPhone = $this->invoice->user_phone;
         $contactFax = $this->invoice->user_fax;
         $contactEmail = $this->invoice->user_email;
-        if ($contactName.$contactPhone.$contactFax.$contactEmail) {
+        if ($contactName . $contactPhone . $contactFax . $contactEmail) {
             $node = $this->doc->createElement('cac:Contact');
-            if ($contactName) {$node->appendChild($this->doc->createElement('cbc:Name', $contactName));}
-            if ($contactPhone) {$node->appendChild($this->doc->createElement('cbc:Telephone', $contactPhone));}
-            if ($contactFax) {$node->appendChild($this->doc->createElement('cbc:Telefax', $contactFax));}
-            if ($contactEmail) {$node->appendChild($this->doc->createElement('cbc:ElectronicMail', $contactEmail));}
+            if ($contactName) {
+                $node->appendChild($this->doc->createElement('cbc:Name', $contactName));
+            }
+            if ($contactPhone) {
+                $node->appendChild($this->doc->createElement('cbc:Telephone', $contactPhone));
+            }
+            if ($contactFax) {
+                $node->appendChild($this->doc->createElement('cbc:Telefax', $contactFax));
+            }
+            if ($contactEmail) {
+                $node->appendChild($this->doc->createElement('cbc:ElectronicMail', $contactEmail));
+            }
         }
 
         return $node;
@@ -198,33 +208,38 @@ class Ublexamv20Xml
     //PaymentMeans
     protected function xmlPaymentMeans()
     {
-        $PaymentDueDate = $this->invoice->invoice_date_due;
-        $InstructionNote = 'Invoice: #' . $this->invoice->invoice_number;
+        $paymentDueDate = $this->invoice->invoice_date_due;
+        $instructionNote = 'Invoice: #' . $this->invoice->invoice_number;
         $node = $this->doc->createElement('cac:PaymentMeans');
         $nodePMC = $this->doc->createElement('cbc:PaymentMeansCode', '1');
         $nodePMC->setAttribute('listID', 'UN/ECE 4461');
         $nodePMC->setAttribute('listName', 'Payment Means');
         $node->appendChild($nodePMC);
-        if ($PaymentDueDate) {$node->appendChild($this->doc->createElement('cbc:PaymentDueDate', $PaymentDueDate));}
-        if ($InstructionNote) {$node->appendChild($this->doc->createElement('cbc:InstructionNote', $InstructionNote));}
+        if ($paymentDueDate) {
+            $node->appendChild($this->doc->createElement('cbc:paymentDueDate', $paymentDueDate));
+        }
+        if ($instructionNote) {
+            $node->appendChild($this->doc->createElement('cbc:instructionNote', $instructionNote));
+        }
         $node->appendChild($this->xmlPFAccount());
+
         return $node;
     }
 
     protected function xmlPFAccount()
     {
-        $BankRekIBAN = $this->invoice->user_iban;
-        $BankRekBIC = $this->invoice->user_bic;
+        $bankAccIBAN = $this->invoice->user_iban;
+        $bankAccBIC = $this->invoice->user_bic;
         $node = $this->doc->createElement('cac:PayeeFinancialAccount');
-        $nodeID = $this->doc->createElement('cbc:ID', $BankRekIBAN);
+        $nodeID = $this->doc->createElement('cbc:ID', $bankAccIBAN);
         $nodeID->setAttribute('schemeName', 'IBAN');
         $node->appendChild($nodeID);
-        if ($BankRekBIC) {
+        if ($bankAccBIC) {
             $nodeFIBranch = $this->doc->createElement('cac:FinancialInstitutionBranch');
             $nodeFInstitution = $this->doc->createElement('cac:FinancialInstitution');
             $nodeFIBranch->appendChild($nodeFInstitution);
 
-            $nodeFInstitutionID = $this->doc->createElement('cbc:ID', $BankRekBIC);
+            $nodeFInstitutionID = $this->doc->createElement('cbc:ID', $bankAccBIC);
             $nodeFInstitutionID->setAttribute('schemeName', 'BIC');
             $nodeFInstitution->appendChild($nodeFInstitutionID);
             $node->appendChild($nodeFIBranch);
@@ -302,7 +317,6 @@ class Ublexamv20Xml
         return $node;
     }
 
-
     // ===========================================================================
     // helpers
     // ===========================================================================
@@ -313,10 +327,4 @@ class Ublexamv20Xml
 
         return $el;
     }
-
-    function ublFormattedFloat($amount, $nb_decimals = 2)
-    {
-        return number_format((float)$amount, $nb_decimals);
-    }
-
 }

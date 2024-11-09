@@ -11,12 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Generate the PDF for an invoice.
- *
- * @param bool $stream
- * @param null $invoice_template
- * @param null $is_guest
- * @return string
+ * @AllowDynamicProperties
  */
 function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null)
 {
@@ -30,12 +25,12 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper('country');
     $CI->load->helper('client');
-    $CI->load->helper('e-invoice');   // eInvoicing++
+    $CI->load->helper('e-invoice'); // eInvoicing++
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
 
-    // Override system language with client language
+    // Override system language with client-specific setting
     set_language($invoice->client_language);
 
     if ( ! $invoice_template) {
@@ -48,80 +43,67 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $payment_method = false;
     }
 
-    // Determine if discounts should be displayed
     $items = $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+    $show_item_discounts = array_reduce($items, fn ($carry, $item) => $carry || $item->item_discount != '0.00', false);
 
-    // Discount settings
-    $show_item_discounts = false;
-    foreach ($items as $item) {
-        if ($item->item_discount != '0.00') {
-            $show_item_discounts = true;
-        }
-    }
-
-    // Get all custom fields
     $custom_fields = [
         'invoice' => $CI->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
-        'client' => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
-        'user' => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
+        'client'  => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
+        'user'    => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
     ];
 
     if ($invoice->quote_id) {
         $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $invoice->quote_id);
     }
 
-    // START eInvoicing++ changes
+    // Prepare XML generation based on client and template settings
     $replace = ['.', ' ', '/', '\\', '#'];
     $filename = str_replace($replace, '', $invoice->user_vat_id) . '_' . str_replace($replace, '', $invoice->invoice_number);
-
-    // Generate the appropriate UBL/CII
     $xml_id = $invoice->client_einvoice_version;
     $embed_xml = '';
+    $associatedFiles = null;
+
     if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
-
         $embed_xml = $xml_setting['embedXML'];
     }
 
-    // PDF associated or embedded (Zugferd) Xml file
-    $associatedFiles = null;
-    if ($embed_xml) {
-        // Create the CII XML file
+    // Generate XML conditionally for ZUGFeRD or other standards
+    if ($xml_id === 'ZUGFERD') {
+        // ZUGFeRD requires associated files setup
         $associatedFiles = [[
-            'name' => 'ZUGFeRD-invoice.xml',
-            'description' => $xml_id . ' CII Invoice',
+            'name'           => 'ZUGFeRD-invoice.xml',
+            'description'    => $xml_id . ' CII Invoice',
             'AFRelationship' => 'Alternative',
-            'mime' => 'text/xml',
-            'path' => generate_xml_invoice_file($invoice, $items, $xml_id, $filename),
+            'mime'           => 'text/xml',
+            'path'           => generate_xml_invoice_file($invoice, $items, $xml_id, $filename),
         ]];
+    } else {
+        // Generate XML directly without association for CIUS_V2, NLCIUS_V2, etc.
+        if ($xml_id && ! $embed_xml) {
+            generate_xml_invoice_file($invoice, $items, $xml_id, $filename);
+        }
     }
 
     $data = [
-        'invoice' => $invoice,
-        'invoice_tax_rates' => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-        'items' => $items,
-        'payment_method' => $payment_method,
-        'output_type' => 'pdf',
+        'invoice'             => $invoice,
+        'invoice_tax_rates'   => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
+        'items'               => $items,
+        'payment_method'      => $payment_method,
+        'output_type'         => 'pdf',
         'show_item_discounts' => $show_item_discounts,
-        'custom_fields' => $custom_fields,
+        'custom_fields'       => $custom_fields,
     ];
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
-    // Create PDF with or without an embedded XML
     $CI->load->helper('mpdf');
     $retval = pdf_create($html, $filename, $stream, $invoice->invoice_password, true, $is_guest, $embed_xml, $associatedFiles);
 
-    // Delete the tmp (zugferd) XML file if exist
     if (file_exists('./uploads/temp/' . $filename . '.xml')) {
         unlink('./uploads/temp/' . $filename . '.xml');
     }
-    // Create the UBL XML file
-    if ($xml_id != '' && $embed_xml != 'true') {
-        $path = generate_xml_invoice_file($invoice, $items, $xml_id, $filename);
-    }
 
-    // END eInvoicing++ changes
     return $retval;
 }
 
@@ -216,15 +198,6 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 
 }
 
-/**
- * Generate the PDF for a quote.
- *
- * @param bool $stream
- * @param null $quote_template
- *
- * @return string
- * @throws \Mpdf\MpdfException
- */
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 {
     $CI = &get_instance();

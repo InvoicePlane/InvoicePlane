@@ -11,7 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Users.
+ * @AllowDynamicProperties
  */
 class Mdl_Users extends Response_Model
 {
@@ -124,21 +124,6 @@ class Mdl_Users extends Response_Model
                 'field' => 'user_invoicing_contact',
                 'rules' => 'trim|xss_clean',
             ],
-            'user_bank' => [
-                'field' => 'user_bank',
-                'rules' => 'trim|xss_clean',
-            ],
-            'user_iban' => [
-                'field' => 'user_iban',
-            ],
-            'user_bic' => [
-                'field' => 'user_bic',
-                'rules' => 'trim|xss_clean',
-            ],
-            'user_remittance_tmpl' => [
-                'field' => 'user_remittance',
-                'rules' => 'trim|xss_clean',
-            ],
             // SUMEX
             'user_gln' => [
                 'field' => 'user_gln',
@@ -220,18 +205,6 @@ class Mdl_Users extends Response_Model
             ],
             'user_invoicing_contact' => [
                 'field' => 'user_invoicing_contact',
-            ],
-            'user_bank' => [
-                'field' => 'user_bank',
-            ],
-            'user_iban' => [
-                'field' => 'user_iban',
-            ],
-            'user_bic' => [
-                'field' => 'user_bic',
-            ],
-            'user_remittance_tmpl' => [
-                'field' => 'user_remittance',
             ],
             // SUMEX
             'user_gln' => [

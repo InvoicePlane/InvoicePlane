@@ -12,7 +12,10 @@ if ( ! defined('BASEPATH')) { exit('No direct script access allowed');}
  */
 
 /**
- * Generate a temporaty XML file from the invoice data.
+ * @AllowDynamicProperties
+ */
+/**
+ * Generate a temporary XML file from the invoice data.
  *
  * @return string
  */
