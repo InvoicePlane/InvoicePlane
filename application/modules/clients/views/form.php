@@ -281,7 +281,7 @@ $cv = $this->controller->view_data['custom_values'];
                                     <option
                                         value="<?php echo $client_title_choice; ?>"
                                         <?php echo $client_title === $client_title_choice ? 'selected' : '' ?>
-                                        <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM->value
+                                        <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM
                                             ? 'selected'
                                             : ''
                                         ?>
@@ -296,7 +296,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 id="client_title_custom"
                                 name="client_title_custom"
                                 type="text"
-                                class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM->value || $is_custom_title ? '' : 'hidden' ?>"
+                                class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM || $is_custom_title ? '' : 'hidden' ?>"
                                 placeholder='Custom title'
                                 value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
                             />
