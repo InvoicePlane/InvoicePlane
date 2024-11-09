@@ -11,3 +11,4 @@ $xml_setting = [
     'full-name'   => 'UBL example v2.0',
     'countrycode' => 'EX',
     'embedXML'    => false,
+];

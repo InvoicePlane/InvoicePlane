@@ -156,7 +156,7 @@ $locations = [];
                                         <th><?php echo trans('invoicing') . ' ' . trans('contact'); ?></th>
                                         <td><?php _htmlsc($client->client_invoicing_contact); ?></td>
                                     </tr>
-                                <?php //endif; ?>  
+                                <?php //endif; ?>
                                 <?php if ($client->client_email) : ?>
                                     <tr>
                                         <th><?php _trans('email'); ?></th>
@@ -250,21 +250,20 @@ $locations = [];
 
                         <div class="panel-heading"><?php echo 'e-'.ucfirst(trans('invoicing')) . ' ' . trans('information'); ?></div>
                         <div class="panel-body table-content">
-
                             <table class="table no-margin">
                                     <tr>
                                         <th><?php echo trans('send') . ' e-'. trans('invoice') . ' ' . trans('version'); ?></th>
-                                        <td><?php echo ($client->client_einvoice_version) ? get_xml_full_name($client->client_einvoice_version) : trans('none'); ?></td>
-                                    </tr>                                                  
+                                        <td><?php echo ($client->client_einvoice_version) ? get_ubl_template_details($client->client_einvoice_version) : trans('none'); ?></td>
+                                    </tr>
                             </table>
                         </div>
                     </div>
-                </div>   
-
+                </div>
+                <!-- /e-Invoicing panel added -->
 
             </div>
 
-            <?php if ($client->client_surname != ''): //Client is not a company?>
+            <?php if ($client->client_surname != ''): //Client is not a company ?>
                 <hr>
 
                 <div class="row">

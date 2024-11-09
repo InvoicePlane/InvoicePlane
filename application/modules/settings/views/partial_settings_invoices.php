@@ -117,23 +117,47 @@
                                 value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                         </div>
 
-                        <!-- Old ZugFerd stuff -->
-                        <div class="form-group">
-                            <label for="settings[include_zugferd]">
-                                <?php _trans('invoice_pdf_include_zugferd'); ?>
-                            </label>
-                            <select name="settings[include_zugferd]" id="settings[include_zugferd]"
-                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value="0">
-                                    <?php _trans('no'); ?>
-                                </option>
-                                <option value="1" <?php check_select(get_setting('include_zugferd'), '1'); ?>>
-                                    <?php _trans('yes'); ?>
-                                </option>
-                            </select>
-                            <p class="help-block"><?php _trans('invoice_pdf_include_zugferd_help'); ?></p>
+
+
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php echo trans('invoice_settings'); ?>
+                            </div>
+                            <div class="panel-body">
+                                <!-- ZUGFeRD Template Usage -->
+                                <div class="form-group">
+                                    <label for="settings[use_zugferd]"><?php echo trans('use_zugferd'); ?></label>
+                                    <select name="settings[use_zugferd]" id="use_zugferd" class="form-control">
+                                        <option value="no" <?php echo (get_setting('use_zugferd') == 'no') ? 'selected' : ''; ?>>
+                                            <?php echo trans('no'); ?>
+                                        </option>
+                                        <option value="yes" <?php echo (get_setting('use_zugferd') == 'yes') ? 'selected' : ''; ?>>
+                                            <?php echo trans('yes'); ?>
+                                        </option>
+                                    </select>
+                                    <p class="help-block"><?php echo trans('enable_zugferd_default_template_help'); ?></p>
+                                </div>
+
+                                <!-- Default UBL Template Type -->
+                                <div class="form-group">
+                                    <label for="settings[default_template_type]"><?php echo trans('default_ubl_template_type'); ?></label>
+                                    <select name="settings[default_template_type]" id="default_template_type" class="form-control">
+                                        <option value="<?php echo UblTypeEnum::CIUS_V2; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::CIUS_V2) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::CIUS_V2; ?>
+                                        </option>
+                                        <option value="<?php echo UblTypeEnum::NLCIUS_V2; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::NLCIUS_V2) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::NLCIUS_V2; ?>
+                                        </option>
+                                        <option value="<?php echo UblTypeEnum::ZUGFERD; ?>" <?php echo (get_setting('use_zugferd') == 'yes' || get_setting('default_template_type') == UblTypeEnum::ZUGFERD) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::ZUGFERD; ?>
+                                        </option>
+                                    </select>
+                                    <p class="help-block"><?php echo trans('set_default_ubl_template_type_help'); ?></p>
+                                </div>
+                            </div>
                         </div>
-                        <!-- /Old ZugFerd stuff -->
+
                     </div>
                     <div class="col-xs-12 col-md-6">
 

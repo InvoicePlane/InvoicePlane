@@ -168,13 +168,13 @@ class Clients extends Admin_Controller
         $default_template_type   = $include_zugferd ? UblTypeEnum::ZUGFERD_V1 : UblTypeEnum::CIUS_V2;
 
         $this->layout->set([
-            'custom_fields'           => $custom_fields,
-            'custom_values'           => $custom_values,
-            'countries'               => get_country_list(trans('cldr')),
-            'selected_country'        => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-            'languages'               => get_available_languages(),
-            'client_einvoice_version' => $client_einvoice_version, //eInvoicing++
-            'default_template_type'   => $default_template_type, //eInvoicing++
+                'custom_fields'           => $custom_fields,
+                'custom_values'           => $custom_values,
+                'countries'               => get_country_list(trans('cldr')),
+                'selected_country'        => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+                'languages'               => get_available_languages(),
+                'client_einvoice_version' => $client_einvoice_version, //eInvoicing++
+                'default_template_type'   => $default_template_type, //eInvoicing++
         ]);
 
         $this->layout->buffer('content', 'clients/form');

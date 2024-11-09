@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -11,7 +12,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @added       Verony-makesIT 2023
  */
 
-function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
+/**
+ * @AllowDynamicProperties
+ */
+/*function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
 {
     $CI = &get_instance();
 
@@ -20,6 +24,29 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
     $path = './uploads/temp/' . $filename . '.xml';
 
     return $path;
+}*/
+
+function generate_xml_invoice_file($invoice, $items, $templateType, $filename)
+{
+    $generatorClass = match ($templateType) {
+        UblTypeEnum::NLCIUS  => 'NlCiusXmlGenerator',
+        UblTypeEnum::ZUGFERD => 'ZugferdXmlGenerator',
+        default => 'CiusXmlGenerator',
+    };
+
+    require_once APPPATH . "libraries/XMLtemplates/{$generatorClass}.php";
+
+    $CI = &get_instance();
+    $generator = new $generatorClass([
+        'invoice'      => $invoice,
+        'items'        => $items,
+        'filename'     => $filename,
+        'currencyCode' => $CI->mdl_settings->setting('currency_code'),
+        'templateType' => $templateType,
+    ]);
+    $generator->generateXml();
+
+    return "./uploads/invoices/{$filename}.xml";
 }
 
 function include_rdf($filename)
@@ -31,6 +58,7 @@ function include_rdf($filename)
     $s .= '  <zf:Version>1.0</zf:Version>' . "\n";
     $s .= '  <zf:ConformanceLevel>COMFORT</zf:ConformanceLevel>' . "\n";
     $s .= '</rdf:Description>' . "\n";
+
     return $s;
 }
 
@@ -39,36 +67,69 @@ function include_rdf($filename)
  *
  * @return array
  */
-function get_xml_template_files()
+function get_xml_templates()
 {
-    $path = APPPATH . 'libraries/XMLtemplates';
-    $xml_template_files = array_diff(scandir($path), ['.', '..']);
+    require_once dirname(__FILE__, 2) . '/enums/UblTypeEnum.php';
 
-    foreach ($xml_template_files as $key => $xml_template_file) {
-        $xml_template_files[$key] = str_replace('Xml.php', '', $xml_template_file);
-
-        if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_template_files[$key] . '.php')) {
-            include APPPATH . 'helpers/XMLconfigs/' . $xml_template_files[$key] . '.php';
-
-            $xml_template_items[$xml_template_files[$key]] = $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
-        }
-    }
-
-    return $xml_template_items;
+    return array_map(function ($case) {
+        return $case->value;
+    }, UblTypeEnum::cases());
 }
 
-/**
- * Returns the XML template (UBL / CII) fullname of a given client_e-invoice_version value.
- *
- * @param $xml_Id
- * @return mixed
- */
+function get_ubl_template_details($xml_id)
+{
+    require_once dirname(__FILE__, 2) . '/enums/UblTypeEnum.php';
+
+    $templateDetails = [
+        UblTypeEnum::CIUS_V2 => [
+            'full-name' => 'CIUS Invoice', //UBL example v2.0
+            'countrycode' => 'EU',
+            'embedXML'    => false,
+        ],
+        UblTypeEnum::NLCIUS_V2 => [
+            'full-name'   => 'Dutch CIUS Invoice', //Dutch UBL example v2.0
+            'countrycode' => 'NL',
+            'embedXML'    => false,
+        ],
+        UblTypeEnum::ZUGFERD_V1 => [
+            'full-name'   => 'ZUGFeRD v1.0',
+            'countrycode' => 'DE',
+            'embedXML'    => true,
+        ],
+    ];
+
+    // Check if the template exists in the details array
+    if (array_key_exists($xml_id, $templateDetails)) {
+        $xml_setting = $templateDetails[$xml_id];
+
+        return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
+    }
+
+    // If no match is found, return a default or null
+
+}
+
 function get_xml_full_name($xml_id)
 {
-
     if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
 
         return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
     }
+}
+
+function get_template_type($clientTemplate = null)
+{
+    if ( ! empty($clientTemplate) && UblTypeEnum::tryFrom($clientTemplate)) {
+        return UblTypeEnum::from($clientTemplate);
+    }
+
+    $defaultSetting = get_setting('default_template_type');
+    if ($defaultSetting && UblTypeEnum::tryFrom($defaultSetting)) {
+        return UblTypeEnum::from($defaultSetting);
+    }
+
+    $envTemplate = env('UBL_STANDARD', 'CIUS_V2');
+
+    return UblTypeEnum::tryFrom($envTemplate) ? UblTypeEnum::from($envTemplate) : UblTypeEnum::CIUS_V2;
 }

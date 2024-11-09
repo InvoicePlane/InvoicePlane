@@ -13,6 +13,9 @@ if ( ! defined('BASEPATH')) { exit('No direct script access allowed'); }
 
 #[AllowDynamicProperties]
 /**
+ * @AllowDynamicProperties
+ */
+/**
  * @param null $attachment_path
  * @param null $cc
  * @param null $bcc
