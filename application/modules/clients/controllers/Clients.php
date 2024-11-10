@@ -269,7 +269,7 @@ class Clients extends Admin_Controller
     private function get_client_title_choices(): array
     {
         return array_map(
-            fn (ClientTitleEnum $clientTitleEnum) => $clientTitleEnum->value,
+            fn ($clientTitleEnum) => $clientTitleEnum->value,
             ClientTitleEnum::cases()
         );
     }
