@@ -53,11 +53,11 @@ class Clients extends Admin_Controller
         $clients = $this->mdl_clients->result();
 
         $this->layout->set([
-                'records'            => $clients,
-                'filter_display'     => true,
-                'filter_placeholder' => trans('filter_clients'),
-                'filter_method'      => 'filter_clients',
-            ]);
+            'records'            => $clients,
+            'filter_display'     => true,
+            'filter_placeholder' => trans('filter_clients'),
+            'filter_method'      => 'filter_clients',
+        ]);
 
         $this->layout->buffer('content', 'clients/index');
         $this->layout->render();
@@ -176,13 +176,13 @@ class Clients extends Admin_Controller
         $this->load->helper('custom_values');
 
         $this->layout->set([
-                'custom_fields'        => $custom_fields,
-                'custom_values'        => $custom_values,
-                'countries'            => get_country_list(trans('cldr')),
-                'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-                'languages'            => get_available_languages(),
-                'client_title_choices' => $this->get_client_title_choices(),
-            ]);
+            'custom_fields'        => $custom_fields,
+            'custom_values'        => $custom_values,
+            'countries'            => get_country_list(trans('cldr')),
+            'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+            'languages'            => get_available_languages(),
+            'client_title_choices' => $this->get_client_title_choices(),
+        ]);
 
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
@@ -220,39 +220,39 @@ class Clients extends Admin_Controller
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
 
         $this->layout->set([
-                'client'           => $client,
-                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices'         => $this->mdl_invoices->result(),
-                'quotes'           => $this->mdl_quotes->result(),
-                'payments'         => $this->mdl_payments->result(),
-                'custom_fields'    => $custom_fields,
-                'quote_statuses'   => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
-                'activeTab'        => $activeTab,
-            ]);
+            'client'           => $client,
+            'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+            'invoices'         => $this->mdl_invoices->result(),
+            'quotes'           => $this->mdl_quotes->result(),
+            'payments'         => $this->mdl_payments->result(),
+            'custom_fields'    => $custom_fields,
+            'quote_statuses'   => $this->mdl_quotes->statuses(),
+            'invoice_statuses' => $this->mdl_invoices->statuses(),
+            'activeTab'        => $activeTab,
+        ]);
 
         $this->layout->buffer([
-                [
-                    'invoice_table',
-                    'invoices/partial_invoice_table',
-                ],
-                [
-                    'quote_table',
-                    'quotes/partial_quote_table',
-                ],
-                [
-                    'payment_table',
-                    'payments/partial_payment_table',
-                ],
-                [
-                    'partial_notes',
-                    'clients/partial_notes',
-                ],
-                [
-                    'content',
-                    'clients/view',
-                ],
-            ]);
+            [
+                'invoice_table',
+                'invoices/partial_invoice_table',
+            ],
+            [
+                'quote_table',
+                'quotes/partial_quote_table',
+            ],
+            [
+                'payment_table',
+                'payments/partial_payment_table',
+            ],
+            [
+                'partial_notes',
+                'clients/partial_notes',
+            ],
+            [
+                'content',
+                'clients/view',
+            ],
+        ]);
 
         $this->layout->render();
     }
