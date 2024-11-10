@@ -1,5 +1,6 @@
 <?php
-$lang = array(
+
+$lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
@@ -334,7 +335,7 @@ $lang = array(
     'no_overdue_invoices'                          => 'No overdue Invoices',
     'no_quotes_requiring_approval'                 => 'There are no quotes requiring approval.',
     'no_updates_available'                         => 'No updates available.',
-		'no_update_invoice_due_date_mail'							 => 'Disable the change of invoice date and due date before emailing',
+    'no_update_invoice_due_date_mail'			   => 'Disable the change of invoice date and due date before emailing',
     'none'                                         => 'None',
     'note'                                         => 'Note',
     'notes'                                        => 'Notes',
@@ -423,14 +424,26 @@ $lang = array(
     'Q2'                                           => 'Q2',
     'Q3'                                           => 'Q3',
     'Q4'                                           => 'Q4',
-    'qr_code_settings'                             => 'QR Code Settings',
-    'qr_code_settings_bic'                         => 'BIC',
-    'qr_code_settings_enable'                      => 'Enable QR Code',
-    'qr_code_settings_enable_hint'                 => 'Enabling this option will include a QR code for invoice PDFs. You have to fill out recipient, IBAN and a <em>correct</em> BIC down below to work correctly. Otherwise the QR code won\'t be displayed.',
-    'qr_code_settings_iban'                        => 'IBAN',
-    'qr_code_settings_recipient'                   => 'Recipient',
-    'qr_code_settings_remittance_text'             => 'Remittance Text',
-    'qr_code_settings_remittance_text_tags'        => 'Remittance Text Tags',
+    'payment_method_type_invoice_options'          => 'Invoice Options',
+    'payment_method_type_invoice_options_error'    => 'No invoices specific parameters for this payment method.',
+    'payment_method_type'                          => 'Type',
+    'payment_method_types_title'                   => 'Payment Methods Types',
+    'payment_method_type_custom'                   => 'Custom',
+    'payment_method_type_qr_code'                  => 'QR Code',
+    'payment_method_type_qr_code_bic'              => 'BIC',
+    'payment_method_type_qr_code_enable'           => 'Enable QR Code',
+    'payment_method_type_qr_code_enable_hint'      => 'Enabling this option will include a QR code for invoice PDFs. You have to fill out recipient, IBAN and a <em>correct</em> BIC down below to work correctly. Otherwise the QR code won\'t be displayed.',
+    'payment_method_type_qr_code_iban'             => 'IBAN',
+    'payment_method_type_qr_code_recipient'        => 'Recipient',
+    'payment_method_type_qr_code_remittance_text'  => 'Remittance Text',
+    'payment_method_type_qr_code_remittance_text_t' => 'Remittance Text Tags',
+    'payment_method_type_qr_code_swiss'            => 'QR Code Swiss',
+    'payment_method_type_qr_code_swiss_enable'     => 'Enable QR Code Swiss',
+    'payment_method_type_qr_code_swiss_enable_hint' => 'Enabling this option will include a QR Code Swiss page after the invoice.You must fill in the user\'s IBAN as well as the currency to use (CHF or EUR only). Otherwise, the QR Code Swiss page will not be displayed.',
+    'invoice_templates_info'                       => 'You can extend the available templates by downloading other templates provided by the community (see <a href="https://www.invoiceplane.com/themes" target="_blank">www.invoiceplane.com/themes</a>).',
+    'payment_method_type_qr_code_swiss_besrid'     => 'BESR-ID',
+    'payment_method_type_qr_code_swiss_additional_text' => 'Additional Text',
+    'payment_method_type_qr_code_swiss_additional_text_t' => 'Additional Text Tags',
     'qty'                                          => 'Qty',
     'quantity'                                     => 'Quantity',
     'quarter'                                      => 'Quarter',
@@ -735,5 +748,5 @@ $lang = array(
 
     // Types
     'true'                                         => 'True',
-    'false'                                        => 'False'
-);
+    'false'                                        => 'False',
+];

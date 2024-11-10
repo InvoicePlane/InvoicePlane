@@ -58,7 +58,6 @@ class PaypalLib
             log_message('debug', 'Paypal library authorization obtained');
         } catch (ClientException $e) {
             log_message('error', 'Paypal library authorization failed');
-
             return $e->getResponse()->getBody();
         }
     }
@@ -93,11 +92,9 @@ class PaypalLib
                     ]),
             ]);
             log_message('debug', 'Paypal library order creation completed');
-
             return $response->getBody()->getContents();
         } catch (ClientException $e) {
             log_message('debug', 'Paypal library order creation failed');
-
             return ['status' => false, 'error' => $e];
         }
     }
@@ -124,7 +121,6 @@ class PaypalLib
             return ['status' => true, 'response' => $response];
         } catch (ClientException $e) {
             log_message('debug', 'Paypal library order capturing failed');
-
             return ['status' => false, 'error' => $e];
         }
     }
@@ -147,11 +143,9 @@ class PaypalLib
                 ]
             ]);
             log_message('debug', 'Paypal library show order completed');
-
             return ['status' => true, 'response' => $response];
         } catch (ClientException $e) {
             log_message('debug', 'Paypal library show order failed');
-
             return ['status' => false, 'error' => $e];
         }
     }

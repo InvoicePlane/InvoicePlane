@@ -150,6 +150,7 @@ class Settings extends Admin_Controller
                 'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
+                'payment_method_types' => $this->mdl_payment_methods->types(),
                 'public_invoice_templates' => $public_invoice_templates,
                 'pdf_invoice_templates' => $pdf_invoice_templates,
                 'public_quote_templates' => $public_quote_templates,
