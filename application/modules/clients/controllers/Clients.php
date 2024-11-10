@@ -4,6 +4,8 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
+
 /*
  * InvoicePlane
  *
@@ -18,6 +20,8 @@ if ( ! defined('BASEPATH')) {
  */
 class Clients extends Admin_Controller
 {
+    private const CLIENT_TITLE = 'client_title';
+
     /**
      * Clients constructor.
      */
@@ -48,14 +52,12 @@ class Clients extends Admin_Controller
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
 
-        $this->layout->set(
-            [
-                'records'            => $clients,
-                'filter_display'     => true,
-                'filter_placeholder' => trans('filter_clients'),
-                'filter_method'      => 'filter_clients',
-            ]
-        );
+        $this->layout->set([
+            'records'            => $clients,
+            'filter_display'     => true,
+            'filter_placeholder' => trans('filter_clients'),
+            'filter_method'      => 'filter_clients',
+        ]);
 
         $this->layout->buffer('content', 'clients/index');
         $this->layout->render();
@@ -89,6 +91,11 @@ class Clients extends Admin_Controller
         }
 
         if ($this->mdl_clients->run_validation()) {
+            $client_title_custom = $this->input->post('client_title_custom');
+            if ($client_title_custom !== '') {
+                $_POST[self::CLIENT_TITLE] = $client_title_custom;
+                $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
+            }
             $id = $this->mdl_clients->save($id);
 
             if ($new_client) {
@@ -168,15 +175,14 @@ class Clients extends Admin_Controller
         $this->load->helper('country');
         $this->load->helper('custom_values');
 
-        $this->layout->set(
-            [
-                'custom_fields'    => $custom_fields,
-                'custom_values'    => $custom_values,
-                'countries'        => get_country_list(trans('cldr')),
-                'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-                'languages'        => get_available_languages(),
-            ]
-        );
+        $this->layout->set([
+            'custom_fields'        => $custom_fields,
+            'custom_values'        => $custom_values,
+            'countries'            => get_country_list(trans('cldr')),
+            'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+            'languages'            => get_available_languages(),
+            'client_title_choices' => $this->get_client_title_choices(),
+        ]);
 
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
@@ -213,44 +219,40 @@ class Clients extends Admin_Controller
         $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
 
-        $this->layout->set(
-            [
-                'client'           => $client,
-                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices'         => $this->mdl_invoices->result(),
-                'quotes'           => $this->mdl_quotes->result(),
-                'payments'         => $this->mdl_payments->result(),
-                'custom_fields'    => $custom_fields,
-                'quote_statuses'   => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
-                'activeTab'        => $activeTab,
-            ]
-        );
+        $this->layout->set([
+            'client'           => $client,
+            'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+            'invoices'         => $this->mdl_invoices->result(),
+            'quotes'           => $this->mdl_quotes->result(),
+            'payments'         => $this->mdl_payments->result(),
+            'custom_fields'    => $custom_fields,
+            'quote_statuses'   => $this->mdl_quotes->statuses(),
+            'invoice_statuses' => $this->mdl_invoices->statuses(),
+            'activeTab'        => $activeTab,
+        ]);
 
-        $this->layout->buffer(
+        $this->layout->buffer([
             [
-                [
-                    'invoice_table',
-                    'invoices/partial_invoice_table',
-                ],
-                [
-                    'quote_table',
-                    'quotes/partial_quote_table',
-                ],
-                [
-                    'payment_table',
-                    'payments/partial_payment_table',
-                ],
-                [
-                    'partial_notes',
-                    'clients/partial_notes',
-                ],
-                [
-                    'content',
-                    'clients/view',
-                ],
-            ]
-        );
+                'invoice_table',
+                'invoices/partial_invoice_table',
+            ],
+            [
+                'quote_table',
+                'quotes/partial_quote_table',
+            ],
+            [
+                'payment_table',
+                'payments/partial_payment_table',
+            ],
+            [
+                'partial_notes',
+                'clients/partial_notes',
+            ],
+            [
+                'content',
+                'clients/view',
+            ],
+        ]);
 
         $this->layout->render();
     }
@@ -262,5 +264,13 @@ class Clients extends Admin_Controller
     {
         $this->mdl_clients->delete($client_id);
         redirect('clients');
+    }
+
+    private function get_client_title_choices(): array
+    {
+        return array_map(
+            fn (ClientTitleEnum $clientTitleEnum) => $clientTitleEnum->value,
+            ClientTitleEnum::cases()
+        );
     }
 }
