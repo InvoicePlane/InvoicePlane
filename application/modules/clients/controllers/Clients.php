@@ -1,14 +1,10 @@
 <?php
-<<<<<<< HEAD
-if (!defined('BASEPATH')) exit('No direct script access allowed');
-=======
 
 if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
->>>>>>> 44a388fe (fix formatting)
 
 /*
  * InvoicePlane
@@ -20,10 +16,12 @@ require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
  */
 
 /**
- * Class Clients
+ * Class Clients.
  */
 class Clients extends Admin_Controller
 {
+    private const CLIENT_TITLE = 'client_title';
+
     /**
      * Clients constructor.
      */
@@ -42,34 +40,25 @@ class Clients extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'active', $page = 0)
     {
-        if (is_numeric(array_search($status, array('active', 'inactive')))) {
+        if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
-            $this->mdl_clients->$function();
+            $this->mdl_clients->{$function}();
         }
 
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
 
         $this->layout->set(
-<<<<<<< HEAD
-            array(
-                'records' => $clients,
-                'filter_display' => true,
-                'filter_placeholder' => trans('filter_clients'),
-                'filter_method' => 'filter_clients'
-            )
-=======
             [
                 'records'            => $clients,
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_clients'),
                 'filter_method'      => 'filter_clients',
             ]
->>>>>>> 44a388fe (fix formatting)
         );
 
         $this->layout->buffer('content', 'clients/index');
@@ -89,19 +78,12 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
-<<<<<<< HEAD
-            $check = $this->db->get_where('ip_clients', array(
-                'client_name' => $this->input->post('client_name'),
-                'client_surname' => $this->input->post('client_surname')
-            ))->result();
-=======
             $check = $this->db->get_where('ip_clients', [
                 'client_name'    => $this->input->post('client_name'),
                 'client_surname' => $this->input->post('client_surname'),
             ])->result();
->>>>>>> 44a388fe (fix formatting)
 
-            if (!empty($check)) {
+            if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
             } else {
@@ -110,17 +92,11 @@ class Clients extends Admin_Controller
         }
 
         if ($this->mdl_clients->run_validation()) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
             $client_title_custom = $this->input->post('client_title_custom');
             if ($client_title_custom !== '') {
                 $_POST[self::CLIENT_TITLE] = $client_title_custom;
                 $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
             }
->>>>>>> 6375fa67 (1059: no void return types (yet))
-=======
->>>>>>> f93e42eb (feat: Add pagination for tabs in client detail fix #1083)
             $id = $this->mdl_clients->save($id);
 
             if ($new_client) {
@@ -135,18 +111,14 @@ class Clients extends Admin_Controller
                 $this->session->set_flashdata('alert_error', $result);
                 $this->session->set_flashdata('alert_success', null);
                 redirect('clients/form/' . $id);
+
                 return;
-            } else {
-                redirect('clients/view/' . $id);
             }
-<<<<<<< HEAD
-=======
             redirect('clients/view/' . $id);
->>>>>>> 44a388fe (fix formatting)
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_clients->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_clients->prep_form($id)) {
                 show_404();
             }
 
@@ -203,15 +175,14 @@ class Clients extends Admin_Controller
         $this->load->helper('country');
         $this->load->helper('custom_values');
 
-        $this->layout->set(
-            array(
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'countries' => get_country_list(trans('cldr')),
-                'selected_country' => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-                'languages' => get_available_languages(),
-            )
-        );
+        $this->layout->set([
+                'custom_fields'        => $custom_fields,
+                'custom_values'        => $custom_values,
+                'countries'            => get_country_list(trans('cldr')),
+                'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+                'languages'            => get_available_languages(),
+                'client_title_choices' => $this->get_client_title_choices(),
+            ]);
 
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
@@ -240,7 +211,7 @@ class Clients extends Admin_Controller
 
         $this->mdl_client_custom->prep_form($client_id);
 
-        if (!$client) {
+        if ( ! $client) {
             show_404();
         }
 
@@ -249,19 +220,6 @@ class Clients extends Admin_Controller
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
 
         $this->layout->set(
-<<<<<<< HEAD
-            array(
-                'client' => $client,
-                'client_notes' => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices' => $this->mdl_invoices->result(),
-                'quotes' => $this->mdl_quotes->result(),
-                'payments' => $this->mdl_payments->result(),
-                'custom_fields' => $custom_fields,
-                'quote_statuses' => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
-                'tab' => $tab
-            )
-=======
             [
                 'client'           => $client,
                 'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
@@ -273,32 +231,31 @@ class Clients extends Admin_Controller
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'activeTab'        => $activeTab,
             ]
->>>>>>> 44a388fe (fix formatting)
         );
 
         $this->layout->buffer(
-            array(
-                array(
+            [
+                [
                     'invoice_table',
-                    'invoices/partial_invoice_table'
-                ),
-                array(
+                    'invoices/partial_invoice_table',
+                ],
+                [
                     'quote_table',
-                    'quotes/partial_quote_table'
-                ),
-                array(
+                    'quotes/partial_quote_table',
+                ],
+                [
                     'payment_table',
-                    'payments/partial_payment_table'
-                ),
-                array(
+                    'payments/partial_payment_table',
+                ],
+                [
                     'partial_notes',
-                    'clients/partial_notes'
-                ),
-                array(
+                    'clients/partial_notes',
+                ],
+                [
                     'content',
-                    'clients/view'
-                )
-            )
+                    'clients/view',
+                ],
+            ]
         );
 
         $this->layout->render();
@@ -311,5 +268,13 @@ class Clients extends Admin_Controller
     {
         $this->mdl_clients->delete($client_id);
         redirect('clients');
+    }
+
+    private function get_client_title_choices(): array
+    {
+        return array_map(
+            fn (ClientTitleEnum $clientTitleEnum) => $clientTitleEnum->value,
+            ClientTitleEnum::cases()
+        );
     }
 }
