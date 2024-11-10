@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 require_once dirname(__FILE__, 4) . '/enums/UblTypeEnum.php';
 
 /*
@@ -165,9 +166,9 @@ class Clients extends Admin_Controller
         $this->load->helper('custom_values');
         $this->load->helper('e-invoice'); //eInvoicing++
 
-        $client_einvoice_version = $this->mdl_clients->form_value('client_einvoice_version') ?? UblTypeEnum::CIUS_V2;
+        $client_einvoice_version = $this->mdl_clients->form_value('client_einvoice_version') ?? UblTypeEnum::CIUS_V20;
         $include_zugferd         = get_setting('include_zugferd') === 'yes';
-        $default_template_type   = $include_zugferd ? UblTypeEnum::ZUGFERD_V1 : UblTypeEnum::CIUS_V2;
+        $default_template_type   = $include_zugferd ? UblTypeEnum::ZUGFERD_V10 : UblTypeEnum::CIUS_V20;
 
         $this->layout->set([
                 'custom_fields'           => $custom_fields,

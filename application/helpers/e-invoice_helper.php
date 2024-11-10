@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once dirname(__FILE__, 2) . '/enums/UblTypeEnum.php';
 /*
  * InvoicePlane
  *
@@ -29,9 +30,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 function generate_xml_invoice_file($invoice, $items, $templateType, $filename)
 {
     $generatorClass = match ($templateType) {
-        UblTypeEnum::NLCIUS  => 'NlCiusXmlGenerator',
-        UblTypeEnum::ZUGFERD => 'ZugferdXmlGenerator',
-        default => 'CiusXmlGenerator',
+        UblTypeEnum::NLCIUS_V20  => 'NlCius20Xml',
+        UblTypeEnum::ZUGFERD_V10 => 'Zugferd10Xml',
+        default => 'Cius20Xml',
     };
 
     require_once APPPATH . "libraries/XMLtemplates/{$generatorClass}.php";
@@ -44,7 +45,7 @@ function generate_xml_invoice_file($invoice, $items, $templateType, $filename)
         'currencyCode' => $CI->mdl_settings->setting('currency_code'),
         'templateType' => $templateType,
     ]);
-    $generator->generateXml();
+    $generator->xml();
 
     return "./uploads/invoices/{$filename}.xml";
 }
@@ -81,17 +82,17 @@ function get_ubl_template_details($xml_id)
     require_once dirname(__FILE__, 2) . '/enums/UblTypeEnum.php';
 
     $templateDetails = [
-        UblTypeEnum::CIUS_V2 => [
+        UblTypeEnum::CIUS_V20 => [
             'full-name' => 'CIUS Invoice', //UBL example v2.0
             'countrycode' => 'EU',
             'embedXML'    => false,
         ],
-        UblTypeEnum::NLCIUS_V2 => [
+        UblTypeEnum::NLCIUS_V20 => [
             'full-name'   => 'Dutch CIUS Invoice', //Dutch UBL example v2.0
             'countrycode' => 'NL',
             'embedXML'    => false,
         ],
-        UblTypeEnum::ZUGFERD_V1 => [
+        UblTypeEnum::ZUGFERD_V10 => [
             'full-name'   => 'ZUGFeRD v1.0',
             'countrycode' => 'DE',
             'embedXML'    => true,
@@ -129,7 +130,7 @@ function get_template_type($clientTemplate = null)
         return UblTypeEnum::from($defaultSetting);
     }
 
-    $envTemplate = env('UBL_STANDARD', 'CIUS_V2');
+    $envTemplate = env('UBL_STANDARD', 'CIUS_V20');
 
-    return UblTypeEnum::tryFrom($envTemplate) ? UblTypeEnum::from($envTemplate) : UblTypeEnum::CIUS_V2;
+    return UblTypeEnum::tryFrom($envTemplate) ? UblTypeEnum::from($envTemplate) : UblTypeEnum::CIUS_V20;
 }
