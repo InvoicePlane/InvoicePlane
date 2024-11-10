@@ -107,12 +107,12 @@
                 <td><?php echo date_from_mysql(htmlsc($invoice->invoice_date_created), true); ?></td>
             </tr>
             <tr>
-                <td><?php echo trans('due_date') . ': '; ?></td>
-                <td><?php echo date_from_mysql(htmlsc($invoice->invoice_date_due), true); ?></td>
+                <td class="text-red"><?php echo trans('due_date') . ': '; ?></td>
+                <td class="text-red"><?php echo date_from_mysql(htmlsc($invoice->invoice_date_due), true); ?></td>
             </tr>
             <tr>
-                <td class="text-green"><?php echo trans('amount_due') . ': '; ?></td>
-                <td class="text-green"><?php echo format_currency(htmlsc($invoice->invoice_balance)); ?></td>
+                <td class="text-red"><?php echo trans('amount_due') . ': '; ?></td>
+                <td class="text-red"><?php echo format_currency(htmlsc($invoice->invoice_balance)); ?></td>
             </tr>
             <?php if ($payment_method): ?>
                 <tr>
