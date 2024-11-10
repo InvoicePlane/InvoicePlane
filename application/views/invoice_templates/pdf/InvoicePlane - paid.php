@@ -239,7 +239,7 @@
             <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                 <b><?php _trans('balance'); ?></b>
             </td>
-            <td class="text-right text-red">
+            <td class="text-right text-green">
                 <b><?php echo format_currency(htmlsc($invoice->invoice_balance)); ?></b>
             </td>
         </tr>
