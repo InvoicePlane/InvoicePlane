@@ -60,8 +60,9 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     // Prepare XML generation based on client and template settings
+    $userVatId = $invoice->user_vat_id ?? 'VAT ID for user NOT FILLED';
     $replace = ['.', ' ', '/', '\\', '#'];
-    $filename = str_replace($replace, '', $invoice->user_vat_id) . '_' . str_replace($replace, '', $invoice->invoice_number);
+    $filename = str_replace($replace, '', $userVatId) . '_' . str_replace($replace, '', $invoice->invoice_number);
     $xml_id = $invoice->client_einvoice_version;
     $embed_xml = '';
     $associatedFiles = null;
@@ -82,7 +83,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             'path'           => generate_xml_invoice_file($invoice, $items, $xml_id, $filename),
         ]];
     } else {
-        // Generate XML directly without association for CIUS_V2, NLCIUS_V2, etc.
+        // Generate XML directly without association for CIUS_V20, NLCIUS_V20, etc.
         if ($xml_id && ! $embed_xml) {
             generate_xml_invoice_file($invoice, $items, $xml_id, $filename);
         }

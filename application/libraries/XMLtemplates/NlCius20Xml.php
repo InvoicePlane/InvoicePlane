@@ -1,6 +1,8 @@
 <?php
 
-class NlCiusXml extends AbstractXmlTemplate
+require_once 'AbstractXmlTemplate.php';
+
+class NlCius20Xml extends AbstractXmlTemplate
 {
     protected function xmlRoot()
     {

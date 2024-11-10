@@ -143,14 +143,14 @@
                                 <div class="form-group">
                                     <label for="settings[default_template_type]"><?php echo trans('default_ubl_template_type'); ?></label>
                                     <select name="settings[default_template_type]" id="default_template_type" class="form-control">
-                                        <option value="<?php echo UblTypeEnum::CIUS_V2; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::CIUS_V2) ? 'selected' : ''; ?>>
-                                            <?php echo UblTypeEnum::CIUS_V2; ?>
+                                        <option value="<?php echo UblTypeEnum::CIUS_V20; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::CIUS_V20) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::CIUS_V20; ?>
                                         </option>
-                                        <option value="<?php echo UblTypeEnum::NLCIUS_V2; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::NLCIUS_V2) ? 'selected' : ''; ?>>
-                                            <?php echo UblTypeEnum::NLCIUS_V2; ?>
+                                        <option value="<?php echo UblTypeEnum::NLCIUS_V20; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::NLCIUS_V20) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::NLCIUS_V20; ?>
                                         </option>
-                                        <option value="<?php echo UblTypeEnum::ZUGFERD; ?>" <?php echo (get_setting('use_zugferd') == 'yes' || get_setting('default_template_type') == UblTypeEnum::ZUGFERD) ? 'selected' : ''; ?>>
-                                            <?php echo UblTypeEnum::ZUGFERD; ?>
+                                        <option value="<?php echo UblTypeEnum::ZUGFERD_V10; ?>" <?php echo (get_setting('use_zugferd') == 'yes' || get_setting('default_template_type') == UblTypeEnum::ZUGFERD_V10) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::ZUGFERD_V10; ?>
                                         </option>
                                     </select>
                                     <p class="help-block"><?php echo trans('set_default_ubl_template_type_help'); ?></p>

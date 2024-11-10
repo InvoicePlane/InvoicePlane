@@ -32,7 +32,7 @@ class AbstractXmlTemplate
         $this->currencyCode = get_setting('currency_code'); // $CI->mdl_settings->setting('currency_code');
     }
 
-    public function xml(): void
+    public function xml()
     {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->preserveWhiteSpace = false;
@@ -97,8 +97,10 @@ class AbstractXmlTemplate
 
     protected function xmlSuppPartyIdentification()
     {
+        $userVatId = $this->invoice->user_vat_id ?? 'VAT ID for user NOT FILLED';
+
         $node = $this->doc->createElement('cac:PartyIdentification');
-        $nodeID = $this->doc->createElement('cbc:ID', $this->invoice->user_vat_id);
+        $nodeID = $this->doc->createElement('cbc:ID', $userVatId);
         $nodeID->setAttribute('schemeAgencyID', $this->invoice->user_country);
         $nodeID->setAttribute('schemeAgencyName', 'Example');
         $node->appendChild($nodeID);
@@ -108,8 +110,10 @@ class AbstractXmlTemplate
 
     protected function xmlSuppPartyName()
     {
+        // 939: We're looking for user_company here, while we also have client_name.
+        $userCompany = $this->invoice->user_company ?? 'Company Name for user NOT FILLED';
         $node = $this->doc->createElement('cac:PartyName');
-        $nodeName = $this->doc->createElement('cbc:Name', $this->invoice->user_company);
+        $nodeName = $this->doc->createElement('cbc:Name', $userCompany);
         $node->appendChild($nodeName);
 
         return $node;
@@ -228,7 +232,7 @@ class AbstractXmlTemplate
 
     protected function xmlPFAccount()
     {
-        $bankAccIBAN = $this->invoice->user_iban;
+        $bankAccIBAN = $this->invoice->user_iban ?? 'IBAN for user not filled';
         $bankAccBIC = $this->invoice->user_bic;
         $node = $this->doc->createElement('cac:PayeeFinancialAccount');
         $nodeID = $this->doc->createElement('cbc:ID', $bankAccIBAN);
@@ -274,11 +278,12 @@ class AbstractXmlTemplate
 
     protected function xmlTaxSubtotal($percent, $subtotal)
     {
-        $taxamount = $subtotal * $percent / 100;
+        $percentage = $percent ?? 'Percentage not filled?';
+        $taxAmount = $subtotal * $percent / 100;
         $node = $this->doc->createElement('cac:TaxSubtotal');
         $node->appendChild($this->currencyElement('cbc:TaxableAmount', $subtotal));
-        $node->appendChild($this->currencyElement('cbc:TaxAmount', $taxamount));
-        $node->appendChild($this->doc->createElement('cbc:Percent', $percent));
+        $node->appendChild($this->currencyElement('cbc:TaxAmount', $taxAmount));
+        $node->appendChild($this->doc->createElement('cbc:Percent', $percentage));
 
         return $node;
     }

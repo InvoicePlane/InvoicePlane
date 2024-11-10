@@ -7,44 +7,39 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class ClientTitleEnum
 {
-    const MISTER    = 'mr';
-    const MISSUS    = 'mrs';
-    const DOCTOR    = 'doctor';
-    const PROFESSOR = 'professor';
-    const CUSTOM    = 'custom';
+    public const MISTER    = 'mr';
 
-    private static function getValues() {
-        return [
-            self::MISTER,
-            self::MISSUS,
-            self::DOCTOR,
-            self::PROFESSOR,
-            self::CUSTOM
-        ];
+    public const MISSUS    = 'mrs';
 
-    }
+    public const DOCTOR    = 'doctor';
 
-    public static function tryFrom($value) {
+    public const PROFESSOR = 'professor';
+
+    public const CUSTOM    = 'custom';
+
+    public static function tryFrom($value)
+    {
 
         $values = self::getValues();
 
-        $searchResult = array_search($value,$values);
+        $searchResult = array_search($value, $values);
 
-        if($searchResult) {
+        if ($searchResult) {
 
             $returnObject = new StdClass();
             $returnObject->value = $searchResult;
 
             return $returnObject;
 
-        } else {
-
-            return null;
-
         }
+
+
+
+
     }
 
-    public static function cases() {
+    public static function cases()
+    {
 
         $values = self::getValues();
 
@@ -58,5 +53,17 @@ class ClientTitleEnum
         }
 
         return $returnArray;
+    }
+
+    private static function getValues()
+    {
+        return [
+            self::MISTER,
+            self::MISSUS,
+            self::DOCTOR,
+            self::PROFESSOR,
+            self::CUSTOM,
+        ];
+
     }
 }

@@ -5,9 +5,9 @@
  */
 class UblTypeEnum
 {
-    public const CIUS_V2    = 'CIUS_V2';
-    public const NLCIUS_V2  = 'NLCIUS_V2';
-    public const ZUGFERD_V1 = 'ZUGFERD_V1';
+    public const CIUS_V20    = 'CIUS_V20';
+    public const NLCIUS_V20  = 'NLCIUS_V20';
+    public const ZUGFERD_V10 = 'ZUGFERD_V10';
 
     /**
      * Attempts to retrieve an enum instance based on a value.
@@ -50,9 +50,9 @@ class UblTypeEnum
     private static function getValues()
     {
         return [
-            self::CIUS_V2,
-            self::NLCIUS,
-            self::ZUGFERD_V1,
+            self::CIUS_V20,
+            self::NLCIUS_V20,
+            self::ZUGFERD_V10,
         ];
     }
 }

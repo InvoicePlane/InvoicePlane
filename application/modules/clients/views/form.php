@@ -426,14 +426,14 @@ $cv = $this->controller->view_data['custom_values'];
                             <label for="client_einvoice_version"><?php echo 'UBL Template Type'; ?></label>
                             <select name="client_einvoice_version" id="client_einvoice_version" class="form-control">
                                 <option value=""><?php echo trans('none'); ?></option>
-                                <option value="<?php echo UblTypeEnum::CIUS_V2; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::CIUS_V2 || $default_template_type == UblTypeEnum::CIUS_V2) ? 'selected' : ''; ?>>
-                                    <?php echo UblTypeEnum::CIUS_V2; ?>
+                                <option value="<?php echo UblTypeEnum::CIUS_V20; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::CIUS_V20 || $default_template_type == UblTypeEnum::CIUS_V20) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::CIUS_V20; ?>
                                 </option>
-                                <option value="<?php echo UblTypeEnum::NLCIUS_V2; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::NLCIUS_V2 || $default_template_type == UblTypeEnum::NLCIUS_V2) ? 'selected' : ''; ?>>
-                                    <?php echo UblTypeEnum::NLCIUS_V2; ?>
+                                <option value="<?php echo UblTypeEnum::NLCIUS_V20; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::NLCIUS_V20 || $default_template_type == UblTypeEnum::NLCIUS_V20) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::NLCIUS_V20; ?>
                                 </option>
-                                <option value="<?php echo UblTypeEnum::ZUGFERD; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::ZUGFERD || $default_template_type == UblTypeEnum::ZUGFERD) ? 'selected' : ''; ?>>
-                                    <?php echo UblTypeEnum::ZUGFERD; ?>
+                                <option value="<?php echo UblTypeEnum::ZUGFERD_V10; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::ZUGFERD_V10 || $default_template_type == UblTypeEnum::ZUGFERD_V10) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::ZUGFERD_V10; ?>
                                 </option>
                             </select>
                             <p class="help-block"><?php echo trans('override_ubl_template_help'); ?></p>
