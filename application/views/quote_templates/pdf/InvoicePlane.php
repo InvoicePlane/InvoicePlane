@@ -165,7 +165,7 @@
 
         <tr>
             <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?>
-                    class="text-right"><?php _trans('subtotal'); ?></td>
+                class="text-right"><?php _trans('subtotal'); ?></td>
             <td class="text-right"><?php echo format_currency(htmlsc($quote->quote_item_subtotal)); ?></td>
         </tr>
 
