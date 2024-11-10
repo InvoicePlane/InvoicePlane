@@ -52,14 +52,12 @@ class Clients extends Admin_Controller
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
 
-        $this->layout->set(
-            [
+        $this->layout->set([
                 'records'            => $clients,
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_clients'),
                 'filter_method'      => 'filter_clients',
-            ]
-        );
+            ]);
 
         $this->layout->buffer('content', 'clients/index');
         $this->layout->render();
@@ -219,8 +217,7 @@ class Clients extends Admin_Controller
         $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
         $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
 
-        $this->layout->set(
-            [
+        $this->layout->set([
                 'client'           => $client,
                 'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
                 'invoices'         => $this->mdl_invoices->result(),
@@ -230,11 +227,9 @@ class Clients extends Admin_Controller
                 'quote_statuses'   => $this->mdl_quotes->statuses(),
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'activeTab'        => $activeTab,
-            ]
-        );
+            ]);
 
-        $this->layout->buffer(
-            [
+        $this->layout->buffer([
                 [
                     'invoice_table',
                     'invoices/partial_invoice_table',
@@ -255,8 +250,7 @@ class Clients extends Admin_Controller
                     'content',
                     'clients/view',
                 ],
-            ]
-        );
+            ]);
 
         $this->layout->render();
     }
