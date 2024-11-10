@@ -86,6 +86,7 @@ $lang = array(
     'client_access'                                => 'Client Access',
     'client_already_exists'                        => 'Client already exists!',
     'client_form'                                  => 'Client Form',
+    'client_title'                                 => 'Title',
     'client_name'                                  => 'Client Name',
     'client_surname'                               => 'Client Surname',
     'client_surname_optional'                      => 'Client Surname (Optional)',
