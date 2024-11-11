@@ -41,7 +41,7 @@ function phpmail_send(
 
     switch (get_setting('email_send_method')) {
         case 'smtp':
-            $mail->IsSMTP();
+            $mail->isSMTP();
 
             // Set the basic properties
             $mail->Host = get_setting('smtp_server_address');
