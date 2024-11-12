@@ -6,7 +6,12 @@
 
     <title>
         <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
-        - <?php echo trans('invoice'); ?> <?php echo $invoice->invoice_number; ?>
+        - 
+        <?php if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
+          } else {
+            echo trans('invoice') . ' ' . $invoice->invoice_number;
+          } ?> 
     </title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -22,7 +27,13 @@
 
         <div class="webpreview-header">
 
-            <h2><?php echo trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
+            <h2>
+                <?php if ($invoice->invoice_sign == -1) {
+                    echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
+                } else {
+                    echo trans('invoice') . ' ' . $invoice->invoice_number;
+                } ?> 
+            </h2>
 
             <div class="btn-group">
                 <?php if ($invoice->sumex_id == NULL) : ?>
@@ -124,25 +135,31 @@
                     <table class="table table-condensed">
                         <tbody>
                         <tr>
+                            <?php if ($invoice->invoice_sign == -1) { ?>
+                                <td><?php echo trans('credit_invoice_date'); ?></td>
+                            <?php } else { ?>
                             <td><?php echo trans('invoice_date'); ?></td>
+                            <?php } ?>  
                             <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                         </tr>
+                        <?php if ($invoice->invoice_sign != -1) { ?>
                         <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
                             <td><?php echo trans('due_date'); ?></td>
                             <td class="text-right">
                                 <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                             </td>
                         </tr>
+                        <?php } ?>
                         <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
                             <td><?php echo trans('amount_due'); ?></td>
                             <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
                         </tr>
-                        <?php if ($payment_method): ?>
+                        <?php if ($payment_method) { ?>
                             <tr>
                                 <td><?php echo trans('payment_method') . ': '; ?></td>
                                 <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
                             </tr>
-                        <?php endif; ?>
+                        <?php } ?>
                         </tbody>
                     </table>
 

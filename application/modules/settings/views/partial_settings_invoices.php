@@ -1,3 +1,23 @@
+<script>
+    $(function () {
+        toggle_cri_settings();
+
+        $('#enable_credit_invoice_format').change(function () {
+            toggle_cri_settings();
+        });
+
+        function toggle_cri_settings() {
+            enable_cri_format = $('#enable_credit_invoice_format').val();
+
+            if (enable_cri_format === '1') {
+                $('#div-cri-settings').show();
+            } else {
+                $('#div-cri-settings').hide();
+            }
+        }
+    });
+</script>
+
 <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
 
@@ -31,11 +51,21 @@
                                 <?php _trans('default_terms'); ?>
                             </label>
                             <textarea name="settings[default_invoice_terms]" id="settings[default_invoice_terms]"
-                                class="form-control" rows="4"
+                                class="form-control" rows="2"
                                 ><?php echo get_setting('default_invoice_terms', '', true); ?></textarea>
                         </div>
 
+                        <div class="form-group">
+                            <label for="settings[credit_invoice_terms]">
+                                <?php _trans('credit_invoice_terms'); ?>
+                            </label>
+                            <textarea name="settings[credit_invoice_terms]" id="settings[credit_invoice_terms]"
+                                class="form-control" rows="2"
+                                ><?php echo get_setting('credit_invoice_terms', '', true); ?></textarea>
                     </div>
+
+                    </div>
+
                     <div class="col-xs-12 col-md-6">
 
                         <div class="form-group">
@@ -81,6 +111,52 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[enable_credit_invoice_format]">
+                                <?php _trans('enable_credit_invoice_format'); ?>
+                            </label>
+                            <select name="settings[enable_credit_invoice_format]"
+                                class="form-control simple-select"
+                                id="enable_credit_invoice_format"
+                                data-minimum-results-for-search="Infinity">
+                                <option value="0" <?php check_select(get_setting('enable_credit_invoice_format'), '0'); ?>>
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('enable_credit_invoice_format'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                            <p class="help-block">
+                                <?php _trans('enable_credit_invoice_format_hint'); ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="div-cri-settings">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label for="settings[credit_invoice_group]">
+                                    <?php _trans('credit_invoice_group'); ?>
+                                </label>
+                                <select name="settings[credit_invoice_group]"
+                                    id="settings[credit_invoice_group]"
+                                    class="form-control simple-select" 
+                                    data-minimum-results-for-search="Infinity">
+                                    <option value=""><?php _trans('none'); ?></option>
+                                    <?php foreach ($invoice_groups as $invoice_group) { ?>
+                                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
+                                            <?php check_select(get_setting('credit_invoice_group'), $invoice_group->invoice_group_id); ?>>
+                                            <?php echo $invoice_group->invoice_group_name; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
 
