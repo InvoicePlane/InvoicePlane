@@ -19,7 +19,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @param null $password
  * @param null $isInvoice
  * @param null $is_guest
- * @param bool $zugferd_invoice
+ * @param bool $embed_xml
  * @param null $associated_files
  *
  * @return string
@@ -32,7 +32,7 @@ function pdf_create(
     $password = null,
     $isInvoice = null,
     $is_guest = null,
-    $zugferd_invoice = false,
+    $embed_xml = false,    // eInvoicing++
     $associated_files = null
 ) {
     $CI = &get_instance();
@@ -57,13 +57,13 @@ function pdf_create(
         $mpdf->showImageErrors = true;
     }
 
-    // Include zugferd if enabled
-    if ($zugferd_invoice) {
-        $CI->load->helper('zugferd');
+    // Include (zugferd?) XML if enabled for the client     // eInvoicing++
+    if ($embed_xml) {                                       // eInvoicing++
+        $CI->load->helper('e-invoice');                     // eInvoicing++
         $mpdf->PDFA = true;
         $mpdf->PDFAauto = true;
-        $mpdf->SetAdditionalXmpRdf(zugferd_rdf());
         $mpdf->SetAssociatedFiles($associated_files);
+        $mpdf->SetAdditionalXmpRdf(include_rdf());          // eInvoicing++
     }
 
     // Set a password if set for the voucher

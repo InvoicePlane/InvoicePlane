@@ -97,6 +97,13 @@ class Mdl_Clients extends Response_Model
             'client_tax_code' => [
                 'field' => 'client_tax_code',
             ],
+            'client_invoicing_contact' => [
+                'field' => 'client_invoicing_contact',
+                'rules' => 'trim'
+            ],
+            'client_einvoice_version' => [
+                'field' => 'client_einvoice_version'
+            ],
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
@@ -136,6 +143,7 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
+     * @param $input
      * @return string
      */
     public function fix_avs($input)
