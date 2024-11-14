@@ -117,7 +117,7 @@ $locations = [];
             <?php $this->layout->load_view('layout/alerts'); ?>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
 
                     <h3><?php _htmlsc(format_client($client)); ?></h3>
                     <p>
@@ -125,7 +125,7 @@ $locations = [];
                     </p>
 
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
 
                     <table class="table table-bordered no-margin">
                         <tr>
@@ -168,12 +168,18 @@ $locations = [];
             <hr>
 
             <div class="row">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading"><?php _trans('contact_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
+                                <?php if ($client->client_invoicing_contact) : ?>
+                                    <tr>
+                                        <th><?php echo trans('invoicing') . ' ' . trans('contact'); ?></th>
+                                        <td><?php _htmlsc($client->client_invoicing_contact); ?></td>
+                                    </tr>
+                                <?php endif; ?>
                                 <?php if ($client->client_email) : ?>
                                     <tr>
                                         <th><?php _trans('email'); ?></th>
@@ -223,7 +229,7 @@ $locations = [];
                     </div>
 
                 </div>
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                     <div class="panel panel-default no-margin">
 
                         <div class="panel-heading"><?php _trans('tax_information'); ?></div>
@@ -260,6 +266,25 @@ $locations = [];
 
                     </div>
                 </div>
+
+                <!-- e-Invoicing panel added -->
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="panel panel-default no-margin">
+
+                        <div class="panel-heading"><?php echo 'e-'.ucfirst(trans('invoicing')) . ' ' . trans('information'); ?></div>
+                        <div class="panel-body table-content">
+
+                            <table class="table no-margin">
+                                    <tr>
+                                        <th><?php echo trans('send') . ' e-'. trans('invoice') . ' ' . trans('version'); ?></th>
+                                        <td><?php echo ($client->client_einvoice_version) ? get_xml_full_name($client->client_einvoice_version) : trans('none'); ?></td>
+                                    </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
             <?php if ($client->client_surname != ''): //Client is not a company?>

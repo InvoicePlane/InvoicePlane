@@ -34,6 +34,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper('country');
     $CI->load->helper('client');
+    $CI->load->helper('e-invoice');   // eInvoicing++
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
@@ -73,23 +74,30 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $invoice->quote_id);
     }
 
-    // PDF associated files
-    $include_zugferd = $CI->mdl_settings->setting('include_zugferd');
+    // START eInvoicing++ changes
+    $replace = array('.', ' ', '/', '\\', '#');
+    $filename = str_replace($replace, '', $invoice->user_vat_id) . '_' . str_replace($replace, '', $invoice->invoice_number);
 
-    if ($include_zugferd) {
-        $CI->load->helper('zugferd');
+    // Generate the appropriate UBL/CII
+    $xml_id = $invoice->client_einvoice_version;
+    $embed_xml = '';
+    if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
+        include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
 
-        $associatedFiles = array(
-            array(
-                'name' => 'ZUGFeRD-invoice.xml',
-                'description' => 'ZUGFeRD Invoice',
-                'AFRelationship' => 'Alternative',
-                'mime' => 'text/xml',
-                'path' => generate_invoice_zugferd_xml_temp_file($invoice, $items)
-            )
-        );
-    } else {
-        $associatedFiles = null;
+        $embed_xml = $xml_setting['embedXML'];
+    }
+
+    // PDF associated or embedded (Zugferd) Xml file 
+    $associatedFiles = null;
+    if ($embed_xml) {
+        // Create the CII XML file
+        $associatedFiles = array(array(
+            'name' => 'ZUGFeRD-invoice.xml',
+            'mime' => 'text/xml',
+            'description' => $xml_id . ' CII Invoice',
+            'AFRelationship' => 'Alternative',
+            'path' => generate_xml_invoice_file($invoice, $items, $xml_id, $filename),
+        ));
     }
 
     $data = array(
@@ -104,9 +112,22 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
+    // Create PDF with or without an embedded XML
     $CI->load->helper('mpdf');
-    return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
+    $retval = pdf_create($html, $filename, $stream, $invoice->invoice_password, true, $is_guest, $embed_xml, $associatedFiles);
+
+    // Delete the tmp (zugferd) XML file if exist
+    if (file_exists('./uploads/temp/' . $filename . '.xml')) {
+        unlink('./uploads/temp/' . $filename . '.xml');
+    }
+    // Create the UBL XML file
+    if ($xml_id != '' && $embed_xml != 'true') {
+        $path = generate_xml_invoice_file($invoice, $items, $xml_id, $filename);
+    }
+
+    // END eInvoicing++ changes
+    return $retval;
+
 }
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)

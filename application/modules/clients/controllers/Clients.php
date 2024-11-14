@@ -109,7 +109,6 @@ class Clients extends Admin_Controller
                 $this->session->set_flashdata('alert_success', null);
                 redirect('clients/form/' . $id);
 
-
                 return;
             }
             redirect('clients/view/' . $id);
@@ -172,6 +171,7 @@ class Clients extends Admin_Controller
 
         $this->load->helper('country');
         $this->load->helper('custom_values');
+        $this->load->helper('e-invoice'); //eInvoicing++
 
         $this->layout->set([
             'custom_fields'        => $custom_fields,
@@ -180,6 +180,7 @@ class Clients extends Admin_Controller
             'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
             'languages'            => get_available_languages(),
             'client_title_choices' => $this->get_client_title_choices(),
+            'xml_templates' => get_xml_template_files(), //eInvoicing++
         ]);
 
         $this->layout->buffer('content', 'clients/form');
@@ -197,6 +198,8 @@ class Clients extends Admin_Controller
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
+
+        $this->load->helper('e-invoice'); //eInvoicing++
 
         $client = $this->mdl_clients
             ->with_total()
