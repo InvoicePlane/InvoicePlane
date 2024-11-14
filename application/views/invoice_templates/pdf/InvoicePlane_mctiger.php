@@ -257,10 +257,10 @@ table.item-table {
 				<?php endif; ?>
                 </td>
                     <td class="text-right">
-				<?php if ($show_item_discounts > 0) : ?>
-                        <?php echo format_currency($item->item_discount); ?>
-				<?php endif; ?>
-                    </td>
+				 <?php if ($show_item_discounts > 0 && $item->item_discount > 0) { 
+						echo format_currency($item->item_discount); }
+					?> 
+				</td>
                 <td class="text-right">
 				<?php if ($item->item_subtotal> 0) : ?>
                     <?php echo format_currency($item->item_subtotal); ?>
@@ -282,24 +282,16 @@ table.item-table {
         </tr>
        
         <?php if ($invoice->invoice_item_tax_total > 0) {
-            foreach($taxarray2 as $key => $value ) :?>
-                <tr>
-                    <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right"></td>
-                    <td class="text-right"><?php echo 'USt.('. format_amount($value['taxperc']).'%)'; ?></>
-                    </td>
-                    <td class="text-right"><?php echo format_currency($value['taxamount']); ?></td>
-                </tr>
-        <?php endforeach ?>
-        <!--<tr> Steuer Summe
-                <td class="text-right"></td>
-                <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
-                    <?php _trans('item_tax'); ?>
+			foreach($taxarray2 as $key => $value ) :
+				if ($value['taxamount'] != 0 && !empty($value['taxamount'])) :?>
+            <tr>
+                <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right"></td>
+                <td class="text-right"><?php echo 'USt.('. format_amount($value['taxperc']).'%)'; ?></>
                 </td>
-                <td class="text-right">
-                    <?php echo format_currency($invoice->invoice_item_tax_total != 0) ? $invoice->invoice_item_tax_total : null;?>
-                </td>
-            </tr>-->
-       <?php } ?>
+                <td class="text-right"><?php echo format_currency($value['taxamount']); ?></td>
+            </tr>
+		<?php endif;
+		endforeach;	}	?>
 
         <?php foreach ($invoice_tax_rates as $invoice_tax_rate) : ?>
             <tr>
