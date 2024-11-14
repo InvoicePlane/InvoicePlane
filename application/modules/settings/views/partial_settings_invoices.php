@@ -119,7 +119,7 @@
                             </label>
                             <select name="settings[enable_credit_invoice_format]"
                                 class="form-control simple-select"
-                                id="enable_credit_invoice_format"
+                                id="settings[enable_credit_invoice_format]"
                                 data-minimum-results-for-search="Infinity">
                                 <option value="0" <?php check_select(get_setting('enable_credit_invoice_format'), '0'); ?>>
                                     <?php _trans('no'); ?>
