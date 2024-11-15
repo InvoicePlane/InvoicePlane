@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -46,6 +49,8 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
             $id = $this->mdl_users->save($id);
 
@@ -56,7 +61,14 @@ class Users extends Admin_Controller
             if ($this->session->userdata('user_id') == $id) {
                 $new_details = $this->mdl_users->get_by_id($id);
 
-                $session_data = ['user_type' => $new_details->user_type, 'user_id' => $new_details->user_id, 'user_name' => $new_details->user_name, 'user_email' => $new_details->user_email, 'user_company' => $new_details->user_company, 'user_language' => isset($new_details->user_language) ? $new_details->user_language : 'system'];
+                $session_data = [
+                    'user_type' => $new_details->user_type,
+                    'user_id' => $new_details->user_id,
+                    'user_name' => $new_details->user_name,
+                    'user_email' => $new_details->user_email,
+                    'user_company' => $new_details->user_company,
+                    'user_language' => $new_details->user_language ?? 'system',
+                ];
 
                 $this->session->set_userdata($session_data);
             }
@@ -66,8 +78,8 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        if ($id && !$this->input->post('btn_submit')) {
-            if (!$this->mdl_users->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_users->prep_form($id)) {
                 show_404();
             }
 
@@ -125,7 +137,17 @@ class Users extends Admin_Controller
         }
 
         $this->layout->set(
-            ['id' => $id, 'user_types' => $this->mdl_users->user_types(), 'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(), 'custom_fields' => $custom_fields, 'custom_values' => $custom_values, 'countries' => get_country_list(trans('cldr')), 'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'), 'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(), 'languages' => get_available_languages()]
+            [
+                'id' => $id,
+                'user_types' => $this->mdl_users->user_types(),
+                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
+                'countries' => get_country_list(trans('cldr')),
+                'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'),
+                'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
+                'languages' => get_available_languages(),
+            ]
         );
 
         $this->layout->buffer('content', 'users/form');
@@ -155,7 +177,7 @@ class Users extends Admin_Controller
      */
     public function delete($id)
     {
-        if ($id <> 1) {
+        if ($id != 1) {
             $this->mdl_users->delete($id);
         }
         redirect('users');

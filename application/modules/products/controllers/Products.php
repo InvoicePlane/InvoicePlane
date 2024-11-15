@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -45,6 +48,8 @@ class Products extends Admin_Controller
             redirect('products');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_products->run_validation()) {
             // Get the db array
             $db_array = $this->mdl_products->db_array();
@@ -52,8 +57,8 @@ class Products extends Admin_Controller
             redirect('products');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_products->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_products->prep_form($id)) {
                 show_404();
             }
         }
@@ -63,7 +68,11 @@ class Products extends Admin_Controller
         $this->load->model('tax_rates/mdl_tax_rates');
 
         $this->layout->set(
-            ['families' => $this->mdl_families->get()->result(), 'units' => $this->mdl_units->get()->result(), 'tax_rates' => $this->mdl_tax_rates->get()->result()]
+            [
+                'families' => $this->mdl_families->get()->result(),
+                'units' => $this->mdl_units->get()->result(),
+                'tax_rates' => $this->mdl_tax_rates->get()->result(),
+            ]
         );
 
         $this->layout->buffer('content', 'products/form');

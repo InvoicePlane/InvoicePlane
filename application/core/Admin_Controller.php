@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -15,12 +16,19 @@ if (!defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Admin_Controller extends User_Controller
 {
-
-    /**
-     * Admin_Controller constructor.
-     */
     public function __construct()
     {
         parent::__construct('user_type', 1);
+    }
+
+    protected function filter_input(): void
+    {
+        $input = $this->input->post();
+
+        array_walk($input, function (&$value, $key): void {
+            $value = $this->security->xss_clean($value);
+            $value = strip_tags($value);
+            $value = html_escape($value);   // <<<=== that's a CodeIgniter helper
+        });
     }
 }

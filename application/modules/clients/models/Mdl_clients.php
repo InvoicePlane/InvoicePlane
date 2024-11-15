@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -34,29 +37,88 @@ class Mdl_Clients extends Response_Model
     public function validation_rules()
     {
         return [
-            'client_name' => ['field' => 'client_name', 'label' => trans('client_name'), 'rules' => 'required'],
-            'client_surname' => ['field' => 'client_surname', 'label' => trans('client_surname')],
-            'client_active' => ['field' => 'client_active'],
-            'client_language' => ['field' => 'client_language', 'label' => trans('language'), 'rules' => 'trim'],
-            'client_address_1' => ['field' => 'client_address_1'],
-            'client_address_2' => ['field' => 'client_address_2'],
-            'client_city' => ['field' => 'client_city'],
-            'client_state' => ['field' => 'client_state'],
-            'client_zip' => ['field' => 'client_zip'],
-            'client_country' => ['field' => 'client_country', 'rules' => 'trim'],
-            'client_phone' => ['field' => 'client_phone'],
-            'client_fax' => ['field' => 'client_fax'],
-            'client_mobile' => ['field' => 'client_mobile'],
-            'client_email' => ['field' => 'client_email'],
-            'client_web' => ['field' => 'client_web'],
-            'client_vat_id' => ['field' => 'client_vat_id'],
-            'client_tax_code' => ['field' => 'client_tax_code'],
+            'client_title' => [
+                'field' => 'client_title',
+                'label' => trans('client_title'),
+            ],
+            'client_name' => [
+                'field' => 'client_name',
+                'label' => trans('client_name'),
+                'rules' => 'required',
+            ],
+            'client_surname' => [
+                'field' => 'client_surname',
+                'label' => trans('client_surname'),
+            ],
+            'client_active' => [
+                'field' => 'client_active',
+            ],
+            'client_language' => [
+                'field' => 'client_language',
+                'label' => trans('language'),
+                'rules' => 'trim',
+            ],
+            'client_address_1' => [
+                'field' => 'client_address_1',
+            ],
+            'client_address_2' => [
+                'field' => 'client_address_2',
+            ],
+            'client_city' => [
+                'field' => 'client_city',
+            ],
+            'client_state' => [
+                'field' => 'client_state',
+            ],
+            'client_zip' => [
+                'field' => 'client_zip',
+            ],
+            'client_country' => [
+                'field' => 'client_country',
+                'rules' => 'trim',
+            ],
+            'client_phone' => [
+                'field' => 'client_phone',
+            ],
+            'client_fax' => [
+                'field' => 'client_fax',
+            ],
+            'client_mobile' => [
+                'field' => 'client_mobile',
+            ],
+            'client_email' => [
+                'field' => 'client_email',
+            ],
+            'client_web' => [
+                'field' => 'client_web',
+            ],
+            'client_vat_id' => [
+                'field' => 'client_vat_id',
+            ],
+            'client_tax_code' => [
+                'field' => 'client_tax_code',
+            ],
             // SUMEX
-            'client_birthdate' => ['field' => 'client_birthdate', 'rules' => 'callback_convert_date'],
-            'client_gender' => ['field' => 'client_gender'],
-            'client_avs' => ['field' => 'client_avs', 'label' => trans('sumex_ssn'), 'rules' => 'callback_fix_avs'],
-            'client_insurednumber' => ['field' => 'client_insurednumber', 'label' => trans('sumex_insurednumber')],
-            'client_veka' => ['field' => 'client_veka', 'label' => trans('sumex_veka')],
+            'client_birthdate' => [
+                'field' => 'client_birthdate',
+                'rules' => 'callback_convert_date',
+            ],
+            'client_gender' => [
+                'field' => 'client_gender',
+            ],
+            'client_avs' => [
+                'field' => 'client_avs',
+                'label' => trans('sumex_ssn'),
+                'rules' => 'callback_fix_avs',
+            ],
+            'client_insurednumber' => [
+                'field' => 'client_insurednumber',
+                'label' => trans('sumex_insurednumber'),
+            ],
+            'client_veka' => [
+                'field' => 'client_veka',
+                'label' => trans('sumex_veka'),
+            ],
         ];
     }
 
@@ -64,7 +126,7 @@ class Mdl_Clients extends Response_Model
      * @param int $amount
      * @return mixed
      */
-    function get_latest($amount = 10)
+    public function get_latest($amount = 10)
     {
         return $this->mdl_clients
             ->where('client_active', 1)
@@ -75,23 +137,23 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * @param $input
      * @return string
      */
-    function fix_avs($input)
+    public function fix_avs($input)
     {
-        if ($input != "") {
+        if ($input != '') {
             if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
                 return $matches[1] . $matches[2] . $matches[3] . $matches[4];
-            } else if (preg_match('/^\d{13}$/', $input)) {
+            }
+            if (preg_match('/^\d{13}$/', $input)) {
                 return $input;
             }
         }
 
-        return "";
+        return '';
     }
 
-    function convert_date($input)
+    public function convert_date($input)
     {
         $this->load->helper('date_helper');
 
@@ -106,7 +168,7 @@ class Mdl_Clients extends Response_Model
     {
         $db_array = parent::db_array();
 
-        if (!isset($db_array['client_active'])) {
+        if ( ! isset($db_array['client_active'])) {
             $db_array['client_active'] = 0;
         }
 
@@ -137,7 +199,9 @@ class Mdl_Clients extends Response_Model
         if ($client->num_rows()) {
             $client_id = $client->row()->client_id;
         } else {
-            $db_array = ['client_name' => $client_name];
+            $db_array = [
+                'client_name' => $client_name,
+            ];
 
             $client_id = parent::save(null, $db_array);
         }

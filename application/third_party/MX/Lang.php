@@ -1,4 +1,8 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 #[AllowDynamicProperties]
 class MX_Lang extends CI_Lang

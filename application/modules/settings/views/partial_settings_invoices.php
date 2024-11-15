@@ -174,7 +174,9 @@
                 <?php _trans('invoice_templates'); ?>
             </div>
             <div class="panel-body">
-
+                <div class="help-block">
+                    <?php _trans('invoice_templates_info'); ?>
+                </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
 

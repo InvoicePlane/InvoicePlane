@@ -1,4 +1,8 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /* load MX core classes */
 require_once dirname(__FILE__) . '/Lang.php';
@@ -7,7 +11,6 @@ require_once dirname(__FILE__) . '/Config.php';
 #[AllowDynamicProperties]
 class CI extends CI_Controller
 {
-
     public static $APP;
 
     public function __construct()

@@ -1,13 +1,13 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 #[AllowDynamicProperties]
 class Sumex
 {
-    const ROLES = array(
+    const ROLES = [
         'physician',
         'physiotherapist',
         'chiropractor',
@@ -28,15 +28,16 @@ class Sumex
         'druggist',
         'naturopathicdoctor',
         'naturopathictherapist',
-        'other');
-    const PLACES = array(
+        'other'
+    ];
+    const PLACES = [
         'practice',
         'hospital',
         'lab',
         'association',
         'company'
-    );
-    const CANTONS = array(
+    ];
+    const CANTONS = [
         "AG",
         "AI",
         "AR",
@@ -68,7 +69,7 @@ class Sumex
         "D",
         "F",
         "I"
-    );
+    ];
     public $invoice;
     public $doc;
     public $root;
@@ -83,7 +84,7 @@ class Sumex
     public $_canton = "TI";
     public $_esrType = "9";
 
-    public $_patient = array(
+    public $_patient = [
         'gender' => 'male',
         'birthdate' => '1970-01-01',
         'familyName' => 'FamilyName',
@@ -93,20 +94,20 @@ class Sumex
         'city' => 'ClientCity',
         'phone' => '000 000 00 00',
         'avs' => '7000000000000'
-    );
+    ];
 
     public $_casedate = "1970-01-01";
     public $_casenumber = "0";
     public $_insuredid = '1234567';
 
-    public $_treatment = array(
+    public $_treatment = [
         'start' => '',
         'end' => '',
         'reason' => 'disease',
         'diagnosis' => '.'
-    );
+    ];
 
-    public $_company = array(
+    public $_company = [
         'name' => 'SomeCompany GmbH',
         'street' => 'Via Cantonale 5',
         'zip' => '6900',
@@ -114,20 +115,20 @@ class Sumex
         'phone' => '091 902 11 00',
         'gln' => '123456789123', // EAN 13
         'rcc' => 'C000002'
-    );
+    ];
 
-    public $_insurance = array(
+    public $_insurance = [
         'gln' => '7634567890000',
         'name' => 'SUVA',
         'street' => 'ChangeMe 12',
         'zip' => '6900',
         'city' => 'Lugano'
-    );
+    ];
 
-    public $_options = array(
+    public $_options = [
         'copy' => "0",
         'storno' => "0"
-    );
+    ];
 
     public function __construct($params)
     {
@@ -138,7 +139,7 @@ class Sumex
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
         if (!is_array(@$params['options'])) {
-            $params['options'] = array();
+            $params['options'] = [];
         }
         $this->_options = array_merge($this->_options, $params['options']);
 
@@ -169,25 +170,25 @@ class Sumex
         $this->_insuredid = $this->invoice->client_insurednumber;
 
 
-        $treatments = array(
+        $treatments = [
             'disease',
             'accident',
             'maternity',
             'prevention',
             'birthdefect',
             'unknown'
-        );
+        ];
 
 
-        $this->_treatment = array(
+        $this->_treatment = [
             'start' => $this->invoice->sumex_treatmentstart,
             'end' => $this->invoice->sumex_treatmentend,
             'reason' => $treatments[$this->invoice->sumex_reason],
             'diagnosis' => $this->invoice->sumex_diagnosis,
             'observations' => $this->invoice->sumex_observations,
-        );
+        ];
 
-        $esrTypes = array("9", "red");
+        $esrTypes = ["9", "red"];
         $this->_esrType = $esrTypes[$CI->mdl_settings->setting('sumex_sliptype')];
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');

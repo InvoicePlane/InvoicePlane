@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -71,11 +74,9 @@ class User_Clients extends Admin_Controller
 
             if ($this->input->post('user_all_clients')) {
                 $users_id = [$user_id];
-
                 $this->mdl_user_clients->set_all_clients_user($users_id);
 
                 $user_update = ['user_all_clients' => 1];
-
             } else {
                 $user_update = ['user_all_clients' => 0];
 

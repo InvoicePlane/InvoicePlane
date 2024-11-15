@@ -1,6 +1,8 @@
 <?php
 
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -14,9 +16,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 #[AllowDynamicProperties]
 class ZugferdXml
 {
-    var $invoice;
-    var $doc;
-    var $root;
+    public $invoice;
+    public $doc;
+    public $root;
     private $currencyCode;
     private mixed $items;
 

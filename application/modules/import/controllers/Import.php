@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -40,13 +43,13 @@ class Import extends Admin_Controller
 
     public function form()
     {
-        if (!$this->input->post('btn_submit')) {
+        if ( ! $this->input->post('btn_submit')) {
             $this->load->helper('directory');
 
             $files = directory_map('./uploads/import');
 
             foreach ($files as $key => $file) {
-                if (!is_numeric(array_search($file, $this->allowed_files))) {
+                if ( ! is_numeric(array_search($file, $this->allowed_files))) {
                     unset($files[$key]);
                 }
             }
@@ -63,7 +66,7 @@ class Import extends Admin_Controller
                 $files = $this->allowed_files;
 
                 foreach ($files as $key => $file) {
-                    if (!is_numeric(array_search($file, $this->input->post('files')))) {
+                    if ( ! is_numeric(array_search($file, $this->input->post('files')))) {
                         unset($files[$key]);
                     }
                 }

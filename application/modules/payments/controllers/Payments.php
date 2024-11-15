@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -32,7 +35,12 @@ class Payments extends Admin_Controller
         $payments = $this->mdl_payments->result();
 
         $this->layout->set(
-            ['payments' => $payments, 'filter_display' => true, 'filter_placeholder' => trans('filter_payments'), 'filter_method' => 'filter_payments']
+            [
+                'payments' => $payments,
+                'filter_display' => true,
+                'filter_placeholder' => trans('filter_payments'),
+                'filter_method' => 'filter_payments',
+            ]
         );
 
         $this->layout->buffer('content', 'payments/index');
@@ -48,6 +56,8 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_payments->run_validation()) {
             $id = $this->mdl_payments->save($id);
 
@@ -58,10 +68,10 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
-        if (!$this->input->post('btn_submit')) {
+        if ( ! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_payments->prep_form($id);
 
-            if ($id and !$prep_form) {
+            if ($id && ! $prep_form) {
                 show_404();
             }
 
@@ -128,7 +138,15 @@ class Payments extends Admin_Controller
         }
 
         $this->layout->set(
-            ['payment_id' => $id, 'payment_methods' => $this->mdl_payment_methods->get()->result(), 'open_invoices' => $open_invoices, 'custom_fields' => $custom_fields, 'custom_values' => $custom_values, 'amounts' => json_encode($amounts), 'invoice_payment_methods' => json_encode($invoice_payment_methods)]
+            [
+                'payment_id' => $id,
+                'payment_methods' => $this->mdl_payment_methods->get()->result(),
+                'open_invoices' => $open_invoices,
+                'custom_fields' => $custom_fields,
+                'custom_values' => $custom_values,
+                'amounts' => json_encode($amounts),
+                'invoice_payment_methods' => json_encode($invoice_payment_methods),
+            ]
         );
 
         if ($id) {
@@ -150,7 +168,9 @@ class Payments extends Admin_Controller
         $payment_logs = $this->mdl_payment_logs->result();
 
         $this->layout->set(
-            ['payment_logs' => $payment_logs]
+            [
+                'payment_logs' => $payment_logs,
+            ]
         );
 
         $this->layout->buffer('content', 'payments/online_logs');

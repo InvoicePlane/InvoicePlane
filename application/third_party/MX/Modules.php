@@ -1,4 +1,8 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 (defined('EXT')) OR define('EXT', '.php');
 
@@ -32,7 +36,7 @@ class Modules
     public static function run($module)
     {
         $method = 'index';
-	    $args = func_get_args();
+        $args = func_get_args();
 
         if (($pos = strrpos($module, '/')) != false) {
             $method = substr($module, $pos + 1);
@@ -55,29 +59,29 @@ class Modules
     public static function load($module)
     {
         if (is_array($module))
-	{
-                list($module, $params) = @myEach($module);
-	}
+        {
+            list($module, $params) = @myEach($module);
+        }
         else
-	{
-		$params = null;
-	}
+        {
+            $params = null;
+        }
 
         /* get the requested controller class name */
-    	if ($module==null) {
-    		$alias = '';
-    	} else {
+        if ($module==null) {
+            $alias = '';
+        } else {
             $alias = strtolower(basename($module));
-    	}
+        }
 
         /* create or return an existing controller from the registry */
         if (!isset(self::$registry[$alias])) {
             /* find the controller */
             if ($module == null) {
-		    list($class) = CI::$APP->router->locate(array());
-	    } else {
-            list($class) = CI::$APP->router->locate(explode('/', $module));
-	    }
+                list($class) = CI::$APP->router->locate(array());
+            } else {
+                list($class) = CI::$APP->router->locate(explode('/', $module));
+            }
 
             /* controller cannot be located */
             if (empty($class)) {

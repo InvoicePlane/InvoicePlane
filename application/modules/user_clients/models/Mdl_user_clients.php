@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -63,7 +66,6 @@ class Mdl_User_Clients extends MY_Model
 
             for ($i = 0; $i < count($clients); $i++) {
                 $user_client = ['user_id' => $users_id[$x], 'client_id' => $clients[$i]->client_id];
-
                 $this->db->insert('ip_user_clients', $user_client);
             }
         }
@@ -75,7 +77,6 @@ class Mdl_User_Clients extends MY_Model
         $users = $this->mdl_users->where('user_all_clients', 1)->get()->result();
 
         $new_users = [];
-
         for ($i = 0; $i < count($users); $i++) {
             array_push($new_users, $users[$i]->user_id);
         }

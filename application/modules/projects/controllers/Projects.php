@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -45,13 +48,15 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_projects->run_validation()) {
             $this->mdl_projects->save($id);
             redirect('projects');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_projects->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_projects->prep_form($id)) {
                 show_404();
             }
         }
@@ -59,7 +64,9 @@ class Projects extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         $this->layout->set(
-            ['clients' => $this->mdl_clients->where('client_active', 1)->get()->result()]
+            [
+                'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
+            ]
         );
 
         $this->layout->buffer('content', 'projects/form');
@@ -78,13 +85,17 @@ class Projects extends Admin_Controller
         $this->load->model('projects/mdl_projects');
         $project = $this->mdl_projects->get_by_id($project_id);
 
-        if (!$project) {
+        if ( ! $project) {
             show_404();
         }
 
         $this->load->model('tasks/mdl_tasks');
 
-        $this->layout->set(['project' => $project, 'tasks' => $this->mdl_projects->get_tasks($project->project_id), 'task_statuses' => $this->mdl_tasks->statuses()]);
+        $this->layout->set([
+            'project' => $project,
+            'tasks' => $this->mdl_projects->get_tasks($project->project_id),
+            'task_statuses' => $this->mdl_tasks->statuses(),
+        ]);
         $this->layout->buffer('content', 'projects/view');
         $this->layout->render();
     }
