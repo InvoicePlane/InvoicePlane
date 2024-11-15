@@ -13,8 +13,6 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-#[AllowDynamicProperties]
-
 /**
  * Output the amount as a currency amount, e.g. 1.234,56 €.
  *
