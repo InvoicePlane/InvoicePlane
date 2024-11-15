@@ -15,9 +15,7 @@ require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Clients.
- */
+#[AllowDynamicProperties]
 class Clients extends Admin_Controller
 {
     private const CLIENT_TITLE = 'client_title';
