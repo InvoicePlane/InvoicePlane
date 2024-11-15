@@ -13,9 +13,7 @@ if (! defined('BASEPATH')) {
  * @link        https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 
 /**
  * Deletes orphaned entries in the database

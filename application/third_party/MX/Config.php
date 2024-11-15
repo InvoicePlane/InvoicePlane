@@ -39,9 +39,7 @@ if (! defined('BASEPATH')) {
  * THE SOFTWARE.
  **/
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Config extends CI_Config
 {
 

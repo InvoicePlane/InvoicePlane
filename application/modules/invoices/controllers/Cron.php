@@ -13,9 +13,7 @@ if (! defined('BASEPATH')) {
  * @link        https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Cron extends Base_Controller
 {
     /**
