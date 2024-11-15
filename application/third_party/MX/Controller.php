@@ -1,4 +1,8 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /** load the CI class for Modular Extensions **/
 require dirname(__FILE__) . '/Base.php';
@@ -37,6 +41,10 @@ require dirname(__FILE__) . '/Base.php';
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+/**
+ * @AllowDynamicProperties
+ */
 class MX_Controller
 {
 

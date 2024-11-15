@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,7 +14,7 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * Class Products
+ * @AllowDynamicProperties
  */
 class Products extends Admin_Controller
 {
@@ -89,5 +89,4 @@ class Products extends Admin_Controller
         $this->mdl_products->delete($id);
         redirect('products');
     }
-
 }

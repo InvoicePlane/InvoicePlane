@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -12,18 +15,17 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 use Money\Currencies\ISOCurrencies;
 
-
 /**
- * @return array
+ * @AllowDynamicProperties
  */
 function get_currencies(): array
- {
-    //retrive the available currencies
-    $currencies = new ISOCurrencies();
+{
+    //retrieve the available currencies
+    $currencies = new ISOCurrencies;
     $ISOCurrencies = [];
     foreach ($currencies as $currency) {
         $ISOCurrencies[$currency->getCode()] = $currency->getCode();
     }
 
     return $ISOCurrencies;
- }
+}

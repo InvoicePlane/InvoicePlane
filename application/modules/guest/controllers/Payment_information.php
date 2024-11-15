@@ -17,6 +17,9 @@ if (! defined('BASEPATH')) {
  *
  */
 
+/**
+ * @AllowDynamicProperties
+ */
 class Payment_Information extends Base_Controller
 {
     public function __construct()
