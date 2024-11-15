@@ -13,9 +13,7 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Import extends Admin_Controller
 {
     private $allowed_files = [

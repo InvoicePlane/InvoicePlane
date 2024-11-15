@@ -15,9 +15,7 @@ if (! defined('BASEPATH')) {
 
 use Money\Currencies\ISOCurrencies;
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 function get_currencies(): array
 {
     //retrieve the available currencies

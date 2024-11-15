@@ -42,9 +42,7 @@ require dirname(__FILE__) . '/Base.php';
  * THE SOFTWARE.
  **/
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Controller
 {
 

@@ -4,9 +4,7 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 
 (defined('EXT')) OR define('EXT', '.php');
 

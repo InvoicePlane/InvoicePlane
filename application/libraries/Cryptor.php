@@ -30,9 +30,7 @@ if (! defined('BASEPATH')) {
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Cryptor
 {
     private $cipher_algo;
