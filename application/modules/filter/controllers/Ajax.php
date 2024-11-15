@@ -32,7 +32,10 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = ['invoices' => $this->mdl_invoices->get()->result(), 'invoice_statuses' => $this->mdl_invoices->statuses()];
+        $data = [
+            'invoices'         => $this->mdl_invoices->get()->result(),
+            'invoice_statuses' => $this->mdl_invoices->statuses()
+        ];
 
         $this->layout->load_view('invoices/partial_invoice_table', $data);
     }

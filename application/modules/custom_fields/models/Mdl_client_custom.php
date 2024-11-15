@@ -16,7 +16,13 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Client_Custom extends Validator
 {
-    public static $positions = ['custom_fields', 'address', 'contact_information', 'personal_information', 'tax_information'];
+    public static $positions = [
+        'custom_fields',
+        'address',
+        'contact_information',
+        'personal_information',
+        'tax_information',
+    ];
     public $table = 'ip_client_custom';
     public $primary_key = 'ip_client_custom.client_custom_id';
 
@@ -55,7 +61,11 @@ class Mdl_Client_Custom extends Validator
             $db_array['client_id'] = $client_id;
 
             foreach ($form_data as $key => $value) {
-                $db_array = ['client_id' => $client_id, 'client_custom_fieldid' => $key, 'client_custom_fieldvalue' => $value];
+                $db_array = [
+                    'client_id'                => $client_id,
+                    'client_custom_fieldid'    => $key,
+                    'client_custom_fieldvalue' => $value
+                ];
 
                 $client_custom = $this->where('client_id', $client_id)->where('client_custom_fieldid', $key)->get();
 

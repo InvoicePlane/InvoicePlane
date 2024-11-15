@@ -34,6 +34,12 @@ class Mdl_Families extends Response_Model
      */
     public function validation_rules()
     {
-        return ['family_name' => ['field' => 'family_name', 'label' => trans('family_name'), 'rules' => 'required']];
+        return [
+            'family_name' => [
+                'field' => 'family_name',
+                'label' => trans('family_name'),
+                'rules' => 'required'
+            ]
+        ];
     }
 }

@@ -258,7 +258,11 @@ $cv = $this->controller->view_data['custom_values'];
                                 <select name="client_gender" id="client_gender"
                                         class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                     <?php
-                                    $genders = [trans('gender_male'), trans('gender_female'), trans('gender_other')];
+                                    $genders = [
+                                        trans('gender_male'),
+                                        trans('gender_female'),
+                                        trans('gender_other')
+                                    ];
                                     foreach ($genders as $key => $val) { ?>
                                         <option
                                             value=" <?php echo $key; ?>" <?php check_select($key, $this->mdl_clients->form_value('client_gender')) ?>>

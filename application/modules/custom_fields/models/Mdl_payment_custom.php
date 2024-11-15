@@ -16,7 +16,9 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Payment_Custom extends Validator
 {
-    public static $positions = ['custom_fields'];
+    public static $positions = [
+        'custom_fields'
+    ];
     public $table = 'ip_payment_custom';
     public $primary_key = 'ip_payment_custom.payment_custom_id';
 
@@ -54,7 +56,11 @@ class Mdl_Payment_Custom extends Validator
             $payment_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array = ['payment_id' => $payment_id, 'payment_custom_fieldid' => $key, 'payment_custom_fieldvalue' => $value];
+                $db_array = [
+                    'payment_id'                => $payment_id,
+                    'payment_custom_fieldid'    => $key,
+                    'payment_custom_fieldvalue' => $value
+                ];
 
                 $payment_custom = $this->where('payment_id', $payment_id)->where('payment_custom_fieldid', $key)->get();
 

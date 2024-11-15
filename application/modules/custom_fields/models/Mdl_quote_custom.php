@@ -55,7 +55,11 @@ class Mdl_Quote_Custom extends Validator
             $quote_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array = ['quote_id' => $quote_id, 'quote_custom_fieldid' => $key, 'quote_custom_fieldvalue' => $value];
+                $db_array = [
+                    'quote_id'                => $quote_id,
+                    'quote_custom_fieldid'    => $key,
+                    'quote_custom_fieldvalue' => $value
+                ];
 
                 $quote_custom = $this->where('quote_id', $quote_id)->where('quote_custom_fieldid', $key)->get();
 

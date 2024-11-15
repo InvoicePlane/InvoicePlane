@@ -16,7 +16,10 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Invoice_Custom extends Validator
 {
-    public static $positions = ['custom_fields', 'properties'];
+    public static $positions = [
+        'custom_fields',
+        'properties'
+    ];
     public $table = 'ip_invoice_custom';
     public $primary_key = 'ip_invoice_custom.invoice_custom_id';
 
@@ -48,7 +51,11 @@ class Mdl_Invoice_Custom extends Validator
             $invoice_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array = ['invoice_id' => $invoice_id, 'invoice_custom_fieldid' => $key, 'invoice_custom_fieldvalue' => $value];
+                $db_array = [
+                    'invoice_id' => $invoice_id,
+                    'invoice_custom_fieldid' => $key,
+                    'invoice_custom_fieldvalue' => $value
+                ];
                 $invoice_custom = $this->where('invoice_id', $invoice_id)->where('invoice_custom_fieldid', $key)->get();
 
                 if ($invoice_custom->num_rows()) {
