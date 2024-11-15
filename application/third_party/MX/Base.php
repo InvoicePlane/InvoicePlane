@@ -5,8 +5,8 @@ if (! defined('BASEPATH')) {
 }
 
 /* load MX core classes */
-require_once dirname(__FILE__).'/Lang.php';
-require_once dirname(__FILE__).'/Config.php';
+require_once dirname(__FILE__) . '/Lang.php';
+require_once dirname(__FILE__) . '/Config.php';
 
 /**
  * Modular Extensions - HMVC
@@ -57,10 +57,10 @@ class CI extends CI_Controller
         global $LANG, $CFG;
 
         /* re-assign language and config for modules */
-        if (! $LANG instanceof MX_Lang) {
+        if (!$LANG instanceof MX_Lang) {
             $LANG = new MX_Lang;
         }
-        if (! $CFG instanceof MX_Config) {
+        if (!$CFG instanceof MX_Config) {
             $CFG = new MX_Config;
         }
 
