@@ -55,18 +55,6 @@ $cv = $this->controller->view_data['custom_values'];
                     </div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label for="client_title"><?php _trans('client_title'); ?></label>
-                            <select name="client_title" id="client_title" class="form-control simple-select">
-                                <?php $client_title = $this->mdl_clients->form_value('client_title'); ?>
-                                <?php foreach ($client_title_choices as $client_title_choice) : ?>
-                                    <option value="<?php echo $client_title; ?>">
-                                        <?php echo ucfirst($client_title_choice); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
                             <label for="client_name">
                                 <?php _trans('client_name'); ?>
                             </label>
