@@ -1,11 +1,14 @@
 <?php
 
-use Stripe\StripeClient;
-
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+use Stripe\StripeClient;
+
+/**
+ * @AllowDynamicProperties
+ */
 class Stripe extends Base_Controller
 {
     protected StripeClient $stripe;
@@ -22,7 +25,7 @@ class Stripe extends Base_Controller
 
     /**
      * Creates a checkout session on Stripe
-     * that is then retrived to execute the payment
+     * that is then retrieved to execute the payment
      *
      * @param  string  $invoice_url_key  the url key that is used to retrive the invoice
      * @return json the client secret in a json format

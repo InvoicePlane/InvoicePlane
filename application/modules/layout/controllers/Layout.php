@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -11,7 +12,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Layout
+ * @AllowDynamicProperties
  */
 class Layout extends MX_Controller
 {

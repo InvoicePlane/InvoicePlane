@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,7 +14,7 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * Class Custom_Fields
+ * @AllowDynamicProperties
  */
 class Custom_Fields extends Admin_Controller
 {

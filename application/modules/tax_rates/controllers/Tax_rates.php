@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,7 +14,7 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * Class Tax_Rates
+ * @AllowDynamicProperties
  */
 class Tax_Rates extends Admin_Controller
 {
