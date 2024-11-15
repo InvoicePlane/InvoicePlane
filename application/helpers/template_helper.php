@@ -13,8 +13,6 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-#[AllowDynamicProperties]
-
 /**
  * Parse a template by predefined template tags
  *

@@ -13,8 +13,6 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-#[AllowDynamicProperties]
-
 /**
  * Redirect the user to a given URL
  *

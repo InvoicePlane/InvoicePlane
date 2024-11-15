@@ -13,8 +13,6 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-#[AllowDynamicProperties]
-
 /**
  * Generate a temporaty XML file from the invoice data
  * @param $invoice

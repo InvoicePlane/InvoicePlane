@@ -13,8 +13,6 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-#[AllowDynamicProperties]
-
 /**
  * Check if mail sending is configured in the settings
  *
