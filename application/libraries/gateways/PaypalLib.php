@@ -7,6 +7,7 @@ if (! defined('BASEPATH')) {
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
+#[AllowDynamicProperties]
 class PaypalLib
 {
     protected Client $client;
@@ -90,7 +91,7 @@ class PaypalLib
                         'custom_id' => $order_information['custom_id'],
                     ]],
                     'intent' => 'CAPTURE',
-                    ]),
+                ]),
             ]);
             log_message('debug', 'Paypal library order creation completed');
 
