@@ -11,7 +11,7 @@ class ClientTitleEnum
     const MISSUS    = 'mrs';
     const DOCTOR    = 'doctor';
     const PROFESSOR = 'professor';
-    const CUSTOM    = 'custom';
+    const CUSTOM    = '';
 
     private static function getValues() {
         return [
