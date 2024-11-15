@@ -141,18 +141,18 @@ function phpmail_send(
         $attachfile = pathinfo($attachment_path);
         $dirname = $attachfile['dirname'];
         $filename = $attachfile['filename'];
-        $file = $dirname .'/'. $filename; 
+        $file = $dirname . '/' . $filename;
         // check the date prefix: '2017-02-01'_ == today, then strip, copy and attach the new file)
-        if (substr($filename, 0, 10) == date('Y-m-d')) {
-            $file = $dirname.'/'.substr_replace($filename, '', 0, 11);
-            copy($attachment_path, $file.'.pdf');
-        }
+        // if (substr($filename, 0, 10) == date('Y-m-d')) {
+        //     $file = $dirname . '/' . substr_replace($filename, '', 0, 11);
+        //     copy($attachment_path, $file . '.pdf');
+        // }
         $mail->addAttachment($file.'.pdf');
 
         // attach the UBL+ file
-        $fullUblname = $dirname.'/'.$filename.'.xml';
-        if (file_exists($file.'.xml')) {
-            $mail->addAttachment($file.'.xml');
+        $fullUblname = $dirname . '/' . $filename . '.xml';
+        if (file_exists($file . '.xml')) {
+            $mail->addAttachment($file . '.xml');
         } elseif (file_exists($fullUblname)) {
             $mail->addAttachment($fullUblname);
         }
