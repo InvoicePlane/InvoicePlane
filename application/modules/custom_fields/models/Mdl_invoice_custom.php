@@ -10,9 +10,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Mdl_Invoice_Custom extends Validator
 {
     public static $positions = ['custom_fields', 'properties'];

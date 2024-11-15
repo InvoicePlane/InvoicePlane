@@ -12,9 +12,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;

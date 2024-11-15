@@ -1,8 +1,6 @@
 <?php (defined('BASEPATH')) OR exit('No direct script access allowed');
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Lang extends CI_Lang
 {
     public function load($langfile, $lang = '', $return = false, $add_suffix = true, $alt_path = '', $_module = '')

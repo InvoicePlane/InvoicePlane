@@ -12,9 +12,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Form_Validation_Model extends MY_Model
 {
     public $form_validation;

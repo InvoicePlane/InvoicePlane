@@ -1,9 +1,7 @@
 <?php (defined('BASEPATH')) OR exit('No direct script access allowed');
 
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Loader extends CI_Loader
 {
     public $_ci_plugins = [];

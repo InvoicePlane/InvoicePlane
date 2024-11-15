@@ -12,9 +12,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Invoices extends Admin_Controller
 {
     /**

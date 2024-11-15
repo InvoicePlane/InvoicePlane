@@ -1,7 +1,10 @@
-<?php if (!defined('BASEPATH')) {
+<?php
+
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+#[AllowDynamicProperties]
 class Sumex
 {
     const ROLES = array(

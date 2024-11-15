@@ -5,9 +5,7 @@
 // load the MX core module class
 require dirname(__FILE__) . '/Modules.php';
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Router extends CI_Router
 {
     public $module;

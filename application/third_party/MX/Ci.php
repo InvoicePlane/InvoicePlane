@@ -4,9 +4,7 @@
 require_once dirname(__FILE__) . '/Lang.php';
 require_once dirname(__FILE__) . '/Config.php';
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class CI
 {
 

@@ -3,9 +3,7 @@
 /** load the CI class for Modular Extensions **/
 require dirname(__FILE__) . '/Base.php';
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Controller
 {
     public $autoload = [];

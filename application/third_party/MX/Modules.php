@@ -20,9 +20,7 @@ function myEach($arr) {
 }
 
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Modules
 {
     public static $routes, $registry, $locations;

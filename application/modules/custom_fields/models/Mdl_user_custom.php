@@ -10,9 +10,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://userplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Mdl_User_Custom extends Validator
 {
     public static $positions = ['custom_fields', 'account_information', 'address', 'tax_information', 'contact_information'];

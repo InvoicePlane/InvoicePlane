@@ -10,9 +10,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Import extends Admin_Controller
 {
     private $allowed_files = [0 => 'clients.csv', 1 => 'invoices.csv', 2 => 'invoice_items.csv', 3 => 'payments.csv'];

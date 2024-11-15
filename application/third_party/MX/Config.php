@@ -1,8 +1,6 @@
 <?php (defined('BASEPATH')) OR exit('No direct script access allowed');
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Config extends CI_Config
 {
     public function load($file = '', $use_sections = false, $fail_gracefully = false, $_module = '')
