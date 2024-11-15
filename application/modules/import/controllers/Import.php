@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,7 +16,12 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Import extends Admin_Controller
 {
-    private $allowed_files = [0 => 'clients.csv', 1 => 'invoices.csv', 2 => 'invoice_items.csv', 3 => 'payments.csv'];
+    private $allowed_files = [
+        0 => 'clients.csv',
+        1 => 'invoices.csv',
+        2 => 'invoice_items.csv',
+        3 => 'payments.csv',
+    ];
 
     /**
      * Import constructor.

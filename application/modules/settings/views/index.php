@@ -12,7 +12,9 @@
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('settings'); ?></h1>
-    <?php $this->layout->load_view('layout/header_buttons', ['hide_cancel_button' => true]); ?>
+    <?php $this->layout->load_view('layout/header_buttons', [
+        'hide_cancel_button' => true,
+    ]); ?>
 </div>
 
 <ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">

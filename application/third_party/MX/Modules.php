@@ -23,7 +23,6 @@ function myEach($arr) {
     return $result;
 }
 
-
 #[AllowDynamicProperties]
 class Modules
 {

@@ -168,8 +168,7 @@ class MX_Loader extends CI_Loader
 
         if ($object_name == null) {
             $_alias = $class;
-        }
-        else {
+        } else {
             $_alias = strtolower($object_name);
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -31,13 +31,16 @@ class Ajax extends Admin_Controller
             $client_id = $client->client_id;
 
             // Is this a new user or an existing user?
-            if (!empty($user_id)) {
+            if ( ! empty($user_id)) {
                 // Existing user - go ahead and save the entries
                 $user_client = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)
                     ->where('ip_user_clients.client_id', $client_id)->get();
 
-                if (!$user_client->num_rows()) {
-                    $this->mdl_user_clients->save(null, ['user_id' => $user_id, 'client_id' => $client_id]);
+                if ( ! $user_client->num_rows()) {
+                    $this->mdl_user_clients->save(null, [
+                        'user_id'   => $user_id,
+                        'client_id' => $client_id,
+                    ]);
                 }
             } else {
                 // New user - assign the entries to a session variable until user record is saved
@@ -57,11 +60,17 @@ class Ajax extends Admin_Controller
         if ($session_user_clients) {
             $this->load->model('clients/mdl_clients');
 
-            $data = ['id' => null, 'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id', $session_user_clients)->get()->result()];
+            $data = [
+                'id'           => null,
+                'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id', $session_user_clients)->get()->result(),
+            ];
         } else {
             $this->load->model('users/mdl_user_clients');
 
-            $data = ['id' => $this->input->post('user_id'), 'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $this->input->post('user_id'))->get()->result()];
+            $data = [
+                'id'           => $this->input->post('user_id'),
+                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $this->input->post('user_id'))->get()->result(),
+            ];
         }
 
         $this->layout->load_view('users/partial_user_client_table', $data);
@@ -80,7 +89,7 @@ class Ajax extends Admin_Controller
             $assigned_clients = [];
 
             foreach ($assigned_clients_query as $assigned_client) {
-                $assigned_clients[] = (int)$assigned_client->client_id;
+                $assigned_clients[] = (int) $assigned_client->client_id;
             }
 
             if (empty($assigned_clients)) {
@@ -90,7 +99,10 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = ['user_id' => $user_id, 'clients' => $clients];
+        $data = [
+            'user_id' => $user_id,
+            'clients' => $clients,
+        ];
 
         $this->layout->load_view('users/modal_user_client', $data);
     }

@@ -13,7 +13,9 @@
         <div class="panel-body no-padding">
 
             <?php if ($open_quotes) { ?>
-                <?php echo $this->layout->load_view('guest/partial_quotes_table', ['quotes' => $open_quotes]); ?>
+                <?php echo $this->layout->load_view('guest/partial_quotes_table', [
+                    'quotes' => $open_quotes,
+                ]); ?>
             <?php } else { ?>
                 <div class="alert text-success no-margin"><?php _trans('no_quotes_requiring_approval'); ?></div>
             <?php } ?>

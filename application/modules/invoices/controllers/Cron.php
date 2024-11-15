@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,23 +39,22 @@ class Cron extends Base_Controller
         $invoices_recurring = $this->mdl_invoices_recurring->active()->get()->result();
         $recurInfo = [];
         foreach ($invoices_recurring as $invoice_recurring) {
-
             $recurInfo = [
-                'invoice_id' => $invoice_recurring->invoice_id,
-                'client_id' => $invoice_recurring->client_id,
-                'invoice_group_id' => $invoice_recurring->invoice_group_id,
-                'invoice_status_id' => $invoice_recurring->invoice_status_id,
-                'invoice_number' => $invoice_recurring->invoice_number,
+                'invoice_id'           => $invoice_recurring->invoice_id,
+                'client_id'            => $invoice_recurring->client_id,
+                'invoice_group_id'     => $invoice_recurring->invoice_group_id,
+                'invoice_status_id'    => $invoice_recurring->invoice_status_id,
+                'invoice_number'       => $invoice_recurring->invoice_number,
                 'invoice_recurring_id' => $invoice_recurring->invoice_recurring_id,
-                'recur_start_date' => $invoice_recurring->recur_start_date,
-                'recur_end_date' => $invoice_recurring->recur_end_date,
-                'recur_frequency' => $invoice_recurring->recur_frequency,
-                'recur_next_date' => $invoice_recurring->recur_next_date,
-                'recur_status' => $invoice_recurring->recur_status,
+                'recur_start_date'     => $invoice_recurring->recur_start_date,
+                'recur_end_date'       => $invoice_recurring->recur_end_date,
+                'recur_frequency'      => $invoice_recurring->recur_frequency,
+                'recur_next_date'      => $invoice_recurring->recur_next_date,
+                'recur_status'         => $invoice_recurring->recur_status,
             ];
 
             if (IP_DEBUG) {
-                log_message('debug', 'v1.6.1: Recurring Info: '. json_encode($recurInfo, JSON_PRETTY_PRINT));
+                log_message('debug', 'v1.6.1: Recurring Info: ' . json_encode($recurInfo, JSON_PRETTY_PRINT));
             }
 
             // This is the original invoice id
@@ -65,18 +64,29 @@ class Cron extends Base_Controller
             $invoice = $this->mdl_invoices->get_by_id($source_id);
 
             // Create the new invoice
-            $db_array = ['client_id' => $invoice->client_id, 'invoice_date_created' => $invoice_recurring->recur_next_date, 'invoice_date_due' => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date), 'invoice_group_id' => $invoice->invoice_group_id, 'user_id' => $invoice->user_id, 'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id), 'invoice_url_key' => $this->mdl_invoices->get_url_key(), 'invoice_terms' => $invoice->invoice_terms, 'invoice_discount_amount' => $invoice->invoice_discount_amount, 'invoice_discount_percent' => $invoice->invoice_discount_percent];
+            $db_array = [
+                'client_id'                => $invoice->client_id,
+                'invoice_date_created'     => $invoice_recurring->recur_next_date,
+                'invoice_date_due'         => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date),
+                'invoice_group_id'         => $invoice->invoice_group_id,
+                'user_id'                  => $invoice->user_id,
+                'invoice_number'           => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
+                'invoice_url_key'          => $this->mdl_invoices->get_url_key(),
+                'invoice_terms'            => $invoice->invoice_terms,
+                'invoice_discount_amount'  => $invoice->invoice_discount_amount,
+                'invoice_discount_percent' => $invoice->invoice_discount_percent,
+            ];
 
             // This is the new invoice id
             $target_id = $this->mdl_invoices->create($db_array, false);
             if (IP_DEBUG) {
-                log_message('debug', 'v1.6.1: Recurring Invoice with id '. $target_id . ' was created');
+                log_message('debug', 'v1.6.1: Recurring Invoice with id ' . $target_id . ' was created');
             }
 
             // Copy the original invoice to the new invoice
             $this->mdl_invoices->copy_invoice($source_id, $target_id, false);
             if (IP_DEBUG) {
-                log_message('debug', 'v1.6.1: Recurring Invoice with sourceId '. $source_id .' was copied to id '. $target_id);
+                log_message('debug', 'v1.6.1: Recurring Invoice with sourceId ' . $source_id . ' was copied to id ' . $target_id);
             }
 
             // Update the next recur date for the recurring invoice
@@ -93,7 +103,7 @@ class Cron extends Base_Controller
                 $this->load->model('email_templates/mdl_email_templates');
 
                 $email_template_id = get_setting('email_invoice_template');
-                if (!$email_template_id) {
+                if ( ! $email_template_id) {
                     log_message('error', '[Recurring Invoices] No email template set in the system settings!');
                     continue;
                 }
@@ -112,17 +122,17 @@ class Cron extends Base_Controller
 
                 // Prepare the body
                 $body = $tpl->email_template_body;
-                if (strlen($body) != strlen(strip_tags($body))) {
+                if (mb_strlen($body) != mb_strlen(strip_tags($body))) {
                     $body = htmlspecialchars_decode($body, ENT_COMPAT);
                 } else {
                     $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
                 }
 
-                $from = !empty($tpl->email_template_from_email) ?
+                $from = ! empty($tpl->email_template_from_email) ?
                     [$tpl->email_template_from_email, $tpl->email_template_from_name] :
-                    [$invoice->user_email, ""];
+                    [$invoice->user_email, ''];
 
-                $subject = !empty($tpl->email_template_subject) ?
+                $subject = ! empty($tpl->email_template_subject) ?
                     $tpl->email_template_subject :
                     trans('invoice') . ' #' . $new_invoice->invoice_number;
 

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -51,7 +51,9 @@ class Families extends Admin_Controller
         $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->input->post('is_update') == 0 && $this->input->post('family_name') != '') {
-            $check = $this->db->get_where('ip_families', ['family_name' => $this->input->post('family_name')])->result();
+            $check = $this->db->get_where('ip_families', [
+                'family_name' => $this->input->post('family_name'),
+            ])->result();
 
             if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('family_already_exists'));

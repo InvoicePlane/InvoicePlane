@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -36,7 +36,12 @@ class Payments extends Guest_Controller
         $payments = $this->mdl_payments->result();
 
         $this->layout->set(
-            ['payments' => $payments, 'filter_display' => true, 'filter_placeholder' => trans('filter_payments'), 'filter_method' => 'filter_payments']
+            [
+                'payments'           => $payments,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_payments'),
+                'filter_method'      => 'filter_payments',
+            ]
         );
 
         $this->layout->buffer('content', 'guest/payments_index');

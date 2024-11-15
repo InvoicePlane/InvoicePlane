@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -45,7 +45,8 @@ class Settings extends Admin_Controller
 
             // Only execute if the setting is different
             if ($settings['tax_rate_decimal_places'] != get_setting('tax_rate_decimal_places')) {
-                $this->db->query("
+                $this->db->query(
+                    "
                     ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
                     DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null"
                 );
@@ -53,7 +54,7 @@ class Settings extends Admin_Controller
 
             // Save the submitted settings
             foreach ($settings as $key => $value) {
-                if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
+                if (str_contains($key, 'field_is_password') || str_contains($key, 'field_is_amount')) {
                     // Skip all meta fields
                     continue;
                 }
@@ -66,16 +67,11 @@ class Settings extends Admin_Controller
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
                     $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
-
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
-
                     // Format amount inputs
                     $this->mdl_settings->save($key, standardize_amount($value));
-
                 } else {
-
                     $this->mdl_settings->save($key, $value);
-
                 }
 
                 if ($key == 'number_format') {
@@ -83,16 +79,21 @@ class Settings extends Admin_Controller
                     $this->mdl_settings->save('decimal_point', $number_formats[$value]['decimal_point']);
                     $this->mdl_settings->save('thousands_separator', $number_formats[$value]['thousands_separator']);
                 }
-
             }
 
-            $upload_config = ['upload_path' => './uploads/', 'allowed_types' => 'gif|jpg|jpeg|png|svg', 'max_size' => '9999', 'max_width' => '9999', 'max_height' => '9999'];
+            $upload_config = [
+                'upload_path'   => './uploads/',
+                'allowed_types' => 'gif|jpg|jpeg|png|svg',
+                'max_size'      => '9999',
+                'max_width'     => '9999',
+                'max_height'    => '9999',
+            ];
 
             // Check for invoice logo upload
             if ($_FILES['invoice_logo']['name']) {
                 $this->load->library('upload', $upload_config);
 
-                if (!$this->upload->do_upload('invoice_logo')) {
+                if ( ! $this->upload->do_upload('invoice_logo')) {
                     $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     redirect('settings');
                 }
@@ -106,7 +107,7 @@ class Settings extends Admin_Controller
             if ($_FILES['login_logo']['name']) {
                 $this->load->library('upload', $upload_config);
 
-                if (!$this->upload->do_upload('login_logo')) {
+                if ( ! $this->upload->do_upload('login_logo')) {
                     $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     redirect('settings');
                 }
@@ -141,7 +142,35 @@ class Settings extends Admin_Controller
 
         // Set data in the layout
         $this->layout->set(
-            ['invoice_groups' => $this->mdl_invoice_groups->get()->result(), 'tax_rates' => $this->mdl_tax_rates->get()->result(), 'payment_methods' => $this->mdl_payment_methods->get()->result(), 'public_invoice_templates' => $public_invoice_templates, 'pdf_invoice_templates' => $pdf_invoice_templates, 'public_quote_templates' => $public_quote_templates, 'pdf_quote_templates' => $pdf_quote_templates, 'languages' => get_available_languages(), 'countries' => get_country_list(trans('cldr')), 'date_formats' => date_formats(), 'current_date' => new DateTime(), 'available_themes' => $available_themes, 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(), 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(), 'gateway_drivers' => $gateways, 'number_formats' => $number_formats, 'gateway_currency_codes' => get_currencies(), 'first_days_of_weeks' => ['0' => lang('sunday'), '1' => lang('monday')]]
+            [
+                'invoice_groups'           => $this->mdl_invoice_groups->get()->result(),
+                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
+                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
+                'public_invoice_templates' => $public_invoice_templates,
+                'pdf_invoice_templates'    => $pdf_invoice_templates,
+                'public_quote_templates'   => $public_quote_templates,
+                'pdf_quote_templates'      => $pdf_quote_templates,
+                'languages'                => get_available_languages(),
+                'countries'                => get_country_list(trans('cldr')),
+                'date_formats'             => date_formats(),
+                'current_date'             => new DateTime(),
+                'available_themes'         => $available_themes,
+                'email_templates_quote'    => $this->mdl_email_templates->where(
+                    'email_template_type',
+                    'quote'
+                )->get()->result(),
+                'email_templates_invoice' => $this->mdl_email_templates->where(
+                    'email_template_type',
+                    'invoice'
+                )->get()->result(),
+                'gateway_drivers'        => $gateways,
+                'number_formats'         => $number_formats,
+                'gateway_currency_codes' => get_currencies(),
+                'first_days_of_weeks'    => [
+                    '0' => lang('sunday'),
+                    '1' => lang('monday'),
+                ],
+            ]
         );
 
         $this->layout->buffer('content', 'settings/index');

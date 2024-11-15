@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -34,7 +34,7 @@ class Quotes extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'all', $page = 0)
     {
@@ -64,7 +64,13 @@ class Quotes extends Admin_Controller
         $quotes = $this->mdl_quotes->result();
 
         $this->layout->set(
-            ['quotes' => $quotes, 'status' => $status, 'filter_display' => true, 'filter_placeholder' => trans('filter_quotes'), 'filter_method' => 'filter_quotes', 'quote_statuses' => $this->mdl_quotes->statuses()]
+            [
+                'quotes'             => $quotes,
+                'status'             => $status,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_quotes'),
+                'filter_method'      => 'filter_quotes',
+                'quote_statuses'     => $this->mdl_quotes->statuses()]
         );
 
         $this->layout->buffer('content', 'quotes/index');
@@ -102,8 +108,7 @@ class Quotes extends Admin_Controller
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-
-        if (!$quote) {
+        if ( ! $quote) {
             show_404();
         }
 
@@ -153,7 +158,7 @@ class Quotes extends Admin_Controller
     }
 
     /**
-     * @param $quote_id
+     * @param      $quote_id
      * @param bool $stream
      * @param null $quote_template
      */
@@ -195,5 +200,4 @@ class Quotes extends Admin_Controller
             $this->mdl_quote_amounts->calculate($quote_id->quote_id);
         }
     }
-
 }

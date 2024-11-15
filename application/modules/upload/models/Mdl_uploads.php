@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +17,9 @@ if (! defined('BASEPATH')) {
 class Mdl_Uploads extends Response_Model
 {
     public $table = 'ip_uploads';
+
     public $primary_key = 'ip_uploads.upload_id';
+
     public $date_modified_field = 'uploaded_date';
 
     public function default_order_by()
@@ -27,6 +29,7 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param null $db_array
+     *
      * @return int|null
      */
     public function create($db_array = null)
@@ -38,6 +41,7 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param $id
+     *
      * @return array
      */
     public function get_quote_uploads($id)
@@ -50,7 +54,10 @@ class Mdl_Uploads extends Response_Model
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                array_push($names, ['path' => UPLOADS_CFILES_FOLDER . $row->file_name_new, 'filename' => $row->file_name_original]);
+                $names[] = [
+                    'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
+                    'filename' => $row->file_name_original,
+                ];
             }
         }
 
@@ -59,6 +66,7 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param $id
+     *
      * @return array
      */
     public function get_invoice_uploads($id)
@@ -71,7 +79,9 @@ class Mdl_Uploads extends Response_Model
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                array_push($names, ['path' => UPLOADS_CFILES_FOLDER . $row->file_name_new, 'filename' => $row->file_name_original]);
+                $names[] = [
+                    'path' => UPLOADS_CFILES_FOLDER . $row->file_name_new, 'filename' => $row->file_name_original,
+                ];
             }
         }
 
@@ -91,11 +101,13 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param $client_id
+     *
      * @return $this
      */
     public function by_client($client_id)
     {
         $this->filter_where('ip_uploads.client_id', $client_id);
+
         return $this;
     }
 }

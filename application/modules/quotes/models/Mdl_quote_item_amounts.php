@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -21,7 +21,7 @@ class Mdl_Quote_Item_Amounts extends CI_Model
      * item_id
      * item_subtotal (item_quantity * item_price)
      * item_tax_total
-     * item_total ((item_quantity * item_price) + item_tax_total)
+     * item_total ((item_quantity * item_price) + item_tax_total).
      *
      * @param $item_id
      */
@@ -36,7 +36,13 @@ class Mdl_Quote_Item_Amounts extends CI_Model
         $item_discount_total = $item->item_discount_amount * $item->item_quantity;
         $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
 
-        $db_array = ['item_id' => $item_id, 'item_subtotal' => $item_subtotal, 'item_tax_total' => $item_tax_total, 'item_discount' => $item_discount_total, 'item_total' => $item_total];
+        $db_array = [
+            'item_id'        => $item_id,
+            'item_subtotal'  => $item_subtotal,
+            'item_tax_total' => $item_tax_total,
+            'item_discount'  => $item_discount_total,
+            'item_total'     => $item_total,
+        ];
 
         $this->db->where('item_id', $item_id);
         if ($this->db->get('ip_quote_item_amounts')->num_rows()) {

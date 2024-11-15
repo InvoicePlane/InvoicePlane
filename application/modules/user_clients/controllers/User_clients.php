@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -62,7 +62,7 @@ class User_Clients extends Admin_Controller
      */
     public function create($user_id = null)
     {
-        if (!$user_id) {
+        if ( ! $user_id) {
             redirect('custom_values');
         }
 
@@ -71,20 +71,23 @@ class User_Clients extends Admin_Controller
         }
 
         if ($this->mdl_user_clients->run_validation()) {
-
             if ($this->input->post('user_all_clients')) {
                 $users_id = [$user_id];
                 $this->mdl_user_clients->set_all_clients_user($users_id);
 
-                $user_update = ['user_all_clients' => 1];
+                $user_update = [
+                    'user_all_clients' => 1,
+                ];
             } else {
-                $user_update = ['user_all_clients' => 0];
+                $user_update = [
+                    'user_all_clients' => 0,
+                ];
 
-               $this->mdl_user_clients->save();
+                $this->mdl_user_clients->save();
             }
 
-            $this->db->where('user_id',$user_id);
-            $this->db->update('ip_users',$user_update);
+            $this->db->where('user_id', $user_id);
+            $this->db->update('ip_users', $user_update);
 
             redirect('user_clients/user/' . $user_id);
         }
@@ -100,7 +103,7 @@ class User_Clients extends Admin_Controller
     }
 
     /**
-     * @param integer $user_client_id
+     * @param int $user_client_id
      */
     public function delete($user_client_id)
     {

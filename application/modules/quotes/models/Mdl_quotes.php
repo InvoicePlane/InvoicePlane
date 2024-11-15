@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -31,32 +31,32 @@ class Mdl_Quotes extends Response_Model
             '1' => [
                 'label' => trans('draft'),
                 'class' => 'draft',
-                'href'  => 'quotes/status/draft'
+                'href'  => 'quotes/status/draft',
             ],
             '2' => [
                 'label' => trans('sent'),
                 'class' => 'sent',
-                'href'  => 'quotes/status/sent'
+                'href'  => 'quotes/status/sent',
             ],
             '3' => [
                 'label' => trans('viewed'),
                 'class' => 'viewed',
-                'href'  => 'quotes/status/viewed'
+                'href'  => 'quotes/status/viewed',
             ],
             '4' => [
                 'label' => trans('approved'),
                 'class' => 'approved',
-                'href'  => 'quotes/status/approved'
+                'href'  => 'quotes/status/approved',
             ],
             '5' => [
                 'label' => trans('rejected'),
                 'class' => 'rejected',
-                'href'  => 'quotes/status/rejected'
+                'href'  => 'quotes/status/rejected',
             ],
             '6' => [
                 'label' => trans('canceled'),
                 'class' => 'canceled',
-                'href'  => 'quotes/status/canceled'
+                'href'  => 'quotes/status/canceled',
             ],
         ];
     }
@@ -94,7 +94,29 @@ class Mdl_Quotes extends Response_Model
      */
     public function validation_rules()
     {
-        return ['client_id' => ['field' => 'client_id', 'label' => trans('client'), 'rules' => 'required'], 'quote_date_created' => ['field' => 'quote_date_created', 'label' => trans('quote_date'), 'rules' => 'required'], 'invoice_group_id' => ['field' => 'invoice_group_id', 'label' => trans('quote_group'), 'rules' => 'required'], 'quote_password' => ['field' => 'quote_password', 'label' => trans('quote_password')], 'user_id' => ['field' => 'user_id', 'label' => trans('user'), 'rule' => 'required']];
+        return [
+            'client_id' => [
+                'field' => 'client_id',
+                'label' => trans('client'),
+                'rules' => 'required'],
+            'quote_date_created' => [
+                'field' => 'quote_date_created',
+                'label' => trans('quote_date'),
+                'rules' => 'required',
+            ],
+            'invoice_group_id' => [
+                'field' => 'invoice_group_id',
+                'label' => trans('quote_group'),
+                'rules' => 'required'],
+            'quote_password' => [
+                'field' => 'quote_password',
+                'label' => trans('quote_password')],
+            'user_id' => [
+                'field' => 'user_id',
+                'label' => trans('user'),
+                'rule'  => 'required',
+            ],
+        ];
     }
 
     /**
@@ -111,17 +133,17 @@ class Mdl_Quotes extends Response_Model
             'quote_date_created' => [
                 'field' => 'quote_date_created',
                 'label' => trans('date'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'quote_date_expires' => [
                 'field' => 'quote_date_expires',
                 'label' => trans('due_date'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'quote_password' => [
                 'field' => 'quote_password',
-                'label' => trans('quote_password')
-            ]
+                'label' => trans('quote_password'),
+            ],
         ];
     }
 
@@ -359,6 +381,7 @@ class Mdl_Quotes extends Response_Model
     public function is_open()
     {
         $this->filter_where_in('quote_status_id', [2, 3]);
+
         return $this;
     }
 
@@ -368,6 +391,7 @@ class Mdl_Quotes extends Response_Model
     public function guest_visible()
     {
         $this->filter_where_in('quote_status_id', [2, 3, 4, 5]);
+
         return $this;
     }
 

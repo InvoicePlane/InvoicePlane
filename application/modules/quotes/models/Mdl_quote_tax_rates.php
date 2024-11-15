@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Quote_Tax_Rates extends Response_Model
 {
     public $table = 'ip_quote_tax_rates';
+
     public $primary_key = 'ip_quote_tax_rates.quote_tax_rate_id';
 
     public function default_select()
@@ -34,6 +35,7 @@ class Mdl_Quote_Tax_Rates extends Response_Model
     /**
      * @param null $id
      * @param null $db_array
+     *
      * @return void
      */
     public function save($id = null, $db_array = null)
@@ -55,6 +57,21 @@ class Mdl_Quote_Tax_Rates extends Response_Model
      */
     public function validation_rules()
     {
-        return ['quote_id' => ['field' => 'quote_id', 'label' => trans('quote'), 'rules' => 'required'], 'tax_rate_id' => ['field' => 'tax_rate_id', 'label' => trans('tax_rate'), 'rules' => 'required'], 'include_item_tax' => ['field' => 'include_item_tax', 'label' => trans('tax_rate_placement'), 'rules' => 'required']];
+        return ['quote_id' => [
+            'field' => 'quote_id',
+            'label' => trans('quote'),
+            'rules' => 'required',
+        ],
+            'tax_rate_id' => [
+                'field' => 'tax_rate_id',
+                'label' => trans('tax_rate'),
+                'rules' => 'required',
+            ],
+            'include_item_tax' => [
+                'field' => 'include_item_tax',
+                'label' => trans('tax_rate_placement'),
+                'rules' => 'required',
+            ],
+        ];
     }
 }

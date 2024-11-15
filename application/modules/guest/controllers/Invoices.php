@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -34,7 +34,7 @@ class Invoices extends Guest_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'open', $page = 0)
     {
@@ -46,14 +46,16 @@ class Invoices extends Guest_Controller
             default:
                 $this->mdl_invoices->is_open()->where_in('ip_invoices.client_id', $this->user_clients);
                 break;
-
         }
 
         $this->mdl_invoices->paginate(site_url('guest/invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 
         $this->layout->set(
-            ['invoices' => $invoices, 'status' => $status]
+            [
+                'invoices' => $invoices,
+                'status'   => $status,
+            ]
         );
 
         $this->layout->buffer('content', 'guest/invoices_index');
@@ -70,25 +72,40 @@ class Invoices extends Guest_Controller
 
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
-        if (!$invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
         $this->mdl_invoices->mark_viewed($invoice->invoice_id);
 
         $this->layout->set(
-            ['invoice' => $invoice, 'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(), 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(), 'invoice_id' => $invoice_id]
+            [
+                'invoice' => $invoice,
+                'items'   => $this->mdl_items->where(
+                    'invoice_id',
+                    $invoice_id
+                )->get()->result(),
+                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where(
+                    'invoice_id',
+                    $invoice_id
+                )->get()->result(),
+                'invoice_id' => $invoice_id]
         );
 
         $this->layout->buffer(
-            [['content', 'guest/invoices_view']]
+            [
+                [
+                    'content',
+                    'guest/invoices_view',
+                ],
+            ]
         );
 
         $this->layout->render('layout_guest');
     }
 
     /**
-     * @param $invoice_id
+     * @param      $invoice_i1d
      * @param bool $stream
      * @param null $invoice_template
      */
@@ -100,7 +117,7 @@ class Invoices extends Guest_Controller
             ->where_in('ip_invoices.client_id', $this->user_clients)
             ->get()->row();
 
-        if (!$invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
@@ -110,7 +127,7 @@ class Invoices extends Guest_Controller
     }
 
     /**
-     * @param $invoice_id
+     * @param      $invoice_id
      * @param bool $stream
      * @param null $invoice_template
      */
@@ -122,7 +139,7 @@ class Invoices extends Guest_Controller
             ->where_in('ip_invoices.client_id', $this->user_clients)
             ->get()->row();
 
-        if (!$invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 

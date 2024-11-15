@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,12 +17,14 @@ if (! defined('BASEPATH')) {
 class Mdl_Payments extends Response_Model
 {
     public $table = 'ip_payments';
+
     public $primary_key = 'ip_payments.payment_id';
+
     public $validation_rules = 'validation_rules';
 
     public function default_select()
     {
-        $this->db->select("
+        $this->db->select('
             SQL_CALC_FOUND_ROWS
             ip_payment_methods.*,
             ip_invoice_amounts.*,
@@ -31,7 +33,7 @@ class Mdl_Payments extends Response_Model
         	  ip_clients.client_id,
             ip_invoices.invoice_number,
             ip_invoices.invoice_date_created,
-            ip_payments.*", false);
+            ip_payments.*', false);
     }
 
     public function default_order_by()
@@ -52,16 +54,40 @@ class Mdl_Payments extends Response_Model
      */
     public function validation_rules()
     {
-        return ['invoice_id' => ['field' => 'invoice_id', 'label' => trans('invoice'), 'rules' => 'required'], 'payment_date' => ['field' => 'payment_date', 'label' => trans('date'), 'rules' => 'required'], 'payment_amount' => ['field' => 'payment_amount', 'label' => trans('payment'), 'rules' => 'required|callback_validate_payment_amount'], 'payment_method_id' => ['field' => 'payment_method_id', 'label' => trans('payment_method')], 'payment_note' => ['field' => 'payment_note', 'label' => trans('note')]];
+        return ['invoice_id' => [
+            'field' => 'invoice_id',
+            'label' => trans('invoice'),
+            'rules' => 'required',
+        ],
+            'payment_date' => [
+                'field' => 'payment_date',
+                'label' => trans('date'),
+                'rules' => 'required',
+            ],
+            'payment_amount' => [
+                'field' => 'payment_amount',
+                'label' => trans('payment'),
+                'rules' => 'required|callback_validate_payment_amount',
+            ],
+            'payment_method_id' => [
+                'field' => 'payment_method_id',
+                'label' => trans('payment_method'),
+            ],
+            'payment_note' => [
+                'field' => 'payment_note',
+                'label' => trans('note'),
+            ],
+        ];
     }
 
     /**
      * @param $amount
+     *
      * @return bool
      */
     public function validate_payment_amount($amount)
     {
-        $amount = (float)standardize_amount($amount);
+        $amount = (float) standardize_amount($amount);
         $invoice_id = $this->input->post('invoice_id');
         $payment_id = $this->input->post('payment_id');
 
@@ -71,18 +97,19 @@ class Mdl_Payments extends Response_Model
             return false;
         }
 
-        $invoice_balance = (float)$invoice->invoice_balance;
+        $invoice_balance = (float) $invoice->invoice_balance;
 
         if ($payment_id) {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
 
-            $invoice_balance = $invoice_balance + (float)$payment->payment_amount;
+            $invoice_balance = $invoice_balance + (float) $payment->payment_amount;
         }
 
-        $invoice_balance = (float)$invoice_balance;
+        $invoice_balance = (float) $invoice_balance;
 
         if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
+
             return false;
         }
 
@@ -92,6 +119,7 @@ class Mdl_Payments extends Response_Model
     /**
      * @param null $id
      * @param null $db_array
+     *
      * @return bool|int|null
      */
     public function save($id = null, $db_array = null)
@@ -113,8 +141,8 @@ class Mdl_Payments extends Response_Model
             return false;
         }
 
-        $paid = (float)$invoice->invoice_paid;
-        $total = (float)$invoice->invoice_total;
+        $paid = (float) $invoice->invoice_paid;
+        $total = (float) $invoice->invoice_total;
 
         if ($paid >= $total) {
             $this->db->where('invoice_id', $db_array['invoice_id']);
@@ -175,15 +203,16 @@ class Mdl_Payments extends Response_Model
 
     /**
      * @param null $id
+     *
      * @return bool
      */
     public function prep_form($id = null)
     {
-        if (!parent::prep_form($id)) {
+        if ( ! parent::prep_form($id)) {
             return false;
         }
 
-        if (!$id) {
+        if ( ! $id) {
             parent::set_form_value('payment_date', date('Y-m-d'));
         }
 
@@ -192,11 +221,13 @@ class Mdl_Payments extends Response_Model
 
     /**
      * @param $client_id
+     *
      * @return $this
      */
     public function by_client($client_id)
     {
         $this->filter_where('ip_clients.client_id', $client_id);
+
         return $this;
     }
 }

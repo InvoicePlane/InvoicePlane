@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,8 +17,11 @@ if (! defined('BASEPATH')) {
 class Mdl_Users extends Response_Model
 {
     public $table = 'ip_users';
+
     public $primary_key = 'ip_users.user_id';
+
     public $date_created_field = 'user_date_created';
+
     public $date_modified_field = 'user_date_modified';
 
     /**
@@ -45,30 +48,84 @@ class Mdl_Users extends Response_Model
     public function validation_rules()
     {
         return [
-            'user_type' => ['field' => 'user_type', 'label' => trans('user_type'), 'rules' => 'required'],
-            'user_email' => ['field' => 'user_email', 'label' => trans('email'), 'rules' => 'required|valid_email|is_unique[ip_users.user_email]'],
-            'user_name' => ['field' => 'user_name', 'label' => trans('name'), 'rules' => 'required'],
-            'user_password' => ['field' => 'user_password', 'label' => trans('password'), 'rules' => 'required|min_length[8]'],
-            'user_passwordv' => ['field' => 'user_passwordv', 'label' => trans('verify_password'), 'rules' => 'required|matches[user_password]'],
-            'user_language' => ['field' => 'user_language', 'label' => trans('language'), 'rules' => 'required'],
-            'user_company' => ['field' => 'user_company'],
-            'user_address_1' => ['field' => 'user_address_1'],
-            'user_address_2' => ['field' => 'user_address_2'],
-            'user_city' => ['field' => 'user_city'],
-            'user_state' => ['field' => 'user_state'],
-            'user_zip' => ['field' => 'user_zip'],
-            'user_country' => ['field' => 'user_country', 'label' => trans('country')],
-            'user_phone' => ['field' => 'user_phone'],
-            'user_fax' => ['field' => 'user_fax'],
-            'user_mobile' => ['field' => 'user_mobile'],
-            'user_web' => ['field' => 'user_web'],
-            'user_vat_id' => ['field' => 'user_vat_id'],
-            'user_tax_code' => ['field' => 'user_tax_code'],
-            'user_subscribernumber' => ['field' => 'user_subscribernumber'],
-            'user_iban' => ['field' => 'user_iban'],
-            # SUMEX
-            'user_gln' => ['field' => 'user_gln'],
-            'user_rcc' => ['field' => 'user_rcc'],
+            'user_type' => [
+                'field' => 'user_type',
+                'label' => trans('user_type'),
+                'rules' => 'required'],
+            'user_email' => [
+                'field' => 'user_email',
+                'label' => trans('email'),
+                'rules' => 'required|valid_email|is_unique[ip_users.user_email]'],
+            'user_name' => [
+                'field' => 'user_name',
+                'label' => trans('name'),
+                'rules' => 'required'],
+            'user_password' => [
+                'field' => 'user_password',
+                'label' => trans('password'),
+                'rules' => 'required|min_length[8]'],
+            'user_passwordv' => [
+                'field' => 'user_passwordv',
+                'label' => trans('verify_password'),
+                'rules' => 'required|matches[user_password]',
+            ],
+            'user_language' => [
+                'field' => 'user_language',
+                'label' => trans('language'),
+                'rules' => 'required',
+            ],
+            'user_company' => [
+                'field' => 'user_company',
+            ],
+            'user_address_1' => [
+                'field' => 'user_address_1',
+            ],
+            'user_address_2' => [
+                'field' => 'user_address_2',
+            ],
+            'user_city' => [
+                'field' => 'user_city',
+            ],
+            'user_state' => [
+                'field' => 'user_state',
+            ],
+            'user_zip' => [
+                'field' => 'user_zip',
+            ],
+            'user_country' => [
+                'field' => 'user_country',
+                'label' => trans('country')],
+            'user_phone' => [
+                'field' => 'user_phone',
+            ],
+            'user_fax' => [
+                'field' => 'user_fax',
+            ],
+            'user_mobile' => [
+                'field' => 'user_mobile',
+            ],
+            'user_web' => [
+                'field' => 'user_web',
+            ],
+            'user_vat_id' => [
+                'field' => 'user_vat_id',
+            ],
+            'user_tax_code' => [
+                'field' => 'user_tax_code',
+            ],
+            'user_subscribernumber' => [
+                'field' => 'user_subscribernumber',
+            ],
+            'user_iban' => [
+                'field' => 'user_iban',
+            ],
+            // SUMEX
+            'user_gln' => [
+                'field' => 'user_gln',
+            ],
+            'user_rcc' => [
+                'field' => 'user_rcc',
+            ],
         ];
     }
 
@@ -78,28 +135,78 @@ class Mdl_Users extends Response_Model
     public function validation_rules_existing()
     {
         return [
-            'user_type' => ['field' => 'user_type', 'label' => trans('user_type'), 'rules' => 'required'],
-            'user_email' => ['field' => 'user_email', 'label' => trans('email'), 'rules' => 'required|valid_email'],
-            'user_name' => ['field' => 'user_name', 'label' => trans('name'), 'rules' => 'required'],
-            'user_language' => ['field' => 'user_language', 'label' => trans('language'), 'rules' => 'required'],
-            'user_company' => ['field' => 'user_company'],
-            'user_address_1' => ['field' => 'user_address_1'],
-            'user_address_2' => ['field' => 'user_address_2'],
-            'user_city' => ['field' => 'user_city'],
-            'user_state' => ['field' => 'user_state'],
-            'user_zip' => ['field' => 'user_zip'],
-            'user_country' => ['field' => 'user_country', 'label' => trans('country')],
-            'user_phone' => ['field' => 'user_phone'],
-            'user_fax' => ['field' => 'user_fax'],
-            'user_mobile' => ['field' => 'user_mobile'],
-            'user_web' => ['field' => 'user_web'],
-            'user_vat_id' => ['field' => 'user_vat_id'],
-            'user_tax_code' => ['field' => 'user_tax_code'],
-            'user_subscribernumber' => ['field' => 'user_subscribernumber'],
-            'user_iban' => ['field' => 'user_iban'],
-            # SUMEX
-            'user_gln' => ['field' => 'user_gln'],
-            'user_rcc' => ['field' => 'user_rcc'],
+            'user_type' => [
+                'field' => 'user_type',
+                'label' => trans('user_type'),
+                'rules' => 'required',
+            ],
+            'user_email' => [
+                'field' => 'user_email',
+                'label' => trans('email'),
+                'rules' => 'required|valid_email',
+            ],
+            'user_name' => [
+                'field' => 'user_name',
+                'label' => trans('name'),
+                'rules' => 'required',
+            ],
+            'user_language' => [
+                'field' => 'user_language',
+                'label' => trans('language'),
+                'rules' => 'required',
+            ],
+            'user_company' => [
+                'field' => 'user_company',
+            ],
+            'user_address_1' => [
+                'field' => 'user_address_1',
+            ],
+            'user_address_2' => [
+                'field' => 'user_address_2',
+            ],
+            'user_city' => [
+                'field' => 'user_city',
+            ],
+            'user_state' => [
+                'field' => 'user_state',
+            ],
+            'user_zip' => [
+                'field' => 'user_zip',
+            ],
+            'user_country' => [
+                'field' => 'user_country',
+                'label' => trans('country')],
+            'user_phone' => [
+                'field' => 'user_phone',
+            ],
+            'user_fax' => [
+                'field' => 'user_fax',
+            ],
+            'user_mobile' => [
+                'field' => 'user_mobile',
+            ],
+            'user_web' => [
+                'field' => 'user_web',
+            ],
+            'user_vat_id' => [
+                'field' => 'user_vat_id',
+            ],
+            'user_tax_code' => [
+                'field' => 'user_tax_code',
+            ],
+            'user_subscribernumber' => [
+                'field' => 'user_subscribernumber',
+            ],
+            'user_iban' => [
+                'field' => 'user_iban',
+            ],
+            // SUMEX
+            'user_gln' => [
+                'field' => 'user_gln',
+            ],
+            'user_rcc' => [
+                'field' => 'user_rcc',
+            ],
         ];
     }
 
@@ -108,9 +215,19 @@ class Mdl_Users extends Response_Model
      */
     public function validation_rules_change_password()
     {
-        return ['user_password' => ['field' => 'user_password', 'label' => trans('password'), 'rules' => 'required'], 'user_passwordv' => ['field' => 'user_passwordv', 'label' => trans('verify_password'), 'rules' => 'required|matches[user_password]']];
+        return [
+            'user_password' => [
+                'field' => 'user_password',
+                'label' => trans('password'),
+                'rules' => 'required',
+            ],
+            'user_passwordv' => [
+                'field' => 'user_passwordv',
+                'label' => trans('verify_password'),
+                'rules' => 'required|matches[user_password]',
+            ],
+        ];
     }
-
 
     /**
      * @return array
@@ -155,6 +272,7 @@ class Mdl_Users extends Response_Model
     /**
      * @param null $id
      * @param null $db_array
+     *
      * @return int|null
      */
     public function save($id = null, $db_array = null)
