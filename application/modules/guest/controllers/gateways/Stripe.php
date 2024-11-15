@@ -6,9 +6,7 @@ if (! defined('BASEPATH')) {
 
 use Stripe\StripeClient;
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Stripe extends Base_Controller
 {
     protected StripeClient $stripe;

@@ -13,9 +13,7 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 
 /**
  * Generate the PDF for an invoice

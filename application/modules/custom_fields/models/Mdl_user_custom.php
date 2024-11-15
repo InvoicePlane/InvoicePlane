@@ -13,9 +13,7 @@ if (! defined('BASEPATH')) {
  * @link		https://userplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Mdl_User_Custom extends Validator
 {
     public static $positions = array(

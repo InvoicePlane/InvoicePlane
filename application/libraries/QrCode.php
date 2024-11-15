@@ -8,9 +8,7 @@ use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
 use SepaQr\Data;
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class QrCode {
   public $invoice;
   public $recipient;

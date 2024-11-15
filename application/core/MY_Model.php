@@ -35,9 +35,7 @@ if (! defined('BASEPATH')) {
  *
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MY_Model extends CI_Model
 {
 

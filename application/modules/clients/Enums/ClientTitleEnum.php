@@ -4,9 +4,7 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class ClientTitleEnum
 {
     const MISTER    = 'mr';

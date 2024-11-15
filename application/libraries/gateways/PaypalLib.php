@@ -7,9 +7,7 @@ if (! defined('BASEPATH')) {
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class PaypalLib
 {
     protected Client $client;

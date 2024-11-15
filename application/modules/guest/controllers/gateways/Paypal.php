@@ -4,9 +4,7 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Paypal extends Base_Controller
 {
     public function __construct()

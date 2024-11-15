@@ -40,9 +40,7 @@ require dirname(__FILE__) . '/Modules.php';
  * THE SOFTWARE.
  **/
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class MX_Router extends CI_Router
 {
     public $module;
