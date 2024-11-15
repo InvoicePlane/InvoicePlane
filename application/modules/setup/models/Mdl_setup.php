@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -11,7 +14,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Setup
+ * @AllowDynamicProperties
  */
 class Mdl_Setup extends CI_Model
 {
@@ -372,7 +375,7 @@ class Mdl_Setup extends CI_Model
         //upgrade the recurring invoices data and replace 0000-00-00 invalid date with null in order to be compliant
         //with the MySQL >= 5.8 defautl SQL Strict mode that is activated by default.
         //migrate the dates data from 0000-00-00 to NULL in order to allow SQL Strict mode. Becaues the new
-        //mysql default mode, the change must be done by PHP logic. 
+        //mysql default mode, the change must be done by PHP logic.
 
         //**recur_end_date**
         $rows_recur_end_date = $this->db->query('SELECT * FROM `ip_invoices_recurring`');

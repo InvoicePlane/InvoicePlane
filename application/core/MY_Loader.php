@@ -1,12 +1,13 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /* load the MX_Loader class */
-require APPPATH . "third_party/MX/Loader.php";
+require APPPATH.'third_party/MX/Loader.php';
 
-class MY_Loader extends MX_Loader
-{
-
-}
+/**
+ * @AllowDynamicProperties
+ */
+class MY_Loader extends MX_Loader {}

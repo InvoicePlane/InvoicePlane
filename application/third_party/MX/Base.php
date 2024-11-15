@@ -1,8 +1,12 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /* load MX core classes */
-require_once dirname(__FILE__) . '/Lang.php';
-require_once dirname(__FILE__) . '/Config.php';
+require_once dirname(__FILE__).'/Lang.php';
+require_once dirname(__FILE__).'/Config.php';
 
 /**
  * Modular Extensions - HMVC
@@ -38,9 +42,12 @@ require_once dirname(__FILE__) . '/Config.php';
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+/**
+ * @AllowDynamicProperties
+ */
 class CI extends CI_Controller
 {
-
     public static $APP;
 
     public function __construct()
@@ -52,10 +59,10 @@ class CI extends CI_Controller
         global $LANG, $CFG;
 
         /* re-assign language and config for modules */
-        if (!$LANG instanceof MX_Lang) {
+        if (! $LANG instanceof MX_Lang) {
             $LANG = new MX_Lang;
         }
-        if (!$CFG instanceof MX_Config) {
+        if (! $CFG instanceof MX_Config) {
             $CFG = new MX_Config;
         }
 

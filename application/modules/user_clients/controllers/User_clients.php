@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -11,7 +14,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class User_Clients
+ * @AllowDynamicProperties
  */
 class User_Clients extends Admin_Controller
 {
@@ -70,27 +73,27 @@ class User_Clients extends Admin_Controller
         }
 
         if ($this->mdl_user_clients->run_validation()) {
-            
+
             if ($this->input->post('user_all_clients')) {
                 $users_id = array($user_id);
-                
+
                 $this->mdl_user_clients->set_all_clients_user($users_id);
-                
+
                 $user_update = array(
                     'user_all_clients' => 1
                 );
-                
+
             } else {
                 $user_update = array(
                     'user_all_clients' => 0
                 );
-                
-               $this->mdl_user_clients->save(); 
+
+               $this->mdl_user_clients->save();
             }
-            
+
             $this->db->where('user_id',$user_id);
             $this->db->update('ip_users',$user_update);
-            
+
             redirect('user_clients/user/' . $user_id);
         }
 

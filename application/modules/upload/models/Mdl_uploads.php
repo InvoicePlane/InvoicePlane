@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -11,7 +14,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Mdl_Uploads
+ * @AllowDynamicProperties
  */
 class Mdl_Uploads extends Response_Model
 {
@@ -103,5 +106,4 @@ class Mdl_Uploads extends Response_Model
         $this->filter_where('ip_uploads.client_id', $client_id);
         return $this;
     }
-
 }
