@@ -1,5 +1,5 @@
 <?php
-$lang = array(
+$lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
@@ -745,4 +745,4 @@ $lang = array(
     // Types
     'true'                                         => 'True',
     'false'                                        => 'False'
-);
+];

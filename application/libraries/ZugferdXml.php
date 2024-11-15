@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,14 +13,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class ZugferdXml
- */
+#[AllowDynamicProperties]
 class ZugferdXml
 {
-    var $invoice;
-    var $doc;
-    var $root;
+    public $invoice;
+    public $doc;
+    public $root;
 
     public function __construct($params)
     {

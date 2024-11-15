@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -13,9 +13,7 @@ if ( ! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Payment_Methods
- */
+#[AllowDynamicProperties]
 class Payment_Methods extends Admin_Controller
 {
     /**
