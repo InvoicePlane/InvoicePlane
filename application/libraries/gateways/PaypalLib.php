@@ -81,7 +81,7 @@ class PaypalLib
             $response = $this->client->request('POST', 'v2/checkout/orders', [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer '.$this->bearer_token,
+                    'Authorization' => 'Bearer ' . $this->bearer_token
                 ],
                 'body' => json_encode([
                     'purchase_units' => [[
@@ -119,8 +119,8 @@ class PaypalLib
             $response = $this->client->request('POST', 'v2/checkout/orders/'.$order_id.'/capture', [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer '.$this->bearer_token,
-                ],
+                    'Authorization' => 'Bearer ' . $this->bearer_token
+                ]
             ]);
             log_message('debug', 'Paypal library order capturing completed');
 
@@ -146,8 +146,8 @@ class PaypalLib
             $response = $this->client->request('GET', 'v2/checkout/orders/'.$order_id, [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer '.$this->bearer_token,
-                ],
+                    'Authorization' => 'Bearer ' . $this->bearer_token
+                ]
             ]);
             log_message('debug', 'Paypal library show order completed');
 
