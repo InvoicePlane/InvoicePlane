@@ -256,11 +256,15 @@ table.item-table {
                     <?php echo format_amount($item->item_tax_rate_percent) . '%'; ?>
 				<?php endif; ?>
                 </td>
-                    <td class="text-right">
-				 <?php if ($show_item_discounts > 0 && $item->item_discount > 0) { 
-						echo format_currency($item->item_discount); }
-					?> 
-				</td>
+				<?php if ($show_item_discounts) : ?>
+					<?php if ($item->item_discount > 0) : ?>
+						<td class="text-right">
+						<?php echo format_currency($item->item_discount); ?>
+						</td>
+					<?php else : ?>
+						<td class="text-right"></td>
+					<?php endif; ?>
+				<?php endif; ?>
                 <td class="text-right">
 				<?php if ($item->item_subtotal> 0) : ?>
                     <?php echo format_currency($item->item_subtotal); ?>
