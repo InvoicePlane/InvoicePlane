@@ -114,12 +114,12 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[enable_credit_invoice_format]">
+                            <label for="enable_credit_invoice_format">
                                 <?php _trans('enable_credit_invoice_format'); ?>
                             </label>
                             <select name="settings[enable_credit_invoice_format]"
                                 class="form-control simple-select"
-                                id="settings[enable_credit_invoice_format]"
+                                id="enable_credit_invoice_format"
                                 data-minimum-results-for-search="Infinity">
                                 <option value="0" <?php check_select(get_setting('enable_credit_invoice_format'), '0'); ?>>
                                     <?php _trans('no'); ?>
