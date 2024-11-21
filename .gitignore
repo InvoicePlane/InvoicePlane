@@ -16,3 +16,6 @@ adminer.php
 /.php_cs.cache
 /doc
 *.bak
+/.buildpath
+/.project
+/package-lock.json
