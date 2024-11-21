@@ -102,6 +102,11 @@ function get_ubl_template_details($xml_id)
             'countrycode' => 'DE',
             'embedXML'    => true,
         ],
+    	UblTypeEnum::ZUGFERD_V23 => [
+    		'full-name'   => 'ZUGFeRD v2.3',
+    		'countrycode' => 'DE',
+    		'embedXML'    => true,
+    	],
     ];
 
     // Check if the template exists in the details array

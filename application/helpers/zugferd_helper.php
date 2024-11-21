@@ -17,9 +17,8 @@ if (! defined('BASEPATH')) {
  * @AllowDynamicProperties
  */
 /**
- * Generate a temporary XML file from the invoice data
- * @param $invoice
- * @param $items
+ * Generate a temporary XML file from the invoice data.
+ *
  * @return string
  */
 function generate_invoice_zugferd_xml_temp_file($invoice, $items)
@@ -29,7 +28,7 @@ function generate_invoice_zugferd_xml_temp_file($invoice, $items)
 
 
     $path = UPLOADS_TEMP_FOLDER . 'invoice_' . $invoice->invoice_id . '_zugferd.xml';
-    $CI->load->library('zugferdXml', array('invoice' => $invoice, 'items' => $items));
+    $CI->load->library('zugferdXml', ['invoice' => $invoice, 'items' => $items]);
 
     write_file($path, $CI->zugferdxml->xml());
 
@@ -37,7 +36,8 @@ function generate_invoice_zugferd_xml_temp_file($invoice, $items)
 }
 
 /**
- * Returns the correct RDF string for the Zugferd XML
+ * Returns the correct RDF string for the Zugferd XML.
+ *
  * @return string
  */
 function zugferd_rdf()
