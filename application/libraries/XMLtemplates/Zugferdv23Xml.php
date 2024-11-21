@@ -46,6 +46,16 @@ class Zugferdv23Xml
         $this->doc->appendChild($this->root);
         $this->doc->save(UPLOADS_FOLDER . 'temp/' . $this->filename . '.xml');
         // return $this->doc->saveXML();
+        
+        if (!file_exists(".xsd")) {
+        	log_message('error', 'ZUGFeRD 2.3 Schema not found');
+        }
+        if (!$this->schemaValidate("lib/camt.$this->camt_version.xsd")) {
+        	log_message('error', 'ZUGFeRD 2.3 Schema not valid');
+        	dd("ZUGFeRD 2.3-XML", $this->textContent);
+        } else {
+        	log_message('info', 'ZUGFeRD 2.3 Schema validated');
+        }
     }
 
     /**
