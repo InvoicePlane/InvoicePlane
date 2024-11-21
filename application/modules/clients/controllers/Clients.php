@@ -14,9 +14,7 @@ require_once dirname(__FILE__, 4) . '/enums/UblTypeEnum.php';
  * @link		https://invoiceplane.com
  */
 
-/**
- * @AllowDynamicProperties
- */
+#[AllowDynamicProperties]
 class Clients extends Admin_Controller
 {
     /**
@@ -265,5 +263,13 @@ class Clients extends Admin_Controller
     {
         $this->mdl_clients->delete($client_id);
         redirect('clients');
+    }
+
+    private function get_client_title_choices(): array
+    {
+        return array_map(
+            fn ($clientTitleEnum) => $clientTitleEnum->value,
+            ClientTitleEnum::cases()
+        );
     }
 }

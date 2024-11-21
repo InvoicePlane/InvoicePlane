@@ -1,5 +1,10 @@
 <?php
 
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+#[AllowDynamicProperties]
 class ClientTitleEnum
 {
     public const MISTER    = 'mr';

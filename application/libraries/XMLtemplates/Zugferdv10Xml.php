@@ -13,10 +13,8 @@ if ( ! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Zugferdv10Xml.
- */
-class Zugferdv10Xml
+#[AllowDynamicProperties]
+class ZugferdXml
 {
     public $invoice;
 

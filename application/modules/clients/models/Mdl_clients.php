@@ -1,5 +1,12 @@
 <?php
+<<<<<<< HEAD
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+=======
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+>>>>>>> 35fdf01b (939: Prep for incoming merge-request)
 
 /*
  * InvoicePlane
@@ -10,9 +17,13 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
+<<<<<<< HEAD
+#[AllowDynamicProperties]
+=======
 /**
  * Class Mdl_Clients
  */
+>>>>>>> 35fdf01b (939: Prep for incoming merge-request)
 class Mdl_Clients extends Response_Model
 {
     public $table = 'ip_clients';
