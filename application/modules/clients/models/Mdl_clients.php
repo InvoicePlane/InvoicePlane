@@ -147,6 +147,7 @@ class Mdl_Clients extends Response_Model
      */
     public function fix_avs($input)
     {
+    	$matches = [];
         if ($input != '') {
             if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
                 return $matches[1] . $matches[2] . $matches[3] . $matches[4];
