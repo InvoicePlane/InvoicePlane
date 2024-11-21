@@ -1,9 +1,11 @@
 <?php
 
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 require_once dirname(__FILE__, 2) . '/enums/UblTypeEnum.php';
-// require_once BASEPATH.'application/enums/UblTypeEnum.php';
+
 /*
  * InvoicePlane
  *
@@ -31,9 +33,11 @@ require_once dirname(__FILE__, 2) . '/enums/UblTypeEnum.php';
 function generate_xml_invoice_file($invoice, $items, $templateType, $filename)
 {
     $generatorClass = match ($templateType) {
+        UblTypeEnum::CIUS_V20    => 'Cius20Xml',
         UblTypeEnum::NLCIUS_V20  => 'NlCius20Xml',
         UblTypeEnum::ZUGFERD_V10 => 'Zugferd10Xml',
-        default => 'Cius20Xml',
+        UblTypeEnum::ZUGFERD_V23 => 'Zugferd23Xml',
+        default                  => 'Cius20Xml',
     };
 
     require_once APPPATH . "libraries/XMLtemplates/{$generatorClass}.php";
@@ -84,7 +88,7 @@ function get_ubl_template_details($xml_id)
 
     $templateDetails = [
         UblTypeEnum::CIUS_V20 => [
-            'full-name' => 'CIUS Invoice', //UBL example v2.0
+            'full-name'   => 'CIUS Invoice', //UBL example v2.0
             'countrycode' => 'EU',
             'embedXML'    => false,
         ],
@@ -108,7 +112,6 @@ function get_ubl_template_details($xml_id)
     }
 
     // If no match is found, return a default or null
-
 }
 
 function get_xml_full_name($xml_id)

@@ -8,6 +8,7 @@ class NlCius20Xml extends AbstractXmlTemplate
     {
         $node = parent::xmlRoot();
         $node->setAttribute('CustomizationID', 'Dutch CIUS 1.0');
+
         return $node;
     }
 }
