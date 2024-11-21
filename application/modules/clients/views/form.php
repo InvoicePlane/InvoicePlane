@@ -447,6 +447,9 @@ $cv = $this->controller->view_data['custom_values'];
                                 <option value="<?php echo UblTypeEnum::ZUGFERD_V10; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::ZUGFERD_V10 || $default_template_type == UblTypeEnum::ZUGFERD_V10) ? 'selected' : ''; ?>>
                                     <?php echo UblTypeEnum::ZUGFERD_V10; ?>
                                 </option>
+                                <option value="<?php echo UblTypeEnum::ZUGFERD_V23; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::ZUGFERD_V23 || $default_template_type == UblTypeEnum::ZUGFERD_V23) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::ZUGFERD_V23; ?>
+                                </option>
                             </select>
                             <p class="help-block"><?php echo trans('override_ubl_template_help'); ?></p>
                         </div>
