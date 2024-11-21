@@ -3,6 +3,7 @@
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 require_once dirname(__FILE__, 2) . '/enums/UblTypeEnum.php';
+// require_once BASEPATH.'application/enums/UblTypeEnum.php';
 /*
  * InvoicePlane
  *

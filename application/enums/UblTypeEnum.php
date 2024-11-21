@@ -8,6 +8,7 @@ class UblTypeEnum
     public const CIUS_V20    = 'CIUS_V20';
     public const NLCIUS_V20  = 'NLCIUS_V20';
     public const ZUGFERD_V10 = 'ZUGFERD_V10';
+    public const ZUGFERD_V23 = 'ZUGFERD_V23';
 
     /**
      * Attempts to retrieve an enum instance based on a value.
@@ -53,6 +54,7 @@ class UblTypeEnum
             self::CIUS_V20,
             self::NLCIUS_V20,
             self::ZUGFERD_V10,
+        	self::ZUGFERD_V23,
         ];
     }
 }

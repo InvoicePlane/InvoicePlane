@@ -1,3 +1,4 @@
+<?php require_once dirname(__FILE__, 4) . '/enums/UblTypeEnum.php'; ?>
 <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
 
@@ -149,8 +150,8 @@
                                         <option value="<?php echo UblTypeEnum::NLCIUS_V20; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::NLCIUS_V20) ? 'selected' : ''; ?>>
                                             <?php echo UblTypeEnum::NLCIUS_V20; ?>
                                         </option>
-                                        <option value="<?php echo UblTypeEnum::ZUGFERD_V10; ?>" <?php echo (get_setting('use_zugferd') == 'yes' || get_setting('default_template_type') == UblTypeEnum::ZUGFERD_V10) ? 'selected' : ''; ?>>
-                                            <?php echo UblTypeEnum::ZUGFERD_V10; ?>
+                                        <option value="<?php echo UblTypeEnum::ZUGFERD_V23; ?>" <?php echo (get_setting('use_zugferd') == 'yes' || get_setting('default_template_type') == UblTypeEnum::ZUGFERD_V23) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::ZUGFERD_V23; ?>
                                         </option>
                                     </select>
                                     <p class="help-block"><?php echo trans('set_default_ubl_template_type_help'); ?></p>
