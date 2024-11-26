@@ -105,8 +105,11 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     $CI->load->helper('mpdf');
+
+    // pdf stamp by chrissie
+    $pdf_stamp = env('INVOICE_STAMP_PDF');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
+        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles, $pdf_stamp);
 }
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)

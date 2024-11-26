@@ -24,10 +24,16 @@ if (! defined('BASEPATH')) {
  * @param null $is_guest
  * @param bool $zugferd_invoice
  * @param null $associated_files
+ * @param $pdf_stamp	 
+ *   default "", no stamp. true with default stamp, 
+ *   can also use a filename for multiple different stamps
  *
  * @return string
  * @throws \Mpdf\MpdfException
  */
+
+use mikehaertl\pdftk\Pdf;
+
 function pdf_create(
     $html,
     $filename,
@@ -36,7 +42,8 @@ function pdf_create(
     $isInvoice = null,
     $is_guest = null,
     $zugferd_invoice = false,
-    $associated_files = null
+    $associated_files = null,
+    $pdf_stamp = ""
 ) {
     $CI = &get_instance();
 
@@ -100,29 +107,54 @@ function pdf_create(
 
     if ($isInvoice) {
 
-        foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf') as $file) {
-            array_push($invoice_array, $file);
-        }
-
-        if (!empty($invoice_array) && !is_null($is_guest)) {
-            rsort($invoice_array);
-
-            if ($stream) {
-                return $mpdf->Output($filename . '.pdf', 'I');
-            } else {
-                return $invoice_array[0];
+            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf') as $file) {
+                    array_push($invoice_array, $file);
             }
-        }
 
-        $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
-        $mpdf->Output($archived_file, 'F');
+            if (!empty($invoice_array) && !is_null($is_guest)) {
+                    rsort($invoice_array);
 
-        if ($stream) {
-            return $mpdf->Output($filename . '.pdf', 'I');
-        } else {
-            return $archived_file;
-        }
-    }
+                    if ($stream) {
+                            return $mpdf->Output($filename . '.pdf', 'I');
+                    } else {
+                            return $invoice_array[0];
+                    }
+            }
+
+            // generate new pdf
+            $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
+            $mpdf->Output($archived_file, 'F');
+
+            // pdf stamping invoice by chrissie
+            if(!empty($pdf_stamp)) {
+                    //var_dump(UPLOADS_CFILES_FOLDER);
+                    //echo "<br />\n";
+                    //var_dump ($pdf_stamp); die();
+                    $pdf = new Pdf($archived_file);	// here pdftk is being used
+                    $pdf->multiStamp( UPLOADS_CFILES_FOLDER . $pdf_stamp)
+                            ->saveAs($archived_file);
+            }
+
+            // had to change to this code in my case - YMMV - plz check
+            if ($stream) {
+                    header('Content-type: application/pdf');
+                    header('Content-Disposition: inline; filename="' . $filename . '.pdf"');
+                    header('Content-Transfer-Encoding: binary');
+                    header('Accept-Ranges: bytes');
+                    @readfile ($archived_file);
+            } else {
+                    return $archived_file;
+            }
+
+            /*
+                    // old return of pdfs
+                    if ($stream)) {
+                    return $mpdf->Output($filename . '.pdf', 'I');
+                    } else {
+                    return $archived_file;
+                    }
+             */
+    } // END $invoice
 
     // If $stream is true (default) the PDF will be displayed directly in the browser
     // otherwise will be returned as a download
