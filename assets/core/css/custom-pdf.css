@@ -4,3 +4,13 @@
 
    All changes made in this file will override the default styles in PDFs.
    ========================================================================== */
+footer{
+/*color:#878686; */
+color:#444444;
+width:100%;
+border: none;
+padding:8px 0}
+
+.notes {
+	font-size: 12px;
+}

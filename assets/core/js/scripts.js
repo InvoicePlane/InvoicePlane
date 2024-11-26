@@ -45,7 +45,9 @@ function inject_email_template(template_fields, email_template) {
         key = key.replace("email_template_", "");
         // if key is in template_fields, apply value to form field
         if (val && template_fields.indexOf(key) > -1) {
-            if (key === 'pdf_template') {
+            if (key === 'body') {
+                $("#" + key).html(val);
+            } else if (key === 'pdf_template') {
                 $("#" + key).val(val).trigger('change');
             } else {
                 $("#" + key).val(val);
@@ -70,9 +72,6 @@ function insert_html_tag(tag_type, destination_id) {
             break;
         case 'text-paragraph':
             text = ['<p>', '</p>'];
-            break;
-        case 'text-linebreak':
-            text = ['<br>', ''];
             break;
 
         case 'text-h1':
@@ -183,7 +182,7 @@ $(document).ready(function () {
     $('.simple-select').select2();
 
     // Enable clipboard toggles
-    var clipboards = new ClipboardJS('.to-clipboard');
+    var clipboards = new Clipboard('.to-clipboard');
 
     // Keep track of the last "taggable" input/textarea
     $('.taggable').on('focus', function () {
@@ -252,36 +251,6 @@ $(document).ready(function () {
             } else if (strength.score === 3) {
                 $('.passmeter-2').show();
             }
-        });
-    }
-
-    // Detect Ctrl + S on the whole document
-    $(document).on('keydown', function (e) {
-        if (e.ctrlKey && e.key === 's') {
-            // Detect if modal is open
-            if ($('.modal-footer .btn-success').length) {
-                e.preventDefault();
-                $('.modal-footer .btn-success').click();
-            } else if ($('#headerbar .btn-success').length) {
-                e.preventDefault();
-                $('#headerbar .btn-success').click();
-            }
-        }
-    });
-
-    // Open/close QR code settings depending on checked QR code checkbox
-    const checkboxQrCode = document.getElementById('settings[qr_code]');
-    const panelQrCodeSettings = document.getElementById('panel-qr-code-settings');
-
-    if (checkboxQrCode && panelQrCodeSettings) {
-        checkboxQrCode.addEventListener('click', () => {
-            panelQrCodeSettings.querySelectorAll('.row').forEach((row) => {
-                if (checkboxQrCode.checked) {
-                    row.classList.remove('hidden');
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
         });
     }
 });

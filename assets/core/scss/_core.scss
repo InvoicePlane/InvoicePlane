@@ -21,7 +21,6 @@ html {
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  overflow-y: scroll;
 }
 
 img {
@@ -431,11 +430,8 @@ div.table-content {
 |   =========================================================
 */
 
-.tabbable {
-  .table,
-  .model-pager {
-    margin-bottom: 15px;
-  }
+.tabbable .table {
+  margin-bottom: 15px;
 }
 
 /*
@@ -567,7 +563,7 @@ div.table-content {
   color: $color_status_canceled;
 }
 
-// Invoices, Quotes and Clients Status
+// Invoices and Quotes Status
 .label {
   font-weight: normal;
   padding: $padding-base-vertical $padding-base-horizontal;
@@ -604,14 +600,6 @@ div.table-content {
 
   &.canceled {
     background-color: lighten($color_status_canceled, 10%);
-  }
-
-  &.active {
-    background-color: lighten($color_status_active, 10%);
-  }
-
-  &.inactive {
-    background-color: lighten($color_status_inactive, 10%);
   }
 }
 

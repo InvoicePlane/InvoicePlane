@@ -85,3 +85,27 @@ All security vulnerabilities will be promptly addressed.
 
 > _The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
 and their usage is restricted! For more information visit invoiceplane.com/license-copyright_
+
+### Changes by chrissie
+
+* for PHP 8.3
+
+On serveral vendor Classes, #[\AllowDynamicProperties] were added. There might be further ones not noticed yet. 
+
+> vendor/codeigniter/framework/system/database/drivers/mysqli/mysqli_driver.php:#[\AllowDynamicProperties]
+> vendor/codeigniter/framework/system/core/Controller.php:#[\AllowDynamicProperties]
+> vendor/codeigniter/framework/system/core/Exceptions.php:#[\AllowDynamicProperties]
+> vendor/codeigniter/framework/system/core/Router.php:#[\AllowDynamicProperties]
+> vendor/codeigniter/framework/system/core/Config.php:#[\AllowDynamicProperties]
+> vendor/codeigniter/framework/system/core/URI.php:#[\AllowDynamicProperties]
+> vendor/codeigniter/framework/system/core/Loader.php:#[\AllowDynamicProperties]
+
+* For PDF stamp of invoices via another pdf for nice looking of invoices by chrissie
+
+> mikehaertl/php-pdftk
+was added via composer
+> composer require mikehaertl/php-pdftk
+
+This neeeds the Linux-Program/-Pakage pdftk based on Java, or the FreeBSD port /usr/ports/print/pdftk/ depending on your OS
+
+---
