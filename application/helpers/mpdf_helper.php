@@ -127,9 +127,6 @@ function pdf_create(
 
             // pdf stamping invoice by chrissie
             if(!empty($pdf_stamp)) {
-                    //var_dump(UPLOADS_CFILES_FOLDER);
-                    //echo "<br />\n";
-                    //var_dump ($pdf_stamp); die();
                     $pdf = new Pdf($archived_file);	// here pdftk is being used
                     $pdf->multiStamp( UPLOADS_CFILES_FOLDER . $pdf_stamp)
                             ->saveAs($archived_file);
@@ -154,7 +151,7 @@ function pdf_create(
                     return $archived_file;
                     }
              */
-    } // END $invoice
+    } // END $isInvoice
 
     // If $stream is true (default) the PDF will be displayed directly in the browser
     // otherwise will be returned as a download
