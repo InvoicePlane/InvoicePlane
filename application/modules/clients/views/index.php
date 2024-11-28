@@ -33,15 +33,32 @@
         </div>
     </div>
 
+
+<!-- sort -->
+    <div class="headerbar-item pull-right visible-lg" >
+        <div class="btn-group btn-group-sm index-options">
+<a href="<?php echo site_url('clients/status/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'?sort=0');?>"
+class="btn <?php echo $sort == 0 ? 'btn-primary' : 'btn-default' ?>"> Name&uarr; </a>
+<a href="<?php echo site_url('clients/status/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'?sort=1');?>"
+class="btn <?php echo $sort == 1 ? 'btn-primary' : 'btn-default' ?>"> Name&darr; </a>
+
+<a href="<?php echo site_url('clients/status/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'?sort=2');?>"
+class="btn <?php echo $sort == 2 ? 'btn-primary' : 'btn-default' ?>"> ID&uarr; </a>
+<a href="<?php echo site_url('clients/status/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'?sort=3');?>"
+class="btn <?php echo $sort == 3 ? 'btn-primary' : 'btn-default' ?>"> ID&darr; </a>
+        </div>
+   </div>
+<!-- / sort -->
 </div>
 
-<div id="submenu">
     <div class="collapse clearfix" id="ip-submenu-collapse">
 
         <div class="submenu-row">
             <?php echo pager(site_url('clients/status/' . $this->uri->segment(3)), 'mdl_clients'); ?>
         </div>
 
+
+<div id="submenu">
         <div class="submenu-row">
             <div class="btn-group btn-group-sm index-options">
                 <a href="<?php echo site_url('clients/status/active'); ?>"

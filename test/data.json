@@ -1,0 +1,82 @@
+[
+    {
+        "name": "Christina Vaughan",
+        "phone": "(063) 62649754",
+        "email": "christina@protonmail.ca",
+        "address": "888-360 Ac Road",
+        "postalZip": "37841",
+        "city": "Freital"
+    },
+    {
+        "name": "Anissa Kate",
+        "phone": "(062) 28405519",
+        "email": "anissa.kate@yahoo.com",
+        "address": "481-6482 Non, Street",
+        "postalZip": "72-23",
+        "city": "Delmenhorst"
+    },
+    {
+        "name": "Yosina Phillips",
+        "phone": "(04761) 2787121",
+        "email": "qosina@outlook.ca",
+        "address": "Ap #331-682 Integer St.",
+        "postalZip": "11968",
+        "city": "Bremen"
+    },
+    {
+        "name": "Ivana Carter",
+        "phone": "(030648) 127272",
+        "email": "ivvy.123@icloud.ca",
+        "address": "P.O. Box 332, 8980 Vulputate Road",
+        "postalZip": "64584",
+        "city": "Wittenberg"
+    },
+    {
+        "name": "Kylie Mckay",
+        "phone": "(036162) 115215",
+        "email": "mc_kay@outlook.edu",
+        "address": "Ap #661-3350 Lorem, St.",
+        "postalZip": "02266",
+        "city": "Straubing"
+    },
+    {
+        "name": "Veronica Vaughan",
+        "phone": "(063) 62649754",
+        "email": "vera@protonmail.ca",
+        "address": "888-360 Ac Road",
+        "postalZip": "37841",
+        "city": "Freiburg"
+    },
+    {
+        "name": "Bree Olson",
+        "phone": "(062) 28405519",
+        "email": "bree.olson@yahoo.com",
+        "address": "481-6482 Non, Street",
+        "postalZip": "007008",
+        "city": "Bremerhaven"
+    },
+    {
+        "name": "Amy Reid",
+        "phone": "(04761) 2787121",
+        "email": "amy.reid@outlook.ca",
+        "address": "Ap #331-682 Integer St.",
+        "postalZip": "21968",
+        "city": "Bremen"
+    },
+    {
+        "name": "Olga Ivanova",
+        "phone": "(030648) 127272",
+        "email": "olga@icloud.ca",
+        "address": "P.O. Box 332, 8980 Vulputate Road",
+        "postalZip": "14584",
+        "city": "Munich"
+    },
+    {
+        "name": "Kylie Minogue",
+        "phone": "(036162) 115215",
+        "email": "kylie.minogue@outlook.edu",
+        "address": "Ap #661-3350 Lorem, St.",
+        "postalZip": "02299",
+        "city": "Geisslingen"
+    }
+]

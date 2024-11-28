@@ -47,10 +47,33 @@ class Clients extends Admin_Controller
             $this->mdl_clients->{$function}();
         }
 
-        $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
+	// original query
+        //$this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
+
+        // sort asc desc by chrissie
+        $sort = $this->input->get('sort');
+        if ($sort == NULL) $sort = 0;
+
+        switch ($sort) {        
+        case 0:
+                $this->mdl_clients->with_total_balance()->order_by('client_name','ASC') ->paginate(site_url('clients/status/' . $status), $page);
+                break;
+        case 1:
+                $this->mdl_clients->with_total_balance()->order_by('client_name','DESC') ->paginate(site_url('clients/status/' . $status), $page);
+                break;
+        case 2:
+                $this->mdl_clients->with_total_balance()->order_by('ip_clients.client_id','ASC') ->paginate(site_url('clients/status/' . $status), $page);
+                break;
+        case 3:
+                $this->mdl_clients->with_total_balance()->order_by('ip_clients.client_id','DESC') ->paginate(site_url('clients/status/' . $status), $page);
+                break;
+        }
+        // ^chrissie
+
         $clients = $this->mdl_clients->result();
 
         $this->layout->set([
+            'sort' => $sort,
             'records'            => $clients,
             'filter_display'     => true,
             'filter_placeholder' => trans('filter_clients'),
