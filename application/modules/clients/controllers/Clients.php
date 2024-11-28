@@ -191,9 +191,6 @@ class Clients extends Admin_Controller
      */
     public function view($client_id, $activeTab = 'detail', $page = 0)
     {
-        dd($this->output);
-
-
         $this->load->model('clients/mdl_client_notes');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
