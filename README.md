@@ -120,4 +120,5 @@ This neeeds the Linux-Program/-Pakage pdftk based on Java, or the FreeBSD port /
 
 * added sorting of clients ascending / descending
 * added upload documents for clients
+* added ip_atac(), ip_xtra() and ip_hbk(), added atac quote/invoice templates
 
