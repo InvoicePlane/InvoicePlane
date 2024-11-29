@@ -429,7 +429,7 @@ $config['sess_expiration'] = env('SESS_EXPIRATION', 864000);
 $config['sess_save_path'] = env('SESS_SAVE_PATH', sys_get_temp_dir());
 $config['sess_match_ip'] = env_bool('SESS_MATCH_IP', true);
 $config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = FALSE;
+$config['sess_regenerate_destroy'] = env_bool('SESS_REGENERATE_DESTROY', false);
 
 /*
 |--------------------------------------------------------------------------
