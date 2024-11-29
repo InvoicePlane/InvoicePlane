@@ -26,9 +26,14 @@ class Admin_Controller extends User_Controller
         $input = $this->input->post();
 
         array_walk($input, function (&$value, $key): void {
+
+// by chrissie - beware!
+if (!is_array($value)) {
             $value = $this->security->xss_clean($value);
             $value = strip_tags($value);
             $value = html_escape($value);   // <<<=== that's a CodeIgniter helper
+}
+
         });
     }
 }

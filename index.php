@@ -319,6 +319,21 @@ define('THEME_FOLDER', FCPATH . 'assets' . DIRECTORY_SEPARATOR);
 array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*.pdf'));
 array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*_zugferd.xml'));
 
+/* chrissies ip modes for different implemented stuff */
+$ip_mode = env('IP_MODE');
+function ip_atac() { 
+  global $ip_mode;
+  return $ip_mode == "atac"; 
+}
+function ip_xtra() { 
+  global $ip_mode;
+  return $ip_mode == "xtra"; 
+}
+function ip_hbk() { 
+  global $ip_mode;
+  return $ip_mode == "hbk"; 
+}
+
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

@@ -115,6 +115,9 @@ class Clients extends Admin_Controller
      */
     public function status($status = 'active', $page = 0)
     {
+        $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('custom_fields/mdl_client_custom');
+
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
             $this->mdl_clients->{$function}();
@@ -145,7 +148,60 @@ class Clients extends Admin_Controller
 
         $clients = $this->mdl_clients->result();
 
+        // chrissie: with customer number and atac stuff
+$my_customerno = false;
+$my_customerhosting = false;
+$my_customerls = false;
+$my_customerav = false;
+if (ip_atac() || ip_xtra()) {
+        $my_customerno=[];
+        foreach ($clients as $c) {
+                        $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
+                        foreach ($custom_fields as $cfield) {
+                                // if ($cfield->custom_field_label == "customer_no")
+                                // check DB 'ip_custom_fields' for 'custom_field_id'
+                                if ($cfield->custom_field_id == 3)
+                                        $my_customerno[$c->client_id] = $cfield->client_custom_fieldvalue;
+                        }
+        }
+}
+
+if (ip_atac() ) {
+        $my_customerhosting=[];
+        foreach ($clients as $c) {
+                $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
+                foreach ($custom_fields as $cfield) {
+                        if ($cfield->custom_field_id == 6)
+                                $my_customerhosting[$c->client_id] = $cfield->client_custom_fieldvalue;
+                }
+	}
+
+        $my_customerls=[];
+        foreach ($clients as $c) {
+                $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
+                foreach ($custom_fields as $cfield) {
+                        if ($cfield->custom_field_id == 5)
+                                $my_customerls[$c->client_id] = $cfield->client_custom_fieldvalue;
+                }
+        }
+
+        $my_customerav=[];
+        foreach ($clients as $c) {
+                $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
+                foreach ($custom_fields as $cfield) {
+                        if ($cfield->custom_field_id == 4)
+                                $my_customerav[$c->client_id] = $cfield->client_custom_fieldvalue;
+                }
+        }
+}
+
+
         $this->layout->set([
+                'my_customerno' => $my_customerno,
+                'my_customerhosting' => $my_customerhosting,
+                'my_customerls' => $my_customerls,
+                'my_customerav' => $my_customerav,
+
             'sort' => $sort,
             'records'            => $clients,
             'filter_display'     => true,
