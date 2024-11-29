@@ -126,7 +126,7 @@ function pdf_create(
             $mpdf->Output($archived_file, 'F');
 
             // pdf stamping invoice by chrissie
-            if(!empty($pdf_stamp)) {
+            if(!empty($pdf_stamp) && file_exists( UPLOADS_CFILES_FOLDER . $pdf_stamp)) {
                     $pdf = new Pdf($archived_file);	// here pdftk is being used
                     $pdf->multiStamp( UPLOADS_CFILES_FOLDER . $pdf_stamp)
                             ->saveAs($archived_file);
@@ -142,23 +142,28 @@ function pdf_create(
             } else {
                     return $archived_file;
             }
-
-            /*
-                    // old return of pdfs
-                    if ($stream)) {
-                    return $mpdf->Output($filename . '.pdf', 'I');
-                    } else {
-                    return $archived_file;
-                    }
-             */
     } // END $isInvoice
+
+
+    // generate new pdf
+    $t = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
+    $mpdf->Output($t, 'F');
+    // pdf stamping other by chrissie
+    if(!empty($pdf_stamp) && file_exists( UPLOADS_CFILES_FOLDER . $pdf_stamp)) {
+            $pdf = new Pdf($t);	// here pdftk is being used
+            $pdf->multiStamp( UPLOADS_CFILES_FOLDER . $pdf_stamp)
+                    ->saveAs($t);
+    }
 
     // If $stream is true (default) the PDF will be displayed directly in the browser
     // otherwise will be returned as a download
     if ($stream) {
-        return $mpdf->Output($filename . '.pdf', 'I');
+          header('Content-type: application/pdf');
+          header('Content-Disposition: inline; filename="' . $filename . '.pdf"');
+          header('Content-Transfer-Encoding: binary');
+          header('Accept-Ranges: bytes');
+          @readfile ($t);
     } else {
-        $mpdf->Output(UPLOADS_TEMP_FOLDER . $filename . '.pdf', 'F');
-        return UPLOADS_TEMP_FOLDER . $filename . '.pdf';
+        return $t;
     }
 }

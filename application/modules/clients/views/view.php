@@ -48,6 +48,10 @@ $locations = [];
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
+            <a href="<?php echo site_url('clients/upload_document/' . $client->client_id); ?>" class="btn btn-default client-upload-document"
+               data-client-id="<?php echo $client->client_id; ?>">
+                <i class="fa fa-file"></i> <?php _trans('upload_document'); ?>
+            </a>
             <a href="#" class="btn btn-default client-create-quote"
                data-client-id="<?php echo $client->client_id; ?>">
                 <i class="fa fa-file"></i> <?php _trans('create_quote'); ?>
@@ -82,6 +86,9 @@ $locations = [];
     <li<?php if ($activeTab === 'payments') {
         echo ' class="active"';
     } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
+    <li<?php if ($activeTab === 'documents') {
+        echo ' class="active"';
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/documents'); ?>"><?php _trans('documents'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
@@ -396,6 +403,19 @@ $locations = [];
                 </div>
             </div>
         </div>
+
+        <div id="clientDocuments" class="tab-pane table-content<?php if ($activeTab === 'documents') {
+            echo ' active';
+        } ?>">
+            <?php echo $document_table; ?>
+
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/documents'), 'mdl_documents'); ?>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>

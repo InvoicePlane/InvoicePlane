@@ -30,6 +30,79 @@ class Clients extends Admin_Controller
         $this->load->model('mdl_clients');
     }
 
+    // documents 
+    // https://www.buildwithphp.com/how-to-upload-image-in-codeigniter-with-database-example
+    public function do_upload_document($client_id=1)
+    {
+                $this->load->model('clients/mdl_documents');
+                
+                // generate unique name - YMMV
+                $sid = sprintf("%1$04d", $client_id);
+                $new_name = "D" . $sid . "_" . substr(md5(time()),0,6) . "_" . $_FILES['document']['name'];
+
+                $config = array(
+                       'file_name'  => $new_name,
+                        'upload_path' => UPLOADS_FOLDER . "documents/",
+                        'allowed_types' => "odt|ods|pdf|doc|docx|xls|xlsx|jpeg|jpg|png|gif|tiff",
+                        'max_size' => "15728640" 		// your max file size , here it is 15 MB
+                );
+                $this->load->library('upload', $config);
+                if ($this->upload->do_upload('document')) {
+
+                        $document_filename = $this->upload->data('file_name');
+                        $document_description = ""; // TODO
+                        // instert into database
+                        $this->mdl_documents->insert_document( $client_id, $document_filename, $document_description );
+                        $this->session->set_flashdata('alert_success','Record has been saved successfully.');
+                        redirect('clients/view/' . $client_id . '/documents');
+                } else {
+                        $this->session->set_flashdata('alert_error', $this->upload->display_errors());
+                        redirect('clients/upload_document/' . $client_id);
+                }
+        }
+
+    public function upload_document($client_id=1)
+    {
+        $client = $this->mdl_clients
+            ->where('ip_clients.client_id', $client_id)
+            ->get()->row();
+
+        $this->layout->set(
+            array(
+                'client' => $client,
+                'client_id' => $client_id,
+            )
+        );
+
+        $this->layout->buffer('content', 'clients/upload_document');
+        $this->layout->render();
+    }
+
+    public function show_documents($client_id=1)
+    {
+        $data = get_documents($client_id );
+    }
+
+   public function document_del($client_id, $document_id)
+   {
+        $this->load->model('clients/mdl_documents');
+        if ($this->input->post('del')) {
+                $this->mdl_documents->delete_document($document_id);
+            redirect('clients/view/' . $client_id . '/documents');
+        }
+
+        $this->layout->set(
+            array(
+                'client_id' => $client_id,
+                'document_id' => $document_id
+            )
+        );
+
+        $this->layout->buffer('content', 'clients/delete_document');
+        $this->layout->render();
+   }
+
+
     public function index()
     {
         // Display active clients by default
@@ -215,6 +288,7 @@ class Clients extends Admin_Controller
     public function view($client_id, $activeTab = 'detail', $page = 0)
     {
         $this->load->model('clients/mdl_client_notes');
+	$this->load->model('clients/mdl_documents');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
@@ -243,6 +317,7 @@ class Clients extends Admin_Controller
         $this->layout->set([
             'client'           => $client,
             'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+	'documents' => $this->mdl_documents->get_documents($client_id),
             'invoices'         => $this->mdl_invoices->result(),
             'quotes'           => $this->mdl_quotes->result(),
             'payments'         => $this->mdl_payments->result(),
@@ -261,6 +336,11 @@ class Clients extends Admin_Controller
                 'quote_table',
                 'quotes/partial_quote_table',
             ],
+	[
+                    'document_table',
+                    'clients/partial_document_table'
+	],
+
             [
                 'payment_table',
                 'payments/partial_payment_table',
@@ -295,3 +375,7 @@ class Clients extends Admin_Controller
         );
     }
 }
+
+/*
+vim:et:ts=4:sw=4:
+*/

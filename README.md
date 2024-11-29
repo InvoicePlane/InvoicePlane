@@ -117,3 +117,7 @@ composer require mikehaertl/php-pdftk
 This neeeds the Linux-Program/-Pakage pdftk based on Java, or the FreeBSD port /usr/ports/print/pdftk/ depending on your OS
 
 ---
+
+* added sorting of clients ascending / descending
+* added upload documents for clients
+

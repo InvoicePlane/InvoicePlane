@@ -262,5 +262,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 
     $CI->load->helper('mpdf');
 
-    return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
+    $pdf_stamp = env('QUOTE_STAMP_PDF');
+    return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), 
+    $stream, $quote->quote_password, false, false, false, false, $pdf_stamp);
 }
