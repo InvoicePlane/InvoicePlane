@@ -43,7 +43,9 @@ function pdf_create(
     $is_guest = null,
     $zugferd_invoice = false,
     $associated_files = null,
-    $pdf_stamp = ""
+
+    $pdf_stamp = "",
+    $additionalFooter =""
 ) {
     $CI = &get_instance();
 
@@ -54,6 +56,50 @@ function pdf_create(
     $mpdf = new \Mpdf\Mpdf([
         'tempDir' => UPLOADS_TEMP_MPDF_FOLDER
     ]);
+
+    // size, margin by chrissie, what is this unit? it was trial and error
+    $invoiceNrAndPageOnFooter = env('INVOICE_PAGE_FOOTER');
+    if ($invoiceNrAndPageOnFooter == true ) {
+        $mpdf = new \Mpdf\Mpdf(['format' => 'A4',
+        'margin_left'   => 19,
+        'margin_right'  => 10,
+        'margin_top'    => 40,
+        'margin_bottom' => 22,
+        'margin_header' => 0,
+        'margin_footer' => 7,
+        'tempDir' => UPLOADS_TEMP_MPDF_FOLDER
+        ]);
+    } else {
+        $mpdf = new \Mpdf\Mpdf(['format' => 'A4',
+        'margin_left'   => 19,
+        'margin_right'  => 10,
+        'margin_top'    => 10,
+        'margin_bottom' => 10,
+        'margin_header' => 0,
+        'margin_footer' => 15,
+        'tempDir' => UPLOADS_TEMP_MPDF_FOLDER
+        ]);
+    }
+
+    // how to add new font by chrissie
+    //./vendor/mpdf/mpdf/ttfonts/Raleway-Medium.ttf
+    // change default dejavusanscondensed
+    // to raleway - your mileage may vary
+    $mpdf->fontdata=[];
+    $mpdf->fontdata['dejavusanscondensed'] =
+    [
+        'R' => 'Raleway-Medium.ttf',
+        'I' => 'Raleway-Italic.ttf',
+        'B' => 'Raleway-Bold.ttf',
+    ];
+    // dejavuserifcondensed needed for watermark
+    $mpdf->fontdata['dejavuserifcondensed'] =
+    [
+        'R' => 'Raleway-Medium.ttf',
+        'I' => 'Raleway-Italic.ttf',
+        'B' => 'Raleway-Bold.ttf',
+    ];
+
 
     // mPDF configuration
     $mpdf->useAdobeCJK = true;
@@ -97,6 +143,26 @@ function pdf_create(
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
+
+    // by chrissie : special page nr footer and addidional footer
+    if ($isInvoice) {
+        $f="";
+        if (!empty($additionalFooter)) {
+	        $f .= '<div id="footer"><p align="center">'.$additionalFooter.'</p></div>';
+        }
+        if ($invoiceNrAndPageOnFooter == true) {
+            $my_invoice_nr = "";
+            if (!empty($CI->load->_ci_cached_vars['invoice']->invoice_number))
+              $my_invoice_nr = "Rechnung Nr. ".$CI->load->_ci_cached_vars['invoice']->invoice_number." / ";
+            $f .= '<div id="footer"><p align=right>'.$my_invoice_nr.' Seite {PAGENO} von {nbpg}</p></div>';
+        }
+        if (!empty ($f)) {
+	    $mpdf->setAutoBottomMargin = 'stretch';
+            $mpdf->SetHTMLFooter($f);
+	}
+    }
+    // ^end
+
 
     // Watermark
     if (get_setting('pdf_watermark')) {
