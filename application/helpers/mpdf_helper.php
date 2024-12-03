@@ -106,7 +106,12 @@ function pdf_create(
     $mpdf->WriteHTML((string) $html);
 
     if ($isInvoice) {
+	// invoice copy by chrissie with watermark
+	$invoice_copy = env('INVOICE_COPY');
+	$invoice_copy_watermark = env('INVOICE_COPY_WATERMARK');
 
+	// only returne archived files when no copy - todo improfe!
+	if ($invoice_copy != true) {
             foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf') as $file) {
                     array_push($invoice_array, $file);
             }
@@ -120,34 +125,77 @@ function pdf_create(
                             return $invoice_array[0];
                     }
             }
+	}
 
-            // generate new pdf
-            $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
-            $mpdf->Output($archived_file, 'F');
+        // generate new pdf
+        $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
+        $mpdf->Output($archived_file, 'F');
+
+	if ($invoice_copy == true) {
+		$archived_file_copy = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '-copy.pdf';
+		$xpdf = new \Mpdf\Mpdf([
+		    'tempDir' => UPLOADS_TEMP_MPDF_FOLDER
+		]);
+		$xpdf->SetWatermarkText($invoice_copy_watermark);
+		$xpdf->showWatermarkText = true;
+		$pagecount = $xpdf->SetSourceFile($archived_file);
+		$tplId = $xpdf->importPage($pagecount);
+		$xpdf->useTemplate($tplId);
+		$xpdf->Output($archived_file_copy, 'F');
+	}
 
             // pdf stamping invoice by chrissie
             if(!empty($pdf_stamp) && file_exists( UPLOADS_CFILES_FOLDER . $pdf_stamp)) {
-                    $pdf = new Pdf($archived_file);	// here pdftk is being used
+                    $pdf = new Pdf($archived_file);	// here pdftk mikehaertl is being used
                     $pdf->multiStamp( UPLOADS_CFILES_FOLDER . $pdf_stamp)
                             ->saveAs($archived_file);
-            }
 
-            // had to change to this code in my case - YMMV - plz check
+	  // invoice copy by chrissie with watermark
+	  if ($invoice_copy == true) {
+		// stamping of copy
+		if(!empty($pdf_stamp) && file_exists( UPLOADS_CFILES_FOLDER . $pdf_stamp)) {
+		        $pdf = new Pdf($archived_file_copy);
+			$pdf->multiStamp( UPLOADS_CFILES_FOLDER . $pdf_stamp)
+			        ->saveAs($archived_file_copy);
+		}
+	
+		// concatenate both pdf
+		$pdf = new Pdf();
+		$pdf->addFile($archived_file);
+		$pdf->addFile($archived_file_copy);
+		$pdf->saveAs($archived_file_copy);
+	  }
+	}
+
+
+            // using readfile, setting header!
             if ($stream) {
                     header('Content-type: application/pdf');
                     header('Content-Disposition: inline; filename="' . $filename . '.pdf"');
                     header('Content-Transfer-Encoding: binary');
                     header('Accept-Ranges: bytes');
+
+		if ($invoice_copy == true) {
+                    @readfile ($archived_file_copy);
+		    return;
+		} else {
                     @readfile ($archived_file);
+		    return;
+		}
             } else {
+		if ($invoice_copy == true) {
+                    return $archived_file_copy;
+		} else {
                     return $archived_file;
+		}
             }
     } // END $isInvoice
 
-
-    // generate new pdf
+	
+    // generate new pdf : other files but not invoice
     $t = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
     $mpdf->Output($t, 'F');
+
     // pdf stamping other by chrissie
     if(!empty($pdf_stamp) && file_exists( UPLOADS_CFILES_FOLDER . $pdf_stamp)) {
             $pdf = new Pdf($t);	// here pdftk is being used

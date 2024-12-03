@@ -29,6 +29,10 @@ DB_PORT=
 #INVOICE_STAMP_PDF=invoice_stamp_default.pdf
 #QUOTE_STAMP_PDF=quote_stamp_default.pdf
 
+# additional invoice copy with watermark
+#INVOICE_COPY=true
+#INVOICE_COPY_WATERMARK="Kopie"
+
 #IP_MODE=atac
 #INVOICE_STAMP_PDF=atac-ug_bp_2022.pdf
 #QUOTE_STAMP_PDF=atac-ug_bp_2022.pdf
