@@ -57,8 +57,10 @@ function pdf_create(
         'tempDir' => UPLOADS_TEMP_MPDF_FOLDER
     ]);
 
-    // size, margin by chrissie, what is this unit? it was trial and error
+    // special footer with page numeration
     $invoiceNrAndPageOnFooter = env('INVOICE_PAGE_FOOTER');
+
+    // size, margin by chrissie, what is this unit? it was trial and error
     if ($invoiceNrAndPageOnFooter == true ) {
         $mpdf = new \Mpdf\Mpdf(['format' => 'A4',
         'margin_left'   => 19,
@@ -144,24 +146,24 @@ function pdf_create(
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
-    // by chrissie : special page nr footer and addidional footer
+    // by chrissie: special page nr footer and addidional footer
     if ($isInvoice) {
         $f="";
         if (!empty($additionalFooter)) {
-	        $f .= '<div id="footer"><p align="center">'.$additionalFooter.'</p></div>';
+		$f .= '<div id="footer"><p align="center">'.$additionalFooter.'</p></div>';
         }
         if ($invoiceNrAndPageOnFooter == true) {
             $my_invoice_nr = "";
             if (!empty($CI->load->_ci_cached_vars['invoice']->invoice_number))
               $my_invoice_nr = "Rechnung Nr. ".$CI->load->_ci_cached_vars['invoice']->invoice_number." / ";
-            $f .= '<div id="footer"><p align=right>'.$my_invoice_nr.' Seite {PAGENO} von {nbpg}</p></div>';
+              $f .= '<div id="footer"><p align=right>'.$my_invoice_nr.' Seite {PAGENO} von {nbpg}</p></div>';
         }
         if (!empty ($f)) {
 	    $mpdf->setAutoBottomMargin = 'stretch';
             $mpdf->SetHTMLFooter($f);
 	}
     }
-    // ^end
+    // END special page footer
 
 
     // Watermark
