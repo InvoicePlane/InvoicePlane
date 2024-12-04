@@ -4,3 +4,11 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
+
+.label.active {
+  background-color: #58a959;
+}
+
+.label.inactive {
+  background-color: #c76e6d;
+}

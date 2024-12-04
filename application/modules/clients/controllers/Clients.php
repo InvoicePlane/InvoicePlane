@@ -148,48 +148,38 @@ class Clients extends Admin_Controller
 
         $clients = $this->mdl_clients->result();
 
-        // chrissie: with customer number and atac stuff
-$my_customerno = false;
-$my_customerhosting = false;
-$my_customerls = false;
-$my_customerav = false;
-if (ip_atac() || ip_xtra()) {
-        $my_customerno=[];
+
+// xtra, atac, ... by chrissie: with customer number, ... 
+
+$my_customerno = [];
+$my_customerav = [];
+$my_customerhosting = [];
+$my_customerls = [];
+
+if (ip_xtra()) {
         foreach ($clients as $c) {
-                        $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
-                        foreach ($custom_fields as $cfield) {
-                                // if ($cfield->custom_field_label == "customer_no")
-                                // check DB 'ip_custom_fields' for 'custom_field_id'
-                                if ($cfield->custom_field_id == 3)
-                                        $my_customerno[$c->client_id] = $cfield->client_custom_fieldvalue;
-                        }
+		$custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
+		foreach ($custom_fields as $cfield) {
+		if ($cfield->custom_field_label == "customer_no")
+			$my_customerno[$c->client_id] = $cfield->client_custom_fieldvalue;
+		}
         }
 }
 
 if (ip_atac() ) {
-        $my_customerhosting=[];
         foreach ($clients as $c) {
-                $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
-                foreach ($custom_fields as $cfield) {
-                        if ($cfield->custom_field_id == 6)
+		$custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
+		foreach ($custom_fields as $cfield) {
+			if ($cfield->custom_field_label == "Kundennummer")
+				$my_customerno[$c->client_id] = $cfield->client_custom_fieldvalue;
+
+                        if (str_starts_with($cfield->custom_field_label, "Hostingvertrag"))
                                 $my_customerhosting[$c->client_id] = $cfield->client_custom_fieldvalue;
-                }
-	}
 
-        $my_customerls=[];
-        foreach ($clients as $c) {
-                $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
-                foreach ($custom_fields as $cfield) {
-                        if ($cfield->custom_field_id == 5)
+                        if (str_starts_with($cfield->custom_field_label, "Lastschrift"))
                                 $my_customerls[$c->client_id] = $cfield->client_custom_fieldvalue;
-                }
-        }
 
-        $my_customerav=[];
-        foreach ($clients as $c) {
-                $custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
-                foreach ($custom_fields as $cfield) {
-                        if ($cfield->custom_field_id == 4)
+			if ($cfield->custom_field_label == "AV-Vertrag")
                                 $my_customerav[$c->client_id] = $cfield->client_custom_fieldvalue;
                 }
         }
