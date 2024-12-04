@@ -1,22 +1,26 @@
+<?php function do_client_caret($cond, $order) {
+  if(!$cond) return;
+  if ($order == 'desc') echo ' <i class="fa fa-caret-down"></i> ';
+  if ($order == 'asc') echo ' <i class="fa fa-caret-up"></i>';
+}?>
+
 <div class="table-responsive">
     <table class="table table-hover table-striped">
         <thead>
         <tr>
             <th><?php _trans('active'); ?></th>
             <th> <a href="?sort=name&order=<?= ($sort === 'name' && $order === 'asc') ? 'desc' : 'asc' ?>">
-		<?php _trans('client_name'); ?></a>
+		<?php _trans('client_name'); ?><?= do_client_caret($sort === 'name', $order) ?></a>
 	   </th>
 
 <?php if (ip_xtra()): ?>
-<th>
-<a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
-Kd-Nr.</a></th>
+<th> <a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
+  Kd-Nr.><?= do_client_caret($sort === 'id', $order) ?></a></th>
 <?php endif; ?>
 
 <?php if (ip_atac()): ?>
-<th>
-<a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
-Kd-Id.</a></th>
+<th> <a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
+  Kd-Id.<?= do_client_caret($sort === 'id', $order) ?></a></th>
 <th>Hosting</th>
 <th>LS-Mandat</th>
 <th>AV</th>
@@ -27,7 +31,7 @@ Kd-Id.</a></th>
 
             <th class="amount">
 		<a href="?sort=amount&order=<?= ($sort === 'amount' && $order === 'asc') ? 'desc' : 'asc' ?>">
-		<?php _trans('balance'); ?> </a> 
+		<?php _trans('balance'); ?><?= do_client_caret($sort === 'amount', $order) ?></a> 
 	</th>
 
             <th><?php _trans('options'); ?></th>
