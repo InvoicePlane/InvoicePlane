@@ -143,6 +143,7 @@
         <div class="panel-body">
 
             <div class="form-group">
+		<input type="text" class="form-control" value="https://github.com/chris-x-tra/InvoicePlaneXtra" readonly="readonly">
                 <input type="text" class="form-control" value="<?php echo get_setting('current_version'); ?>" readonly="readonly">
             </div>
             <div id="updatecheck-results">

@@ -124,3 +124,11 @@ This neeeds the Linux-Program/-Pakage pdftk based on Java, or the FreeBSD port /
 * added invoice copy with invoice watermark
 * added extra invoice footer invoice page ... of ...
 * page size, font, ..., see helpers/mpdf_helper.php
+
+* correct PDF 3a via Horstoeku Zugferd, activation via ipconfig.php
+```
+composer require horstoeko/zugferd
+```
+* seee mpdf_helper.php
+
+* Added idea about horst oeko zupferd extended profile and switch

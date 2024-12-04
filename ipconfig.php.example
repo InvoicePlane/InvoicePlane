@@ -32,7 +32,14 @@ DB_PORT=
 # additional invoice copy with watermark
 #INVOICE_COPY=true
 #INVOICE_COPY_WATERMARK="Kopie"
+# additional extra footer with text: invoice ... page 1 of 2 ...
 #INVOICE_PAGE_FOOTER=true
+
+# pdf3a via horstoeko zugpferd
+# INVOICE_PDF3A=true
+# zugpferd xml extended profile via horstoeko
+# INVOICE_HORST_ZUG=true
+
 
 #IP_MODE=atac
 #INVOICE_STAMP_PDF=atac-ug_bp_2022.pdf
