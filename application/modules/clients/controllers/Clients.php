@@ -123,31 +123,28 @@ class Clients extends Admin_Controller
             $this->mdl_clients->{$function}();
         }
 
-	// original query
+	// original query - unmodified
         //$this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
 
         // sort asc desc by chrissie
-        $sort = $this->input->get('sort');
-        if ($sort == NULL) $sort = 0;
+        $sort = $this->input->get('sort') ?? 'id'; // Standard-Spalte
+        $order = $this->input->get('order') ?? 'asc';  // Standard-Reihenfolge
 
-        switch ($sort) {        
-        case 0:
-                $this->mdl_clients->with_total_balance()->order_by('client_name','ASC') ->paginate(site_url('clients/status/' . $status), $page);
-                break;
-        case 1:
+	if ($sort == 'name' && $order =='asc')
+		$this->mdl_clients->with_total_balance()->order_by('client_name','ASC') ->paginate(site_url('clients/status/' . $status), $page);
+	if ($sort == 'name' && $order =='desc')
                 $this->mdl_clients->with_total_balance()->order_by('client_name','DESC') ->paginate(site_url('clients/status/' . $status), $page);
-                break;
-        case 2:
-                $this->mdl_clients->with_total_balance()->order_by('ip_clients.client_id','ASC') ->paginate(site_url('clients/status/' . $status), $page);
-                break;
-        case 3:
-                $this->mdl_clients->with_total_balance()->order_by('ip_clients.client_id','DESC') ->paginate(site_url('clients/status/' . $status), $page);
-                break;
-        }
-        // ^chrissie
+	if ($sort == 'id' && $order =='asc')
+                $this->mdl_clients->with_total_balance()->order_by('client_id','ASC') ->paginate(site_url('clients/status/' . $status), $page);
+	if ($sort == 'id' && $order =='desc')
+                $this->mdl_clients->with_total_balance()->order_by('client_id','DESC') ->paginate(site_url('clients/status/' . $status), $page);
+	if ($sort == 'amount' && $order =='asc')
+                $this->mdl_clients->with_total_balance()->order_by('client_invoice_balance','ASC') ->paginate(site_url('clients/status/' . $status), $page);
+	if ($sort == 'amount' && $order =='desc')
+                $this->mdl_clients->with_total_balance()->order_by('client_invoice_balance','DESC') ->paginate(site_url('clients/status/' . $status), $page);
+        // end sort
 
         $clients = $this->mdl_clients->result();
-
 
 // xtra, atac, ... by chrissie: with customer number, ... 
 
@@ -193,6 +190,7 @@ if (ip_atac() ) {
                 'my_customerav' => $my_customerav,
 
             'sort' => $sort,
+            'order' => $order,
             'records'            => $clients,
             'filter_display'     => true,
             'filter_placeholder' => trans('filter_clients'),

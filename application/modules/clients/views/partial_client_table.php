@@ -3,12 +3,20 @@
         <thead>
         <tr>
             <th><?php _trans('active'); ?></th>
-            <th><?php _trans('client_name'); ?></th>
+            <th> <a href="?sort=name&order=<?= ($sort === 'name' && $order === 'asc') ? 'desc' : 'asc' ?>">
+		<?php _trans('client_name'); ?></a>
+	   </th>
 
-<?php if (ip_atac() || ip_xtra()): ?>
-<th>Kd-Id.</th>
+<?php if (ip_xtra()): ?>
+<th>
+<a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
+Kd-Nr.</a></th>
 <?php endif; ?>
+
 <?php if (ip_atac()): ?>
+<th>
+<a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
+Kd-Id.</a></th>
 <th>Hosting</th>
 <th>LS-Mandat</th>
 <th>AV</th>
@@ -16,7 +24,12 @@
 
             <th><?php _trans('email_address'); ?></th>
             <th><?php _trans('phone_number'); ?></th>
-            <th class="amount"><?php _trans('balance'); ?></th>
+
+            <th class="amount">
+		<a href="?sort=amount&order=<?= ($sort === 'amount' && $order === 'asc') ? 'desc' : 'asc' ?>">
+		<?php _trans('balance'); ?> </a> 
+	</th>
+
             <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
