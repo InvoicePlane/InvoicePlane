@@ -305,11 +305,21 @@ $locations = [];
                 </div>
             <?php endif; ?>
 
+	<hr>
+	<div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="panel panel-default no-margin">
+                        <div class="panel-heading"><?php _trans('extended_information'); ?></div>
+                        <div class="panel-body table-content" >
+                            <?php $this->layout->load_view('clients/partial_client_extended'); ?>
+                        </div>
+		</div>
+		</div>
+
+
             <?php
             if ($custom_fields) : ?>
-                <hr>
 
-                <div class="row">
                     <div class="col-xs-12 col-md-6">
                         <div class="panel panel-default no-margin">
 

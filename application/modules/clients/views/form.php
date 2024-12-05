@@ -404,6 +404,100 @@ $cv = $this->controller->view_data['custom_values'];
 
             </div>
         </div>
+
+<!-- client_extended by chrissie -->
+        <div class="row" >
+            <div class="col-xs-12 col-sm-6" >
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <?php _trans('additional_information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="client_extended_salutation"><?php _trans('salutation'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_salutation" id="client_extended_salutation" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_salutation', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_customer_no"><?php _trans('customerno'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_customer_no" id="client_extended_customer_no" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_customer_no', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_flags"><?php _trans('flags'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_flags" id="client_extended_flags" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_flags', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_contact_person"><?php _trans('contact_person'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_contact_person" id="client_extended_contact_person" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_contact_person', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_contract"><?php _trans('contract'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_contract" id="client_extended_contract" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_contract', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_direct_debit"><?php _trans('direct_debit'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_direct_debit" id="client_extended_direct_debit" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_direct_debit', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_bank_name"><?php _trans('bank_name'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_bank_name" id="client_extended_bank_name" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_bank_name', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_bank_bic"><?php _trans('bank_bic'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_bank_bic" id="client_extended_bank_bic" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_bank_bic', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_bank_iban"><?php _trans('bank_iban'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_bank_iban" id="client_extended_bank_iban" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_bank_iban', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_payment_terms"><?php _trans('payment_terms'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_payment_terms" id="client_extended_payment_terms" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_payment_terms', true); ?>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_extended_delivery_terms"><?php _trans('delivery_terms'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_extended_delivery_terms" id="client_extended_delivery_terms" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_delivery_terms', true); ?>" >
+                            </div>
+                        </div>
+	        </div>
+	    </div>
+	</div>
+<!-- // client_extended END -->
+
+<!-- custom fields -->
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
@@ -428,5 +522,6 @@ $cv = $this->controller->view_data['custom_values'];
                 </div>
             </div>
         <?php endif; ?>
+
     </div>
 </form>

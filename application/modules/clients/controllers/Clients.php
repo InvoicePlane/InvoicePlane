@@ -115,6 +115,7 @@ class Clients extends Admin_Controller
      */
     public function status($status = 'active', $page = 0)
     {
+	$this->load->model('clients/mdl_client_extended');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
 
@@ -146,12 +147,16 @@ class Clients extends Admin_Controller
 
         $clients = $this->mdl_clients->result();
 
+/*
 // xtra, atac, ... by chrissie: with customer number, ... 
-
+// attention - this information is now in ip_client_extended
+// us this as an idea for new custom fields
 $my_customerno = [];
 $my_customerav = [];
 $my_customerhosting = [];
 $my_customerls = [];
+$my_customeransprech = [];
+$my_customeranrede = [];
 
 if (ip_xtra()) {
         foreach ($clients as $c) {
@@ -159,9 +164,14 @@ if (ip_xtra()) {
 		foreach ($custom_fields as $cfield) {
 		if ($cfield->custom_field_label == "customer_no")
 			$my_customerno[$c->client_id] = $cfield->client_custom_fieldvalue;
+		if ($cfield->custom_field_label == "contact_person")
+			$my_customeransprech[$c->client_id] = $cfield->client_custom_fieldvalue;
+		if ($cfield->custom_field_label == "salutation")
+			$my_customeranrede[$c->client_id] = $cfield->client_custom_fieldvalue;
 		}
-        }
+	}
 }
+
 
 if (ip_atac() ) {
         foreach ($clients as $c) {
@@ -178,16 +188,21 @@ if (ip_atac() ) {
 
 			if ($cfield->custom_field_label == "AV-Vertrag")
                                 $my_customerav[$c->client_id] = $cfield->client_custom_fieldvalue;
+
+			if ($cfield->custom_field_label == "Ansprechpartner")
+                                $my_customeransprech[$c->client_id] = $cfield->client_custom_fieldvalue;
                 }
         }
 }
-
+*/
 
         $this->layout->set([
-                'my_customerno' => $my_customerno,
-                'my_customerhosting' => $my_customerhosting,
-                'my_customerls' => $my_customerls,
-                'my_customerav' => $my_customerav,
+/*
+            'my_customerno' => $my_customerno,
+            'my_customerhosting' => $my_customerhosting,
+            'my_customerls' => $my_customerls,
+            'my_customerav' => $my_customerav,
+*/
 
             'sort' => $sort,
             'order' => $order,
@@ -204,11 +219,30 @@ if (ip_atac() ) {
     /**
      * @param null $id
      */
+
+    function dump_post()
+    {
+        $post = array();
+        foreach ( array_keys($_POST) as $key ) {
+            $post[$key] = $this->input->post($key);
+        }
+        echo '<pre>'; print_r($post); echo '</pre>';
+    }
+
     public function form($id = null)
     {
+	$this->load->model('clients/mdl_client_extended');
+
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
         }
+
+	// debug by chrissie
+	if ( 0 && $this->input->post('btn_submit')) {
+	$this->dump_post();
+	  die("btn_submit");
+	}
+	//
 
         $new_client = false;
         $this->filter_input();  // <<<--- filters _POST array for nastiness
@@ -234,15 +268,67 @@ if (ip_atac() ) {
                 $_POST[self::CLIENT_TITLE] = $client_title_custom;
                 $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
             }
+
             $id = $this->mdl_clients->save($id);
 
             if ($new_client) {
                 $this->load->model('user_clients/mdl_user_clients');
                 $this->mdl_user_clients->get_users_all_clients();
-            }
+            } 
+
+
+	// handle extended by chrissie: handle flags, customer no
+	$my_client_flags=0;
+	// flags as form field
+	$my_client_flags = $this->input->post('client_extended_flags');
+	// flags as checkboxes TODO	
+	//if ($this->input->post('option_a')) $my_client_flags |=1;
+	//if ($this->input->post('option_b')) $my_client_flags |=2;
+
+	// auto customer number by chrissie for new customer if none entered
+	$my_customerno = $this->input->post('client_extended_customer_no');
+	$my_id = sprintf("%03d", $id);
+	if (empty($my_customerno)) $my_customerno = "K-".$my_id;	// auto customer number prefix - change if you want
+
+	// insert or update?
+	$exists_extended = $this->mdl_client_extended->get_by_clientid($id);
+	if ($exists_extended == NULL) {
+		// extended save by chrissie - how to do this in a simpler way?
+		$a = $this->mdl_client_extended->insert_entry( 
+		$id,
+		$this->input->post('client_extended_salutation'),
+		$my_customerno,
+		$my_client_flags,
+		$this->input->post('client_extended_contact_person'),
+		$this->input->post('client_extended_contract'),
+		$this->input->post('client_extended_direct_debit'),
+		$this->input->post('client_extended_bank_name'),
+		$this->input->post('client_extended_bank_bic'),
+		$this->input->post('client_extended_bank_iban'),
+		$this->input->post('client_extended_payment_terms'),
+		$this->input->post('client_extended_delivery_terms'),
+		);
+
+	} else {
+
+		$a = $this->mdl_client_extended->update_entry($id,
+		$this->input->post('client_extended_salutation'),
+		$my_customerno,
+		$my_client_flags,
+		$this->input->post('client_extended_contact_person'),
+		$this->input->post('client_extended_contract'),
+		$this->input->post('client_extended_direct_debit'),
+		$this->input->post('client_extended_bank_name'),
+		$this->input->post('client_extended_bank_bic'),
+		$this->input->post('client_extended_bank_iban'),
+		$this->input->post('client_extended_payment_terms'),
+		$this->input->post('client_extended_delivery_terms'),
+		);
+	}
 
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
+
 
             if ($result !== true) {
                 $this->session->set_flashdata('alert_error', $result);
@@ -313,7 +399,26 @@ if (ip_atac() ) {
         $this->load->helper('country');
         $this->load->helper('custom_values');
 
+        // chrissie extended TODO improve / automate this population of fields
+        $client_extended = $this->mdl_client_extended->get_by_clientid($id);
+        if ($client_extended) {
+                $this->mdl_client_extended->set_form_value('client_extended_salutation', $client_extended->client_extended_salutation) ;
+                $this->mdl_client_extended->set_form_value('client_extended_customer_no', $client_extended->client_extended_customer_no) ;
+                $this->mdl_client_extended->set_form_value('client_extended_flags', $client_extended->client_extended_flags) ;
+                $this->mdl_client_extended->set_form_value('client_extended_contact_person', $client_extended->client_extended_contact_person) ;
+                $this->mdl_client_extended->set_form_value('client_extended_contract', $client_extended->client_extended_contract) ;
+                $this->mdl_client_extended->set_form_value('client_extended_direct_debit', $client_extended->client_extended_direct_debit) ;
+                $this->mdl_client_extended->set_form_value('client_extended_bank_name', $client_extended->client_extended_bank_name) ;
+                $this->mdl_client_extended->set_form_value('client_extended_bank_bic', $client_extended->client_extended_bank_bic) ;
+                $this->mdl_client_extended->set_form_value('client_extended_bank_iban', $client_extended->client_extended_bank_iban) ;
+                $this->mdl_client_extended->set_form_value('client_extended_payment_terms', $client_extended->client_extended_payment_terms) ;
+                $this->mdl_client_extended->set_form_value('client_extended_delivery_terms', $client_extended->client_extended_delivery_terms) ;
+        }
+	// end
+
+
         $this->layout->set([
+            'client_extended'      => $client_extended,
             'custom_fields'        => $custom_fields,
             'custom_values'        => $custom_values,
             'countries'            => get_country_list(trans('cldr')),
@@ -333,6 +438,7 @@ if (ip_atac() ) {
     {
         $this->load->model('clients/mdl_client_notes');
 	$this->load->model('clients/mdl_documents');
+	$this->load->model('clients/mdl_client_extended');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
@@ -345,6 +451,8 @@ if (ip_atac() ) {
             ->with_total_paid()
             ->where('ip_clients.client_id', $client_id)
             ->get()->row();
+
+	$client_extended = $this->mdl_client_extended->get_by_clientid($client_id);
 
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
 
@@ -360,8 +468,9 @@ if (ip_atac() ) {
 
         $this->layout->set([
             'client'           => $client,
+            'client_extended'  => $client_extended,
             'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-	'documents' => $this->mdl_documents->get_documents($client_id),
+	    'documents'        => $this->mdl_documents->get_documents($client_id),
             'invoices'         => $this->mdl_invoices->result(),
             'quotes'           => $this->mdl_quotes->result(),
             'payments'         => $this->mdl_payments->result(),
@@ -380,11 +489,10 @@ if (ip_atac() ) {
                 'quote_table',
                 'quotes/partial_quote_table',
             ],
-	[
-                    'document_table',
-                    'clients/partial_document_table'
-	],
-
+	    [
+                 'document_table',
+                 'clients/partial_document_table'
+	    ],
             [
                 'payment_table',
                 'payments/partial_payment_table',

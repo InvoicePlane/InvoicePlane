@@ -15,7 +15,7 @@
 
 <?php if (ip_xtra()): ?>
 <th> <a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
-  Kd-Nr.><?= do_client_caret($sort === 'id', $order) ?></a></th>
+  Kd-Nr.<?= do_client_caret($sort === 'id', $order) ?></a></th>
 <?php endif; ?>
 
 <?php if (ip_atac()): ?>
@@ -47,13 +47,13 @@
 			<?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?>
 		</td>
 <?php if (ip_atac() || ip_xtra()): ?>
-	<td> <?php if (isset($my_customerno) && isset($my_customerno[$client->client_id])) echo $my_customerno[$client->client_id]; ?> </td>
+	<td><?php if (isset($client->client_extended_customer_no)) echo $client->client_extended_customer_no; ?></td>
 <?php endif; ?>
 
 <?php if (ip_atac()): ?>
-	<td><?php if (isset($my_customerhosting) && isset($my_customerhosting[$client->client_id])) echo $my_customerhosting[$client->client_id]; ?></td>
-	<td><?php if (isset($my_customerls) && isset($my_customerls[$client->client_id])) echo $my_customerls[$client->client_id]; ?></td>
-	<td><?php if (isset($my_customerav) && isset($my_customerav[$client->client_id])) echo $my_customerav[$client->client_id]; ?></td>
+	<td><?php if (isset($client->client_extended_contract)) echo $client->client_extended_contract; ?></td>
+	<td><?php if (isset($client->client_extended_direct_debit)) echo $client->client_extended_direct_debit; ?></td>
+	<td><?php if (isset($client->client_extended_flags)) echo $client->client_extended_flags; ?></td>
 <?php endif; ?>
 
                 <td><?php _htmlsc($client->client_email); ?></td>
