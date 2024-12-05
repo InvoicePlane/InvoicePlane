@@ -33,6 +33,7 @@
 </script>
 
 <?php
+
 $locations = [];
             foreach ($custom_fields as $custom_field) {
                 if (array_key_exists($custom_field->custom_field_location, $locations)) {
@@ -311,7 +312,7 @@ $locations = [];
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading"><?php _trans('extended_information'); ?></div>
                         <div class="panel-body table-content" >
-                            <?php $this->layout->load_view('clients/partial_client_extended'); ?>
+                            <?php  $this->layout->load_view('clients/partial_client_extended'); ?>
                         </div>
 		</div>
 		</div>
@@ -348,6 +349,7 @@ $locations = [];
                     </div>
                 </div>
             <?php endif; ?>
+	</div>
 
             <hr>
 
@@ -381,11 +383,12 @@ $locations = [];
         <div id="clientQuotes" class="tab-pane table-content<?php if ($activeTab === 'quotes') {
             echo ' active';
         } ?>">
+
             <?php echo $quote_table; ?>
 
             <div class="container-fluid">
                 <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/quotes'), 'mdl_quotes'); ?>
+                    <?php  echo pager(site_url('clients/view/' . $client->client_id . '/quotes'), 'mdl_quotes'); ?>
                 </div>
             </div>
         </div>

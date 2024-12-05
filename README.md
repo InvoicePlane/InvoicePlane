@@ -132,3 +132,4 @@ composer require horstoeko/zugferd
 * seee mpdf_helper.php
 
 * Added idea about horst oeko zupferd extended profile and switch
+* Added ip_client_extended table with the most common used custom fields for convience
