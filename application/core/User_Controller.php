@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class User_Controller extends Base_Controller
 {
-
     /**
      * User_Controller constructor.
      *

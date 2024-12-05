@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Items extends Response_Model
 {
-
     public $table = 'ip_invoice_items';
 
     public $primary_key = 'ip_invoice_items.item_id';

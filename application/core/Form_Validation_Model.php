@@ -16,6 +16,8 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Form_Validation_Model extends MY_Model
 {
+    public $form_validation;
+    public $load;
 
     /**
      * Form_Validation_Model constructor.

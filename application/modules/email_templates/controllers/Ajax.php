@@ -26,5 +26,4 @@ class Ajax extends Admin_Controller
 
         echo json_encode($this->mdl_email_templates->get_by_id($id));
     }
-
 }

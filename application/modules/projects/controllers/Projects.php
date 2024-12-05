@@ -111,5 +111,4 @@ class Projects extends Admin_Controller
         $this->mdl_projects->delete($id);
         redirect('projects');
     }
-
 }

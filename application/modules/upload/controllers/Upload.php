@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,16 +18,17 @@ class Upload extends Admin_Controller
 {
     public $targetPath;
 
-    public $ctype_default = "application/octet-stream";
-    public $content_types = array(
-        'gif' => 'image/gif',
-        'jpg' => 'image/jpeg',
+    public $ctype_default = 'application/octet-stream';
+
+    public $content_types = [
+        'gif'  => 'image/gif',
+        'jpg'  => 'image/jpeg',
         'jpeg' => 'image/jpeg',
-        'pdf' => 'application/pdf',
-        'png' => 'image/png',
-        'txt' => 'text/plain',
-        'xml' => 'application/xml',
-    );
+        'pdf'  => 'application/pdf',
+        'png'  => 'image/png',
+        'txt'  => 'text/plain',
+        'xml'  => 'application/xml',
+    ];
 
     /**
      * Upload constructor.
@@ -45,88 +46,86 @@ class Upload extends Admin_Controller
      */
     public function upload_file($customerId, $url_key)
     {
-        Upload::create_dir($this->targetPath . '/');
+        self::create_dir($this->targetPath . '/');
 
-        if (!empty($_FILES)) {
+        if ( ! empty($_FILES)) {
             $tempFile = $_FILES['file']['tmp_name'];
             $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name']);
             $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
             $file_exists = file_exists($targetFile);
 
-            if (!$file_exists) {
-                // If file does not exists then upload
-                $data = array(
-                    'client_id' => $customerId,
-                    'url_key' => $url_key,
+            if ( ! $file_exists) {
+                // If file does not exist then upload
+                $data = [
+                    'client_id'          => $customerId,
+                    'url_key'            => $url_key,
                     'file_name_original' => $fileName,
-                    'file_name_new' => $url_key . '_' . $fileName
-                );
+                    'file_name_new'      => $url_key . '_' . $fileName,
+                ];
 
                 $this->mdl_uploads->create($data);
 
                 move_uploaded_file($tempFile, $targetFile);
 
                 echo json_encode([
-                    'success' => true
+                    'success' => true,
                 ]);
-
             } else {
                 // If file exists then echo the error and set a http error response
                 echo json_encode([
                     'success' => false,
-                    'message' => trans('error_duplicate_file')
+                    'message' => trans('error_duplicate_file'),
                 ]);
                 http_response_code(404);
             }
-
         } else {
-            Upload::show_files($url_key, $customerId);
+            self::show_files($url_key, $customerId);
         }
     }
 
     /**
      * @param string $path
      * @param string $chmod
+     *
      * @return bool
      */
     public function create_dir($path, $chmod = '0777')
     {
-        if (!(is_dir($path) || is_link($path))) {
+        if ( ! (is_dir($path) || is_link($path))) {
             return mkdir($path, $chmod);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
-     * @param $url_key
+     * @param      $url_key
      * @param null $customerId
+     *
      * @return void
      */
     public function show_files($url_key, $customerId = null)
     {
-        $result = array();
+        $result = [];
         $path = $this->targetPath;
 
         $files = scandir($path);
 
         if ($files !== false) {
-
             foreach ($files as $file) {
-                if (in_array($file, array(".", ".."))) {
+                if (in_array($file, ['.', '..'])) {
                     continue;
                 }
-                if (strpos($file, $url_key) !== 0) {
+                if ( ! str_starts_with($file, $url_key)) {
                     continue;
                 }
-                if (substr(realpath($path), realpath($file) == 0)) {
-                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                if (mb_substr(realpath($path), realpath($file) == 0)) {
+                    $obj['name'] = mb_substr($file, mb_strpos($file, '_', 1) + 1);
                     $obj['fullname'] = $file;
                     $obj['size'] = filesize($path . '/' . $file);
                     $result[] = $obj;
                 }
             }
-
         } else {
             return;
         }
@@ -147,15 +146,16 @@ class Upload extends Admin_Controller
         // AVOID TREE TRAVERSAL!
         $finalPath = $path . '/' . $url_key . '_' . $fileName;
 
-        if (strpos(realpath($path), realpath($finalPath)) == 0) {
+        if (mb_strpos(realpath($path), realpath($finalPath)) == 0) {
             unlink($path . '/' . $url_key . '_' . $fileName);
         }
     }
 
     /**
-     * Returns the corresponding file as a download and prevents execution of files
+     * Returns the corresponding file as a download and prevents execution of files.
      *
      * @param string $filename
+     *
      * @return void
      */
     public function get_file($filename)
@@ -163,7 +163,7 @@ class Upload extends Admin_Controller
         $base_path = UPLOADS_CFILES_FOLDER;
         $file_path = $base_path . $filename;
 
-        if (strpos(realpath($base_path), realpath($file_path)) != 0) {
+        if (mb_strpos(realpath($base_path), realpath($file_path)) != 0) {
             show_404();
             exit;
         }
@@ -177,11 +177,11 @@ class Upload extends Admin_Controller
             $save_ctype = isset($this->content_types[$file_ext]);
             $ctype = $save_ctype ? $this->content_types[$file_ext] : $this->ctype_default;
 
-            header("Expires: -1");
-            header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
-            header("Content-Disposition: attachment; filename=\"$filename\"");
-            header("Content-Type: " . $ctype);
-            header("Content-Length: " . $file_size);
+            header('Expires: -1');
+            header('Cache-Control: public, must-revalidate, post-check=0, pre-check=0');
+            header("Content-Disposition: attachment; filename=\"{$filename}\"");
+            header('Content-Type: ' . $ctype);
+            header('Content-Length: ' . $file_size);
 
             echo file_get_contents($file_path);
             exit;
@@ -190,5 +190,4 @@ class Upload extends Admin_Controller
         show_404();
         exit;
     }
-
 }

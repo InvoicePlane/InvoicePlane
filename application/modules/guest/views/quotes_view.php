@@ -3,7 +3,7 @@
 
     <div class="pull-right">
         <div class="btn-group btn-group-sm">
-            <?php if (in_array($quote->quote_status_id, array(2, 3))) { ?>
+            <?php if (in_array($quote->quote_status_id, [2, 3])) { ?>
                 <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
                    class="btn btn-success">
                     <i class="fa fa-check"></i>
@@ -47,7 +47,7 @@
 
                 <h2><?php echo format_client($quote); ?></h2><br>
                 <div class="client-address">
-                    <?php $this->layout->load_view('clients/partial_client_address', array('client' => $quote)); ?>
+                    <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                 </div>
                 <br><br>
                 <?php if ($quote->client_phone) { ?>

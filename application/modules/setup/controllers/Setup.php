@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Setup extends MX_Controller
 {
-
     public $errors = 0;
 
     /**

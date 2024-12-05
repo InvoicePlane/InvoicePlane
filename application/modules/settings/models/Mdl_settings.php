@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,7 +16,7 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Settings extends CI_Model
 {
-    public $settings = array();
+    public $settings = [];
 
     /**
      * @param $key
@@ -24,10 +24,10 @@ class Mdl_Settings extends CI_Model
      */
     public function save($key, $value)
     {
-        $db_array = array(
-            'setting_key' => $key,
+        $db_array = [
+            'setting_key'   => $key,
             'setting_value' => $value,
-        );
+        ];
 
         if ($this->get($key) !== null) {
             $this->db->where('setting_key', $key);
@@ -39,6 +39,7 @@ class Mdl_Settings extends CI_Model
 
     /**
      * @param $key
+     *
      * @return null
      */
     public function get($key)
@@ -49,8 +50,6 @@ class Mdl_Settings extends CI_Model
 
         if ($query->row()) {
             return $query->row()->setting_value;
-        } else {
-            return null;
         }
     }
 
@@ -65,7 +64,7 @@ class Mdl_Settings extends CI_Model
 
     /**
      * Loads all settings from the database so they are available
-     * without additional queries
+     * without additional queries.
      */
     public function load_settings()
     {
@@ -82,8 +81,9 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
-     * @param $key
+     * @param        $key
      * @param string $default
+     *
      * @return mixed|string
      */
     public function setting($key, $default = '')
@@ -93,11 +93,12 @@ class Mdl_Settings extends CI_Model
 
     /**
      * @param string $key
+     *
      * @return mixed|string
      */
     public function gateway_settings($key)
     {
-        return $this->db->like('setting_key', 'gateway_' . strtolower($key), 'after')->get('ip_settings')->result();
+        return $this->db->like('setting_key', 'gateway_' . mb_strtolower($key), 'after')->get('ip_settings')->result();
     }
 
     /**
@@ -110,7 +111,8 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
-     * Returns all available themes
+     * Returns all available themes.
+     *
      * @return array
      */
     public function get_themes()
@@ -140,5 +142,4 @@ class Mdl_Settings extends CI_Model
 
         return $themes;
     }
-
 }

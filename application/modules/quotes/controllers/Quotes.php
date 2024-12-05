@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -34,7 +34,7 @@ class Quotes extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'all', $page = 0)
     {
@@ -64,14 +64,13 @@ class Quotes extends Admin_Controller
         $quotes = $this->mdl_quotes->result();
 
         $this->layout->set(
-            array(
-                'quotes' => $quotes,
-                'status' => $status,
-                'filter_display' => true,
+            [
+                'quotes'             => $quotes,
+                'status'             => $status,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_quotes'),
-                'filter_method' => 'filter_quotes',
-                'quote_statuses' => $this->mdl_quotes->statuses()
-            )
+                'filter_method'      => 'filter_quotes',
+                'quote_statuses'     => $this->mdl_quotes->statuses()]
         );
 
         $this->layout->buffer('content', 'quotes/index');
@@ -109,8 +108,7 @@ class Quotes extends Admin_Controller
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-
-        if (!$quote) {
+        if ( ! $quote) {
             show_404();
         }
 
@@ -137,30 +135,11 @@ class Quotes extends Admin_Controller
         }
 
         $this->layout->set(
-            array(
-                'quote' => $quote,
-                'items' => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
-                'quote_id' => $quote_id,
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
-                'units' => $this->mdl_units->get()->result(),
-                'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'custom_js_vars' => array(
-                    'currency_symbol' => get_setting('currency_symbol'),
-                    'currency_symbol_placement' => get_setting('currency_symbol_placement'),
-                    'decimal_point' => get_setting('decimal_point')
-                ),
-                'quote_statuses' => $this->mdl_quotes->statuses()
-            )
+            ['quote' => $quote, 'items' => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(), 'quote_id' => $quote_id, 'tax_rates' => $this->mdl_tax_rates->get()->result(), 'units' => $this->mdl_units->get()->result(), 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(), 'custom_fields' => $custom_fields, 'custom_values' => $custom_values, 'custom_js_vars' => ['currency_symbol' => get_setting('currency_symbol'), 'currency_symbol_placement' => get_setting('currency_symbol_placement'), 'decimal_point' => get_setting('decimal_point')], 'quote_statuses' => $this->mdl_quotes->statuses()]
         );
 
         $this->layout->buffer(
-            array(
-                array('modal_delete_quote', 'quotes/modal_delete_quote'),
-                array('modal_add_quote_tax', 'quotes/modal_add_quote_tax'),
-                array('content', 'quotes/view')
-            )
+            [['modal_delete_quote', 'quotes/modal_delete_quote'], ['modal_add_quote_tax', 'quotes/modal_add_quote_tax'], ['content', 'quotes/view']]
         );
 
         $this->layout->render();
@@ -179,7 +158,7 @@ class Quotes extends Admin_Controller
     }
 
     /**
-     * @param $quote_id
+     * @param      $quote_id
      * @param bool $stream
      * @param null $quote_template
      */
@@ -221,5 +200,4 @@ class Quotes extends Admin_Controller
             $this->mdl_quote_amounts->calculate($quote_id->quote_id);
         }
     }
-
 }

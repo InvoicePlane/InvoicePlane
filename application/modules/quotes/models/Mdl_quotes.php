@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -31,32 +31,32 @@ class Mdl_Quotes extends Response_Model
             '1' => [
                 'label' => trans('draft'),
                 'class' => 'draft',
-                'href'  => 'quotes/status/draft'
+                'href'  => 'quotes/status/draft',
             ],
             '2' => [
                 'label' => trans('sent'),
                 'class' => 'sent',
-                'href'  => 'quotes/status/sent'
+                'href'  => 'quotes/status/sent',
             ],
             '3' => [
                 'label' => trans('viewed'),
                 'class' => 'viewed',
-                'href'  => 'quotes/status/viewed'
+                'href'  => 'quotes/status/viewed',
             ],
             '4' => [
                 'label' => trans('approved'),
                 'class' => 'approved',
-                'href'  => 'quotes/status/approved'
+                'href'  => 'quotes/status/approved',
             ],
             '5' => [
                 'label' => trans('rejected'),
                 'class' => 'rejected',
-                'href'  => 'quotes/status/rejected'
+                'href'  => 'quotes/status/rejected',
             ],
             '6' => [
                 'label' => trans('canceled'),
                 'class' => 'canceled',
-                'href'  => 'quotes/status/canceled'
+                'href'  => 'quotes/status/canceled',
             ],
         ];
     }
@@ -98,27 +98,24 @@ class Mdl_Quotes extends Response_Model
             'client_id' => [
                 'field' => 'client_id',
                 'label' => trans('client'),
-                'rules' => 'required'
-            ],
+                'rules' => 'required'],
             'quote_date_created' => [
                 'field' => 'quote_date_created',
                 'label' => trans('quote_date'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'invoice_group_id' => [
                 'field' => 'invoice_group_id',
                 'label' => trans('quote_group'),
-                'rules' => 'required'
-            ],
+                'rules' => 'required'],
             'quote_password' => [
                 'field' => 'quote_password',
-                'label' => trans('quote_password')
-            ],
+                'label' => trans('quote_password')],
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
-                'rule'  => 'required'
-            ]
+                'rule'  => 'required',
+            ],
         ];
     }
 
@@ -136,17 +133,17 @@ class Mdl_Quotes extends Response_Model
             'quote_date_created' => [
                 'field' => 'quote_date_created',
                 'label' => trans('date'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'quote_date_expires' => [
                 'field' => 'quote_date_expires',
                 'label' => trans('due_date'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'quote_password' => [
                 'field' => 'quote_password',
-                'label' => trans('quote_password')
-            ]
+                'label' => trans('quote_password'),
+            ],
         ];
     }
 
@@ -160,20 +157,13 @@ class Mdl_Quotes extends Response_Model
         $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
-        $db_array = [
-            'quote_id' => $quote_id
-        ];
+        $db_array = ['quote_id' => $quote_id];
 
         $this->db->insert('ip_quote_amounts', $db_array);
 
         // Create the default invoice tax record if applicable
         if (get_setting('default_invoice_tax_rate')) {
-            $db_array = [
-                'quote_id'              => $quote_id,
-                'tax_rate_id'           => get_setting('default_invoice_tax_rate'),
-                'include_item_tax'      => get_setting('default_include_item_tax'),
-                'quote_tax_rate_amount' => 0
-            ];
+            $db_array = ['quote_id' => $quote_id, 'tax_rate_id' => get_setting('default_invoice_tax_rate'), 'include_item_tax' => get_setting('default_include_item_tax'), 'quote_tax_rate_amount' => 0];
 
             $this->db->insert('ip_quote_tax_rates', $db_array);
         }
@@ -214,12 +204,7 @@ class Mdl_Quotes extends Response_Model
         $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $source_id)->get()->result();
 
         foreach ($quote_tax_rates as $quote_tax_rate) {
-            $db_array = [
-                'quote_id'              => $target_id,
-                'tax_rate_id'           => $quote_tax_rate->tax_rate_id,
-                'include_item_tax'      => $quote_tax_rate->include_item_tax,
-                'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
-            ];
+            $db_array = ['quote_id' => $target_id, 'tax_rate_id' => $quote_tax_rate->tax_rate_id, 'include_item_tax' => $quote_tax_rate->include_item_tax, 'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount];
 
             $this->mdl_quote_tax_rates->save(null, $db_array);
         }

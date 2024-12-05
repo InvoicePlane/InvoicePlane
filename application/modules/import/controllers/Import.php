@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -20,7 +20,7 @@ class Import extends Admin_Controller
         0 => 'clients.csv',
         1 => 'invoices.csv',
         2 => 'invoice_items.csv',
-        3 => 'payments.csv'
+        3 => 'payments.csv',
     ];
 
     /**
@@ -115,5 +115,4 @@ class Import extends Admin_Controller
         $this->mdl_import->delete($id);
         redirect('import');
     }
-
 }

@@ -38,7 +38,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class MY_Model extends CI_Model
 {
-
     public $table;
 
     public $primary_key;

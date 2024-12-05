@@ -185,5 +185,4 @@ class Payments extends Admin_Controller
         $this->mdl_payments->delete($id);
         redirect('payments');
     }
-
 }

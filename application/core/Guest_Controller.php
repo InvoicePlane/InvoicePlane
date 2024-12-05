@@ -40,5 +40,4 @@ class Guest_Controller extends User_Controller
             $this->user_clients[$user_client->client_id] = $user_client->client_id;
         }
     }
-
 }

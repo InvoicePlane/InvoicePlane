@@ -41,7 +41,7 @@
                 </td>
                 <td>
                     <div class="options btn-group btn-group-sm">
-                        <?php if (in_array($quote->quote_status_id, array(2, 3))) { ?>
+                        <?php if (in_array($quote->quote_status_id, [2, 3])) { ?>
                             <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
                                class="btn btn-success btn-sm">
                                 <i class="fa fa-check"></i>

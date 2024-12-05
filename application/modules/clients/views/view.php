@@ -296,7 +296,7 @@ $locations = [];
 
                     </div>
                 </div>
-            <?php endif; ?>
+<?php endif; ?>
 
             <?php
             if ($custom_fields) : ?>

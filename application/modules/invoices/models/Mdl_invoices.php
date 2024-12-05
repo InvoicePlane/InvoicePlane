@@ -471,7 +471,6 @@ class Mdl_Invoices extends Response_Model
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', [2, 3]);
-
         return $this;
     }
 
@@ -486,7 +485,6 @@ class Mdl_Invoices extends Response_Model
     public function guest_visible()
     {
         $this->filter_where_in('invoice_status_id', [2, 3, 4]);
-
         return $this;
     }
 

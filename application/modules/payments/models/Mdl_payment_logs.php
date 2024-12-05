@@ -35,5 +35,4 @@ class Mdl_Payment_Logs extends Response_Model
     {
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_merchant_responses.invoice_id');
     }
-
 }
