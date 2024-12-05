@@ -160,35 +160,48 @@ class Upload extends Admin_Controller
      */
     public function get_file($filename)
     {
-        $base_path = UPLOADS_CFILES_FOLDER;
-        $file_path = $base_path . $filename;
+        $base_path = realpath(UPLOADS_CFILES_FOLDER);
 
-        if (strpos(realpath($base_path), realpath($file_path)) != 0) {
+        if (!$base_path) {
+            log_message('error', "Invalid base upload directory: " . UPLOADS_CFILES_FOLDER);
+            show_404();
+            exit;
+        }
+
+        $file_path = realpath($base_path . DIRECTORY_SEPARATOR . basename($filename));
+
+        if (!$file_path || strpos($file_path, $base_path) !== 0) {
+            log_message('error', "Unauthorized file access attempt: $filename");
             show_404();
             exit;
         }
 
         $path_parts = pathinfo($file_path);
-        $file_ext = $path_parts['extension'];
+        $file_ext = strtolower($path_parts['extension'] ?? '');
 
-        if (file_exists($file_path)) {
-            $file_size = filesize($file_path);
-
-            $save_ctype = isset($this->content_types[$file_ext]);
-            $ctype = $save_ctype ? $this->content_types[$file_ext] : $this->ctype_default;
-
-            header("Expires: -1");
-            header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
-            header("Content-Disposition: attachment; filename=\"$filename\"");
-            header("Content-Type: " . $ctype);
-            header("Content-Length: " . $file_size);
-
-            echo file_get_contents($file_path);
+        if (!isset($this->content_types[$file_ext])) {
+            log_message('error', "Unsupported file type: $file_ext");
+            show_error('Unsupported file type', 403);
             exit;
         }
 
-        show_404();
+        if (!file_exists($file_path)) {
+            log_message('error', "File not found: $file_path");
+            show_404();
+            exit;
+        }
+
+        $file_size = filesize($file_path);
+        $ctype = $this->content_types[$file_ext] ?? $this->ctype_default;
+
+        header("Expires: -1");
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Pragma: no-cache");
+        header("Content-Disposition: attachment; filename=\"" . basename($file_path) . "\"");
+        header("Content-Type: " . $ctype);
+        header("Content-Length: " . $file_size);
+
+        readfile($file_path);
         exit;
     }
-
 }
