@@ -8,7 +8,14 @@
       <p>ITEMS ($items)</p>
       <?php foreach ($items as $item) { ?>
         <pre><?php print_r($item); ?></pre>
-      <?php } ?>
+        <p>Item date replacement<p>
+        <pre><?php
+          // this should come from a helper function
+          print_r(invoice_replace_date_tags($invoice->invoice_date_created, 
+                                            $invoice->client_language, 
+                                            $item->item_description));
+        ?></pre>
+        <?php } ?>
       <hr>
       <p>TAXES ($invoice_tax_rates)</p>
       <?php foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
@@ -24,15 +31,5 @@
       <p>System Country</p>
       <pre><?php print_r(get_setting('default_country')); ?></pre>
       <hr>
-      <p>Date Replacement<p>
-      <pre>You must have something like {{{Month-3}}} {{{Month+1}}} in your item description to see test results here:<br />
-      <?php
-        // this should come from a helper function
-        print_r(invoice_replace_date_tags(
-                  $invoice->invoice_date_created, 
-                  $invoice->client_language, 
-                  $item->item_description)
-                );
-        ?></pre>
     </body>
 </html>
