@@ -21,12 +21,21 @@ class Mdl_Clients extends Response_Model
     public $date_created_field = 'client_date_created';
     public $date_modified_field = 'client_date_modified';
 
+
     public function default_select()
     {
         $this->db->select(
             'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname'
-            , false);
+            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname, '
+            ." ip_clients.*, "
+            ." ip_client_extended.* "
+            , false) ;
+
+    }
+
+    public function default_join()
+    {
+        $this->db->join('ip_client_extended', 'ip_client_extended.client_extended_client_id = ip_clients.client_id', 'left');
     }
 
     public function default_order_by()
