@@ -15,6 +15,8 @@
     "codeigniter/framework": "3.1.13",
     "endroid/qr-code": "^4.8.5",
     "guzzlehttp/guzzle": "^7.0",
+    "horstoeko/zugferd": "^1.0",
+    "mikehaertl/php-pdftk": "^0.13.1",
     "moneyphp/money": "^4.5",
     "mpdf/mpdf": "^8.2",
     "paragonie/random_compat": "^2.0.21",
