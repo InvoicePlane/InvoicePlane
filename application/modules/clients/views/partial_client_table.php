@@ -2,7 +2,11 @@
   if(!$cond) return;
   if ($order == 'desc') echo ' <i class="fa fa-caret-down"></i> ';
   if ($order == 'asc') echo ' <i class="fa fa-caret-up"></i>';
-}?>
+}
+
+// because of search box
+if (!isset($sort)) $sort=''; if(!isset($order)) $order='';
+?>
 
 <div class="table-responsive">
     <table class="table table-hover table-striped">

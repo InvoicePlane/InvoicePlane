@@ -10,21 +10,21 @@ function _xpr($class, $prop) {
 }
 ?>
     <table class="table no-margin">
+	    <tr>
+		<th><?php _trans('customer_no'); ?></th>
+		<td><?php _xpr($client_extended,'client_extended_customer_no'); ?></td>
+	    </tr>
             <tr>
                 <th><?php _trans('salutation'); ?></th>
                 <td><?php _xpr($client_extended,'client_extended_salutation'); ?></td>
             </tr>
 	    <tr>
-		<th><?php _trans('customer_no'); ?></th>
-		<td><?php _xpr($client_extended,'client_extended_customer_no'); ?></td>
+		<th><?php _trans('contact_person'); ?></th>
+		<td><?php _xpr($client_extended,'client_extended_contact_person'); ?></td>
 	    </tr>
 	    <tr>
 		<th><?php _trans('flags'); ?></th>
 		<td><?php _xpr($client_extended,'client_extended_flags'); ?></td>
-	    </tr>
-	    <tr>
-		<th><?php _trans('contact_person'); ?></th>
-		<td><?php _xpr($client_extended,'client_extended_contact_person'); ?></td>
 	    </tr>
 	    <tr>
 		<th><?php _trans('contract'); ?></th>
