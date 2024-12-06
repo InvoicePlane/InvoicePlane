@@ -59,6 +59,7 @@ class Mdl_Invoices extends Response_Model
             ip_users.*,
             ip_clients.*,
             ip_invoice_sumex.*,
+	ip_client_extended.*,
             ip_invoice_amounts.invoice_amount_id,
             IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
             IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
@@ -81,6 +82,7 @@ class Mdl_Invoices extends Response_Model
     public function default_join()
     {
         $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+        $this->db->join('ip_client_extended', 'ip_clients.client_id = ip_client_extended.client_extended_client_id', 'left');
         $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');

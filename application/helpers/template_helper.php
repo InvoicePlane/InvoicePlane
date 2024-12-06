@@ -99,7 +99,6 @@ function parse_template($object, $body)
             $body = str_replace('{{{' . $var . '}}}', $replace, $body);
         }
     }
-
     return $body;
 }
 
