@@ -279,9 +279,7 @@ $locations = [];
 		</div>
 
 
-            <?php
-            if ($custom_fields) : ?>
-
+            <?php if ($custom_fields) : ?>
                     <div class="col-xs-12 col-md-6">
                         <div class="panel panel-default no-margin">
 
@@ -308,7 +306,6 @@ $locations = [];
 
                         </div>
                     </div>
-                </div>
             <?php endif; ?>
 	</div>
 
