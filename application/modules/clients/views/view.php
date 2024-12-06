@@ -34,6 +34,8 @@
 
 <?php
 
+/*
+// WTF
 $locations = [];
             foreach ($custom_fields as $custom_field) {
                 if (array_key_exists($custom_field->custom_field_location, $locations)) {
@@ -42,6 +44,7 @@ $locations = [];
                     $locations[$custom_field->custom_field_location] = 1;
                 }
             }
+*/
             ?>
 
 <div id="headerbar">
@@ -189,20 +192,6 @@ $locations = [];
                                         <td><?php _auto_link($client->client_web, 'url', true); ?></td>
                                     </tr>
                                 <?php endif; ?>
-
-                                <?php foreach ($custom_fields as $custom_field) : ?>
-                                    <?php if ($custom_field->custom_field_location != 2) {
-                                        continue;
-                                    } ?>
-                                    <tr>
-                                        <?php
-                                        $column = $custom_field->custom_field_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                    ?>
-                                        <th><?php _htmlsc($column); ?></th>
-                                        <td><?php _htmlsc($value); ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
                             </table>
                         </div>
                     </div>
@@ -226,20 +215,6 @@ $locations = [];
                                         <td><?php _htmlsc($client->client_tax_code); ?></td>
                                     </tr>
                                 <?php endif; ?>
-
-                                <?php foreach ($custom_fields as $custom_field) : ?>
-                                    <?php if ($custom_field->custom_field_location != 4) {
-                                        continue;
-                                    } ?>
-                                    <tr>
-                                        <?php
-                                        $column = $custom_field->custom_field_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                    ?>
-                                        <th><?php _htmlsc($column); ?></th>
-                                        <td><?php _htmlsc($value); ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
                             </table>
                         </div>
 
@@ -284,20 +259,6 @@ $locations = [];
                                             <td><?php _htmlsc($client->client_veka) ?></td>
                                         </tr>
                                     <?php endif; ?>
-
-                                    <?php foreach ($custom_fields as $custom_field) : ?>
-                                        <?php if ($custom_field->custom_field_location != 3) {
-                                            continue;
-                                        } ?>
-                                        <tr>
-                                            <?php
-                                            $column = $custom_field->custom_field_label;
-                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                        ?>
-                                            <th><?php _htmlsc($column); ?></th>
-                                            <td><?php _htmlsc($value); ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
                                 </table>
                             </div>
                         </div>
