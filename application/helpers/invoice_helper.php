@@ -175,46 +175,45 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
 
     $invoiceDateCreated = new DateTime(date_from_mysql($invoice_date_created, true));
     
-    if ( 'system' == $client_language ) $dateLanguageLocale = get_setting('default_country');
-    else $dateLanguageLocale = invoice_get_locale_by_displayname($client_language);
+    if ($client_language ==  'system') {
+        $dateLanguageLocale = get_setting('default_country');
+    } else { 
+        $dateLanguageLocale = invoice_get_locale_by_displayname($client_language);
+    }
 
-    // initialize based date
-    $printDate = clone($invoiceDateCreated);
     // get the tags
     $tags = explode('{{{', $item_description);
     foreach ($tags as $tag) {
-        // find tags end
+        // find tag end
         $rawTag = stristr($tag, '}}}', true);
-        // nothing to do here
+        // exit loop, if no tag content
         if (empty($rawTag)) continue;
 
         // here we do D(ate), M(onth and year) and Y(ear) nothing else
         $request = strtoupper(substr($rawTag,0,1));  
-        // take only first letter, ignore if not within our service
+        // take only first letter, exit loop, if none of 'DMY' found
         if (strpos('DMY', $request) === false) continue;
 
         // reconstruct original request pattern
         $replaceThis='{{{'.$rawTag.'}}}';
 
-        // needs to reset if a new/second relative date occurs
-        // within same item description
+        // refresh date to calculate with is needed to be reset 
+        // if a new/second relative date occurs within same item description
+        $printDate = clone($invoiceDateCreated);
         try {
             // calculate additions/substractions
             if ($pos = strpos($rawTag, '+')) {
                 $num = max(substr($rawTag,$pos+1),1);
-                // refresh date to calculate with
-                $printDate = clone($invoiceDateCreated);
                 $printDate->add(new DateInterval( 'P' . $num . $request ));
             }
             elseif ($pos = strpos($rawTag, '-')) {
                 $num = max(substr($rawTag,$pos+1),1);
                 // refresh date to calculate with
-                $printDate = clone($invoiceDateCreated);
                 $printDate->sub(new DateInterval( 'P' . $num . $request ));
             }
             
             // prepare replacement format string
-            if ('D' == $request) {
+            if ($request == 'D') {
                 // ignore locale and create sql Y-m-d format date
                 // and use ip's function to create a visible date
                 $withReplacement = date_from_mysql(date_format($printDate, 'Y-m-d'));
@@ -225,8 +224,11 @@ function invoice_replace_date_tags($invoice_date_created, $client_language, $ite
                                     IntlDateFormatter::SHORT,
                                     IntlDateFormatter::SHORT
                                     );
-                if ('M' == $request) $dateFormat->setPattern('MMM yyyy'); // short month year
-                elseif ('Y' == $request) $dateFormat->setPattern('yyyy');     // year only
+                if ($request == 'M') {
+                    $dateFormat->setPattern('MMM yyyy'); // short month year
+                } elseif ($request == 'Y') {
+                    $dateFormat->setPattern('yyyy');     // year only
+                }
                 $withReplacement = datefmt_format($dateFormat, $printDate);
             }
 
