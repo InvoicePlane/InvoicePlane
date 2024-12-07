@@ -411,7 +411,7 @@ $cv = $this->controller->view_data['custom_values'];
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
-                        <?php _trans('additional_information'); ?>
+                        <?php _trans('extended_information'); ?>
                     </div>
 
                     <div class="panel-body">
@@ -423,7 +423,7 @@ $cv = $this->controller->view_data['custom_values'];
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="client_extended_customer_no"><?php _trans('customerno'); ?></label>
+                            <label for="client_extended_customer_no"><?php _trans('customer_no'); ?></label>
                             <div class="controls">
                                 <input type="text" name="client_extended_customer_no" id="client_extended_customer_no" class="form-control"
                                        value="<?php echo $this->mdl_client_extended->form_value('client_extended_customer_no', true); ?>" >
@@ -432,9 +432,23 @@ $cv = $this->controller->view_data['custom_values'];
                         <div class="form-group">
                             <label for="client_extended_flags"><?php _trans('flags'); ?></label>
                             <div class="controls">
-                                <input type="text" name="client_extended_flags" id="client_extended_flags" class="form-control"
-                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_flags', true); ?>" >
+                                <!-- input type="text" name="client_extended_flags" id="client_extended_flags" class="form-control"
+                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_flags', true); ?>" -->
+								<!-- Use select and use trans | selected="selected" -->
+								<select id="client_extended_flags" name="client_extended_flags" class="form-control">
+									<option value="0" <?php check_select($this->mdl_client_extended->form_value('client_extended_flags'), '0'); ?>>
+										<?php _trans('no'); ?>
+									</option>
+									<option value="1" <?php check_select($this->mdl_client_extended->form_value('client_extended_flags'), '1'); ?>>
+										<?php _trans('open'); ?>
+									</option>
+									<option value="2" <?php check_select($this->mdl_client_extended->form_value('client_extended_flags'), '2'); ?>>
+										<?php _trans('yes'); ?>
+									</option>
+								</select>
+								
                             </div>
+							
                         </div>
                         <div class="form-group">
                             <label for="client_extended_contact_person"><?php _trans('contact_person'); ?></label>
@@ -481,15 +495,15 @@ $cv = $this->controller->view_data['custom_values'];
                         <div class="form-group">
                             <label for="client_extended_payment_terms"><?php _trans('payment_terms'); ?></label>
                             <div class="controls">
-                                <input type="text" name="client_extended_payment_terms" id="client_extended_payment_terms" class="form-control"
-                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_payment_terms', true); ?>" >
+								<textarea rows="3" name="client_extended_payment_terms" id="client_extended_payment_terms" class="form-control" >
+<?php echo $this->mdl_client_extended->form_value('client_extended_payment_terms', true); ?></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="client_extended_delivery_terms"><?php _trans('delivery_terms'); ?></label>
                             <div class="controls">
-                                <input type="text" name="client_extended_delivery_terms" id="client_extended_delivery_terms" class="form-control"
-                                       value="<?php echo $this->mdl_client_extended->form_value('client_extended_delivery_terms', true); ?>" >
+                                <textarea rows="3" name="client_extended_delivery_terms" id="client_extended_delivery_terms" class="form-control" >
+<?php echo $this->mdl_client_extended->form_value('client_extended_delivery_terms', true); ?></textarea>
                             </div>
                         </div>
 	        </div>
@@ -522,6 +536,8 @@ $cv = $this->controller->view_data['custom_values'];
                 </div>
             </div>
         <?php endif; ?>
-
+		<div id="headerbar">
+			<?php $this->layout->load_view('layout/footer_buttons'); ?>
+		</div>
     </div>
 </form>

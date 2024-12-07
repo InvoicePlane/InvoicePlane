@@ -8,6 +8,15 @@ function _xpr($class, $prop) {
 		}
 	}
 }
+function _xpr2($class, $prop) {
+	if ($class) {
+		if (property_exists($class, $prop)) {
+			return $class->$prop;
+		} else {
+			return 0;
+		}
+	}
+}
 ?>
     <table class="table no-margin">
 	    <tr>
@@ -24,7 +33,20 @@ function _xpr($class, $prop) {
 	    </tr>
 	    <tr>
 		<th><?php _trans('flags'); ?></th>
-		<td><?php _xpr($client_extended,'client_extended_flags'); ?></td>
+		<td>
+			
+			<?php switch (_xpr2($client_extended,'client_extended_flags')) {
+				case 0:
+					echo _trans('no');
+					break;
+				case 1:
+					echo _trans('open');
+					break;
+				case 2:
+					echo _trans('yes');
+					break;
+			} ?>
+		</td>
 	    </tr>
 	    <tr>
 		<th><?php _trans('contract'); ?></th>

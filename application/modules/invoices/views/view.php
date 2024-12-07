@@ -209,6 +209,7 @@ echo $modal_add_invoice_tax;
 if ($this->config->item('disable_read_only') == true) {
     $invoice->is_read_only = 0;
 }
+
 ?>
 
 <div id="headerbar">
@@ -220,77 +221,130 @@ if ($this->config->item('disable_read_only') == true) {
     </h1>
 
     <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
-
-        <div class="options btn-group btn-group-sm">
-            <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
-            </a>
-            <ul class="dropdown-menu">
-                <?php if ($invoice->is_read_only != 1) { ?>
-                    <li>
-                        <a href="#add-invoice-tax" data-toggle="modal">
-                            <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
-                        </a>
-                    </li>
-                <?php } ?>
-                <li>
-                    <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
-                    </a>
-                </li>
-                <?php if ($invoice->invoice_balance != 0) : ?>
-                    <li>
-                        <a href="#" class="invoice-add-payment"
-                           data-invoice-id="<?php echo $invoice_id; ?>"
-                           data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
-                           data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
-                            <i class="fa fa-credit-card fa-margin"></i>
-                            <?php _trans('enter_payment'); ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
-                <li>
-                    <a href="#" id="btn_generate_pdf"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-print fa-margin"></i>
-                        <?php _trans('download_pdf'); ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
-                        <i class="fa fa-send fa-margin"></i>
-                        <?php _trans('send_email'); ?>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="#" id="btn_create_recurring"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-refresh fa-margin"></i>
-                        <?php _trans('create_recurring'); ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" id="btn_copy_invoice"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-copy fa-margin"></i>
-                        <?php _trans('copy_invoice'); ?>
-                    </a>
-                </li>
-                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
-                    <li>
-                        <a href="#delete-invoice" data-toggle="modal">
-                            <i class="fa fa-trash-o fa-margin"></i>
-                            <?php _trans('delete'); ?>
-                        </a>
-                    </li>
-                <?php } ?>
-            </ul>
+		
+		<!-- ToDo: 
+			if viewport =< sm/lg switch to dropdown
+			create and load an options partial 
+		-->
+        
+		<div class="options btn-group btn-group-sm">
+			<?php 
+				// Enable options menu as buttons				
+				if (ip_invoice_options()) {
+					
+					if ($invoice->is_read_only != 1) { ?>
+					<!-- Options as Buttons -->
+						<a  class="btn btn-sm btn-default" href="#add-invoice-tax" data-toggle="modal">
+							<i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
+						</a>
+					<?php } ?>
+						<a class="btn btn-sm btn-default" href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
+							<i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
+						</a>
+					<?php if ($invoice->invoice_balance != 0) : ?>
+						<a href="#" class="btn btn-sm btn-default invoice-add-payment"
+						   data-invoice-id="<?php echo $invoice_id; ?>"
+						   data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+						   data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
+						   data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
+							<i class="fa fa-credit-card fa-margin"></i>
+							<?php _trans('enter_payment'); ?>
+						</a>
+					<?php endif; ?>		
+						<a class="btn btn-sm btn-default" href="#" id="btn_generate_pdf"
+							   data-invoice-id="<?php echo $invoice_id; ?>">
+								<i class="fa fa-print fa-margin"></i>
+								<?php _trans('download_pdf'); ?>
+						</a>
+						<a class="btn btn-sm btn-default" href="#" id="btn_create_recurring"
+							   data-invoice-id="<?php echo $invoice_id; ?>">
+								<i class="fa fa-refresh fa-margin"></i>
+								<?php _trans('create_recurring'); ?>
+						</a>	
+						<a class="btn btn-sm btn-default" href="#" id="btn_copy_invoice"
+							   data-invoice-id="<?php echo $invoice_id; ?>">
+								<i class="fa fa-copy fa-margin"></i>
+								<?php _trans('copy_invoice'); ?>
+						</a>
+					<?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
+						<a class="btn btn-sm btn-default btn-warning" href="#delete-invoice" data-toggle="modal">
+							<i class="fa fa-trash-o fa-margin"></i>
+							<?php _trans('delete'); ?>
+						</a>
+					<?php } 
+				} else { ?>
+					<!-- Options as dropdown -->
+					<a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+						<i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
+					</a>
+					<ul class="dropdown-menu">
+					<?php if ($invoice->is_read_only != 1) { ?>
+						<li>
+							<a href="#add-invoice-tax" data-toggle="modal">
+								<i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
+							</a>
+						</li>
+					<?php } ?>
+					<li>
+						<a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
+							<i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
+						</a>
+					</li>
+					<?php if ($invoice->invoice_balance != 0) : ?>
+						<li>
+							<a href="#" class="invoice-add-payment"
+							   data-invoice-id="<?php echo $invoice_id; ?>"
+							   data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+							   data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
+							   data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
+								<i class="fa fa-credit-card fa-margin"></i>
+								<?php _trans('enter_payment'); ?>
+							</a>
+						</li>
+					<?php endif; ?>
+					<li>
+						<a href="#" id="btn_generate_pdf"
+						   data-invoice-id="<?php echo $invoice_id; ?>">
+							<i class="fa fa-print fa-margin"></i>
+							<?php _trans('download_pdf'); ?>
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
+							<i class="fa fa-send fa-margin"></i>
+							<?php _trans('send_email'); ?>
+						</a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="#" id="btn_create_recurring"
+						   data-invoice-id="<?php echo $invoice_id; ?>">
+							<i class="fa fa-refresh fa-margin"></i>
+							<?php _trans('create_recurring'); ?>
+						</a>
+					</li>
+					<li>
+						<a href="#" id="btn_copy_invoice"
+						   data-invoice-id="<?php echo $invoice_id; ?>">
+							<i class="fa fa-copy fa-margin"></i>
+							<?php _trans('copy_invoice'); ?>
+						</a>
+					</li>
+					<?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
+						<li>
+							<a href="#delete-invoice" data-toggle="modal">
+								<i class="fa fa-trash-o fa-margin"></i>
+								<?php _trans('delete'); ?>
+							</a>
+						</li>
+					<?php } ?>
+				</ul>
+				<?php }
+			?>
         </div>
 
         <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
-            <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
+            <a href="#" class="btn btn-sm btn-success ajax-loader ms-3" id="btn_save_invoice">
                 <i class="fa fa-check"></i> <?php _trans('save'); ?>
             </a>
         <?php } ?>
@@ -585,9 +639,7 @@ if ($this->config->item('disable_read_only') == true) {
                     </div>
                 </div>
             <?php endif; ?>
-
         </div>
-
     </div>
 </div>
 

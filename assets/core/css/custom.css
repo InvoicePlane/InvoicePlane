@@ -4,11 +4,28 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
-
-.label.active {
-  background-color: #58a959;
+   
+/* fixed Navbar */ 
+nav.navbar {
+	position: fixed;
+	width: 100%;
+	z-index: 99;
 }
 
+#main-area {
+	padding-top: 5.25rem;
+}
+
+
+/* clickable table */
+ 
+th.sort:hover {
+	cursor: n-resize; 
+}
+
+.label.active {
+	background-color: #58a959;
+}
 .label.inactive {
-  background-color: #c76e6d;
+	background-color: #d9534f;
 }

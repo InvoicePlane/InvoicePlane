@@ -334,6 +334,14 @@ function ip_hbk() {
   return $ip_mode == "hbk"; 
 }
 
+/* atac: configure header options */
+$ip_invoice_options = env('INVOICE_OPTIONS_BUTTONS');
+function ip_invoice_options() { 
+  global $ip_invoice_options;
+  return $ip_invoice_options == "true"; 
+}
+
+
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
