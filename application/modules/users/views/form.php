@@ -236,15 +236,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="user_iban">
-                                        <?php _trans('user_iban'); ?>
-                                    </label>
-                                    <input type="text" name="user_iban" id="user_iban" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
-                                </div>
-
+                                <!-- user_iban field was moved due to the e-invoicing stuff -->
                                 <div class="form-group">
                                     <label for="user_subscribernumber">
                                         <?php _trans('user_subscriber_number'); ?>
@@ -268,7 +260,6 @@ $cv = $this->controller->view_data["custom_values"];
                                     ?>
                                 <?php endforeach; ?>
                             </div>
-
                         </div>
 
                         <?php if ($this->mdl_settings->setting('sumex') == '1'): ?>
@@ -299,10 +290,15 @@ $cv = $this->controller->view_data["custom_values"];
                         <?php endif; ?>
 
                         <div class="panel panel-default">
-
                             <div class="panel-heading"><?php _trans('contact_information'); ?></div>
-
                             <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_invoicing_contact">
+                                        <?php echo trans('invoicing') . ' ' . trans('contact'); ?>
+                                    </label>
+                                    <input type="text" name="user_invoicing_contact" id="user_invoicing_contact" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_invoicing_contact', true); ?>">
+                                </div>
                                 <div class="form-group">
                                     <label for="user_phone">
                                         <?php _trans('phone_number'); ?>
@@ -310,7 +306,6 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_phone" id="user_phone" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_phone', true); ?>">
                                 </div>
-
                                 <div class="form-group">
                                     <label for="user_fax">
                                         <?php _trans('fax_number'); ?>
@@ -318,7 +313,6 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_fax" id="user_fax" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_fax', true); ?>">
                                 </div>
-
                                 <div class="form-group">
                                     <label for="user_mobile">
                                         <?php _trans('mobile_number'); ?>
@@ -326,7 +320,6 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_mobile" id="user_mobile" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_mobile', true); ?>">
                                 </div>
-
                                 <div class="form-group">
                                     <label for="user_web">
                                         <?php _trans('web_address'); ?>
@@ -334,7 +327,6 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_web" id="user_web" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_web', true); ?>">
                                 </div>
-
                                 <!-- Custom fields -->
                                 <?php foreach ($custom_fields as $custom_field): ?>
                                     <?php if ($custom_field->custom_field_location != 4) {
@@ -349,8 +341,8 @@ $cv = $this->controller->view_data["custom_values"];
                                     ?>
                                 <?php endforeach; ?>
                             </div>
-
                         </div>
+
                         <?php if ($custom_fields) : ?>
                             <div class="panel panel-default">
                                 <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
@@ -369,16 +361,11 @@ $cv = $this->controller->view_data["custom_values"];
                                 );
                             } ?>
                                 </div>
-
                             </div>
                         <?php endif; ?>
-
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
-
 </form>

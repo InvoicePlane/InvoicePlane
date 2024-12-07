@@ -184,6 +184,14 @@ $cv = $this->controller->view_data['custom_values'];
 
                     <div class="panel-body">
                         <div class="form-group">
+                            <label for="client_invoicing_contact"><?php echo trans('invoicing') . ' ' . trans('contact'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_invoicing_contact" id="client_invoicing_contact" class="form-control"
+                                    value="<?php echo htmlsc($this->mdl_clients->form_value('client_invoicing_contact')); ?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="client_phone"><?php _trans('phone_number'); ?></label>
 
                             <div class="controls">
@@ -404,6 +412,41 @@ $cv = $this->controller->view_data['custom_values'];
 
             </div>
         </div>
+
+        <!-- eInvoicing++ panel added -->
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo 'e-' . trans('invoicing') . ' ' . trans('information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="client_einvoice_version"><?php echo 'UBL Template Type'; ?></label>
+                            <select name="client_einvoice_version" id="client_einvoice_version" class="form-control">
+                                <option value=""><?php echo trans('none'); ?></option>
+                                <option value="<?php echo UblTypeEnum::CIUS_V20; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::CIUS_V20 || $default_template_type == UblTypeEnum::CIUS_V20) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::CIUS_V20; ?>
+                                </option>
+                                <option value="<?php echo UblTypeEnum::NLCIUS_V20; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::NLCIUS_V20 || $default_template_type == UblTypeEnum::NLCIUS_V20) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::NLCIUS_V20; ?>
+                                </option>
+                                <option value="<?php echo UblTypeEnum::ZUGFERD_V10; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::ZUGFERD_V10 || $default_template_type == UblTypeEnum::ZUGFERD_V10) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::ZUGFERD_V10; ?>
+                                </option>
+                                <option value="<?php echo UblTypeEnum::ZUGFERD_V23; ?>" <?php echo ($client_einvoice_version == UblTypeEnum::ZUGFERD_V23 || $default_template_type == UblTypeEnum::ZUGFERD_V23) ? 'selected' : ''; ?>>
+                                    <?php echo UblTypeEnum::ZUGFERD_V23; ?>
+                                </option>
+                            </select>
+                            <p class="help-block"><?php echo trans('override_ubl_template_help'); ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /eInvoicing++ panel added -->
+
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">

@@ -1,5 +1,4 @@
 <?php
-
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
@@ -13,7 +12,9 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-#[AllowDynamicProperties]
+/**
+ * Class Mdl_Clients
+ */
 class Mdl_Clients extends Response_Model
 {
     public $table = 'ip_clients';
@@ -25,8 +26,9 @@ class Mdl_Clients extends Response_Model
     {
         $this->db->select(
             'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname'
-            , false);
+            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname',
+            false
+        );
     }
 
     public function default_order_by()
@@ -37,10 +39,6 @@ class Mdl_Clients extends Response_Model
     public function validation_rules()
     {
         return [
-            'client_title' => [
-                'field' => 'client_title',
-                'label' => trans('client_title'),
-            ],
             'client_name' => [
                 'field' => 'client_name',
                 'label' => trans('client_name'),
@@ -98,6 +96,14 @@ class Mdl_Clients extends Response_Model
             'client_tax_code' => [
                 'field' => 'client_tax_code',
             ],
+            'client_invoicing_contact' => [
+                'field' => 'client_invoicing_contact',
+                'rules' => 'trim|xss_clean',
+            ],
+            'client_einvoice_version' => [
+                'field' => 'client_einvoice_version',
+                'rules' => 'trim',
+            ],
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
@@ -141,6 +147,7 @@ class Mdl_Clients extends Response_Model
      */
     public function fix_avs($input)
     {
+    	$matches = [];
         if ($input != '') {
             if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
                 return $matches[1] . $matches[2] . $matches[3] . $matches[4];
@@ -189,7 +196,6 @@ class Mdl_Clients extends Response_Model
     /**
      * Returns client_id of existing client
      *
-     * @param $client_name
      * @return int|null
      */
     public function client_lookup($client_name)
@@ -234,7 +240,6 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * @param $user_id
      * @return $this
      */
     public function get_not_assigned_to_user($user_id)
