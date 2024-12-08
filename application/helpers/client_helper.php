@@ -19,7 +19,9 @@ if ( ! defined('BASEPATH')) {
  */
 function format_client($client)
 {
-    $client_title = $client->client_title === 'custom' ? '' : ucfirst($client->client_title ?? '');
+	if(property_exists($client, 'client_title')){
+		$client_title = $client->client_title === 'custom' ? '' : ucfirst($client->client_title ?? '');
+	} else $client_title="";
 
     if ( ! empty($client->client_surname)) {
         return $client_title . ' ' . $client->client_name . ' ' . $client->client_surname;
