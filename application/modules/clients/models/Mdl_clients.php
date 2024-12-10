@@ -86,6 +86,51 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_country',
                 'rules' => 'trim',
             ],
+
+            'billing_address_name' => [
+                'field' => 'billing_address_name',
+            ],
+            'billing_address_1' => [
+                'field' => 'billing_address_1',
+            ],
+            'billing_address_2' => [
+                'field' => 'billing_address_2',
+            ],
+            'billing_city' => [
+                'field' => 'billing_city',
+            ],
+            'billing_state' => [
+                'field' => 'billing_state',
+            ],
+            'billing_zip' => [
+                'field' => 'billing_zip',
+            ],
+            'billing_country' => [
+                'field' => 'billing_country',
+            ],
+
+            'delivery_address_name' => [
+                'field' => 'delivery_address_name',
+            ],
+            'delivery_address_1' => [
+                'field' => 'delivery_address_1',
+            ],
+            'delivery_address_2' => [
+                'field' => 'delivery_address_2',
+            ],
+            'delivery_city' => [
+                'field' => 'delivery_city',
+            ],
+            'delivery_state' => [
+                'field' => 'delivery_state',
+            ],
+            'delivery_zip' => [
+                'field' => 'delivery_zip',
+            ],
+            'delivery_country' => [
+                'field' => 'delivery_country',
+            ],
+
             'client_phone' => [
                 'field' => 'client_phone',
             ],

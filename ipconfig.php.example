@@ -28,6 +28,10 @@ DB_PASSWORD=
 DB_DATABASE=
 DB_PORT=
 
+## Backend settings
+# Show invoice options as buttons (true) or dropdown (false)
+#INVOICE_OPTIONS_BUTTONS=true
+
 # pdf stamp function of invoices and quotes by chrissie ^ x-tra-designs
 # this stamp pdf have to be in uploads/customer_files directory
 #INVOICE_STAMP_PDF=invoice_stamp_default.pdf

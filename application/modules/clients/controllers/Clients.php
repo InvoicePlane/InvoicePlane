@@ -4,6 +4,12 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+/*
+alter table ip_clients add column delivery_address_name text, add column delivery_address_1 text, add column delivery_address_2 text, add column delivery_city text, add column delivery_zip text, add column delivery_state text, add column delivery_country text ;
+
+alter table ip_clients add column billing_address_name text, add column billing_address_1 text, add column billing_address_2 text, add column billing_city text, add column billing_state text, add column billing_zip text, add column billing_country text;
+*/
+
 require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 
 /*
@@ -147,63 +153,7 @@ class Clients extends Admin_Controller
 
         $clients = $this->mdl_clients->result();
 
-/*
-// xtra, atac, ... by chrissie: with customer number, ... 
-// attention - this information is now in ip_client_extended
-// us this as an idea for new custom fields
-$my_customerno = [];
-$my_customerav = [];
-$my_customerhosting = [];
-$my_customerls = [];
-$my_customeransprech = [];
-$my_customeranrede = [];
-
-if (ip_xtra()) {
-        foreach ($clients as $c) {
-		$custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
-		foreach ($custom_fields as $cfield) {
-		if ($cfield->custom_field_label == "customer_no")
-			$my_customerno[$c->client_id] = $cfield->client_custom_fieldvalue;
-		if ($cfield->custom_field_label == "contact_person")
-			$my_customeransprech[$c->client_id] = $cfield->client_custom_fieldvalue;
-		if ($cfield->custom_field_label == "salutation")
-			$my_customeranrede[$c->client_id] = $cfield->client_custom_fieldvalue;
-		}
-	}
-}
-
-
-if (ip_atac() ) {
-        foreach ($clients as $c) {
-		$custom_fields = $this->mdl_client_custom->get_by_client($c->client_id)->result();
-		foreach ($custom_fields as $cfield) {
-			if ($cfield->custom_field_label == "Kundennummer")
-				$my_customerno[$c->client_id] = $cfield->client_custom_fieldvalue;
-
-                        if (str_starts_with($cfield->custom_field_label, "Hostingvertrag"))
-                                $my_customerhosting[$c->client_id] = $cfield->client_custom_fieldvalue;
-
-                        if (str_starts_with($cfield->custom_field_label, "Lastschrift"))
-                                $my_customerls[$c->client_id] = $cfield->client_custom_fieldvalue;
-
-			if ($cfield->custom_field_label == "AV-Vertrag")
-                                $my_customerav[$c->client_id] = $cfield->client_custom_fieldvalue;
-
-			if ($cfield->custom_field_label == "Ansprechpartner")
-                                $my_customeransprech[$c->client_id] = $cfield->client_custom_fieldvalue;
-                }
-        }
-}
-*/
-
         $this->layout->set([
-/*
-            'my_customerno' => $my_customerno,
-            'my_customerhosting' => $my_customerhosting,
-            'my_customerls' => $my_customerls,
-            'my_customerav' => $my_customerav,
-*/
-
             'sort' => $sort,
             'order' => $order,
             'records'            => $clients,
@@ -231,6 +181,9 @@ if (ip_atac() ) {
 
     public function form($id = null)
     {
+	// profiler for debug by chrissie
+	// $this->output->enable_profiler(TRUE);
+
 	$this->load->model('clients/mdl_client_extended');
 
         if ($this->input->post('btn_cancel')) {
