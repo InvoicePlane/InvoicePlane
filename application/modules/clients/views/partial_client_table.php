@@ -17,17 +17,17 @@ if (!isset($sort)) $sort=''; if(!isset($order)) $order='';
 		<?php _trans('client_name'); ?><?= do_client_caret($sort === 'name', $order) ?></a>
 	   </th>
 
-<?php if (ip_xtra()): ?>
+<?php if (ip_xtra()||ip_hbk()): ?>
 <th> <a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
-  Kd-Nr.<?= do_client_caret($sort === 'id', $order) ?></a></th>
+<?= _trans('customerno_short')?><?= do_client_caret($sort === 'id', $order) ?></a></th>
 <?php endif; ?>
 
 <?php if (ip_atac()): ?>
 <th> <a href="?sort=id&order=<?= ($sort === 'id' && $order === 'asc') ? 'desc' : 'asc' ?>">
-  Kd-Id.<?= do_client_caret($sort === 'id', $order) ?></a></th>
-<th>Hosting</th>
-<th>LS-Mandat</th>
-<th>AV</th>
+<?= _trans('customerno_short')?><?= do_client_caret($sort === 'id', $order) ?></a></th>
+<th><?= _trans('hosting') ?></th>
+<th><?= _trans('ls_mandat') ?></th>
+<th><?= _trans('av')?></th>
 <?php endif; ?>
 
             <th><?php _trans('email_address'); ?></th>
@@ -50,7 +50,7 @@ if (!isset($sort)) $sort=''; if(!isset($order)) $order='';
                 <td>
 			<?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?>
 		</td>
-<?php if (ip_atac() || ip_xtra()): ?>
+<?php if (ip_atac() || ip_xtra() || ip_hbk()): ?>
 	<td><?php if (isset($client->client_extended_customer_no)) echo $client->client_extended_customer_no; ?></td>
 <?php endif; ?>
 
