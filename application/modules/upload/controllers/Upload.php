@@ -19,7 +19,7 @@ class Upload extends Admin_Controller
     public $targetPath;
 
     public $ctype_default = "application/octet-stream";
-    public $content_types = array(
+    public $content_types = [
         'gif' => 'image/gif',
         'jpg' => 'image/jpeg',
         'jpeg' => 'image/jpeg',
@@ -27,7 +27,7 @@ class Upload extends Admin_Controller
         'png' => 'image/png',
         'txt' => 'text/plain',
         'xml' => 'application/xml',
-    );
+    ];
 
     /**
      * Upload constructor.
@@ -39,49 +39,45 @@ class Upload extends Admin_Controller
         $this->targetPath = UPLOADS_FOLDER . '/customer_files';
     }
 
-    /**
-     * @param $customerId
-     * @param $url_key
-     */
     public function upload_file($customerId, $url_key)
     {
-        Upload::create_dir($this->targetPath . '/');
-
-        if (!empty($_FILES)) {
-            $tempFile = $_FILES['file']['tmp_name'];
-            $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name']);
-            $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
-            $file_exists = file_exists($targetFile);
-
-            if (!$file_exists) {
-                // If file does not exists then upload
-                $data = array(
-                    'client_id' => $customerId,
-                    'url_key' => $url_key,
-                    'file_name_original' => $fileName,
-                    'file_name_new' => $url_key . '_' . $fileName
-                );
-
-                $this->mdl_uploads->create($data);
-
-                move_uploaded_file($tempFile, $targetFile);
-
-                echo json_encode([
-                    'success' => true
-                ]);
-
-            } else {
-                // If file exists then echo the error and set a http error response
-                echo json_encode([
-                    'success' => false,
-                    'message' => trans('error_duplicate_file')
-                ]);
-                http_response_code(404);
-            }
-
-        } else {
-            Upload::show_files($url_key, $customerId);
+        if (!$this->validate_csrf()) {
+            $this->respond_error(403, 'ip_lang.error_csrf', 'ip_lang.log_error_csrf');
+            return;
         }
+
+        if (empty($_FILES) || !isset($_FILES['file'])) {
+            Upload::show_files($url_key, $customerId);
+            return;
+        }
+
+        $fileName = $this->sanitize_file_name($_FILES['file']['name']);
+        $tempFile = $_FILES['file']['tmp_name'];
+        $filePath = $this->get_target_file_path($url_key, $fileName);
+
+        if (!$this->validate_upload($tempFile, $fileName)) {
+            return;
+        }
+
+        if (!$this->validate_file_extension($fileName)) {
+            return;
+        }
+
+        if (file_exists($filePath)) {
+            $this->respond_error(409, 'ip_lang.error_duplicate_file', 'ip_lang.log_info_duplicate_file', $fileName);
+            return;
+        }
+
+        if (!$this->save_file_metadata($customerId, $url_key, $fileName)) {
+            return;
+        }
+
+        if (!$this->move_uploaded_file($tempFile, $filePath, $fileName)) {
+            return;
+        }
+
+        log_message('info', sprintf(_trans('ip_lang.log_info_file_uploaded'), $fileName));
+        echo json_encode(['success' => true, 'message' => _trans('ip_lang.file_uploaded_successfully')]);
     }
 
     /**
@@ -203,5 +199,73 @@ class Upload extends Admin_Controller
 
         readfile($file_path);
         exit;
+    }
+
+    private function validate_csrf(): bool
+    {
+        return $this->security->csrf_verify();
+    }
+
+    private function sanitize_file_name(string $fileName): string
+    {
+        return preg_replace('/\s+/', '_', $fileName);
+    }
+
+    private function get_target_file_path(string $url_key, string $fileName): string
+    {
+        return $this->targetPath . '/' . $url_key . '_' . $fileName;
+    }
+
+    private function validate_upload(string $tempFile, string $fileName): bool
+    {
+        if (!is_uploaded_file($tempFile)) {
+            $this->respond_error(400, 'ip_lang.error_invalid_file_upload', 'ip_lang.log_error_invalid_file_upload', $fileName);
+            return false;
+        }
+        return true;
+    }
+
+    private function validate_file_extension(string $fileName): bool
+    {
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        if (!array_key_exists($extension, $this->content_types)) {
+            $this->respond_error(415, 'ip_lang.error_unsupported_file_type', 'ip_lang.log_error_unsupported_file_type', $extension);
+            return false;
+        }
+        return true;
+    }
+
+    private function save_file_metadata(int $customerId, string $url_key, string $fileName): bool
+    {
+        $data = [
+            'client_id' => $customerId,
+            'url_key' => $url_key,
+            'file_name_original' => $fileName,
+            'file_name_new' => $url_key . '_' . $fileName,
+        ];
+
+        if (!$this->mdl_uploads->create($data)) {
+            $this->respond_error(500, 'ip_lang.error_database', 'ip_lang.log_error_database', $fileName);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function move_uploaded_file(string $tempFile, string $filePath, string $fileName): bool
+    {
+        if (!move_uploaded_file($tempFile, $filePath)) {
+            $this->respond_error(500, 'ip_lang.error_file_save', 'ip_lang.log_error_file_save', $fileName);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function respond_error(int $httpCode, string $messageKey, string $logKey, string $dynamicValue = '')
+    {
+        log_message('error', sprintf(_trans($logKey), $dynamicValue));
+        http_response_code($httpCode);
+        echo json_encode(['success' => false, 'message' => _trans($messageKey)]);
     }
 }
