@@ -1,16 +1,16 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
- *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * 
+ * @author        InvoicePlane Developers
+ * @copyright     InvoicePlane
+ * @license       https://invoiceplane.com/license.txt
+ * @link          https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -18,15 +18,15 @@ class Upload extends Admin_Controller
 {
     public $targetPath;
 
-    public $ctype_default = "application/octet-stream";
+    public $ctype_default = 'application/octet-stream';
     public $content_types = [
-        'gif' => 'image/gif',
-        'jpg' => 'image/jpeg',
+        'gif'  => 'image/gif',
+        'jpg'  => 'image/jpeg',
         'jpeg' => 'image/jpeg',
-        'pdf' => 'application/pdf',
-        'png' => 'image/png',
-        'txt' => 'text/plain',
-        'xml' => 'application/xml',
+        'pdf'  => 'application/pdf',
+        'png'  => 'image/png',
+        'txt'  => 'text/plain',
+        'xml'  => 'application/xml',
     ];
 
     /**
@@ -47,7 +47,7 @@ class Upload extends Admin_Controller
         }
 
         if (empty($_FILES) || !isset($_FILES['file'])) {
-            Upload::show_files($url_key, $customerId);
+            $this->respond_error(400, 'ip_lang.error_no_file', 'ip_lang.log_error_no_file');
             return;
         }
 
@@ -59,7 +59,8 @@ class Upload extends Admin_Controller
             return;
         }
 
-        if (!$this->validate_file_extension($fileName)) {
+        $fileType = mime_content_type($tempFile);
+        if (!$this->validate_mime_type($fileType)) {
             return;
         }
 
@@ -80,125 +81,101 @@ class Upload extends Admin_Controller
         echo json_encode(['success' => true, 'message' => _trans('ip_lang.file_uploaded_successfully')]);
     }
 
-    /**
-     * @param string $path
-     * @param string $chmod
-     * @return bool
-     */
     public function create_dir($path, $chmod = '0777')
     {
         if (!(is_dir($path) || is_link($path))) {
             return mkdir($path, $chmod);
-        } else {
-            return false;
         }
+        return false;
     }
 
-    /**
-     * @param $url_key
-     * @param null $customerId
-     * @return void
-     */
     public function show_files($url_key, $customerId = null)
     {
-        $result = array();
+        $result = [];
         $path = $this->targetPath;
 
         $files = scandir($path);
+        if ($files === false) {
+            return;
+        }
 
-        if ($files !== false) {
-
-            foreach ($files as $file) {
-                if (in_array($file, array(".", ".."))) {
-                    continue;
-                }
-                if (strpos($file, $url_key) !== 0) {
-                    continue;
-                }
-                if (substr(realpath($path), realpath($file) == 0)) {
-                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
-                    $obj['fullname'] = $file;
-                    $obj['size'] = filesize($path . '/' . $file);
-                    $result[] = $obj;
-                }
+        foreach ($files as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+            if (strpos($file, $url_key) !== 0) {
+                continue;
+            }
+            if (realpath($path) !== substr(realpath($file), 0, strlen(realpath($path)))) {
+                continue;
             }
 
-        } else {
-            return;
+            $result[] = [
+                'name' => substr($file, strpos($file, '_', 1) + 1),
+                'fullname' => $file,
+                'size' => filesize($path . '/' . $file),
+            ];
         }
 
         echo json_encode($result);
     }
 
-    /**
-     * @param $url_key
-     */
     public function delete_file($url_key)
     {
         $path = $this->targetPath;
-        $fileName = $_POST['name'];
+        $fileName = $this->input->post('name');
 
         $this->mdl_uploads->delete_file($url_key, $fileName);
 
-        // AVOID TREE TRAVERSAL!
         $finalPath = $path . '/' . $url_key . '_' . $fileName;
 
-        if (strpos(realpath($path), realpath($finalPath)) == 0) {
-            unlink($path . '/' . $url_key . '_' . $fileName);
+        if (realpath($path) === substr(realpath($finalPath), 0, strlen(realpath($path)))) {
+            unlink($finalPath);
         }
     }
 
-    /**
-     * Returns the corresponding file as a download and prevents execution of files
-     *
-     * @param string $filename
-     * @return void
-     */
     public function get_file($filename)
     {
         $base_path = realpath(UPLOADS_CFILES_FOLDER);
-
         if (!$base_path) {
-            log_message('error', "Invalid base upload directory: " . UPLOADS_CFILES_FOLDER);
+            log_message('error', sprintf(_trans('ip_lang.log_error_invalid_directory'), UPLOADS_CFILES_FOLDER));
             show_404();
-            exit;
+            return;
         }
 
         $file_path = realpath($base_path . DIRECTORY_SEPARATOR . basename($filename));
-
         if (!$file_path || strpos($file_path, $base_path) !== 0) {
-            log_message('error', "Unauthorized file access attempt: $filename");
+            log_message('error', sprintf(_trans('ip_lang.log_error_unauthorized_access'), $filename));
             show_404();
-            exit;
+            return;
         }
 
         $path_parts = pathinfo($file_path);
         $file_ext = strtolower($path_parts['extension'] ?? '');
 
         if (!isset($this->content_types[$file_ext])) {
-            log_message('error', "Unsupported file type: $file_ext");
-            show_error('Unsupported file type', 403);
-            exit;
+            log_message('error', sprintf(_trans('ip_lang.log_error_unsupported_file_type'), $file_ext));
+            show_error(_trans('ip_lang.error_unsupported_file_type'), 403);
+            return;
         }
 
         if (!file_exists($file_path)) {
-            log_message('error', "File not found: $file_path");
+            log_message('error', sprintf(_trans('ip_lang.log_error_file_not_found'), $file_path));
             show_404();
-            exit;
+            return;
         }
 
         $file_size = filesize($file_path);
         $ctype = $this->content_types[$file_ext] ?? $this->ctype_default;
 
-        header("Expires: -1");
-        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-        header("Pragma: no-cache");
-        header("Content-Disposition: attachment; filename=\"" . basename($file_path) . "\"");
-        header("Content-Type: " . $ctype);
-        header("Content-Length: " . $file_size);
+        header('Expires: -1');
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
+        header('Content-Type: ' . $ctype);
+        header('Content-Length: ' . $file_size);
 
         readfile($file_path);
-        exit;
     }
 
     private function validate_csrf(): bool
@@ -225,11 +202,11 @@ class Upload extends Admin_Controller
         return true;
     }
 
-    private function validate_file_extension(string $fileName): bool
+    private function validate_mime_type(string $mimeType): bool
     {
-        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        if (!array_key_exists($extension, $this->content_types)) {
-            $this->respond_error(415, 'ip_lang.error_unsupported_file_type', 'ip_lang.log_error_unsupported_file_type', $extension);
+        $allowedTypes = array_values($this->content_types);
+        if (!in_array($mimeType, $allowedTypes, true)) {
+            $this->respond_error(415, 'ip_lang.error_unsupported_file_type', 'ip_lang.log_error_unsupported_file_type', $mimeType);
             return false;
         }
         return true;
