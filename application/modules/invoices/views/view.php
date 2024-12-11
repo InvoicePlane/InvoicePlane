@@ -224,17 +224,17 @@ if ($this->config->item('disable_read_only') == true) {
 		
 		<!-- ToDo: 
 			if viewport =< sm/lg switch to dropdown
-			create and load an options partial 
+			create and load an options partial? 
 		-->
         
 		<div class="options btn-group btn-group-sm">
 			<?php 
-				// Enable options menu as buttons				
+				// atac: Enable options menu as buttons				
 				if (ip_invoice_options()) {
 					
 					if ($invoice->is_read_only != 1) { ?>
 					<!-- Options as Buttons -->
-						<a  class="btn btn-sm btn-default" href="#add-invoice-tax" data-toggle="modal">
+						<a class="btn btn-sm btn-default" href="#add-invoice-tax" data-toggle="modal">
 							<i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
 						</a>
 					<?php } ?>

@@ -133,3 +133,5 @@ composer require horstoeko/zugferd
 
 * Added idea about horst oeko zupferd extended profile and switch
 * Added ip_client_extended table with the most common used custom fields for convience
+* Invoice, Quote Options as buttons
+* separate billing address, delivery address
