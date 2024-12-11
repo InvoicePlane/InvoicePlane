@@ -112,7 +112,8 @@ function invoice_recMod10($in)
  * @param number invoice-id
  * @return string
  */
-function invoice_qrcode($invoice_id) {
+function invoice_qrcode($invoice_id)
+{
     $CI = &get_instance();
 
     if (
@@ -128,4 +129,115 @@ function invoice_qrcode($invoice_id) {
     }
 
     return '';
+}
+
+/**
+ * Retrieve locale for clear text language
+ *
+ * @param string displayName
+ * @param string default_locale
+ * @return string
+ */
+function invoice_get_locale_by_displayname($displayName, $default_locale = 'en')
+{
+    $CI = &get_instance();
+
+    // https://www.php.net/manual/de/class.resourcebundle.php
+    // get all available locales
+    $allLocales = ResourceBundle::getLocales('');
+    foreach ($allLocales as $locale) {
+        // https://www.php.net/manual/de/class.locale.php
+        // get string with langauge part for locale
+        $currentName = Locale::getDisplayLanguage($locale, $default_locale);
+        if (strncmp($currentName, $displayName, strlen($currentName)) === 0) {
+            // use first/shortest locale match
+
+            return $locale;
+        }
+    }
+
+    return $default_locale;
+}
+
+/**
+ * Replace date tags within description with useful real date values
+ *
+ * @param date invoice_date_created
+ * @param string client_language
+ * @param string item_description
+ *   Tags: can have the form {{{month}}}, {{{date}}}, {{{year}}}, {{{month+1}}} etc.
+ * @return string
+ * in case of trouble contact markus . neubauer (at) email - online . org
+*/
+function invoice_replace_date_tags($invoice_date_created, $client_language, $item_description)
+{
+    $CI = &get_instance();
+
+    $invoiceDateCreated = new DateTime(date_from_mysql($invoice_date_created, true));
+    
+    if ($client_language ==  'system') {
+        $dateLanguageLocale = get_setting('default_country');
+    } else { 
+        $dateLanguageLocale = invoice_get_locale_by_displayname($client_language);
+    }
+
+    // get the tags
+    $tags = explode('{{{', $item_description);
+    foreach ($tags as $tag) {
+        // find tag end
+        $rawTag = stristr($tag, '}}}', true);
+        // exit loop, if no tag content
+        if (empty($rawTag)) continue;
+
+        // here we do D(ate), M(onth and year) and Y(ear) nothing else
+        $request = strtoupper(substr($rawTag,0,1));  
+        // take only first letter, exit loop, if none of 'DMY' found
+        if (strpos('DMY', $request) === false) continue;
+
+        // reconstruct original request pattern
+        $replaceThis='{{{'.$rawTag.'}}}';
+
+        // refresh date to calculate with is needed to be reset 
+        // if a new/second relative date occurs within same item description
+        $printDate = clone($invoiceDateCreated);
+        try {
+            // calculate additions/substractions
+            if ($pos = strpos($rawTag, '+')) {
+                $num = max(substr($rawTag,$pos+1),1);
+                $printDate->add(new DateInterval( 'P' . $num . $request ));
+            }
+            elseif ($pos = strpos($rawTag, '-')) {
+                $num = max(substr($rawTag,$pos+1),1);
+                // refresh date to calculate with
+                $printDate->sub(new DateInterval( 'P' . $num . $request ));
+            }
+            
+            // prepare replacement format string
+            if ($request == 'D') {
+                // ignore locale and create sql Y-m-d format date
+                // and use ip's function to create a visible date
+                $withReplacement = date_from_mysql(date_format($printDate, 'Y-m-d'));
+            }
+            else {
+                $dateFormat = new IntlDateFormatter(
+                                    $dateLanguageLocale,
+                                    IntlDateFormatter::SHORT,
+                                    IntlDateFormatter::SHORT
+                                    );
+                if ($request == 'M') {
+                    $dateFormat->setPattern('MMM yyyy'); // short month year
+                } elseif ($request == 'Y') {
+                    $dateFormat->setPattern('yyyy');     // year only
+                }
+                $withReplacement = datefmt_format($dateFormat, $printDate);
+            }
+
+            // replace within item description
+            $item_description = str_replace($replaceThis, $withReplacement, $item_description);
+
+        } catch (\Exception $e) {
+            $item_description = str_replace($replaceThis, trans('invoice_replace_date_tag_invalid'), $item_description);
+        }
+    }            
+    return $item_description;
 }
