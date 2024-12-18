@@ -29,6 +29,10 @@ DB_PORT=
 # the default is 10 days.
 SESS_EXPIRATION=864000
 
+# Whether to match the user's IP address when reading the session data.
+# If you loose session on web mobile (with srange move ipv4/v6) set to false
+SESS_MATCH_IP=true
+
 # Enable the deletion of invoices
 ENABLE_INVOICE_DELETION=false
 
