@@ -123,11 +123,11 @@ class Mdl_Users extends Response_Model
             ),
             'user_invoicing_contact' => array(
                 'field' => 'user_invoicing_contact',
-                'rules' => 'trim|xss_clean'
+                'rules' => 'trim'
             ),
             'user_bank' => array(
                 'field' => 'user_bank',
-                'rules' => 'trim|xss_clean'
+                'rules' => 'trim'
             ),
             'user_iban' => array(
                 'field' => 'user_iban'

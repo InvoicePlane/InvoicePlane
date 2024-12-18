@@ -44,7 +44,7 @@ class Ublexamv20Xml
             $this->root->appendChild($this->xmlInvoiceLine($index + 1, $item));
         }
         $this->doc->appendChild($this->root);
-        $this->doc->save(UPLOADS_FOLDER . 'archive/' . $this->filename . '.xml');
+        $this->doc->save(UPLOADS_ARCHIVE_FOLDER . $this->filename . '.xml');
     }
 
     protected function xmlRoot()
@@ -56,7 +56,7 @@ class Ublexamv20Xml
         $node->appendChild($this->doc->createElement('cbc:UBLVersionID', '2.0'));
         $node->appendChild($this->doc->createElement('cbc:CustomizationID', '1.0'));
         $node->appendChild($this->doc->createElement('cbc:ProfileID', 'EX IP-Community example'));
-        $node->appendChild($this->doc->createElement('cbc:ID', $this->invoice->invoice_number));
+        $node->appendChild($this->doc->createElement('cbc:ID', $this->filename));
         $node->appendChild($this->doc->createElement('cbc:IssueDate', $this->invoice->invoice_date_created));
         $node->appendChild($this->doc->createElement('cbc:InvoiceTypeCode', '380'));
         $node->appendChild($this->doc->createElement('cbc:DocumentCurrencyCode', $this->currencyCode));  // Mandatory
@@ -178,7 +178,7 @@ class Ublexamv20Xml
     protected function xmlPaymentMeans()
     {
         $PaymentDueDate = $this->invoice->invoice_date_due; 
-        $InstructionNote = 'Invoice: #' . $this->invoice->invoice_number;
+        $InstructionNote = 'Invoice: #' . $this->filename;
         $node = $this->doc->createElement('cac:PaymentMeans');
         $nodePMC = $this->doc->createElement('cbc:PaymentMeansCode', '1');
         $nodePMC->setAttribute('listID', 'UN/ECE 4461');

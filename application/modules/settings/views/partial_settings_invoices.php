@@ -1,3 +1,23 @@
+<script>
+    $(function () {
+        toggle_prfx_settings();
+
+        $('#change_filename_prefix').change(function () {
+            toggle_prfx_settings();
+        });
+
+        function toggle_prfx_settings() {
+            change_prfx_format = $('#change_filename_prefix').val();
+
+            if (change_prfx_format === '1') {
+                $('#div-prfx-settings').show();
+            } else {
+                $('#div-prfx-settings').hide();
+            }
+        }
+    });
+</script>
+
 <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
 
@@ -474,6 +494,51 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="change_filename_prefix">
+                                <?php _trans('change_filename_prefix'); ?>
+                            </label>
+                            <select name="settings[change_filename_prefix]" class="form-control simple-select"
+                                id="change_filename_prefix" data-minimum-results-for-search="Infinity">
+                                <option value="0" <?php check_select(get_setting('change_filename_prefix'), '0'); ?>>
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('change_filename_prefix'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                            <p class="help-block"><?php _trans('change_filename_prefix_hint'); ?></p>
+                        </div>
+                    </div>
+
+                    <div id="div-prfx-settings">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label for="settings[add_filename_prefix]">
+                                    <?php _trans('add_filename_prefix'); ?>
+                                </label>
+                                <select name="settings[add_filename_prefix]" id="settings[add_filename_prefix]"
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                        <option value="user_vat_id" <?php check_select(get_setting('add_filename_prefix'), 'user_vat_id'); ?>>
+                                            <?php _trans('vat_id'); ?>
+                                        </option>
+                                        <option value="user_company" <?php check_select(get_setting('add_filename_prefix'), 'user_company'); ?>>
+                                            <?php _trans('company'); ?>
+                                        </option>
+                                        <option value="user_name" <?php check_select(get_setting('add_filename_prefix'), 'user_name'); ?>>
+                                            <?php _trans('name'); ?>
+                                        </option>
+                                </select>
+                                <p class="help-block"><?php _trans('add_filename_prefix_hint'); ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
             </div>
         </div>
 

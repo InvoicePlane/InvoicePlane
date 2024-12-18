@@ -11,6 +11,24 @@ $cv = $this->controller->view_data['custom_values'];
 
         <?php $this->layout->load_view('clients/js/script_select_client_title.js'); ?>
     });
+
+    $(function () {
+        toggle_einvoice();
+
+        $('#client_start_einvoicing').change(function () {
+            toggle_einvoice();
+        });
+
+        function toggle_einvoice() {
+            start_einvoicing = $('#client_start_einvoicing').val();
+
+            if (start_einvoicing === '1') {
+                $('#div_show_einvoice').show();
+            } else {
+                $('#div_show_einvoice').hide();
+            }
+        }
+    });
 </script>
 
 <form method="post">
@@ -61,7 +79,7 @@ $cv = $this->controller->view_data['custom_values'];
                             <input id="client_name" name="client_name" type="text" class="form-control"
                                    autofocus
                                    value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>" required>
-                        </div>
+                        </div>                      
                         <div class="form-group">
                             <label for="client_surname">
                                 <?php _trans('client_surname_optional'); ?>
@@ -255,6 +273,291 @@ $cv = $this->controller->view_data['custom_values'];
             <div class="col-xs-12 col-sm-6">
 
                 <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php _trans('tax_information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="client_company">
+                                <?php _trans('client_company'); ?>
+                            </label>
+                            <div class="controls">
+                                <input id="client_company" name="client_company" type="text" class="form-control"
+                                       value="<?php echo $this->mdl_clients->form_value('client_company', true); ?>">
+                            </div> 
+                        </div>  
+                        <div class="form-group">
+                            <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
+
+                            <div class="controls">
+                                <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
+                                       value="<?php echo $this->mdl_clients->form_value('client_vat_id', true); ?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="client_tax_code"><?php _trans('tax_code'); ?></label>
+
+                            <div class="controls">
+                                <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
+                                       value="<?php echo $this->mdl_clients->form_value('client_tax_code', true); ?>">
+                            </div>
+                        </div>
+
+                        <!-- Custom fields -->
+                        <?php foreach ($custom_fields as $custom_field): ?>
+                            <?php if ($custom_field->custom_field_location != 4) {
+                                continue;
+                            } ?>
+                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                        <?php endforeach; ?>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-xs-12 col-sm-6">
+
+                <!-- eInvoicing++ panel added -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo 'e-' . trans('invoicing') . ' ' . trans('information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="row" style="font-size: medium;">
+                            <div class="col-xs-12 col-md-6">
+
+                                <div class="form-group">
+                                    <label for="client_start_einvoicing">
+                                        <?php _trans('start_einvoicing'); ?>
+                                    </label>
+                                    <select name="client_start_einvoicing" class="form-control simple-select"
+                                        id="client_start_einvoicing" data-minimum-results-for-search="Infinity">
+                                        <option value="0" <?php check_select($this->mdl_clients->form_value('client_start_einvoicing'), '0'); ?>>
+                                            <?php _trans('no'); ?>
+                                        </option>
+                                        <option value="1" <?php check_select($this->mdl_clients->form_value('client_start_einvoicing'), '1'); ?>>
+                                            <?php _trans('yes'); ?>
+                                        </option>
+                                    </select>
+                                    <p class="help-block"><?php echo trans('start_einvoicing_hint'); ?></p>
+                                </div>
+                                
+                            </div>
+
+                            <div id="div_show_einvoice">
+                                                                                
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="client_einvoice_version"><?php echo 'UBL / CII '. trans('version'); ?></label>
+                                        <?php if ($req_einvoice['show_table'] == 0) { ?>
+                                            <select name="client_einvoice_version" id="client_einvoice_version" class="form-control">
+                                        <?php } else { ?>
+                                            <select disabled name="client_einvoice_version" id="client_einvoice_version" class="form-control">
+                                        <?php } ?>                                                
+                                            <option value=""><?php echo trans('none'); ?></option>
+                                            <?php foreach ($xml_templates as $xml_key => $xml_template) { ?>
+                                                <option value="<?php echo $xml_key; ?>"
+                                                    <?php check_select($xml_key, $this->mdl_clients->form_value('client_einvoice_version')) ?>>
+                                                    <?php echo $xml_template; ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                        <?php if ($req_einvoice['show_table'] == 1) { ?>
+                                            <p class="help-block"><?php echo trans('ubl_cii_required_help'); ?></p>
+                                        <?php } else { ?>                                            
+                                            <p class="help-block"><?php echo trans('ubl_cii_creation_help'); ?></p>
+                                        <?php } ?>     
+                                    </div>  
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">    
+                                   
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <?php if ($req_einvoice['show_table'] == 1) { ?>
+                                                <table class="table table-hover table-condensed table-bordered no-margin">
+                                            <?php } else { ?>
+                                                <table style="display:none;">
+                                            <?php } ?>                                           
+                                                <thead>
+                                                    <tr>
+                                                        <th><?php _trans('required_fields'); ?></th>
+                                                        <th style="min-width: 20%; text-align: center;"><?php _trans('user'); ?></th>
+                                                        <th style="min-width: 20%; text-align: center;"><?php _trans('client'); ?></th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <?php if ($req_einvoice['tr_show_address_1'] == 1) { ?>
+                                                        <tr>
+                                                    <?php } else { ?>
+                                                        <tr style="display:none;">
+                                                    <?php } ?>
+                                                        <td>
+                                                            <?php echo trans('street_address'); ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['user_address_1'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>
+                                                            <?php } else { ?>
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['client_address_1'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>
+                                                            <?php } else { ?>
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <?php if ($req_einvoice['tr_show_zip'] == 1) { ?>
+                                                        <tr>
+                                                    <?php } else { ?>
+                                                        <tr style="display:none;">
+                                                    <?php } ?>
+                                                        <td>
+                                                            <?php _trans('zip_code'); ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['user_zip'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>
+                                                            <?php } else { ?>
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['client_zip'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+
+                                                    </tr>
+
+                                                    <?php if ($req_einvoice['tr_show_city'] == 1) { ?>
+                                                        <tr>
+                                                    <?php } else { ?>                                                               
+                                                        <tr style="display:none;">
+                                                    <?php } ?>
+                                                        <td>
+                                                            <?php _trans('city'); ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['user_city'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['client_city'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+
+                                                    </tr>
+
+                                                    <?php if ($req_einvoice['tr_show_country'] == 1) { ?>
+                                                        <tr>
+                                                    <?php } else { ?>                                                               
+                                                        <tr style="display:none;">
+                                                    <?php } ?>
+                                                        <td>
+                                                            <?php _trans('country'); ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['user_country'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['client_country'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+
+                                                    </tr>
+
+                                                    <?php if ($req_einvoice['tr_show_company'] == 1) { ?>
+                                                        <tr>
+                                                    <?php } else { ?>                                                               
+                                                        <tr style="display:none;">
+                                                    <?php } ?>
+                                                        <td>
+                                                            <?php echo trans('company') . ' ' . trans('name'); ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['user_company'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['client_company'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+
+                                                    </tr>
+
+                                                    <?php if ($req_einvoice['tr_show_vat_id'] == 1) { ?>
+                                                        <tr>
+                                                    <?php } else { ?>                                                               
+                                                        <tr style="display:none;">
+                                                    <?php } ?>                                                    
+                                                        <td>
+                                                            <?php _trans('vat_id'); ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['user_vat_id'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php if ($req_einvoice['client_vat_id'] == 0 ) { ?>
+                                                                <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>  
+                                                            <?php } else { ?>                                                               
+                                                                <i class="fa fa-edit" style="font-size:16px; color:red"></i>
+                                                            <?php } ?>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                        <!-- End Table check -->
+                                    </div>
+
+                                </div> 
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="panel panel-default">
 
                     <div class="panel-heading">
                         <?php _trans('personal_information'); ?>
@@ -322,8 +625,8 @@ $cv = $this->controller->view_data['custom_values'];
                             ?>
                             <div class="input-group">
                                 <input type="text" name="client_birthdate" id="client_birthdate"
-                                       class="form-control datepicker"
-                                       value="<?php _htmlsc($bdate); ?>">
+                                    class="form-control datepicker"
+                                    value="<?php _htmlsc($bdate); ?>">
                                 <span class="input-group-addon">
                                 <i class="fa fa-calendar fa-fw"></i>
                             </span>
@@ -337,7 +640,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_avs" id="client_avs" class="form-control"
-                                           value="<?php echo htmlspecialchars(format_avs($avs), ENT_COMPAT); ?>">
+                                        value="<?php echo htmlspecialchars(format_avs($avs), ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -346,8 +649,8 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_insurednumber" id="client_insurednumber"
-                                           class="form-control"
-                                           value="<?php echo htmlentities($insuredNumber, ENT_COMPAT); ?>">
+                                        class="form-control"
+                                        value="<?php echo htmlentities($insuredNumber, ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -356,7 +659,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_veka" id="client_veka" class="form-control"
-                                           value="<?php echo htmlentities($veka, ENT_COMPAT); ?>">
+                                        value="<?php echo htmlentities($veka, ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -371,75 +674,8 @@ $cv = $this->controller->view_data['custom_values'];
                         <?php endforeach; ?>
                     </div>
 
-                </div>
-
-            </div>
-            <div class="col-xs-12 col-sm-6">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <?php _trans('tax_information'); ?>
                     </div>
 
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
-
-                            <div class="controls">
-                                <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_vat_id', true); ?>">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="client_tax_code"><?php _trans('tax_code'); ?></label>
-
-                            <div class="controls">
-                                <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_tax_code', true); ?>">
-                            </div>
-                        </div>
-
-                        <!-- Custom fields -->
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php if ($custom_field->custom_field_location != 4) {
-                                continue;
-                            } ?>
-                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                        <?php endforeach; ?>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-
-        <!-- eInvoicing++ panel added -->
-        <div class="row">
-            <div class="col-xs-12 col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <?php echo 'e-' . trans('invoicing') . ' ' . trans('information'); ?>
-                    </div>
-
-                    <div class="panel-body">
-
-                        <div class="form-group">
-                            <label for="client_einvoice_version"><?php echo 'UBL / CII '. trans('version'); ?></label>
-                                <select name="client_einvoice_version" id="client_einvoice_version" class="form-control">
-                                    <option value=""><?php echo trans('none'); ?></option>
-                                    <?php foreach ($xml_templates as $xml_key => $xml_template) { ?>
-                                        <option value="<?php echo $xml_key; ?>"
-                                            <?php check_select($xml_key, $this->mdl_clients->form_value('client_einvoice_version')) ?>>
-                                            <?php echo $xml_template; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            <p class="help-block"><?php echo trans('ubl_cii_select_help'); ?></p>
-                        </div> 
-
-                    </div>
-                </div>
             </div>
 
         </div>

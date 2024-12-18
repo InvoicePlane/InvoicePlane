@@ -45,7 +45,7 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_name',
                 'label' => trans('client_name'),
                 'rules' => 'required',
-            ],
+            ],          
             'client_surname' => [
                 'field' => 'client_surname',
                 'label' => trans('client_surname'),
@@ -92,6 +92,9 @@ class Mdl_Clients extends Response_Model
             'client_web' => [
                 'field' => 'client_web',
             ],
+            'client_company' => [
+                'field' => 'client_company',
+            ],              
             'client_vat_id' => [
                 'field' => 'client_vat_id',
             ],
@@ -104,7 +107,13 @@ class Mdl_Clients extends Response_Model
             ],
             'client_einvoice_version' => [
                 'field' => 'client_einvoice_version'
+            ], 
+            'client_start_einvoicing' => [
+                'field' => 'client_start_einvoicing'
             ],
+            'client_pause_einvoicing' => [
+                'field' => 'client_pause_einvoicing'
+            ],            
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',

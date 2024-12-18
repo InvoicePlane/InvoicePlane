@@ -57,7 +57,7 @@ function get_xml_template_files()
 }
 
 /**
- * Returns the XML template (UBL / CII) fullname of a given client_e-invoice_version value.
+ * Returns the XML template (UBL/CII) fullname of a given client_e-invoice_version value.
  *
  * @param $xml_Id
  * @return mixed

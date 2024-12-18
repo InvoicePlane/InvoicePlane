@@ -138,25 +138,15 @@ function phpmail_send(
 
     // Add the attachments if needed - eInvoicing++
     if ($attachment_path && get_setting('email_pdf_attachment')) {
-        $attachfile = pathinfo($attachment_path);
-        $dirname = $attachfile['dirname'];
-        $filename = $attachfile['filename'];
-        $file = $dirname . '/' . $filename;
-        // check the date prefix: '2017-02-01'_ == today, then strip, copy and attach the new file)
-        // if (substr($filename, 0, 10) == date('Y-m-d')) {
-        //     $file = $dirname . '/' . substr_replace($filename, '', 0, 11);
-        //     copy($attachment_path, $file . '.pdf');
-        // }
-        $mail->addAttachment($file.'.pdf');
+        $mail->addAttachment($attachment_path);
 
-        // attach the UBL+ file
-        $fullUblname = $dirname . '/' . $filename . '.xml';
-        if (file_exists($file . '.xml')) {
-            $mail->addAttachment($file . '.xml');
-        } elseif (file_exists($fullUblname)) {
-            $mail->addAttachment($fullUblname);
-        }
+        // attach the XML file
+        $xml_file = rtrim($attachment_path, ".pdf") . ".xml";
+        if (file_exists($xml_file)) {
+            $mail->addAttachment($xml_file);
+        }        
     }
+    
     // Add the other attachments if supplied
     if ($more_attachments) {
         foreach ($more_attachments as $paths) {
