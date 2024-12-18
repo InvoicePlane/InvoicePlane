@@ -23,7 +23,7 @@
                 <div class="form-group">
                     <label for="custom_values_value"><?php _trans('label'); ?></label>
                     <input type="text" name="custom_values_value" id="custom_values_value" class="form-control"
-                           value="<?php _htmlsc($value->custom_values_value); ?>">
+                           value="<?php _htmlsc($value->custom_values_value); ?>" required>
                 </div>
             </div>
         </div>

@@ -77,7 +77,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <?php _trans('email_address'); ?>
                                 </label>
                                 <input type="text" name="user_email" id="user_email" class="form-control"
-                                       value="<?php echo $this->mdl_users->form_value('user_email', true); ?>">
+                                       value="<?php echo $this->mdl_users->form_value('user_email', true); ?>" required>
                             </div>
 
                             <?php if (!$id) { ?>
@@ -85,7 +85,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     <label for="user_password">
                                         <?php _trans('password'); ?>
                                     </label>
-                                    <input type="password" name="user_password" id="user_password" class="form-control">
+                                    <input type="password" name="user_password" id="user_password" class="form-control" required>
                                 </div>
 
                                 <div class="form-group">
@@ -93,7 +93,7 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php _trans('verify_password'); ?>
                                     </label>
                                     <input type="password" name="user_passwordv" id="user_passwordv"
-                                           class="form-control">
+                                           class="form-control" required>
                                 </div>
                             <?php } else { ?>
                                 <div class="form-group">
@@ -108,7 +108,7 @@ $cv = $this->controller->view_data["custom_values"];
                                 <label for="user_language">
                                     <?php _trans('language'); ?>
                                 </label>
-                                <select name="user_language" id="user_language" class="form-control simple-select">
+                                <select name="user_language" id="user_language" class="form-control simple-select" required>
                                     <option value="system">
                                         <?php echo trans('use_system_language') ?>
                                     </option>
@@ -127,7 +127,7 @@ $cv = $this->controller->view_data["custom_values"];
                                 <label for="user_type">
                                     <?php _trans('user_type'); ?>
                                 </label>
-                                <select name="user_type" id="user_type" class="form-control simple-select">
+                                <select name="user_type" id="user_type" class="form-control simple-select" required>
                                     <?php foreach ($user_types as $key => $type) { ?>
                                         <option value="<?php echo $key; ?>"
                                             <?php check_select($this->mdl_users->form_value('user_type'), $key); ?>>
@@ -358,16 +358,16 @@ $cv = $this->controller->view_data["custom_values"];
                                 <div class="panel-body">
                                     <?php
                                     $cv = $this->controller->view_data["custom_values"];
-                                    foreach ($custom_fields as $custom_field) {
-                                        if ($custom_field->custom_field_location != 0) {
-                                            continue;
-                                        }
-                                        print_field(
-                                            $this->mdl_users,
-                                            $custom_field,
-                                            $cv
-                                        );
-                                    } ?>
+                            foreach ($custom_fields as $custom_field) {
+                                if ($custom_field->custom_field_location != 0) {
+                                    continue;
+                                }
+                                print_field(
+                                    $this->mdl_users,
+                                    $custom_field,
+                                    $cv
+                                );
+                            } ?>
                                 </div>
 
                             </div>

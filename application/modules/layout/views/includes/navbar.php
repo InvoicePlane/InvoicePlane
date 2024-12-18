@@ -120,7 +120,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="http://docs.invoiceplane.com/" target="_blank"
+                    <a href="https://wiki.invoiceplane.com/" target="_blank"
                        class="tip icon" title="<?php _trans('documentation'); ?>"
                        data-placement="bottom">
                         <i class="fa fa-question-circle"></i>

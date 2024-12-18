@@ -16,7 +16,7 @@ if (!file_exists('ipconfig.php')) {
 }
 
 require('vendor/autoload.php');
-$dotenv = new \Dotenv\Dotenv(__DIR__, 'ipconfig.php');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__, 'ipconfig.php');
 $dotenv->load();
 
 /**
@@ -29,7 +29,11 @@ $dotenv->load();
  */
 function env($env_key, $default = null)
 {
-    return getenv($env_key) ? getenv($env_key) : $default;
+    if (isset($_ENV[$env_key])) {
+        return $_ENV[$env_key];
+    } else {
+        return $default;
+    }
 }
 
 /**

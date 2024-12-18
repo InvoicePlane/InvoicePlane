@@ -28,7 +28,7 @@
                                 <?php _trans('password'); ?>
                             </label>
                             <input type="password" name="user_password" id="user_password"
-                                   class="form-control passwordmeter-input">
+                                   class="form-control passwordmeter-input" required>
                             <div class="progress" style="height:3px;">
                                 <div class="progress-bar progress-bar-danger passmeter passmeter-1"
                                      style="width: 33%"></div>
@@ -44,7 +44,7 @@
                                 <?php _trans('verify_password'); ?>
                             </label>
                             <input type="password" name="user_passwordv" id="user_passwordv"
-                                   class="form-control">
+                                   class="form-control" required>
                         </div>
                     </div>
 

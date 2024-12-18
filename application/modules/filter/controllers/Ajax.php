@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Ajax
- */
+#[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
@@ -70,7 +71,7 @@ class Ajax extends Admin_Controller
 
         foreach ($keywords as $keyword) {
             if ($keyword) {
-                $keyword = strtolower($keyword);
+                $keyword = trim(strtolower($keyword));
                 $this->mdl_clients->like("CONCAT_WS('^',LOWER(client_name),LOWER(client_surname),LOWER(client_email),client_phone,client_active)", $keyword);
             }
         }

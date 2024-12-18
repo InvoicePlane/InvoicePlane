@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Ajax
- */
+#[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
@@ -48,10 +49,10 @@ class Ajax extends Admin_Controller
 
         $data = array(
             'payment_methods' => $this->mdl_payment_methods->get()->result(),
-            'invoice_id' => $this->input->post('invoice_id'),
+            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
             'invoice_balance' => $this->input->post('invoice_balance'),
             'invoice_payment_method' => $this->input->post('invoice_payment_method'),
-            'payment_cf_exist' => $this->input->post('payment_cf_exist')
+            'payment_cf_exist' => $this->security->xss_clean($this->input->post('payment_cf_exist'))
         );
 
         $this->layout->load_view('payments/modal_add_payment', $data);

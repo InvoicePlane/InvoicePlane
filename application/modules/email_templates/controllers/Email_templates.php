@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Email_Templates
- */
+#[AllowDynamicProperties]
 class Email_Templates extends Admin_Controller
 {
     /**
@@ -46,6 +47,8 @@ class Email_Templates extends Admin_Controller
         if ($this->input->post('btn_cancel')) {
             redirect('email_templates');
         }
+
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
             $check = $this->db->get_where('ip_email_templates', array('email_template_title' => $this->input->post('email_template_title')))->result();
@@ -90,5 +93,4 @@ class Email_Templates extends Admin_Controller
         $this->mdl_email_templates->delete($id);
         redirect('email_templates');
     }
-
 }

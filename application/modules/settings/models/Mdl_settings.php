@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Settings
- */
+#[AllowDynamicProperties]
 class Mdl_Settings extends CI_Model
 {
     public $settings = array();
@@ -126,13 +127,13 @@ class Mdl_Settings extends CI_Model
             }
 
             // Get the theme info file
-            $theme = str_replace('/', '', $theme);
+            $theme = str_replace(DIRECTORY_SEPARATOR, '', $theme);
             $info_path = THEME_FOLDER . $theme . '/';
             $info_file = $theme . '.theme';
 
             if (file_exists($info_path . $info_file)) {
-                $theme_info = new \Dotenv\Dotenv($info_path, $info_file);
-                $theme_info->overload();
+                $theme_info = Dotenv\Dotenv::createMutable($info_path, $info_file);
+                $theme_info->load();
                 $themes[$theme] = env('TITLE');
             }
         }

@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -50,7 +53,9 @@ function pdf_create(
     $invoice_array = array();
 
     // mPDF loading
-    $mpdf = new \Mpdf\Mpdf(['tempDir' => UPLOADS_TEMP_MPDF_FOLDER]);#mpdf 8.1.0
+    $mpdf = new \Mpdf\Mpdf([
+        'tempDir' => UPLOADS_TEMP_MPDF_FOLDER
+    ]);
 
     // mPDF configuration
     $mpdf->useAdobeCJK = true;

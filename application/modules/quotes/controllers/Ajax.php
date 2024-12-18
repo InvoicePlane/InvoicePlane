@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Ajax
- */
+#[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
 
@@ -24,7 +25,7 @@ class Ajax extends Admin_Controller
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('units/mdl_units');
 
-        $quote_id = $this->input->post('quote_id');
+        $quote_id = $this->security->xss_clean($this->input->post('quote_id', true));
 
         $this->mdl_quotes->set_id($quote_id);
 
@@ -180,8 +181,8 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         $data = [
-            'client_id' => $this->input->post('client_id'),
-            'quote_id' => $this->input->post('quote_id'),
+            'client_id' => $this->security->xss_clean($this->input->post('client_id')),
+            'quote_id' => $this->security->xss_clean($this->input->post('quote_id')),
             'clients' => $this->mdl_clients->get_latest(),
         ];
 
@@ -209,7 +210,7 @@ class Ajax extends Admin_Controller
 
             $response = [
                 'success' => 1,
-                'quote_id' => $quote_id,
+                'quote_id' => $this->security->xss_clean($quote_id),
             ];
         } else {
             $this->load->helper('json_error');
@@ -260,7 +261,7 @@ class Ajax extends Admin_Controller
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'quote_id' => $this->input->post('quote_id'),
+            'quote_id' => $this->security->xss_clean($this->input->post('quote_id')),
             'quote' => $this->mdl_quotes->where('ip_quotes.quote_id', $this->input->post('quote_id'))->get()->row(),
             'client' => $this->mdl_clients->get_by_id($this->input->post('client_id')),
         ];
@@ -302,7 +303,7 @@ class Ajax extends Admin_Controller
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
-            'quote_id' => $quote_id,
+            'quote_id' => $this->security->xss_clean($quote_id),
             'quote' => $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row(),
         ];
 

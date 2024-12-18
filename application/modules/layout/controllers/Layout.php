@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -10,9 +11,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Layout
- */
+#[AllowDynamicProperties]
 class Layout extends MX_Controller
 {
     public $view_data = array();

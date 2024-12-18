@@ -1,4 +1,8 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /**
  * Modular Extensions - HMVC
@@ -34,6 +38,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+#[AllowDynamicProperties]
 class MX_Config extends CI_Config
 {
 
