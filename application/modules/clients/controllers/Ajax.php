@@ -147,6 +147,8 @@ class Ajax extends Admin_Controller
 	*/
 
         foreach ($clients as $client) {
+	    $client->client_invoice_balance = format_currency($client->client_invoice_balance );
+
             $response[] = [
                 'id' => $client->client_id,
                 'htmlsc_name' => htmlsc(format_client($client)),
