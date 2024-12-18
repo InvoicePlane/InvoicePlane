@@ -89,6 +89,75 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
+    /**
+     * Get much clients info via ajax for infinite scroll by chrissie
+     */
+    public function get_ajax($offset = 0)
+    {
+        // Load the model & helper
+        $this->load->model('clients/mdl_clients');
+	$this->load->model('clients/mdl_client_extended');
+
+	//$this->mdl_clients->with_total_balance();
+
+	$sort  = $this->input->get('sort')  ?? 'id';	// Standard-Spalte
+	$order = $this->input->get('order') ?? 'asc';	// Standard-Reihenfolge
+	$sort=trim($sort); $order=trim($order);
+
+	$this->db->limit(5, $offset);		// limit, start
+
+        if ($sort == 'name' && $order =='asc')
+		$this->mdl_clients->with_total_balance()->order_by('client_name','ASC');
+        if ($sort == 'name' && $order =='desc')
+		$this->mdl_clients->with_total_balance()->order_by('client_name','DESC');
+        if ($sort == 'id' && $order =='asc')
+		$this->mdl_clients->with_total_balance()->order_by('client_id','ASC');
+        if ($sort == 'id' && $order =='desc')
+		$this->mdl_clients->with_total_balance()->order_by('client_id','DESC');
+        if ($sort == 'amount' && $order =='asc')
+		$this->mdl_clients->with_total_balance()->order_by('client_invoice_balance','ASC');
+        if ($sort == 'amount' && $order =='desc')
+		$this->mdl_clients->with_total_balance()->order_by('client_invoice_balance','DESC');
+
+        $clients = $this->mdl_clients
+            ->where('client_active', 1)
+            ->limit(5)
+            ->order_by('client_date_created')
+            ->get()
+            ->result();
+
+        $response = [];
+
+	/*
+	// debug
+	$response[]=[
+		'id' => 'Offset',
+		'text' => $offset
+	];
+	*/
+
+	/*
+	// debug
+	$filePath = "/var/customers/webs/user02/InvoicePlaneXtra-devel/application/modules/d.txt";
+	//$objData = serialize($client);
+	$objData="s: ".$sort." / o: " . $order . " / offs:" . $offset . " \n";
+	$fp = fopen($filePath, "a");
+	fwrite($fp, $objData);
+	fclose($fp);
+	*/
+
+        foreach ($clients as $client) {
+            $response[] = [
+                'id' => $client->client_id,
+                'htmlsc_name' => htmlsc(format_client($client)),
+		$client
+            ];
+        }
+
+        // Return the results
+        echo json_encode($response);
+    }
+
     public function save_preference_permissive_search_clients()
     {
         $this->load->model('mdl_settings');

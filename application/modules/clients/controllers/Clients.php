@@ -134,7 +134,7 @@ class Clients extends Admin_Controller
         //$this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
 
         // sort asc desc by chrissie
-        $sort = $this->input->get('sort') ?? 'id'; // Standard-Spalte
+        $sort  = $this->input->get('sort') ?? 'id'; // Standard-Spalte
         $order = $this->input->get('order') ?? 'asc';  // Standard-Reihenfolge
 
 	if ($sort == 'name' && $order =='asc')
@@ -154,6 +154,7 @@ class Clients extends Admin_Controller
         $clients = $this->mdl_clients->result();
 
         $this->layout->set([
+            'page' => $page,
             'sort' => $sort,
             'order' => $order,
             'records'            => $clients,
@@ -431,6 +432,7 @@ class Clients extends Admin_Controller
             'quote_statuses'   => $this->mdl_quotes->statuses(),
             'invoice_statuses' => $this->mdl_invoices->statuses(),
             'activeTab'        => $activeTab,
+'page' => $page
         ]);
 
         $this->layout->buffer([

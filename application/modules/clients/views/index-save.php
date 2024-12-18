@@ -69,30 +69,18 @@
         <?php $this->layout->load_view('clients/partial_client_table'); ?>
     </div>
 
+</div>
+<!-- infinite scroll -->
 
-<!-- HTML infinite scroll -->
-    <div class="table-responsive">
-        <table class="table table-hover table-striped">
-            <tbody id="scroll-content">
-           </tbody>
-        </table>
-    </div>
-
-    <div id="loader" style="text-align: center; display: none;">
-        <p><?= _trans('Loading') ?></p>
-    </div>
-
-<!-- //END infinite scroll -->
-
+<div id="loader" style="text-align: center; display: none;">
+    <p>Scroll ...</p>
 </div>
 
-<!-- Javascript infinite scroll -->
+
 <script type="text/javascript">
 $(document).ready(function () {
-    let sort   = '<?php echo $sort; ?>';
-    let order  = '<?php echo $order; ?>';
-    let offset = <?php echo $page; ?> + 15;     // Startpunkt - $page + 15 already there
-    const limit = 5;     // Anzahl der Eintrage pro Anfrage
+    let offset = 15; // Startpunkt - 15 already there
+    const limit = 5; // Anzahl der Eintrage pro Anfrage
     let loading = false; // Ladezustand
 
     // Funktion zum Laden von Clients
@@ -101,18 +89,36 @@ $(document).ready(function () {
         loading = true;
         $("#loader").show();
 
-       $.getJSON("<?php echo site_url('clients/ajax/get_ajax'); ?>/"+offset+"?sort="+sort+"&order="+order, { }, function (data) {
+       $.getJSON("<?php echo site_url('clients/ajax/get_ajax'); ?>/"+offset, { }, function (data) {
 
             if (data.length > 0) {
                 data.forEach(client => {
-			//console.log(client);
-			$("#scroll-content").append(`
-			<?php $this->layout->load_view('clients/partial_client_table_ajax'); ?>
-			`);
+//console.log(client);
+$("#content").append(`
+<?php $this->layout->load_view('clients/partial_client_table_ajax'); ?>
+`);
+/*
+                    $("#content").append(`
+                        <div class="cl1">
+                            ${client[0].client_active}
+                            ${client[0].client_id}
+                            ${client.htmlsc_name}
+                            ${client[0].client_extended_customer_no}
+                            ${client[0].client_extended_customer_no}
+                            ${client[0].client_extended_contract}
+                            ${client[0].client_extended_direct_debit}
+                            ${client[0].client_extended_flags}
+                            ${client[0].client_email}
+                            ${client[0].client_phone}
+                            ${client[0].client_invoice_balance}
+                        </div>
+                    `);
+*/
+
                 });
-                offset += limit; 	// increase offset for next
+                offset += limit; // Offset erhöhen
             } else {
-                // no further clients - make of scroll sign
+                // Keine weiteren Inhalte
                 $(window).off("scroll");
             }
             loading = false;
@@ -127,8 +133,8 @@ $(document).ready(function () {
         }
     });
 
-    // initial load clients - not in this case - just for reference
-    //loadClients();
+    // initial load clients - not in this case
+    //loadCustomers();
 });
 </script>
 
