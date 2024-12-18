@@ -18,7 +18,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function format_currency($amount)
 {
-    global $CI;
+    $CI =& get_instance();
     $amount = floatval($amount);
     $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
@@ -53,21 +53,26 @@ function format_amount($amount = null)
 }
 
 /**
- * Standardize an amount based on the system settings
+ * Standardize a database amount based on the system settings
  *
  * @param $amount
  * @return mixed
  */
 function standardize_amount($amount)
 {
-    $CI =& get_instance();
-    $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
-    $decimal_point = $CI->mdl_settings->setting('decimal_point');
-    #Fix on save : 3.3 goto 33 if sep = '.' & dec = ','
-    if($thousands_separator!='.')
+    if($amount && !is_numeric($amount)){
+        $CI =& get_instance();
+        $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
+        $decimal_point = $CI->mdl_settings->setting('decimal_point');
+
+        #Detect point at last 2nd|3rd place #.##? Min 3 chars to Fix strrpos Argument #3 ($offset) must be contained in argument #1
+        if($thousands_separator=='.' && isset($amount[2]) && strrpos($amount, '.', strlen($amount)-3) !== false){
+            $amount[ strrpos($amount, '.') ] = ',';# replace last position of point to comma
+        }
+
         $amount = str_replace($thousands_separator, '', $amount);
-    if($decimal_point!='.')
         $amount = str_replace($decimal_point, '.', $amount);
 
+    }
     return $amount;
 }
