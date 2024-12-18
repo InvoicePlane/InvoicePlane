@@ -75,8 +75,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     // START eInvoicing++ changes
+    $CI->load->helper('settings');
+    $file_prefix = trans('invoice');
     $replace = array('.', ' ', '/', '\\', '#');
-    $filename = str_replace($replace, '', $invoice->user_vat_id) . '_' . str_replace($replace, '', $invoice->invoice_number);
+    if (get_setting('change_filename_prefix') == 1) {
+        $user_item = get_setting('add_filename_prefix');
+        $file_prefix = str_replace($replace, '', $invoice->$user_item);
+    }
+    $filename = $file_prefix . '_' . str_replace($replace, '', $invoice->invoice_number);
 
     // Generate the appropriate UBL/CII
     $xml_id = $invoice->client_einvoice_version;
@@ -122,9 +128,15 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
     // Create the UBL XML file
     if ($xml_id != '' && $embed_xml != 'true') {
-        $path = generate_xml_invoice_file($invoice, $items, $xml_id, $filename);
+        // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!
+        if (get_setting('change_filename_prefix') == 0) {
+            $filename = date('Y-m-d') . '_' . $filename;
+        }    
+        // client_pause_einvoicing == 1 (on hold)
+        if ($invoice->client_pause_einvoicing == 0) {
+            generate_xml_invoice_file($invoice, $items, $xml_id, $filename);   
+        }
     }
-
     // END eInvoicing++ changes
     return $retval;
 

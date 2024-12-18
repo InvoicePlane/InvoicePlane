@@ -235,6 +235,10 @@ $locations = [];
                         <div class="panel-heading"><?php _trans('tax_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
+                                    <tr>
+                                        <th><?php _trans('company'); ?></th>
+                                        <td><?php echo ($client->client_company) ? _htmlsc($client->client_company) : ''; ?></td>
+                                    </tr>
                                 <?php if ($client->client_vat_id) : ?>
                                     <tr>
                                         <th><?php _trans('vat_id'); ?></th>
@@ -280,6 +284,14 @@ $locations = [];
                                         <td><?php echo ($client->client_einvoice_version) ? get_xml_full_name($client->client_einvoice_version) : trans('none'); ?></td>
                                     </tr>
                             </table>
+                                <!-- <?php    
+                                    // echo "<pre>";
+                                    //     echo "Client start einvoicing: " . $client->client_start_einvoicing . "<br>";
+                                    //     echo "Client pause einvoicing: " . $client->client_pause_einvoicing . "<br>";
+                                    //     echo "Client total empty fields: " . $req_einvoice["einvoices_empty_fields"] . "<br>";
+                                    //     // echo "<br>";
+                                    // echo "</pre>";    
+                                ?>  -->
                         </div>
                     </div>
                 </div>

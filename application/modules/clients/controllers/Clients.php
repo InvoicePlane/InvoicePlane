@@ -100,7 +100,7 @@ class Clients extends Admin_Controller
                 $this->load->model('user_clients/mdl_user_clients');
                 $this->mdl_user_clients->get_users_all_clients();
             }
-
+   
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
 
@@ -113,6 +113,49 @@ class Clients extends Admin_Controller
             }
             redirect('clients/view/' . $id);
         }
+
+        // // required fields for e-invoicing
+        // $this->load->model('users/mdl_users');
+        // $req_user = [];
+        // $req_user = $this->db->from('ip_users')->where('user_type', '1')->get()->row_array();
+        // $req_user["user_address_1"] = $req_user["user_address_1"] != '' ? 0 : 1;
+        // $req_user["user_zip"] = $req_user["user_zip"] != '' ? 0 : 1;
+        // $req_user["user_city"] = $req_user["user_city"] != '' ? 0 : 1;
+        // $req_user["user_country"] = $req_user["user_country"] != '' ? 0 : 1;
+        // $req_user["user_company"] = $req_user["user_company"] != '' ? 0 : 1;
+        // $req_user["user_vat_id"] = $req_user["user_vat_id"] != '' ? 0 : 1;
+        
+        // // test of $id (client_id) niet leeg is = add client = nieuwe klant
+        // $req_client = [];
+        // $req_client = $this->db->from('ip_clients')->where('client_id', $id)->get()->row_array();
+        // $req_client["client_address_1"] = $req_client["client_address_1"] != '' ? 0 : 1;
+        // $req_client["client_zip"] = $req_client["client_zip"] != '' ? 0 : 1;
+        // $req_client["client_city"] = $req_client["client_city"] != '' ? 0 : 1;
+        // $req_client["client_country"] = $req_client["client_country"] != '' ? 0 : 1;
+        // $req_client["client_company"] = $req_client["client_company"] != '' ? 0 : 1;
+        // $req_client["client_vat_id"] = $req_client["client_vat_id"] != '' ? 0 : 1;
+
+        // if ($req_client['client_company'] == 1 && $req_client['client_vat_id'] == 1) {
+        //     $req_client['client_company'] = 0;
+        //     $req_client['client_vat_id'] = 0;
+        // }
+
+        // // show table record or not
+        // $show_row = [];        
+        // $show_row["tr_show_address_1"] = $req_user["user_address_1"] + $req_client["client_address_1"] > 0 ? 1 : 0;
+        // $show_row["tr_show_zip"] = $req_user["user_zip"] + $req_client["client_zip"] > 0 ? 1 : 0;
+        // $show_row["tr_show_city"] = $req_user["user_city"] + $req_client["client_city"] > 0 ? 1 : 0;
+        // $show_row["tr_show_country"] = $req_user["user_country"] + $req_client["client_country"] > 0 ? 1 : 0;
+        // $show_row["tr_show_company"] = $req_user["user_company"] + $req_client["client_company"] > 0 ? 1 : 0;
+        // $show_row["tr_show_vat_id"] = $req_user["user_vat_id"] + $req_client["client_vat_id"] > 0 ? 1 : 0;
+        // $show_row["show_table"] = $show_row["tr_show_address_1"] +
+        //                           $show_row["tr_show_zip"] +
+        //                           $show_row["tr_show_city"] +
+        //                           $show_row["tr_show_country"] +
+        //                           $show_row["tr_show_company"] +
+        //                           $show_row["tr_show_vat_id"] > 0 ? 1 : 0;
+
+        // $req_einvoice = $req_client + $req_user + $show_row;
 
         if ($id && ! $this->input->post('btn_submit')) {
             if ( ! $this->mdl_clients->prep_form($id)) {
@@ -172,7 +215,7 @@ class Clients extends Admin_Controller
         $this->load->helper('country');
         $this->load->helper('custom_values');
         $this->load->helper('e-invoice'); //eInvoicing++
-
+        
         $this->layout->set([
             'custom_fields'        => $custom_fields,
             'custom_values'        => $custom_values,
@@ -180,7 +223,8 @@ class Clients extends Admin_Controller
             'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
             'languages'            => get_available_languages(),
             'client_title_choices' => $this->get_client_title_choices(),
-            'xml_templates' => get_xml_template_files(), //eInvoicing++
+            'xml_templates'        => get_xml_template_files(), //eInvoicing++
+            // 'req_einvoice'         => $req_einvoice,            //eInvoicing++
         ]);
 
         $this->layout->buffer('content', 'clients/form');
@@ -208,6 +252,44 @@ class Clients extends Admin_Controller
             ->where('ip_clients.client_id', $client_id)
             ->get()->row();
 
+        // check if required (e-invoicing) fields are filled in?
+        $req_fields = [];
+        $req_fields["client_address_1"] = $client->client_address_1 != '' ? 0 : 1;
+        $req_fields["client_zip"] = $client->client_zip != '' ? 0 : 1;
+        $req_fields["client_city"] = $client->client_city != '' ? 0 : 1;
+        $req_fields["client_country"] = $client->client_country != '' ? 0 : 1;
+        $req_fields["client_company"] = $client->client_company != '' ? 0 : 1;
+        $req_fields["client_vat_id"] = $client->client_vat_id != '' ? 0 : 1;
+
+        if ($req_fields['client_company'] == 1 && $req_fields['client_vat_id'] == 1) {
+            $req_fields['client_company'] = 0;
+            $req_fields['client_vat_id'] = 0;
+        }   
+
+        $this->load->model('users/mdl_users');
+        $check = $this->db->from('ip_users')->where('user_type', '1')->get()->row_array();
+        $req_fields["user_address_1"] = $check["user_address_1"] != '' ? 0 : 1;
+        $req_fields["user_zip"] = $check["user_zip"] != '' ? 0 : 1;
+        $req_fields["user_city"] = $check["user_city"] != '' ? 0 : 1;
+        $req_fields["user_country"] = $check["user_country"] != '' ? 0 : 1;
+        $req_fields["user_company"] = $check["user_company"] != '' ? 0 : 1;
+        $req_fields["user_vat_id"] = $check["user_vat_id"] != '' ? 0 : 1;
+
+        $totals = 0;
+        foreach ($req_fields as $key => $val) {
+            $totals += $val;
+        }
+        // 1. check mandatory fields (no company, client vat id, email address, ...)
+        $req_fields["einvoices_empty_fields"] = $totals; 
+        $this->db->where('client_id', $client_id);  
+        if ($client->client_start_einvoicing == 1 && !empty($client->client_einvoice_version) && $totals == 0) {
+            $this->db->set('client_pause_einvoicing', 0);
+        // } elseif (empty($req_fields["client_einvoice_version"]) || $req_fields["client_start_einvoicing"] == 0) {
+        } else {
+            $this->db->set('client_pause_einvoicing', 1);       
+        }
+        $this->db->update('ip_clients');  
+
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
 
         $this->mdl_client_custom->prep_form($client_id);
@@ -230,6 +312,7 @@ class Clients extends Admin_Controller
             'quote_statuses'   => $this->mdl_quotes->statuses(),
             'invoice_statuses' => $this->mdl_invoices->statuses(),
             'activeTab'        => $activeTab,
+            'req_einvoice'     => $req_fields,
         ]);
 
         $this->layout->buffer([
