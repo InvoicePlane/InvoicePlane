@@ -154,4 +154,14 @@ $this->db->update('ip_client_extended', $data, array('client_extended_client_id'
         return $db_array;
     }
 
+    /**
+     * @param int $id
+     */
+    public function delete($id)
+    {
+        parent::delete($id);
+
+        $this->load->helper('orphan');
+        delete_orphans();
+    }
 }
