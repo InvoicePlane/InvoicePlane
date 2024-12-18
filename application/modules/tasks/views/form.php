@@ -44,7 +44,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
                         <div class="form-group">
                             <label for="task_name"><?php _trans('task_name'); ?></label>
                             <input type="text" name="task_name" id="task_name" class="form-control"
-                                   value="<?php echo $this->mdl_tasks->form_value('task_name', true); ?>">
+                                   value="<?php echo $this->mdl_tasks->form_value('task_name', true); ?>" required>
                         </div>
 
                         <div class="form-group">
@@ -57,7 +57,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
                             <label for="task_price"><?php _trans('task_price'); ?></label>
                             <div class="input-group">
                                 <input type="text" name="task_price" id="task_price" class="amount form-control"
-                                       value="<?php echo format_amount($this->mdl_tasks->form_value('task_price')); ?>">
+                                       value="<?php echo format_amount($this->mdl_tasks->form_value('task_price')); ?>" required>
                                 <div class="input-group-addon">
                                     <?php echo get_setting('currency_symbol') ?>
                                 </div>
@@ -81,7 +81,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
                             <label for="task_finish_date"><?php _trans('task_finish_date'); ?></label>
                             <div class="input-group">
                                 <input name="task_finish_date" id="task_finish_date" class="form-control datepicker"
-                                       value="<?php echo date_from_mysql($this->mdl_tasks->form_value('task_finish_date')); ?>">
+                                       value="<?php echo date_from_mysql($this->mdl_tasks->form_value('task_finish_date')); ?>" required>
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar fa-fw"></i>
                                 </div>
@@ -90,7 +90,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
 
                         <div class="form-group">
                             <label for="task_status"><?php _trans('status'); ?></label>
-                            <select name="task_status" id="task_status" 
+                            <select name="task_status" id="task_status"
                             	class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <?php foreach ($task_statuses as $key => $status) {
                                     if ($this->mdl_tasks->form_value('task_status') != 4 && $key == 4) {
@@ -121,7 +121,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
                                 <?php foreach ($projects as $project) { ?>
                                     <option value="<?php echo $project->project_id; ?>"
                                         <?php check_select($this->mdl_tasks->form_value('project_id'), $project->project_id); ?>>
-                                        <?php echo htmlspecialchars($project->project_name); ?>
+                                        <?php echo htmlspecialchars($project->project_name, ENT_COMPAT); ?>
                                     </option>
                                 <?php } ?>
                             </select>

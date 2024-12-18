@@ -16,7 +16,7 @@
 
             <div class="form-group">
                 <label for="custom_field_table"><?php _trans('table'); ?></label>
-                <select name="custom_field_table" id="custom_field_table" class="form-control simple-select">
+                <select name="custom_field_table" id="custom_field_table" class="form-control simple-select" required>
                     <?php foreach ($custom_field_tables as $table => $label) { ?>
                         <option value="<?php echo $table; ?>"
                             <?php check_select($this->mdl_custom_fields->form_value('custom_field_table'), $table); ?>>
@@ -29,12 +29,12 @@
             <div class="form-group">
                 <label for="custom_field_label"><?php _trans('label'); ?></label>
                 <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
-                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label', true); ?>">
+                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label', true); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="custom_field_type"><?php _trans('type'); ?></label>
-                <select name="custom_field_type" id="custom_field_type" class="form-control simple-select">
+                <select name="custom_field_type" id="custom_field_type" class="form-control simple-select" required>
                     <?php foreach ($custom_field_types as $type) { ?>
                         <?php $alpha = str_replace("-", "_", strtolower($type)); ?>
                         <option value="<?php echo $type; ?>"
@@ -63,13 +63,13 @@
                     'user' => Mdl_user_custom::$positions,
                 );
 
-                foreach ($positions as $key => $val) {
-                    foreach ($val as $key2 => $val2) {
-                        $val[$key2] = trans($val2);
-                    }
-                    $positions[$key] = $val;
-                }
-                ?>
+    foreach ($positions as $key => $val) {
+        foreach ($val as $key2 => $val2) {
+            $val[$key2] = trans($val2);
+        }
+        $positions[$key] = $val;
+    }
+    ?>
                 <script>
                     var jsonPositions = '<?php echo json_encode($positions); ?>';
                     jsonPositions = JSON.parse(jsonPositions);

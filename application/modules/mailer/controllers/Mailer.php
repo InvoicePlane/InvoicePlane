@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mailer
- */
+#[AllowDynamicProperties]
 class Mailer extends Admin_Controller
 {
     private $mailer_configured;
@@ -49,7 +50,6 @@ class Mailer extends Admin_Controller
         $this->load->helper('template');
 
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
-
         $email_template_id = select_email_invoice_template($invoice);
 
         if ($email_template_id) {
@@ -122,6 +122,9 @@ class Mailer extends Admin_Controller
      */
     public function send_invoice($invoice_id)
     {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('to_email', 'Email', 'required|valid_email|xss_clean');
+
         if ($this->input->post('btn_cancel')) {
             redirect('invoices/view/' . $invoice_id);
         }
@@ -130,7 +133,7 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $to = $this->input->post('to_email');
+        $to = $this->input->post('to_email', true);
 
         if (empty($to)) {
             $this->session->set_flashdata('alert_danger', trans('email_to_address_missing'));
@@ -143,14 +146,14 @@ class Mailer extends Admin_Controller
             $this->input->post('from_name')
         );
 
-        $pdf_template = $this->input->post('pdf_template');
+        $pdf_template = $this->input->post('pdf_template', true);
         $subject = $this->input->post('subject');
         $body = $this->input->post('body');
 
         if (strlen($body) != strlen(strip_tags($body))) {
-            $body = htmlspecialchars_decode($body);
+            $body = htmlspecialchars_decode($body, ENT_COMPAT);
         } else {
-            $body = htmlspecialchars_decode(nl2br($body));
+            $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
         }
 
         $cc = $this->input->post('cc');
@@ -198,9 +201,9 @@ class Mailer extends Admin_Controller
         $subject = $this->input->post('subject');
 
         if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
-            $body = htmlspecialchars_decode($this->input->post('body'));
+            $body = htmlspecialchars_decode($this->input->post('body'), ENT_COMPAT);
         } else {
-            $body = htmlspecialchars_decode(nl2br($this->input->post('body')));
+            $body = htmlspecialchars_decode(nl2br($this->input->post('body')), ENT_COMPAT);
         }
 
         $cc = $this->input->post('cc');
@@ -211,7 +214,6 @@ class Mailer extends Admin_Controller
 
         if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_quotes->mark_sent($quote_id);
-
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
 
             redirect('quotes/view/' . $quote_id);

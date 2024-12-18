@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Quote_Amounts
- */
+#[AllowDynamicProperties]
 class Mdl_Quote_Amounts extends CI_Model
 {
     /**
@@ -84,6 +85,14 @@ class Mdl_Quote_Amounts extends CI_Model
     {
         $this->db->where('quote_id', $quote_id);
         $quote_data = $this->db->get('ip_quotes')->row();
+
+        if ($quote_data->quote_discount_amount==null) {
+            $quote_data->quote_discount_amount = 0.0;
+        }
+
+        if ($quote_data->quote_discount_percent==null) {
+            $quote_data->quote_discount_percent = 0.0;
+        }
 
         $total = number_format(floatval($quote_total), 2, '.', '');
         $discount_amount = number_format(floatval($quote_data->quote_discount_amount), 2, '.', '');

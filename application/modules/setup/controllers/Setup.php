@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,9 +13,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Setup
- */
+#[AllowDynamicProperties]
 class Setup extends MX_Controller
 {
 
@@ -241,10 +240,10 @@ class Setup extends MX_Controller
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
-        $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME=" . $hostname, $config);
-        $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME=" . $username, $config);
-        $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD=" . $password, $config);
-        $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE=" . $database, $config);
+        $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME='" . $hostname . "'", $config);
+        $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME='" . $username . "'", $config);
+        $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD='" . $password . "'", $config);
+        $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE='" . $database . "'", $config);
         $config = preg_replace("/DB_PORT=(.*)?/", "DB_PORT=" . $port, $config);
 
         write_file(IPCONFIG_FILE, $config);
@@ -257,7 +256,7 @@ class Setup extends MX_Controller
     {
         // Reload the ipconfig.php file
         global $dotenv;
-        $dotenv->overload();
+        $dotenv->load();
 
         // Load the database config and configure it to test the connection
         include(APPPATH . 'config/database.php');
@@ -270,7 +269,7 @@ class Setup extends MX_Controller
             $this->errors += 1;
 
             return [
-                'message' => trans('cannot_connect_database_server'),
+                'message' => trans('setup_database_message'),
                 'success' => false,
             ];
         }
@@ -340,7 +339,11 @@ class Setup extends MX_Controller
         $this->load_ci_database();
 
         // Set a new encryption key if none exists
-        if (env('ENCRYPTION_KEY') === null) {
+        if (
+            env('ENCRYPTION_KEY') === null
+            ||
+            env('ENCRYPTION_KEY') === ''
+        ) {
             $this->set_encryption_key();
         }
 
@@ -411,12 +414,20 @@ class Setup extends MX_Controller
             redirect('setup/prerequisites');
         }
 
+        $this->load_ci_database();
+        $users = $this->db->query('SELECT * FROM ip_users');
+        if ($users->num_rows() === 0) {
+            log_message('error', 'there was already one or more users in the database');
+            $this->session->set_flashdata('alert_error', 'Something went wrong, check the log file for errors');
+            $this->session->set_userdata('install_step', 'create_user');
+            redirect('setup/create_user');
+        }
+
         // Additional tasks after setup is completed
         $this->post_setup_tasks();
 
         // Check if this is an update or the first install
         // First get all version entries from the database and format them
-        $this->load_ci_database();
         $versions = $this->db->query('SELECT * FROM ip_versions');
         if ($versions->num_rows() > 0) {
             foreach ($versions->result() as $row):
@@ -444,5 +455,4 @@ class Setup extends MX_Controller
         $config = preg_replace("/SETUP_COMPLETED=(.*)?/", "SETUP_COMPLETED=true", $config);
         write_file(IPCONFIG_FILE, $config);
     }
-
 }

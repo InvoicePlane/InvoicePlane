@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Sessions
- */
+#[AllowDynamicProperties]
 class Sessions extends Base_Controller
 {
     public function index()
@@ -72,11 +73,20 @@ class Sessions extends Base_Controller
     public function authenticate($email_address, $password)
     {
         $this->load->model('mdl_sessions');
-
-        if ($this->mdl_sessions->auth($email_address, $password)) {
-            return true;
+        //check if user is banned
+        $login_log = $this->_login_log_check($email_address);
+        if(empty($login_log)||$login_log->log_count < 10)
+        {
+            if ($this->mdl_sessions->auth($email_address, $password)) {
+                $this->_login_log_reset($email_address);
+                return true;
+            }
+            else
+            {
+                //track failed attempt
+                $this->_login_log_addfailure($email_address);
+            }
         }
-
         return false;
     }
 
@@ -95,6 +105,20 @@ class Sessions extends Base_Controller
     {
         // Check if a token was provided
         if ($token) {
+            if(preg_match("/[^[:alnum:]\-_]/", $token)) {
+                log_message('error', 'Incoming token is not alphanumeric ' . $token);
+                redirect('/');
+            }
+
+            //prevent brute force attacks by counting times a token is used
+            $login_log_check = $this->_login_log_check($token);
+            if (!empty($login_log_check) && $login_log_check->log_count > 10) {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                //the use of a token counts as a failure
+                $this->_login_log_addfailure($token);
+            }
+
             $this->db->where('user_passwordreset_token', $token);
             $user = $this->db->get('ip_users');
             $user = $user->row();
@@ -103,6 +127,10 @@ class Sessions extends Base_Controller
                 // Redirect back to the login screen with an alert
                 $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                 redirect('sessions/passwordreset');
+            } else {
+                //if token is valid, delete the failure attempt from
+                //the login_log table
+                $this->_login_log_reset($token);
             }
 
             $formdata = array(
@@ -115,8 +143,8 @@ class Sessions extends Base_Controller
 
         // Check if the form for a new password was used
         if ($this->input->post('btn_new_password')) {
-            $new_password = $this->input->post('new_password');
-            $user_id = $this->input->post('user_id');
+            $new_password = $this->input->post('new_password', true);
+            $user_id = $this->input->post('user_id', true);
 
             if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
@@ -148,6 +176,10 @@ class Sessions extends Base_Controller
                 'user_passwordreset_token' => '',
             );
 
+            //delete failed attempts from login_log table
+            $user = $this->db->where('user_id',$user_id)->get('ip_users')->row();
+            $this->_login_log_reset($user->user_email);
+
             $this->db->where('user_id', $user_id);
             $this->db->update('ip_users', $db_array);
 
@@ -157,19 +189,41 @@ class Sessions extends Base_Controller
         }
 
         // Check if the password reset form was used
-        if ($this->input->post('btn_reset')) {
-            $email = $this->input->post('email');
+        if ($this->input->post('btn_reset', true)) {
+            $email = $this->input->post('email', true);
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                log_message('error', 'Incoming email is not a valid email address in passwordreset ' . $email);
+                redirect('/');
+            }
 
             if (empty($email)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
                 redirect($_SERVER['HTTP_REFERER']);
             }
 
+            //prevent brute force attacks by counting password resets
+            $login_log_check = $this->_login_log_check($email);
+            if (!empty($login_log_check) && $login_log_check->log_count > 10) {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                //a password recovery attempt counts as failed login
+                $this->_login_log_addfailure($email);
+            }
+
             // Test if a user with this email exists
-            if ($this->db->where('user_email', $email)) {
-                // Create a passwordreset token
-                $email = $this->input->post('email');
-                $token = md5(time() . $email);
+            if ($recovery_result = $this->db->where('user_email', $email)) {
+                // Create a passwordreset token.
+                $email = $this->input->post('email', true);
+
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    log_message('error', 'Incoming email is not a valid email address in passwordreset ' . $email);
+                    redirect('/');
+                }
+
+                //use salt to prevent predictability of the reset token (CVE-2021-29023)
+                $this->load->library('crypt');
+                $token = md5(time() . $email . $this->crypt->salt());
 
                 // Save the token to the database and set the user to inactive
                 $db_array = array(
@@ -182,7 +236,7 @@ class Sessions extends Base_Controller
                 // Send the email with reset link
                 $this->load->helper('mailer');
 
-                // Preprare some variables for the email
+                // Prepare some variables for the email
                 $email_resetlink = site_url('sessions/passwordreset/' . $token);
                 $email_message = $this->load->view('emails/passwordreset', array(
                     'resetlink' => $email_resetlink
@@ -237,4 +291,71 @@ class Sessions extends Base_Controller
         return $this->load->view('session_passwordreset');
     }
 
+    /**
+     * Checks if the login_log table has records for the
+     * given
+     *
+     * @param string $username
+     * @return object
+     */
+    private function _login_log_check($username)
+    {
+        $login_log_query =  $this->db->where('login_name',$username)->get('ip_login_log')->row();
+
+        if(!empty($login_log_query) && $login_log_query->log_count > 10)
+        {
+            $current_time = new DateTime();
+            $interval = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));
+            //if the last recorded failed attempt is over 12 hours ago, then unlock the account
+            //the fails are only counted up to 11, this means that the account is also unlocked
+            //if the last failed 11th login attempt is over 12 hours ago.
+            if($interval->h>12)
+            {
+                $this->_login_log_reset($username);
+                return null;
+            }
+        }
+        return $login_log_query;
+    }
+
+    /**
+     * If the username has a record in the login_log
+     * table the count is incremented by 1, otherwise
+     * a record for the given user is created.
+     *
+     * @param string $username
+     */
+    private function _login_log_addfailure($username)
+    {
+        if(empty($login_log_check = $this->_login_log_check($username)))
+        {
+            //create the log
+            $this->db->insert('ip_login_log',[
+                'login_name' => $username,
+                'log_count' => 1,
+                'log_create_timestamp' => date('c')
+            ]);
+        }
+        else
+        {
+            //update the log
+            $this->db->set([
+                'log_count'=>$login_log_check->log_count+1,
+                'log_create_timestamp' => date('c')
+            ])
+            ->where('login_name',$username)
+            ->update('ip_login_log');
+        }
+    }
+
+    /**
+     * The record of the given user is deleted from the
+     * login_log table.
+     *
+     * @param string $username
+     */
+    private function _login_log_reset($username)
+    {
+        $this->db->delete('ip_login_log',['login_name'=>$username]);
+    }
 }

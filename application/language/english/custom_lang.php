@@ -12,6 +12,4 @@
  * community forums.
  */
 
-$lang = array(
-
-);
+$lang = [];

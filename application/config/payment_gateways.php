@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $config['payment_gateways'] = array(
-    'AuthorizeNet_AIM' => array(
+/*     'AuthorizeNet_AIM' => array(
         'apiLoginId' => array(
             'type' => 'text',
             'label' => 'Api Login Id',
@@ -36,8 +36,8 @@ $config['payment_gateways'] = array(
         //    'type' => 'text',
         //    'label' => 'Developer Endpoint',
         //),
-    ),
-    'AuthorizeNet_SIM' => array(
+    ),*/
+/*     'AuthorizeNet_SIM' => array(
         'apiLoginId' => array(
             'type' => 'text',
             'label' => 'Api Login Id',
@@ -53,7 +53,7 @@ $config['payment_gateways'] = array(
         'developerMode' => array(
             'type' => 'checkbox',
             'label' => 'Developer Mode',
-        ),
+        ), */
         //'liveEndpoint' => array(
         //    'type' => 'text',
         //    'label' => 'Live Endpoint',
@@ -66,7 +66,7 @@ $config['payment_gateways'] = array(
         //    'type' => 'text',
         //    'label' => 'Hash Secret',
         //),
-    ),
+    /* ),
     'Buckaroo_Ideal' => array(
         'websiteKey' => array(
             'type' => 'text',
@@ -94,8 +94,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'CardSave' => array(
+    ), */
+    /* 'CardSave' => array(
         'merchantId' => array(
             'type' => 'text',
             'label' => 'Merchant Id',
@@ -104,8 +104,8 @@ $config['payment_gateways'] = array(
             'type' => 'password',
             'label' => 'Password',
         ),
-    ),
-    'Coinbase' => array(
+    ), */
+    /* 'Coinbase' => array(
         'apiKey' => array(
             'type' => 'text',
             'label' => 'Api Key',
@@ -118,8 +118,8 @@ $config['payment_gateways'] = array(
             'type' => 'text',
             'label' => 'Account Id',
         ),
-    ),
-    'Eway_Rapid' => array(
+    ), */
+    /* 'Eway_Rapid' => array(
         'apiKey' => array(
             'type' => 'text',
             'label' => 'Api Key',
@@ -132,8 +132,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'FirstData_Connect' => array(
+    ), */
+    /* 'FirstData_Connect' => array(
         'storeId' => array(
             'type' => 'text',
             'label' => 'Store Id',
@@ -146,8 +146,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'GoCardless' => array(
+    ), */
+    /* 'GoCardless' => array(
         'appId' => array(
             'type' => 'text',
             'label' => 'App Id',
@@ -168,8 +168,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'Migs_ThreeParty' => array(
+    ), */
+    /* 'Migs_ThreeParty' => array(
         'merchantId' => array(
             'type' => 'text',
             'label' => 'Merchant Id',
@@ -196,14 +196,14 @@ $config['payment_gateways'] = array(
             'type' => 'text',
             'label' => 'Secure Hash',
         ),
-    ),
-    'Mollie' => array(
+    ), */
+    /* 'Mollie' => array(
         'apiKey' => array(
             'type' => 'text',
             'label' => 'Api Key',
         ),
-    ),
-    'MultiSafepay' => array(
+    ), */
+    /* 'MultiSafepay' => array(
         'accountId' => array(
             'type' => 'text',
             'label' => 'Account Id',
@@ -220,8 +220,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'Netaxept' => array(
+    ), */
+    /* 'Netaxept' => array(
         'merchantId' => array(
             'type' => 'text',
             'label' => 'Merchant Id',
@@ -234,8 +234,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'NetBanx' => array(
+    ), */
+    /* 'NetBanx' => array(
         'accountNumber' => array(
             'type' => 'text',
             'label' => 'Account Number',
@@ -252,8 +252,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'PayFast' => array(
+    ), */
+    /* 'PayFast' => array(
         'merchantId' => array(
             'type' => 'text',
             'label' => 'Merchant Id',
@@ -270,8 +270,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'Payflow_Pro' => array(
+    ), */
+    /* 'Payflow_Pro' => array(
         'username' => array(
             'type' => 'text',
             'label' => 'Username',
@@ -292,8 +292,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'PaymentExpress_PxPay' => array(
+    ), */
+    /* 'PaymentExpress_PxPay' => array(
         'username' => array(
             'type' => 'text',
             'label' => 'Username',
@@ -314,8 +314,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'PaymentExpress_PxPost' => array(
+    ), */
+    /* 'PaymentExpress_PxPost' => array(
         'username' => array(
             'type' => 'text',
             'label' => 'Username',
@@ -328,8 +328,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'PayPal_Express' => array(
+    ), */
+    /* 'PayPal_Express' => array(
         'username' => array(
             'type' => 'text',
             'label' => 'Username',
@@ -370,8 +370,8 @@ $config['payment_gateways'] = array(
         //    'type' => 'text',
         //    'label' => 'Border Color',
         //),
-    ),
-    'PayPal_Pro' => array(
+    ), */
+    /* 'PayPal_Pro' => array(
         'username' => array(
             'type' => 'text',
             'label' => 'Username',
@@ -388,8 +388,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'Pin' => array(
+    ), */
+/*     'Pin' => array(
         'secretKey' => array(
             'type' => 'password',
             'label' => 'Secret Key',
@@ -398,8 +398,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'SagePay_Direct' => array(
+    ), */
+    /* 'SagePay_Direct' => array(
         'vendor' => array(
             'type' => 'text',
             'label' => 'Vendor',
@@ -412,8 +412,8 @@ $config['payment_gateways'] = array(
             'type' => 'text',
             'label' => 'Referrer Id',
         ),
-    ),
-    'SagePay_Server' => array(
+    ), */
+    /* 'SagePay_Server' => array(
         'vendor' => array(
             'type' => 'text',
             'label' => 'Vendor',
@@ -426,8 +426,8 @@ $config['payment_gateways'] = array(
             'type' => 'text',
             'label' => 'Referrer Id',
         ),
-    ),
-    'SecurePay_DirectPost' => array(
+    ), */
+    /* 'SecurePay_DirectPost' => array(
         'merchantId' => array(
             'type' => 'text',
             'label' => 'Merchant Id',
@@ -440,14 +440,32 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
+    ), */
     'Stripe' => array(
         'apiKey' => array(
             'type' => 'password',
-            'label' => 'Api Key',
+            'label' => 'Secret key',
+        ),
+        'apiKeyPublic' => array(
+            'type' => 'text',
+            'label' => 'Publishable key'
         ),
     ),
-    'TargetPay_Directebanking' => array(
+    'PayPal' => array(
+        'clientId' => array(
+            'type'  => 'text',
+            'label' => 'Client ID'
+        ),
+        'clientSecret' => array(
+            'type'  => 'password',
+            'label' => 'Secret'
+        ),
+        'testMode' => array(
+            'type' => 'checkbox',
+            'label' => 'Test Mode',
+        ),
+    ),
+    /* 'TargetPay_Directebanking' => array(
         'subAccountId' => array(
             'type' => 'text',
             'label' => 'Sub Account Id',
@@ -458,14 +476,14 @@ $config['payment_gateways'] = array(
             'type' => 'text',
             'label' => 'Sub Account Id',
         ),
-    ),
-    'TargetPay_Mrcash' => array(
+    ), */
+/*     'TargetPay_Mrcash' => array(
         'subAccountId' => array(
             'type' => 'text',
             'label' => 'Sub Account Id',
         ),
-    ),
-    'TwoCheckout' => array(
+    ), */
+    /* 'TwoCheckout' => array(
         'accountNumber' => array(
             'type' => 'text',
             'label' => 'Account Number',
@@ -478,8 +496,8 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
-    'WorldPay' => array(
+    ), */
+    /* 'WorldPay' => array(
         'installationId' => array(
             'type' => 'text',
             'label' => 'Installation Id',
@@ -500,5 +518,5 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Test Mode',
         ),
-    ),
+    ), */
 );

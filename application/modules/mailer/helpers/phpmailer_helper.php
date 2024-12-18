@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,6 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
+#[AllowDynamicProperties]
 /**
  * @param $from
  * @param $to
@@ -41,7 +45,9 @@ function phpmail_send(
 
     switch (get_setting('email_send_method')) {
         case 'smtp':
-            $mail->IsSMTP();
+            $mail->isSMTP();
+            $mail->SMTPDebug   = env_bool('ENABLE_DEBUG') ? 2 : 0;
+            $mail->Debugoutput = env_bool('ENABLE_DEBUG') ? 'echo' : 'error_log';
 
             // Set the basic properties
             $mail->Host = get_setting('smtp_server_address');
@@ -150,5 +156,4 @@ function phpmail_send(
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
         return false;
     }
-
 }

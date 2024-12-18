@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,14 +13,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class ZugferdXml
- */
+#[AllowDynamicProperties]
 class ZugferdXml
 {
-    var $invoice;
-    var $doc;
-    var $root;
+    public $invoice;
+    public $doc;
+    public $root;
 
     public function __construct($params)
     {
@@ -93,7 +94,7 @@ class ZugferdXml
      */
     function zugferdFormattedDate($date)
     {
-        if ($date && $date <> '0000-00-00') {
+        if ($date) {
             $date = DateTime::createFromFormat('Y-m-d', $date);
             return $date->format('Ymd');
         }
@@ -123,7 +124,13 @@ class ZugferdXml
     protected function xmlSellerTradeParty($index = '', $item = '')
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
-        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+
+        if (!empty($this->invoice->user_company)) {
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_company)));
+            $node->appendChild($this->doc->createElement('ram:DefinedTradeContact', htmlsc($this->invoice->user_name)));
+        } else {
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+        }
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
@@ -140,7 +147,7 @@ class ZugferdXml
     protected function xmlBuyerTradeParty($index = '', $item = '')
     {
         $node = $this->doc->createElement('ram:BuyerTradeParty');
-        $node->appendChild($this->doc->createElement('ram:Name', $this->invoice->client_name));
+        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->client_name)));
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');

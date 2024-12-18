@@ -35,12 +35,12 @@
             <?php foreach ($tasks as $task) { ?>
                 <tr>
                     <td>
-                        <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
-                            <?php echo $task_statuses["$task->task_status"]['label']; ?>
+                        <span class="label <?php if (isset($task_statuses["$task->task_status"]['class'])) echo $task_statuses["$task->task_status"]['class']; ?>">
+                            <?php if (isset($task_statuses["$task->task_status"]['label'])) echo $task_statuses["$task->task_status"]['label']; ?>
                         </span>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($task->task_name); ?>
+                        <?php echo htmlspecialchars($task->task_name, ENT_COMPAT); ?>
                     </td>
                     <td>
                         <div class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">

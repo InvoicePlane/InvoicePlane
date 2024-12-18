@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Invoice_Amounts
- */
+#[AllowDynamicProperties]
 class Mdl_Invoice_Amounts extends CI_Model
 {
     /**
@@ -129,6 +130,14 @@ class Mdl_Invoice_Amounts extends CI_Model
     {
         $this->db->where('invoice_id', $invoice_id);
         $invoice_data = $this->db->get('ip_invoices')->row();
+
+        if ($invoice_data->invoice_discount_amount==null) {
+            $invoice_data->invoice_discount_amount = 0.0;
+        }
+
+        if ($invoice_data->invoice_discount_percent==null) {
+            $invoice_data->invoice_discount_percent = 0.0;
+        }
 
         $total = number_format(floatval($invoice_total), 2, '.', '');
         $discount_amount = number_format(floatval($invoice_data->invoice_discount_amount), 2, '.', '');
