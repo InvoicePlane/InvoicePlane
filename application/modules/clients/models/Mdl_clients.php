@@ -21,12 +21,21 @@ class Mdl_Clients extends Response_Model
     public $date_created_field = 'client_date_created';
     public $date_modified_field = 'client_date_modified';
 
+
     public function default_select()
     {
         $this->db->select(
             'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname'
-            , false);
+            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname, '
+            ." ip_clients.*, "
+            ." ip_client_extended.* "
+            , false) ;
+
+    }
+
+    public function default_join()
+    {
+        $this->db->join('ip_client_extended', 'ip_client_extended.client_extended_client_id = ip_clients.client_id', 'left');
     }
 
     public function default_order_by()
@@ -77,6 +86,51 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_country',
                 'rules' => 'trim',
             ],
+
+            'billing_address_name' => [
+                'field' => 'billing_address_name',
+            ],
+            'billing_address_1' => [
+                'field' => 'billing_address_1',
+            ],
+            'billing_address_2' => [
+                'field' => 'billing_address_2',
+            ],
+            'billing_city' => [
+                'field' => 'billing_city',
+            ],
+            'billing_state' => [
+                'field' => 'billing_state',
+            ],
+            'billing_zip' => [
+                'field' => 'billing_zip',
+            ],
+            'billing_country' => [
+                'field' => 'billing_country',
+            ],
+
+            'delivery_address_name' => [
+                'field' => 'delivery_address_name',
+            ],
+            'delivery_address_1' => [
+                'field' => 'delivery_address_1',
+            ],
+            'delivery_address_2' => [
+                'field' => 'delivery_address_2',
+            ],
+            'delivery_city' => [
+                'field' => 'delivery_city',
+            ],
+            'delivery_state' => [
+                'field' => 'delivery_state',
+            ],
+            'delivery_zip' => [
+                'field' => 'delivery_zip',
+            ],
+            'delivery_country' => [
+                'field' => 'delivery_country',
+            ],
+
             'client_phone' => [
                 'field' => 'client_phone',
             ],

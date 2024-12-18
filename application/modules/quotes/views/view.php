@@ -179,51 +179,85 @@ $cv = $this->controller->view_data["custom_values"];
     </h1>
 
     <div class="headerbar-item pull-right">
+	
         <div class="btn-group btn-group-sm">
-            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                <?php _trans('options'); ?> <i class="fa fa-chevron-down"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <a href="#add-quote-tax" data-toggle="modal">
-                        <i class="fa fa-plus fa-margin"></i>
-                        <?php _trans('add_quote_tax'); ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" id="btn_generate_pdf"
-                       data-quote-id="<?php echo $quote_id; ?>">
-                        <i class="fa fa-print fa-margin"></i>
-                        <?php _trans('download_pdf'); ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
-                        <i class="fa fa-send fa-margin"></i>
-                        <?php _trans('send_email'); ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" id="btn_quote_to_invoice"
-                       data-quote-id="<?php echo $quote_id; ?>">
-                        <i class="fa fa-refresh fa-margin"></i>
-                        <?php _trans('quote_to_invoice'); ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" id="btn_copy_quote"
-                       data-quote-id="<?php echo $quote_id; ?>"
-                       data-client-id="<?php echo $quote->client_id; ?>">
-                        <i class="fa fa-copy fa-margin"></i>
-                        <?php _trans('copy_quote'); ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="#delete-quote" data-toggle="modal">
-                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
-                    </a>
-                </li>
-            </ul>
+			<?php 
+				// atac: Enable options menu as buttons				
+				if (ip_invoice_options()) { ?>
+					<a class="btn btn-sm btn-default" href="#add-quote-tax" data-toggle="modal">
+						<i class="fa fa-plus fa-margin"></i>
+						<?php _trans('add_quote_tax'); ?>
+					</a>
+					<a class="btn btn-sm btn-default" href="#" id="btn_generate_pdf"
+					   data-quote-id="<?php echo $quote_id; ?>">
+						<i class="fa fa-print fa-margin"></i>
+						<?php _trans('download_pdf'); ?>
+					</a>
+					<a class="btn btn-sm btn-default" href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
+						<i class="fa fa-send fa-margin"></i>
+						<?php _trans('send_email'); ?>
+					</a>
+					<a class="btn btn-sm btn-default" href="#" id="btn_quote_to_invoice"
+					   data-quote-id="<?php echo $quote_id; ?>">
+						<i class="fa fa-refresh fa-margin"></i>
+						<?php _trans('quote_to_invoice'); ?>
+					</a>
+					<a class="btn btn-sm btn-default" href="#" id="btn_copy_quote"
+					   data-quote-id="<?php echo $quote_id; ?>"
+					   data-client-id="<?php echo $quote->client_id; ?>">
+						<i class="fa fa-copy fa-margin"></i>
+						<?php _trans('copy_quote'); ?>
+					</a>
+					<a class="btn btn-sm btn-warning" href="#delete-quote" data-toggle="modal">
+						<i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
+					</a>
+				<?php } else { ?>
+					<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+						<?php _trans('options'); ?> <i class="fa fa-chevron-down"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li>
+							<a href="#add-quote-tax" data-toggle="modal">
+								<i class="fa fa-plus fa-margin"></i>
+								<?php _trans('add_quote_tax'); ?>
+							</a>
+						</li>
+						<li>
+							<a href="#" id="btn_generate_pdf"
+							   data-quote-id="<?php echo $quote_id; ?>">
+								<i class="fa fa-print fa-margin"></i>
+								<?php _trans('download_pdf'); ?>
+							</a>
+						</li>
+						<li>
+							<a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
+								<i class="fa fa-send fa-margin"></i>
+								<?php _trans('send_email'); ?>
+							</a>
+						</li>
+						<li>
+							<a href="#" id="btn_quote_to_invoice"
+							   data-quote-id="<?php echo $quote_id; ?>">
+								<i class="fa fa-refresh fa-margin"></i>
+								<?php _trans('quote_to_invoice'); ?>
+							</a>
+						</li>
+						<li>
+							<a href="#" id="btn_copy_quote"
+							   data-quote-id="<?php echo $quote_id; ?>"
+							   data-client-id="<?php echo $quote->client_id; ?>">
+								<i class="fa fa-copy fa-margin"></i>
+								<?php _trans('copy_quote'); ?>
+							</a>
+						</li>
+						<li>
+							<a href="#delete-quote" data-toggle="modal">
+								<i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
+							</a>
+						</li>
+					</ul>
+				<?php }
+			?>
         </div>
 
         <a href="#" class="btn btn-success btn-sm ajax-loader" id="btn_save_quote">
@@ -380,10 +414,14 @@ $cv = $this->controller->view_data["custom_values"];
            } else {
              $this->layout->load_view('quotes/partial_itemlist_table');
            }
-         ?>
-
-        <hr/>
-
+        ?>
+		
+		<div id="footerbar">
+			<?php $this->layout->load_view('layout/footer_buttons'); ?>
+		</div>
+        
+		<hr/>
+		
         <div class="row">
             <div class="col-xs-12 col-md-6">
 

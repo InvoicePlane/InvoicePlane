@@ -144,7 +144,8 @@ function email_quote_status($quote_id, $status)
     $CI->load->helper('mailer/phpmailer');
 
     $quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
-    $base_url = base_url('/quotes/view/' . $quote_id);
+    $index = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
+    $base_url = base_url('/' . $index . '/quotes/view/' . $quote_id);
 
     $user_email = $quote->user_email;
     $subject = sprintf(trans('quote_status_email_subject'),
