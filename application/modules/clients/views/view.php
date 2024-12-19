@@ -9,7 +9,7 @@
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful
-                        $('.control-group').removeClass('error');
+                        $('.has-error').removeClass('has-error');
                         $('#client_note').val('');
 
                         // Reload all notes
@@ -24,7 +24,7 @@
                     } else {
                         // The validation was not successful
                         $('.fullpage-loader-close').click();
-                        $('.control-group').removeClass('error');
+                        $('.has-error').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().addClass('has-error');
                         }
@@ -48,7 +48,7 @@
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful
-                        $('.control-group').removeClass('error');
+                        $('.has-error').removeClass('has-error');
                         $('#client_note').val('');
 
                         // Reload all notes
@@ -62,7 +62,7 @@
                             });
                     } else {
                         // The validation was not successful
-                        $('.control-group').removeClass('error');
+                        $('.has-error').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().addClass('has-error');
                         }
