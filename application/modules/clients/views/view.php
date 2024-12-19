@@ -1,5 +1,43 @@
 <script>
     $(function () {
+        function delete_client_note(event) {
+            $.post('<?php echo site_url('clients/ajax/delete_client_note'); ?>',
+                {
+                    client_note_id: $(this).attr('data-id')
+                }, function (data) {
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
+                    var response = JSON.parse(data);
+                    if (response.success === 1) {
+                        // The validation was successful
+                        $('.control-group').removeClass('error');
+                        $('#client_note').val('');
+
+                        // Reload all notes
+                        $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
+                            {
+                                client_id: <?php echo $client->client_id; ?>
+                            }, function (response) {
+                                <?php echo IP_DEBUG ? 'console.log(response);' : ''; ?>
+
+                                setTimeout(add_delete_client_notes_click_event, 161);
+                            });
+                    } else {
+                        // The validation was not successful
+                        $('.fullpage-loader-close').click();
+                        $('.control-group').removeClass('error');
+                        for (var key in response.validation_errors) {
+                            $('#' + key).parent().addClass('has-error');
+                        }
+                    }
+                });
+        }
+
+        function add_delete_client_notes_click_event(){
+            $('.delete_client_note').click(delete_client_note);
+        }
+
+        add_delete_client_notes_click_event();
+
         $('#save_client_note').click(function () {
             $.post('<?php echo site_url('clients/ajax/save_client_note'); ?>',
                 {
@@ -19,6 +57,8 @@
                                 client_id: <?php echo $client->client_id; ?>
                             }, function (response) {
                                 <?php echo IP_DEBUG ? 'console.log(response);' : ''; ?>
+
+                                setTimeout(add_delete_client_notes_click_event, 161);
                             });
                     } else {
                         // The validation was not successful
