@@ -19,6 +19,10 @@
             }
         });
 
+        $(document).ready(function(){
+            $('#btn-cancel').attr('onclick', "window.location.href = '<?php echo site_url() ?>/payments'");
+        });
+
     });
 </script>
 
