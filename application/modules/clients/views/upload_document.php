@@ -33,8 +33,8 @@
                     </div>
 -->
                     <div class="form-group">
-                        <label><?php _trans('select_document'); ?></label>
-                        <input class="form-control" type="file" name="document" required>
+                        <label for="document"><?php _trans('select_document'); ?></label>
+                        <input class="form-control" type="file" id="document" name="document" required>
                     </div>
 
                 </div>
