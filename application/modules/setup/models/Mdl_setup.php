@@ -372,7 +372,7 @@ class Mdl_Setup extends CI_Model
     {
         //upgrade the recurring invoices data and replace 0000-00-00 invalid date with null in order to be compliant
         //with the MySQL >= 5.8 defautl SQL Strict mode that is activated by default.
-        //migrate the dates data from 0000-00-00 to NULL in order to allow SQL Strict mode. Becaues the new
+        //migrate the dates data from 0000-00-00 to NULL in order to allow SQL Strict mode. Because the new
         //mysql default mode, the change must be done by PHP logic.
 
         //**recur_end_date**
