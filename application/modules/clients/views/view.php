@@ -1,34 +1,57 @@
 <script>
     $(function () {
+        const client_id = <?php echo $client->client_id; ?>;
+        function add_delete_client_notes_click_event(){
+            $('.delete_client_note').click(delete_client_note);
+        }
+        function reload_client_notes(data){
+            <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
+            var response = JSON.parse(data);
+            if (response.success === 1) {
+                // The validation was successful
+                $('.has-error').removeClass('has-error');
+                $('#client_note').val('');
+
+                // Reload all notes
+                $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
+                    {
+                        client_id: client_id
+                    }, function (response) {
+                        <?php echo IP_DEBUG ? 'console.log(response);' : ''; ?>
+
+                        setTimeout(add_delete_client_notes_click_event, 161);
+                    });
+            } else {
+                // The validation was not successful
+                $('.has-error').removeClass('has-error');
+                for (var key in response.validation_errors) {
+                    $('#' + key).parent().addClass('has-error');
+                }
+            }
+            $('#fullpage-loader').fadeOut(200);
+        }
+        function delete_client_note(event) {
+            $('#fullpage-loader').fadeIn(200);
+            $.post('<?php echo site_url('clients/ajax/delete_client_note'); ?>',
+                {
+                    client_note_id: $(this).attr('data-id')
+                }, function (data) {
+                    reload_client_notes(data)
+                }
+            );
+        }
         $('#save_client_note').click(function () {
+            $('#fullpage-loader').fadeIn(200);
             $.post('<?php echo site_url('clients/ajax/save_client_note'); ?>',
                 {
-                    client_id: $('#client_id').val(),
+                    client_id: client_id,
                     client_note: $('#client_note').val()
                 }, function (data) {
-                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-                    var response = JSON.parse(data);
-                    if (response.success === 1) {
-                        // The validation was successful
-                        $('.control-group').removeClass('error');
-                        $('#client_note').val('');
-
-                        // Reload all notes
-                        $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
-                            {
-                                client_id: <?php echo $client->client_id; ?>
-                            }, function (response) {
-                                <?php echo IP_DEBUG ? 'console.log(response);' : ''; ?>
-                            });
-                    } else {
-                        // The validation was not successful
-                        $('.control-group').removeClass('error');
-                        for (var key in response.validation_errors) {
-                            $('#' + key).parent().addClass('has-error');
-                        }
-                    }
-                });
+                    reload_client_notes(data)
+                }
+            );
         });
+        add_delete_client_notes_click_event();
     });
 </script>
 
@@ -364,8 +387,6 @@ $locations = [];
                             <div id="notes_list">
                                 <?php echo $partial_notes; ?>
                             </div>
-                            <input type="hidden" name="client_id" id="client_id"
-                                   value="<?php echo $client->client_id; ?>">
                             <div class="input-group">
                                 <textarea id="client_note" class="form-control" rows="2" style="resize:none"></textarea>
                                 <span id="save_client_note" class="input-group-addon btn btn-default">

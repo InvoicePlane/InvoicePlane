@@ -10,6 +10,10 @@ IP_URL=
 # Having problems? Enable debug by changing the value to 'true' to enable advanced logging
 ENABLE_DEBUG=false
 
+X_FRAME_OPTIONS=SAMEORIGIN
+ENABLE_X_CONTENT_TYPE_OPTIONS=true
+SESS_REGENERATE_DESTROY=false
+
 # Set this setting to 'true' if you want to disable the setup for security purposes
 DISABLE_SETUP=false
 
