@@ -105,31 +105,34 @@ class Invoices extends Admin_Controller
         }
     }
 
-public function download($invoice)
-{
-    $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
+    /**
+     * @param string $invoice
+     */
+    public function download($invoice)
+    {
+        $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
 
-    $fileName = basename($invoice) . '.pdf'; // Strip directory traversal sequences
-    $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
+        $fileName = basename($invoice) . '.pdf'; // Strip directory traversal sequences
+        $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
 
-    if ($filePath === false || strpos($filePath, $safeBaseDir) !== 0) {
-        log_message('error', "Invalid file access attempt: $fileName");
-        show_404();
-        return;
+        if ($filePath === false || strpos($filePath, $safeBaseDir) !== 0) {
+            log_message('error', "Invalid file access attempt: $fileName");
+            show_404();
+            return;
+        }
+
+        if (!file_exists($filePath)) {
+            log_message('error', "While downloading: File not found: $filePath");
+            show_404();
+            return;
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+        header('Content-Length: ' . filesize($filePath));
+        readfile($filePath);
+        exit;
     }
-
-    if (!file_exists($filePath)) {
-        log_message('error', "While downloading: File not found: $filePath");
-        show_404();
-        return;
-    }
-
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
-    header('Content-Length: ' . filesize($filePath));
-    readfile($filePath);
-    exit;
-}
 
     /**
      * @param $invoice_id

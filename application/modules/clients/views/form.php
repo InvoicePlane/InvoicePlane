@@ -405,7 +405,7 @@ $cv = $this->controller->view_data['custom_values'];
             </div>
         </div>
 
-<!-- client_extended by chrissie -->
+        <!-- client_extended by chrissie -->
         <div class="row" >
             <div class="col-xs-12 col-sm-6" >
                 <div class="panel panel-default">
@@ -423,7 +423,7 @@ $cv = $this->controller->view_data['custom_values'];
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="client_extended_customer_no"><?php _trans('customerno'); ?></label>
+                            <label for="client_extended_customer_no"><?php _trans('customer_no'); ?></label>
                             <div class="controls">
                                 <input type="text" name="client_extended_customer_no" id="client_extended_customer_no" class="form-control"
                                        value="<?php echo $this->mdl_client_extended->form_value('client_extended_customer_no', true); ?>" >
@@ -492,12 +492,12 @@ $cv = $this->controller->view_data['custom_values'];
                                        value="<?php echo $this->mdl_client_extended->form_value('client_extended_delivery_terms', true); ?>" >
                             </div>
                         </div>
-	        </div>
-	    </div>
-	</div>
-<!-- // client_extended END -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- client_extended END -->
 
-<!-- custom fields -->
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
