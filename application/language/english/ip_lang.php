@@ -744,4 +744,14 @@ $lang = [
     // Types
     'true'                                         => 'True',
     'false'                                        => 'False'
+
+	//Expense Module
+	'enter_expense'                                => 'Enter Expense',
+    'expense'                                      => 'Expense',
+    'expense_form'                                 => 'Expense Form',
+    'expense_tax'                                  => 'Expense Tax',
+    'expenses'                                     => 'Expenses',
+	'tax_paid'                                     => 'Tax Paid',
+	'view_expenses'                                => 'View Expenses',
+	'yearly_report'                                => 'Yearly Report'
 ];
