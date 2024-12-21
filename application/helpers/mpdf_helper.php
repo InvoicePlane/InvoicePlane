@@ -107,8 +107,8 @@ function convert_pdf_to_pdfa(string $sourcePdf, string $destPdf, string $title, 
  * @param null $is_guest
  * @param bool $zugferd_invoice
  * @param null $associated_files
- * @param $pdf_stamp	 
- *   default "", no stamp. true with default stamp, 
+ * @param $pdf_stamp
+ *   default "", no stamp. true with default stamp,
  *   can also use a filename for multiple different stamps
  *
  * @return string
@@ -374,8 +374,3 @@ function pdf_create(
         return $t;
     }
 }
-
-/*
-vim:et:ts=4:sw=4:
-*/
-

@@ -3,6 +3,35 @@
 </p>
 <p>&nbsp;</p>
 
+### Experimental way, need to add 2 tables in DB [See this comment](https://github.com/InvoicePlane/InvoicePlane/pull/1153#issuecomment-2557951939)
+```sql
+-- Extension by chrissie
+create table ip_client_extended (
+    client_extended_id int auto_increment primary key,
+    client_extended_client_id int,
+    client_extended_salutation varchar(255),
+    client_extended_customer_no varchar(255),
+    client_extended_flags int,
+    client_extended_contact_person varchar(255),
+    client_extended_contract varchar(255),
+    client_extended_direct_debit varchar(255),
+    client_extended_bank_name varchar(255),
+    client_extended_bank_bic varchar(255),
+    client_extended_bank_iban varchar(255),
+    client_extended_payment_terms varchar(255),
+    client_extended_delivery_terms varchar(255)
+);
+-- Extension by chrissie
+create table ip_documents (
+    document_id int auto_increment primary key,
+    client_id int, document_filename varchar(255),
+    document_description varchar(255),
+    document_deleted int default 0,
+    document_created datetime
+);
+```
+
+
 <p align="center">
 <a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1"></a>
 <a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/github/downloads/invoiceplane/invoiceplane/total?colorB=%23429ae1"></a>
@@ -90,7 +119,7 @@ and their usage is restricted! For more information visit invoiceplane.com/licen
 
 * for PHP 8.3
 
-On serveral vendor Classes, #[\AllowDynamicProperties] were added. There might be further ones not noticed yet. 
+On serveral vendor Classes, #[\AllowDynamicProperties] were added. There might be further ones not noticed yet.
 
 ```
 vendor/codeigniter/framework/system/database/drivers/mysqli/mysqli_driver.php:#[\AllowDynamicProperties]

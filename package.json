@@ -14,7 +14,7 @@
     "devDependencies": {
         "autoprefixer": "9.8.8",
         "bootstrap-datepicker": "1.10",
-        "bootstrap-sass": "3.4.3",
+        "bootstrap-sass": "3.4.1",
         "clipboard": "2.0.11",
         "dropzone": "5.9.3",
         "font-awesome": "4.7",
