@@ -84,7 +84,8 @@ class Reports extends Admin_Controller
     public function sales_by_year()
     {
 
-        if ($this->input->post('btn_submit')) {
+        if ($this->input->post('btn_submit'))
+		{
             $data = array(
                 'results' => $this->mdl_reports->sales_by_year($this->input->post('from_date'), $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax')),
                 'from_date' => $this->input->post('from_date'),
@@ -99,6 +100,27 @@ class Reports extends Admin_Controller
         }
 
         $this->layout->buffer('content', 'reports/sales_by_year_index')->render();
+    }
+	
+	public function yearly()
+    {
+		 if ($this->input->post('btn_submit')) 
+		 {
+            $data = array(
+                'results' => $this->mdl_reports->yearly($this->input->post('from_date'), $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax')),
+                'from_date' => $this->input->post('from_date'),
+                'to_date' => $this->input->post('to_date'),
+            );
+			
+			
+		 }
+		 else
+		 {
+			 $data = array(
+				'results' => $this->mdl_reports->yearly()
+			);
+		 }
+        $this->layout->buffer('content', 'reports/yearly', $data)->render();
     }
 
 }
