@@ -4,8 +4,12 @@
 
    All changes made in this file will override the default styles.
    ========================================================================== */
+#settings-tabs {
+	background-color: rgba(255,255,255,0.25);
+}
+
 @media (min-height: 640px) {/* stycky navbars on good height screen + z-index ip.1.5.11-1 */
-	.navbar, #headerbar{
+	.navbar, #headerbar, #settings-tabs{
 		position: fixed;
 		position: -webkit-sticky;
 		position: sticky;
@@ -14,9 +18,21 @@
 		z-index: 3;
 	}
 	#headerbar {
-		top: 52.5px;
-		background-color: rgba(255,255,255,0.777);
+		top: 52px;
+		background-color: rgba(128,128,128,0.5);
 		z-index: 2;
+	}
+	#settings-tabs {
+		top: 104px;
+		background-color: rgba(128,128,128,0.5);
+	}
+}
+@media (min-width: 900px) {/* stycky setting tabs in headerbars on good width screen ip.1.6.2 */
+	#settings-tabs {
+		top: 60px;
+		width: 72%;
+		margin: 0 14%;
+		background-color: transparent;
 	}
 }
 .input-group .form-control,
@@ -27,6 +43,7 @@
 	float: right;
 }
 .navbar-inverse {
+	border-color: transparent;
 	background: #092448;
 	background: rgb(9, 36, 72);
 	background: rgba(9, 36, 72, .936);
