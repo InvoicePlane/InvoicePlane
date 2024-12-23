@@ -598,7 +598,7 @@ $cv = $this->controller->view_data['custom_values'];
                                             : ''
                                         ?>
                                     >
-                                        <?php echo ucfirst($client_title_choice); ?>
+                                        <?php echo ucfirst(trans($client_title_choice)); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -609,7 +609,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 name="client_title_custom"
                                 type="text"
                                 class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM || $is_custom_title ? '' : 'hidden' ?>"
-                                placeholder='Custom title'
+                                placeholder=<?php echo trans('custom_title') ?>
                                 value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
                             />
                         </div>
