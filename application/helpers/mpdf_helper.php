@@ -66,7 +66,7 @@ function pdf_create(
         $mpdf->PDFA = true;
         $mpdf->PDFAauto = true;
         $mpdf->SetAssociatedFiles($associated_files);
-        $mpdf->SetAdditionalXmpRdf(include_rdf());          // eInvoicing++
+        $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files['name']));          // eInvoicing++
     }
 
     // Set a password if set for the voucher

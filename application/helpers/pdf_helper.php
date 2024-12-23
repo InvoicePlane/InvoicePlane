@@ -91,6 +91,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
 
         $embed_xml = $xml_setting['embedXML'];
+        $XMLname = $xml_setting['XMLname'];
     }
 
     // PDF associated or embedded (Zugferd) Xml file 
@@ -98,7 +99,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     if ($embed_xml && $invoice->client_einvoicing_active == 1) {
         // Create the CII XML file
         $associatedFiles = array(array(
-            'name' => 'ZUGFeRD-invoice.xml',
+            'name' => $XMLname,
             'mime' => 'text/xml',
             'description' => $xml_id . ' CII Invoice',
             'AFRelationship' => 'Alternative',
