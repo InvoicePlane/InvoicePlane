@@ -8,7 +8,6 @@ ALTER TABLE `ip_users`
 ALTER TABLE `ip_clients`
   ADD COLUMN client_invoicing_contact VARCHAR(50) DEFAULT NULL,
   ADD COLUMN client_einvoice_version VARCHAR(25) DEFAULT NULL,
-  ADD COLUMN client_start_einvoicing TINYINT NOT NULL DEFAULT '0';
-  ADD COLUMN client_pause_einvoicing TINYINT NOT NULL DEFAULT '0';
+  ADD COLUMN client_einvoicing_active TINYINT NOT NULL DEFAULT '0';
   ADD COLUMN client_company TEXT DEFAULT NULL AFTER `client_name`;
   

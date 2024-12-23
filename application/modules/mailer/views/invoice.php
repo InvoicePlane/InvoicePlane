@@ -56,6 +56,17 @@
 
                 <?php $this->layout->load_view('layout/alerts'); ?>
 
+                <?php if ($invoice->client_einvoice_version != '' && $invoice->client_einvoicing_active == 0) { ?>
+                    <div class="alert alert-warning">
+                        <table style="margin-left: auto; margin-right: auto;">
+                            <tr>
+                                <td><i class="fa fa-exclamation-triangle fa-2x"></i>&emsp;</td>
+                                <td><?php echo trans('einvoicing_no_creation_hint'); ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                <?php } ?>
+
                 <div class="form-group">
                     <label for="to_email"><?php _trans('to_email'); ?></label>
                     <input type="email" multiple name="to_email" id="to_email" class="form-control" required

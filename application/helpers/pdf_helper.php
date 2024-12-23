@@ -95,7 +95,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // PDF associated or embedded (Zugferd) Xml file 
     $associatedFiles = null;
-    if ($embed_xml) {
+    if ($embed_xml && $invoice->client_einvoicing_active == 1) {
         // Create the CII XML file
         $associatedFiles = array(array(
             'name' => 'ZUGFeRD-invoice.xml',
@@ -104,6 +104,10 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             'AFRelationship' => 'Alternative',
             'path' => generate_xml_invoice_file($invoice, $items, $xml_id, $filename),
         ));
+    } else {
+        // Do not embed the XML file if the client e-Invoicing is not active
+        $associatedFiles = null;
+        $embed_xml = false;
     }
 
     $data = array(
@@ -132,8 +136,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         if (get_setting('change_filename_prefix') == 0) {
             $filename = date('Y-m-d') . '_' . $filename;
         }    
-        // client_pause_einvoicing == 1 (on hold)
-        if ($invoice->client_pause_einvoicing == 0) {
+
+        if ($invoice->client_einvoicing_active == 1) {
             generate_xml_invoice_file($invoice, $items, $xml_id, $filename);   
         }
     }
