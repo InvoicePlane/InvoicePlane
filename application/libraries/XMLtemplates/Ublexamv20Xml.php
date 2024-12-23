@@ -59,7 +59,7 @@ class Ublexamv20Xml
         $node->appendChild($this->doc->createElement('cbc:ID', $this->filename));
         $node->appendChild($this->doc->createElement('cbc:IssueDate', $this->invoice->invoice_date_created));
         $node->appendChild($this->doc->createElement('cbc:InvoiceTypeCode', '380'));
-        $node->appendChild($this->doc->createElement('cbc:DocumentCurrencyCode', $this->currencyCode));  // Mandatory
+        $node->appendChild($this->doc->createElement('cbc:DocumentCurrencyCode', $this->currencyCode));
         return $node;
     }
 

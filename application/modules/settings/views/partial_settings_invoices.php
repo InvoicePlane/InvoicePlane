@@ -529,7 +529,7 @@
                                             <?php _trans('company'); ?>
                                         </option>
                                         <option value="user_name" <?php check_select(get_setting('add_filename_prefix'), 'user_name'); ?>>
-                                            <?php _trans('name'); ?>
+                                            <?php _trans('username'); ?>
                                         </option>
                                 </select>
                                 <p class="help-block"><?php _trans('add_filename_prefix_hint'); ?></p>

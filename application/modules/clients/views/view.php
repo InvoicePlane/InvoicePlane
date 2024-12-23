@@ -284,14 +284,18 @@ $locations = [];
                                         <td><?php echo ($client->client_einvoice_version) ? get_xml_full_name($client->client_einvoice_version) : trans('none'); ?></td>
                                     </tr>
                             </table>
-                                <!-- <?php    
-                                    // echo "<pre>";
-                                    //     echo "Client start einvoicing: " . $client->client_start_einvoicing . "<br>";
-                                    //     echo "Client pause einvoicing: " . $client->client_pause_einvoicing . "<br>";
-                                    //     echo "Client total empty fields: " . $req_einvoice["einvoices_empty_fields"] . "<br>";
-                                    //     // echo "<br>";
-                                    // echo "</pre>";    
-                                ?>  -->
+
+                            <?php if ($req_einvoice["einvoices_empty_fields"] > 0 && $client->client_einvoice_version != '') { ?>
+                                <div class="alert alert-warning small" style="margin: 0px 10px 10px;">
+                                    <table>
+                                        <tr>
+                                            <td><i class="fa fa-exclamation-triangle fa-2x"></i>&emsp;</td>
+                                            <td><?php echo trans('einvoicing_no_creation_hint'); ?></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            <?php } ?>
+
                         </div>
                     </div>
                 </div>

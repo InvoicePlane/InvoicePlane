@@ -108,11 +108,8 @@ class Mdl_Clients extends Response_Model
             'client_einvoice_version' => [
                 'field' => 'client_einvoice_version'
             ], 
-            'client_start_einvoicing' => [
-                'field' => 'client_start_einvoicing'
-            ],
-            'client_pause_einvoicing' => [
-                'field' => 'client_pause_einvoicing'
+            'client_einvoicing_active' => [
+                'field' => 'client_einvoicing_active'
             ],            
             // SUMEX
             'client_birthdate' => [
