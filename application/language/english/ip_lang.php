@@ -185,6 +185,7 @@ $lang = [
     'edit'                                         => 'Edit',
     'einvoicing_no_creation_hint'                  => '<b>Empty (e-invoicing) fields</b> were detected.<br>The <b>e-invoice XML</b> cannot be created until this problem is solved.',
     'einvoicing_no_enabled_hint'                   => 'This e-invoicing option can only be enabled for <b>existing clients</b>.',
+    'einvoicing_send_invoice_hint'                 => 'This invoice <b>CAN</b> be sent but <i><u>without</u> the e-invoicing XML file</i>.',
     'einvoicing_start'                             => 'Start e-invoicing',
     'einvoicing_start_hint'                        => 'And show the empty (<i>additional e-invoicing</i>) fields to fill in!',
     'einvoicing_ubl_cii_required_help'             => 'An e-invoice XML will only be created <b>if all required fields are filled in!</b>',

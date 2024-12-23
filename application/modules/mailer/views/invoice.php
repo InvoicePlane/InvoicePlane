@@ -61,7 +61,8 @@
                         <table style="margin-left: auto; margin-right: auto;">
                             <tr>
                                 <td><i class="fa fa-exclamation-triangle fa-2x"></i>&emsp;</td>
-                                <td><?php echo trans('einvoicing_no_creation_hint'); ?></td>
+                                <td><?php echo trans('einvoicing_no_creation_hint') . '<br>' . trans('einvoicing_send_invoice_hint'); ?>
+                                </td>
                             </tr>
                         </table>
                     </div>
