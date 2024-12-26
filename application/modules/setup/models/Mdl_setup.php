@@ -48,11 +48,16 @@ class Mdl_Setup extends CI_Model
         $commands = explode(';', $contents);
 
         foreach ($commands as $command) {
-            if (trim($command)) {
-                if (!$this->db->query(trim($command) . ';')) {
-                    $this->errors[] = $this->db->_error_message();
-                }
-            }
+            if (!trim($command)) {
+				continue;
+			}
+			
+			if ($this->db->query(trim($command) . ';')) {
+				continue;
+			}
+			
+			return $this->db->_error_message();
+			$this->errors[] = $this->db->_error_message();
         }
     }
 
