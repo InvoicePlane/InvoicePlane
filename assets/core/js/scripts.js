@@ -226,12 +226,28 @@ $(document).ready(function () {
     });
 
     // Fullpage loader
-    $(document).on('click', '.ajax-loader', function () {
-        $('#fullpage-loader').fadeIn(200);
-        window.fullpageloaderTimeout = window.setTimeout(function () {
-            $('#loader-error').fadeIn(200);
-            $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
-        }, 10000);
+    $(document).on('click', '.ajax-loader', function (event) {
+        var requiredFieldsFilledIn = true;
+
+        $('input[required], textarea[required], select[required]').each(function () {
+            if ($(this).val().trim() === '') {
+                requiredFieldsFilledIn = false;
+            }
+        });
+
+        // Checks if required fields are filled it. If not, don't display spinner.
+        if (!requiredFieldsFilledIn) {
+            return;
+        }
+
+        $(document).on('click', '.ajax-loader', function () {
+            $('#fullpage-loader').fadeIn(200);
+            window.fullpageloaderTimeout = window.setTimeout(function () {
+                $('#loader-error').fadeIn(200);
+                $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
+            }, 10000);
+            console.log('ajax-loader');
+        });
     });
 
     $(document).on('click', '.fullpage-loader-close', function () {
