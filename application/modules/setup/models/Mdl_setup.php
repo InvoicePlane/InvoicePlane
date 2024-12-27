@@ -46,18 +46,18 @@ class Mdl_Setup extends CI_Model
     private function execute_contents($contents)
     {
         $commands = explode(';', $contents);
-
+        
         foreach ($commands as $command) {
             if (!trim($command)) {
+                continue;
+            }
+
+            $this->db->query(trim($command) . ';');
+			
+			// If the DB error is duplicate table or collumn
+			if (($this->db->error()['code']) === 1050 && ($this->db->error()['code'] === 1060)) {
 				continue;
 			}
-			
-			if ($this->db->query(trim($command) . ';')) {
-				continue;
-			}
-			
-			return $this->db->_error_message();
-			$this->errors[] = $this->db->_error_message();
         }
     }
 
