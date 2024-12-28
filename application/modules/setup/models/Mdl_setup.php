@@ -46,7 +46,7 @@ class Mdl_Setup extends CI_Model
     private function execute_contents($contents)
     {
         $commands = explode(';', $contents);
-        
+
         foreach ($commands as $command) {
             if (!trim($command)) {
                 continue;
@@ -166,9 +166,7 @@ class Mdl_Setup extends CI_Model
 				continue;
 			}
 			
-			// $this->db->select('COUNT(*) AS update_applied');
 			$this->db->where('version_file', $sql_file);
-			// $update_applied = $this->db->get('ip_versions')->row()->update_applied;
 			$update_applied = $this->db->get('ip_versions');
 
 			if ($update_applied->num_rows()) {
