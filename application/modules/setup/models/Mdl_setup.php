@@ -54,8 +54,7 @@ class Mdl_Setup extends CI_Model
 
             $this->db->query(trim($command) . ';');
 			
-			// If the DB error is duplicate table or collumn
-			if (($this->db->error()['code']) === 1050 && ($this->db->error()['code'] === 1060)) {
+			if (($this->db->error()['code']) === 1050 || ($this->db->error()['code'] === 1060)) {
 				continue;
 			}
         }
