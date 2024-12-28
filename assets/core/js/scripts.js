@@ -246,6 +246,7 @@ $(document).ready(function () {
                 $('#loader-error').fadeIn(200);
                 $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
             }, 10000);
+            console.log('ajax-loader');
         });
     });
 
