@@ -54,10 +54,10 @@ class Mdl_Setup extends CI_Model
 
             $this->db->query(trim($command) . ';');
 			
-			if (($this->db->error()['code']) === 1050 || ($this->db->error()['code'] === 1060)) {
-				continue;
+			$error = $this->db->error();
+			if ($error['code'] !== 1050 || $error['code'] !== 1060) {
+				$this->errors[] = $this->db->_error_message();
 			}
-            $this->errors[] = $this->db->_error_message();
         }
     }
 
@@ -179,7 +179,6 @@ class Mdl_Setup extends CI_Model
 			$this->execute_contents($file_contents);
 			$this->save_version($sql_file);
 
-			// Check for any required upgrade methods
 			$upgrade_method = 'upgrade_' . str_replace('.', '_', substr($sql_file, 0, -4));
 
 			if (!method_exists($this, $upgrade_method)) {
