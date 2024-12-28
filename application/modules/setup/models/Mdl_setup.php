@@ -57,6 +57,7 @@ class Mdl_Setup extends CI_Model
 			if (($this->db->error()['code']) === 1050 || ($this->db->error()['code'] === 1060)) {
 				continue;
 			}
+            $this->errors[] = $this->db->_error_message();
         }
     }
 
