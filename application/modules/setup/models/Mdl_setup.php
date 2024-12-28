@@ -52,13 +52,13 @@ class Mdl_Setup extends CI_Model
                 continue;
             }
 
-            $this->db->db_debug = false; // https://stackoverflow.com/questions/7843406/codeigniter-how-to-catch-db-errors#54519533
+            $this->db->db_debug = false;
 
             $this->db->query(trim($command) . ';');
 
             $error = $this->db->error();
-            if ($error['code'] !== 0 && ($error['code'] !== 1050 || $error['code'] !== 1060)) {
-                $this->errors[] = $error['message']; // Call to undefined method CI_DB_mysqli_driver::_error_message()
+            if ($error['code'] !== 0) {
+                $this->errors[] = $error['message'];
             }
         }
     }
