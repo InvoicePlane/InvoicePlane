@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -52,12 +52,14 @@ class Mdl_Setup extends CI_Model
                 continue;
             }
 
+            $this->db->db_debug = false; // https://stackoverflow.com/questions/7843406/codeigniter-how-to-catch-db-errors#54519533
+
             $this->db->query(trim($command) . ';');
-			
-			$error = $this->db->error();
-			if ($error['code'] !== 1050 || $error['code'] !== 1060) {
-				$this->errors[] = $this->db->_error_message();
-			}
+
+            $error = $this->db->error();
+            if ($error['code'] !== 0 && ($error['code'] !== 1050 || $error['code'] !== 1060)) {
+                $this->errors[] = $error['message']; // Call to undefined method CI_DB_mysqli_driver::_error_message()
+            }
         }
     }
 
@@ -162,28 +164,28 @@ class Mdl_Setup extends CI_Model
 
         // Loop through the files and take appropriate action
         foreach ($sql_files as $sql_file) {
-			if (substr($sql_file, -4) !== '.sql') {
-				continue;
-			}
-			
-			$this->db->where('version_file', $sql_file);
-			$update_applied = $this->db->get('ip_versions');
+            if (substr($sql_file, -4) !== '.sql') {
+                continue;
+            }
 
-			if ($update_applied->num_rows()) {
-				continue;
-			}
-			
-			$file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
-			$this->execute_contents($file_contents);
-			$this->save_version($sql_file);
+            $this->db->where('version_file', $sql_file);
+            $update_applied = $this->db->get('ip_versions');
 
-			$upgrade_method = 'upgrade_' . str_replace('.', '_', substr($sql_file, 0, -4));
+            if ($update_applied->num_rows()) {
+                continue;
+            }
 
-			if (!method_exists($this, $upgrade_method)) {
-				continue;
-			}
-			
-			$this->$upgrade_method();
+            $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
+            $this->execute_contents($file_contents);
+            $this->save_version($sql_file);
+
+            $upgrade_method = 'upgrade_' . str_replace('.', '_', substr($sql_file, 0, -4));
+
+            if (!method_exists($this, $upgrade_method)) {
+                continue;
+            }
+
+            $this->$upgrade_method();
         }
 
         if ($this->errors) {
