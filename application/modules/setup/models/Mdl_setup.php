@@ -52,7 +52,7 @@ class Mdl_Setup extends CI_Model
                 continue;
             }
 
-            $this->db->db_debug = false;
+            $this->db->db_debug = IP_DEBUG;
 
             $this->db->query(trim($command) . ';');
 
