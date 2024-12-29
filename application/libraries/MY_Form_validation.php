@@ -31,9 +31,9 @@ class MY_Form_validation extends CI_Form_validation
         return $query->num_rows() === 0;
     }
 
-    function run($module = '', $group = '')
+    function run($config = null, &$data = null)
     {
-        (is_object($module)) AND $this->CI = &$module;
-        return parent::run($group);
+        (is_object($config)) AND $this->CI = &$config;
+        return parent::run($data);
     }
 }
