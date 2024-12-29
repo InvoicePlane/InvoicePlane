@@ -46,6 +46,7 @@ require dirname(__FILE__) . '/Base.php';
 class MX_Controller
 {
 
+    public $load;
     public $autoload = [];
 
     public function __construct()
