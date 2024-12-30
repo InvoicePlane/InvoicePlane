@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,9 +13,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Versions
- */
+#[AllowDynamicProperties]
 class Mdl_Versions extends Response_Model
 {
 

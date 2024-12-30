@@ -199,7 +199,7 @@
                             <div class="col-xs-12 col-lg-6">
                                 <div class="input-group">
                                     <label for="item_quantity_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('quantity'); ?></label>
-                                    <input type="text" name="item_quantity" id="item_quantity_<?php echo $item->item_id; ?>" class="input-sm form-control" value="<?php echo format_amount($item->item_quantity); ?>"<?php echo $invoice_disabled; ?>>
+                                    <input type="text" name="item_quantity" id="item_quantity_<?php echo $item->item_id; ?>" class="input-sm form-control" value="<?php echo format_quantity($item->item_quantity); ?>"<?php echo $invoice_disabled; ?>>
                                 </div>
                                 <div class="input-group">
                                     <label for="item_product_unit_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('product_unit'); ?></label>

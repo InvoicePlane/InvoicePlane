@@ -176,7 +176,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('quantity'); ?></span>
                         <input type="text" name="item_quantity" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_quantity); ?>"
+                               value="<?php echo format_quantity($item->item_quantity); ?>"
                             <?php if ($invoice->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>

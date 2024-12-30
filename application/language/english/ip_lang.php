@@ -1,5 +1,5 @@
 <?php
-$lang = array(
+$lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
@@ -86,6 +86,7 @@ $lang = array(
     'client_access'                                => 'Client Access',
     'client_already_exists'                        => 'Client already exists!',
     'client_form'                                  => 'Client Form',
+    'client_title'                                 => 'Title',
     'client_name'                                  => 'Client Name',
     'client_surname'                               => 'Client Surname',
     'client_surname_optional'                      => 'Client Surname (Optional)',
@@ -142,6 +143,7 @@ $lang = array(
     'default_invoice_group'                        => 'Default Invoice Group',
     'default_invoice_tax_rate'                     => 'Default Invoice Tax Rate',
     'default_invoice_tax_rate_placement'           => 'Default Invoice Tax Rate Placement',
+    'default_item_decimals'                        => 'Default decimals for items',
     'default_item_tax_rate'                        => 'Default Item Tax Rate',
     'default_list_limit'                           => 'Number of Items in Lists',
     'default_notes'                                => 'Default Notes',
@@ -276,6 +278,7 @@ $lang = array(
     'invoice_tax_rate'                             => 'Invoice Tax Rate',
     'invoice_template'                             => 'Invoice Template',
     'invoice_templates'                            => 'Invoice Templates',
+    'invoice_templates_info'                       => 'You can extend the available templates by downloading other templates provided by the community (see <a href="https://www.invoiceplane.com/themes" target="_blank">www.invoiceplane.com/themes</a>).',
     'invoice_terms'                                => 'Invoice Terms',
     'invoiced'                                     => 'Invoiced',
     'invoiceplane_news'                            => 'InvoicePlane News',
@@ -728,10 +731,17 @@ $lang = array(
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
 
+    // Clients/Enums/ClientTitleEnum
+    'mr'                                           => 'mr',
+    'mrs'                                          => 'mrs',
+    'doctor'                                       => 'doctor',
+    'professor'                                    => 'professor',
+    'custom'                                       => 'custom',
+
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
     // Types
     'true'                                         => 'True',
     'false'                                        => 'False'
-);
+];

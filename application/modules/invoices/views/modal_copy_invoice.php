@@ -12,7 +12,7 @@
         $('#copy_invoice_confirm').click(function () {
             $.post("<?php echo site_url('invoices/ajax/copy_invoice'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
-                    client_id: $('#client_id').val(),
+                    client_id: $('#copy_invoice_client_id').val(),
                     invoice_date_created: $('#invoice_date_created_modal').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
@@ -21,7 +21,7 @@
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
@@ -54,11 +54,11 @@
                    value="<?php echo $invoice->payment_method; ?>">
 
             <div class="form-group">
-                <label for="client_id"><?php _trans('client'); ?></label>
-                <select name="client_id" id="client_id" class="form-control" autofocus="autofocus">
-                    <option value="<?php echo $invoice->client_id; ?>">
-                        <?php echo format_client($invoice); ?>
-                    </option>
+                <label for="copy_invoice_client_id"><?php _trans('client'); ?></label>
+                <select name="client_id" id="copy_invoice_client_id" class="client-id-select form-control" autofocus="autofocus">
+                <?php if ( ! empty($client)) : ?>
+                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
+                    <?php endif; ?>
                 </select>
             </div>
 

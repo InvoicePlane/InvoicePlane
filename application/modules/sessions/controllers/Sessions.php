@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Sessions
- */
+#[AllowDynamicProperties]
 class Sessions extends Base_Controller
 {
     public function index()
@@ -104,7 +105,7 @@ class Sessions extends Base_Controller
     {
         // Check if a token was provided
         if ($token) {
-            if(!preg_match("/[^[:alnum:]\-_]/", $token)) {
+            if(preg_match("/[^[:alnum:]\-_]/", $token)) {
                 log_message('error', 'Incoming token is not alphanumeric ' . $token);
                 redirect('/');
             }

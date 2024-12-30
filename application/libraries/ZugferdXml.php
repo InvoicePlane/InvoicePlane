@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,14 +13,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class ZugferdXml
- */
+#[AllowDynamicProperties]
 class ZugferdXml
 {
-    var $invoice;
-    var $doc;
-    var $root;
+    public $invoice;
+    public $doc;
+    public $root;
 
     public function __construct($params)
     {
@@ -123,7 +124,13 @@ class ZugferdXml
     protected function xmlSellerTradeParty($index = '', $item = '')
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
-        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+
+        if (!empty($this->invoice->user_company)) {
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_company)));
+            $node->appendChild($this->doc->createElement('ram:DefinedTradeContact', htmlsc($this->invoice->user_name)));
+        } else {
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+        }
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');

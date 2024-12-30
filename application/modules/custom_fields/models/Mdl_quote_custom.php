@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Quote_Custom
- */
+#[AllowDynamicProperties]
 class Mdl_Quote_Custom extends Validator
 {
     public static $positions = array(

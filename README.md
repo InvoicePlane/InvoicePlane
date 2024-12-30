@@ -9,15 +9,17 @@
 <a href="https://translations.invoiceplane.com/project/fusioninvoice"><img src="https://img.shields.io/badge/Translations-%40%20Crowdin-429ae1"></a>
 </p>
 
-<p align="center" bgcolor="#429ae1"><b>InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.<br>
-  For more information visit <a href="https://www.invoiceplane.com">InvoicePlane.com</a> or try the <a href="https://demo.invoiceplane.com">Demo</a>.</b></p>
+<p align="center" bgcolor="#429ae1"><i>InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.<br>
+  For more information visit <a href="https://www.invoiceplane.com">InvoicePlane.com</a> or try the <a href="https://www.invoiceplane.com/demo">Demo</a>.</i></p>
 
 ---
 
-Since the start of the project in 2014, InvoicePlane evolved into a software that is used world wide. However, it is
-still developed in our free time, as a hobby. We do your best to fulfill any legal requirements but please note that we
-cannot make sure that the app is working 100% correct. Also, due to the fact that InvoicePlane is a free and open
-source software without an income, there are no professional audits of the app yet.
+Since the start of the project in 2014, InvoicePlane evolved into a software used worldwide.
+However, it is still developed in our free time, as a hobby.
+We do your best to fulfill any legal requirements but please note
+that we cannot make sure that the app is working 100% correctly.
+Also, due to the fact that InvoicePlane is a free and open source software without an income,
+there are no professional audits of the app yet.
 
 ---
 
@@ -29,14 +31,14 @@ source software without an income, there are no professional audits of the app y
 4. Open the `ipconfig.php` file in an editor and set your URL like specified in the file.
 5. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
 
-
-_Notice: Please download InvoicePlane from our [website](https://www.invoiceplane.com/downloads) only as the packages contain additional needed components. If you are a developer, read the [development guide](CONTRIBUTING.md)._
+_Notice: Please download InvoicePlane from our [website](https://www.invoiceplane.com/downloads) only as the packages contain additional needed components.
+If you are a developer, read the [development guide](CONTRIBUTING.md)._
 
 ---
 
 #### Issues
 
-As soon as you run into issues and you want to report it, make sure we can replicate that issue.
+Before you report an issue, try your best to make it reproducible.
 
 Something like "_It doesn't work_" will not help in finding your issue.
 
@@ -52,11 +54,12 @@ Once the issue is _reproducable / replicatable_, you will be asked to create an 
 
 If you want to remove `index.php` from the URL, follow these instructions. However, this is an _optional_ step and not a requirement. If it's not working correctly, take a step back and use the application with out removing that part from the URL.
 
-1. Make sure that mod_rewrite is enabled on your web server.
+1. Make sure that `mod_rewrite` is enabled on your web server.
 2. Set the `REMOVE_INDEXPHP` setting in your `ipconfig.php` to `true`.
 3. Rename the `htaccess` file to `.htaccess`
 
-If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoiceplane-domain.com/invoices/`) you have to change the `ipconfig.php` and `.htaccess` file. The instructions can be found within the files.
+If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoiceplane-domain.com/invoices/`) you have to change the `ipconfig.php` and `.htaccess` file.
+The instructions can be found within the files.
 
 ---
 

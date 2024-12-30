@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Quote_Amounts
- */
+#[AllowDynamicProperties]
 class Mdl_Quote_Amounts extends CI_Model
 {
     /**
@@ -182,31 +183,31 @@ class Mdl_Quote_Amounts extends CI_Model
         switch ($period) {
             case 'month':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes
-					WHERE MONTH(quote_date_created) = MONTH(NOW()) 
+					WHERE MONTH(quote_date_created) = MONTH(NOW())
 					AND YEAR(quote_date_created) = YEAR(NOW()))")->row()->total_quoted;
             case 'last_month':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes
 					WHERE MONTH(quote_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
 					AND YEAR(quote_date_created) = YEAR(NOW() - INTERVAL 1 MONTH))")->row()->total_quoted;
             case 'year':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes WHERE YEAR(quote_date_created) = YEAR(NOW()))")->row()->total_quoted;
             case 'last_year':
                 return $this->db->query("
-					SELECT SUM(quote_total) AS total_quoted 
+					SELECT SUM(quote_total) AS total_quoted
 					FROM ip_quote_amounts
-					WHERE quote_id IN 
+					WHERE quote_id IN
 					(SELECT quote_id FROM ip_quotes WHERE YEAR(quote_date_created) = YEAR(NOW() - INTERVAL 1 YEAR))")->row()->total_quoted;
             default:
                 return $this->db->query("SELECT SUM(quote_total) AS total_quoted FROM ip_quote_amounts")->row()->total_quoted;

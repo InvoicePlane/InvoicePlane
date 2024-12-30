@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Payment_Methods
- */
+#[AllowDynamicProperties]
 class Payment_Methods extends Admin_Controller
 {
     /**
@@ -47,9 +48,11 @@ class Payment_Methods extends Admin_Controller
             redirect('payment_methods');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->input->post('is_update') == 0 && $this->input->post('payment_method_name') != '') {
-            $check = $this->db->get_where('ip_payment_methods', array('payment_method_name' => $this->input->post('payment_method_name')))->result();
-            if (!empty($check)) {
+            $check = $this->db->get_where('ip_payment_methods', ['payment_method_name' => $this->input->post('payment_method_name')])->result();
+            if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('payment_method_already_exists'));
                 redirect('payment_methods/form');
             }
@@ -60,8 +63,8 @@ class Payment_Methods extends Admin_Controller
             redirect('payment_methods');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_payment_methods->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_payment_methods->prep_form($id)) {
                 show_404();
             }
             $this->mdl_payment_methods->set_form_value('is_update', true);

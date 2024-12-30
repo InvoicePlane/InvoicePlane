@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*******************
  * Cryptor Class
@@ -27,6 +30,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#[AllowDynamicProperties]
 class Cryptor
 {
     private $cipher_algo;

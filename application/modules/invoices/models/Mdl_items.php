@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link        https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Items
- */
+#[AllowDynamicProperties]
 class Mdl_Items extends Response_Model
 {
 
