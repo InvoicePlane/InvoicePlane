@@ -1,12 +1,14 @@
 <?php
-if (!defined('BASEPATH')) {
-  exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
 }
 
-use SepaQr\Data;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
+use SepaQr\Data;
 
+#[AllowDynamicProperties]
 class QrCode {
   public $invoice;
   public $recipient;
@@ -38,7 +40,7 @@ class QrCode {
       ->setBic($this->bic)
       ->setCurrency($this->currencyCode)
       ->setRemittanceText($this->remittance_text)
-      ->setAmount($this->invoice->invoice_total);
+      ->setAmount($this->invoice->invoice_balance);
 
     return $paymentData;
   }

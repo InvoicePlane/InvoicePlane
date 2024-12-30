@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -16,11 +19,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 function format_client($client)
 {
-    if ($client->client_surname != "") {
-        return $client->client_name . " " . $client->client_surname;
+    $client_title='';
+    if(property_exists($client, 'client_title')){
+        $client_title = $client->client_title === 'custom' ? '' : $client->client_title ?? '';
     }
 
-    return $client->client_name;
+    return ucfirst(trans($client_title)) . ' ' . $client->client_name . (empty($client->client_surname) ? '' : ' ' . $client->client_surname);
 }
 
 /**

@@ -19,6 +19,10 @@
             }
         });
 
+        $(document).ready(function(){
+            $('#btn-cancel').attr('onclick', "window.location.href = '<?php echo site_url() ?>/payments'");
+        });
+
     });
 </script>
 
@@ -84,7 +88,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="payment_amount" id="payment_amount" class="form-control"
-                       value="<?php echo format_amount($this->mdl_payments->form_value('payment_amount')); ?>" required>
+                       value="<?php echo format_amount(standardize_amount($this->mdl_payments->form_value('payment_amount'))); ?>" required>
             </div>
         </div>
 

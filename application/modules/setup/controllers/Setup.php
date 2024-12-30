@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,9 +13,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Setup
- */
+#[AllowDynamicProperties]
 class Setup extends MX_Controller
 {
 
@@ -270,7 +269,7 @@ class Setup extends MX_Controller
             $this->errors += 1;
 
             return [
-                'message' => trans('cannot_connect_database_server'),
+                'message' => trans('setup_database_message'),
                 'success' => false,
             ];
         }
@@ -456,5 +455,4 @@ class Setup extends MX_Controller
         $config = preg_replace("/SETUP_COMPLETED=(.*)?/", "SETUP_COMPLETED=true", $config);
         write_file(IPCONFIG_FILE, $config);
     }
-
 }
