@@ -253,7 +253,7 @@
 
             <hr>
 
-            <?php if (get_setting('qr_code')) : ?>
+            <?php if (get_setting('qr_code') && $invoice->invoice_balance > 0) : ?>
                 <table class="invoice-qr-code-table">
                     <tr>
                         <td>
