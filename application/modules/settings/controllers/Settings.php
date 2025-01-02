@@ -133,6 +133,7 @@ class Settings extends Admin_Controller
         $this->load->model('email_templates/mdl_email_templates');
         $this->load->model('payment_methods/mdl_payment_methods');
         $this->load->model('invoices/mdl_templates');
+        $this->load->model('custom_fields/mdl_invoice_custom');
 
         $this->load->helper('country');
 
@@ -162,10 +163,11 @@ class Settings extends Admin_Controller
                 'available_themes' => $available_themes,
                 'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'custom_fields' => ['ip_invoice_custom' => $this->mdl_invoice_custom->get()->result()],
                 'gateway_drivers' => $gateways,
                 'number_formats' => $number_formats,
                 'gateway_currency_codes' => get_currencies(),
-                'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))
+                'first_days_of_weeks' => ['0' => lang('sunday'), '1' => lang('monday')]
             )
         );
 
