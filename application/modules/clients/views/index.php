@@ -32,16 +32,16 @@
             </a>
         </div>
     </div>
-
 </div>
 
-<div id="submenu">
     <div class="collapse clearfix" id="ip-submenu-collapse">
 
         <div class="submenu-row">
             <?php echo pager(site_url('clients/status/' . $this->uri->segment(3)), 'mdl_clients'); ?>
         </div>
 
+
+<div id="submenu">
         <div class="submenu-row">
             <div class="btn-group btn-group-sm index-options">
                 <a href="<?php echo site_url('clients/status/active'); ?>"
@@ -65,7 +65,6 @@
 <div id="content" class="table-content">
 
     <?php $this->layout->load_view('layout/alerts'); ?>
-
     <div id="filter_results">
         <?php $this->layout->load_view('clients/partial_client_table'); ?>
     </div>
