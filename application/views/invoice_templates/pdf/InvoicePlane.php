@@ -52,6 +52,7 @@
         if ($invoice->client_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
         } ?>
+
     </div>
     <div id="company">
         <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
@@ -101,6 +102,16 @@
 
     <div class="invoice-details clearfix">
         <table>
+            <?php if ($invoice->invoice_sign == -1) { ?>
+                <tr>
+                    <td><?php echo trans('credit_invoice_date') . ':'; ?></td>
+                    <td><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo trans('amount_due') . ': '; ?></td>
+                    <td><?php echo format_currency($invoice->invoice_balance); ?></td>
+                </tr>
+            <?php } else { ?>
             <tr>
                 <td><?php echo trans('invoice_date') . ':'; ?></td>
                 <td><?php echo date_from_mysql(htmlsc($invoice->invoice_date_created), true); ?></td>
@@ -119,10 +130,17 @@
                     <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
                 </tr>
             <?php } ?>
+            <?php } ?>
         </table>
     </div>
 
-    <h1 class="invoice-title"><?php echo trans('invoice') . ' ' . htmlsc($invoice->invoice_number); ?></h1>
+    <h1 class="invoice-title">
+    <?php if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ' . htmlsc($invoice->invoice_number);
+          } else {
+            echo trans('invoice') . ' ' . htmlsc($invoice->invoice_number);
+          } ?>    
+    </h1>        
 
     <table class="item-table">
         <thead>
