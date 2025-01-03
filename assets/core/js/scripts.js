@@ -240,13 +240,13 @@ $(document).ready(function () {
             return;
         }
 
-        $(document).on('click', '.ajax-loader', function () {
-            $('#fullpage-loader').fadeIn(200);
-            window.fullpageloaderTimeout = window.setTimeout(function () {
-                $('#loader-error').fadeIn(200);
-                $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
-            }, 10000);
-        });
+        // Show loader
+        $('#fullpage-loader').fadeIn(200);
+        window.fullpageloaderTimeout = window.setTimeout(function () {
+            $('#loader-error').fadeIn(200);
+            $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
+        }, 10000);
+
     });
 
     $(document).on('click', '.fullpage-loader-close', function () {
