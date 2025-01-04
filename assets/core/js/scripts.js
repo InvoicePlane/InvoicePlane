@@ -225,8 +225,8 @@ $(document).ready(function () {
         update_email_template_preview();
     });
 
-    // Fullpage loader
-    $(document).on('click', '.ajax-loader', function (event) {
+    // Fullpage loader (spinner)
+    $(document).on('click', '.ajax-loader', function () {
         var requiredFieldsFilledIn = true;
 
         $('input[required], textarea[required], select[required]').each(function () {
@@ -235,9 +235,9 @@ $(document).ready(function () {
             }
         });
 
-        // Checks if required fields are filled it. If not, don't display spinner.
+        // Checks if required fields are filled it.
         if (!requiredFieldsFilledIn) {
-            return;
+            return; // If not, don't display spinner.
         }
 
         // Show loader
