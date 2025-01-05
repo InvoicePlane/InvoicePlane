@@ -26,7 +26,7 @@
                 <th><?php _trans('task_name'); ?></th>
                 <th><?php _trans('task_finish_date'); ?></th>
                 <th><?php _trans('project'); ?></th>
-                <th><?php _trans('task_price'); ?></th>
+                <th class="amount last"><?php _trans('task_price'); ?></th>
                 <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
@@ -50,7 +50,7 @@
                     <td>
                         <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, htmlsc($task->project_name)) : ''; ?>
                     </td>
-                    <td>
+                    <td class="amount last">
                         <?php echo format_currency($task->task_price); ?>
                     </td>
                     <td>
