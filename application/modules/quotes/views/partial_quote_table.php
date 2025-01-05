@@ -8,7 +8,7 @@
             <th><?php _trans('created'); ?></th>
             <th><?php _trans('due_date'); ?></th>
             <th><?php _trans('client_name'); ?></th>
-            <th style="text-align: right; padding-right: 25px;"><?php _trans('amount'); ?></th>
+            <th class="amount last"><?php _trans('amount'); ?></th>
             <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
@@ -47,7 +47,7 @@
                         <?php _htmlsc(format_client($quote)); ?>
                     </a>
                 </td>
-                <td style="text-align: right; padding-right: 25px;">
+                <td class="amount last">
                     <?php echo format_currency($quote->quote_total); ?>
                 </td>
                 <td>
