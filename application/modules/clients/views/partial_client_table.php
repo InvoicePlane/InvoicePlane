@@ -6,7 +6,7 @@
             <th><?php _trans('client_name'); ?></th>
             <th><?php _trans('email_address'); ?></th>
             <th><?php _trans('phone_number'); ?></th>
-            <th class="amount"><?php _trans('balance'); ?></th>
+            <th style="text-align: right;"><?php _trans('balance'); ?></th>
             <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
