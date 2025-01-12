@@ -7,7 +7,7 @@
             <th><?php _trans('invoice_date'); ?></th>
             <th><?php _trans('invoice'); ?></th>
             <th><?php _trans('client'); ?></th>
-            <th><?php _trans('amount'); ?></th>
+            <th class="amount last"><?php _trans('amount'); ?></th>
             <th><?php _trans('payment_method'); ?></th>
             <th><?php _trans('note'); ?></th>
             <th><?php _trans('options'); ?></th>
@@ -26,7 +26,7 @@
                         <?php _htmlsc(format_client($payment)); ?>
                     </a>
                 </td>
-                <td class="amount"><?php echo format_currency($payment->payment_amount); ?></td>
+                <td class="amount last"><?php echo format_currency($payment->payment_amount); ?></td>
                 <td><?php _htmlsc($payment->payment_method_name); ?></td>
                 <td><?php _htmlsc($payment->payment_note); ?></td>
                 <td>

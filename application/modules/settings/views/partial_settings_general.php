@@ -371,7 +371,6 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="monospace_amounts">
                                 <?php _trans('monospaced_font_for_amounts'); ?>
@@ -387,13 +386,12 @@
                             <p class="help-block">
                                 <?php _trans('example'); ?>:
                                 <span style="font-family: Monaco, Lucida Console, monospace">
-                        <?php echo format_currency(123456.78); ?>
-                    </span>
+                                    <?php echo format_currency(123456.78); ?>
+                                </span>
                             </p>
                         </div>
-                      </div>
-
-                      <div class="col-xs-12 col-md-6">
+                    </div>
+                    <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="login_logo">
                                 <?php _trans('login_logo'); ?>
@@ -409,7 +407,7 @@
                     </div>
                 </div>
 
-              	<div class="row">
+                <div class="row">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[reports_in_new_tab]">
@@ -423,9 +421,9 @@
                                 </option>
                             </select>
                         </div>
- 				            </div>
+                    </div>
                     <div class="col-xs-12 col-md-6">
-    					          <div class="form-group">
+                        <div class="form-group">
                             <label for="settings[show_responsive_itemlist]">
                                 <?php _trans('show_responsive_itemlist'); ?>
                             </label>
@@ -439,7 +437,6 @@
                                 </option>
                             </select>
                         </div>
-
                     </div>
                 </div>
 
