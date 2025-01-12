@@ -109,7 +109,7 @@ public function download($invoice)
 {
     $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
 
-    $fileName = basename($invoice) . '.pdf'; // Strip directory traversal sequences
+    $fileName = basename($invoice); // Strip directory traversal sequences
     $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
 
     if ($filePath === false || strpos($filePath, $safeBaseDir) !== 0) {
