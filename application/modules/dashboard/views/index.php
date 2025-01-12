@@ -127,7 +127,7 @@
                             <th style="min-width: 15%;"><?php _trans('date'); ?></th>
                             <th style="min-width: 15%;"><?php _trans('quote'); ?></th>
                             <th style="min-width: 35%;"><?php _trans('client'); ?></th>
-                            <th style="text-align: right;"><?php _trans('balance'); ?></th>
+                            <th class="amount"><?php _trans('balance'); ?></th>
                             <th></th>
                         </tr>
                         </thead>
@@ -187,7 +187,7 @@
                             <th style="min-width: 15%;"><?php _trans('due_date'); ?></th>
                             <th style="min-width: 15%;"><?php _trans('invoice'); ?></th>
                             <th style="min-width: 35%;"><?php _trans('client'); ?></th>
-                            <th style="text-align: right;"><?php _trans('balance'); ?></th>
+                            <th class="amount"><?php _trans('balance'); ?></th>
                             <th></th>
                         </tr>
                         </thead>

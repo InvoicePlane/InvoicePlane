@@ -57,14 +57,14 @@
 
 <?php
 $locations = [];
-            foreach ($custom_fields as $custom_field) {
-                if (array_key_exists($custom_field->custom_field_location, $locations)) {
-                    $locations[$custom_field->custom_field_location] += 1;
-                } else {
-                    $locations[$custom_field->custom_field_location] = 1;
-                }
-            }
-            ?>
+foreach ($custom_fields as $custom_field) {
+    if (array_key_exists($custom_field->custom_field_location, $locations)) {
+        $locations[$custom_field->custom_field_location] += 1;
+    } else {
+        $locations[$custom_field->custom_field_location] = 1;
+    }
+}
+?>
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _htmlsc(format_client($client)); ?></h1>
@@ -82,11 +82,14 @@ $locations = [];
                class="btn btn-default">
                 <i class="fa fa-edit"></i> <?php _trans('edit'); ?>
             </a>
-            <a class="btn btn-danger"
-               href="<?php echo site_url('clients/delete/' . $client->client_id); ?>"
-               onclick="return confirm('<?php _trans('delete_client_warning'); ?>');">
-                <i class="fa fa-trash-o"></i> <?php _trans('delete'); ?>
-            </a>
+            <form action="<?php echo site_url('clients/delete/' . $client->client_id); ?>"
+                  method="POST" class="btn-group btn-group-sm">
+                <?php _csrf_field(); ?>
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('<?php _trans('delete_client_warning'); ?>');">
+                    <i class="fa fa-trash-o"></i> <?php _trans('delete'); ?>
+                </button>
+            </form>
         </div>
     </div>
 

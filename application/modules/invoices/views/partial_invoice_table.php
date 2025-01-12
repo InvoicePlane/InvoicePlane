@@ -8,8 +8,8 @@
             <th><?php _trans('created'); ?></th>
             <th><?php _trans('due_date'); ?></th>
             <th><?php _trans('client_name'); ?></th>
-            <th style="text-align: right;"><?php _trans('amount'); ?></th>
-            <th style="text-align: right;"><?php _trans('balance'); ?></th>
+            <th class="amount"><?php _trans('amount'); ?></th>
+            <th class="amount last"><?php _trans('balance'); ?></th>
             <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
@@ -73,7 +73,7 @@
                     <?php echo format_currency($invoice->invoice_total); ?>
                 </td>
 
-                <td class="amount">
+                <td class="amount last">
                     <?php echo format_currency($invoice->invoice_balance); ?>
                 </td>
 
