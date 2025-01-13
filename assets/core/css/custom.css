@@ -33,6 +33,7 @@
 		width: 72%;
 		margin: 0 14%;
 		background-color: transparent;
+		z-index: 2;
 	}
 }
 .input-group .form-control,
