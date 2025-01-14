@@ -58,8 +58,7 @@ class Mdl_Products extends Response_Model
         return array(
             'product_sku' => array(
                 'field' => 'product_sku',
-                'label' => trans('product_sku'),
-                'rules' => ''
+                'label' => trans('product_sku')
             ),
             'product_name' => array(
                 'field' => 'product_name',
@@ -68,8 +67,7 @@ class Mdl_Products extends Response_Model
             ),
             'product_description' => array(
                 'field' => 'product_description',
-                'label' => trans('product_description'),
-                'rules' => ''
+                'label' => trans('product_description')
             ),
             'product_price' => array(
                 'field' => 'product_price',
@@ -78,13 +76,11 @@ class Mdl_Products extends Response_Model
             ),
             'purchase_price' => array(
                 'field' => 'purchase_price',
-                'label' => trans('purchase_price'),
-                'rules' => ''
+                'label' => trans('purchase_price')
             ),
             'provider_name' => array(
                 'field' => 'provider_name',
-                'label' => trans('provider_name'),
-                'rules' => ''
+                'label' => trans('provider_name')
             ),
             'family_id' => array(
                 'field' => 'family_id',
@@ -104,8 +100,7 @@ class Mdl_Products extends Response_Model
             // Sumex
             'product_tariff' => array(
                 'field' => 'product_tariff',
-                'label' => trans('product_tariff'),
-                'rules' => ''
+                'label' => trans('product_tariff')
             ),
         );
     }

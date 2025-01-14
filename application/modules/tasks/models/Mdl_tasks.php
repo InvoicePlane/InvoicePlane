@@ -64,8 +64,7 @@ class Mdl_Tasks extends Response_Model
             ),
             'task_description' => array(
                 'field' => 'task_description',
-                'label' => trans('task_description'),
-                'rules' => ''
+                'label' => trans('task_description')
             ),
             'task_price' => array(
                 'field' => 'task_price',
@@ -79,8 +78,7 @@ class Mdl_Tasks extends Response_Model
             ),
             'project_id' => array(
                 'field' => 'project_id',
-                'label' => trans('project'),
-                'rules' => ''
+                'label' => trans('project')
             ),
             'task_status' => array(
                 'field' => 'task_status',
