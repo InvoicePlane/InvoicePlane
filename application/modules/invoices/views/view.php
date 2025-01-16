@@ -256,6 +256,10 @@ if ($this->config->item('disable_read_only') == true) {
 								<i class="fa fa-print fa-margin"></i>
 								<?php _trans('download_pdf'); ?>
 						</a>
+						<a class="btn btn-sm btn-default" href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
+							<i class="fa fa-send fa-margin"></i>
+							<?php _trans('send_email'); ?>
+						</a>
 						<a class="btn btn-sm btn-default" href="#" id="btn_create_recurring"
 							   data-invoice-id="<?php echo $invoice_id; ?>">
 								<i class="fa fa-refresh fa-margin"></i>

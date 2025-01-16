@@ -320,13 +320,13 @@
             <?php } ?>
         </div>
 		<br><br>
-		<div class="headerbar-item">
+		<!--div class="headerbar-item">
 			<?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
 				<a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
 					<i class="fa fa-check"></i> <?php _trans('save'); ?>
 				</a>
 			<?php } ?>
-		</div>
+		</div -->
 	
     </div>
 

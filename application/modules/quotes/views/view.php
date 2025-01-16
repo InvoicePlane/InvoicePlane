@@ -417,7 +417,7 @@ $cv = $this->controller->view_data["custom_values"];
         ?>
 		
 		<div id="footerbar">
-			<?php $this->layout->load_view('layout/footer_buttons'); ?>
+			<!-- ?php $this->layout->load_view('layout/footer_buttons'); ? -->
 		</div>
         
 		<hr/>

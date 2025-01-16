@@ -171,18 +171,32 @@ function pdf_create(
     // change default dejavusanscondensed
     // to raleway - your mileage may vary
     $mpdf->fontdata=[];
-    $mpdf->fontdata['dejavusanscondensed'] = [
-        'R' => 'Raleway-Medium.ttf',
-        'I' => 'Raleway-Italic.ttf',
-        'B' => 'Raleway-Bold.ttf',
-        ];
-    // dejavuserifcondensed needed for watermark
-    $mpdf->fontdata['dejavuserifcondensed'] = [
-        'R' => 'Raleway-Medium.ttf',
-        'I' => 'Raleway-Italic.ttf',
-        'B' => 'Raleway-Bold.ttf',
-        ];
 
+    if (ip_atac() ) {
+        $mpdf->fontdata['dejavusanscondensed'] = [
+            'R' => 'FaktPro-Normal_bulletmod.ttf',
+            'I' => 'FaktPro-SemiBold.ttf',
+            'B' => 'Faktatac-SemiBold.ttf',
+            ];
+        // dejavuserifcondensed needed for watermark
+        $mpdf->fontdata['dejavuserifcondensed'] = [
+            'R' => 'FaktPro-Normal_bulletmod.ttf',
+            'I' => 'FaktPro-SemiBold.ttf',
+            'B' => 'Faktatac-SemiBold.ttf',
+            ];
+    } else {
+        $mpdf->fontdata['dejavusanscondensed'] = [
+            'R' => 'Raleway-Medium.ttf',
+            'I' => 'Raleway-Italic.ttf',
+            'B' => 'Raleway-Bold.ttf',
+            ];
+        // dejavuserifcondensed needed for watermark
+        $mpdf->fontdata['dejavuserifcondensed'] = [
+            'R' => 'Raleway-Medium.ttf',
+            'I' => 'Raleway-Italic.ttf',
+            'B' => 'Raleway-Bold.ttf',
+            ];
+    }
 
     // mPDF configuration
     $mpdf->useAdobeCJK = true;
