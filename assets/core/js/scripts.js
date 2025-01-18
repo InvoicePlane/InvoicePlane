@@ -225,13 +225,28 @@ $(document).ready(function () {
         update_email_template_preview();
     });
 
-    // Fullpage loader
+    // Fullpage loader (spinner)
     $(document).on('click', '.ajax-loader', function () {
+        var requiredFieldsFilledIn = true;
+
+        $('input[required], textarea[required], select[required]').each(function () {
+            if ($(this).val().trim() === '') {
+                requiredFieldsFilledIn = false;
+            }
+        });
+
+        // Checks if required fields are filled it.
+        if (!requiredFieldsFilledIn) {
+            return; // If not, don't display spinner.
+        }
+
+        // Show loader
         $('#fullpage-loader').fadeIn(200);
         window.fullpageloaderTimeout = window.setTimeout(function () {
             $('#loader-error').fadeIn(200);
             $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
         }, 10000);
+
     });
 
     $(document).on('click', '.fullpage-loader-close', function () {

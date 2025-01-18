@@ -13,7 +13,6 @@ if (! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-#[AllowDynamicProperties]
 /**
  * @param $from
  * @param $to
