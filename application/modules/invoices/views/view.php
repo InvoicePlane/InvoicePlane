@@ -214,7 +214,11 @@ if ($this->config->item('disable_read_only') == true) {
 <div id="headerbar">
     <h1 class="headerbar-title">
         <?php
+        if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ';
+        } else {
         echo trans('invoice') . ' ';
+        }
         echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
         ?>
     </h1>
@@ -226,18 +230,20 @@ if ($this->config->item('disable_read_only') == true) {
                 <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
-                <?php if ($invoice->is_read_only != 1) { ?>
+                <?php if ($invoice->is_read_only != 1 && $invoice->invoice_sign != -1) { ?>
                     <li>
                         <a href="#add-invoice-tax" data-toggle="modal">
                             <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
                         </a>
                     </li>
                 <?php } ?>
+                <?php if ($invoice->invoice_sign != -1) { ?>
                 <li>
                     <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
+                <?php } ?>
                 <?php if ($invoice->invoice_balance != 0) : ?>
                     <li>
                         <a href="#" class="invoice-add-payment"
@@ -364,8 +370,7 @@ if ($this->config->item('disable_read_only') == true) {
                                 <div class="col-xs-12">
                                     <div class="alert alert-warning small">
                                         <i class="fa fa-credit-invoice"></i>&nbsp;
-                                        <?php
-                                        echo trans('credit_invoice_for_invoice') . ' ';
+                                        <?php echo trans('credit_invoice_for_invoice') . ' ';
                                         $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
                                         echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
                                         ?>
@@ -376,13 +381,19 @@ if ($this->config->item('disable_read_only') == true) {
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
-                                    <label><?php _trans('invoice'); ?> #</label>
+                                    <label>
+                                        <?php if ($invoice->invoice_sign == -1) {
+                                                echo trans('credit_invoice');
+                                            } else {
+                                                echo trans('invoice');
+                                        } ?> #
+                                    </label>
                                     <input type="text" id="invoice_number" class="form-control input-sm"
-                                        <?php if ($invoice->invoice_number) : ?>
+                                        <?php if ($invoice->invoice_number) { ?>
                                             value="<?php echo $invoice->invoice_number; ?>"
-                                        <?php else : ?>
+                                        <?php } else { ?>
                                             placeholder="<?php _trans('not_set'); ?>"
-                                        <?php endif; ?>
+                                        <?php } ?>
                                         <?php if ($invoice->is_read_only == 1) {
                                             echo 'disabled="disabled"';
                                         } ?>>
@@ -411,7 +422,7 @@ if ($this->config->item('disable_read_only') == true) {
                                         <input name="invoice_date_due" id="invoice_date_due"
                                                class="form-control input-sm datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
-                                            <?php if ($invoice->is_read_only == 1) {
+                                            <?php if ($invoice->is_read_only == 1 || $invoice->invoice_sign == -1) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
                                         <span class="input-group-addon">
@@ -509,8 +520,7 @@ if ($this->config->item('disable_read_only') == true) {
                     $this->layout->load_view('invoices/partial_itemlist_responsive');
                   } else {
                     $this->layout->load_view('invoices/partial_itemlist_table');
-                  }
-            ?>
+                  } ?>
 
             <hr/>
 
@@ -519,7 +529,11 @@ if ($this->config->item('disable_read_only') == true) {
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
-                            <?php _trans('invoice_terms'); ?>
+                            <?php if ($invoice->invoice_sign == -1) {
+                                    _trans('credit_invoice_terms');
+                                } else {
+                                    _trans('invoice_terms');
+                                } ?>
                         </div>
                         <div class="panel-body">
                             <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
@@ -540,7 +554,7 @@ if ($this->config->item('disable_read_only') == true) {
                 </div>
             </div>
 
-            <?php if ($custom_fields): ?>
+            <?php if ($custom_fields) { ?>
                 <div class="row">
                     <div class="col-xs-12">
 
@@ -560,22 +574,22 @@ if ($this->config->item('disable_read_only') == true) {
                                                 continue;
                                             } ?>
                                             <?php $i++; ?>
-                                            <?php if ($i % 2 != 0): ?>
+                                            <?php if ($i % 2 != 0) { ?>
                                                 <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                            <?php endif; ?>
+                                            <?php } ?>
                                         <?php endforeach; ?>
                                     </div>
                                     <div class="col-xs-12 col-md-6">
                                         <?php $i = 0; ?>
-                                        <?php foreach ($custom_fields as $custom_field): ?>
+                                        <?php foreach ($custom_fields as $custom_field) { ?>
                                             <?php if ($custom_field->custom_field_location != 0) {
                                                 continue;
                                             } ?>
                                             <?php $i++; ?>
-                                            <?php if ($i % 2 == 0): ?>
+                                            <?php if ($i % 2 == 0) { ?>
                                                 <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
+                                            <?php } ?>
+                                        <?php } ?>
                                     </div>
 
                                 </div>
@@ -584,7 +598,7 @@ if ($this->config->item('disable_read_only') == true) {
 
                     </div>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
 
         </div>
 
