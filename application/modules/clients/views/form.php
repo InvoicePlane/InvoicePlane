@@ -11,6 +11,7 @@ $cv = $this->controller->view_data['custom_values'];
 
         <?php $this->layout->load_view('clients/js/script_select_client_title.js'); ?>
     });
+
 </script>
 
 <form method="post">
@@ -61,7 +62,7 @@ $cv = $this->controller->view_data['custom_values'];
                             <input id="client_name" name="client_name" type="text" class="form-control"
                                    autofocus
                                    value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>" required>
-                        </div>
+                        </div>                      
                         <div class="form-group">
                             <label for="client_surname">
                                 <?php _trans('client_surname_optional'); ?>
@@ -184,6 +185,15 @@ $cv = $this->controller->view_data['custom_values'];
 
                     <div class="panel-body">
                         <div class="form-group">
+                            <label for="client_invoicing_contact"><?php echo trans('invoicing') . ' ' . trans('contact'); ?></label>
+
+                            <div class="controls">
+                                <input type="text" name="client_invoicing_contact" id="client_invoicing_contact" class="form-control"
+                                    value="<?php echo htmlsc($this->mdl_clients->form_value('client_invoicing_contact')); ?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="client_phone"><?php _trans('phone_number'); ?></label>
 
                             <div class="controls">
@@ -245,6 +255,75 @@ $cv = $this->controller->view_data['custom_values'];
         <div class="row">
             <div class="col-xs-12 col-sm-6">
 
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php _trans('tax_information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="client_company">
+                                <?php _trans('client_company'); ?>
+                            </label>
+                            <div class="controls">
+                                <input id="client_company" name="client_company" type="text" class="form-control"
+                                       value="<?php echo $this->mdl_clients->form_value('client_company', true); ?>">
+                            </div> 
+                        </div>  
+                        <div class="form-group">
+                            <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
+
+                            <div class="controls">
+                                <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
+                                       value="<?php echo $this->mdl_clients->form_value('client_vat_id', true); ?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="client_tax_code"><?php _trans('tax_code'); ?></label>
+
+                            <div class="controls">
+                                <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
+                                       value="<?php echo $this->mdl_clients->form_value('client_tax_code', true); ?>">
+                            </div>
+                        </div>
+
+                        <!-- Custom fields -->
+                        <?php foreach ($custom_fields as $custom_field): ?>
+                            <?php if ($custom_field->custom_field_location != 4) {
+                                continue;
+                            } ?>
+                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
+                        <?php endforeach; ?>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-xs-12 col-sm-6">
+
+                <!-- eInvoicing++ panel added -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?php echo 'e-' . trans('invoicing') . ' ' . trans('information'); ?>
+                    </div>
+
+                    <div class="panel-body">
+                        <?php if ($this->mdl_clients->form_value('client_id')) { ?>  
+                            <?php $this->layout->load_view('clients/partial_client_einvoicing'); ?>
+                        <?php } else { ?>   
+                            <div class="alert alert-warning small" style="font-size:medium;"> 
+                                <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
+                                <?php echo trans('einvoicing_no_enabled_hint'); ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
@@ -313,8 +392,8 @@ $cv = $this->controller->view_data['custom_values'];
                             ?>
                             <div class="input-group">
                                 <input type="text" name="client_birthdate" id="client_birthdate"
-                                       class="form-control datepicker"
-                                       value="<?php _htmlsc($bdate); ?>">
+                                    class="form-control datepicker"
+                                    value="<?php _htmlsc($bdate); ?>">
                                 <span class="input-group-addon">
                                 <i class="fa fa-calendar fa-fw"></i>
                             </span>
@@ -328,7 +407,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_avs" id="client_avs" class="form-control"
-                                           value="<?php echo htmlspecialchars(format_avs($avs), ENT_COMPAT); ?>">
+                                        value="<?php echo htmlspecialchars(format_avs($avs), ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -337,8 +416,8 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_insurednumber" id="client_insurednumber"
-                                           class="form-control"
-                                           value="<?php echo htmlentities($insuredNumber, ENT_COMPAT); ?>">
+                                        class="form-control"
+                                        value="<?php echo htmlentities($insuredNumber, ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -347,7 +426,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_veka" id="client_veka" class="form-control"
-                                           value="<?php echo htmlentities($veka, ENT_COMPAT); ?>">
+                                        value="<?php echo htmlentities($veka, ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -362,48 +441,12 @@ $cv = $this->controller->view_data['custom_values'];
                         <?php endforeach; ?>
                     </div>
 
-                </div>
-
-            </div>
-            <div class="col-xs-12 col-sm-6">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <?php _trans('tax_information'); ?>
                     </div>
 
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
-
-                            <div class="controls">
-                                <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_vat_id', true); ?>">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="client_tax_code"><?php _trans('tax_code'); ?></label>
-
-                            <div class="controls">
-                                <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_tax_code', true); ?>">
-                            </div>
-                        </div>
-
-                        <!-- Custom fields -->
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php if ($custom_field->custom_field_location != 4) {
-                                continue;
-                            } ?>
-                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                        <?php endforeach; ?>
-                    </div>
-
-                </div>
-
             </div>
+
         </div>
+        
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">

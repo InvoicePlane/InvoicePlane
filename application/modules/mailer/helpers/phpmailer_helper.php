@@ -135,10 +135,17 @@ function phpmail_send(
         $mail->addBCC($admin->user_email);
     }
 
-    // Add the attachment if supplied
+    // Add the attachments if needed - eInvoicing++
     if ($attachment_path && get_setting('email_pdf_attachment')) {
         $mail->addAttachment($attachment_path);
+
+        // attach the XML file
+        $xml_file = rtrim($attachment_path, ".pdf") . ".xml";
+        if (file_exists($xml_file)) {
+            $mail->addAttachment($xml_file);
+        }        
     }
+    
     // Add the other attachments if supplied
     if ($more_attachments) {
         foreach ($more_attachments as $paths) {

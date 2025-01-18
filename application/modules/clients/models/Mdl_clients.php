@@ -45,7 +45,7 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_name',
                 'label' => trans('client_name'),
                 'rules' => 'required',
-            ],
+            ],          
             'client_surname' => [
                 'field' => 'client_surname',
                 'label' => trans('client_surname'),
@@ -92,12 +92,25 @@ class Mdl_Clients extends Response_Model
             'client_web' => [
                 'field' => 'client_web',
             ],
+            'client_company' => [
+                'field' => 'client_company',
+            ],              
             'client_vat_id' => [
                 'field' => 'client_vat_id',
             ],
             'client_tax_code' => [
                 'field' => 'client_tax_code',
             ],
+            'client_invoicing_contact' => [
+                'field' => 'client_invoicing_contact',
+                'rules' => 'trim'
+            ],
+            'client_einvoice_version' => [
+                'field' => 'client_einvoice_version'
+            ], 
+            'client_einvoicing_active' => [
+                'field' => 'client_einvoicing_active'
+            ],            
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
@@ -137,6 +150,7 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
+     * @param $input
      * @return string
      */
     public function fix_avs($input)

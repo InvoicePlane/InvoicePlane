@@ -120,7 +120,7 @@ foreach ($custom_fields as $custom_field) {
             <?php $this->layout->load_view('layout/alerts'); ?>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
 
                     <h3><?php _htmlsc(format_client($client)); ?></h3>
                     <p>
@@ -128,7 +128,7 @@ foreach ($custom_fields as $custom_field) {
                     </p>
 
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
 
                     <table class="table table-bordered no-margin">
                         <tr>
@@ -171,12 +171,18 @@ foreach ($custom_fields as $custom_field) {
             <hr>
 
             <div class="row">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading"><?php _trans('contact_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
+                                <?php if ($client->client_invoicing_contact) : ?>
+                                    <tr>
+                                        <th><?php echo trans('invoicing') . ' ' . trans('contact'); ?></th>
+                                        <td><?php _htmlsc($client->client_invoicing_contact); ?></td>
+                                    </tr>
+                                <?php endif; ?>
                                 <?php if ($client->client_email) : ?>
                                     <tr>
                                         <th><?php _trans('email'); ?></th>
@@ -226,12 +232,16 @@ foreach ($custom_fields as $custom_field) {
                     </div>
 
                 </div>
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                     <div class="panel panel-default no-margin">
 
                         <div class="panel-heading"><?php _trans('tax_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
+                                    <tr>
+                                        <th><?php _trans('company'); ?></th>
+                                        <td><?php echo ($client->client_company) ? _htmlsc($client->client_company) : ''; ?></td>
+                                    </tr>
                                 <?php if ($client->client_vat_id) : ?>
                                     <tr>
                                         <th><?php _trans('vat_id'); ?></th>
@@ -263,6 +273,37 @@ foreach ($custom_fields as $custom_field) {
 
                     </div>
                 </div>
+
+                <!-- e-Invoicing panel added -->
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="panel panel-default no-margin">
+
+                        <div class="panel-heading"><?php echo 'e-'.ucfirst(trans('invoicing')) . ' ' . trans('information'); ?></div>
+                        <div class="panel-body table-content">
+
+                            <table class="table no-margin">
+                                    <tr>
+                                        <th><?php echo trans('send') . ' e-'. trans('invoice') . ' ' . trans('version'); ?></th>
+                                        <td><?php echo ($client->client_einvoice_version) ? get_xml_full_name($client->client_einvoice_version) : trans('none'); ?></td>
+                                    </tr>
+                            </table>
+
+                            <?php if ($req_einvoice["einvoices_empty_fields"] > 0 && $client->client_einvoice_version != '') { ?>
+                                <div class="alert alert-warning small" style="margin: 0px 10px 10px;">
+                                    <table>
+                                        <tr>
+                                            <td><i class="fa fa-exclamation-triangle fa-2x"></i>&emsp;</td>
+                                            <td><?php echo trans('einvoicing_no_creation_hint'); ?></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            <?php } ?>
+
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
             <?php if ($client->client_surname != ''): //Client is not a company?>
