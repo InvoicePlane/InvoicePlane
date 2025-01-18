@@ -11,6 +11,8 @@ if (! defined('BASEPATH')) {
  * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
+ *
+ * eInvoicing add-ons by Verony
  */
 
 /**
@@ -94,7 +96,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $XMLname = $xml_setting['XMLname'];
     }
 
-    // PDF associated or embedded (Zugferd) Xml file 
+    // PDF associated or embedded (CII e.g. Zugferd, Factur-X) Xml file
     $associatedFiles = null;
     if ($embed_xml && $invoice->client_einvoicing_active == 1) {
         // Create the CII XML file
@@ -103,11 +105,10 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             'mime' => 'text/xml',
             'description' => $xml_id . ' CII Invoice',
             'AFRelationship' => 'Alternative',
-            'path' => generate_xml_invoice_file($invoice, $items, $xml_id, $filename),
+            'path' => generate_xml_invoice_file($invoice, $items, $xml_id, $filename ),
         ));
     } else {
         // Do not embed the XML file if the client e-Invoicing is not active
-        $associatedFiles = null;
         $embed_xml = false;
     }
 
@@ -127,19 +128,20 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->helper('mpdf');
     $retval = pdf_create($html, $filename, $stream, $invoice->invoice_password, true, $is_guest, $embed_xml, $associatedFiles);
 
-    // Delete the tmp (zugferd) XML file if exist
-    if (file_exists('./uploads/temp/' . $filename . '.xml')) {
-        unlink('./uploads/temp/' . $filename . '.xml');
+    if ($embed_xml && file_exists('./uploads/temp/' . $filename . '.xml')) {
+        // delete the tmp CII-XML file
+        unlink("./uploads/temp/" . $filename . ".xml");
     }
+
     // Create the UBL XML file
     if ($xml_id != '' && $embed_xml != 'true') {
         // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!
         if (get_setting('change_filename_prefix') == 0) {
             $filename = date('Y-m-d') . '_' . $filename;
-        }    
+        }
 
         if ($invoice->client_einvoicing_active == 1) {
-            generate_xml_invoice_file($invoice, $items, $xml_id, $filename);   
+            generate_xml_invoice_file($invoice, $items, $xml_id, $filename);
         }
     }
     // END eInvoicing++ changes

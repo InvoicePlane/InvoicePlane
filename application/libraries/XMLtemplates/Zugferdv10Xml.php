@@ -13,6 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Class Zugferdv10Xml
  */
+#[\AllowDynamicProperties]
 class Zugferdv10Xml
 {
     var $invoice;

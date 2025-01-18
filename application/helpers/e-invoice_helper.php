@@ -8,6 +8,8 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
+ *
+ * eInvoicing add-ons by Verony
  */
 
 function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
@@ -21,12 +23,11 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
     return $path;
 }
 
-function include_rdf($filename)
+function include_rdf($embedXml)
 {
-    $rdf = '<rdf:Description rdf:about="" xmlns:zf="urn:ferd:pdfa:CrossIndustryDocument:invoice:1p0#">'."\n";
+    $rdf = '<rdf:Description rdf:about="" xmlns:zf="urn:zugferd:pdfa:CrossIndustryDocument:invoice:1p0#">'."\n";
     $rdf .= '  <zf:DocumentType>INVOICE</zf:DocumentType>'."\n";
-    // $rdf .= '  <zf:DocumentFileName>ZUGFeRD-invoice.xml</zf:DocumentFileName>'."\n";
-    $rdf .= '  <zf:DocumentFileName>'. $filename .'</zf:DocumentFileName>'."\n";  
+    $rdf .= '  <zf:DocumentFileName>'. $embedXml .'</zf:DocumentFileName>'."\n";
     $rdf .= '  <zf:Version>1.0</zf:Version>'."\n";
     $rdf .= '  <zf:ConformanceLevel>COMFORT</zf:ConformanceLevel>'."\n";
     $rdf .= '</rdf:Description>'."\n";

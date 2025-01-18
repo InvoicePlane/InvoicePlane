@@ -11,6 +11,8 @@ if (! defined('BASEPATH')) {
  * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
+ *
+ * eInvoicing add-ons by Verony
  */
 
 /**
@@ -60,13 +62,15 @@ function pdf_create(
         $mpdf->showImageErrors = true;
     }
 
-    // Include (zugferd?) XML if enabled for the client     // eInvoicing++
+    // Include (embedded) XML if enabled for the client     // eInvoicing++
     if ($embed_xml) {                                       // eInvoicing++
         $CI->load->helper('e-invoice');                     // eInvoicing++
+        // mpdf only creates PDF/A-1b files and cannot create the required PDF/A-3b files!
+        $mpdf->pdf_version = "1.7";
         $mpdf->PDFA = true;
         $mpdf->PDFAauto = true;
         $mpdf->SetAssociatedFiles($associated_files);
-        $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files['name']));          // eInvoicing++
+        $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files[0]['name']));          // eInvoicing++
     }
 
     // Set a password if set for the voucher
@@ -115,8 +119,9 @@ function pdf_create(
         }
 
         $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
+        // eInvoicing++
         if (get_setting('change_filename_prefix') == 1) {
-            $archived_file = UPLOADS_ARCHIVE_FOLDER . $filename . '.pdf';        
+            $archived_file = UPLOADS_ARCHIVE_FOLDER . $filename . '.pdf';
         }
         $mpdf->Output($archived_file, 'F');
 
