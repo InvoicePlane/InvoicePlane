@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -11,35 +14,42 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Get a setting value
+ * Get a setting value.
  *
  * @param string $setting_key
- * @param mixed $default
- * @param boolean $escape
+ * @param mixed  $default
+ * @param bool   $escape
+ *
  * @return string
  */
 function get_setting($setting_key, $default = '', $escape = false)
 {
     $CI = &get_instance();
     $value = $CI->mdl_settings->setting($setting_key, $default);
+    if ($value === '') {
+        log_message('info', sprintf('Returning setting value for %s with its default value!', $setting_key));
+    }
+
     return $escape ? htmlsc($value) : $value;
 }
 
 /**
- * Get the settings for a payment gateway
+ * Get the settings for a payment gateway.
  *
  * @param string $gateway
+ *
  * @return array
  */
 function get_gateway_settings($gateway)
 {
     $CI = &get_instance();
+
     return $CI->mdl_settings->gateway_settings($gateway);
 }
 
 /**
  * Compares the two given values and outputs selected="selected"
- * if the values match or the operation is true for the single value
+ * if the values match or the operation is true for the single value.
  *
  * Examples
  * check_select($option_key, 'key_1')           Checks if $option_key equals (==) 'key_1'.
@@ -48,10 +58,11 @@ function get_gateway_settings($gateway)
  * check_select($option_key, null, 'e')         Checks if the $option_key value is empty.
  * check_select($option_key != 'key_1')         If the first param is bool, it is used to validate the select
  *
- * @param string|integer $value1
- * @param string|integer|null $value2
- * @param string $operator
- * @param bool $checked
+ * @param string|int      $value1
+ * @param string|int|null $value2
+ * @param string          $operator
+ * @param bool            $checked
+ *
  * @return void
  */
 function check_select($value1, $value2 = null, $operator = '==', $checked = false)
@@ -61,6 +72,7 @@ function check_select($value1, $value2 = null, $operator = '==', $checked = fals
     // Instant-validate if $value1 is a bool value
     if (is_bool($value1) && $value2 === null) {
         echo $value1 ? $select : '';
+
         return;
     }
 

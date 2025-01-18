@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,12 +13,9 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Invoices
- */
+#[AllowDynamicProperties]
 class Invoices extends Admin_Controller
 {
-
     /**
      * Invoices constructor.
      */
@@ -36,7 +34,7 @@ class Invoices extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'all', $page = 0)
     {
@@ -87,7 +85,8 @@ class Invoices extends Admin_Controller
             $this->layout->set(
                 [
                     'invoices_archive' => $invoice_array,
-                ]);
+                ]
+            );
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
 
@@ -100,15 +99,13 @@ class Invoices extends Admin_Controller
             $this->layout->set(
                 [
                     'invoices_archive' => $invoice_array,
-                ]);
+                ]
+            );
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
         }
     }
 
-    /**
-     * @param $invoice
-     */
     public function download($invoice)
     {
         header('Content-type: application/pdf');
@@ -116,9 +113,6 @@ class Invoices extends Admin_Controller
         readfile(UPLOADS_ARCHIVE_FOLDER . urldecode($invoice));
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function view($invoice_id)
     {
         $this->load->model(
@@ -131,8 +125,8 @@ class Invoices extends Admin_Controller
             ]
         );
 
-        $this->load->helper("custom_values");
-        $this->load->helper("client");
+        $this->load->helper('custom_values');
+        $this->load->helper('client');
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 
@@ -156,7 +150,7 @@ class Invoices extends Admin_Controller
         $fields = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if (!$invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
@@ -184,7 +178,7 @@ class Invoices extends Admin_Controller
 
         // Check whether there are payment custom fields
         $payment_cf = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
-        $payment_cf_exist = ($payment_cf->num_rows() > 0) ? "yes" : "no";
+        $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
 
         $this->layout->set(
             [
@@ -230,9 +224,6 @@ class Invoices extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function delete($invoice_id)
     {
         // Get the status of the invoice
@@ -256,7 +247,6 @@ class Invoices extends Admin_Controller
     }
 
     /**
-     * @param $invoice_id
      * @param bool $stream
      * @param null $invoice_template
      */
@@ -272,9 +262,6 @@ class Invoices extends Admin_Controller
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function generate_zugferd_xml($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
@@ -303,8 +290,8 @@ class Invoices extends Admin_Controller
             'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
             'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
             'options' => [
-                'copy' => "1",
-                'storno' => "0",
+                'copy' => '1',
+                'storno' => '0',
             ],
         ]);
 
@@ -312,10 +299,6 @@ class Invoices extends Admin_Controller
         $this->output->set_output($this->sumex->pdf());
     }
 
-    /**
-     * @param $invoice_id
-     * @param $invoice_tax_rate_id
-     */
     public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id)
     {
         $this->load->model('mdl_invoice_tax_rates');
@@ -338,5 +321,4 @@ class Invoices extends Admin_Controller
             $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
         }
     }
-
 }

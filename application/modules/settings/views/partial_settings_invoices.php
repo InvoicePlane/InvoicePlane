@@ -1,3 +1,4 @@
+<?php require_once dirname(__FILE__, 4) . '/enums/UblTypeEnum.php'; ?>
 <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
 
@@ -117,20 +118,45 @@
                                 value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                         </div>
 
-                        <div class="form-group">
-                            <label for="settings[include_zugferd]">
-                                <?php _trans('invoice_pdf_include_zugferd'); ?>
-                            </label>
-                            <select name="settings[include_zugferd]" id="settings[include_zugferd]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value="0">
-                                    <?php _trans('no'); ?>
-                                </option>
-                                <option value="1" <?php check_select(get_setting('include_zugferd'), '1'); ?>>
-                                    <?php _trans('yes'); ?>
-                                </option>
-                            </select>
-                            <p class="help-block"><?php _trans('invoice_pdf_include_zugferd_help'); ?></p>
+
+
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php echo trans('invoice_settings'); ?>
+                            </div>
+                            <div class="panel-body">
+                                <!-- ZUGFeRD Template Usage -->
+                                <div class="form-group">
+                                    <label for="settings[use_zugferd]"><?php echo trans('use_zugferd'); ?></label>
+                                    <select name="settings[use_zugferd]" id="use_zugferd" class="form-control">
+                                        <option value="no" <?php echo (get_setting('use_zugferd') == 'no') ? 'selected' : ''; ?>>
+                                            <?php echo trans('no'); ?>
+                                        </option>
+                                        <option value="yes" <?php echo (get_setting('use_zugferd') == 'yes') ? 'selected' : ''; ?>>
+                                            <?php echo trans('yes'); ?>
+                                        </option>
+                                    </select>
+                                    <p class="help-block"><?php echo trans('enable_zugferd_default_template_help'); ?></p>
+                                </div>
+
+                                <!-- Default UBL Template Type -->
+                                <div class="form-group">
+                                    <label for="settings[default_template_type]"><?php echo trans('default_ubl_template_type'); ?></label>
+                                    <select name="settings[default_template_type]" id="default_template_type" class="form-control">
+                                        <option value="<?php echo UblTypeEnum::CIUS_V20; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::CIUS_V20) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::CIUS_V20; ?>
+                                        </option>
+                                        <option value="<?php echo UblTypeEnum::NLCIUS_V20; ?>" <?php echo (get_setting('default_template_type') == UblTypeEnum::NLCIUS_V20) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::NLCIUS_V20; ?>
+                                        </option>
+                                        <option value="<?php echo UblTypeEnum::ZUGFERD_V23; ?>" <?php echo (get_setting('use_zugferd') == 'yes' || get_setting('default_template_type') == UblTypeEnum::ZUGFERD_V23) ? 'selected' : ''; ?>>
+                                            <?php echo UblTypeEnum::ZUGFERD_V23; ?>
+                                        </option>
+                                    </select>
+                                    <p class="help-block"><?php echo trans('set_default_ubl_template_type_help'); ?></p>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -174,7 +200,9 @@
                 <?php _trans('invoice_templates'); ?>
             </div>
             <div class="panel-body">
-
+                <div class="help-block">
+                    <?php _trans('invoice_templates_info'); ?>
+                </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
 
@@ -451,10 +479,8 @@
                 <?php _trans('other_settings'); ?>
             </div>
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[read_only_toggle]">
                                 <?php _trans('set_to_read_only'); ?>
@@ -472,10 +498,7 @@
                                 </option>
                             </select>
                         </div>
-
                     </div>
-
-                    <!-- Disable the update of invoice date and due date before emailing! -->
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[no_update_invoice_due_date_mail]">
@@ -492,9 +515,7 @@
                             </select>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
 

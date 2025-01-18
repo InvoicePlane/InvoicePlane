@@ -1,5 +1,7 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -24,8 +26,9 @@ class Mdl_Clients extends Response_Model
     {
         $this->db->select(
             'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname'
-            , false);
+            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname',
+            false
+        );
     }
 
     public function default_order_by()
@@ -35,93 +38,101 @@ class Mdl_Clients extends Response_Model
 
     public function validation_rules()
     {
-        return array(
-            'client_name' => array(
+        return [
+            'client_name' => [
                 'field' => 'client_name',
                 'label' => trans('client_name'),
-                'rules' => 'required'
-            ),
-            'client_surname' => array(
+                'rules' => 'required',
+            ],
+            'client_surname' => [
                 'field' => 'client_surname',
-                'label' => trans('client_surname')
-            ),
-            'client_active' => array(
-                'field' => 'client_active'
-            ),
-            'client_language' => array(
+                'label' => trans('client_surname'),
+            ],
+            'client_active' => [
+                'field' => 'client_active',
+            ],
+            'client_language' => [
                 'field' => 'client_language',
                 'label' => trans('language'),
-                'rules' => 'trim'
-            ),
-            'client_address_1' => array(
-                'field' => 'client_address_1'
-            ),
-            'client_address_2' => array(
-                'field' => 'client_address_2'
-            ),
-            'client_city' => array(
-                'field' => 'client_city'
-            ),
-            'client_state' => array(
-                'field' => 'client_state'
-            ),
-            'client_zip' => array(
-                'field' => 'client_zip'
-            ),
-            'client_country' => array(
+                'rules' => 'trim',
+            ],
+            'client_address_1' => [
+                'field' => 'client_address_1',
+            ],
+            'client_address_2' => [
+                'field' => 'client_address_2',
+            ],
+            'client_city' => [
+                'field' => 'client_city',
+            ],
+            'client_state' => [
+                'field' => 'client_state',
+            ],
+            'client_zip' => [
+                'field' => 'client_zip',
+            ],
+            'client_country' => [
                 'field' => 'client_country',
-                'rules' => 'trim'
-            ),
-            'client_phone' => array(
-                'field' => 'client_phone'
-            ),
-            'client_fax' => array(
-                'field' => 'client_fax'
-            ),
-            'client_mobile' => array(
-                'field' => 'client_mobile'
-            ),
-            'client_email' => array(
-                'field' => 'client_email'
-            ),
-            'client_web' => array(
-                'field' => 'client_web'
-            ),
-            'client_vat_id' => array(
-                'field' => 'client_vat_id'
-            ),
-            'client_tax_code' => array(
-                'field' => 'client_tax_code'
-            ),
+                'rules' => 'trim',
+            ],
+            'client_phone' => [
+                'field' => 'client_phone',
+            ],
+            'client_fax' => [
+                'field' => 'client_fax',
+            ],
+            'client_mobile' => [
+                'field' => 'client_mobile',
+            ],
+            'client_email' => [
+                'field' => 'client_email',
+            ],
+            'client_web' => [
+                'field' => 'client_web',
+            ],
+            'client_vat_id' => [
+                'field' => 'client_vat_id',
+            ],
+            'client_tax_code' => [
+                'field' => 'client_tax_code',
+            ],
+            'client_invoicing_contact' => [
+                'field' => 'client_invoicing_contact',
+                'rules' => 'trim|xss_clean',
+            ],
+            'client_einvoice_version' => [
+                'field' => 'client_einvoice_version',
+                'rules' => 'trim',
+            ],
             // SUMEX
-            'client_birthdate' => array(
+            'client_birthdate' => [
                 'field' => 'client_birthdate',
-                'rules' => 'callback_convert_date'
-            ),
-            'client_gender' => array(
-                'field' => 'client_gender'
-            ),
-            'client_avs' => array(
+                'rules' => 'callback_convert_date',
+            ],
+            'client_gender' => [
+                'field' => 'client_gender',
+            ],
+            'client_avs' => [
                 'field' => 'client_avs',
                 'label' => trans('sumex_ssn'),
-                'rules' => 'callback_fix_avs'
-            ),
-            'client_insurednumber' => array(
+                'rules' => 'callback_fix_avs',
+            ],
+            'client_insurednumber' => [
                 'field' => 'client_insurednumber',
-                'label' => trans('sumex_insurednumber')
-            ),
-            'client_veka' => array(
+                'label' => trans('sumex_insurednumber'),
+            ],
+            'client_veka' => [
                 'field' => 'client_veka',
-                'label' => trans('sumex_veka')
-            ),
-        );
+                'label' => trans('sumex_veka'),
+            ],
+        ];
     }
 
     /**
      * @param int $amount
      * @return mixed
      */
-    function get_latest($amount = 10)
+    public function get_latest($amount = 10)
     {
         return $this->mdl_clients
             ->where('client_active', 1)
@@ -132,23 +143,24 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * @param $input
      * @return string
      */
-    function fix_avs($input)
+    public function fix_avs($input)
     {
-        if ($input != "") {
+    	$matches = [];
+        if ($input != '') {
             if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
                 return $matches[1] . $matches[2] . $matches[3] . $matches[4];
-            } else if (preg_match('/^\d{13}$/', $input)) {
+            }
+            if (preg_match('/^\d{13}$/', $input)) {
                 return $input;
             }
         }
 
-        return "";
+        return '';
     }
 
-    function convert_date($input)
+    public function convert_date($input)
     {
         $this->load->helper('date_helper');
 
@@ -163,7 +175,7 @@ class Mdl_Clients extends Response_Model
     {
         $db_array = parent::db_array();
 
-        if (!isset($db_array['client_active'])) {
+        if ( ! isset($db_array['client_active'])) {
             $db_array['client_active'] = 0;
         }
 
@@ -184,7 +196,6 @@ class Mdl_Clients extends Response_Model
     /**
      * Returns client_id of existing client
      *
-     * @param $client_name
      * @return int|null
      */
     public function client_lookup($client_name)
@@ -194,9 +205,9 @@ class Mdl_Clients extends Response_Model
         if ($client->num_rows()) {
             $client_id = $client->row()->client_id;
         } else {
-            $db_array = array(
-                'client_name' => $client_name
-            );
+            $db_array = [
+                'client_name' => $client_name,
+            ];
 
             $client_id = parent::save(null, $db_array);
         }
@@ -229,7 +240,6 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * @param $user_id
      * @return $this
      */
     public function get_not_assigned_to_user($user_id)
@@ -256,5 +266,4 @@ class Mdl_Clients extends Response_Model
         $this->filter_where('client_active', 1);
         return $this;
     }
-
 }
