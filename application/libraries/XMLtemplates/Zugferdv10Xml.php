@@ -34,7 +34,7 @@ class Zugferdv10Xml
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
-    public function xml()
+    public function xml(): void
     {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->formatOutput = true;

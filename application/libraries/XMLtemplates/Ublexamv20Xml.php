@@ -34,7 +34,7 @@ class Ublexamv20Xml
         $this->currencyCode = get_setting('currency_code');
     }
 
-    public function xml()
+    public function xml(): void
     {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->preserveWhiteSpace = false;

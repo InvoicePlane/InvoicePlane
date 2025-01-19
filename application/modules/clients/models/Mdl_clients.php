@@ -24,7 +24,7 @@ class Mdl_Clients extends Response_Model
 
     public $date_modified_field = 'client_date_modified';
 
-    public function default_select()
+    public function default_select(): void
     {
         $this->db->select(
             'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
@@ -33,7 +33,7 @@ class Mdl_Clients extends Response_Model
         );
     }
 
-    public function default_order_by()
+    public function default_order_by(): void
     {
         $this->db->order_by('ip_clients.client_name');
     }
@@ -196,7 +196,7 @@ class Mdl_Clients extends Response_Model
     /**
      * @param int $id
      */
-    public function delete($id)
+    public function delete($id): void
     {
         parent::delete($id);
 

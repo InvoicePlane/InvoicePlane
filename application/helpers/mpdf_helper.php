@@ -50,11 +50,11 @@ function pdf_create(
     ]);
 
     // mPDF configuration
-    $mpdf->useAdobeCJK      = true;
+    $mpdf->useAdobeCJK = true;
     $mpdf->autoScriptToLang = true;
-    $mpdf->autoVietnamese   = true;
-    $mpdf->autoArabic       = true;
-    $mpdf->autoLangToFont   = true;
+    $mpdf->autoVietnamese = true;
+    $mpdf->autoArabic = true;
+    $mpdf->autoLangToFont = true;
 
     if (IP_DEBUG) {
         // Enable image error logging
@@ -66,8 +66,8 @@ function pdf_create(
         $CI->load->helper('e-invoice');             // eInvoicing++
         // mpdf only creates PDF/A-1b files and cannot create the required PDF/A-3b files!
         $mpdf->pdf_version = '1.7';
-        $mpdf->PDFA        = true;
-        $mpdf->PDFAauto    = true;
+        $mpdf->PDFA = true;
+        $mpdf->PDFAauto = true;
         $mpdf->SetAssociatedFiles($associated_files);
         $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files[0]['name']));          // eInvoicing++
     }

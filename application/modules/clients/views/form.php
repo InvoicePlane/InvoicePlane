@@ -47,7 +47,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php _trans('active_client'); ?>
                                 <input id="client_active" name="client_active" type="checkbox" value="1"
                                     <?php if ($this->mdl_clients->form_value('client_active') == 1
-                                        || !is_numeric($this->mdl_clients->form_value('client_active'))
+                                        || ! is_numeric($this->mdl_clients->form_value('client_active'))
                                     ) {
                                         echo 'checked="checked"';
                                     } ?>>
@@ -337,12 +337,12 @@ $cv = $this->controller->view_data['custom_values'];
                                 <select name="client_gender" id="client_gender"
                                         class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                     <?php
-                                    $genders = array(
+                                    $genders = [
                                         trans('gender_male'),
                                         trans('gender_female'),
                                         trans('gender_other'),
-                                    );
-                                    foreach ($genders as $key => $val) { ?>
+                                    ];
+foreach ($genders as $key => $val) { ?>
                                         <option
                                             value=" <?php echo $key; ?>" <?php check_select($key, $this->mdl_clients->form_value('client_gender')) ?>>
                                             <?php echo $val; ?>
@@ -353,7 +353,7 @@ $cv = $this->controller->view_data['custom_values'];
                         </div>
                         <div class="form-group">
                             <?php $client_title = $this->mdl_clients->form_value('client_title'); ?>
-                            <?php $is_custom_title = is_null(ClientTitleEnum::tryFrom($client_title)) ?>
+                            <?php $is_custom_title = null === ClientTitleEnum::tryFrom($client_title) ?>
                             <label for="client_title"><?php _trans('client_title'); ?></label>
                             <select name="client_title" id="client_title" class="form-control simple-select">
                                 <?php foreach ($client_title_choices as $client_title_choice) : ?>
@@ -361,9 +361,9 @@ $cv = $this->controller->view_data['custom_values'];
                                         value="<?php echo $client_title_choice; ?>"
                                         <?php echo $client_title === $client_title_choice ? 'selected' : '' ?>
                                         <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM
-                                            ? 'selected'
-                                            : ''
-                                        ?>
+        ? 'selected'
+        : ''
+                                    ?>
                                     >
                                         <?php echo ucfirst(trans($client_title_choice)); ?>
                                     </option>
@@ -384,12 +384,12 @@ $cv = $this->controller->view_data['custom_values'];
                             <label for="client_birthdate"><?php _trans('birthdate'); ?></label>
                             <?php
                             $bdate = $this->mdl_clients->form_value('client_birthdate');
-                            if ($bdate && $bdate != "0000-00-00") {
-                                $bdate = date_from_mysql($bdate);
-                            } else {
-                                $bdate = '';
-                            }
-                            ?>
+if ($bdate && $bdate != '0000-00-00') {
+    $bdate = date_from_mysql($bdate);
+} else {
+    $bdate = '';
+}
+?>
                             <div class="input-group">
                                 <input type="text" name="client_birthdate" id="client_birthdate"
                                     class="form-control datepicker"
