@@ -57,14 +57,14 @@
 
 <?php
 $locations = [];
-foreach ($custom_fields as $custom_field) {
-    if (array_key_exists($custom_field->custom_field_location, $locations)) {
-        $locations[$custom_field->custom_field_location] += 1;
-    } else {
-        $locations[$custom_field->custom_field_location] = 1;
-    }
-}
-?>
+        foreach ($custom_fields as $custom_field) {
+            if (array_key_exists($custom_field->custom_field_location, $locations)) {
+                $locations[$custom_field->custom_field_location] += 1;
+            } else {
+                $locations[$custom_field->custom_field_location] = 1;
+            }
+        }
+        ?>
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _htmlsc(format_client($client)); ?></h1>
@@ -215,7 +215,7 @@ foreach ($custom_fields as $custom_field) {
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                     ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
@@ -252,7 +252,7 @@ foreach ($custom_fields as $custom_field) {
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                     ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
@@ -310,7 +310,7 @@ foreach ($custom_fields as $custom_field) {
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                         ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
@@ -344,7 +344,7 @@ foreach ($custom_fields as $custom_field) {
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                         ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
@@ -421,5 +421,4 @@ foreach ($custom_fields as $custom_field) {
             </div>
         </div>
     </div>
-
 </div>

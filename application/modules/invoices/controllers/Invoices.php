@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Invoices extends Admin_Controller
 {
-
     /**
      * Invoices constructor.
      */
@@ -35,7 +34,7 @@ class Invoices extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'all', $page = 0)
     {
@@ -63,12 +62,12 @@ class Invoices extends Admin_Controller
 
         $this->layout->set(
             [
-                'invoices' => $invoices,
-                'status' => $status,
-                'filter_display' => true,
+                'invoices'           => $invoices,
+                'status'             => $status,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_invoices'),
-                'filter_method' => 'filter_invoices',
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'filter_method'      => 'filter_invoices',
+                'invoice_statuses'   => $this->mdl_invoices->statuses(),
             ]
         );
 
@@ -86,10 +85,10 @@ class Invoices extends Admin_Controller
             $this->layout->set(
                 [
                     'invoices_archive' => $invoice_array,
-                ]);
+                ]
+            );
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
-
         } else {
             foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
                 array_push($invoice_array, $file);
@@ -99,41 +98,41 @@ class Invoices extends Admin_Controller
             $this->layout->set(
                 [
                     'invoices_archive' => $invoice_array,
-                ]);
+                ]
+            );
             $this->layout->buffer('content', 'invoices/archive');
             $this->layout->render();
         }
     }
 
-public function download($invoice)
-{
-    $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
+    public function download($invoice)
+    {
+        $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
 
-    $fileName = basename($invoice); // Strip directory traversal sequences
-    $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
+        $fileName = basename($invoice); // Strip directory traversal sequences
+        $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
 
-    if ($filePath === false || strpos($filePath, $safeBaseDir) !== 0) {
-        log_message('error', "Invalid file access attempt: $fileName");
-        show_404();
-        return;
+        if ($filePath === false || ! str_starts_with($filePath, $safeBaseDir)) {
+            log_message('error', "Invalid file access attempt: {$fileName}");
+            show_404();
+
+            return;
+        }
+
+        if ( ! file_exists($filePath)) {
+            log_message('error', "While downloading: File not found: {$filePath}");
+            show_404();
+
+            return;
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+        header('Content-Length: ' . filesize($filePath));
+        readfile($filePath);
+        exit;
     }
 
-    if (!file_exists($filePath)) {
-        log_message('error', "While downloading: File not found: $filePath");
-        show_404();
-        return;
-    }
-
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
-    header('Content-Length: ' . filesize($filePath));
-    readfile($filePath);
-    exit;
-}
-
-    /**
-     * @param $invoice_id
-     */
     public function view($invoice_id)
     {
         $this->load->model(
@@ -146,8 +145,8 @@ public function download($invoice)
             ]
         );
 
-        $this->load->helper("custom_values");
-        $this->load->helper("client");
+        $this->load->helper('custom_values');
+        $this->load->helper('client');
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 
@@ -168,10 +167,10 @@ public function download($invoice)
             }
         }*/
 
-        $fields = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
+        $fields  = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if (!$invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
@@ -179,7 +178,7 @@ public function download($invoice)
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -198,24 +197,24 @@ public function download($invoice)
         }
 
         // Check whether there are payment custom fields
-        $payment_cf = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
-        $payment_cf_exist = ($payment_cf->num_rows() > 0) ? "yes" : "no";
+        $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
+        $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
 
         $this->layout->set(
             [
-                'invoice' => $invoice,
-                'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_id' => $invoice_id,
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
+                'invoice'           => $invoice,
+                'items'             => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+                'invoice_id'        => $invoice_id,
+                'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'units' => $this->mdl_units->get()->result(),
-                'payment_methods' => $this->mdl_payment_methods->get()->result(),
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'custom_js_vars' => [
-                    'currency_symbol' => get_setting('currency_symbol'),
+                'units'             => $this->mdl_units->get()->result(),
+                'payment_methods'   => $this->mdl_payment_methods->get()->result(),
+                'custom_fields'     => $custom_fields,
+                'custom_values'     => $custom_values,
+                'custom_js_vars'    => [
+                    'currency_symbol'           => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
-                    'decimal_point' => get_setting('decimal_point'),
+                    'decimal_point'             => get_setting('decimal_point'),
                 ],
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'payment_cf_exist' => $payment_cf_exist,
@@ -245,13 +244,10 @@ public function download($invoice)
         $this->layout->render();
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function delete($invoice_id)
     {
         // Get the status of the invoice
-        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice        = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_status = $invoice->invoice_status_id;
 
         if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
@@ -271,7 +267,6 @@ public function download($invoice)
     }
 
     /**
-     * @param $invoice_id
      * @param bool $stream
      * @param null $invoice_template
      */
@@ -287,15 +282,12 @@ public function download($invoice)
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function generate_zugferd_xml($invoice_id)
     {
         $this->load->model('invoices/mdl_items');
         $this->load->library('ZugferdXml', [
             'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
-            'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+            'items'   => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
         ]);
 
         $this->output->set_content_type('text/xml');
@@ -311,15 +303,13 @@ public function download($invoice)
 
     public function generate_sumex_copy($invoice_id)
     {
-
-
         $this->load->model('invoices/mdl_items');
         $this->load->library('Sumex', [
             'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
-            'items' => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+            'items'   => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
             'options' => [
-                'copy' => "1",
-                'storno' => "0",
+                'copy'   => '1',
+                'storno' => '0',
             ],
         ]);
 
@@ -327,10 +317,6 @@ public function download($invoice)
         $this->output->set_output($this->sumex->pdf());
     }
 
-    /**
-     * @param $invoice_id
-     * @param $invoice_tax_rate_id
-     */
     public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id)
     {
         $this->load->model('mdl_invoice_tax_rates');
@@ -353,5 +339,4 @@ public function download($invoice)
             $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
         }
     }
-
 }

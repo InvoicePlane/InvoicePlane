@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,14 +14,15 @@ if (! defined('BASEPATH')) {
  */
 
 /**
- * @param $from
- * @param $to
- * @param $subject
- * @param $message
+ * @param      $from
+ * @param      $to
+ * @param      $subject
+ * @param      $message
  * @param null $attachment_path
  * @param null $cc
  * @param null $bcc
  * @param null $more_attachments
+ *
  * @return bool
  */
 function phpmail_send(
@@ -38,7 +39,7 @@ function phpmail_send(
     $CI->load->library('crypt');
 
     // Create the basic mailer object
-    $mail = new \PHPMailer\PHPMailer\PHPMailer();
+    $mail          = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
 
@@ -68,20 +69,18 @@ function phpmail_send(
             }
 
             // Check if certificates should not be verified
-            if (!get_setting('smtp_verify_certs', true)) {
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
+            if ( ! get_setting('smtp_verify_certs', true)) {
+                $mail->SMTPOptions = [
+                    'ssl' => [
+                        'verify_peer'       => false,
+                        'verify_peer_name'  => false,
+                        'allow_self_signed' => true,
+                    ],
+                ];
             }
 
             break;
         case 'sendmail':
-            $mail->IsMail();
-            break;
         case 'phpmail':
         case 'default':
             $mail->IsMail();
@@ -89,7 +88,7 @@ function phpmail_send(
     }
 
     $mail->Subject = $subject;
-    $mail->Body = $message;
+    $mail->Body    = $message;
     $mail->AltBody = $mail->normalizeBreaks($mail->html2text($message));
 
     if (is_array($from)) {
@@ -101,7 +100,7 @@ function phpmail_send(
     }
 
     // Allow multiple recipients delimited by comma or semicolon
-    $to = (strpos($to, ',')) ? explode(',', $to) : explode(';', $to);
+    $to = (mb_strpos($to, ',')) ? explode(',', $to) : explode(';', $to);
 
     // Add the addresses
     foreach ($to as $address) {
@@ -110,7 +109,7 @@ function phpmail_send(
 
     if ($cc) {
         // Allow multiple CC's delimited by comma or semicolon
-        $cc = (strpos($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
+        $cc = (mb_strpos($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
 
         // Add the CC's
         foreach ($cc as $address) {
@@ -120,7 +119,7 @@ function phpmail_send(
 
     if ($bcc) {
         // Allow multiple BCC's delimited by comma or semicolon
-        $bcc = (strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
+        $bcc = (mb_strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
         // Add the BCC's
         foreach ($bcc as $address) {
             $mail->addBCC($address);
@@ -149,10 +148,11 @@ function phpmail_send(
     // And away it goes...
     if ($mail->send()) {
         $CI->session->set_flashdata('alert_success', 'The email has been sent');
+
         return true;
-    } else {
-        // Or not...
-        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-        return false;
     }
+    // Or not...
+    $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+
+    return false;
 }

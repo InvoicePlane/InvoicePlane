@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,7 +14,7 @@ if (! defined('BASEPATH')) {
  */
 
 /**
- * Check if mail sending is configured in the settings
+ * Check if mail sending is configured in the settings.
  *
  * @return bool
  */
@@ -22,24 +22,19 @@ function mailer_configured()
 {
     $CI = &get_instance();
 
-    return (($CI->mdl_settings->setting('email_send_method') == 'phpmail') ||
+    return ($CI->mdl_settings->setting('email_send_method') == 'phpmail') ||
         ($CI->mdl_settings->setting('email_send_method') == 'sendmail') ||
-        (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')))
-    );
+        (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')));
 }
 
 /**
- * Send an invoice via email
+ * Send an invoice via email.
  *
- * @param $invoice_id
- * @param $invoice_template
- * @param $from
- * @param $to
- * @param $subject
  * @param string $body
- * @param null $cc
- * @param null $bcc
- * @param null $attachments
+ * @param null   $cc
+ * @param null   $bcc
+ * @param null   $attachments
+ *
  * @return bool
  */
 function email_invoice(
@@ -70,9 +65,9 @@ function email_invoice(
 
     $message = parse_template($db_invoice, $body);
     $subject = parse_template($db_invoice, $subject);
-    $cc = parse_template($db_invoice, $cc);
-    $bcc = parse_template($db_invoice, $bcc);
-    $from = array(parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1]));
+    $cc      = parse_template($db_invoice, $cc);
+    $bcc     = parse_template($db_invoice, $bcc);
+    $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -80,17 +75,13 @@ function email_invoice(
 }
 
 /**
- * Send a quote via email
+ * Send a quote via email.
  *
- * @param $quote_id
- * @param $quote_template
- * @param $from
- * @param $to
- * @param $subject
  * @param string $body
- * @param null $cc
- * @param null $bcc
- * @param null $attachments
+ * @param null   $cc
+ * @param null   $bcc
+ * @param null   $attachments
+ *
  * @return bool
  */
 function email_quote(
@@ -116,9 +107,9 @@ function email_quote(
 
     $message = parse_template($db_quote, $body);
     $subject = parse_template($db_quote, $subject);
-    $cc = parse_template($db_quote, $cc);
-    $bcc = parse_template($db_quote, $bcc);
-    $from = array(parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1]));
+    $cc      = parse_template($db_quote, $cc);
+    $bcc     = parse_template($db_quote, $bcc);
+    $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -126,9 +117,10 @@ function email_quote(
 }
 
 /**
- * Send an email if the status of an email changed
- * @param $quote_id
+ * Send an email if the status of an email changed.
+ *
  * @param string $status string "accepted" or "rejected"
+ *
  * @return bool if the email was sent
  */
 function email_quote_status($quote_id, $status)
@@ -136,26 +128,28 @@ function email_quote_status($quote_id, $status)
     ini_set('display_errors', 'on');
     error_reporting(E_ALL);
 
-    if (!mailer_configured()) {
+    if ( ! mailer_configured()) {
         return false;
     }
 
     $CI = &get_instance();
     $CI->load->helper('mailer/phpmailer');
 
-    $quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
-    $index = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
+    $quote    = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
+    $index    = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
     $base_url = base_url('/' . $index . '/quotes/view/' . $quote_id);
 
     $user_email = $quote->user_email;
-    $subject = sprintf(trans('quote_status_email_subject'),
+    $subject    = sprintf(
+        trans('quote_status_email_subject'),
         $quote->client_name,
-        strtolower(lang($status)),
+        mb_strtolower(lang($status)),
         $quote->quote_number
     );
-    $body = sprintf(nl2br(trans('quote_status_email_body')),
+    $body = sprintf(
+        nl2br(trans('quote_status_email_body')),
         $quote->client_name,
-        strtolower(lang($status)),
+        mb_strtolower(lang($status)),
         $quote->quote_number,
         '<a href="' . $base_url . '">' . $base_url . '</a>'
     );
