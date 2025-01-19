@@ -10,7 +10,7 @@
             $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
                 email_template_id: email_template_id
             }, function (data) {
-                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                 inject_email_template(template_fields, JSON.parse(data));
             });
         });
@@ -56,7 +56,7 @@
 
                 <?php $this->layout->load_view('layout/alerts'); ?>
 
-                <?php if ($invoice->client_einvoice_version != '' && $invoice->client_einvoicing_active == 0) { ?>
+                <?php if ($invoice->client_einvoicing_version != '' && $invoice->client_einvoicing_active == 0) { ?>
                     <div class="alert alert-warning">
                         <table style="margin-left: auto; margin-right: auto;">
                             <tr>

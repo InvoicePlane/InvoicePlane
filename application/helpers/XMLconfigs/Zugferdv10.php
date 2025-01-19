@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-//  Filename      => 'Ublexamv20.php'     -> "Shortid" + "version" + ".php" 
+//  Filename      => 'Ublexamv20.php'     -> "Shortid" + "version" + ".php"
 //                                            (preferably without spaces " ", dots ".", hyphen "-", underscore "_" or special characters)
 
 //  'full-name'   => 'UBL example v2.0',  -> UBL version name visible in the clients drop-down menu
@@ -8,9 +8,9 @@
 //  'embedXML'    => false,               -> for 'ZUGFeRD' (and similar = Xml embedded in Pdf) set to true
 //  'XMLname'     => 'factur-x.xml',      -> name of the Xml file (if embedded in a CII Pdf)
 
-$xml_setting = array( 
-  'full-name'   => 'ZUGFeRD v1.0',
-  'countrycode' => 'DE',
-  'embedXML'    => true,
-  'XMLname'     => 'ZUGFeRD-invoice.xml',
-);
+$xml_setting = [
+    'full-name'   => 'ZUGFeRD v1.0',
+    'countrycode' => 'DE',
+    'embedXML'    => true,
+    'XMLname'     => 'ZUGFeRD-invoice.xml',
+];

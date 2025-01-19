@@ -57,14 +57,14 @@
 
 <?php
 $locations = [];
-foreach ($custom_fields as $custom_field) {
-    if (array_key_exists($custom_field->custom_field_location, $locations)) {
-        $locations[$custom_field->custom_field_location] += 1;
-    } else {
-        $locations[$custom_field->custom_field_location] = 1;
-    }
-}
-?>
+        foreach ($custom_fields as $custom_field) {
+            if (array_key_exists($custom_field->custom_field_location, $locations)) {
+                $locations[$custom_field->custom_field_location] += 1;
+            } else {
+                $locations[$custom_field->custom_field_location] = 1;
+            }
+        }
+        ?>
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _htmlsc(format_client($client)); ?></h1>
@@ -177,44 +177,44 @@ foreach ($custom_fields as $custom_field) {
                         <div class="panel-heading"><?php _trans('contact_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
-                                <?php if ($client->client_invoicing_contact) : ?>
+                                <?php if ($client->client_invoicing_contact) { ?>
                                     <tr>
                                         <th><?php echo trans('invoicing') . ' ' . trans('contact'); ?></th>
                                         <td><?php _htmlsc($client->client_invoicing_contact); ?></td>
                                     </tr>
-                                <?php endif; ?>
-                                <?php if ($client->client_email) : ?>
+                                <?php } ?>
+                                <?php if ($client->client_email) { ?>
                                     <tr>
                                         <th><?php _trans('email'); ?></th>
                                         <td><?php _auto_link($client->client_email, 'email'); ?></td>
                                     </tr>
-                                <?php endif; ?>
-                                <?php if ($client->client_phone) : ?>
+                                <?php } ?>
+                                <?php if ($client->client_phone) { ?>
                                     <tr>
                                         <th><?php _trans('phone'); ?></th>
                                         <td><?php _htmlsc($client->client_phone); ?></td>
                                     </tr>
-                                <?php endif; ?>
-                                <?php if ($client->client_mobile) : ?>
+                                <?php } ?>
+                                <?php if ($client->client_mobile) { ?>
                                     <tr>
                                         <th><?php _trans('mobile'); ?></th>
                                         <td><?php _htmlsc($client->client_mobile); ?></td>
                                     </tr>
-                                <?php endif; ?>
-                                <?php if ($client->client_fax) : ?>
+                                <?php } ?>
+                                <?php if ($client->client_fax) { ?>
                                     <tr>
                                         <th><?php _trans('fax'); ?></th>
                                         <td><?php _htmlsc($client->client_fax); ?></td>
                                     </tr>
-                                <?php endif; ?>
-                                <?php if ($client->client_web) : ?>
+                                <?php } ?>
+                                <?php if ($client->client_web) { ?>
                                     <tr>
                                         <th><?php _trans('web'); ?></th>
                                         <td><?php _auto_link($client->client_web, 'url', true); ?></td>
                                     </tr>
-                                <?php endif; ?>
+                                <?php } ?>
 
-                                <?php foreach ($custom_fields as $custom_field) : ?>
+                                <?php foreach ($custom_fields as $custom_field) { ?>
                                     <?php if ($custom_field->custom_field_location != 2) {
                                         continue;
                                     } ?>
@@ -226,7 +226,7 @@ foreach ($custom_fields as $custom_field) {
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
                                     </tr>
-                                <?php endforeach; ?>
+                                <?php } ?>
                             </table>
                         </div>
                     </div>
@@ -242,20 +242,20 @@ foreach ($custom_fields as $custom_field) {
                                         <th><?php _trans('company'); ?></th>
                                         <td><?php echo ($client->client_company) ? _htmlsc($client->client_company) : ''; ?></td>
                                     </tr>
-                                <?php if ($client->client_vat_id) : ?>
+                                <?php if ($client->client_vat_id) { ?>
                                     <tr>
                                         <th><?php _trans('vat_id'); ?></th>
                                         <td><?php _htmlsc($client->client_vat_id); ?></td>
                                     </tr>
-                                <?php endif; ?>
-                                <?php if ($client->client_tax_code) : ?>
+                                <?php } ?>
+                                <?php if ($client->client_tax_code) { ?>
                                     <tr>
                                         <th><?php _trans('tax_code'); ?></th>
                                         <td><?php _htmlsc($client->client_tax_code); ?></td>
                                     </tr>
-                                <?php endif; ?>
+                                <?php } ?>
 
-                                <?php foreach ($custom_fields as $custom_field) : ?>
+                                <?php foreach ($custom_fields as $custom_field) { ?>
                                     <?php if ($custom_field->custom_field_location != 4) {
                                         continue;
                                     } ?>
@@ -267,7 +267,7 @@ foreach ($custom_fields as $custom_field) {
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
                                     </tr>
-                                <?php endforeach; ?>
+                                <?php } ?>
                             </table>
                         </div>
 
@@ -278,17 +278,17 @@ foreach ($custom_fields as $custom_field) {
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                     <div class="panel panel-default no-margin">
 
-                        <div class="panel-heading"><?php echo 'e-'.ucfirst(trans('invoicing')) . ' ' . trans('information'); ?></div>
+                        <div class="panel-heading"><?php echo 'e-' . ucfirst(trans('invoicing')) . ' ' . trans('information'); ?></div>
                         <div class="panel-body table-content">
 
                             <table class="table no-margin">
                                     <tr>
-                                        <th><?php echo trans('send') . ' e-'. trans('invoice') . ' ' . trans('version'); ?></th>
-                                        <td><?php echo ($client->client_einvoice_version) ? get_xml_full_name($client->client_einvoice_version) : trans('none'); ?></td>
+                                        <th><?php echo trans('send') . ' e-' . trans('invoice') . ' ' . trans('version'); ?></th>
+                                        <td><?php echo ($client->client_einvoicing_version) ? get_xml_full_name($client->client_einvoicing_version) : trans('none'); ?></td>
                                     </tr>
                             </table>
 
-                            <?php if ($req_einvoice["einvoices_empty_fields"] > 0 && $client->client_einvoice_version != '') { ?>
+                            <?php if ($req_einvoicing['einvoicing_empty_fields'] > 0 && $client->client_einvoicing_version != '') { ?>
                                 <div class="alert alert-warning small" style="margin: 0px 10px 10px;">
                                     <table>
                                         <tr>
@@ -302,11 +302,11 @@ foreach ($custom_fields as $custom_field) {
                         </div>
                     </div>
                 </div>
-
+                <!-- /e-Invoicing panel added -->
 
             </div>
 
-            <?php if ($client->client_surname != ''): //Client is not a company?>
+            <?php if ($client->client_surname != '') { // Client is not a company?>
                 <hr>
 
                 <div class="row">
@@ -327,7 +327,7 @@ foreach ($custom_fields as $custom_field) {
                                         <th><?php _trans('gender'); ?></th>
                                         <td><?php echo format_gender($client->client_gender) ?></td>
                                     </tr>
-                                    <?php if ($this->mdl_settings->setting('sumex') == '1'): ?>
+                                    <?php if ($this->mdl_settings->setting('sumex') == '1') { ?>
                                         <tr>
                                             <th><?php _trans('sumex_ssn'); ?></th>
                                             <td><?php echo format_avs($client->client_avs) ?></td>
@@ -342,9 +342,9 @@ foreach ($custom_fields as $custom_field) {
                                             <th><?php _trans('sumex_veka'); ?></th>
                                             <td><?php _htmlsc($client->client_veka) ?></td>
                                         </tr>
-                                    <?php endif; ?>
+                                    <?php } ?>
 
-                                    <?php foreach ($custom_fields as $custom_field) : ?>
+                                    <?php foreach ($custom_fields as $custom_field) { ?>
                                         <?php if ($custom_field->custom_field_location != 3) {
                                             continue;
                                         } ?>
@@ -356,17 +356,17 @@ foreach ($custom_fields as $custom_field) {
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php } ?>
                                 </table>
                             </div>
                         </div>
 
                     </div>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
 
             <?php
-            if ($custom_fields) : ?>
+            if ($custom_fields) { ?>
                 <hr>
 
                 <div class="row">
@@ -378,7 +378,7 @@ foreach ($custom_fields as $custom_field) {
                             </div>
                             <div class="panel-body table-content">
                                 <table class="table no-margin">
-                                    <?php foreach ($custom_fields as $custom_field) : ?>
+                                    <?php foreach ($custom_fields as $custom_field) { ?>
                                         <?php if ($custom_field->custom_field_location != 0) {
                                             continue;
                                         } ?>
@@ -390,14 +390,14 @@ foreach ($custom_fields as $custom_field) {
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php } ?>
                                 </table>
                             </div>
 
                         </div>
                     </div>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
 
             <hr>
 

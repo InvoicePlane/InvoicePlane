@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -15,13 +19,15 @@
 
 class Ublexamv20Xml
 {
-    var $invoice;
-    var $doc;
-    var $root;
+    public $invoice;
+
+    public $doc;
+
+    public $root;
 
     public function __construct($params)
     {
-        $CI = & get_instance();
+        $CI = &get_instance();
         $this->invoice = $params['invoice'];
         $this->items = $params['items'];
         $this->filename = $params['filename'];
@@ -37,14 +43,21 @@ class Ublexamv20Xml
         $this->root->appendChild($this->xmlAccountingSupplierParty());
         $this->root->appendChild($this->xmlAccountingCustomerParty());
         $this->root->appendChild($this->xmlPaymentMeans());
-        if ($this->invoice->invoice_terms) {$this->root->appendChild($this->xmlPaymentTerms());}
+        if ($this->invoice->invoice_terms) {
+            $this->root->appendChild($this->xmlPaymentTerms());
+        }
         $this->root->appendChild($this->xmlTaxTotal($this->items[0]));
         $this->root->appendChild($this->xmlLegalMonetaryTotal());
         foreach ($this->items as $index => $item) {
             $this->root->appendChild($this->xmlInvoiceLine($index + 1, $item));
         }
         $this->doc->appendChild($this->root);
-        $this->doc->save(UPLOADS_ARCHIVE_FOLDER . $this->filename . '.xml');
+        $this->doc->save(UPLOADS_TEMP_FOLDER . $this->filename . '.xml');
+    }
+
+    public function ublFormattedFloat($amount, $nb_decimals = 2)
+    {
+        return number_format((float) $amount, $nb_decimals);
     }
 
     protected function xmlRoot()
@@ -60,14 +73,16 @@ class Ublexamv20Xml
         $node->appendChild($this->doc->createElement('cbc:IssueDate', $this->invoice->invoice_date_created));
         $node->appendChild($this->doc->createElement('cbc:InvoiceTypeCode', '380'));
         $node->appendChild($this->doc->createElement('cbc:DocumentCurrencyCode', $this->currencyCode));
+
         return $node;
     }
 
     // AccountingSupplierParty
-    protected function xmlAccountingSupplierParty() 
+    protected function xmlAccountingSupplierParty()
     {
         $node = $this->doc->createElement('cac:AccountingSupplierParty');
         $node->appendChild($this->xmlSuppParty());
+
         return $node;
     }
 
@@ -78,6 +93,7 @@ class Ublexamv20Xml
         $node->appendChild($this->xmlSuppPartyName());
         $node->appendChild($this->xmlSuppPostalAddress());
         $node->appendChild($this->xmlSuppContact());
+
         return $node;
     }
 
@@ -88,6 +104,7 @@ class Ublexamv20Xml
         $nodeID->setAttribute('schemeAgencyID', $this->invoice->user_country);
         $nodeID->setAttribute('schemeAgencyName', 'Example');
         $node->appendChild($nodeID);
+
         return $node;
     }
 
@@ -96,6 +113,7 @@ class Ublexamv20Xml
         $node = $this->doc->createElement('cac:PartyName');
         $nodeName = $this->doc->createElement('cbc:Name', $this->invoice->user_company);
         $node->appendChild($nodeName);
+
         return $node;
     }
 
@@ -108,6 +126,7 @@ class Ublexamv20Xml
         $nodeCountry = $this->doc->createElement('cac:Country');
         $nodeCountry->appendChild($this->doc->createElement('cbc:IdentificationCode', $this->invoice->user_country));
         $node->appendChild($nodeCountry);
+
         return $node;
     }
 
@@ -117,21 +136,31 @@ class Ublexamv20Xml
         $contactPhone = $this->invoice->user_phone;
         $contactFax = $this->invoice->user_fax;
         $contactEmail = $this->invoice->user_email;
-        if ($contactName.$contactPhone.$contactFax.$contactEmail) {
+        if ($contactName . $contactPhone . $contactFax . $contactEmail) {
             $node = $this->doc->createElement('cac:Contact');
-            if ($contactName) {$node->appendChild($this->doc->createElement('cbc:Name', $contactName));}
-            if ($contactPhone) {$node->appendChild($this->doc->createElement('cbc:Telephone', $contactPhone));}
-            if ($contactFax) {$node->appendChild($this->doc->createElement('cbc:Telefax', $contactFax));}
-            if ($contactEmail) {$node->appendChild($this->doc->createElement('cbc:ElectronicMail', $contactEmail));}
+            if ($contactName) {
+                $node->appendChild($this->doc->createElement('cbc:Name', $contactName));
+            }
+            if ($contactPhone) {
+                $node->appendChild($this->doc->createElement('cbc:Telephone', $contactPhone));
+            }
+            if ($contactFax) {
+                $node->appendChild($this->doc->createElement('cbc:Telefax', $contactFax));
+            }
+            if ($contactEmail) {
+                $node->appendChild($this->doc->createElement('cbc:ElectronicMail', $contactEmail));
+            }
         }
+
         return $node;
     }
 
-    //AccountingCustomerParty
+    // AccountingCustomerParty
     protected function xmlAccountingCustomerParty()
     {
-        $node = $this->doc->createElement('cac:AccountingCustomerParty'); 
+        $node = $this->doc->createElement('cac:AccountingCustomerParty');
         $node->appendChild($this->xmlCustParty());
+
         return $node;
     }
 
@@ -141,6 +170,7 @@ class Ublexamv20Xml
         $node->appendChild($this->xmlCustPartyIdentification());
         $node->appendChild($this->xmlCustPartyName());
         $node->appendChild($this->xmlCustPostalAddress());
+
         return $node;
     }
 
@@ -151,6 +181,7 @@ class Ublexamv20Xml
         $nodeID->setAttribute('schemeAgencyID', $this->invoice->client_country);
         $nodeID->setAttribute('schemeAgencyName', 'Example');
         $node->appendChild($nodeID);
+
         return $node;
     }
 
@@ -159,34 +190,41 @@ class Ublexamv20Xml
         $node = $this->doc->createElement('cac:PartyName');
         $nodeName = $this->doc->createElement('cbc:Name', $this->invoice->client_name);
         $node->appendChild($nodeName);
+
         return $node;
     }
 
     protected function xmlCustPostalAddress()
     {
-        $node = $this->doc->createElement('cac:PostalAddress');  
+        $node = $this->doc->createElement('cac:PostalAddress');
         $node->appendChild($this->doc->createElement('cbc:StreetName', $this->invoice->client_address_1));
         $node->appendChild($this->doc->createElement('cbc:CityName', $this->invoice->client_city));
         $node->appendChild($this->doc->createElement('cbc:PostalZone', $this->invoice->client_zip));
         $nodeCountry = $this->doc->createElement('cac:Country');
         $nodeCountry->appendChild($this->doc->createElement('cbc:IdentificationCode', $this->invoice->client_country));
         $node->appendChild($nodeCountry);
-        return $node;
-    }   
 
-    //PaymentMeans
+        return $node;
+    }
+
+    // PaymentMeans
     protected function xmlPaymentMeans()
     {
-        $PaymentDueDate = $this->invoice->invoice_date_due; 
+        $PaymentDueDate = $this->invoice->invoice_date_due;
         $InstructionNote = 'Invoice: #' . $this->filename;
         $node = $this->doc->createElement('cac:PaymentMeans');
         $nodePMC = $this->doc->createElement('cbc:PaymentMeansCode', '1');
         $nodePMC->setAttribute('listID', 'UN/ECE 4461');
         $nodePMC->setAttribute('listName', 'Payment Means');
         $node->appendChild($nodePMC);
-        if ($PaymentDueDate) {$node->appendChild($this->doc->createElement('cbc:PaymentDueDate', $PaymentDueDate));}
-        if ($InstructionNote) {$node->appendChild($this->doc->createElement('cbc:InstructionNote', $InstructionNote));}
+        if ($PaymentDueDate) {
+            $node->appendChild($this->doc->createElement('cbc:PaymentDueDate', $PaymentDueDate));
+        }
+        if ($InstructionNote) {
+            $node->appendChild($this->doc->createElement('cbc:InstructionNote', $InstructionNote));
+        }
         $node->appendChild($this->xmlPFAccount());
+
         return $node;
     }
 
@@ -212,7 +250,7 @@ class Ublexamv20Xml
         return $node;
     }
 
-    //PaymentTerms
+    // PaymentTerms
     protected function xmlPaymentTerms()
     {
         $date = date_create($this->invoice->invoice_date_due);
@@ -222,29 +260,32 @@ class Ublexamv20Xml
             $nodePayTerms = $this->doc->createElement('cbc:Note', $PaymentTerms);
             $node->appendChild($nodePayTerms);
         }
+
         return $node;
     }
 
-    //TaxTotal
+    // TaxTotal
     protected function xmlTaxTotal($item)
     {
         $node = $this->doc->createElement('cac:TaxTotal');
         $node->appendChild($this->currencyElement('cbc:TaxAmount', $this->invoice->invoice_item_tax_total));
         $node->appendChild($this->xmlTaxSubtotal($item->item_tax_rate_percent, $item->item_subtotal));
+
         return $node;
     }
 
     protected function xmlTaxSubtotal($percent, $subtotal)
-    {   
+    {
         $taxamount = $subtotal * $percent / 100;
         $node = $this->doc->createElement('cac:TaxSubtotal');
         $node->appendChild($this->currencyElement('cbc:TaxableAmount', $subtotal));
         $node->appendChild($this->currencyElement('cbc:TaxAmount', $taxamount));
         $node->appendChild($this->doc->createElement('cbc:Percent', $percent));
+
         return $node;
     }
 
-    //LegalMonetaryTotal
+    // LegalMonetaryTotal
     protected function xmlLegalMonetaryTotal()
     {
         $TaxExclAmount = $this->invoice->invoice_total - $this->invoice->invoice_item_tax_total;
@@ -252,11 +293,12 @@ class Ublexamv20Xml
         $node->appendChild($this->currencyElement('cbc:LineExtensionAmount', $this->invoice->invoice_item_subtotal));
         $node->appendChild($this->currencyElement('cbc:TaxExclusiveAmount', $TaxExclAmount));
         $node->appendChild($this->currencyElement('cbc:TaxInclusiveAmount', $this->invoice->invoice_total));
-        $node->appendChild($this->currencyElement('cbc:PayableAmount', $this->invoice->invoice_balance)); 
+        $node->appendChild($this->currencyElement('cbc:PayableAmount', $this->invoice->invoice_balance));
+
         return $node;
     }
 
-    //InvoiceLine
+    // InvoiceLine
     protected function xmlInvoiceLine($lineNumber, $item)
     {
         $node = $this->doc->createElement('cac:InvoiceLine');
@@ -273,9 +315,9 @@ class Ublexamv20Xml
         $nodePrice = $this->doc->createElement('cac:Price');
         $nodePrice->appendChild($this->currencyElement('cbc:PriceAmount', $item->item_price));
         $node->appendChild($nodePrice);
+
         return $node;
     }
-
 
     // ===========================================================================
     // helpers
@@ -284,12 +326,7 @@ class Ublexamv20Xml
     {
         $el = $this->doc->createElement($name, $this->ublFormattedFloat($amount, $nb_decimals));
         $el->setAttribute('currencyID', $this->currencyCode);
+
         return $el;
     }
-
-    function ublFormattedFloat($amount, $nb_decimals = 2)
-    {
-        return number_format((float)$amount, $nb_decimals);
-    }
-
 }

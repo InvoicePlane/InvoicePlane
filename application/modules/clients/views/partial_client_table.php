@@ -5,8 +5,8 @@
             <th><?php _trans('active'); ?></th>
             <th><?php _trans('client_name'); ?></th>
             <th><?php _trans('email_address'); ?></th>
-            <th><?php echo ' e-'. trans('invoicing') . ' ' . ucfirst(trans('version')); ?></th>
-            <th><?php  echo ' e-'. trans('invoicing') . ' ' . trans('active'); ?></th>
+            <th><?php echo ' e-' . trans('invoicing') . ' ' . ucfirst(trans('version')); ?></th>
+            <th><?php  echo ' e-' . trans('invoicing') . ' ' . trans('active'); ?></th>
             <th><?php _trans('phone_number'); ?></th>
             <th class="amount last"><?php _trans('balance'); ?></th>
             <th><?php _trans('options'); ?></th>
@@ -20,11 +20,11 @@
                 </td>
                 <td><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
                 <td><?php _htmlsc($client->client_email); ?></td>
-                <td><?php _htmlsc($client->client_einvoice_version); ?></td>
+                <td><?php _htmlsc($client->client_einvoicing_version); ?></td>
                 <td>
                     <?php if ($client->client_einvoicing_active == 1) { ?>
                         <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>
-                    <?php } elseif ($client->client_einvoice_version != '') { ?>
+                    <?php } elseif ($client->client_einvoicing_version != '') { ?>
                         <i class="fa fa-edit" style="font-size:16px; color:red"></i>
                     <?php } ?>
                 </td>
