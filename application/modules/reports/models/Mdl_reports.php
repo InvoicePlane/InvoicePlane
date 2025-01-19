@@ -198,7 +198,6 @@ class Mdl_Reports extends CI_Model
 
         $this->db->join('ip_invoices', 'ip_invoices.client_id = ip_clients.client_id', 'left');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
-        $this->db->join('ip_client_custom', 'ip_client_custom.client_id = ip_clients.client_id AND client_custom_fieldid = 1', 'left');
 
         $this->db->where('ip_invoices.invoice_date_created >=', $from_date);
         $this->db->where('ip_invoices.invoice_date_created <=', $to_date);
