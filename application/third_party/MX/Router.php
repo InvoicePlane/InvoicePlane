@@ -39,6 +39,8 @@ require dirname(__FILE__) . '/Modules.php';
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+#[AllowDynamicProperties]
 class MX_Router extends CI_Router
 {
     public $module;

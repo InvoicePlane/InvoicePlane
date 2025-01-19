@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Client_Notes
- */
+#[AllowDynamicProperties]
 class Mdl_Client_Notes extends Response_Model
 {
     public $table = 'ip_client_notes';
@@ -46,6 +47,16 @@ class Mdl_Client_Notes extends Response_Model
         $db_array['client_note_date'] = date('Y-m-d');
 
         return $db_array;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function delete($id)
+    {
+        parent::delete($id);
+        // For Ajax Check if deletion was successful
+        return true;
     }
 
 }

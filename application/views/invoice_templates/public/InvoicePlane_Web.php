@@ -170,7 +170,7 @@
                                 <td><?php _htmlsc($item->item_name); ?></td>
                                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                                 <td class="amount">
-                                    <?php echo format_amount($item->item_quantity); ?>
+                                    <?php echo format_quantity($item->item_quantity); ?>
                                     <?php if ($item->item_product_unit) : ?>
                                         <br>
                                         <small><?php _htmlsc($item->item_product_unit); ?></small>
@@ -253,7 +253,7 @@
 
             <hr>
 
-            <?php if (get_setting('qr_code')) : ?>
+            <?php if (get_setting('qr_code') && $invoice->invoice_balance > 0) : ?>
                 <table class="invoice-qr-code-table">
                     <tr>
                         <td>

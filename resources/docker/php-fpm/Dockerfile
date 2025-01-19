@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN install-php-extensions \
     bcmath \
+    dom \
     exif \
     gd \
     imagick \
@@ -43,6 +44,7 @@ RUN install-php-extensions \
     redis \
     soap \
     xdebug \
+    xml \
     xsl \
     zip
 
@@ -63,7 +65,7 @@ COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Copy the php-fpm config
 COPY ./fpm.conf /usr/local/etc/php-fpm.d/
-COPY ./php-dev.ini /usr/local/etc/php/conf.d/
+COPY ./php-dev.ini /usr/local/etc/php/conf.d/php.ini
 
 USER root
 

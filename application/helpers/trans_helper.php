@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -34,7 +34,8 @@ function trans($line, $id = '', $default = null)
 
         if (empty($current_language) || $current_language == 'system') {
             // todo gives error at startup, fix later
-            $current_language = 'english'; //get_setting('default_language');
+            // #1034: Translation breaks in PDF-template
+            $current_language = get_setting('default_language') ?? 'english';
         }
 
         // Load the default language and translate the string

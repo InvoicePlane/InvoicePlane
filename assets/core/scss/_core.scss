@@ -431,8 +431,11 @@ div.table-content {
 |   =========================================================
 */
 
-.tabbable .table {
-  margin-bottom: 15px;
+.tabbable {
+  .table,
+  .model-pager {
+    margin-bottom: 15px;
+  }
 }
 
 /*
@@ -768,6 +771,10 @@ div.table-content {
 
 .amount {
   text-align: right;
+}
+
+.amount.last {
+  padding-right: 25px;
 }
 
 .no-border-radius {

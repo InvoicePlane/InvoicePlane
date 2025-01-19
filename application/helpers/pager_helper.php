@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -9,6 +12,8 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @license		https://invoiceplane.com/license.txt
  * @link		https://invoiceplane.com
  */
+
+
 
 /**
  * Returns a printable pagination

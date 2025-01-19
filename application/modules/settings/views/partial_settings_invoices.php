@@ -1,12 +1,10 @@
 <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
-
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('invoices'); ?>
             </div>
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
 
@@ -80,7 +78,6 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -165,7 +162,6 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -174,7 +170,9 @@
                 <?php _trans('invoice_templates'); ?>
             </div>
             <div class="panel-body">
-
+                <div class="help-block">
+                    <?php _trans('invoice_templates_info'); ?>
+                </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
 
@@ -310,7 +308,6 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -341,7 +338,7 @@
                     </div>
                 </div>
 
-                <div class="row <?php echo !get_setting('qr_code') ? 'hidden' : ''; ?>">
+                <div class="row <?php echo ! get_setting('qr_code') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_recipient]">
@@ -372,7 +369,7 @@
                     </div>
                 </div>
 
-                <div class="row <?php echo !get_setting('qr_code') ? 'hidden' : ''; ?>">
+                <div class="row <?php echo ! get_setting('qr_code') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_bic]">
@@ -412,7 +409,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -451,10 +447,8 @@
                 <?php _trans('other_settings'); ?>
             </div>
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[read_only_toggle]">
                                 <?php _trans('set_to_read_only'); ?>
@@ -472,10 +466,7 @@
                                 </option>
                             </select>
                         </div>
-
                     </div>
-
-                    <!-- Disable the update of invoice date and due date before emailing! -->
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[no_update_invoice_due_date_mail]">
@@ -492,9 +483,7 @@
                             </select>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
 
@@ -529,8 +518,8 @@
                             <select name="settings[sumex_sliptype]" id="settings[sumex_sliptype]"
                                 class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <?php
-                                $slipTypes = array("esr9", "esrRed");
-                                foreach ($slipTypes as $k => $v): ?>
+                                $slipTypes = ['esr9', 'esrRed'];
+                foreach ($slipTypes as $k => $v): ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_sliptype'), $k) ?>>
                                         <?php _trans('invoice_sumex_sliptype-' . $v); ?>
                                     </option>
@@ -547,8 +536,8 @@
                             <select name="settings[sumex_role]" id="settings[sumex_role]"
                                 class="form-control simple-select">
                                 <?php
-                                $roles = Sumex::ROLES;
-                                foreach ($roles as $k => $v): ?>
+                $roles = Sumex::ROLES;
+                foreach ($roles as $k => $v): ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_role'), $k) ?>>
                                         <?php _trans('invoice_sumex_role_' . $v); ?>
                                     </option>
@@ -563,8 +552,8 @@
                             <select name="settings[sumex_place]" id="settings[sumex_place]"
                                 class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <?php
-                                $places = Sumex::PLACES;
-                                foreach ($places as $k => $v): ?>
+                $places = Sumex::PLACES;
+                foreach ($places as $k => $v): ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_place'), $k); ?>>
                                         <?php _trans('invoice_sumex_place_' . $v); ?>
                                     </option>
@@ -579,8 +568,8 @@
                             <select name="settings[sumex_canton]" id="settings[sumex_canton]"
                                 class="form-control simple-select">
                                 <?php
-                                $cantons = Sumex::CANTONS;
-                                foreach ($cantons as $k => $v): ?>
+                $cantons = Sumex::CANTONS;
+                foreach ($cantons as $k => $v): ?>
                                     <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_canton'), $k); ?>>
                                         <?php echo $v; ?>
                                     </option>
@@ -589,9 +578,7 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 </div>

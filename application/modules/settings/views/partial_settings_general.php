@@ -218,6 +218,27 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[default_item_decimals]">
+                                <?php _trans('default_item_decimals'); ?>
+                            </label>
+                            <?php $current_default_item_decimals = get_setting('default_item_decimals'); ?>
+                            <select name="settings[default_item_decimals]" id="settings[default_item_decimals]"
+                                class="form-control simple-select"
+                                data-minimum-results-for-search="Infinity">
+                                <option value="1" <?php check_select($current_default_item_decimals, '1'); ?>>1</option>
+                                <option value="2" <?php check_select($current_default_item_decimals, '2'); ?>>2</option>
+                                <option value="3" <?php check_select($current_default_item_decimals, '3'); ?>>3</option>
+                                <option value="4" <?php check_select($current_default_item_decimals, '4'); ?>>4</option>
+                                <option value="5" <?php check_select($current_default_item_decimals, '5'); ?>>5</option>
+                                <option value="6" <?php check_select($current_default_item_decimals, '6'); ?>>6</option>
+                                <option value="7" <?php check_select($current_default_item_decimals, '7'); ?>>7</option>
+                                <option value="8" <?php check_select($current_default_item_decimals, '8'); ?>>8</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -350,7 +371,6 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="monospace_amounts">
                                 <?php _trans('monospaced_font_for_amounts'); ?>
@@ -366,13 +386,12 @@
                             <p class="help-block">
                                 <?php _trans('example'); ?>:
                                 <span style="font-family: Monaco, Lucida Console, monospace">
-                        <?php echo format_currency(123456.78); ?>
-                    </span>
+                                    <?php echo format_currency(123456.78); ?>
+                                </span>
                             </p>
                         </div>
-                      </div>
-
-                      <div class="col-xs-12 col-md-6">
+                    </div>
+                    <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="login_logo">
                                 <?php _trans('login_logo'); ?>
@@ -388,7 +407,7 @@
                     </div>
                 </div>
 
-              	<div class="row">
+                <div class="row">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[reports_in_new_tab]">
@@ -402,9 +421,9 @@
                                 </option>
                             </select>
                         </div>
- 				            </div>
+                    </div>
                     <div class="col-xs-12 col-md-6">
-    					          <div class="form-group">
+                        <div class="form-group">
                             <label for="settings[show_responsive_itemlist]">
                                 <?php _trans('show_responsive_itemlist'); ?>
                             </label>
@@ -418,7 +437,6 @@
                                 </option>
                             </select>
                         </div>
-
                     </div>
                 </div>
 
