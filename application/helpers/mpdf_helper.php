@@ -68,8 +68,8 @@ function pdf_create(
         $CI->load->helper('e-invoice');             // eInvoicing++
         // mpdf only creates PDF/A-1b files and cannot create the required PDF/A-3b files!
         $mpdf->pdf_version = '1.7';
-        $mpdf->PDFA     = true;
-        $mpdf->PDFAauto = true;
+        $mpdf->PDFA        = true;
+        $mpdf->PDFAauto    = true;
         $mpdf->SetAssociatedFiles($associated_files);
         $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files[0]['name']));          // eInvoicing++
     }
@@ -112,7 +112,7 @@ function pdf_create(
             $invoice_array[] = $file;
         }
 
-        if ( ! empty($invoice_array) && !is_null($is_guest)) {
+        if ( ! empty($invoice_array) && null !== $is_guest) {
             rsort($invoice_array);
 
             if ($stream) {

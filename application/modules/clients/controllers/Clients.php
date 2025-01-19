@@ -117,37 +117,37 @@ class Clients extends Admin_Controller
         if ($id) {
             // required (user) fields for e-invoicing
             $this->load->model('users/mdl_users');
-            $req_user = $this->db->from('ip_users')->where('user_type', '1')->get()->row_array();
+            $req_user                   = $this->db->from('ip_users')->where('user_type', '1')->get()->row_array();
             $req_user['user_address_1'] = $req_user['user_address_1'] == '' ? 1 : 0;
-            $req_user['user_zip'] = $req_user['user_zip'] == '' ? 1 : 0;
-            $req_user['user_city'] = $req_user['user_city'] == '' ? 1 : 0;
-            $req_user['user_country'] = $req_user['user_country'] == '' ? 1 : 0;
-            $req_user['user_company'] = $req_user['user_company'] == '' ? 1 : 0;
-            $req_user['user_vat_id'] = $req_user['user_vat_id'] == '' ? 1 : 0;
+            $req_user['user_zip']       = $req_user['user_zip'] == '' ? 1 : 0;
+            $req_user['user_city']      = $req_user['user_city'] == '' ? 1 : 0;
+            $req_user['user_country']   = $req_user['user_country'] == '' ? 1 : 0;
+            $req_user['user_company']   = $req_user['user_company'] == '' ? 1 : 0;
+            $req_user['user_vat_id']    = $req_user['user_vat_id'] == '' ? 1 : 0;
 
             // required (client) fields for e-invoicing
-            $req_client = $this->db->from('ip_clients')->where('client_id', $id)->get()->row_array();
+            $req_client                     = $this->db->from('ip_clients')->where('client_id', $id)->get()->row_array();
             $req_client['client_address_1'] = $req_client['client_address_1'] == '' ? 1 : 0;
-            $req_client['client_zip'] = $req_client['client_zip'] == '' ? 1 : 0;
-            $req_client['client_city'] = $req_client['client_city'] == '' ? 1 : 0;
-            $req_client['client_country'] = $req_client['client_country'] == '' ? 1 : 0;
-            $req_client['client_company'] = $req_client['client_company'] == '' ? 1 : 0;
-            $req_client['client_vat_id'] = $req_client['client_vat_id'] == '' ? 1 : 0;
+            $req_client['client_zip']       = $req_client['client_zip'] == '' ? 1 : 0;
+            $req_client['client_city']      = $req_client['client_city'] == '' ? 1 : 0;
+            $req_client['client_country']   = $req_client['client_country'] == '' ? 1 : 0;
+            $req_client['client_company']   = $req_client['client_company'] == '' ? 1 : 0;
+            $req_client['client_vat_id']    = $req_client['client_vat_id'] == '' ? 1 : 0;
 
             if ($req_client['client_company'] == 1 && $req_client['client_vat_id'] == 1) {
                 $req_client['client_company'] = 0;
-                $req_client['client_vat_id'] = 0;
+                $req_client['client_vat_id']  = 0;
             }
 
             // show table record (or not)
-            $show_row = [];
+            $show_row                      = [];
             $show_row['tr_show_address_1'] = $req_user['user_address_1'] + $req_client['client_address_1'] > 0 ? 1 : 0;
-            $show_row['tr_show_zip'] = $req_user['user_zip'] + $req_client['client_zip'] > 0 ? 1 : 0;
-            $show_row['tr_show_city'] = $req_user['user_city'] + $req_client['client_city'] > 0 ? 1 : 0;
-            $show_row['tr_show_country'] = $req_user['user_country'] + $req_client['client_country'] > 0 ? 1 : 0;
-            $show_row['tr_show_company'] = $req_user['user_company'] + $req_client['client_company'] > 0 ? 1 : 0;
-            $show_row['tr_show_vat_id'] = $req_user['user_vat_id'] + $req_client['client_vat_id'] > 0 ? 1 : 0;
-            $show_row['show_table'] = $show_row['tr_show_address_1'] +
+            $show_row['tr_show_zip']       = $req_user['user_zip'] + $req_client['client_zip'] > 0 ? 1 : 0;
+            $show_row['tr_show_city']      = $req_user['user_city'] + $req_client['client_city'] > 0 ? 1 : 0;
+            $show_row['tr_show_country']   = $req_user['user_country'] + $req_client['client_country'] > 0 ? 1 : 0;
+            $show_row['tr_show_company']   = $req_user['user_company'] + $req_client['client_company'] > 0 ? 1 : 0;
+            $show_row['tr_show_vat_id']    = $req_user['user_vat_id'] + $req_client['client_vat_id'] > 0 ? 1 : 0;
+            $show_row['show_table']        = $show_row['tr_show_address_1'] +
                                       $show_row['tr_show_zip'] +
                                       $show_row['tr_show_city'] +
                                       $show_row['tr_show_country'] +
@@ -255,17 +255,17 @@ class Clients extends Admin_Controller
             ->get()->row();
 
         // check if required (e-invoicing) fields are filled in?
-        $req_fields = [];
+        $req_fields                     = [];
         $req_fields['client_address_1'] = $client->client_address_1 != '' ? 0 : 1;
-        $req_fields['client_zip'] = $client->client_zip != '' ? 0 : 1;
-        $req_fields['client_city'] = $client->client_city != '' ? 0 : 1;
-        $req_fields['client_country'] = $client->client_country != '' ? 0 : 1;
-        $req_fields['client_company'] = $client->client_company != '' ? 0 : 1;
-        $req_fields['client_vat_id'] = $client->client_vat_id != '' ? 0 : 1;
+        $req_fields['client_zip']       = $client->client_zip != '' ? 0 : 1;
+        $req_fields['client_city']      = $client->client_city != '' ? 0 : 1;
+        $req_fields['client_country']   = $client->client_country != '' ? 0 : 1;
+        $req_fields['client_company']   = $client->client_company != '' ? 0 : 1;
+        $req_fields['client_vat_id']    = $client->client_vat_id != '' ? 0 : 1;
 
         if ($req_fields['client_company'] == 1 && $req_fields['client_vat_id'] == 1) {
             $req_fields['client_company'] = 0;
-            $req_fields['client_vat_id'] = 0;
+            $req_fields['client_vat_id']  = 0;
         }
 
         $this->load->model('users/mdl_users');
@@ -275,9 +275,9 @@ class Clients extends Admin_Controller
             ->get()
             ->row_array();
         $req_fields['user_address_1'] = $check['user_address_1'] != '' ? 0 : 1;
-        $req_fields['user_zip'] = $check['user_zip'] != '' ? 0 : 1;
-        $req_fields['user_city'] = $check['user_city'] != '' ? 0 : 1;
-        $total_empty_fields = 0;
+        $req_fields['user_zip']       = $check['user_zip'] != '' ? 0 : 1;
+        $req_fields['user_city']      = $check['user_city'] != '' ? 0 : 1;
+        $total_empty_fields           = 0;
         foreach ($req_fields as $key => $val) {
             $total_empty_fields += $val;
         }

@@ -46,7 +46,7 @@ function phpmail_send(
     switch (get_setting('email_send_method')) {
         case 'smtp':
             $mail->isSMTP();
-            $mail->SMTPDebug = env_bool('ENABLE_DEBUG') ? 2 : 0;
+            $mail->SMTPDebug   = env_bool('ENABLE_DEBUG') ? 2 : 0;
             $mail->Debugoutput = env_bool('ENABLE_DEBUG') ? 'echo' : 'error_log';
 
             // Set the basic properties
