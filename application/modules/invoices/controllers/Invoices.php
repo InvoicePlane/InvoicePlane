@@ -133,9 +133,6 @@ class Invoices extends Admin_Controller
         exit;
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function view($invoice_id): void
     {
         $this->load->model(
@@ -170,7 +167,7 @@ class Invoices extends Admin_Controller
             }
         }*/
 
-        $fields = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
+        $fields  = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
         if ( ! $invoice) {
@@ -181,7 +178,7 @@ class Invoices extends Admin_Controller
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -200,7 +197,7 @@ class Invoices extends Admin_Controller
         }
 
         // Check whether there are payment custom fields
-        $payment_cf = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
+        $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
 
         $this->layout->set(
@@ -247,13 +244,10 @@ class Invoices extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function delete($invoice_id): void
     {
         // Get the status of the invoice
-        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice        = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_status = $invoice->invoice_status_id;
 
         if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
@@ -289,9 +283,6 @@ class Invoices extends Admin_Controller
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
     }
 
-    /**
-     * @param $invoice_id
-     */
     public function generate_zugferd_xml($invoice_id): void
     {
         $this->load->model('invoices/mdl_items');
@@ -327,10 +318,6 @@ class Invoices extends Admin_Controller
         $this->output->set_output($this->sumex->pdf());
     }
 
-    /**
-     * @param $invoice_id
-     * @param $invoice_tax_rate_id
-     */
     public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id): void
     {
         $this->load->model('mdl_invoice_tax_rates');

@@ -221,7 +221,7 @@ $locations = [];
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                     ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
@@ -262,7 +262,7 @@ $locations = [];
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                    $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                     ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
@@ -351,7 +351,7 @@ $locations = [];
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                         ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
@@ -385,7 +385,7 @@ $locations = [];
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                        $value = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
                                         ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
@@ -462,5 +462,4 @@ $locations = [];
             </div>
         </div>
     </div>
-
 </div>

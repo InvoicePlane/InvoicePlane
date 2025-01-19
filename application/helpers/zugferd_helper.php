@@ -14,7 +14,7 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * Generate a temporaty XML file from the invoice data.
+ * Generate a temporary XML file from the invoice data.
  *
  * @param $invoice
  * @param $items

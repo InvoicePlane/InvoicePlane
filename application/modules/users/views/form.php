@@ -422,5 +422,4 @@ $cv = $this->controller->view_data['custom_values'];
             </div>
         </div>
     </div>
-
 </form>

@@ -20,13 +20,11 @@
 
 <div class="row">
     <div class="col-xs-12 col-md-8 col-md-offset-2">
-
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('invoices'); ?>
             </div>
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
 
@@ -100,7 +98,6 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -169,7 +166,6 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -316,7 +312,6 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -418,7 +413,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -633,7 +627,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

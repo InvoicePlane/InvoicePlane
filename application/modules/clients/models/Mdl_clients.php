@@ -207,6 +207,8 @@ class Mdl_Clients extends Response_Model
     /**
      * Returns client_id of existing client.
      *
+     * @param $client_name
+     *
      * @return int|null
      */
     public function client_lookup($client_name)
@@ -255,6 +257,8 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
+     * @param $user_id
+     *
      * @return $this
      */
     public function get_not_assigned_to_user($user_id)

@@ -223,9 +223,7 @@
 
             </div>
         </div>
-
     </div>
-
 </form>
 
 <?php $this->layout->load_view('upload/dropzone-invoice-scripts'); ?>

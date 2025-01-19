@@ -70,9 +70,9 @@ function email_invoice(
 
     $message = parse_template($db_invoice, $body);
     $subject = parse_template($db_invoice, $subject);
-    $cc = parse_template($db_invoice, $cc);
-    $bcc = parse_template($db_invoice, $bcc);
-    $from = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
+    $cc      = parse_template($db_invoice, $cc);
+    $bcc     = parse_template($db_invoice, $bcc);
+    $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -117,9 +117,9 @@ function email_quote(
 
     $message = parse_template($db_quote, $body);
     $subject = parse_template($db_quote, $subject);
-    $cc = parse_template($db_quote, $cc);
-    $bcc = parse_template($db_quote, $bcc);
-    $from = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
+    $cc      = parse_template($db_quote, $cc);
+    $bcc     = parse_template($db_quote, $bcc);
+    $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -146,12 +146,12 @@ function email_quote_status($quote_id, $status)
     $CI = &get_instance();
     $CI->load->helper('mailer/phpmailer');
 
-    $quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
-    $index = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
+    $quote    = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
+    $index    = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
     $base_url = base_url('/' . $index . '/quotes/view/' . $quote_id);
 
     $user_email = $quote->user_email;
-    $subject = sprintf(
+    $subject    = sprintf(
         trans('quote_status_email_subject'),
         $quote->client_name,
         mb_strtolower(lang($status)),

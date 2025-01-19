@@ -217,7 +217,7 @@ class Setup extends MX_Controller
         $this->load->helper('country');
 
         if ($this->mdl_users->run_validation()) {
-            $db_array = $this->mdl_users->db_array();
+            $db_array              = $this->mdl_users->db_array();
             $db_array['user_type'] = 1;
 
             $this->mdl_users->save(null, $db_array);
@@ -258,9 +258,9 @@ class Setup extends MX_Controller
         // First get all version entries from the database and format them
         $versions = $this->db->query('SELECT * FROM ip_versions');
         if ($versions->num_rows() > 0) {
-            foreach ($versions->result() as $row):
+            foreach ($versions->result() as $row) {
                 $data[] = $row;
-            endforeach;
+            }
         }
 
         // Then check if the first version entry is less than 30 minutes old
@@ -283,7 +283,7 @@ class Setup extends MX_Controller
     {
         $checks = [];
 
-        $php_required = '5.6';
+        $php_required  = '5.6';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
         if ($php_installed < $php_required) {
@@ -357,19 +357,15 @@ class Setup extends MX_Controller
     /**
      * Load the database connection trough CodeIgniter.
      */
-    private function load_ci_database(): void
+    private function load_ci_database()
     {
         $this->load->database();
     }
 
     /**
-     * @param     $hostname
-     * @param     $username
-     * @param     $password
-     * @param     $database
      * @param int $port
      */
-    private function write_database_config($hostname, $username, $password, $database, $port = 3306): void
+    private function write_database_config($hostname, $username, $password, $database, $port = 3306)
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
@@ -393,7 +389,7 @@ class Setup extends MX_Controller
 
         // Load the database config and configure it to test the connection
         include APPPATH . 'config/database.php';
-        $db = $db['default'];
+        $db             = $db['default'];
         $db['autoinit'] = false;
         $db['db_debug'] = false;
 
@@ -432,7 +428,7 @@ class Setup extends MX_Controller
     /**
      * Set a new encryption key in the ipconfig.php file.
      */
-    private function set_encryption_key(): void
+    private function set_encryption_key()
     {
         $length = (env('ENCRYPTION_CIPHER') == 'AES-256' ? 32 : 16);
 
@@ -447,7 +443,7 @@ class Setup extends MX_Controller
         write_file(IPCONFIG_FILE, $config);
     }
 
-    private function post_setup_tasks(): void
+    private function post_setup_tasks()
     {
         // Set SETUP_COMPLETED to true
         $config = file_get_contents(IPCONFIG_FILE);

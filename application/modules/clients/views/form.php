@@ -15,7 +15,6 @@ $cv = $this->controller->view_data['custom_values'];
 </script>
 
 <form method="post">
-
     <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
            value="<?php echo $this->security->get_csrf_hash() ?>">
 
@@ -23,11 +22,8 @@ $cv = $this->controller->view_data['custom_values'];
         <h1 class="headerbar-title"><?php _trans('client_form'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
-
     <div id="content">
-
         <?php $this->layout->load_view('layout/alerts'); ?>
-
         <input class="hidden" name="is_update" type="hidden"
             <?php if ($this->mdl_clients->form_value('is_update')) {
                 echo 'value="1"';
@@ -35,7 +31,6 @@ $cv = $this->controller->view_data['custom_values'];
                 echo 'value="0"';
             } ?>
         >
-
         <div class="row">
             <div class="col-xs-12 col-sm-6">
 
@@ -62,7 +57,7 @@ $cv = $this->controller->view_data['custom_values'];
                             <input id="client_name" name="client_name" type="text" class="form-control"
                                    autofocus
                                    value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>" required>
-                        </div>                      
+                        </div>
                         <div class="form-group">
                             <label for="client_surname">
                                 <?php _trans('client_surname_optional'); ?>
@@ -268,8 +263,8 @@ $cv = $this->controller->view_data['custom_values'];
                             <div class="controls">
                                 <input id="client_company" name="client_company" type="text" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_company', true); ?>">
-                            </div> 
-                        </div>  
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
 
@@ -309,10 +304,10 @@ $cv = $this->controller->view_data['custom_values'];
                     </div>
 
                     <div class="panel-body">
-                        <?php if ($this->mdl_clients->form_value('client_id')) { ?>  
+                        <?php if ($this->mdl_clients->form_value('client_id')) { ?>
                             <?php $this->layout->load_view('clients/partial_client_einvoicing'); ?>
-                        <?php } else { ?>   
-                            <div class="alert alert-warning small" style="font-size:medium;"> 
+                        <?php } else { ?>
+                            <div class="alert alert-warning small" style="font-size:medium;">
                                 <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
                                 <?php echo trans('einvoicing_no_enabled_hint'); ?>
                             </div>
@@ -352,7 +347,7 @@ foreach ($genders as $key => $val) { ?>
                             </div>
                         </div>
                         <div class="form-group">
-                            <?php $client_title = $this->mdl_clients->form_value('client_title'); ?>
+                            <?php $client_title    = $this->mdl_clients->form_value('client_title'); ?>
                             <?php $is_custom_title = null === ClientTitleEnum::tryFrom($client_title) ?>
                             <label for="client_title"><?php _trans('client_title'); ?></label>
                             <select name="client_title" id="client_title" class="form-control simple-select">
@@ -446,7 +441,7 @@ if ($bdate && $bdate != '0000-00-00') {
             </div>
 
         </div>
-        
+
         <?php if ($custom_fields): ?>
             <div class="row">
                 <div class="col-xs-12 col-md-6">

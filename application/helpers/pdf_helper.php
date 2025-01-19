@@ -18,6 +18,7 @@ if ( ! defined('BASEPATH')) {
 /**
  * Generate the PDF for an invoice.
  *
+ * @param      $invoice_id
  * @param bool $stream
  * @param null $invoice_template
  * @param null $is_guest
@@ -79,21 +80,21 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     // START eInvoicing++ changes
     $CI->load->helper('settings');
     $file_prefix = trans('invoice');
-    $replace = ['.', ' ', '/', '\\', '#'];
+    $replace     = ['.', ' ', '/', '\\', '#'];
     if (get_setting('change_filename_prefix') == 1) {
-        $user_item = get_setting('add_filename_prefix');
+        $user_item   = get_setting('add_filename_prefix');
         $file_prefix = str_replace($replace, '', $invoice->{$user_item});
     }
     $filename = $file_prefix . '_' . str_replace($replace, '', $invoice->invoice_number);
 
     // Generate the appropriate UBL/CII
-    $xml_id = $invoice->client_einvoicing_version;
+    $xml_id    = $invoice->client_einvoicing_version;
     $embed_xml = '';
     if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
 
         $embed_xml = $xml_setting['embedXML'];
-        $XMLname = $xml_setting['XMLname'];
+        $XMLname   = $xml_setting['XMLname'];
     }
 
     // PDF associated or embedded (CII e.g. Zugferd, Factur-X) Xml file
@@ -126,7 +127,16 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // Create PDF with or without an embedded XML
     $CI->load->helper('mpdf');
-    $retval = pdf_create($html, $filename, $stream, $invoice->invoice_password, true, $is_guest, $embed_xml, $associatedFiles);
+
+    $retval = pdf_create(
+        $html,
+        trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number),
+        $stream,
+        $invoice->invoice_password,
+        true,
+        $is_guest,
+        $associatedFiles
+    );
 
     if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . DIRECTORY_SEPARATOR . $filename . '.xml')) {
         // delete the tmp CII-XML file
@@ -163,12 +173,12 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
     // Append a copy at the end and change the title:
     // WARNING: The title depends on what invoice type is (TP, TG)
     // and is language-dependant. Fix accordingly if you really need this hack
-    $temp = tempnam('/tmp', 'invsumex_');
+    $temp     = tempnam('/tmp', 'invsumex_');
     $tempCopy = tempnam('/tmp', 'invsumex_');
-    $pdf = new FPDI();
+    $pdf      = new FPDI();
     $sumexPDF = $CI->sumex->pdf();
 
-    $sha1sum = sha1($sumexPDF);
+    $sha1sum  = sha1($sumexPDF);
     $shortsum = mb_substr($sha1sum, 0, 8);
     $filename = trans('invoice') . '_' . $invoice->invoice_number . '_' . $shortsum;
 
@@ -188,7 +198,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $templateId = $pdf->importPage($pageNo);
-            $size = $pdf->getTemplateSize($templateId);
+            $size       = $pdf->getTemplateSize($templateId);
 
             if ($size['w'] > $size['h']) {
                 $pageFormat = 'L';  //  landscape
@@ -204,7 +214,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 
         for ($pageNo = 2; $pageNo <= $pageCount; $pageNo++) {
             $templateId = $pdf->importPage($pageNo);
-            $size = $pdf->getTemplateSize($templateId);
+            $size       = $pdf->getTemplateSize($templateId);
 
             if ($size['w'] > $size['h']) {
                 $pageFormat = 'L';  //  landscape
@@ -244,6 +254,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 /**
  * Generate the PDF for a quote.
  *
+ * @param      $quote_id
  * @param bool $stream
  * @param null $quote_template
  *

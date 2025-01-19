@@ -29,11 +29,11 @@ class QrCode
 
         $CI->load->helper('template');
 
-        $this->invoice = $params['invoice'];
-        $this->recipient = $CI->mdl_settings->setting('qr_code_recipient');
-        $this->iban = $CI->mdl_settings->setting('qr_code_iban');
-        $this->bic = $CI->mdl_settings->setting('qr_code_bic');
-        $this->currencyCode = $CI->mdl_settings->setting('currency_code');
+        $this->invoice         = $params['invoice'];
+        $this->recipient       = $CI->mdl_settings->setting('qr_code_recipient');
+        $this->iban            = $CI->mdl_settings->setting('qr_code_iban');
+        $this->bic             = $CI->mdl_settings->setting('qr_code_bic');
+        $this->currencyCode    = $CI->mdl_settings->setting('currency_code');
         $this->remittance_text = parse_template(
             $this->invoice,
             $CI->mdl_settings->setting('qr_code_remittance_text')

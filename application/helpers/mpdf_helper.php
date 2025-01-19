@@ -18,6 +18,8 @@ if ( ! defined('BASEPATH')) {
 /**
  * Create a PDF.
  *
+ * @param      $html
+ * @param      $filename
  * @param bool $stream
  * @param null $password
  * @param null $isInvoice
@@ -50,11 +52,11 @@ function pdf_create(
     ]);
 
     // mPDF configuration
-    $mpdf->useAdobeCJK = true;
+    $mpdf->useAdobeCJK      = true;
     $mpdf->autoScriptToLang = true;
-    $mpdf->autoVietnamese = true;
-    $mpdf->autoArabic = true;
-    $mpdf->autoLangToFont = true;
+    $mpdf->autoVietnamese   = true;
+    $mpdf->autoArabic       = true;
+    $mpdf->autoLangToFont   = true;
 
     if (IP_DEBUG) {
         // Enable image error logging
@@ -66,7 +68,7 @@ function pdf_create(
         $CI->load->helper('e-invoice');             // eInvoicing++
         // mpdf only creates PDF/A-1b files and cannot create the required PDF/A-3b files!
         $mpdf->pdf_version = '1.7';
-        $mpdf->PDFA = true;
+        $mpdf->PDFA     = true;
         $mpdf->PDFAauto = true;
         $mpdf->SetAssociatedFiles($associated_files);
         $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files[0]['name']));          // eInvoicing++
@@ -79,7 +81,9 @@ function pdf_create(
 
     // Check if the archive folder is available
     if ( ! (is_dir(UPLOADS_ARCHIVE_FOLDER) || is_link(UPLOADS_ARCHIVE_FOLDER))) {
-        mkdir(UPLOADS_ARCHIVE_FOLDER, '0777');
+        if ( ! mkdir($concurrentDirectory = UPLOADS_ARCHIVE_FOLDER, '0777') && ! is_dir($concurrentDirectory)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
     }
 
     // Set the footer if voucher is invoice and if set in settings
@@ -108,7 +112,7 @@ function pdf_create(
             $invoice_array[] = $file;
         }
 
-        if ( ! empty($invoice_array) && $is_guest !== null) {
+        if ( ! empty($invoice_array) && !is_null($is_guest)) {
             rsort($invoice_array);
 
             if ($stream) {
@@ -118,11 +122,12 @@ function pdf_create(
             return $invoice_array[0];
         }
 
-        $archived_file = UPLOADS_TEMP_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
         // eInvoicing++
+        $archived_file = UPLOADS_TEMP_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
         if (get_setting('change_filename_prefix') == 1) {
             $archived_file = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
         }
+        // eInvoicing++
 
         $mpdf->Output($archived_file, 'F');
 

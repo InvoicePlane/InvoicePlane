@@ -24,15 +24,15 @@ class ZugferdXml
 
     public function __construct($params)
     {
-        $CI = &get_instance();
-        $this->invoice = $params['invoice'];
-        $this->items = $params['items'];
+        $CI                 = &get_instance();
+        $this->invoice      = $params['invoice'];
+        $this->items        = $params['items'];
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
     public function xml()
     {
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc               = new DOMDocument('1.0', 'UTF-8');
         $this->doc->formatOutput = true;
 
         $this->root = $this->xmlRoot();
@@ -98,7 +98,7 @@ class ZugferdXml
 
     protected function xmlSpecifiedExchangedDocumentContext()
     {
-        $node = $this->doc->createElement('rsm:SpecifiedExchangedDocumentContext');
+        $node          = $this->doc->createElement('rsm:SpecifiedExchangedDocumentContext');
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:ferd:CrossIndustryDocument:invoice:1p0:basic'));
         $node->appendChild($guidelineNode);
@@ -208,7 +208,7 @@ class ZugferdXml
     protected function xmlSpecifiedTaxRegistration($schemeID, $content)
     {
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
-        $el = $this->doc->createElement('ram:ID', $content);
+        $el   = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
         $node->appendChild($el);
 
@@ -221,7 +221,7 @@ class ZugferdXml
 
         // ActualDeliverySupplyChainEvent
         $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
-        $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
+        $dateNode  = $this->doc->createElement('ram:OccurrenceDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
         $eventNode->appendChild($dateNode);
 
