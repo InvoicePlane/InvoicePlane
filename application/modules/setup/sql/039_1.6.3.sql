@@ -1,5 +1,4 @@
-#
-Feature Request IP-939 Add BIC & Remittance info tmpl to ip_users table and Add contact & UBL-CII_version to ip_clients table
+#Feature Request IP-939 Add BIC & Remittance info tmpl to ip_users table and Add contact & UBL-CII_version to ip_clients table
 ALTER TABLE `ip_users`
     ADD COLUMN user_bank VARCHAR(50) DEFAULT NULL AFTER `user_subscribernumber`,
     ADD COLUMN user_bic VARCHAR(11) DEFAULT NULL AFTER `user_iban`,

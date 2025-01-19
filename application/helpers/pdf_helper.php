@@ -129,16 +129,17 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->helper('mpdf');
 
     $retval = pdf_create(
-        $html,
-        trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number),
-        $stream,
-        $invoice->invoice_password,
-        true,
-        $is_guest,
-        $associatedFiles
+        html: $html,
+        filename: trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number),
+        stream: $stream,
+        password: $invoice->invoice_password,
+        isInvoice: true,
+        is_guest: $is_guest,
+        embed_xml: $embed_xml,
+        associated_files: $associatedFiles
     );
 
-    if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . DIRECTORY_SEPARATOR . $filename . '.xml')) {
+    if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . $filename . '.xml')) {
         // delete the tmp CII-XML file
         unlink(UPLOADS_TEMP_FOLDER . DIRECTORY_SEPARATOR . $filename . '.xml');
     }

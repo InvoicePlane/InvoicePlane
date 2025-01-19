@@ -34,12 +34,12 @@ if ( ! defined('BASEPATH')) {
 function pdf_create(
     $html,
     $filename,
-    $stream = true,
+    bool $stream = true,
     $password = null,
     $isInvoice = null,
     $is_guest = null,
-    $embed_xml = false,    // eInvoicing++
-    $associated_files = null
+    bool $embed_xml = false,    // eInvoicing++
+    ?array $associated_files = []
 ) {
     $CI = &get_instance();
 
