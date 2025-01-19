@@ -18,11 +18,7 @@
                 $client_id = $result->client_id; ?>
                 <tr>
                     <th>
-                        <?php
-                            $result->client_custom_fieldvalue
-                                ? _htmlsc($result->client_custom_fieldvalue)
-                                : _htmlsc($result->client_name) . ' ' . _htmlsc($result->client_surname);
-                        ?>
+                        <?php _htmlsc($result->client_name) . ' ' . _htmlsc($result->client_surname); ?>
                     </th>
                     <th></th>
                     <th></th>
