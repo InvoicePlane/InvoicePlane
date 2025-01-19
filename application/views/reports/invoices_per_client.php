@@ -17,9 +17,7 @@
             <?php if ($client_id != $result->client_id) {
                 $client_id = $result->client_id; ?>
                 <tr>
-                    <th>
-                        <?php _htmlsc($result->client_name) . ' ' . _htmlsc($result->client_surname); ?>
-                    </th>
+                    <th><?php _htmlsc(format_client($result)); ?></th>
                     <th></th>
                     <th></th>
                 </tr>
