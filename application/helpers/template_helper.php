@@ -91,6 +91,11 @@ function parse_template($object, $body)
                             // Get the values for the custom field
                             $cf_model = str_replace('ip_', 'mdl_', $cf->custom_field_table);
                             $replace = $CI->mdl_custom_fields->get_value_for_field($cf_id[1], $cf_model, $object);
+                            if ($cf->custom_field_type == 'SINGLE-CHOICE') {
+								$CI->load->model('custom_values/mdl_custom_values', 'cv');
+    							$el = $CI->cv->get_by_id($replace)->row();
+								$replace = $el->custom_values_value;
+							}
                         } else {
                             $replace = '';
                         }
