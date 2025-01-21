@@ -367,7 +367,8 @@ class Facturxv10Xml
 
         // SpecifiedTradeProduct
         $tradeNode = $this->doc->createElement('ram:SpecifiedTradeProduct');
-        $tradeNode->appendChild($this->doc->createElement('ram:Name', htmlsc($item->item_name) /* . "\n" . htmlsc($item->item_description) */));
+        $itemdesc = $item->item_description ? "\n" . htmlsc($item->item_description) : '';
+        $tradeNode->appendChild($this->doc->createElement('ram:Name', htmlsc($item->item_name) . $itemdesc));
         $node->appendChild($tradeNode);
 
         // SpecifiedLineTradeAgreement
