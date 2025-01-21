@@ -1,6 +1,6 @@
 <?php
 
-//  Filename      => 'Ublexamv20.php'     -> "Shortid" + "version" + ".php"
+//  Filename      => 'Ublexamv20.php'     -> "Shortid" + "version" + ".php" : max 25 characters (without ".php")
 //                                            (preferably without spaces " ", dots ".", hyphen "-", underscore "_" or special characters)
 
 //  'full-name'   => 'UBL example v2.0',  -> UBL version name visible in the clients drop-down menu

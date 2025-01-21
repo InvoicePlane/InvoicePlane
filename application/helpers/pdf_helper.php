@@ -83,7 +83,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $replace     = ['.', ' ', '/', '\\', '#'];
     if (get_setting('change_filename_prefix') == 1) {
         $user_item   = get_setting('add_filename_prefix');
-        $file_prefix = str_replace($replace, '', $invoice->{$user_item});
+        $file_prefix = str_replace($replace, '', $invoice->$user_item);
     }
     $filename = $file_prefix . '_' . str_replace($replace, '', $invoice->invoice_number);
 
