@@ -165,9 +165,11 @@ class Facturxv10Xml
         $node->appendChild($addressNode);
 
         // SpecifiedTaxRegistration
-        $schemeID = 'VA';
-        $content = $this->invoice->user_vat_id;
-        $node->appendChild($this->xmlSpecifiedTaxRegistration($schemeID, $content)); // zugferd 2
+        if($this->invoice->invoice_tax_total > 0) { // todo? != ApplicableTradeTax>CategoryCode=O
+            $schemeID = 'VA';
+            $content = $this->invoice->user_vat_id;
+            $node->appendChild($this->xmlSpecifiedTaxRegistration($schemeID, $content)); // zugferd 2
+        }
 
         return $node;
     }
@@ -187,8 +189,10 @@ class Facturxv10Xml
         $node->appendChild($addressNode);
 
         // SpecifiedTaxRegistration
-        $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->client_vat_id));
-        //~ $node->appendChild($this->xmlSpecifiedTaxRegistration('FC', htmlsc($this->invoice->client_tax_code))); // uexpected
+        if($this->invoice->invoice_tax_total > 0) { // todo? != ApplicableTradeTax>CategoryCode=O
+            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->client_vat_id));
+            //~ $node->appendChild($this->xmlSpecifiedTaxRegistration('FC', htmlsc($this->invoice->client_tax_code))); // uexpected
+        }
 
         return $node;
     }
@@ -237,7 +241,10 @@ class Facturxv10Xml
         }
         if($notax)
         {
-            $node->appendChild($this->xmlApplicableTradeTax(0, 0, 'O')); //  "O" pour "Exonéré" (Out of scope).
+            // Not subject to VAT
+            $percent = $this->invoice->invoice_tax_total; // invoice_item_tax_total
+            $subtotal = $this->invoice->invoice_total; // invoice_item_subtotal
+            $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal, 'O')); //  "O" pour "Exonéré" (Out of scope).
         }
         // (Ok here (ApplicableHeaderTradeSettlement) and SpecifiedLineTradeSettlement)
         // after <ram:ApplicableTradeTax> ;)
@@ -287,22 +294,18 @@ class Facturxv10Xml
     protected function xmlApplicableTradeTax($percent, $subtotal, $category = 'S')
     {
         $node = $this->doc->createElement('ram:ApplicableTradeTax');
-        if($category == 'S')
-        {
-            $node->appendChild($this->currencyElement('ram:CalculatedAmount', $subtotal * $percent / 100)); // not expected (at end): fixed if here (1st pos)
-        }
+        $node->appendChild($this->currencyElement('ram:CalculatedAmount', $subtotal * $percent / 100)); // not expected (at end): fixed if here (1st pos)
 
         $node->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
+        $node->appendChild($this->currencyElement('ram:BasisAmount', $subtotal)); // not expected (at end): fixed if here (after typecode pos)
+        $node->appendChild($this->doc->createElement('ram:CategoryCode', $category));
 
         if($category == 'S')
         {
-            $node->appendChild($this->currencyElement('ram:BasisAmount', $subtotal)); // not expected (at end): fixed if here (after typecode pos)
-            $node->appendChild($this->doc->createElement('ram:CategoryCode', $category));
             $node->appendChild($this->doc->createElement('ram:RateApplicablePercent', $percent));
         }
         else // Pour les auto-entrepreneurs non assujettis à la TVA (todo)
         {
-            $node->appendChild($this->doc->createElement('ram:CategoryCode', $category)); // "O" pour "Exonéré" (Out of scope).
             $node->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); //see https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/ubl/schematron/codelist/EN16931-UBL-codes.sch#L133
             //~ $node->appendChild($this->doc->createElement('ram:ExemptionReason', 'TVA non applicable, art. 293 B du CGI')); // Contient la mention légale obligatoire pour les auto-entrepreneurs.
         }
@@ -452,7 +455,7 @@ class Facturxv10Xml
         $taxNode = $this->doc->createElement('ram:ApplicableTradeTax');
         $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
         //~ $taxNode->appendChild($this->doc->createElement('ram:BasisAmount', $item->item_subtotal)); // is marked as not used in the given context.
-        if ($item->item_tax_rate_percent > 0)
+        if ($item->item_tax_rate_percent > 0) // todo? != ApplicableTradeTax>CategoryCode=O
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'S')); // todo from db?
         //~ $taxNode->appendChild($this->doc->createElement('ram:ApplicablePercent', $item->item_tax_rate_percent)); // not expected
@@ -463,7 +466,7 @@ class Facturxv10Xml
         else
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O')); // todo from db?
-            $taxNode->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); // todo from db?
+            //~ $taxNode->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); // not expected
             //~ $taxNode->appendChild($this->doc->createElement('ram:ExemptionReason', 'TVA non applicable, art. 293 B du CGI')); // not expected here.
             //~ $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', '0.00')); // Optional. Need the atomic type 'xs:decimal'.
         }
