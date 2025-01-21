@@ -49,9 +49,7 @@ class Facturxv10Xml
         $node = $this->doc->createElement('rsm:CrossIndustryInvoice');
         $node->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $node->setAttribute('xmlns:rsm', 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100');
-    //~ $node->setAttribute('xmlns:ram', 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12'); // zugferd 1
         $node->setAttribute('xmlns:ram', 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100');
-    //~ $node->setAttribute('xmlns:udt', 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15'); // zugferd 1
         $node->setAttribute('xmlns:udt', 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100');
         return $node;
     }
@@ -60,12 +58,8 @@ class Facturxv10Xml
     {
         $node = $this->doc->createElement('rsm:ExchangedDocumentContext');
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
-        //~ $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic'));
-        //~ $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017#compliant#urn:zugferd:2.3:1p0:basic'));
-        //~ $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:en16931')); // profil COMFORT (EN16931)
-        //~ $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017#compliant#urn:zugferd:2.3:1p0:en16931')); // profil COMFORT (EN16931)
-        //~ $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:extended'));
-        //~ $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017#compliant#urn:zugferd:2.3:1p0:extended'));
+        // urn:cen.eu:en16931:2017#compliant#urn:(zugferd:2.3 | factur-x.eu):1p0:(basic | en16931) : en16931 = COMFORT (profil)
+        // urn:cen.eu:en16931:2017#conformant#urn:(zugferd:2.3 | factur-x.eu):1p0:extended
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017')); // KISS
         $node->appendChild($guidelineNode);
         return $node;
@@ -108,7 +102,8 @@ class Facturxv10Xml
      */
     function facturxFormattedDate($date)
     {
-        if ($date) {
+        if ($date)
+        {
             $date = DateTime::createFromFormat('Y-m-d', $date);
             return $date->format('Ymd');
         }
@@ -118,12 +113,12 @@ class Facturxv10Xml
     protected function xmlSupplyChainTradeTransaction()
     {
         $node = $this->doc->createElement('rsm:SupplyChainTradeTransaction');
-    //~ $node->appendChild($this->xmlApplicableHeaderTradeAgreement()); // zugferd 1 (same)
-    //~ $node->appendChild($this->xmlApplicableSupplyChainTradeDelivery()); // zugferd 1
-    //~ $node->appendChild($this->xmlApplicableSupplyChainTradeSettlement()); // zugferd 1
-        foreach ($this->items as $index => $item) {
+
+        foreach ($this->items as $index => $item)
+        {
             $node->appendChild($this->xmlIncludedSupplyChainTradeLineItem($index + 1, $item));
         }
+
         $node->appendChild($this->xmlApplicableHeaderTradeAgreement());
         $node->appendChild($this->xmlApplicableHeaderTradeDelivery());
         $node->appendChild($this->xmlApplicableHeaderTradeSettlement());
@@ -156,16 +151,14 @@ class Facturxv10Xml
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
         $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->user_zip)));
         $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->user_address_1)));
-        if($this->invoice->user_address_2)
-        {
-            $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->user_address_2)));
-        }
+        $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->user_address_2)));
         $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->user_city)));
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->user_country)));
         $node->appendChild($addressNode);
 
         // SpecifiedTaxRegistration
-        if($this->invoice->invoice_tax_total > 0) { // todo? != ApplicableTradeTax>CategoryCode=O
+        if($this->invoice->invoice_tax_total > 0) // todo? != ApplicableTradeTax>CategoryCode=O
+        {
             $schemeID = 'VA';
             $content = $this->invoice->user_vat_id;
             $node->appendChild($this->xmlSpecifiedTaxRegistration($schemeID, $content)); // zugferd 2
@@ -189,9 +182,9 @@ class Facturxv10Xml
         $node->appendChild($addressNode);
 
         // SpecifiedTaxRegistration
-        if($this->invoice->invoice_tax_total > 0) { // todo? != ApplicableTradeTax>CategoryCode=O
+        if($this->invoice->invoice_tax_total > 0) // todo? != ApplicableTradeTax>CategoryCode=O
+        {
             $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->client_vat_id));
-            //~ $node->appendChild($this->xmlSpecifiedTaxRegistration('FC', htmlsc($this->invoice->client_tax_code))); // uexpected
         }
 
         return $node;
@@ -239,16 +232,13 @@ class Facturxv10Xml
             $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal)); // 'S' by default
             $notax = false;
         }
-        if($notax)
+        if($notax) // Not subject to VAT
         {
-            // Not subject to VAT
             $percent = $this->invoice->invoice_tax_total; // invoice_item_tax_total
             $subtotal = $this->invoice->invoice_total; // invoice_item_subtotal
             $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal, 'O')); //  "O" pour "Exonéré" (Out of scope).
         }
-        // (Ok here (ApplicableHeaderTradeSettlement) and SpecifiedLineTradeSettlement)
-        // after <ram:ApplicableTradeTax> ;)
-        // todo: Create helper?
+
         // BillingSpecifiedPeriod (optional)
         $period = $this->doc->createElement('ram:BillingSpecifiedPeriod');
         // StartDateTime
@@ -264,13 +254,7 @@ class Facturxv10Xml
         // zugferd 2.3, facturx 1.0.7
         $node->appendChild($this->xmlSpecifiedTradePaymentTerms());
 
-        //~ // SpecifiedTradeSettlementMonetarySummation zf 1
-        //~ $sumNode = $this->doc->createElement('ram:SpecifiedTradeSettlementMonetarySummation');
-        //~ $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $item->item_subtotal));
-        //~ $node->appendChild($sumNode);
-
         // sums
-    //~ $node->appendChild($this->xmlSpecifiedTradeSettlementMonetarySummation()); //zugferd 1
         $node->appendChild($this->xmlSpecifiedTradeSettlementHeaderMonetarySummation()); // or PayeeTradeParty
         return $node;
     }
@@ -278,12 +262,15 @@ class Facturxv10Xml
     function itemsSubtotalGroupedByTaxPercent()
     {
         $result = [];
-        foreach ($this->items as $item) {
-            if ($item->item_tax_rate_percent == 0) {
+        foreach ($this->items as $item)
+        {
+            if ($item->item_tax_rate_percent == 0)
+            {
                 continue;
             }
 
-            if (!isset($result[$item->item_tax_rate_percent])) {
+            if (!isset($result[$item->item_tax_rate_percent]))
+            {
                 $result[$item->item_tax_rate_percent] = 0;
             }
             $result[$item->item_tax_rate_percent] += $item->item_subtotal;
@@ -294,20 +281,18 @@ class Facturxv10Xml
     protected function xmlApplicableTradeTax($percent, $subtotal, $category = 'S')
     {
         $node = $this->doc->createElement('ram:ApplicableTradeTax');
-        $node->appendChild($this->currencyElement('ram:CalculatedAmount', $subtotal * $percent / 100)); // not expected (at end): fixed if here (1st pos)
-
+        $node->appendChild($this->currencyElement('ram:CalculatedAmount', $subtotal * $percent / 100));
         $node->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
-        $node->appendChild($this->currencyElement('ram:BasisAmount', $subtotal)); // not expected (at end): fixed if here (after typecode pos)
+        $node->appendChild($this->currencyElement('ram:BasisAmount', $subtotal));
         $node->appendChild($this->doc->createElement('ram:CategoryCode', $category));
 
         if($category == 'S')
         {
             $node->appendChild($this->doc->createElement('ram:RateApplicablePercent', $percent));
         }
-        else // Pour les auto-entrepreneurs non assujettis à la TVA (todo)
+        else // Pour les auto-entrepreneurs non assujettis à la TVA
         {
             $node->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); //see https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/ubl/schematron/codelist/EN16931-UBL-codes.sch#L133
-            //~ $node->appendChild($this->doc->createElement('ram:ExemptionReason', 'TVA non applicable, art. 293 B du CGI')); // Contient la mention légale obligatoire pour les auto-entrepreneurs.
         }
 
         return $node;
@@ -322,7 +307,8 @@ class Facturxv10Xml
     protected function currencyElement($name, $amount, $nb_decimals = 2, $add_code = false)
     {
         $el = $this->doc->createElement($name, $this->facturxFormattedFloat($amount, $nb_decimals));
-        if($add_code) {
+        if($add_code)
+        {
             $el->setAttribute('currencyID', $this->currencyCode);
         }
         return $el;
@@ -342,34 +328,19 @@ class Facturxv10Xml
         $node = $this->doc->createElement('ram:SpecifiedTradeSettlementPaymentMeans');
 
         $node->appendChild($this->doc->createElement('ram:TypeCode', '30'));
-        //~ $node->appendChild($this->doc->createElement('ram:Information', 'Virement')); (No Valid)
-
-        // PayerPartyDebtorFinancialAccount (client iban? todo?)
-        //~ $payerNode = $this->doc->createElement('ram:PayerPartyDebtorFinancialAccount');
-        //~ $payerNode->appendChild($this->doc->createElement('ram:IBANID', $this->invoice->client_iban)); //FRDEBIT
-        //~ $node->appendChild($payerNode);
 
         // PayeePartyCreditorFinancialAccount
         $payeeNode = $this->doc->createElement('ram:PayeePartyCreditorFinancialAccount');
         $payeeNode->appendChild($this->doc->createElement('ram:IBANID', $this->invoice->user_iban));
         $payeeNode->appendChild($this->doc->createElement('ram:ProprietaryID', $this->invoice->user_bank)); // LOC BANK ACCOUNT
 
-        //~ $payeeNode->appendChild($this->doc->createElement('ram:AccountName', $this->invoice->user_bank)); // MON COMPTE BANCAIRE // not expected
-        //~ $payeeNode->appendChild($this->doc->createElement('ram:BICID', $this->invoice->user_bic)); // not expected
-
         $node->appendChild($payeeNode);
-
-        // PayeeSpecifiedCreditorFinancialInstitution
-        //~ $payNode = $this->doc->createElement('ram:PayeeSpecifiedCreditorFinancialInstitution'); // not expected
-        //~ $payNode->appendChild($this->doc->createElement('ram:BICID', $this->invoice->user_bic));
-        //~ $node->appendChild($payNode);
 
         return $node;
     }
 
     protected function xmlSpecifiedTradeSettlementHeaderMonetarySummation()
     {
-    //~ $node = $this->doc->createElement('ram:SpecifiedTradeSettlementMonetarySummation'); // zugferd 1
         $node = $this->doc->createElement('ram:SpecifiedTradeSettlementHeaderMonetarySummation');
         // Représente le montant total des lignes de la facture avant les frais, remises et taxes.
         $node->appendChild($this->currencyElement('ram:LineTotalAmount', $this->invoice->invoice_item_subtotal));
@@ -399,17 +370,14 @@ class Facturxv10Xml
         $tradeNode->appendChild($this->doc->createElement('ram:Name', htmlsc($item->item_name) /* . "\n" . htmlsc($item->item_description) */));
         $node->appendChild($tradeNode);
 
-        // SpecifiedSupplyChainTradeAgreement zugferd 1
         // SpecifiedLineTradeAgreement
         $node->appendChild($this->xmlSpecifiedLineTradeAgreement($item));
 
-        // SpecifiedSupplyChainTradeDelivery zugferd 1
         // SpecifiedLineTradeDelivery
         $deliveyNode = $this->doc->createElement('ram:SpecifiedLineTradeDelivery');
         $deliveyNode->appendChild($this->quantityElement('ram:BilledQuantity', $item->item_quantity));
         $node->appendChild($deliveyNode);
 
-        // SpecifiedSupplyChainTradeSettlement zugferd 1
         // SpecifiedLineTradeSettlement
         $node->appendChild($this->xmlSpecifiedLineTradeSettlement($item));
 
@@ -454,40 +422,18 @@ class Facturxv10Xml
         // ApplicableTradeTax
         $taxNode = $this->doc->createElement('ram:ApplicableTradeTax');
         $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
-        //~ $taxNode->appendChild($this->doc->createElement('ram:BasisAmount', $item->item_subtotal)); // is marked as not used in the given context.
+
         if ($item->item_tax_rate_percent > 0) // todo? != ApplicableTradeTax>CategoryCode=O
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'S')); // todo from db?
-        //~ $taxNode->appendChild($this->doc->createElement('ram:ApplicablePercent', $item->item_tax_rate_percent)); // not expected
             $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $item->item_tax_rate_percent));
-            //~ $taxNode->appendChild($this->currencyElement('ram:BasisAmount', $item->item_subtotal)); // not expected?
-            //~ $taxNode->appendChild($this->currencyElement('ram:CalculatedAmount', $item->item_tax_total)); // not expected?
         }
         else
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O')); // todo from db?
-            //~ $taxNode->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); // not expected
-            //~ $taxNode->appendChild($this->doc->createElement('ram:ExemptionReason', 'TVA non applicable, art. 293 B du CGI')); // not expected here.
-            //~ $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', '0.00')); // Optional. Need the atomic type 'xs:decimal'.
         }
         $node->appendChild($taxNode);
 
-        // (Ok here (SpecifiedLineTradeSettlement) and ApplicableHeaderTradeSettlement)
-        // after <ram:ApplicableTradeTax> ;)
-        // todo: Create helper?
-        // BillingSpecifiedPeriod (optional)
-        //~ $period = $this->doc->createElement('ram:BillingSpecifiedPeriod');
-        //~ // StartDateTime
-        //~ $dateNode = $this->doc->createElement('ram:StartDateTime');
-        //~ $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
-        //~ $period->appendChild($dateNode);
-        //~ // EndDateTime
-        //~ $dateNode = $this->doc->createElement('ram:EndDateTime');
-        //~ $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_due));
-        //~ $period->appendChild($dateNode);
-        //~ $node->appendChild($period);
-
-        // SpecifiedTradeSettlementMonetarySummation zugferd 1
         // SpecifiedTradeSettlementLineMonetarySummation
         $sumNode = $this->doc->createElement('ram:SpecifiedTradeSettlementLineMonetarySummation');
         $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $item->item_subtotal));
