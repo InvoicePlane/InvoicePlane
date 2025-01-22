@@ -79,8 +79,9 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // START eInvoicing++ changes
     $CI->load->helper('settings');
-    $file_prefix = trans('invoice');
+    $file_prefix = date('Y-m-d') . '_' . trans('invoice');
     $replace     = ['.', ' ', '/', '\\', '#'];
+    
     if (get_setting('change_filename_prefix') == 1) {
         $user_item   = get_setting('add_filename_prefix');
         $file_prefix = str_replace($replace, '', $invoice->$user_item);
