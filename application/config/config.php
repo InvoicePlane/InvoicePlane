@@ -9,6 +9,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
+| Change discounts calculation mode for quotes & invoices subtotal
+|--------------------------------------------------------------------------
+|
+| To apply discounts after taxes: set this value to true
+| To apply discounts before taxes: set this value to false
+| Note: need set to false to valid Zugferd2 & Facturx xml (discounts & VAT)
+|
+*/
+$config['taxes_after_discounts'] = env_bool('TAXES_AFTER_DISCOUNTS');
+
+/*
+|--------------------------------------------------------------------------
 | Allow deletion of invoices after they have been sent
 |--------------------------------------------------------------------------
 |

@@ -41,21 +41,31 @@ class Mdl_Invoice_Amounts extends CI_Model
     {
         // Get the basic totals
         $query = $this->db->query("
-        SELECT  SUM(item_subtotal) AS invoice_item_subtotal,
-		        SUM(item_tax_total) AS invoice_item_tax_total,
-		        SUM(item_subtotal) + SUM(item_tax_total) AS invoice_total,
-		        SUM(item_discount) AS invoice_item_discount
-		FROM ip_invoice_item_amounts
-		WHERE item_id IN (
-		    SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . "
-		    )
+            SELECT  SUM(item_subtotal) AS invoice_item_subtotal,
+                    SUM(item_tax_total) AS invoice_item_tax_total,
+                    SUM(item_subtotal) + SUM(item_tax_total) AS invoice_total,
+                    SUM(item_discount) AS invoice_item_discount
+            FROM ip_invoice_item_amounts
+            WHERE item_id IN (
+                SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . "
+            )
         ");
 
         $invoice_amounts = $query->row();
 
-        $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
-        $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
-        $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
+        // Discounts calculation - since v1.6.3
+        if(config_item('taxes_after_discounts'))
+        {
+            $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
+            $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
+        }
+        else
+        {
+            $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal;
+            $invoice_subtotal = $this->calculate_discount($invoice_id, $invoice_item_subtotal);
+            $invoice_total = $invoice_subtotal + $invoice_amounts->invoice_item_tax_total;
+        }
 
         // Get the amount already paid
         $query = $this->db->query("

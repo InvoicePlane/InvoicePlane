@@ -8,7 +8,15 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @copyright   Copyright (c) 2012 - 2025 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
- * @Note        Zugferd 2.3 & Factur-X 1.0.7 compatible
+ * @Note        Zugferd 2.3 & Factur-X 1.0.7 compatibility
+ *
+ * @Important   Need TAXES_AFTER_DISCOUNTS=false (In ip_config)
+ *               For embeded xml are valid (discounts calculation)
+ *
+ * @todos?
+ *  settings('default_item_decimals')
+ *  settings('tax_rate_decimal_places')
+ *  Like in (and/or calls) currencyElement, facturxFormatedFloat functions
  */
 
 /**
@@ -17,7 +25,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Facturxv10Xml
 {
     public $invoice;
+    public $items;
     public $doc;
+    public $filname;
+    public $currencyCode;
     public $root;
 
     public function __construct($params)
@@ -27,6 +38,7 @@ class Facturxv10Xml
         $this->items = $params['items'];
         $this->filename = $params['filename'];
         $this->currencyCode = get_setting('currency_code'); // $CI->mdl_settings->setting('currency_code');
+        $this->set_invoice_discount_amount_total();
     }
 
     public function xml()
@@ -85,7 +97,7 @@ class Facturxv10Xml
             $node->appendChild($noteNode);
         }
 
-        //~ $node->appendChild($this->doc->createElement('ram:Name', trans('invoice'))); // not expected
+        //~ $node->appendChild($this->doc->createElement('ram:Name', trans('invoice'))); // not expected (here) todo? Where?
 
         return $node;
     }
@@ -141,7 +153,7 @@ class Facturxv10Xml
         return $node;
     }
 
-    protected function xmlSellerTradeParty($index = '', $item = '')
+    protected function xmlSellerTradeParty()
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
         $node->appendChild($this->doc->createElement('ram:ID', $this->invoice->user_id)); // zugferd 2 : SELLER123
@@ -156,18 +168,16 @@ class Facturxv10Xml
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->user_country)));
         $node->appendChild($addressNode);
 
-        // SpecifiedTaxRegistration
-        if($this->invoice->invoice_tax_total > 0) // todo? != ApplicableTradeTax>CategoryCode=O
+        // SpecifiedTaxRegistration #todo? != ApplicableTradeTax>CategoryCode=O OR helper (taxes && user_vat_id && client_vat_id)
+        if(($this->invoice->invoice_tax_total + $this->invoice->invoice_item_tax_total) > 0)
         {
-            $schemeID = 'VA';
-            $content = $this->invoice->user_vat_id;
-            $node->appendChild($this->xmlSpecifiedTaxRegistration($schemeID, $content)); // zugferd 2
+            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->user_vat_id)); // zugferd 2
         }
 
         return $node;
     }
 
-    protected function xmlBuyerTradeParty($index = '', $item = '')
+    protected function xmlBuyerTradeParty()
     {
         $node = $this->doc->createElement('ram:BuyerTradeParty');
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->client_name)));
@@ -181,8 +191,8 @@ class Facturxv10Xml
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->client_country)));
         $node->appendChild($addressNode);
 
-        // SpecifiedTaxRegistration
-        if($this->invoice->invoice_tax_total > 0) // todo? != ApplicableTradeTax>CategoryCode=O
+        // SpecifiedTaxRegistration #todo? != ApplicableTradeTax>CategoryCode=O OR helper (taxes && user_vat_id && client_vat_id)
+        if(($this->invoice->invoice_tax_total + $this->invoice->invoice_item_tax_total) > 0)
         {
             $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->client_vat_id));
         }
@@ -192,6 +202,7 @@ class Facturxv10Xml
 
     /**
      * @param string $schemeID
+     * @param string $content
      */
     protected function xmlSpecifiedTaxRegistration($schemeID, $content)
     {
@@ -227,7 +238,7 @@ class Facturxv10Xml
         $node->appendChild($this->xmlSpecifiedTradeSettlementPaymentMeans());
 
         // taxes
-        $notax = true;
+        $notax = true; #todo: like if !$this->notax & have discounts (how to find item(s) with amount > of amount discount to get % of VAT
         foreach ($this->itemsSubtotalGroupedByTaxPercent() as $percent => $subtotal) {
             $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal)); // 'S' by default
             $notax = false;
@@ -251,13 +262,87 @@ class Facturxv10Xml
         $period->appendChild($dateNode);
         $node->appendChild($period);
 
+        if($this->invoice->invoice_discount_amount_total > 0)
+        {
+            // Si remise globale (ram:AppliedTradeAllowanceCharge)
+            // Doit être après BillingSpecifiedPeriod et avant SpecifiedTradePaymentTerms !important
+            // SpecifiedTradeAllowanceCharge
+            $discountNode = $this->doc->createElement('ram:SpecifiedTradeAllowanceCharge');
+
+            $indicatorNode = $this->doc->createElement('ram:ChargeIndicator'); // ChargeIndicator
+            $indicatorNode->appendChild($this->doc->createElement('udt:Indicator', 'false')); // false indique qu'il s'agit d'une remise
+            $discountNode->appendChild($indicatorNode);
+
+            $discountNode->appendChild($this->currencyElement('ram:ActualAmount', $this->invoice->invoice_discount_amount_total)); // Représente le montant de la remise
+            $discountNode->appendChild($this->doc->createElement('ram:ReasonCode', '95'));
+            $discountNode->appendChild($this->doc->createElement('ram:Reason', rtrim(trans('discount'), ' '))); // todo curious chars ' ' not a space (scope: French ip_lang)
+
+            $taxNode = $this->doc->createElement('ram:CategoryTradeTax');
+            $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
+            if(($this->invoice->invoice_tax_total + $this->invoice->invoice_item_tax_total) > 0)
+            {
+                $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'S'));
+                $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $this->get_invoice_discount_percent()));
+            }
+            else
+            {
+                $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O'));
+            }
+
+            $discountNode->appendChild($taxNode);
+
+            $node->appendChild($discountNode);
+        }
+
         // zugferd 2.3, facturx 1.0.7
         $node->appendChild($this->xmlSpecifiedTradePaymentTerms());
 
         // sums
-        $node->appendChild($this->xmlSpecifiedTradeSettlementHeaderMonetarySummation()); // or PayeeTradeParty
+        $node->appendChild($this->xmlSpecifiedTradeSettlementHeaderMonetarySummation());
         return $node;
     }
+
+    /*
+     * Add missing discount invoice vars [for factur-x validation](ecosio.com/en/peppol-and-xml-document-validator)
+     *
+     * invoice_subtotal                 Scope TaxBasisTotalAmount
+     * invoice_discount_amount_total    Scope AllowanceTotalAmount & SpecifiedTradeAllowanceCharge
+     */
+    function set_invoice_discount_amount_total()
+    {
+        $amount = 0;
+        if($this->invoice->invoice_discount_amount > 0)
+        {
+            $amount = $this->invoice->invoice_discount_amount;
+        }
+        elseif($this->invoice->invoice_discount_percent > 0)
+        {
+            $amount = $this->invoice->invoice_item_subtotal * ($this->invoice->invoice_discount_percent / 100);
+        }
+        $this->invoice->invoice_subtotal = $this->facturxFormattedFloat($this->invoice->invoice_item_subtotal - $amount);
+        $this->invoice->invoice_discount_amount_total = $this->facturxFormattedFloat($amount);
+     }
+
+    function get_invoice_discount_percent() // # todo: change to percent vat rate (of invoice)
+    {
+        if($this->invoice->invoice_discount_percent > 0)
+        {
+            return $this->invoice->invoice_discount_percent;
+        }
+        if($this->invoice->invoice_discount_amount > 0)
+        {
+            // rule for ApplicableTradeTax>CategoryCode=S, need ram:RateApplicablePercent > 0
+            # todo: New calculation! Now calculate % of discounts but Need VAT's rate
+            # idea: get Vat's of items > invoice_discount_amount & dispatch it
+            #       See & search itemsSubtotalGroupedByTaxPercent()
+            $amount = $this->invoice->invoice_discount_amount;
+            $brut = $this->invoice->invoice_item_subtotal + $this->invoice->invoice_item_tax_total + $this->invoice->invoice_tax_total;
+            $remise = $brut - $amount;
+            $percent = (($brut * 100) / $remise) - 100;
+
+            return $percent;
+        }
+     }
 
     function itemsSubtotalGroupedByTaxPercent()
     {
@@ -290,7 +375,7 @@ class Facturxv10Xml
         {
             $node->appendChild($this->doc->createElement('ram:RateApplicablePercent', $percent));
         }
-        else // Pour les auto-entrepreneurs non assujettis à la TVA
+        else // Pour les auto-entrepreneurs non assujettis à la TVA (Catégorie 'O')
         {
             $node->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); //see https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/ubl/schematron/codelist/EN16931-UBL-codes.sch#L133
         }
@@ -303,6 +388,8 @@ class Facturxv10Xml
      * @param number $amount
      * @param int    $nb_decimals
      * @param bool   $add_code
+     *
+     * return node
      */
     protected function currencyElement($name, $amount, $nb_decimals = 2, $add_code = false)
     {
@@ -345,16 +432,26 @@ class Facturxv10Xml
         // Représente le montant total des lignes de la facture avant les frais, remises et taxes.
         $node->appendChild($this->currencyElement('ram:LineTotalAmount', $this->invoice->invoice_item_subtotal));
         // Indique le montant total des frais supplémentaires appliqués à la facture.
-        $node->appendChild($this->currencyElement('ram:ChargeTotalAmount', 0)); // facultatif (todo from db)
-        // Représente le montant total des remises accordées sur la facture.
-        $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', 0)); // facultatif (todo from db)
-        $node->appendChild($this->currencyElement('ram:TaxBasisTotalAmount', $this->invoice->invoice_item_subtotal));
+        //~ $node->appendChild($this->currencyElement('ram:ChargeTotalAmount', 0)); // optional (todo? from db: maybe need field)
+        // Représente le montant total des remises accordées sur la facture. (voir set_invoice_discount_amount_total() helper)
+        $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', $this->invoice->invoice_discount_amount_total)); // optional
+
+        $invoiceTotal = $this->invoice->invoice_total; // ApplicableTradeTax>CategoryCode=O
+        if(($this->invoice->invoice_tax_total + $this->invoice->invoice_item_tax_total) > 0)
+        {
+            $invoiceTotal = $this->invoice->invoice_subtotal; // ApplicableTradeTax>CategoryCode=S FIX² added by set_invoice_discount_amount_total()
+        }
+        $node->appendChild($this->currencyElement('ram:TaxBasisTotalAmount', $invoiceTotal)); // ApplicableTradeTax>CategoryCode= O || S FIX
         $node->appendChild($this->currencyElement('ram:TaxTotalAmount', $this->invoice->invoice_item_tax_total, 2, true));
         $node->appendChild($this->currencyElement('ram:GrandTotalAmount', $this->invoice->invoice_total));
         $node->appendChild($this->currencyElement('ram:TotalPrepaidAmount', $this->invoice->invoice_paid));
         $node->appendChild($this->currencyElement('ram:DuePayableAmount', $this->invoice->invoice_balance));
         return $node;
     }
+
+    // ===========================================================================
+    // helpers
+    // ===========================================================================
 
     protected function xmlIncludedSupplyChainTradeLineItem($lineNumber, $item)
     {
@@ -385,22 +482,32 @@ class Facturxv10Xml
         return $node;
     }
 
-    // ===========================================================================
-    // helpers
-    // ===========================================================================
-
     protected function xmlSpecifiedLineTradeAgreement($item)
     {
         $node = $this->doc->createElement('ram:SpecifiedLineTradeAgreement');
 
         // GrossPriceProductTradePrice
         $grossPriceNode = $this->doc->createElement('ram:GrossPriceProductTradePrice');
-        $grossPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price, 4));
+        $grossPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price));
         $node->appendChild($grossPriceNode);
+
+        if($item->item_discount > 0)
+        {
+            // AppliedTradeAllowanceCharge
+            $discountNode = $this->doc->createElement('ram:AppliedTradeAllowanceCharge');
+
+            $indicatorNode = $this->doc->createElement('ram:ChargeIndicator'); // ChargeIndicator
+            $indicatorNode->appendChild($this->doc->createElement('udt:Indicator', 'false')); // false indique qu'il s'agit d'une remise
+
+            $discountNode->appendChild($indicatorNode);
+            $discountNode->appendChild($this->currencyElement('ram:ActualAmount', $item->item_discount_amount)); // Représente le montant de la remise
+
+            $grossPriceNode->appendChild($discountNode);
+        }
 
         // NetPriceProductTradePrice
         $netPriceNode = $this->doc->createElement('ram:NetPriceProductTradePrice');
-        $netPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price, 4));
+        $netPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price));
         $node->appendChild($netPriceNode);
 
         return $node;
@@ -428,16 +535,18 @@ class Facturxv10Xml
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'S')); // todo from db?
             $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $item->item_tax_rate_percent));
+            $itemTotal = $item->item_subtotal; // ApplicableTradeTax>CategoryCode=S FIX²² (Need discounts applyed before tax in model se)
         }
         else
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O')); // todo from db?
+            $itemTotal = $item->item_total; // ApplicableTradeTax>CategoryCode=O FIX²
         }
         $node->appendChild($taxNode);
 
         // SpecifiedTradeSettlementLineMonetarySummation
         $sumNode = $this->doc->createElement('ram:SpecifiedTradeSettlementLineMonetarySummation');
-        $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $item->item_subtotal));
+        $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $itemTotal)); // ApplicableTradeTax>CategoryCode=O OR S FIX²
         $node->appendChild($sumNode);
 
         return $node;
