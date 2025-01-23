@@ -25,7 +25,7 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
         'filename' => $filename,
     ], 'ublciixml');
     $CI->ublciixml->xml();
-    $path = UPLOADS_TEMP_FOLDER . DIRECTORY_SEPARATOR . $filename . '.xml';
+    $path = UPLOADS_TEMP_FOLDER . $filename . '.xml';
 
     return $path;
 }

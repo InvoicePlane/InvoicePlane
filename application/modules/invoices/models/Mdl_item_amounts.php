@@ -30,10 +30,21 @@ class Mdl_Item_Amounts extends CI_Model
         $this->load->model('invoices/mdl_items');
         $item = $this->mdl_items->get_by_id($item_id);
 
-        $item_subtotal = $item->item_quantity * $item->item_price;
-        $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
-        $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-        $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        // Discounts calculation - since v1.6.3
+        if(config_item('taxes_after_discounts'))
+        {
+            $item_subtotal = $item->item_quantity * $item->item_price;
+            $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
+            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
+            $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
+        }
+        else
+        {
+            $item_subtotal = $item->item_quantity * ($item->item_price - $item->item_discount_amount);
+            $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
+            $item_discount_total = $item->item_discount_amount * $item->item_quantity;
+            $item_total = $item_subtotal + $item_tax_total;
+        }
 
         $db_array = array(
             'item_id' => $item_id,
@@ -51,5 +62,4 @@ class Mdl_Item_Amounts extends CI_Model
             $this->db->insert('ip_invoice_item_amounts', $db_array);
         }
     }
-
 }

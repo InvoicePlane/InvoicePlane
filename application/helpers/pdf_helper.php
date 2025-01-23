@@ -81,7 +81,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->helper('settings');
     $file_prefix = date('Y-m-d') . '_' . trans('invoice');
     $replace     = ['.', ' ', '/', '\\', '#'];
-    
+
     if (get_setting('change_filename_prefix') == 1) {
         $user_item   = get_setting('add_filename_prefix');
         $file_prefix = str_replace($replace, '', $invoice->$user_item);
@@ -140,9 +140,15 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         associated_files: $associatedFiles
     );
 
+    // To Simplify xml validation (remove einvoice_test.xml file in uploads/temp when debug is over)
+    if(IP_DEBUG) {
+        @unlink(UPLOADS_TEMP_FOLDER . 'einvoice_test.xml'); // Same file but Always new (when get pdf)
+        @copy(UPLOADS_TEMP_FOLDER . $filename . '.xml', UPLOADS_TEMP_FOLDER . 'einvoice_test.xml');
+    }
+
     if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . $filename . '.xml')) {
         // delete the tmp CII-XML file
-        unlink(UPLOADS_TEMP_FOLDER . DIRECTORY_SEPARATOR . $filename . '.xml');
+        unlink(UPLOADS_TEMP_FOLDER . $filename . '.xml');
     }
 
     // Create the UBL XML file
