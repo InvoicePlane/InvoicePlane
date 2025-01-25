@@ -1,21 +1,32 @@
+<?php
+$taxes_after_discounts = config_item('taxes_after_discounts');
+?>
+
 <div class="table-responsive">
     <table id="item_table" class="items table table-condensed table-bordered no-margin">
-        <thead style="display: none">
+
+        <thead style="display:none">
         <tr>
             <th></th>
             <th><?php _trans('item'); ?></th>
+<!--
             <th><?php _trans('description'); ?></th>
-            <th><?php _trans('quantity'); ?></th>
-            <th><?php _trans('price'); ?></th>
-            <th><?php _trans('tax_rate'); ?></th>
-            <th><?php _trans('subtotal'); ?></th>
-            <th><?php _trans('tax'); ?></th>
-            <th><?php _trans('total'); ?></th>
+-->
+            <th class="amount"><?php _trans('quantity'); ?></th>
+            <th class="amount"><?php _trans('price'); ?></th>
+            <?php echo ! $taxes_after_discounts ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
+            <th class="amount"><?php _trans('tax_rate'); ?></th>
+            <?php echo $taxes_after_discounts ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
+<!--
+            <th class="amount"><?php _trans('subtotal'); ?></th>
+            <th class="amount"><?php _trans('tax'); ?></th>
+-->
+            <th class="amount"><?php _trans('total'); ?></th>
             <th></th>
         </tr>
         </thead>
 
-        <tbody id="new_row" style="display: none;">
+        <tbody id="new_row" style="display:none">
         <tr>
             <td rowspan="2" class="td-icon"><i class="fa fa-arrows cursor-move"></i></td>
             <td class="td-text">
@@ -40,15 +51,13 @@
                     <input type="text" name="item_price" class="input-sm form-control amount" value="">
                 </div>
             </td>
-            <td class="td-amount ">
-                <div class="input-group">
-                    <span class="input-group-addon"><?php _trans('item_discount'); ?></span>
-                    <input type="text" name="item_discount_amount" class="input-sm form-control amount"
-                           data-toggle="tooltip" data-placement="bottom"
-                           title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
-                </div>
-            </td>
-            <td>
+<?php
+            if ( ! $taxes_after_discounts)
+            {
+                $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
+            }
+?>
+            <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
                     <select name="item_tax_rate_id" class="form-control input-sm">
@@ -61,6 +70,12 @@
                     </select>
                 </div>
             </td>
+<?php
+            if ($taxes_after_discounts)
+            {
+                $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
+            }
+?>
             <td class="td-icon text-right td-vert-middle">
                 <button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>">
                     <i class="fa fa-trash-o text-danger"></i>
@@ -92,14 +107,22 @@
                 <span><?php _trans('subtotal'); ?></span><br/>
                 <span name="subtotal" class="amount"></span>
             </td>
-            <td class="td-amount td-vert-middle">
-                <span><?php _trans('discount'); ?></span><br/>
-                <span name="item_discount_total" class="amount"></span>
-            </td>
+<?php
+            if ( ! $taxes_after_discounts)
+            {
+                $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
+            }
+?>
             <td class="td-amount td-vert-middle">
                 <span><?php _trans('tax'); ?></span><br/>
                 <span name="item_tax_total" class="amount"></span>
             </td>
+<?php
+            if ($taxes_after_discounts)
+            {
+                $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
+            }
+?>
             <td class="td-amount td-vert-middle">
                 <span><?php _trans('total'); ?></span><br/>
                 <span name="item_total" class="amount"></span>
@@ -133,19 +156,17 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('price'); ?></span>
                         <input type="text" name="item_price" class="input-sm form-control amount"
-                               value="<?php echo format_currency($item->item_price); ?>">
+                               value="<?php echo format_amount($item->item_price); ?>">
+                        <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                     </div>
                 </td>
-                <td class="td-amount ">
-                    <div class="input-group">
-                        <span class="input-group-addon"><?php _trans('item_discount'); ?></span>
-                        <input type="text" name="item_discount_amount" class="input-sm form-control amount"
-                               value="<?php echo format_amount($item->item_discount_amount); ?>"
-                               data-toggle="tooltip" data-placement="bottom"
-                               title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
-                    </div>
-                </td>
-                <td>
+<?php
+                if ( ! $taxes_after_discounts)
+                {
+                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
+                }
+?>
+                <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
                         <select name="item_tax_rate_id" class="form-control input-sm">
@@ -159,6 +180,12 @@
                         </select>
                     </div>
                 </td>
+<?php
+                if ($taxes_after_discounts)
+                {
+                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
+                }
+?>
                 <td class="td-icon text-right td-vert-middle">
                     <button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>"
                             data-item-id="<?php echo $item->item_id; ?>">
@@ -195,18 +222,24 @@
                         <?php echo format_currency($item->item_subtotal); ?>
                     </span>
                 </td>
-                <td class="td-amount td-vert-middle">
-                    <span><?php _trans('discount'); ?></span><br/>
-                    <span name="item_discount_total" class="amount">
-                        <?php echo format_currency($item->item_discount); ?>
-                    </span>
-                </td>
+<?php
+                if ( ! $taxes_after_discounts)
+                {
+                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
+                }
+?>
                 <td class="td-amount td-vert-middle">
                     <span><?php _trans('tax'); ?></span><br/>
                     <span name="item_tax_total" class="amount">
                         <?php echo format_currency($item->item_tax_total); ?>
                     </span>
                 </td>
+<?php
+                if ($taxes_after_discounts)
+                {
+                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
+                }
+?>
                 <td class="td-amount td-vert-middle">
                     <span><?php _trans('total'); ?></span><br/>
                     <span name="item_total" class="amount">
@@ -244,6 +277,12 @@
                 <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
                 <td style="width: 60%;" class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
             </tr>
+<?php
+            if ( ! $taxes_after_discounts)
+            {
+                $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
+            }
+?>
             <tr>
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
@@ -273,29 +312,12 @@
                     } ?>
                 </td>
             </tr>
-            <tr>
-                <td class="td-vert-middle"><?php _trans('discount'); ?></td>
-                <td class="clearfix">
-                    <div class="discount-field">
-                        <div class="input-group input-group-sm">
-                            <input id="quote_discount_amount" name="quote_discount_amount"
-                                   class="discount-option form-control input-sm amount"
-                                   value="<?php echo format_amount($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
-
-                            <div
-                                class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
-                        </div>
-                    </div>
-                    <div class="discount-field">
-                        <div class="input-group input-group-sm">
-                            <input id="quote_discount_percent" name="quote_discount_percent"
-                                   value="<?php echo format_amount($quote->quote_discount_percent != 0 ? $quote->quote_discount_percent : ''); ?>"
-                                   class="discount-option form-control input-sm amount">
-                            <div class="input-group-addon">&percnt;</div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+<?php
+            if ($taxes_after_discounts)
+            {
+                $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
+            }
+?>
             <tr>
                 <td><b><?php _trans('total'); ?></b></td>
                 <td class="amount"><b><?php echo format_currency($quote->quote_total); ?></b></td>
