@@ -519,8 +519,8 @@ if ($this->config->item('disable_read_only') == true) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
                                         <span class="input-group-addon">
-		                                    <i class="fa fa-calendar fa-fw"></i>
-		                                </span>
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
                                     </div>
                                 </div>
 

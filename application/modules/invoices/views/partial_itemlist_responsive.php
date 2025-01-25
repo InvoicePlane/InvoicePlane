@@ -1,6 +1,6 @@
 <?php
-    $invoice_disabled = "";
-    if ($invoice->is_read_only == 1) $invoice_disabled = ' disabled="disabled"';
+$invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
+$taxes_after_discounts = config_item('taxes_after_discounts');
 ?>
 
 <div class="row">
@@ -69,13 +69,12 @@
                                 <input type="text" name="item_price" id="item_price" class="input-sm form-control" value="">
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
-                            <div class="input-group">
-                                <label for="item_discount_amount" class="input-group-addon ig-addon-aligned"><?php _trans('item_discount'); ?></label>
-                                <input type="text" name="item_discount_amount" id="item_discount_amount" class="input-sm form-control"
-                                       value="" data-toggle="tooltip" data-placement="bottom"
-                                       title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>">
-                                <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
-                            </div>
+<?php
+                            if ( ! $taxes_after_discounts)
+                            {
+                                $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
+                            }
+?>
                             <div class="input-group">
                                 <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
                                 <select name="item_tax_rate_id" id="item_tax_rate_id" class="form-control input-sm">
@@ -88,6 +87,12 @@
                                     <?php } ?>
                                 </select>
                             </div>
+<?php
+                            if ($taxes_after_discounts)
+                            {
+                                $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
+                            }
+?>
                         </div>
 
                         <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
@@ -104,14 +109,12 @@
                                     <span name="subtotal"></span>
                                 </div>
                             </div>
-                            <div class="row mb-1">
-                                <div class="col-xs-9 col-sm-8">
-                                    <?php _trans('discount'); ?>:
-                                </div>
-                                <div class="col-xs-3 col-sm-4">
-                                    <span name="item_discount_total"></span>
-                                </div>
-                            </div>
+<?php
+                            if ( ! $taxes_after_discounts)
+                            {
+                                $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
+                            }
+?>
                             <div class="row mb-1">
                                 <div class="col-xs-9 col-sm-8">
                                     <?php _trans('tax'); ?>:
@@ -120,6 +123,12 @@
                                     <span name="item_tax_total"></span>
                                 </div>
                             </div>
+<?php
+                            if ($taxes_after_discounts)
+                            {
+                                $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
+                            }
+?>
                             <div class="row mb-1">
                                 <strong>
                                     <div class="col-xs-9 col-sm-8">
@@ -219,14 +228,12 @@
                                            value="<?php echo format_amount($item->item_price); ?>"<?php echo $invoice_disabled; ?>>
                                     <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                                 </div>
-                                <div class="input-group">
-                                    <label for="item_discount_amount_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('item_discount'); ?></label>
-                                    <input type="text" name="item_discount_amount" id="item_discount_amount_<?php echo $item->item_id; ?>" class="input-sm form-control"
-                                           value="<?php echo format_amount($item->item_discount_amount); ?>"
-                                           data-toggle="tooltip" data-placement="bottom"
-                                           title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>"<?php echo $invoice_disabled; ?>>
-                                    <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
-                                </div>
+<?php
+                                if ( ! $taxes_after_discounts)
+                                {
+                                    $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
+                                }
+?>
                                 <div class="input-group">
                                     <label for="item_tax_rate_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
                                     <select name="item_tax_rate_id" id="item_tax_rate_id_<?php echo $item->item_id; ?>" class="form-control input-sm"<?php echo $invoice_disabled; ?>>
@@ -239,8 +246,13 @@
                                         <?php } ?>
                                     </select>
                                 </div>
+<?php
+                                if ($taxes_after_discounts)
+                                {
+                                    $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
+                                }
+?>
                             </div>
-
                             <div class="col-xs-12 col-md-6 text-right">
                                 <div class="row mb-1">
                                     <div class="col-xs-9 col-sm-8">
@@ -250,14 +262,12 @@
                                         <?php echo format_currency($item->item_subtotal); ?>
                                     </div>
                                 </div>
-                                <div class="row mb-1">
-                                    <div class="col-xs-9 col-sm-8">
-                                        <?php _trans('discount'); ?>:
-                                    </div>
-                                    <div class="col-xs-3 col-sm-4">
-                                        <?php echo format_currency($item->item_discount); ?>
-                                    </div>
-                                </div>
+<?php
+                                if ( ! $taxes_after_discounts)
+                                {
+                                    $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
+                                }
+?>
                                 <div class="row mb-1">
                                     <div class="col-xs-9 col-sm-8">
                                         <?php _trans('tax'); ?>:
@@ -266,6 +276,12 @@
                                         <?php echo format_currency($item->item_tax_total); ?>
                                     </div>
                                 </div>
+<?php
+                                if ($taxes_after_discounts)
+                                {
+                                    $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
+                                }
+?>
                                 <div class="row mb-1">
                                     <div class="col-xs-9 col-sm-8">
                                         <b><?php _trans('total'); ?>:</b>
@@ -312,6 +328,12 @@
                 <td style="width: 60%;"
                 class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
             </tr>
+<?php
+            if ( ! $taxes_after_discounts)
+            {
+                $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
+            }
+?>
             <tr>
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
@@ -340,29 +362,12 @@
                         } ?>
                 </td>
             </tr>
-            <tr>
-                <td class="td-vert-middle"><?php _trans('discount'); ?></td>
-                <td class="clearfix">
-                    <div class="discount-field">
-                        <div class="input-group input-group-sm">
-                            <label for="invoice_discount_amount" class="hidden"><?php _trans('amount'); ?></label>
-                            <input type="text" id="invoice_discount_amount" name="invoice_discount_amount"
-                                   class="discount-option form-control input-sm amount"
-                                   value="<?php echo format_amount($invoice->invoice_discount_amount != 0 ? $invoice->invoice_discount_amount : ''); ?>"<?php echo $invoice_disabled; ?>>
-                            <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
-                        </div>
-                    </div>
-                    <div class="discount-field">
-                        <div class="input-group input-group-sm">
-                            <label for="invoice_discount_percent" class="hidden"><?php _trans('percentage'); ?></label>
-                            <input type="text" id="invoice_discount_percent" name="invoice_discount_percent"
-                                   class="discount-option form-control input-sm amount"
-                                   value="<?php echo format_amount($invoice->invoice_discount_percent != 0 ? $invoice->invoice_discount_percent : ''); ?>"<?php echo $invoice_disabled; ?>>
-                            <div class="input-group-addon">&percnt;</div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+<?php
+            if ($taxes_after_discounts)
+            {
+                $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
+            }
+?>
             <tr>
                 <td><?php _trans('total'); ?></td>
                 <td class="amount"><b><?php echo format_currency($invoice->invoice_total); ?></b></td>
