@@ -6,6 +6,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <td class="clearfix">
                     <div class="discount-field">
                         <div class="input-group input-group-sm">
+                            <label for="invoice_discount_amount" class="input-group-addon ig-addon-aligned"><?php _trans('discount'); ?></label>
                             <input id="invoice_discount_amount" name="invoice_discount_amount"
                                    value="<?php echo format_amount($invoice->invoice_discount_amount != 0 ? $invoice->invoice_discount_amount : ''); ?>"
                                    class="discount-option form-control input-sm amount"<?php echo $invoice_disabled; ?>>
@@ -14,6 +15,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                     </div>
                     <div class="discount-field">
                         <div class="input-group input-group-sm">
+                            <label for="invoice_discount_percent" class="input-group-addon ig-addon-aligned"><?php _trans('discount'); ?> %</label>
                             <input id="invoice_discount_percent" name="invoice_discount_percent"
                                    value="<?php echo format_amount($invoice->invoice_discount_percent != 0 ? $invoice->invoice_discount_percent : ''); ?>"
                                    class="discount-option form-control input-sm amount"<?php echo $invoice_disabled; ?>>
