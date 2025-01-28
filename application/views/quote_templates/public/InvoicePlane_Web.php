@@ -1,7 +1,4 @@
-<?php
-$taxes_after_discounts = config_item('taxes_after_discounts');
-// $show_taxes = $quote->quote_tax_total + $quote->quote_item_tax_total != 0; // #idea
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="<?php _trans('cldr'); ?>">
 <head>
 

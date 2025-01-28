@@ -1,6 +1,3 @@
-<?php
-$taxes_after_discounts = config_item('taxes_after_discounts');
-?>
 
 <div class="row">
     <div id="item_table" class="items table col-xs-12">

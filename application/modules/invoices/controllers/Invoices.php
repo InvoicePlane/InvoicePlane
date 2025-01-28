@@ -216,8 +216,9 @@ class Invoices extends Admin_Controller
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point'             => get_setting('decimal_point'),
                 ],
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
-                'payment_cf_exist' => $payment_cf_exist,
+                'invoice_statuses'      => $this->mdl_invoices->statuses(),
+                'payment_cf_exist'      => $payment_cf_exist,
+                'taxes_after_discounts' => config_item('taxes_after_discounts'),
             ]
         );
 
@@ -250,14 +251,17 @@ class Invoices extends Admin_Controller
         $invoice        = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_status = $invoice->invoice_status_id;
 
-        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
+        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true)
+        {
             // If invoice refers to tasks, mark those tasks back to 'Complete'
             $this->load->model('tasks/mdl_tasks');
             $tasks = $this->mdl_tasks->update_on_invoice_delete($invoice_id);
 
             // Delete the invoice
             $this->mdl_invoices->delete($invoice_id);
-        } else {
+        }
+        else
+        {
             // Add alert that invoices can't be deleted
             $this->session->set_flashdata('alert_error', trans('invoice_deletion_forbidden'));
         }
@@ -275,7 +279,8 @@ class Invoices extends Admin_Controller
     {
         $this->load->helper('pdf');
 
-        if (get_setting('mark_invoices_sent_pdf') == 1) {
+        if (get_setting('mark_invoices_sent_pdf') == 1)
+        {
             $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
             $this->mdl_invoices->mark_sent($invoice_id);
         }
@@ -336,7 +341,8 @@ class Invoices extends Admin_Controller
 
         $this->load->model('mdl_invoice_amounts');
 
-        foreach ($invoice_ids as $invoice_id) {
+        foreach ($invoice_ids as $invoice_id)
+        {
             $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
         }
     }

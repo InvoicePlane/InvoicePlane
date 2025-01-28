@@ -7,13 +7,46 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  *
  * eInvoicing add-ons by Verony
  */
+
+/**
+ * Print a html for global discounts table template.
+ *
+ * @param obj  $obj ($invoice or $quote object)
+ * @param bool $show_item_discounts
+ * @param str  $is 'invoice' or 'quote'
+ *
+ * @scope views/[invoice|quote]_templates/pdf/InvoicePlane[| - paid| - overdue].pdf
+ *
+ * @return void
+ */
+function discount_global_print_in_pdf($obj, $show_item_discounts, $is = 'invoice') {
+    $type = ['p' => $is . '_discount_percent', 'a' => $is . '_discount_amount'];
+    $discount = 0;
+    if ($obj->{$type['p']} != '0.00') { // discount_percent
+        $discount = format_amount($obj->{$type['p']}) . '%';
+    }
+    elseif ($obj->{$type['a']} != '0.00') { // discount_amount
+        $discount = format_currency($obj->{$type['a']});
+    }
+
+    if($discount) {
+?>
+            <tr>
+                <td class="text-right" colspan="<?php echo $show_item_discounts ? '5' : '4'; ?>"><?php
+                    echo rtrim(trans('discount'), ' '); // Rem not space char (in French ip_lang & maybe other)
+                ?></td>
+                <td class="text-right"><?php echo $discount; ?></td>
+            </tr>
+<?php
+    }
+}
 
 /**
  * Generate the PDF for an invoice.
@@ -63,6 +96,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     foreach ($items as $item) {
         if ($item->item_discount != '0.00') {
             $show_item_discounts = true;
+            break;
         }
     }
 
@@ -115,13 +149,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     $data = [
-        'invoice'             => $invoice,
-        'invoice_tax_rates'   => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-        'items'               => $items,
-        'payment_method'      => $payment_method,
-        'output_type'         => 'pdf',
-        'show_item_discounts' => $show_item_discounts,
-        'custom_fields'       => $custom_fields,
+        'invoice'               => $invoice,
+        'invoice_tax_rates'     => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
+        'items'                 => $items,
+        'payment_method'        => $payment_method,
+        'output_type'           => 'pdf',
+        'show_item_discounts'   => $show_item_discounts,
+        'custom_fields'         => $custom_fields,
+        'taxes_after_discounts' => config_item('taxes_after_discounts'),
     ];
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
@@ -297,6 +332,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     foreach ($items as $item) {
         if ($item->item_discount != '0.00') {
             $show_item_discounts = true;
+            break;
         }
     }
 
@@ -308,12 +344,13 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     ];
 
     $data = [
-        'quote'               => $quote,
-        'quote_tax_rates'     => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-        'items'               => $items,
-        'output_type'         => 'pdf',
-        'show_item_discounts' => $show_item_discounts,
-        'custom_fields'       => $custom_fields,
+        'quote'                 => $quote,
+        'quote_tax_rates'       => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
+        'items'                 => $items,
+        'output_type'           => 'pdf',
+        'show_item_discounts'   => $show_item_discounts,
+        'custom_fields'         => $custom_fields,
+        'taxes_after_discounts' => config_item('taxes_after_discounts'),
     ];
 
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);

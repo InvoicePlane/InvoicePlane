@@ -1,6 +1,3 @@
-<?php
-$taxes_after_discounts = config_item('taxes_after_discounts');
-?>
 
 <div class="table-responsive">
     <table id="item_table" class="items table table-condensed table-bordered no-margin">

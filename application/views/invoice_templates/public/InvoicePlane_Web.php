@@ -1,7 +1,4 @@
-<?php
-$taxes_after_discounts = config_item('taxes_after_discounts');
-// $show_taxes = $invoice->invoice_tax_total + $invoice->invoice_item_tax_total != 0; // #idea
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="<?php _trans('cldr'); ?>">
 <head>
     <meta charset="utf-8">
@@ -199,7 +196,7 @@ $taxes_after_discounts = config_item('taxes_after_discounts');
                             <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
                         </tr>
 
-                        <?php if ($taxes_after_discounts) : ?>
+                        <?php if ( ! $taxes_after_discounts) : ?>
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
                             <td class="amount"><?php _trans('discount'); ?></td>
@@ -275,10 +272,10 @@ $taxes_after_discounts = config_item('taxes_after_discounts');
                 </div>
 
                 <?php if ($invoice->invoice_balance == 0) {
-                    echo '<img src="' . base_url('assets/core/img/paid.png') . '" class="paid-stamp">';
-                } ?>
-                <?php if ($is_overdue) {
-                    echo '<img src="' . base_url('assets/core/img/overdue.png') . '" class="overdue-stamp">';
+                    echo '<span class="stamp rotate bottom paid">' . trans('paid') . '</span>';
+                }
+                elseif ($is_overdue) {
+                    echo '<span class="stamp rotate bottom overdue">' . trans('overdue') . '</span>';
                 } ?>
 
             </div><!-- .invoice-items -->
