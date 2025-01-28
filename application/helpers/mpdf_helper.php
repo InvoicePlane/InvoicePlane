@@ -87,19 +87,19 @@ function pdf_create(
     }
 
     // Set the footer if voucher is invoice and if set in settings
-    if ( ! empty($CI->mdl_settings->settings['pdf_invoice_footer']) && $isInvoice) {
+    if ($isInvoice && ! empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
 
     // Set the footer if voucher is quote and if set in settings
-    if ( ! empty($CI->mdl_settings->settings['pdf_quote_footer']) && str_contains($filename, trans('quote'))) {
+    if ( ! $isInvoice && ! empty($CI->mdl_settings->settings['pdf_quote_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
-    // Watermark
-    if (get_setting('pdf_watermark')) {
+    // Watermark (eInvoicing++ PDFA and PDFX do not permit transparency, so mPDF does not allow Watermarks!)
+    if ( ! $embed_xml && get_setting('pdf_watermark')) {
         $mpdf->showWatermarkText = true;
     }
 

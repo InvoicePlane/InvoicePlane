@@ -1,6 +1,5 @@
 <?php
 $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
-$taxes_after_discounts = config_item('taxes_after_discounts');
 ?>
 
 <div class="row">

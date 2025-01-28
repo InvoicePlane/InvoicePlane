@@ -64,14 +64,14 @@ class Quotes extends Admin_Controller
         $quotes = $this->mdl_quotes->result();
 
         $this->layout->set(
-            array(
-                'quotes' => $quotes,
-                'status' => $status,
-                'filter_display' => true,
+            [
+                'quotes'             => $quotes,
+                'status'             => $status,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_quotes'),
-                'filter_method' => 'filter_quotes',
-                'quote_statuses' => $this->mdl_quotes->statuses()
-            )
+                'filter_method'      => 'filter_quotes',
+                'quote_statuses'     => $this->mdl_quotes->statuses()
+            ]
         );
 
         $this->layout->buffer('content', 'quotes/index');
@@ -137,30 +137,31 @@ class Quotes extends Admin_Controller
         }
 
         $this->layout->set(
-            array(
-                'quote' => $quote,
-                'items' => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
-                'quote_id' => $quote_id,
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
-                'units' => $this->mdl_units->get()->result(),
+            [
+                'quote'           => $quote,
+                'items'           => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
+                'quote_id'        => $quote_id,
+                'units'           => $this->mdl_units->get()->result(),
+                'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'custom_js_vars' => array(
-                    'currency_symbol' => get_setting('currency_symbol'),
+                'quote_statuses'  => $this->mdl_quotes->statuses(),
+                'custom_fields'   => $custom_fields,
+                'custom_values'   => $custom_values,
+                'custom_js_vars'  => [
+                    'currency_symbol'           => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
-                    'decimal_point' => get_setting('decimal_point')
-                ),
-                'quote_statuses' => $this->mdl_quotes->statuses()
-            )
+                    'decimal_point'             => get_setting('decimal_point')
+                ],
+                'taxes_after_discounts' => config_item('taxes_after_discounts'),
+            ]
         );
 
         $this->layout->buffer(
-            array(
-                array('modal_delete_quote', 'quotes/modal_delete_quote'),
-                array('modal_add_quote_tax', 'quotes/modal_add_quote_tax'),
-                array('content', 'quotes/view')
-            )
+            [
+                ['modal_delete_quote', 'quotes/modal_delete_quote'],
+                ['modal_add_quote_tax', 'quotes/modal_add_quote_tax'],
+                ['content', 'quotes/view'],
+            ]
         );
 
         $this->layout->render();

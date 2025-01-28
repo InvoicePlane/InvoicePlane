@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -21,7 +22,8 @@ class View extends Base_Controller
      */
     public function invoice($invoice_url_key = '')
     {
-        if (!$invoice_url_key) {
+        if (!$invoice_url_key)
+        {
             show_404();
         }
 
@@ -29,7 +31,8 @@ class View extends Base_Controller
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
 
-        if ($invoice->num_rows() != 1) {
+        if ($invoice->num_rows() != 1)
+        {
             show_404();
         }
 
@@ -41,38 +44,41 @@ class View extends Base_Controller
 
         $invoice = $invoice->row();
 
-        if ($this->session->userdata('user_type') <> 1 and $invoice->invoice_status_id == 2) {
+        if ($this->session->userdata('user_type') <> 1 and $invoice->invoice_status_id == 2)
+        {
             $this->mdl_invoices->mark_viewed($invoice->invoice_id);
         }
 
         $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-        if ($invoice->payment_method == 0) {
+        if ($invoice->payment_method == 0)
+        {
             $payment_method = null;
         }
 
         // Get all custom fields
-        $custom_fields = array(
+        $custom_fields = [
             'invoice' => $this->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
             'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
             'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
-        );
+        ];
 
         // Attachments
         $attachments = $this->get_attachments($invoice_url_key);
 
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
-        $data = array(
-            'invoice' => $invoice,
-            'items' => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_url_key' => $invoice_url_key,
-            'flash_message' => $this->session->flashdata('flash_message'),
-            'payment_method' => $payment_method,
-            'is_overdue' => $is_overdue,
-            'attachments' => $attachments,
-            'custom_fields' => $custom_fields,
-        );
+        $data = [
+            'invoice'               => $invoice,
+            'items'                 => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_tax_rates'     => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_url_key'       => $invoice_url_key,
+            'flash_message'         => $this->session->flashdata('flash_message'),
+            'payment_method'        => $payment_method,
+            'is_overdue'            => $is_overdue,
+            'attachments'           => $attachments,
+            'custom_fields'         => $custom_fields,
+            'taxes_after_discounts' => config_item('taxes_after_discounts'),
+        ];
 
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
     }
@@ -81,11 +87,14 @@ class View extends Base_Controller
     {
         $path = UPLOADS_FOLDER . '/customer_files';
         $files = scandir($path);
-        $attachments = array();
+        $attachments = [];
 
-        if ($files !== false) {
-            foreach ($files as $file) {
-                if ('.' != $file && '..' != $file && strpos($file, $key) !== false) {
+        if ($files !== false)
+        {
+            foreach ($files as $file)
+            {
+                if ('.' != $file && '..' != $file && strpos($file, $key) !== false)
+                {
                     $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
                     $obj['fullname'] = $file;
                     $obj['size'] = filesize($path . '/' . $file);
@@ -108,13 +117,14 @@ class View extends Base_Controller
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
 
-        if ($invoice->num_rows() == 1) {
+        if ($invoice->num_rows() == 1)
+        {
             $invoice = $invoice->row();
 
-            if (!$invoice_template) {
-                //$invoice_template = get_setting('pdf_invoice_template');
-				$this->load->helper('template');
-				$invoice_template = select_pdf_invoice_template($invoice);
+            if (!$invoice_template)
+            {
+                $this->load->helper('template');
+                $invoice_template = select_pdf_invoice_template($invoice);
             }
 
             $this->load->helper('pdf');
@@ -134,15 +144,18 @@ class View extends Base_Controller
 
         $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
 
-        if ($invoice->num_rows() == 1) {
+        if ($invoice->num_rows() == 1)
+        {
             $invoice = $invoice->row();
 
-            if ($invoice->sumex_id == NULL) {
+            if ($invoice->sumex_id == NULL)
+            {
                 show_404();
                 return;
             }
 
-            if (!$invoice_template) {
+            if (!$invoice_template)
+            {
                 $invoice_template = get_setting('pdf_invoice_template');
             }
 
@@ -157,7 +170,8 @@ class View extends Base_Controller
      */
     public function quote($quote_url_key = '')
     {
-        if (!$quote_url_key) {
+        if (!$quote_url_key)
+        {
             show_404();
         }
 
@@ -165,7 +179,8 @@ class View extends Base_Controller
 
         $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
 
-        if ($quote->num_rows() != 1) {
+        if ($quote->num_rows() != 1)
+        {
             show_404();
         }
 
@@ -191,16 +206,17 @@ class View extends Base_Controller
 
         $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
 
-        $data = array(
-            'quote' => $quote,
-            'items' => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
-            'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
-            'quote_url_key' => $quote_url_key,
-            'flash_message' => $this->session->flashdata('flash_message'),
-            'is_expired' => $is_expired,
-            'attachments' => $attachments,
-            'custom_fields' => $custom_fields,
-        );
+        $data = [
+            'quote'                 => $quote,
+            'items'                 => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
+            'quote_tax_rates'       => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
+            'quote_url_key'         => $quote_url_key,
+            'flash_message'         => $this->session->flashdata('flash_message'),
+            'is_expired'            => $is_expired,
+            'attachments'           => $attachments,
+            'custom_fields'         => $custom_fields,
+            'taxes_after_discounts' => config_item('taxes_after_discounts'),
+        ];
 
         $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
     }
@@ -216,10 +232,12 @@ class View extends Base_Controller
 
         $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
 
-        if ($quote->num_rows() == 1) {
+        if ($quote->num_rows() == 1)
+        {
             $quote = $quote->row();
 
-            if (!$quote_template) {
+            if (!$quote_template)
+            {
                 $quote_template = get_setting('pdf_quote_template');
             }
 
