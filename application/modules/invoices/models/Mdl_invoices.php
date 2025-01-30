@@ -75,7 +75,7 @@ class Mdl_Invoices extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoices.invoice_id DESC');
+        $this->db->order_by('ip_invoices.invoice_date_created DESC');
     }
 
     public function default_join()
