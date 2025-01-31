@@ -1,6 +1,6 @@
 <?php
 
-//  Filename      => 'Facturxv10.php'     -> "Shortid" + "version" + ".php" : max 25 characters (without ".php")
+//  Filename      => 'Ublexamv20.php'     -> "Shortid" + "version" + ".php" : max 25 characters (without ".php")
 //                                            (preferably without spaces " ", dots ".", hyphen "-", underscore "_" or special characters)
 
 //  'full-name'   => 'UBL example v2.0',  -> UBL version name visible in the clients drop-down menu
@@ -9,9 +9,10 @@
 //  'XMLname'     => 'factur-x.xml',      -> name of the Xml file (if embedded in a CII Pdf)
 //  'generator'   => 'Facturxv10',        -> name of the Xml file generator without 'Xml' and '.php' extension (optional)
 
-$xml_setting = array(
-  'full-name'   => 'Factur-X v1.0',
-  'countrycode' => 'FR',
-  'embedXML'    => true,
-  'XMLname'     => 'factur-x.xml',
-);
+$xml_setting = [
+    'full-name'   => 'ZUGFeRD v2.3 [gov]',
+    'countrycode' => 'DE',
+    'embedXML'    => true,
+    'XMLname'     => 'factur-x.xml',
+    'generator'   => 'Facturxv10',
+];

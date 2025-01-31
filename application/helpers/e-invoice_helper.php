@@ -7,14 +7,21 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  *
  * eInvoicing add-ons by Verony
  */
 
+/**
+ * Returns path of invoice xml generated file.
+ *
+ * @scope  helpers/pdf_helper.php (2)
+ *
+ * @return string
+ */
 function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
 {
     $CI = &get_instance();
@@ -45,20 +52,33 @@ function include_rdf($embedXml)
 /**
  * Returns all available xml-template items.
  *
+ * @scope  modules/clients/controllers/Clients.php
+ *
  * @return array
  */
 function get_xml_template_files()
 {
-    $path = APPPATH . 'libraries/XMLtemplates';
-    $xml_template_files = array_diff(scandir($path), ['.', '..']);
+    $xml_template_items = [];
+    $path = APPPATH . 'helpers/XMLconfigs/';
+    $xml_config_files = array_diff(scandir($path), ['.', '..']);
 
-    foreach ($xml_template_files as $key => $xml_template_file) {
-        $xml_template_files[$key] = str_replace('Xml.php', '', $xml_template_file);
+    foreach ($xml_config_files as $key => $xml_config_file)
+    {
+        $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
 
-        if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_template_files[$key] . '.php')) {
-            include APPPATH . 'helpers/XMLconfigs/' . $xml_template_files[$key] . '.php';
+        if (file_exists($path . $xml_config_files[$key] . '.php') && include $path . $xml_config_files[$key] . '.php')
+        {
+            $generator = $xml_config_files[$key];
+            if ( ! empty($xml_setting['generator']))
+            {
+                $generator = $xml_setting['generator']; // Optionnal
+            }
 
-            $xml_template_items[$xml_template_files[$key]] = $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
+            if (file_exists(APPPATH . 'libraries/XMLtemplates/' . $generator . 'Xml.php'))
+            {
+                $xml_template_items[$xml_config_files[$key]] = $xml_setting['full-name']
+                . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
+            }
         }
     }
 
@@ -70,11 +90,14 @@ function get_xml_template_files()
  *
  * @param $xml_Id
  *
+ * @scope modules/clients/views/view.php
+ *
  * @return mixed
  */
 function get_xml_full_name($xml_id)
 {
-    if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
+    if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php'))
+    {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
 
         return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);

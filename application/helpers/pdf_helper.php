@@ -78,13 +78,15 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     // Override system language with client language
     set_language($invoice->client_language);
 
-    if ( ! $invoice_template) {
+    if ( ! $invoice_template)
+    {
         $CI->load->helper('template');
         $invoice_template = select_pdf_invoice_template($invoice);
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-    if ($invoice->payment_method == 0) {
+    if ($invoice->payment_method == 0)
+    {
         $payment_method = false;
     }
 
@@ -93,7 +95,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // Discount settings
     $show_item_discounts = false;
-    foreach ($items as $item) {
+    foreach ($items as $item)
+    {
         if ($item->item_discount != '0.00') {
             $show_item_discounts = true;
             break;
@@ -101,13 +104,15 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     // Get all custom fields
-    $custom_fields = [
+    $custom_fields =
+    [
         'invoice' => $CI->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
         'client'  => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
         'user'    => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
     ];
 
-    if ($invoice->quote_id) {
+    if ($invoice->quote_id)
+    {
         $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $invoice->quote_id);
     }
 
@@ -116,7 +121,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $file_prefix = date('Y-m-d') . '_' . trans('invoice');
     $replace     = ['.', ' ', '/', '\\', '#'];
 
-    if (get_setting('change_filename_prefix') == 1) {
+    if (get_setting('change_filename_prefix') == 1)
+    {
         $user_item   = get_setting('add_filename_prefix');
         $file_prefix = str_replace($replace, '', $invoice->$user_item);
     }
@@ -124,26 +130,31 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // Generate the appropriate UBL/CII
     $xml_id    = $invoice->client_einvoicing_version;
+    $generator = $xml_id;
     $embed_xml = '';
-    if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
-        include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
-
+    $path      = APPPATH . 'helpers/XMLconfigs/';
+    if (file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php')
+    {
         $embed_xml = $xml_setting['embedXML'];
         $XMLname   = $xml_setting['XMLname'];
+        $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
     }
 
     // PDF associated or embedded (CII e.g. Zugferd, Factur-X) Xml file
     $associatedFiles = null;
-    if ($embed_xml && $invoice->client_einvoicing_active == 1) {
+    if ($embed_xml && $invoice->client_einvoicing_active == 1)
+    {
         // Create the CII XML file
         $associatedFiles = [[
             'name'           => $XMLname,
             'mime'           => 'text/xml',
             'description'    => $xml_id . ' CII Invoice',
             'AFRelationship' => 'Alternative',
-            'path'           => generate_xml_invoice_file($invoice, $items, $xml_id, $filename),
+            'path'           => generate_xml_invoice_file($invoice, $items, $generator, $filename),
         ]];
-    } else {
+    }
+    else
+    {
         // Do not embed the XML file if the client e-Invoicing is not active
         $embed_xml = false;
     }
@@ -176,25 +187,28 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     );
 
     // To Simplify xml validation (remove einvoice_test.xml file in uploads/temp when debug is over)
-    if(IP_DEBUG) {
+    if(IP_DEBUG)
+    {
         @unlink(UPLOADS_TEMP_FOLDER . 'einvoice_test.xml'); // Same file but Always new (when get pdf)
         @copy(UPLOADS_TEMP_FOLDER . $filename . '.xml', UPLOADS_TEMP_FOLDER . 'einvoice_test.xml');
     }
 
-    if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . $filename . '.xml')) {
+    if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . $filename . '.xml'))
+    {
         // delete the tmp CII-XML file
         unlink(UPLOADS_TEMP_FOLDER . $filename . '.xml');
     }
 
     // Create the UBL XML file
-    if ($xml_id != '' && $embed_xml != 'true') {
+    if ($xml_id != '' && $embed_xml != 'true')
+    {
         // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!
         if (get_setting('change_filename_prefix') == 0) {
             $filename = date('Y-m-d') . '_' . $filename;
         }
 
         if ($invoice->client_einvoicing_active == 1) {
-            generate_xml_invoice_file($invoice, $items, $xml_id, $filename);
+            generate_xml_invoice_file($invoice, $items, $generator, $filename);
         }
     }
 
@@ -225,7 +239,8 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
     $shortsum = mb_substr($sha1sum, 0, 8);
     $filename = trans('invoice') . '_' . $invoice->invoice_number . '_' . $shortsum;
 
-    if ( ! $client) {
+    if ( ! $client)
+    {
         file_put_contents($temp, $sumexPDF);
 
         // Hackish
@@ -239,13 +254,17 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 
         $pageCount = $pdf->setSourceFile($temp);
 
-        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++)
+        {
             $templateId = $pdf->importPage($pageNo);
             $size       = $pdf->getTemplateSize($templateId);
 
-            if ($size['w'] > $size['h']) {
+            if ($size['w'] > $size['h'])
+            {
                 $pageFormat = 'L';  //  landscape
-            } else {
+            }
+            else
+            {
                 $pageFormat = 'P';  //  portrait
             }
 
@@ -255,13 +274,17 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 
         $pageCount = $pdf->setSourceFile($tempCopy);
 
-        for ($pageNo = 2; $pageNo <= $pageCount; $pageNo++) {
+        for ($pageNo = 2; $pageNo <= $pageCount; $pageNo++)
+        {
             $templateId = $pdf->importPage($pageNo);
             $size       = $pdf->getTemplateSize($templateId);
 
-            if ($size['w'] > $size['h']) {
+            if ($size['w'] > $size['h'])
+            {
                 $pageFormat = 'L';  //  landscape
-            } else {
+            }
+            else
+            {
                 $pageFormat = 'P';  //  portrait
             }
 
@@ -272,7 +295,8 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
         unlink($temp);
         unlink($tempCopy);
 
-        if ($stream) {
+        if ($stream)
+        {
             header('Content-Type', 'application/pdf');
             $pdf->Output($filename . '.pdf', 'I');
 
@@ -284,7 +308,8 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 
         return $filePath;
     }
-    if ($stream) {
+    if ($stream)
+    {
         return $sumexPDF;
     }
 
@@ -321,7 +346,8 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     // Override language with system language
     set_language($quote->client_language);
 
-    if ( ! $quote_template) {
+    if ( ! $quote_template)
+    {
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
     }
 
@@ -329,21 +355,25 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     $items = $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 
     $show_item_discounts = false;
-    foreach ($items as $item) {
-        if ($item->item_discount != '0.00') {
+    foreach ($items as $item)
+    {
+        if ($item->item_discount != '0.00')
+        {
             $show_item_discounts = true;
             break;
         }
     }
 
     // Get all custom fields
-    $custom_fields = [
+    $custom_fields =
+    [
         'quote'  => $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
         'client' => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
         'user'   => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
     ];
 
-    $data = [
+    $data =
+    [
         'quote'                 => $quote,
         'quote_tax_rates'       => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
         'items'                 => $items,
