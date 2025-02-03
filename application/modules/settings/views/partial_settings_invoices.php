@@ -114,21 +114,89 @@
                                 value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                         </div>
 
-                        <div class="form-group">
-                            <label for="settings[include_zugferd]">
-                                <?php _trans('invoice_pdf_include_zugferd'); ?>
-                            </label>
-                            <select name="settings[include_zugferd]" id="settings[include_zugferd]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value="0">
-                                    <?php _trans('no'); ?>
-                                </option>
-                                <option value="1" <?php check_select(get_setting('include_zugferd'), '1'); ?>>
-                                    <?php _trans('yes'); ?>
-                                </option>
-                            </select>
-                            <p class="help-block"><?php _trans('invoice_pdf_include_zugferd_help'); ?></p>
-                        </div>
+                       <div class="form-group">
+    <label for="settings[include_zugferd]">
+        <?php _trans('invoice_pdf_include_zugferd'); ?>
+    </label>
+    <select name="settings[include_zugferd]" id="settings[include_zugferd]"
+        class="form-control simple-select" data-minimum-results-for-search="Infinity">
+        <option value="0">
+            <?php _trans('no'); ?>
+        </option>
+        <!-- ZUGFeRD 1.0 Profiles -->
+        <option value="zugferd_1_0_minimum" <?php check_select(get_setting('include_zugferd'), 'zugferd_1_0_minimum'); ?>>
+            ZUGFeRD 1.0 Minimum
+        </option>
+        <option value="zugferd_1_0_basic" <?php check_select(get_setting('include_zugferd'), 'zugferd_1_0_basic'); ?>>
+            ZUGFeRD 1.0 Basic
+        </option>
+        <option value="zugferd_1_0_comfort" <?php check_select(get_setting('include_zugferd'), 'zugferd_1_0_comfort'); ?>>
+            ZUGFeRD 1.0 Comfort
+        </option>
+        <option value="zugferd_1_0_extended" <?php check_select(get_setting('include_zugferd'), 'zugferd_1_0_extended'); ?>>
+            ZUGFeRD 1.0 Extended
+        </option>
+        <!-- ZUGFeRD 2.0 Profiles (Equivalent to Factur-X 1.0) -->
+        <option value="zugferd_2_0_minimum" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_0_minimum'); ?>>
+            ZUGFeRD 2.0 / Factur-X 1.0 Minimum
+        </option>
+        <option value="zugferd_2_0_basic" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_0_basic'); ?>>
+            ZUGFeRD 2.0 / Factur-X 1.0 Basic
+        </option>
+        <option value="zugferd_2_0_basicwl" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_0_basicwl'); ?>>
+            ZUGFeRD 2.0 / Factur-X 1.0 Basic WL
+        </option>
+        <option value="zugferd_2_0_comfort" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_0_comfort'); ?>>
+            ZUGFeRD 2.0 / Factur-X 1.0 Comfort
+        </option>
+        <option value="zugferd_2_0_extended" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_0_extended'); ?>>
+            ZUGFeRD 2.0 / Factur-X 1.0 Extended
+        </option>
+        <!-- ZUGFeRD 2.1 Profiles -->
+        <option value="zugferd_2_1_minimum" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_1_minimum'); ?>>
+            ZUGFeRD 2.1 / Factur-X 1.0 Minimum
+        </option>
+        <option value="zugferd_2_1_basic" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_1_basic'); ?>>
+            ZUGFeRD 2.1 / Factur-X 1.0 Basic
+        </option>
+        <option value="zugferd_2_1_basicwl" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_1_basicwl'); ?>>
+            ZUGFeRD 2.1 / Factur-X 1.0 Basic WL
+        </option>
+        <option value="zugferd_2_1_comfort" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_1_comfort'); ?>>
+            ZUGFeRD 2.1 / Factur-X 1.0 Comfort
+        </option>
+        <option value="zugferd_2_1_extended" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_1_extended'); ?>>
+            ZUGFeRD 2.1 / Factur-X 1.0 Extended
+        </option>
+        <!-- ZUGFeRD 2.2 Profiles -->
+        <option value="zugferd_2_2_minimum" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_2_minimum'); ?>>
+            ZUGFeRD 2.2 / Factur-X 1.0 Minimum
+        </option>
+        <option value="zugferd_2_2_basic" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_2_basic'); ?>>
+            ZUGFeRD 2.2 / Factur-X 1.0 Basic
+        </option>
+        <option value="zugferd_2_2_basicwl" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_2_basicwl'); ?>>
+            ZUGFeRD 2.2 / Factur-X 1.0 Basic WL
+        </option>
+        <option value="zugferd_2_2_comfort" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_2_comfort'); ?>>
+            ZUGFeRD 2.2 / Factur-X 1.0 Comfort
+        </option>
+        <option value="zugferd_2_2_extended" <?php check_select(get_setting('include_zugferd'), 'zugferd_2_2_extended'); ?>>
+            ZUGFeRD 2.2 / Factur-X 1.0 Extended
+        </option>
+        <!-- XRechnung Profiles -->
+        <option value="xrechnung_1_x" <?php check_select(get_setting('include_zugferd'), 'xrechnung_1_x'); ?>>
+            XRechnung 1.x
+        </option>
+        <option value="xrechnung_2_x" <?php check_select(get_setting('include_zugferd'), 'xrechnung_2_x'); ?>>
+            XRechnung 2.x
+        </option>
+        <option value="xrechnung_3_x" <?php check_select(get_setting('include_zugferd'), 'xrechnung_3_x'); ?>>
+            XRechnung 3.x
+        </option>
+    </select>
+    <p class="help-block"><?php _trans('invoice_pdf_include_zugferd_help'); ?></p>
+</div>
 
                     </div>
                     <div class="col-xs-12 col-md-6">
@@ -166,150 +234,153 @@
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <?php _trans('invoice_templates'); ?>
+    <div class="panel-heading">
+        <?php _trans('invoice_templates'); ?>
+    </div>
+    <div class="panel-body">
+        <div class="help-block">
+            <?php _trans('invoice_templates_info'); ?>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+
+                <div class="form-group">
+                    <label for="settings[pdf_invoice_template]">
+                        <?php _trans('default_pdf_template'); ?>
+                    </label>
+                    <select name="settings[pdf_invoice_template]" id="settings[pdf_invoice_template]"
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                        <option value=""><?php _trans('none'); ?></option>
+                        <?php
+                        $template_path = APPPATH . 'views/invoice_templates/pdf/';
+                        $pdf_invoice_templates = array_diff(scandir($template_path), array('..', '.'));
+                        foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                            <option value="<?php echo $invoice_template; ?>"
+                                <?php check_select(get_setting('pdf_invoice_template'), $invoice_template); ?>>
+                                <?php echo $invoice_template; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="settings[pdf_invoice_template_paid]">
+                        <?php _trans('pdf_template_paid'); ?>
+                    </label>
+                    <select name="settings[pdf_invoice_template_paid]" id="settings[pdf_invoice_template_paid]"
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                        <option value=""><?php _trans('none'); ?></option>
+                        <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                            <option value="<?php echo $invoice_template; ?>"
+                                <?php check_select(get_setting('pdf_invoice_template_paid'), $invoice_template); ?>>
+                                <?php echo $invoice_template; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="settings[pdf_invoice_template_overdue]">
+                        <?php _trans('pdf_template_overdue'); ?>
+                    </label>
+                    <select name="settings[pdf_invoice_template_overdue]" class="form-control simple-select"
+                        id="settings[pdf_invoice_template_overdue]" data-minimum-results-for-search="Infinity">
+                        <option value=""><?php _trans('none'); ?></option>
+                        <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                            <option value="<?php echo $invoice_template; ?>"
+                                <?php check_select(get_setting('pdf_invoice_template_overdue'), $invoice_template); ?>>
+                                <?php echo $invoice_template; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="settings[public_invoice_template]">
+                        <?php _trans('default_public_template'); ?>
+                    </label>
+                    <select name="settings[public_invoice_template]" id="settings[public_invoice_template]"
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                        <option value=""><?php _trans('none'); ?></option>
+                        <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
+                            <option value="<?php echo $invoice_template; ?>"
+                                <?php check_select(get_setting('public_invoice_template'), $invoice_template); ?>>
+                                <?php echo $invoice_template; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
             </div>
-            <div class="panel-body">
-                <div class="help-block">
-                    <?php _trans('invoice_templates_info'); ?>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
+            <div class="col-xs-12 col-md-6">
 
-                        <div class="form-group">
-                            <label for="settings[pdf_invoice_template]">
-                                <?php _trans('default_pdf_template'); ?>
-                            </label>
-                            <select name="settings[pdf_invoice_template]" id="settings[pdf_invoice_template]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
-                                    <option value="<?php echo $invoice_template; ?>"
-                                        <?php check_select(get_setting('pdf_invoice_template'), $invoice_template); ?>>
-                                        <?php echo $invoice_template; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="settings[pdf_invoice_template_paid]">
-                                <?php _trans('pdf_template_paid'); ?>
-                            </label>
-                            <select name="settings[pdf_invoice_template_paid]" id="settings[pdf_invoice_template_paid]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
-                                    <option value="<?php echo $invoice_template; ?>"
-                                        <?php check_select(get_setting('pdf_invoice_template_paid'), $invoice_template); ?>>
-                                        <?php echo $invoice_template; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="settings[pdf_invoice_template_overdue]">
-                                <?php _trans('pdf_template_overdue'); ?>
-                            </label>
-                            <select name="settings[pdf_invoice_template_overdue]" class="form-control simple-select"
-                                id="settings[pdf_invoice_template_overdue]" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <?php foreach ($pdf_invoice_templates as $invoice_template) { ?>
-                                    <option value="<?php echo $invoice_template; ?>"
-                                        <?php check_select(get_setting('pdf_invoice_template_overdue'), $invoice_template); ?>>
-                                        <?php echo $invoice_template; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="settings[public_invoice_template]">
-                                <?php _trans('default_public_template'); ?>
-                            </label>
-                            <select name="settings[public_invoice_template]" id="settings[public_invoice_template]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <?php foreach ($public_invoice_templates as $invoice_template) { ?>
-                                    <option value="<?php echo $invoice_template; ?>"
-                                        <?php check_select(get_setting('public_invoice_template'), $invoice_template); ?>>
-                                        <?php echo $invoice_template; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                    </div>
-                    <div class="col-xs-12 col-md-6">
-
-                        <div class="form-group">
-                            <label for="settings[email_invoice_template]">
-                                <?php _trans('default_email_template'); ?>
-                            </label>
-                            <select name="settings[email_invoice_template]" id="settings[email_invoice_template]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <?php foreach ($email_templates_invoice as $email_template) { ?>
-                                    <option value="<?php echo $email_template->email_template_id; ?>"
-                                        <?php check_select(get_setting('email_invoice_template'), $email_template->email_template_id); ?>>
-                                        <?php echo $email_template->email_template_title; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="settings[email_invoice_template_paid]">
-                                <?php _trans('email_template_paid'); ?>
-                            </label>
-                            <select name="settings[email_invoice_template_paid]" id="settings[email_invoice_template_paid]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <?php foreach ($email_templates_invoice as $email_template) { ?>
-                                    <option value="<?php echo $email_template->email_template_id; ?>"
-                                        <?php check_select(get_setting('email_invoice_template_paid'), $email_template->email_template_id); ?>>
-                                        <?php echo $email_template->email_template_title; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="settings[email_invoice_template_overdue]">
-                                <?php _trans('email_template_overdue'); ?>
-                            </label>
-                            <select name="settings[email_invoice_template_overdue]" class="form-control simple-select"
-                                id="settings[email_invoice_template_overdue]" data-minimum-results-for-search="Infinity">
-                                <option value=""><?php _trans('none'); ?></option>
-                                <?php foreach ($email_templates_invoice as $email_template) { ?>
-                                    <option value="<?php echo $email_template->email_template_id; ?>"
-                                        <?php check_select(get_setting('email_invoice_template_overdue'), $email_template->email_template_id); ?>>
-                                        <?php echo $email_template->email_template_title; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                    </div>
+                <div class="form-group">
+                    <label for="settings[email_invoice_template]">
+                        <?php _trans('default_email_template'); ?>
+                    </label>
+                    <select name="settings[email_invoice_template]" id="settings[email_invoice_template]"
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                        <option value=""><?php _trans('none'); ?></option>
+                        <?php foreach ($email_templates_invoice as $email_template) { ?>
+                            <option value="<?php echo $email_template->email_template_id; ?>"
+                                <?php check_select(get_setting('email_invoice_template'), $email_template->email_template_id); ?>>
+                                <?php echo $email_template->email_template_title; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-
-                        <div class="form-group">
-                            <label for="settings[pdf_invoice_footer]">
-                                <?php _trans('pdf_invoice_footer'); ?>
-                            </label>
-                            <textarea name="settings[pdf_invoice_footer]" id="settings[pdf_invoice_footer]"
-                                class="form-control no-margin"><?php echo get_setting('pdf_invoice_footer', '', true); ?></textarea>
-                            <p class="help-block"><?php _trans('pdf_invoice_footer_hint'); ?></p>
-                        </div>
-
-                    </div>
+                <div class="form-group">
+                    <label for="settings[email_invoice_template_paid]">
+                        <?php _trans('email_template_paid'); ?>
+                    </label>
+                    <select name="settings[email_invoice_template_paid]" id="settings[email_invoice_template_paid]"
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                        <option value=""><?php _trans('none'); ?></option>
+                        <?php foreach ($email_templates_invoice as $email_template) { ?>
+                            <option value="<?php echo $email_template->email_template_id; ?>"
+                                <?php check_select(get_setting('email_invoice_template_paid'), $email_template->email_template_id); ?>>
+                                <?php echo $email_template->email_template_title; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="settings[email_invoice_template_overdue]">
+                        <?php _trans('email_template_overdue'); ?>
+                    </label>
+                    <select name="settings[email_invoice_template_overdue]" class="form-control simple-select"
+                        id="settings[email_invoice_template_overdue]" data-minimum-results-for-search="Infinity">
+                        <option value=""><?php _trans('none'); ?></option>
+                        <?php foreach ($email_templates_invoice as $email_template) { ?>
+                            <option value="<?php echo $email_template->email_template_id; ?>"
+                                <?php check_select(get_setting('email_invoice_template_overdue'), $email_template->email_template_id); ?>>
+                                <?php echo $email_template->email_template_title; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+
+                <div class="form-group">
+                    <label for="settings[pdf_invoice_footer]">
+                        <?php _trans('pdf_invoice_footer'); ?>
+                    </label>
+                    <textarea name="settings[pdf_invoice_footer]" id="settings[pdf_invoice_footer]"
+                        class="form-control no-margin"><?php echo get_setting('pdf_invoice_footer', '', true); ?></textarea>
+                    <p class="help-block"><?php _trans('pdf_invoice_footer_hint'); ?></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
         <div class="panel panel-default" id="panel-qr-code-settings">
             <div class="panel-heading">
