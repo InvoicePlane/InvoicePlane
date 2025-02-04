@@ -245,13 +245,13 @@ class Facturxv10Xml
         {
             foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal)
             {
-                $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal)); // 'S' by default
+                $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal[0])); // 'S' by default
             }
         }
         else // Not subject to VAT
         {
             $percent = $this->invoice->invoice_item_tax_total; // it's 0.00 same of invoice_tax_total
-            $subtotal = $this->invoice->invoice_item_total; // invoice_subtotal
+            $subtotal = $this->invoice->invoice_item_subtotal; // invoice_subtotal
             $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal, 'O')); // "O" pour "Exonéré" (Out of scope).
         }
 
@@ -272,35 +272,10 @@ class Facturxv10Xml
             // Si remise globale (ram:AppliedTradeAllowanceCharge)
             // Doit être après BillingSpecifiedPeriod et avant SpecifiedTradePaymentTerms !important
             // SpecifiedTradeAllowanceCharge
-            $discountNode = $this->doc->createElement('ram:SpecifiedTradeAllowanceCharge');
-
-            $indicatorNode = $this->doc->createElement('ram:ChargeIndicator'); // ChargeIndicator
-            $indicatorNode->appendChild($this->doc->createElement('udt:Indicator', 'false')); // false indique qu'il s'agit d'une remise
-            $discountNode->appendChild($indicatorNode);
-
-            $discountNode->appendChild($this->currencyElement('ram:ActualAmount', $this->invoice->invoice_discount_amount_total)); // Représente le montant de la remise
-            $discountNode->appendChild($this->doc->createElement('ram:ReasonCode', '95'));
-            $discountNode->appendChild($this->doc->createElement('ram:Reason', rtrim(trans('discount'), ' '))); // todo curious chars ' ' not a space (found in French ip_lang)
-
-            $taxNode = $this->doc->createElement('ram:CategoryTradeTax');
-            $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
-
-            if( ! $this->notax)
-            {
-                $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'S'));
-                $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $this->get_invoice_discount_percent()));
-            }
-            else
-            {
-                $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O'));
-            }
-
-            $discountNode->appendChild($taxNode);
-
-            $node->appendChild($discountNode);
+            $this->addSpecifiedTradeAllowanceCharge_discount($node);
         }
 
-        // zugferd 2.3, facturx 1.0.7
+        // SpecifiedTradePaymentTerms (zugferd 2.3 & facturx 1.0.7)
         $node->appendChild($this->xmlSpecifiedTradePaymentTerms());
 
         // sums
@@ -308,48 +283,88 @@ class Facturxv10Xml
         return $node;
     }
 
+    // helper to make SpecifiedTradeAllowanceCharge 's
+    protected function addSpecifiedTradeAllowanceCharge_discount( & $node)
+    {
+        // note: If empty itemsSubtotalGroupedByTaxPercent ($this->notax) Only one `SpecifiedTradeAllowanceCharge` ;)
+        if($this->invoice->invoice_discount_amount_total > 0 && $this->itemsSubtotalGroupedByTaxPercent)
+        {
+            $category = 'S';
+            $amounts = [];
+            // Loop on itemsSubtotalGroupedByTaxPercent to dispatch discount by VAT's rate
+            foreach($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal)
+            {
+                // Don't divide per 0
+                if($this->invoice->invoice_subtotal != 0)
+                {
+                    // from set_invoice_discount_amount_total (helper)
+                    $amounts[$percent] = ($subtotal[1] / $this->invoice->invoice_subtotal) * $this->invoice->invoice_discount_amount_subtotal;
+                }
+            }
+        }
+        else
+        {
+            $category = 'O';
+            // from set_invoice_discount_amount_total (helper)
+            $amounts[0] = $this->invoice->invoice_discount_amount_subtotal;
+        }
+
+        // Loop on VAT to dispatch global discount
+        foreach($amounts as $percent => $amount)
+        {
+            $discountNode = $this->doc->createElement('ram:SpecifiedTradeAllowanceCharge');
+            // ChargeIndicator
+            $indicatorNode = $this->doc->createElement('ram:ChargeIndicator');
+            $indicatorNode->appendChild($this->doc->createElement('udt:Indicator', 'false')); // false it's a discount
+            $discountNode->appendChild($indicatorNode);
+
+            $discountNode->appendChild($this->currencyElement('ram:ActualAmount', $amount)); // of discount of vat rate
+            $discountNode->appendChild($this->doc->createElement('ram:ReasonCode', '95'));
+            $discountNode->appendChild($this->doc->createElement('ram:Reason', rtrim(trans('discount'), ' '))); // todo curious chars ' ' not a space (found in French ip_lang)
+
+            $taxNode = $this->doc->createElement('ram:CategoryTradeTax');
+            $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
+
+            $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', $category)); // S or O
+            if($category == 'S')
+            {
+                $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $percent)); // of VAT rate
+            }
+
+            $discountNode->appendChild($taxNode);
+
+            $node->appendChild($discountNode);
+        }
+    }
+
     /*
      * Add missing discount invoice vars [for factur-x validation](ecosio.com/en/peppol-and-xml-document-validator)
      *
-     * invoice_subtotal                 Scope TaxBasisTotalAmount
-     * invoice_discount_amount_total    Scope AllowanceTotalAmount & SpecifiedTradeAllowanceCharge
+     * invoice_subtotal                    Scope TaxBasisTotalAmount
+     * invoice_discount_amount_total       Scope AllowanceTotalAmount (todo: it's used)
+     * invoice_discount_amount_subtotal    Scope SpecifiedTradeAllowanceCharge > ActualAmount>
      */
-    function set_invoice_discount_amount_total()
+    protected function set_invoice_discount_amount_total()
     {
-        $amount = 0;
+        $item_discount = $item_subtotal = $discount = 0.0;
+
+        foreach ($this->items as $item)
+        {
+            $item_discount += $item->item_discount;
+            $item_subtotal += $item->item_subtotal;
+        }
+
         if($this->invoice->invoice_discount_amount > 0)
         {
-            $amount = $this->invoice->invoice_discount_amount;
+            $discount = $this->invoice->invoice_discount_amount;
         }
         elseif($this->invoice->invoice_discount_percent > 0)
         {
-            $amount = $this->invoice->invoice_item_subtotal * ($this->invoice->invoice_discount_percent / 100);
+            $discount = $item_subtotal * ($this->invoice->invoice_discount_percent / 100);
         }
-        $this->invoice->invoice_subtotal = $this->facturxFormattedFloat($this->invoice->invoice_item_subtotal - $amount);
-        $this->invoice->invoice_discount_amount_total = $this->facturxFormattedFloat($amount);
-     }
-
-    function get_invoice_discount_percent() // Only if( ! $this->notax) # todo: change to get/dispatch discount percent vat's rate (of invoice)
-    {
-        if($this->invoice->invoice_discount_percent > 0)
-        {
-            return '0.01'; // fix by faker (wip)
-        }
-        if($this->invoice->invoice_discount_amount > 0)
-        {
-            // rule for ApplicableTradeTax>CategoryCode=S, need ram:RateApplicablePercent > 0
-            # todo: New calculation! Now calculate % of discounts but Need % VAT's rate
-            # idea: get Vat's of items > invoice_discount_amount & dispatch it
-            #       See & search itemsSubtotalGroupedByTaxPercent()
-
-            //~ $amount = $this->invoice->invoice_discount_amount;
-            //~ $brut = $this->invoice->invoice_item_subtotal + $this->invoice->invoice_item_tax_total + $this->invoice->invoice_tax_total;
-            //~ $remise = $brut - $amount; //                  if = 0
-            //~ $percent = (($brut * 100) / $remise) - 100; // DivisionByZeroError
-            $percent = '0.01'; // fix by faker (wip)
-
-            return $percent;
-        }
+        $this->invoice->invoice_subtotal = $this->facturxFormattedFloat($item_subtotal);
+        $this->invoice->invoice_discount_amount_total = $this->facturxFormattedFloat($item_discount + $discount);
+        $this->invoice->invoice_discount_amount_subtotal = $this->facturxFormattedFloat($discount);
      }
 
     protected function setItemsSubtotalGroupedByTaxPercent()
@@ -364,11 +379,17 @@ class Facturxv10Xml
 
             if ( ! isset($result[$item->item_tax_rate_percent]))
             {
-                $result[$item->item_tax_rate_percent] = 0;
+                $result[$item->item_tax_rate_percent] = [0, 0];
             }
-            $result[$item->item_tax_rate_percent] += $item->item_subtotal;
+
+            $result[$item->item_tax_rate_percent] =
+            [
+                $result[$item->item_tax_rate_percent][0] += ($item->item_total - $item->item_tax_total),
+                $result[$item->item_tax_rate_percent][1] += $item->item_subtotal, // without discounts
+            ];
+
         }
-        $this->itemsSubtotalGroupedByTaxPercent = $result; // help to dispatch invoice global discount tax rate + same for vat's of invoices #idea #todo
+        $this->itemsSubtotalGroupedByTaxPercent = $result; // help to dispatch invoice global discount tax rate + same for vat's of invoices
     }
 
     protected function xmlApplicableTradeTax($percent, $subtotal, $category = 'S')
@@ -437,18 +458,22 @@ class Facturxv10Xml
     protected function xmlSpecifiedTradeSettlementHeaderMonetarySummation()
     {
         $node = $this->doc->createElement('ram:SpecifiedTradeSettlementHeaderMonetarySummation');
-        // Représente le montant total des lignes de la facture avant les frais, remises et taxes.
-        $node->appendChild($this->currencyElement('ram:LineTotalAmount', $this->invoice->invoice_item_subtotal));
-        // Indique le montant total des frais supplémentaires appliqués à la facture.
-        //~ $node->appendChild($this->currencyElement('ram:ChargeTotalAmount', 0)); // optional (todo? from db: maybe need field)
-        // Représente le montant total des remises accordées sur la facture. (voir set_invoice_discount_amount_total() helper)
-        $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', $this->invoice->invoice_discount_amount_total)); // optional
+
+        // LineTotalAmount (somme des montants nets des lignes) Représente le montant total des lignes de la facture avant les frais, remises et taxes.
+        $node->appendChild($this->currencyElement('ram:LineTotalAmount', $this->invoice->invoice_item_subtotal + $this->invoice->invoice_discount_amount_subtotal));
+
+        // ChargeTotalAmount (total des frais au niveau du document) Indique le montant total des frais supplémentaires appliqués à la facture.
+        //~ $node->appendChild($this->currencyElement('ram:ChargeTotalAmount', 0)); // optional (todo? from db: maybe global taxes)
+
+        // AllowanceTotalAmount (total des remises 'au niveau du document') Représente le montant total des remises accordées sur la facture. (voir set_invoice_discount_amount_total() helper)
+        $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', $this->invoice->invoice_discount_amount_subtotal)); // optional
 
         $invoiceTotal = $this->invoice->invoice_total; // ApplicableTradeTax>CategoryCode=O
         if( ! $this->notax)
         {
-            $invoiceTotal = $this->invoice->invoice_subtotal; // ApplicableTradeTax>CategoryCode=S FIX² added by set_invoice_discount_amount_total()
+            $invoiceTotal = $this->invoice->invoice_item_subtotal;
         }
+        // TaxBasisTotalAmount (montant total hors TVA)
         $node->appendChild($this->currencyElement('ram:TaxBasisTotalAmount', $invoiceTotal)); // ApplicableTradeTax>CategoryCode= O || S FIX
         $node->appendChild($this->currencyElement('ram:TaxTotalAmount', $this->invoice->invoice_item_tax_total, 2, true));
         $node->appendChild($this->currencyElement('ram:GrandTotalAmount', $this->invoice->invoice_total));
@@ -539,22 +564,20 @@ class Facturxv10Xml
         $taxNode = $this->doc->createElement('ram:ApplicableTradeTax');
         $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
 
-        if ($item->item_tax_rate_percent > 0) // todo? != ApplicableTradeTax>CategoryCode=O
+        if ($item->item_tax_rate_percent > 0)
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'S')); // todo from db?
             $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $item->item_tax_rate_percent));
-            $itemTotal = $item->item_subtotal; // ApplicableTradeTax>CategoryCode=S FIX²² (Need discounts applyed before tax in model se)
         }
         else
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O')); // todo from db?
-            $itemTotal = $item->item_total; // ApplicableTradeTax>CategoryCode=O FIX²
         }
         $node->appendChild($taxNode);
 
         // SpecifiedTradeSettlementLineMonetarySummation
         $sumNode = $this->doc->createElement('ram:SpecifiedTradeSettlementLineMonetarySummation');
-        $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $itemTotal)); // ApplicableTradeTax>CategoryCode=O OR S FIX²
+        $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $item->item_subtotal - $item->item_discount)); // ApplicableTradeTax>CategoryCode=O OR S FIX²
         $node->appendChild($sumNode);
 
         return $node;

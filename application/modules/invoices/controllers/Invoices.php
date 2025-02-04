@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -325,11 +325,13 @@ class Invoices extends Admin_Controller
 
     public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id): void
     {
-        $this->load->model('mdl_invoice_tax_rates');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->mdl_invoice_tax_rates->delete($invoice_tax_rate_id);
 
-        $this->load->model('mdl_invoice_amounts');
-        $this->mdl_invoice_amounts->calculate($invoice_id);
+        $this->load->model('invoices/mdl_invoice_amounts');
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+        // Recalculate invoice amounts
+        $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
 
         redirect('invoices/view/' . $invoice_id);
     }
@@ -339,11 +341,13 @@ class Invoices extends Admin_Controller
         $this->db->select('invoice_id');
         $invoice_ids = $this->db->get('ip_invoices')->result();
 
-        $this->load->model('mdl_invoice_amounts');
+        $this->load->model('invoices/mdl_invoice_amounts');
 
         foreach ($invoice_ids as $invoice_id)
         {
-            $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
+            $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id->invoice_id);
+            // Recalculate invoice amounts
+            $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id, $global_discount);
         }
     }
 }

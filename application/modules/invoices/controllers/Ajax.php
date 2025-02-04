@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -32,6 +32,33 @@ class Ajax extends Admin_Controller
 
         if ($this->mdl_invoices->run_validation('validation_rules_save_invoice')) {
             $items = json_decode($this->input->post('items'));
+
+            $items_subtotal = 0.0;
+            if ($this->input->post('invoice_discount_amount') === '') {
+                $invoice_discount_amount = floatval(0);
+            } else {
+                $invoice_discount_amount = $this->input->post('invoice_discount_amount');
+                foreach ($items as $item) {
+                    if (!empty($item->item_name)) {
+                        $items_subtotal += floatval($item->item_quantity) * (floatval($item->item_price) - floatval($item->item_discount_amount));
+                    }
+                }
+            }
+// todo? on client side (only one) / server side (2 are possible?) && aplied before all taxes
+            if ($this->input->post('invoice_discount_percent') === '') {
+                $invoice_discount_percent = floatval(0);
+            } else {
+                $invoice_discount_percent = $this->input->post('invoice_discount_percent');
+            }
+
+            // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+            $global_discount =
+            [
+                'amount'         => $invoice_discount_amount ? standardize_amount($invoice_discount_amount) : 0.0,
+                'percent'        => $invoice_discount_percent ? standardize_amount($invoice_discount_percent) : 0.0,
+                'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
+                'items_subtotal' => $items_subtotal,
+            ];
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
@@ -55,7 +82,8 @@ class Ajax extends Admin_Controller
                         $this->mdl_tasks->update_status(4, $item->item_task_id);
                     }
 
-                    $this->mdl_items->save($item_id, $item);
+                    $this->mdl_items->save($item_id, $item, $global_discount);
+
                 } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
@@ -75,18 +103,6 @@ class Ajax extends Admin_Controller
             }
 
             $invoice_status = $this->input->post('invoice_status_id');
-
-            if ($this->input->post('invoice_discount_amount') === '') {
-                $invoice_discount_amount = floatval(0);
-            } else {
-                $invoice_discount_amount = $this->input->post('invoice_discount_amount');
-            }
-
-            if ($this->input->post('invoice_discount_percent') === '') {
-                $invoice_discount_percent = floatval(0);
-            } else {
-                $invoice_discount_percent = $this->input->post('invoice_discount_percent');
-            }
 
             // Generate new invoice number if needed
             $invoice_number = $this->input->post('invoice_number');
@@ -132,10 +148,10 @@ class Ajax extends Admin_Controller
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
             }
 
-            // Recalculate for discounts
-            $this->load->model('invoices/mdl_invoice_amounts');
-            $this->mdl_invoice_amounts->calculate($invoice_id);
-
+            // Recalculate for discounts (why?)
+            //~ $this->load->model('invoices/mdl_invoice_amounts');
+            //~ $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
+//~ $e = new \Exception;var_dump($e->getTraceAsString());exit(__file__.__line__);
             $response = [
                 'success' => 1,
             ];

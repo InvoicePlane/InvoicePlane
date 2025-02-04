@@ -66,14 +66,14 @@ class Mdl_Quotes extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_users.*,
-			ip_clients.*,
-			ip_quote_amounts.quote_amount_id,
-			IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
-			IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
-			IFnull(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
-			IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
+            ip_clients.*,
+            ip_quote_amounts.quote_amount_id,
+            IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
+            IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
+            IFnull(ip_quote_amounts.quote_tax_total, '0.00') AS quote_tax_total,
+            IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
             ip_invoices.invoice_number,
-			ip_quotes.*", false);
+            ip_quotes.*", false);
     }
 
     public function default_order_by()

@@ -202,11 +202,13 @@ class Quotes extends Admin_Controller
      */
     public function delete_quote_tax($quote_id, $quote_tax_rate_id)
     {
-        $this->load->model('mdl_quote_tax_rates');
+        $this->load->model('quotes/mdl_quote_tax_rates');
         $this->mdl_quote_tax_rates->delete($quote_tax_rate_id);
 
-        $this->load->model('mdl_quote_amounts');
-        $this->mdl_quote_amounts->calculate($quote_id);
+        $this->load->model('quotes/mdl_quote_amounts');
+        $global_discount['item'] = $this->mdl_quote_amounts->get_global_discount($quote_id);
+        // Recalculate quote amounts
+        $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
 
         redirect('quotes/view/' . $quote_id);
     }
@@ -219,7 +221,9 @@ class Quotes extends Admin_Controller
         $this->load->model('mdl_quote_amounts');
 
         foreach ($quote_ids as $quote_id) {
-            $this->mdl_quote_amounts->calculate($quote_id->quote_id);
+            $global_discount['item'] = $this->mdl_quote_amounts->get_global_discount($quote_id->quote_id);
+            // Recalculate quote amounts
+            $this->mdl_quote_amounts->calculate($quote_id->quote_id, $global_discount);
         }
     }
 

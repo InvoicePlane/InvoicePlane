@@ -88,22 +88,26 @@ class Mdl_Quote_Items extends Response_Model
     /**
      * @param null $id
      * @param null $db_array
+     * @param []   $global_discount
      *
      * @return int|null
      */
-    public function save($id = null, $db_array = null)
+    public function save($id = null, $db_array = null, & $global_discount = [])
     {
         $id = parent::save($id, $db_array);
 
         $this->load->model('quotes/mdl_quote_item_amounts');
-        $this->mdl_quote_item_amounts->calculate($id);
+        $this->mdl_quote_item_amounts->calculate($id, $global_discount);
 
         $this->load->model('quotes/mdl_quote_amounts');
 
-        if (is_object($db_array) && isset($db_array->quote_id)) {
-            $this->mdl_quote_amounts->calculate($db_array->quote_id);
-        } elseif (is_array($db_array) && isset($db_array['quote_id'])) {
-            $this->mdl_quote_amounts->calculate($db_array['quote_id']);
+        if (is_object($db_array) && isset($db_array->quote_id))
+        {
+            $this->mdl_quote_amounts->calculate($db_array->quote_id, $global_discount);
+        }
+        elseif (is_array($db_array) && isset($db_array['quote_id']))
+        {
+            $this->mdl_quote_amounts->calculate($db_array['quote_id'], $global_discount);
         }
 
         return $id;
@@ -117,10 +121,11 @@ class Mdl_Quote_Items extends Response_Model
     public function delete($item_id)
     {
         // Get item:
-        // the invoice id is needed to recalculate quote amounts
+        // the quote id is needed to recalculate quote amounts
         $query = $this->db->get_where($this->table, ['item_id' => $item_id]);
 
-        if ($query->num_rows() == 0) {
+        if ($query->num_rows() == 0)
+        {
             return false;
         }
 
@@ -134,9 +139,10 @@ class Mdl_Quote_Items extends Response_Model
         $this->db->where('item_id', $item_id);
         $this->db->delete('ip_quote_item_amounts');
 
-        // Recalculate quote amounts
         $this->load->model('quotes/mdl_quote_amounts');
-        $this->mdl_quote_amounts->calculate($quote_id);
+        $global_discount['item'] = $this->mdl_quote_amounts->get_global_discount($quote_id);
+        // Recalculate quote amounts
+        $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
 
         return true;
     }
