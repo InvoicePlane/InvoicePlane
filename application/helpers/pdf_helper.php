@@ -160,14 +160,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     $data = [
-        'invoice'               => $invoice,
-        'invoice_tax_rates'     => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-        'items'                 => $items,
-        'payment_method'        => $payment_method,
-        'output_type'           => 'pdf',
-        'show_item_discounts'   => $show_item_discounts,
-        'custom_fields'         => $custom_fields,
-        'taxes_after_discounts' => config_item('taxes_after_discounts'),
+        'invoice'             => $invoice,
+        'invoice_tax_rates'   => $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
+        'items'               => $items,
+        'payment_method'      => $payment_method,
+        'output_type'         => 'pdf',
+        'show_item_discounts' => $show_item_discounts,
+        'custom_fields'       => $custom_fields,
+        'legacy_calculation'  => config_item('legacy_calculation'),
     ];
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
@@ -374,13 +374,13 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 
     $data =
     [
-        'quote'                 => $quote,
-        'quote_tax_rates'       => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-        'items'                 => $items,
-        'output_type'           => 'pdf',
-        'show_item_discounts'   => $show_item_discounts,
-        'custom_fields'         => $custom_fields,
-        'taxes_after_discounts' => config_item('taxes_after_discounts'),
+        'quote'               => $quote,
+        'quote_tax_rates'     => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
+        'items'               => $items,
+        'output_type'         => 'pdf',
+        'show_item_discounts' => $show_item_discounts,
+        'custom_fields'       => $custom_fields,
+        'legacy_calculation'  => config_item('legacy_calculation'),
     ];
 
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);

@@ -11,9 +11,9 @@
 -->
             <th class="amount"><?php _trans('quantity'); ?></th>
             <th class="amount"><?php _trans('price'); ?></th>
-            <?php echo ! $taxes_after_discounts ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
+            <?php echo ! $legacy_calculation ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
             <th class="amount"><?php _trans('tax_rate'); ?></th>
-            <?php echo $taxes_after_discounts ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
+            <?php echo $legacy_calculation ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
 <!--
             <th class="amount"><?php _trans('subtotal'); ?></th>
             <th class="amount"><?php _trans('tax'); ?></th>
@@ -50,7 +50,7 @@
                 </div>
             </td>
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
             }
@@ -69,7 +69,7 @@
                 </div>
             </td>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
             }
@@ -106,7 +106,7 @@
                 <span name="subtotal" class="amount"></span>
             </td>
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
             }
@@ -116,7 +116,7 @@
                 <span name="item_tax_total" class="amount"></span>
             </td>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
             }
@@ -159,7 +159,7 @@
                     </div>
                 </td>
 <?php
-                if ( ! $taxes_after_discounts)
+                if ( ! $legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
                 }
@@ -179,7 +179,7 @@
                     </div>
                 </td>
 <?php
-                if ($taxes_after_discounts)
+                if ($legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
                 }
@@ -221,7 +221,7 @@
                     </span>
                 </td>
 <?php
-                if ( ! $taxes_after_discounts)
+                if ( ! $legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
                 }
@@ -233,7 +233,7 @@
                     </span>
                 </td>
 <?php
-                if ($taxes_after_discounts)
+                if ($legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
                 }
@@ -272,7 +272,7 @@
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
             }
@@ -311,7 +311,7 @@
                 </td>
             </tr>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
             }

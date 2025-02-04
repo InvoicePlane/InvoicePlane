@@ -216,9 +216,9 @@ class Invoices extends Admin_Controller
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point'             => get_setting('decimal_point'),
                 ],
-                'invoice_statuses'      => $this->mdl_invoices->statuses(),
-                'payment_cf_exist'      => $payment_cf_exist,
-                'taxes_after_discounts' => config_item('taxes_after_discounts'),
+                'invoice_statuses'   => $this->mdl_invoices->statuses(),
+                'payment_cf_exist'   => $payment_cf_exist,
+                'legacy_calculation' => config_item('legacy_calculation'),
             ]
         );
 

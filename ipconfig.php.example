@@ -34,11 +34,11 @@ DB_PORT=
 SESS_EXPIRATION=864000
 SESS_MATCH_IP=true
 
-# Calculation of discounts - Since 1.6.3
-# Set to true if taxes applied before discounts (Default. Same as previous v1.6.3)
-# Set to false if taxes applied after discounts
-# Set to false if use e-invoices (Zugferd2, Factur-x or en-16931). Important to valid xml (embed in pdf) discount calculation amounts.
-TAXES_AFTER_DISCOUNTS=true
+# Amounts Calculation - Since 1.6.3
+# Set to true  to conserve same calculation as previous v1.6.3 (Default)
+# Set to false to calculate all discounts with item subtotal and calculate all taxes with discounted item subtotal
+# Set to false if use e-invoices (Zugferd2, Factur-x or en-16931). Important to valid xml (embed in pdf). New calculation amounts.
+LEGACY_CALCULATION=true
 
 # Enable the deletion of invoices
 ENABLE_INVOICE_DELETION=false

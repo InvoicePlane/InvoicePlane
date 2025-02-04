@@ -10,7 +10,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link        https://invoiceplane.com
  * @Note        Zugferd 2.3 & Factur-X 1.0.7 compatibility
  *
- * @Important   Need TAXES_AFTER_DISCOUNTS=false (In ip_config)
+ * @Important   Need LEGACY_CALCULATION=false (In ip_config)
  *               For embeded xml are valid (discounts calculation)
  *
  * @todos?
@@ -341,7 +341,7 @@ class Facturxv10Xml
      * Add missing discount invoice vars [for factur-x validation](ecosio.com/en/peppol-and-xml-document-validator)
      *
      * invoice_subtotal                    Scope TaxBasisTotalAmount
-     * invoice_discount_amount_total       Scope AllowanceTotalAmount (todo: it's used)
+     * invoice_discount_amount_total       Scope addSpecifiedTradeAllowanceCharge_discount()
      * invoice_discount_amount_subtotal    Scope SpecifiedTradeAllowanceCharge > ActualAmount>
      */
     protected function set_invoice_discount_amount_total()

@@ -55,7 +55,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         $invoice_amounts = $query->row();
 
         // Discounts calculation - since v1.6.3
-        if(config_item('taxes_after_discounts'))
+        if(config_item('legacy_calculation'))
         {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
             $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
@@ -166,7 +166,7 @@ class Mdl_Invoice_Amounts extends CI_Model
      */
     public function get_global_discount($invoice_id)
     {
-        // The global_discount amounts is needed to recalculate invoice amounts
+        // The global_discount amounts is needed to recalculate invoice amounts (if legacy_calculation is false)
         $row = $this->db->query("
             SELECT SUM(item_subtotal) - (SUM(item_total) - SUM(item_tax_total) + SUM(item_discount)) AS global_discount
             FROM ip_invoice_item_amounts
@@ -227,7 +227,7 @@ class Mdl_Invoice_Amounts extends CI_Model
             $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
 
             // Discounts calculation - since v1.6.3
-            if(config_item('taxes_after_discounts'))
+            if(config_item('legacy_calculation'))
             {
                 $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
             }

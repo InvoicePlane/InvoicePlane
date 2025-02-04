@@ -34,7 +34,7 @@ class Mdl_Item_Amounts extends CI_Model
         $item_subtotal = $item->item_quantity * $item->item_price;
 
         // Discounts calculation - since v1.6.3
-        if(config_item('taxes_after_discounts'))
+        if(config_item('legacy_calculation'))
         {
             $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
             $item_discount_total = $item->item_discount_amount * $item->item_quantity;

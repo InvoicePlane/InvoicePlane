@@ -186,7 +186,7 @@
                             </tr>
                         <?php endforeach ?>
 
-                        <?php if ( ! $taxes_after_discounts) : ?>
+                        <?php if ( ! $legacy_calculation) : ?>
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
                             <td class="amount"><?php _trans('discount'); ?></td>
@@ -229,7 +229,7 @@
                             </tr>
                         <?php endforeach ?>
 
-                        <?php if ($taxes_after_discounts) : ?>
+                        <?php if ($legacy_calculation) : ?>
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
                             <td class="amount"><?php _trans('discount'); ?></td>
