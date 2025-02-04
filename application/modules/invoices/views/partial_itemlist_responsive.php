@@ -69,7 +69,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
 <?php
-                            if ( ! $taxes_after_discounts)
+                            if ( ! $legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
                             }
@@ -87,7 +87,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                 </select>
                             </div>
 <?php
-                            if ($taxes_after_discounts)
+                            if ($legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
                             }
@@ -109,7 +109,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                 </div>
                             </div>
 <?php
-                            if ( ! $taxes_after_discounts)
+                            if ( ! $legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
                             }
@@ -123,7 +123,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                 </div>
                             </div>
 <?php
-                            if ($taxes_after_discounts)
+                            if ($legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
                             }
@@ -228,7 +228,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                     <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                                 </div>
 <?php
-                                if ( ! $taxes_after_discounts)
+                                if ( ! $legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
                                 }
@@ -246,7 +246,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                     </select>
                                 </div>
 <?php
-                                if ($taxes_after_discounts)
+                                if ($legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
                                 }
@@ -262,7 +262,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                     </div>
                                 </div>
 <?php
-                                if ( ! $taxes_after_discounts)
+                                if ( ! $legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
                                 }
@@ -276,7 +276,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                     </div>
                                 </div>
 <?php
-                                if ($taxes_after_discounts)
+                                if ($legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
                                 }
@@ -328,7 +328,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
             </tr>
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
             }
@@ -362,7 +362,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 </td>
             </tr>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
             }

@@ -58,8 +58,8 @@ class View extends Base_Controller
         // Get all custom fields
         $custom_fields = [
             'invoice' => $this->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
-            'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
-            'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
+            'client'  => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
+            'user'    => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
         ];
 
         // Attachments
@@ -68,16 +68,16 @@ class View extends Base_Controller
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
 
         $data = [
-            'invoice'               => $invoice,
-            'items'                 => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_tax_rates'     => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_url_key'       => $invoice_url_key,
-            'flash_message'         => $this->session->flashdata('flash_message'),
-            'payment_method'        => $payment_method,
-            'is_overdue'            => $is_overdue,
-            'attachments'           => $attachments,
-            'custom_fields'         => $custom_fields,
-            'taxes_after_discounts' => config_item('taxes_after_discounts'),
+            'invoice'            => $invoice,
+            'items'              => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_tax_rates'  => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_url_key'    => $invoice_url_key,
+            'flash_message'      => $this->session->flashdata('flash_message'),
+            'payment_method'     => $payment_method,
+            'is_overdue'         => $is_overdue,
+            'attachments'        => $attachments,
+            'custom_fields'      => $custom_fields,
+            'legacy_calculation' => config_item('legacy_calculation'),
         ];
 
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
@@ -95,10 +95,10 @@ class View extends Base_Controller
             {
                 if ('.' != $file && '..' != $file && strpos($file, $key) !== false)
                 {
-                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                    $obj['name']     = substr($file, strpos($file, '_', 1) + 1);
                     $obj['fullname'] = $file;
-                    $obj['size'] = filesize($path . '/' . $file);
-                    $attachments[] = $obj;
+                    $obj['size']     = filesize($path . '/' . $file);
+                    $attachments[]   = $obj;
                 }
             }
         }
@@ -196,9 +196,9 @@ class View extends Base_Controller
 
         // Get all custom fields
         $custom_fields = array(
-            'quote' => $this->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
+            'quote'  => $this->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
             'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
-            'user' => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
+            'user'   => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
         );
 
         // Attachments
@@ -207,15 +207,15 @@ class View extends Base_Controller
         $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
 
         $data = [
-            'quote'                 => $quote,
-            'items'                 => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
-            'quote_tax_rates'       => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
-            'quote_url_key'         => $quote_url_key,
-            'flash_message'         => $this->session->flashdata('flash_message'),
-            'is_expired'            => $is_expired,
-            'attachments'           => $attachments,
-            'custom_fields'         => $custom_fields,
-            'taxes_after_discounts' => config_item('taxes_after_discounts'),
+            'quote'              => $quote,
+            'items'              => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
+            'quote_tax_rates'    => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
+            'quote_url_key'      => $quote_url_key,
+            'flash_message'      => $this->session->flashdata('flash_message'),
+            'is_expired'         => $is_expired,
+            'attachments'        => $attachments,
+            'custom_fields'      => $custom_fields,
+            'legacy_calculation' => config_item('legacy_calculation'),
         ];
 
         $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);

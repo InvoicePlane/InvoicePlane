@@ -52,7 +52,7 @@ class Mdl_Quote_Amounts extends CI_Model
         $quote_amounts = $query->row();
 
         // Discounts calculation - since v1.6.3
-        if(config_item('taxes_after_discounts'))
+        if(config_item('legacy_calculation'))
         {
             $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount;
             $quote_subtotal = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
@@ -126,7 +126,7 @@ class Mdl_Quote_Amounts extends CI_Model
      */
     public function get_global_discount($quote_id)
     {
-        // The global_discount amounts is needed to recalculate quote amounts
+        // The global_discount amounts is needed to recalculate quote amounts (if legacy_calculation is false)
         $row = $this->db->query("
             SELECT SUM(item_subtotal) - (SUM(item_total) - SUM(item_tax_total) + SUM(item_discount)) AS global_discount
             FROM ip_quote_item_amounts
@@ -192,7 +192,7 @@ class Mdl_Quote_Amounts extends CI_Model
             $quote_total = $quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total + $quote_amount->quote_tax_total;
 
             // Discounts calculation - since v1.6.3
-            if(config_item('taxes_after_discounts'))
+            if(config_item('legacy_calculation'))
             {
                 $quote_total = $this->calculate_discount($quote_id, $quote_total);
             }

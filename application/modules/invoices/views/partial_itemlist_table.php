@@ -13,9 +13,9 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 -->
             <th class="amount"><?php _trans('quantity'); ?></th>
             <th class="amount"><?php _trans('price'); ?></th>
-            <?php echo ! $taxes_after_discounts ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
+            <?php echo ! $legacy_calculation ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
             <th class="amount"><?php _trans('tax_rate'); ?></th>
-            <?php echo $taxes_after_discounts ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
+            <?php echo $legacy_calculation ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
 <!--
             <th class="amount"><?php _trans('subtotal'); ?></th>
             <th class="amount"><?php _trans('tax'); ?></th>
@@ -61,7 +61,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 </div>
             </td>
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
             }
@@ -81,7 +81,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 </div>
             </td>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
             }
@@ -127,7 +127,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <span name="subtotal" class="amount"></span>
             </td>
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
             }
@@ -137,7 +137,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <span name="item_tax_total" class="amount"></span>
             </td>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
             }
@@ -199,7 +199,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                     </div>
                 </td>
 <?php
-                if ( ! $taxes_after_discounts)
+                if ( ! $legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
                 }
@@ -219,7 +219,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                     </div>
                 </td>
 <?php
-                if ($taxes_after_discounts)
+                if ($legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
                 }
@@ -274,7 +274,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                     </span>
                 </td>
 <?php
-                if ( ! $taxes_after_discounts)
+                if ( ! $legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
                 }
@@ -286,7 +286,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                     </span>
                 </td>
 <?php
-                if ($taxes_after_discounts)
+                if ($legacy_calculation)
                 {
                     $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
                 }
@@ -329,7 +329,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
             }
@@ -369,7 +369,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 </td>
             </tr>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
             }

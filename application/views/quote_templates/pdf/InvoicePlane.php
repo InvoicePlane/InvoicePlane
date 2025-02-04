@@ -189,7 +189,7 @@ if($add_table_and_head_for_sums)
         <tbody class="invoice-sums">
 
 <?php
-        if ( ! $taxes_after_discounts)
+        if ( ! $legacy_calculation)
         {
             discount_global_print_in_pdf($quote, $show_item_discounts, 'quote'); // in helpers/pdf_helper
         }
@@ -225,7 +225,7 @@ if($add_table_and_head_for_sums)
         <?php endforeach ?>
 
 <?php
-        if ($taxes_after_discounts)
+        if ($legacy_calculation)
         {
             discount_global_print_in_pdf($quote, $show_item_discounts, 'quote'); // in helpers/pdf_helper
         }

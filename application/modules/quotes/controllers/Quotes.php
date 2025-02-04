@@ -152,7 +152,7 @@ class Quotes extends Admin_Controller
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point'             => get_setting('decimal_point')
                 ],
-                'taxes_after_discounts' => config_item('taxes_after_discounts'),
+                'legacy_calculation' => config_item('legacy_calculation'),
             ]
         );
 

@@ -231,7 +231,7 @@ if($add_table_and_head_for_sums)
         <tbody class="invoice-sums">
 
 <?php
-        if ( ! $taxes_after_discounts)
+        if ( ! $legacy_calculation)
         {
             discount_global_print_in_pdf($invoice, $show_item_discounts); // in helpers/pdf_helper
         }
@@ -267,7 +267,7 @@ if($add_table_and_head_for_sums)
         <?php } ?>
 
 <?php
-        if ($taxes_after_discounts)
+        if ($legacy_calculation)
         {
             discount_global_print_in_pdf($invoice, $show_item_discounts); // in helpers/pdf_helper
         }

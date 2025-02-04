@@ -52,7 +52,7 @@
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
 <?php
-                            if ( ! $taxes_after_discounts)
+                            if ( ! $legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
                             }
@@ -70,7 +70,7 @@
                                 </select>
                             </div>
 <?php
-                            if ($taxes_after_discounts)
+                            if ($legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
                             }
@@ -90,7 +90,7 @@
                                 </div>
                             </div>
 <?php
-                            if ( ! $taxes_after_discounts)
+                            if ( ! $legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
                             }
@@ -104,7 +104,7 @@
                                 </div>
                             </div>
 <?php
-                            if ($taxes_after_discounts)
+                            if ($legacy_calculation)
                             {
                                 $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
                             }
@@ -183,7 +183,7 @@
                                     <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                                 </div>
 <?php
-                                if ( ! $taxes_after_discounts)
+                                if ( ! $legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
                                 }
@@ -201,7 +201,7 @@
                                     </select>
                                 </div>
 <?php
-                                if ($taxes_after_discounts)
+                                if ($legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
                                 }
@@ -218,7 +218,7 @@
                                     </div>
                                 </div>
 <?php
-                                if ( ! $taxes_after_discounts)
+                                if ( ! $legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
                                 }
@@ -232,7 +232,7 @@
                                     </div>
                                 </div>
 <?php
-                                if ($taxes_after_discounts)
+                                if ($legacy_calculation)
                                 {
                                     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
                                 }
@@ -279,7 +279,7 @@
                 class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
             </tr>
 <?php
-            if ( ! $taxes_after_discounts)
+            if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
             }
@@ -313,7 +313,7 @@
                 </td>
             </tr>
 <?php
-            if ($taxes_after_discounts)
+            if ($legacy_calculation)
             {
                 $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
             }
