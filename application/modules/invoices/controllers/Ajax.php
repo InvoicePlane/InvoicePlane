@@ -44,7 +44,7 @@ class Ajax extends Admin_Controller
                     }
                 }
             }
-// todo? on client side (only one) / server side (2 are possible?) && aplied before all taxes
+            // todo? on client side (only one) / server side (2 are possible)
             if ($this->input->post('invoice_discount_percent') === '') {
                 $invoice_discount_percent = floatval(0);
             } else {
@@ -148,10 +148,13 @@ class Ajax extends Admin_Controller
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
             }
 
-            // Recalculate for discounts (why?)
-            //~ $this->load->model('invoices/mdl_invoice_amounts');
-            //~ $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
-//~ $e = new \Exception;var_dump($e->getTraceAsString());exit(__file__.__line__);
+            if(config_item('legacy_calculation'))
+            {
+                // Recalculate for discounts
+                $this->load->model('invoices/mdl_invoice_amounts');
+                $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
+            }
+
             $response = [
                 'success' => 1,
             ];
