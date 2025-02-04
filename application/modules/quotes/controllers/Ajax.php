@@ -43,7 +43,7 @@ class Ajax extends Admin_Controller
                     }
                 }
             }
-
+            // todo? on client side (only one) / server side (2 are possible)
             if ($this->input->post('quote_discount_percent') === '') {
                 $quote_discount_percent = floatval(0);
             } else {
@@ -97,9 +97,12 @@ class Ajax extends Admin_Controller
 
             $this->mdl_quotes->save($quote_id, $db_array, $global_discount);
 
-            // Recalculate for discounts (why?)
-            //~ $this->load->model('quotes/mdl_quote_amounts');
-            //~ $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
+            if(config_item('legacy_calculation'))
+            {
+                // Recalculate for discounts
+                $this->load->model('quotes/mdl_quote_amounts');
+                $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
+            }
 
             $response = [
                 'success' => 1,
