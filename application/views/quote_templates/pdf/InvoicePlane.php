@@ -188,19 +188,19 @@ if($add_table_and_head_for_sums)
 ?>
         <tbody class="invoice-sums">
 
-        <tr>
-            <td class="text-right" colspan="<?php echo $colspan ?>">
-                <?php _trans('subtotal'); ?>
-            </td>
-            <td class="text-right"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
-        </tr>
-
 <?php
         if ( ! $taxes_after_discounts)
         {
             discount_global_print_in_pdf($quote, $show_item_discounts, 'quote'); // in helpers/pdf_helper
         }
 ?>
+
+        <tr>
+            <td class="text-right" colspan="<?php echo $colspan ?>">
+                <?php _trans('subtotal'); ?>
+            </td>
+            <td class="text-right"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
+        </tr>
 
         <?php if ($quote->quote_item_tax_total > 0) { ?>
             <tr>

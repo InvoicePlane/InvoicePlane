@@ -57,6 +57,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('price'); ?></span>
                     <input type="text" name="item_price" class="input-sm form-control amount" value="">
+                    <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                 </div>
             </td>
 <?php
@@ -327,17 +328,17 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
-            <tr>
-                <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
-                <td style="width: 60%;"
-                    class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
-            </tr>
 <?php
             if ( ! $taxes_after_discounts)
             {
                 $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
             }
 ?>
+            <tr>
+                <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
+                <td style="width: 60%;"
+                    class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
+            </tr>
             <tr>
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>

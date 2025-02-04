@@ -99,22 +99,26 @@ class Mdl_Items extends Response_Model
     /**
      * @param null $id
      * @param null $db_array
+     * @param []   $global_discount
      *
      * @return int|null
      */
-    public function save($id = null, $db_array = null)
+    public function save($id = null, $db_array = null, & $global_discount = [])
     {
         $id = parent::save($id, $db_array);
 
         $this->load->model('invoices/mdl_item_amounts');
-        $this->mdl_item_amounts->calculate($id);
+        $this->mdl_item_amounts->calculate($id, $global_discount);
 
         $this->load->model('invoices/mdl_invoice_amounts');
 
-        if (is_object($db_array) && isset($db_array->invoice_id)) {
-            $this->mdl_invoice_amounts->calculate($db_array->invoice_id);
-        } elseif (is_array($db_array) && isset($db_array['invoice_id'])) {
-            $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        if (is_object($db_array) && isset($db_array->invoice_id))
+        {
+            $this->mdl_invoice_amounts->calculate($db_array->invoice_id, $global_discount);
+        }
+        elseif (is_array($db_array) && isset($db_array['invoice_id']))
+        {
+            $this->mdl_invoice_amounts->calculate($db_array['invoice_id'], $global_discount);
         }
 
         return $id;
@@ -132,7 +136,8 @@ class Mdl_Items extends Response_Model
         // and the task id to update status if the item refers a task
         $query = $this->db->get_where($this->table, ['item_id' => $item_id]);
 
-        if ($query->num_rows() == 0) {
+        if ($query->num_rows() == 0)
+        {
             return false;
         }
 
@@ -146,9 +151,10 @@ class Mdl_Items extends Response_Model
         $this->db->where('item_id', $item_id);
         $this->db->delete('ip_invoice_item_amounts');
 
-        // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
-        $this->mdl_invoice_amounts->calculate($invoice_id);
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+        // Recalculate invoice amounts
+        $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
 
         return true;
     }

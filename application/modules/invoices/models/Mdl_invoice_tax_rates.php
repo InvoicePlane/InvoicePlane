@@ -49,8 +49,9 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
         }
 
         if ($invoice_id) {
-            $this->mdl_invoice_amounts->calculate_invoice_taxes($invoice_id);
-            $this->mdl_invoice_amounts->calculate($invoice_id);
+            $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+            // Recalculate invoice amounts
+            $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
         }
 
     }

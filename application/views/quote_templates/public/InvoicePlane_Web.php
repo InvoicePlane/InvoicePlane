@@ -185,11 +185,6 @@
                                 <td class="amount"><?php echo format_currency($item->item_subtotal); ?></td>
                             </tr>
                         <?php endforeach ?>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td class="amount"><?php _trans('subtotal'); ?>:</td>
-                            <td class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
-                        </tr>
 
                         <?php if ( ! $taxes_after_discounts) : ?>
                         <tr>
@@ -206,6 +201,12 @@
                             </td>
                         </tr>
                         <?php endif ?>
+
+                        <tr>
+                            <td colspan="4"></td>
+                            <td class="amount"><?php _trans('subtotal'); ?>:</td>
+                            <td class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
+                        </tr>
 
                         <?php if ($quote->quote_item_tax_total > 0) { ?>
                             <tr>
