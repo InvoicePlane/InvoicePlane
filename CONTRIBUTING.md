@@ -103,11 +103,15 @@ Please refer to the [TRANSLATIONS.md](TRANSLATIONS.md) for detailed instructions
 
 ### Community Support
 
-Engage with the community by:
+Engage with the InvoicePlane community by:
 
-- **Answering Questions:** Assist others in the [Community Forums](https://community.invoiceplane.com/).  
-- **Joining Discussions:** Participate in GitHub discussions and feature planning.  
-- **Helping with Troubleshooting:** Provide solutions and suggestions in support threads.  
+- **Answering Questions:** Assist others, Help answer questions and contribute to discussions in the [Community Forums](https://community.invoiceplane.com/).
+
+- **[Discord Collaboration](https://discord.gg/PPzD2hTrXt)** - Join the live chat for quick discussions and collaboration.  
+
+- **[Participate in GitHub Issues](https://github.com/InvoicePlane/InvoicePlane/issues)** - Participate in bug reports, feature requests, and discussions and feature planning.
+ 
+- **Helping with Troubleshooting:** Provide solutions and suggestions in support threads on the [Community Forums](https://community.invoiceplane.com/) and on [Discord](https://discord.gg/PPzD2hTrXt)
 
 ---
 
@@ -145,8 +149,7 @@ Engage with the community by:
 - `bugfix/*` For bug fixes. Please refer to an issue, if you have one.
 - `feature/*` New features. Please refer to an issue, if you have one.
 
-- `master` Stable releases. Every time a new version of InvoicePlane goes live, that same version is available in the `master` branch.
-  
+- `master` **Stable releases**. Every time a new version of InvoicePlane goes live, that same version is available in the `master` branch.
 
 ---
 
