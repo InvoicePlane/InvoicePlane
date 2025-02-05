@@ -75,10 +75,10 @@ Help make InvoicePlane accessible to a global audience by contributing translati
 - **Improve Translations:** Enhance existing translations for clarity and accuracy.
 - **Add New Translations:** If your language isn't supported, consider adding it.
 
-Please refer to the [Translation Guide](https://wiki.invoiceplane.com/en/1.5/translations) for detailed instructions.
+Please refer to the [Translation Guide](https://wiki.invoiceplane.com/en/1.6/translations) for detailed instructions.
 
 ### Community Support
 
 Engage with the community by:
 
-- **Answering Questions:** Assist others in the [Community Forums](https://community.invoiceplane.com/).116
+- **Answering Questions:** Assist others in the [Community Forums](https://community.invoiceplane.com/).
