@@ -22,7 +22,7 @@ Thank you for considering contributing to InvoicePlane! Your support is invaluab
 
 ## How Can I Contribute?
 
-### ðŸž Reporting Bugs
+### Reporting Bugs
 
 If you encounter a bug, please report it by [opening an issue](https://github.com/InvoicePlane/InvoicePlane/issues) and include:
 
@@ -126,7 +126,8 @@ Engage with the community by:
 2. **Install Dependencies (if applicable)**  
    ```sh
    composer install
-   npm install
+   yarn install
+   yarn grunt
    ```
 
 ### Coding Standards
