@@ -48,10 +48,14 @@ To remove `index.php` from your URLs:
 
 Join our vibrant community for support, discussions, and contributions:
 
-- **Community Forums:** [InvoicePlane Forums](https://community.invoiceplane.com/)
-- **Slack Channel:** [Join our Slack](https://invoiceplane.com/slack)
-- **Issue Tracker:** [GitHub Issues](https://github.com/InvoicePlane/InvoicePlane/issues)
-- **Wiki and Documentation:** [InvoicePlane Wiki](https://wiki.invoiceplane.com/)
+## Community and Support  
+
+Join our vibrant community for support, discussions, and contributions:  
+
+- **Community Forums:** [InvoicePlane Forums](https://community.invoiceplane.com/) - Ask questions, share knowledge, and get help from the community.  
+- **Discord:** [Join our Discord](https://discord.gg/PPzD2hTrXt) - Chat with other users, developers, and contributors in real time.  
+- **Issue Tracker:** [GitHub Issues](https://github.com/InvoicePlane/InvoicePlane/issues) - Report bugs and request features.  
+- **Wiki and Documentation:** [InvoicePlane Wiki](https://wiki.invoiceplane.com/) - Find guides, FAQs, and detailed setup instructions.  
 
 *Please note that InvoicePlane is developed and maintained by a dedicated team of volunteers. Support is provided by the community on a best-effort basis.*
 
