@@ -2,8 +2,6 @@
 
 InvoicePlane is a self-hosted open-source application designed to help you manage your invoices, clients, and payments with ease.
 
-![InvoicePlane Screenshot](link-to-screenshot.png)
-
 ## Key Features
 
 - **Invoice & Quote Management:** Create, send, and manage professional invoices and quotes efficiently.
