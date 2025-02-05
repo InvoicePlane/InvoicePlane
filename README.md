@@ -1,87 +1,78 @@
-<p align="center">
-  <img src="/assets/core/img/logo.svg">
-</p>
-<p>&nbsp;</p>
+# InvoicePlane
 
-<p align="center">
-<a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1"></a>
-<a href="https://github.com/InvoicePlane/InvoicePlane/releases"><img src="https://img.shields.io/github/downloads/invoiceplane/invoiceplane/total?colorB=%23429ae1"></a>
-<a href="https://translations.invoiceplane.com/project/fusioninvoice"><img src="https://img.shields.io/badge/Translations-%40%20Crowdin-429ae1"></a>
-</p>
+InvoicePlane is a self-hosted open-source application designed to help you manage your invoices, clients, and payments with ease.
 
-<p align="center" bgcolor="#429ae1"><i>InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments.<br>
-  For more information visit <a href="https://www.invoiceplane.com">InvoicePlane.com</a> or try the <a href="https://www.invoiceplane.com/demo">Demo</a>.</i></p>
+![InvoicePlane Screenshot](link-to-screenshot.png)
 
----
+## Key Features
 
-Since the start of the project in 2014, InvoicePlane evolved into a software used worldwide.
-However, it is still developed in our free time, as a hobby.
-We do your best to fulfill any legal requirements but please note
-that we cannot make sure that the app is working 100% correctly.
-Also, due to the fact that InvoicePlane is a free and open source software without an income,
-there are no professional audits of the app yet.
+- **Invoice & Quote Management:** Create, send, and manage professional invoices and quotes efficiently.
+- **Client Management:** Maintain detailed client records, including contact information and transaction history.
+- **Payment Tracking:** Monitor payments, set up payment reminders, and integrate with multiple payment gateways.
+- **Customization:** Tailor templates, themes, and settings to match your brand and preferences.
+- **Reporting:** Generate insightful reports to keep track of your financial performance.
 
----
+## Getting Started
 
-### Quick Installation
+To get started with InvoicePlane:
 
-1. Download the latest version [from the InvoicePlane website](https://www.invoiceplane.com/downloads).
-2. Extract the package and copy all files to your webserver / webspace.
-3. Make a copy of the `ipconfig.php.example` file and rename this copy to `ipconfig.php`.
-4. Open the `ipconfig.php` file in an editor and set your URL like specified in the file.
-5. Open `http://your-invoiceplane-domain.com/index.php/setup` and follow the instructions.
+1. **Download the Latest Version:**
+   - Visit the [InvoicePlane website](https://www.invoiceplane.com/) to download the latest release.
 
-_Notice: Please download InvoicePlane from our [website](https://www.invoiceplane.com/downloads) only as the packages contain additional needed components.
-If you are a developer, read the [development guide](CONTRIBUTING.md)._
+2. **Extract and Upload:**
+   - Extract the downloaded package and upload the files to your web server or hosting environment.
 
----
+3. **Configuration:**
+   - Duplicate the `ipconfig.php.example` file and rename the copy to `ipconfig.php`.
+   - Open `ipconfig.php` in a text editor and set your base URL as specified.
 
-#### Issues
+4. **Run the Installer:**
+   - Navigate to `http://your-domain.com/index.php/setup` in your web browser and follow the on-screen instructions to complete the installation.
 
-Before you report an issue, try your best to make it reproducible.
+For a comprehensive installation guide, including prerequisites and troubleshooting tips, please refer to the [INSTALLATION.md](INSTALLATION.md) file.
 
-Something like "_It doesn't work_" will not help in finding your issue.
+## Removing `index.php` from URLs (Optional)
 
-We've improved the github issue template to help you answering the most common questions that are needed for reporting an issue.
+To remove `index.php` from your URLs:
 
-Try to report your issue on the forums first: https://community.invoiceplane.com
+1. **Enable mod_rewrite:**
+   - Ensure the `mod_rewrite` module is enabled on your web server.
 
-Once the issue is _reproducable / replicatable_, you will be asked to create an issue in the issues list.
+2. **Update Configuration:**
+   - Set the `REMOVE_INDEXPHP` setting in your `ipconfig.php` file to `true`.
 
----
+3. **Rename `.htaccess`:**
+   - Rename the `htaccess` file in the root directory to `.htaccess`.
 
-#### Remove `index.php` from the URL
+*Note:* If you encounter issues after making these changes, you can revert to the default settings by undoing the steps above.
 
-If you want to remove `index.php` from the URL, follow these instructions. However, this is an _optional_ step and not a requirement. If it's not working correctly, take a step back and use the application with out removing that part from the URL.
+## Community and Support
 
-1. Make sure that `mod_rewrite` is enabled on your web server.
-2. Set the `REMOVE_INDEXPHP` setting in your `ipconfig.php` to `true`.
-3. Rename the `htaccess` file to `.htaccess`
+Join our vibrant community for support, discussions, and contributions:
 
-If you want to install InvoicePlane in a subfolder (e.g. `http://your-invoiceplane-domain.com/invoices/`) you have to change the `ipconfig.php` and `.htaccess` file.
-The instructions can be found within the files.
+- **Community Forums:** [InvoicePlane Forums](https://community.invoiceplane.com/)
+- **Slack Channel:** [Join our Slack](https://invoiceplane.com/slack)
+- **Issue Tracker:** [GitHub Issues](https://github.com/InvoicePlane/InvoicePlane/issues)
+- **Wiki and Documentation:** [InvoicePlane Wiki](https://wiki.invoiceplane.com/)
 
----
+*Please note that InvoicePlane is developed and maintained by a dedicated team of volunteers. Support is provided by the community on a best-effort basis.*
 
-### Support / Development / Chat
+## Contributing
 
-Need some help or want to talk with other about InvoicePlane? Follow these links to get in touch.
-Please notice that InvoicePlane is **not** a commercial software but a small open source project and we neither offer
-24/7 support nor any form of SLA or paid help.
+We welcome contributions from the community! To get involved:
 
-[![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)
-[![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)
-[![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://github.com/invoiceplane/invoiceplane/issues/)
-[![Contribution Guide](https://img.shields.io/badge/Development%3A-Contribution%20Guide-429ae1.svg)](CONTRIBUTING.md)
+- **Report Issues:** Use the [Issue Tracker](https://github.com/InvoicePlane/InvoicePlane/issues) to report bugs or request features.
+- **Submit Pull Requests:** Fork the repository, make your changes, and submit a pull request for review.
+- **Translate InvoicePlane:** Help translate the application into your language.
 
----
+For detailed contribution guidelines, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-### Security Vulnerabilities
+## Security Vulnerabilities
 
-If you discover a security vulnerability please send an e-mail to `mail@invoiceplane.com` before disclosing the vulnerability to the public.
-All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability, please send an email to [mail@invoiceplane.com](mailto:mail@invoiceplane.com) before disclosing it publicly. We will address all security concerns promptly.
+
+*The name 'InvoicePlane' and the InvoicePlane logo are both copyrighted by [Kovah.de](https://kovah.de/) and [InvoicePlane.com](https://www.invoiceplane.com/) and their usage is restricted. For more information, visit [invoiceplane.com/license-copyright](https://www.invoiceplane.com/license-copyright).*
 
 ---
 
-> _The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
-and their usage is restricted! For more information visit invoiceplane.com/license-copyright_
+*This project is licensed under the terms of the [MIT License](LICENSE.txt).*
