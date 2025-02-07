@@ -1,6 +1,7 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
@@ -22,14 +23,12 @@ if (! defined('BASEPATH')) {
  */
 function format_currency($amount)
 {
-    global $CI;
+    $CI = & get_instance();
+    $amount = floatval($amount); // prevent null format
     $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point = $CI->mdl_settings->setting('decimal_point');
-
-    //prevent null format
-    if(is_null($amount)) $amount = 0;
 
     if ($currency_symbol_placement == 'before') {
         return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
@@ -79,7 +78,7 @@ function format_quantity($amount = null)
 }
 
 /**
- * Standardize an amount based on the system settings.
+ * Standardize an amount for database based on the system settings
  *
  * @param $amount
  *
@@ -87,12 +86,18 @@ function format_quantity($amount = null)
  */
 function standardize_amount($amount)
 {
-    $CI = & get_instance();
-    $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
-    $decimal_point = $CI->mdl_settings->setting('decimal_point');
+    if ($amount && ! is_numeric($amount))
+    {
+        $CI = & get_instance();
+        $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
+        $decimal_point = $CI->mdl_settings->setting('decimal_point');
 
-    $amount = str_replace($thousands_separator, '', $amount);
-    $amount = str_replace($decimal_point, '.', $amount);
+        if ($thousands_separator == '.' && ! substr_count($amount, ',') && substr_count($amount, '.') > 1)
+        {
+            $amount[ strrpos($amount, '.') ] = ','; // Replace last position of dot to comma
+        }
 
+        $amount = strtr($amount, [$thousands_separator => '', $decimal_point => '.']);
+    }
     return $amount;
 }
