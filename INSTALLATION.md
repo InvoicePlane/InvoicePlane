@@ -20,7 +20,7 @@ Follow the instructions below to install InvoicePlane on your preferred platform
 
 ## Prerequisites
 
-- **Web Server:** Nginx  
+- **Web Server:** Apache or Nginx  
 - **PHP:** Version **8.1 or higher**  
 - **Database:** MariaDB  
 
