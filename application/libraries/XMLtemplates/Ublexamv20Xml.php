@@ -55,9 +55,9 @@ class Ublexamv20Xml
         $this->doc->save(UPLOADS_TEMP_FOLDER . $this->filename . '.xml');
     }
 
-    public function ublFormattedFloat($amount, $nb_decimals = 2)
+    public function formattedFloat($amount, $nb_decimals = 2)
     {
-        return number_format((float) $amount, $nb_decimals);
+        return number_format(floatval($amount), $nb_decimals, '.', '');
     }
 
     protected function xmlRoot()
@@ -324,7 +324,7 @@ class Ublexamv20Xml
     // ===========================================================================
     protected function currencyElement($name, $amount, $nb_decimals = 2)
     {
-        $el = $this->doc->createElement($name, $this->ublFormattedFloat($amount, $nb_decimals));
+        $el = $this->doc->createElement($name, $this->formattedFloat($amount, $nb_decimals));
         $el->setAttribute('currencyID', $this->currencyCode);
 
         return $el;

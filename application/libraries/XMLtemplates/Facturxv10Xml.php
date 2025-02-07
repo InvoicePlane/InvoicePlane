@@ -62,10 +62,11 @@ class Facturxv10Xml
     protected function xmlRoot()
     {
         $node = $this->doc->createElement('rsm:CrossIndustryInvoice');
-        $node->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $node->setAttribute('xmlns:rsm', 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100');
+        $node->setAttribute('xmlns:qdt', 'urn:un:unece:uncefact:data:standard:QualifiedDataType:100');
         $node->setAttribute('xmlns:ram', 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100');
+        $node->setAttribute('xmlns:rsm', 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100');
         $node->setAttribute('xmlns:udt', 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100');
+        $node->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         return $node;
     }
 
@@ -73,7 +74,7 @@ class Facturxv10Xml
     {
         $node = $this->doc->createElement('rsm:ExchangedDocumentContext');
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
-        // urn:cen.eu:en16931:2017#compliant#urn:(zugferd:2.3 | factur-x.eu):1p0:(basic | en16931) : en16931 = COMFORT (profil)
+        // urn:cen.eu:en16931:2017#compliant#urn:(zugferd:2.3 | factur-x.eu):1p0:(basic | en16931) ::: en16931 = COMFORT (profil)
         // urn:cen.eu:en16931:2017#conformant#urn:(zugferd:2.3 | factur-x.eu):1p0:extended
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017')); // KISS
         $node->appendChild($guidelineNode);
@@ -107,22 +108,9 @@ class Facturxv10Xml
 
     protected function dateElement($date)
     {
-        $el = $this->doc->createElement('udt:DateTimeString', $this->facturxFormattedDate($date));
+        $el = $this->doc->createElement('udt:DateTimeString', $this->formattedDate($date));
         $el->setAttribute('format', 102);
         return $el;
-    }
-
-    /**
-     * @return string|null
-     */
-    function facturxFormattedDate($date)
-    {
-        if ($date)
-        {
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-            return $date->format('Ymd');
-        }
-        return '';
     }
 
     protected function xmlSupplyChainTradeTransaction()
@@ -143,7 +131,7 @@ class Facturxv10Xml
     protected function xmlSpecifiedTradePaymentTerms()
     {
         $node = $this->doc->createElement('ram:SpecifiedTradePaymentTerms');
-        // todo: improve? (Like: Payment within 30 days) invoice_date_due / get_settings('invoices_due_after')
+        // todo: improve? (Like: Payment within 30 days) invoice_date_due / get_settings('invoices_due_after') : Lang invoices_due_after
         $node->appendChild($this->doc->createElement('ram:Description', $this->invoice->invoice_terms));
         return $node;
     }
@@ -166,7 +154,10 @@ class Facturxv10Xml
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
         $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->user_zip)));
         $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->user_address_1)));
-        $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->user_address_2)));
+        if($this->invoice->user_address_2)
+        {
+            $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->user_address_2)));
+        }
         $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->user_city)));
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->user_country)));
         $node->appendChild($addressNode);
@@ -189,7 +180,10 @@ class Facturxv10Xml
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
         $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->client_zip)));
         $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->client_address_1)));
-        $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->client_address_2)));
+        if($this->invoice->client_address_2)
+        {
+            $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->client_address_2)));
+        }
         $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->client_city)));
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->client_country)));
         $node->appendChild($addressNode);
@@ -362,9 +356,9 @@ class Facturxv10Xml
         {
             $discount = $item_subtotal * ($this->invoice->invoice_discount_percent / 100);
         }
-        $this->invoice->invoice_subtotal = $this->facturxFormattedFloat($item_subtotal);
-        $this->invoice->invoice_discount_amount_total = $this->facturxFormattedFloat($item_discount + $discount);
-        $this->invoice->invoice_discount_amount_subtotal = $this->facturxFormattedFloat($discount);
+        $this->invoice->invoice_subtotal = $this->formattedFloat($item_subtotal);
+        $this->invoice->invoice_discount_amount_total = $this->formattedFloat($item_discount + $discount);
+        $this->invoice->invoice_discount_amount_subtotal = $this->formattedFloat($discount);
      }
 
     protected function setItemsSubtotalGroupedByTaxPercent()
@@ -402,7 +396,7 @@ class Facturxv10Xml
 
         if ($category == 'S')
         {
-            $node->appendChild($this->doc->createElement('ram:RateApplicablePercent', $percent));
+            $node->appendChild($this->currencyElement('ram:RateApplicablePercent', $percent));
         }
         else // Pour les auto-entrepreneurs non assujettis à la TVA (Catégorie 'O')
         {
@@ -422,7 +416,7 @@ class Facturxv10Xml
      */
     protected function currencyElement($name, $amount, $nb_decimals = 2, $add_code = false)
     {
-        $el = $this->doc->createElement($name, $this->facturxFormattedFloat($amount, $nb_decimals));
+        $el = $this->doc->createElement($name, $this->formattedFloat($amount, $nb_decimals));
         if($add_code)
         {
             $el->setAttribute('currencyID', $this->currencyCode);
@@ -434,9 +428,22 @@ class Facturxv10Xml
     // elements helpers
     // ===========================================================================
 
-    function facturxFormattedFloat($amount, $nb_decimals = 2)
+    /**
+     * @return string|null
+     */
+    function formattedDate($date)
     {
-        return number_format((float)$amount, $nb_decimals);
+        if ($date)
+        {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+            return $date->format('Ymd');
+        }
+        return '';
+    }
+
+    function formattedFloat($amount, $nb_decimals = 2)
+    {
+        return number_format(floatval($amount), $nb_decimals, '.', '');
     }
 
     protected function xmlSpecifiedTradeSettlementPaymentMeans()
@@ -551,7 +558,7 @@ class Facturxv10Xml
      */
     protected function quantityElement($name, $quantity)
     {
-        $el = $this->doc->createElement($name, $this->facturxFormattedFloat($quantity, 4));
+        $el = $this->doc->createElement($name, $this->formattedFloat($quantity, 4));
         $el->setAttribute('unitCode', 'C62');
         return $el;
     }

@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -49,20 +49,6 @@ class Zugferdv10Xml
         // return $this->doc->saveXML();
     }
 
-    /**
-     * @return string|null
-     */
-    public function zugferdFormattedDate($date)
-    {
-        if ($date) {
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-
-            return $date->format('Ymd');
-        }
-
-        return '';
-    }
-
     public function itemsSubtotalGroupedByTaxPercent()
     {
         $result = [];
@@ -84,9 +70,23 @@ class Zugferdv10Xml
     // elements helpers
     // ===========================================================================
 
-    public function zugferdFormattedFloat($amount, $nb_decimals = 2)
+    /**
+     * @return string|null
+     */
+    public function formattedDate($date)
     {
-        return number_format((float) $amount, $nb_decimals);
+        if ($date) {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+
+            return $date->format('Ymd');
+        }
+
+        return '';
+    }
+
+    public function formattedFloat($amount, $nb_decimals = 2)
+    {
+        return number_format(floatval($amount), $nb_decimals, '.', '');
     }
 
     protected function xmlRoot()
@@ -133,7 +133,7 @@ class Zugferdv10Xml
 
     protected function dateElement($date)
     {
-        $el = $this->doc->createElement('udt:DateTimeString', $this->zugferdFormattedDate($date));
+        $el = $this->doc->createElement('udt:DateTimeString', $this->formattedDate($date));
         $el->setAttribute('format', 102);
 
         return $el;
@@ -263,7 +263,7 @@ class Zugferdv10Xml
      */
     protected function currencyElement($name, $amount, $nb_decimals = 2)
     {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
+        $el = $this->doc->createElement($name, $this->formattedFloat($amount, $nb_decimals));
         $el->setAttribute('currencyID', $this->currencyCode);
 
         return $el;
@@ -338,7 +338,7 @@ class Zugferdv10Xml
      */
     protected function quantityElement($name, $quantity)
     {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));
+        $el = $this->doc->createElement($name, $this->formattedFloat($quantity, 4));
         $el->setAttribute('unitCode', 'C62');
 
         return $el;
