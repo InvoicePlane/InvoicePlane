@@ -393,7 +393,6 @@ class Mdl_Setup extends CI_Model
             if($row->recur_next_date == '0000-00-00')
             {
                 $this->db->set('recur_next_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
-
             }
         }
 
@@ -404,6 +403,32 @@ class Mdl_Setup extends CI_Model
             if($row_bdate->client_birthdate == '0000-00-00')
             {
                 $this->db->set('client_birthdate',NULL)->where('client_id',$row_bdate->client_id)->update('ip_clients');
+            }
+        }
+    }
+
+    public function upgrade_039_1_6_3()
+    {
+        // Set languages to lowercase
+
+        //**default_language**
+        $rows = $this->db->query('SELECT * FROM `ip_settings`');
+        foreach($rows->result() as $row)
+        {
+            if($row->setting_key == 'default_language')
+            {
+                $this->db->set('setting_value', strtolower($row->setting_value))->where('setting_id', $row->setting_id)->update('ip_settings');
+                break;
+            }
+        }
+
+        //**user_language**
+        $rows = $this->db->query('SELECT * FROM `ip_users`');
+        foreach($rows->result() as $row)
+        {
+            if($row->user_language != 'system')
+            {
+                $this->db->set('user_language', strtolower($row->user_language))->where('user_id', $row->user_id)->update('ip_users');
             }
         }
     }
