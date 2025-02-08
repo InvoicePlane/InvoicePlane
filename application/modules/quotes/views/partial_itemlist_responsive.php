@@ -273,17 +273,17 @@
 
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
-            <tr>
-                <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
-                <td style="width: 60%;"
-                class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
-            </tr>
 <?php
             if ( ! $legacy_calculation)
             {
                 $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
             }
 ?>
+            <tr>
+                <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
+                <td style="width: 60%;"
+                class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
+            </tr>
             <tr>
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
