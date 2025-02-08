@@ -274,6 +274,7 @@ class Setup extends MX_Controller
 
         $this->layout->buffer('content', 'setup/complete');
         $this->layout->render('setup');
+        $this->session->sess_destroy();
     }
 
     /**
