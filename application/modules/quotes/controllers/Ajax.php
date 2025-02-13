@@ -39,7 +39,7 @@ class Ajax extends Admin_Controller
                 $quote_discount_amount = $this->input->post('quote_discount_amount');
                 foreach ($items as $item) {
                     if (!empty($item->item_name)) {
-                        $items_subtotal += floatval($item->item_quantity) * (floatval($item->item_price) - floatval($item->item_discount_amount));
+                        $items_subtotal += floatval($item->item_quantity) * floatval($item->item_price);
                     }
                 }
             }
@@ -114,7 +114,6 @@ class Ajax extends Admin_Controller
                 'validation_errors' => json_errors(),
             ];
         }
-
 
         // Save all custom fields
         if ($this->input->post('custom')) {

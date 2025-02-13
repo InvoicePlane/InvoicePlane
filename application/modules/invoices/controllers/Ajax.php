@@ -40,7 +40,7 @@ class Ajax extends Admin_Controller
                 $invoice_discount_amount = $this->input->post('invoice_discount_amount');
                 foreach ($items as $item) {
                     if (!empty($item->item_name)) {
-                        $items_subtotal += floatval($item->item_quantity) * (floatval($item->item_price) - floatval($item->item_discount_amount));
+                        $items_subtotal += floatval($item->item_quantity) * floatval($item->item_price);
                     }
                 }
             }
@@ -125,13 +125,12 @@ class Ajax extends Admin_Controller
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($this->config->item('disable_read_only') === false) {
-                if ($invoice_status == get_setting('read_only_toggle')) {
-                    $db_array['is_read_only'] = 1;
-                }
+            if ($this->config->item('disable_read_only') === false && $invoice_status == get_setting('read_only_toggle')) {
+                $db_array['is_read_only'] = 1;
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
+
             $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
 
             if ($sumexInvoice >= 1) {
