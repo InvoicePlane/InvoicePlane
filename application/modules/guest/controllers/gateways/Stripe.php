@@ -1,8 +1,18 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
+
+/*
+ * InvoicePlane
+ *
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
+ */
 
 use Stripe\StripeClient;
 
@@ -32,21 +42,22 @@ class Stripe extends Base_Controller
     {
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)
-            ->get()->row();
+        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         // Check if the invoice is payable
-        if ($invoice->invoice_balance <= 0) {
+        if ($invoice->invoice_balance <= 0)
+        {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
 
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
         }
 
         $checkout_session = $this->stripe->checkout->sessions->create([
-            'ui_mode' => 'embedded',
-            'return_url' => site_url('guest/gateways/stripe/callback/{CHECKOUT_SESSION_ID}'),
+            'mode'                => 'payment',
+            'ui_mode'             => 'embedded',
+            'return_url'          => site_url('guest/gateways/stripe/callback/{CHECKOUT_SESSION_ID}'),
             'client_reference_id' => $invoice->invoice_id,
-            'line_items' => [
+            'line_items'          => [
                 [
                     'price_data' => [
                         'currency' => get_setting('gateway_stripe_currency'),
@@ -58,7 +69,6 @@ class Stripe extends Base_Controller
                     'quantity' => 1
                 ],
             ],
-            'mode' => 'payment',
         ]);
 
         //TODO: handle exceptions in checkout session
@@ -84,8 +94,7 @@ class Stripe extends Base_Controller
             $this->load->model('invoices/mdl_invoices');
 
             //retrieve the invoice
-            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)
-                ->get()->row();
+            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
             $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
             $this->session->keep_flashdata('alert_success');
@@ -94,21 +103,21 @@ class Stripe extends Base_Controller
             $this->load->model('payments/mdl_payments');
 
             $this->mdl_payments->save(null, [
-                'invoice_id' => $invoice_id,
-                'payment_date' => date('Y-m-d'),
-                'payment_amount' => $session->amount_total / 100,
+                'invoice_id'        => $invoice_id,
+                'payment_date'      => date('Y-m-d'),
+                'payment_amount'    => $session->amount_total / 100,
                 'payment_method_id' => get_setting('gateway_stripe_payment_method'),
-                'payment_note' => 'payment intent ID: ' . $session->payment_intent,
+                'payment_note'      => 'payment intent ID: ' . $session->payment_intent,
             ]);
 
             //record the online payment
             $this->db->insert('ip_merchant_responses', [
-                'invoice_id' => $invoice_id,
+                'invoice_id'                   => $invoice_id,
                 'merchant_response_successful' => true,
-                'merchant_response_date' => date('Y-m-d'),
-                'merchant_response_driver' => 'stripe',
-                'merchant_response' => '',
-                'merchant_response_reference' => 'payment intent ID: ' . $session->payment_intent,
+                'merchant_response_date'       => date('Y-m-d'),
+                'merchant_response_driver'     => 'stripe',
+                'merchant_response'            => '', // ???
+                'merchant_response_reference'  => 'payment intent ID: ' . $session->payment_intent,
             ]);
 
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
@@ -116,7 +125,7 @@ class Stripe extends Base_Controller
             //TODO: log error
 
             $this->session->set_flashdata('alert_error',
-                trans('online_payment_payment_failed') . '<br/>' . $$e->getMessage());
+                trans('online_payment_payment_failed') . '<br>' . $e->getMessage());
             $this->session->keep_flashdata('alert_error');
 
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));

@@ -1,6 +1,7 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
@@ -19,32 +20,27 @@ class Get extends Base_Controller
     public function attachment($filename)
     {
         $path = UPLOADS_CFILES_FOLDER;
-        $filePath = $path . $filename;
+        $filePath = realpath($path . $filename);
 
-        if (strpos(realpath($filePath), $path) !== 0) {
+        if (strpos($filePath, $path) !== 0)
+        {
             header("Status: 403 Forbidden");
             echo '<h1>Forbidden</h1>';
             exit;
         }
 
-        $filePath = realpath($filePath);
-
-        if (file_exists($filePath)) {
-            $pathParts = pathinfo($filePath);
-            $fileExt = $pathParts['extension'];
-            $fileSize = filesize($filePath);
-
-            header("Expires: -1");
-            header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
-            header("Content-Disposition: attachment; filename=\"$filename\"");
-            header("Content-Type: application/octet-stream");
-            header("Content-Length: " . $fileSize);
-
-            echo file_get_contents($filePath);
-            exit;
+        if (! file_exists($filePath))
+        {
+            show_404();
         }
 
-        show_404();
+        header("Expires: -1");
+        header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Content-Type: application/octet-stream");
+        header("Content-Length: " . filesize($filePath));
+
+        echo file_get_contents($filePath);
         exit;
     }
 

@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -36,12 +37,12 @@ class Payments extends Guest_Controller
         $payments = $this->mdl_payments->result();
 
         $this->layout->set(
-            array(
-                'payments' => $payments,
-                'filter_display' => true,
+            [
+                'payments'           => $payments,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_payments'),
-                'filter_method' => 'filter_payments'
-            )
+                'filter_method'      => 'filter_payments',
+            ]
         );
 
         $this->layout->buffer('content', 'guest/payments_index');

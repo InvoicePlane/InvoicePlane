@@ -26,7 +26,8 @@ class Mdl_Quote_Items extends Response_Model
     public function default_select()
     {
         $this->db->select('ip_quote_item_amounts.*, ip_products.*, ip_quote_items.*,
-            item_tax_rates.tax_rate_percent AS item_tax_rate_percent');
+            item_tax_rates.tax_rate_percent AS item_tax_rate_percent,
+            item_tax_rates.tax_rate_name AS item_tax_rate_name');
     }
 
     public function default_order_by()

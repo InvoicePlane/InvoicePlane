@@ -12,9 +12,17 @@
                class="btn <?php echo $status == 'open' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('open'); ?>
             </a>
+            <a href="<?php echo site_url('guest/invoices/status/overdue'); ?>"
+               class="btn <?php echo $status == 'overdue' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('overdue'); ?>
+            </a>
             <a href="<?php echo site_url('guest/invoices/status/paid'); ?>"
                class="btn  <?php echo $status == 'paid' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('paid'); ?>
+            </a>
+            <a href="<?php echo site_url('guest/invoices/status/all'); ?>"
+               class="btn  <?php echo $status == 'all' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('all'); ?>
             </a>
         </div>
     </div>
@@ -42,7 +50,11 @@
                 </thead>
 
                 <tbody>
-                <?php foreach ($invoices as $invoice) { ?>
+<?php
+foreach ($invoices as $invoice)
+{
+    $css_class = ($invoice->invoice_status_id != 4 && $invoice->invoice_date_due < date('Y-m-d')) ? 'font-overdue' : '';
+?>
                     <tr>
                         <td>
                             <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>">
@@ -52,7 +64,7 @@
                         <td>
                             <?php echo date_from_mysql($invoice->invoice_date_created); ?>
                         </td>
-                        <td>
+                        <td class="<?php echo $css_class ?>">
                             <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                         </td>
                         <td>
@@ -66,13 +78,18 @@
                         </td>
                         <td>
                             <div class="options btn-group btn-group-sm">
-                                <?php if ($invoice->invoice_status_id != 4 && get_setting('enable_online_payments')) : ?>
-                                    <a href="<?php echo site_url('guest/payment_handler/make_payment/' . $invoice->invoice_url_key); ?>"
-                                       class="btn btn-primary">
-                                        <i class="fa fa-credit-card"></i>
-                                        <?php _trans('pay_now'); ?>
-                                    </a>
-                                <?php endif; ?>
+<?php
+    if ($invoice->invoice_status_id != 4 && $enable_online_payments)
+    {
+?>
+                                <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
+                                   class="btn btn-primary">
+                                    <i class="fa fa-credit-card"></i>
+                                    <?php _trans('pay_now'); ?>
+                                </a>
+<?php
+    }
+?>
                                 <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>"
                                    class="btn btn-default">
                                     <i class="fa fa-eye"></i>
@@ -86,7 +103,9 @@
                             </div>
                         </td>
                     </tr>
-                <?php } ?>
+<?php
+} // End foreach
+?>
                 </tbody>
 
             </table>

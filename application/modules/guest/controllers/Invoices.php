@@ -1,16 +1,17 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if ( ! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -40,21 +41,29 @@ class Invoices extends Guest_Controller
     {
         // Determine which group of invoices to load
         switch ($status) {
+            case 'all':
+                $this->mdl_invoices->guest_visible();
+                break;
             case 'paid':
-                $this->mdl_invoices->is_paid()->where_in('ip_invoices.client_id', $this->user_clients);
+                $this->mdl_invoices->is_paid();
+                break;
+            case 'overdue':
+                $this->mdl_invoices->is_overdue();
                 break;
             default:
-                $this->mdl_invoices->is_open()->where_in('ip_invoices.client_id', $this->user_clients);
+                $this->mdl_invoices->is_open();
                 break;
         }
 
+        $this->mdl_invoices->where_in('ip_invoices.client_id', $this->user_clients);
         $this->mdl_invoices->paginate(site_url('guest/invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 
         $this->layout->set(
             [
-                'invoices' => $invoices,
-                'status'   => $status,
+                'invoices'               => $invoices,
+                'status'                 => $status,
+                'enable_online_payments' => get_setting('enable_online_payments'),
             ]
         );
 
@@ -67,32 +76,30 @@ class Invoices extends Guest_Controller
      */
     public function view($invoice_id): void
     {
-        $this->load->model('invoices/mdl_items');
-        $this->load->model('invoices/mdl_invoice_tax_rates');
-
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
-        if ( ! $invoice) {
+        if (! $invoice)
+        {
             show_404();
         }
 
         $this->mdl_invoices->mark_viewed($invoice->invoice_id);
 
+        $this->load->model('invoices/mdl_items');
+        $this->load->model('invoices/mdl_invoice_tax_rates');
+
         $this->layout->set(
             [
-                'invoice'           => $invoice,
-                'items'             => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'invoice_id'        => $invoice_id,
+                'invoice_id'             => $invoice_id,
+                'invoice'                => $invoice,
+                'items'                  => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+                'invoice_tax_rates'      => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
+                'enable_online_payments' => get_setting('enable_online_payments'),
+                'legacy_calculation'     => config_item('legacy_calculation'),
             ]
         );
 
-        $this->layout->buffer(
-            [
-                ['content', 'guest/invoices_view'],
-            ]
-        );
-
+        $this->layout->buffer('content', 'guest/invoices_view');
         $this->layout->render('layout_guest');
     }
 
@@ -105,11 +112,10 @@ class Invoices extends Guest_Controller
     {
         $this->load->helper('pdf');
 
-        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)
-            ->where_in('ip_invoices.client_id', $this->user_clients)
-            ->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
-        if ( ! $invoice) {
+        if (! $invoice)
+        {
             show_404();
         }
 
@@ -127,11 +133,10 @@ class Invoices extends Guest_Controller
     {
         $this->load->helper('pdf');
 
-        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)
-            ->where_in('ip_invoices.client_id', $this->user_clients)
-            ->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
-        if ( ! $invoice) {
+        if (! $invoice)
+        {
             show_404();
         }
 

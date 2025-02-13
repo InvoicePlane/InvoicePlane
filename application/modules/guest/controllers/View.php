@@ -95,10 +95,12 @@ class View extends Base_Controller
             {
                 if ('.' != $file && '..' != $file && strpos($file, $key) !== false)
                 {
-                    $obj['name']     = substr($file, strpos($file, '_', 1) + 1);
-                    $obj['fullname'] = $file;
-                    $obj['size']     = filesize($path . '/' . $file);
-                    $attachments[]   = $obj;
+                    $attachments[] =
+                    [
+                        'name'     => substr($file, strpos($file, '_', 1) + 1),
+                        'fullname' => $file,
+                        'size'     => filesize($path . '/' . $file),
+                    ];
                 }
             }
         }
@@ -121,7 +123,7 @@ class View extends Base_Controller
         {
             $invoice = $invoice->row();
 
-            if (!$invoice_template)
+            if (! $invoice_template)
             {
                 $this->load->helper('template');
                 $invoice_template = select_pdf_invoice_template($invoice);
@@ -151,10 +153,9 @@ class View extends Base_Controller
             if ($invoice->sumex_id == NULL)
             {
                 show_404();
-                return;
             }
 
-            if (!$invoice_template)
+            if (! $invoice_template)
             {
                 $invoice_template = get_setting('pdf_invoice_template');
             }
@@ -170,7 +171,7 @@ class View extends Base_Controller
      */
     public function quote($quote_url_key = '')
     {
-        if (!$quote_url_key)
+        if (! $quote_url_key)
         {
             show_404();
         }
@@ -190,23 +191,26 @@ class View extends Base_Controller
 
         $quote = $quote->row();
 
-        if ($this->session->userdata('user_type') <> 1 and $quote->quote_status_id == 2) {
+        if ($this->session->userdata('user_type') != 1 && $quote->quote_status_id == 2)
+        {
             $this->mdl_quotes->mark_viewed($quote->quote_id);
         }
 
         // Get all custom fields
-        $custom_fields = array(
+        $custom_fields =
+        [
             'quote'  => $this->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
             'client' => $this->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
             'user'   => $this->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
-        );
+        ];
 
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
 
         $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
 
-        $data = [
+        $data =
+        [
             'quote'              => $quote,
             'items'              => $this->mdl_quote_items->where('quote_id', $quote->quote_id)->get()->result(),
             'quote_tax_rates'    => $this->mdl_quote_tax_rates->where('quote_id', $quote->quote_id)->get()->result(),
@@ -230,21 +234,21 @@ class View extends Base_Controller
     {
         $this->load->model('quotes/mdl_quotes');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
+        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get()->row();
 
-        if ($quote->num_rows() == 1)
+        if (! $quote)
         {
-            $quote = $quote->row();
-
-            if (!$quote_template)
-            {
-                $quote_template = get_setting('pdf_quote_template');
-            }
-
-            $this->load->helper('pdf');
-
-            generate_quote_pdf($quote->quote_id, $stream, $quote_template);
+            show_404();
         }
+
+        if (! $quote_template)
+        {
+            $quote_template = get_setting('pdf_quote_template');
+        }
+
+        $this->load->helper('pdf');
+
+        generate_quote_pdf($quote->quote_id, $stream, $quote_template);
     }
 
     /**
@@ -256,7 +260,7 @@ class View extends Base_Controller
         $this->load->helper('mailer');
 
         $this->mdl_quotes->approve_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, "approved");
+        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'approved');
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
@@ -270,7 +274,7 @@ class View extends Base_Controller
         $this->load->helper('mailer');
 
         $this->mdl_quotes->reject_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, "rejected");
+        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'rejected');
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
