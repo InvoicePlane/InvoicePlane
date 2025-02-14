@@ -23,6 +23,8 @@
         // this is the email invoice window, disable the quote select
         $('#tags_invoice').prop('disabled', false);
         $('#tags_quote').prop('disabled', 'disabled');
+        // Fix blocked by browser if to_email field is empty
+        $('#btn_cancel').on('click', function(){$('#to_email').prop('required', false);});
     });
 
 </script>
@@ -41,7 +43,7 @@
                     <i class="fa fa-send"></i>
                     <?php _trans('send'); ?>
                 </button>
-                <button class="btn btn-danger" name="btn_cancel" value="1">
+                <button class="btn btn-danger" name="btn_cancel" id="btn_cancel" value="1">
                     <i class="fa fa-times"></i>
                     <?php _trans('cancel'); ?>
                 </button>
