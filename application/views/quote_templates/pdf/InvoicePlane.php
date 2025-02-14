@@ -7,10 +7,9 @@ $colspan = $show_item_discounts ? 5 : 4;
 <html lang="<?php _trans('cldr'); ?>">
 <head>
     <meta charset="utf-8">
-    <title><?php _trans('quote'); ?></title>
-    <link rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/templates.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom-pdf.css">
+    <title><?php echo get_setting('custom_title', 'InvoicePlane', true); ?> - <?php _trans('quote'); ?></title>
+    <link rel="stylesheet" href="<?php _theme_asset('css/templates.css'); ?>" type="text/css">
+    <link rel="stylesheet" href="<?php _core_asset('css/custom-pdf.css'); ?>" type="text/css">
 </head>
 <body>
 <header class="clearfix">

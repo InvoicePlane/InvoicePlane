@@ -10,26 +10,17 @@
 <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-    <title>
-        <?php
-        if (get_setting('custom_title') != '') {
-            echo get_setting('custom_title');
-        } else {
-            echo 'InvoicePlane';
-        } ?>
-    </title>
+    <title><?php echo get_setting('custom_title', 'InvoicePlane', true); ?> - <?php _trans('password_reset'); ?></title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
+    <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-    <link href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css"
-          rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/core/css/custom.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>" type="text/css">
+    <link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>" type="text/css">
 </head>
 
 <body>

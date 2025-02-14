@@ -21,7 +21,7 @@
     });
 </script>
 
-<script src="<?php echo base_url(); ?>assets/core/js/zxcvbn.js"></script>
+<script src="<?php _core_asset('js/zxcvbn.js'); ?>"></script>
 
 <div class="container">
     <div class="install-panel">

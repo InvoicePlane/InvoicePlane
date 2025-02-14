@@ -39,7 +39,8 @@ class Setup extends MX_Controller
         $this->load->helper('settings');
         $this->load->helper('echo');
 
-        $this->load->model('mdl_setup');
+        $this->load->model('settings/mdl_settings'); // For get_setting() in echo_helper
+        $this->load->model('setup/mdl_setup');
 
         $this->load->module('layout');
 
