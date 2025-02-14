@@ -19,17 +19,21 @@
 
                         <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
                                value="<?php echo $this->security->get_csrf_hash() ?>">
+<?php
+foreach ($files as $file)
+{
+?>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="files[]" value="<?php echo $file; ?>">
+                                <?php echo $file; ?>
+                            </label>
+                        </div>
+<?php
+}
+?>
+                        <input type="submit" class="btn btn-default" name="btn_submit" value="<?php _trans('import'); ?>">
 
-                        <?php foreach ($files as $file) { ?>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="files[]" value="<?php echo $file; ?>">
-                                    <?php echo $file; ?>
-                                </label>
-                            </div>
-                        <?php } ?>
-                        <input type="submit" class="btn btn-default" name="btn_submit"
-                               value="<?php _trans('import'); ?>">
                     </form>
                 </div>
             </div>
