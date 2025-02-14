@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -191,6 +192,16 @@ class Mdl_Quotes extends Response_Model
     {
         $this->load->model('quotes/mdl_quote_items');
 
+        // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+        $quote = $this->get_by_id($source_id); // This is the original quote
+        $global_discount = [
+            'amount'         => $quote->quote_discount_amount,
+            'percent'        => $quote->quote_discount_percent,
+            'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
+            'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($source_id),
+        ];
+        unset($quote); // Free memory
+
         $quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
 
         foreach ($quote_items as $quote_item) {
@@ -208,7 +219,7 @@ class Mdl_Quotes extends Response_Model
                 'item_product_unit_id' => $quote_item?->item_product_unit_id,
             ];
 
-            $this->mdl_quote_items->save(null, $db_array);
+            $this->mdl_quote_items->save(null, $db_array, $global_discount);
         }
 
         $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $source_id)->get()->result();

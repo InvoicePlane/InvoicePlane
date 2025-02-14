@@ -144,7 +144,7 @@ class Mdl_Items extends Response_Model
         $row = $query->row();
         $invoice_id = $row->invoice_id;
 
-        // Delete the item
+        // Delete the item itself
         parent::delete($item_id);
 
         // Delete the item amounts
@@ -158,4 +158,23 @@ class Mdl_Items extends Response_Model
 
         return true;
     }
+
+    /**
+     * @param $invoice_id
+     *
+     * return items_subtotal
+     */
+    public function get_items_subtotal($invoice_id)
+    {
+        // Needed to recalculate invoice amounts (if legacy_calculation is false)
+        $row = $this->db->query("
+            SELECT SUM(item_subtotal) AS items_subtotal
+            FROM ip_invoice_item_amounts
+            WHERE item_id
+                IN (SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . ")
+            ")
+            ->row();
+        return $row->items_subtotal;
+    }
+
 }

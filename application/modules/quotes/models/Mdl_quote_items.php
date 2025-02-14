@@ -148,4 +148,22 @@ class Mdl_Quote_Items extends Response_Model
         return true;
     }
 
+    /**
+     * @param $quote_id
+     *
+     * return items_subtotal
+     */
+    public function get_items_subtotal($quote_id)
+    {
+        // Needed to recalculate quote amounts (if legacy_calculation is false)
+        $row = $this->db->query("
+            SELECT SUM(item_subtotal) AS items_subtotal
+            FROM ip_quote_item_amounts
+            WHERE item_id
+                IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")
+            ")
+            ->row();
+        return $row->items_subtotal;
+    }
+
 }

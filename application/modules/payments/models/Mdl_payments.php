@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -126,17 +126,18 @@ class Mdl_Payments extends Response_Model
         // Save the payment
         $id = parent::save($id, $db_array);
 
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($db_array['invoice_id']);
         // Recalculate invoice amounts
-        $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        $this->mdl_invoice_amounts->calculate($db_array['invoice_id'], $global_discount);
 
         // Set proper status for the invoice
         $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
 
-        // Calculate sum for payments
         if ($invoice == null) {
             return false;
         }
 
+        // Calculate sum for payments
         $paid = (float)$invoice->invoice_paid;
         $total = (float)$invoice->invoice_total;
 
@@ -146,8 +147,9 @@ class Mdl_Payments extends Response_Model
             $this->db->update('ip_invoices');
         }
 
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($db_array['invoice_id']);
         // Recalculate invoice amounts
-        $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        $this->mdl_invoice_amounts->calculate($db_array['invoice_id'], $global_discount);
 
         return $id;
     }
@@ -178,9 +180,10 @@ class Mdl_Payments extends Response_Model
         // Delete the payment
         parent::delete($id);
 
-        // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
-        $this->mdl_invoice_amounts->calculate($invoice_id);
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+        // Recalculate invoice amounts
+        $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
 
         // Change invoice status back to sent
         $this->db->select('invoice_status_id');
