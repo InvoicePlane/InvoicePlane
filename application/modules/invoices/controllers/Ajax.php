@@ -113,6 +113,13 @@ class Ajax extends Admin_Controller
                 $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
             }
 
+            // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
+            if(! config_item('legacy_calculation') && $invoice_discount_amount && $invoice_discount_amount != $global_discount['item'])
+            {
+                // Adjust amount to reflect real calculation (cents)
+                $invoice_discount_amount = $global_discount['item'];
+            }
+
             $db_array = [
                 'invoice_number' => $invoice_number,
                 'invoice_terms' => $this->security->xss_clean($this->input->post('invoice_terms')),

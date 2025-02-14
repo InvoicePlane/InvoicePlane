@@ -84,6 +84,13 @@ class Ajax extends Admin_Controller
                 $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
             }
 
+            // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
+            if(! config_item('legacy_calculation') && $quote_discount_amount && $quote_discount_amount != $global_discount['item'])
+            {
+                // Adjust amount to reflect real calculation (cents)
+                $quote_discount_amount = $global_discount['item'];
+            }
+
             $db_array = [
                 'quote_number' => $quote_number,
                 'quote_date_created' => date_to_mysql($this->input->post('quote_date_created')),
