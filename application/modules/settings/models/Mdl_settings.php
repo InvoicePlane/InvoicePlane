@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -88,7 +88,7 @@ class Mdl_Settings extends CI_Model
      */
     public function setting($key, $default = '')
     {
-        return (isset($this->settings[$key])) ? $this->settings[$key] : $default;
+        return (isset($this->settings[$key]) && $this->settings[$key] !== '') ? $this->settings[$key] : $default;
     }
 
     /**
