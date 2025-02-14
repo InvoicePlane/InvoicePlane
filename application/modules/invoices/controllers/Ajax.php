@@ -1,6 +1,7 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
@@ -35,18 +36,18 @@ class Ajax extends Admin_Controller
 
             $items_subtotal = 0.0;
             if ($this->input->post('invoice_discount_amount') === '') {
-                $invoice_discount_amount = floatval(0);
+                $invoice_discount_amount = 0.0;
             } else {
                 $invoice_discount_amount = $this->input->post('invoice_discount_amount');
                 foreach ($items as $item) {
                     if (!empty($item->item_name)) {
-                        $items_subtotal += floatval($item->item_quantity) * floatval($item->item_price);
+                        $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
                     }
                 }
             }
             // todo? on client side (only one) / server side (2 are possible)
             if ($this->input->post('invoice_discount_percent') === '') {
-                $invoice_discount_percent = floatval(0);
+                $invoice_discount_percent = 0.0;
             } else {
                 $invoice_discount_percent = $this->input->post('invoice_discount_percent');
             }
@@ -63,8 +64,8 @@ class Ajax extends Admin_Controller
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
                 if (!empty($item->item_name)) {
-                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : 0.0);
+                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : 0.0);
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
                     if (property_exists($item, 'item_date')) {

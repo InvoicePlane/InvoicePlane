@@ -34,18 +34,18 @@ class Ajax extends Admin_Controller
 
             $items_subtotal = 0.0;
             if ($this->input->post('quote_discount_amount') === '') {
-                $quote_discount_amount = floatval(0);
+                $quote_discount_amount = 0.0;
             } else {
                 $quote_discount_amount = $this->input->post('quote_discount_amount');
                 foreach ($items as $item) {
                     if (!empty($item->item_name)) {
-                        $items_subtotal += floatval($item->item_quantity) * floatval($item->item_price);
+                        $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
                     }
                 }
             }
             // todo? on client side (only one) / server side (2 are possible)
             if ($this->input->post('quote_discount_percent') === '') {
-                $quote_discount_percent = floatval(0);
+                $quote_discount_percent = 0.0;
             } else {
                 $quote_discount_percent = $this->input->post('quote_discount_percent');
             }
@@ -61,8 +61,8 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 if ($item->item_name) {
-                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : 0.0);
+                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : 0.0);
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
                     $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
@@ -333,9 +333,9 @@ class Ajax extends Admin_Controller
             [
                 'invoices/mdl_invoices',
                 'invoices/mdl_items',
+                'invoices/mdl_invoice_tax_rates',
                 'quotes/mdl_quotes',
                 'quotes/mdl_quote_items',
-                'invoices/mdl_invoice_tax_rates',
                 'quotes/mdl_quote_tax_rates',
             ]
         );
@@ -357,6 +357,15 @@ class Ajax extends Admin_Controller
             $this->db->set('invoice_id', $invoice_id);
             $this->db->update('ip_quotes');
 
+            // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+            $global_discount = [
+                'amount'         => $quote->quote_discount_amount,
+                'percent'        => $quote->quote_discount_percent,
+                'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
+                'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($quote->quote_id),
+            ];
+            unset($quote); // Free memory
+
             $quote_items = $this->mdl_quote_items->where('quote_id', $this->input->post('quote_id'))->get()->result();
 
             foreach ($quote_items as $quote_item) {
@@ -374,12 +383,10 @@ class Ajax extends Admin_Controller
                     'item_order' => $quote_item->item_order,
                 ];
 
-                $this->mdl_items->save(null, $db_array);
+                $this->mdl_items->save(null, $db_array, $global_discount);
             }
 
-            $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))
-                ->get()
-                ->result();
+            $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))->get()->result();
 
             foreach ($quote_tax_rates as $quote_tax_rate) {
                 $db_array = [
