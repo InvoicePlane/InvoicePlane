@@ -227,17 +227,12 @@ $(document).ready(function () {
 
     // Fullpage loader (spinner)
     $(document).on('click', '.ajax-loader', function () {
-        var requiredFieldsFilledIn = true;
 
-        $('input[required], textarea[required], select[required]').each(function () {
-            if ($(this).val().trim() === '') {
-                requiredFieldsFilledIn = false;
-            }
-        });
-
-        // Checks if required fields are filled it.
-        if (!requiredFieldsFilledIn) {
-            return; // If not, don't display spinner.
+        // Get parent form of clicked element
+        const form = $(this).closest('form');
+        // Have form? Yes, Check if valid.
+        if (form.length && !form[0].checkValidity()) {
+            return; // No valid, don't show spinner.
         }
 
         // Show loader
