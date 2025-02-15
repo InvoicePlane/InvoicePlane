@@ -5,8 +5,7 @@
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-                   value="<?php echo $this->security->get_csrf_hash() ?>">
+            <?php _csrf_field(); ?>
 
             <legend><?php _trans('setup_choose_language'); ?></legend>
 

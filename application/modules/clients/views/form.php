@@ -15,8 +15,7 @@ $cv = $this->controller->view_data['custom_values'];
 </script>
 
 <form method="post">
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('client_form'); ?></h1>
