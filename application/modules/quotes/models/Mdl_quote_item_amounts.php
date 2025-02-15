@@ -1,6 +1,7 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
@@ -48,7 +49,7 @@ class Mdl_Quote_Item_Amounts extends CI_Model
                 $item_discount = round(($item_subtotal * ($global_discount['percent'] / 100)), 2);
             }
 
-            if($global_discount['amount'] > 0)
+            if($global_discount['amount'] > 0 && $global_discount['items_subtotal'] != 0) // Prevent divide per 0
             {
                 $item_discount = round($global_discount['amount'] * ($item_subtotal / $global_discount['items_subtotal']), 2);
             }
@@ -59,19 +60,22 @@ class Mdl_Quote_Item_Amounts extends CI_Model
             $item_total = $item_subtotal - $item_discount - $item_discount_total + $item_tax_total;
         }
 
-        $db_array = array(
-            'item_id' => $item_id,
-            'item_subtotal' => $item_subtotal,
+        $db_array = [
+            'item_id'        => $item_id,
+            'item_subtotal'  => $item_subtotal,
             'item_tax_total' => $item_tax_total,
-            'item_discount' => $item_discount_total,
-            'item_total' => $item_total,
-        );
+            'item_discount'  => $item_discount_total,
+            'item_total'     => $item_total,
+        ];
 
         $this->db->where('item_id', $item_id);
-        if ($this->db->get('ip_quote_item_amounts')->num_rows()) {
+        if ($this->db->get('ip_quote_item_amounts')->num_rows())
+        {
             $this->db->where('item_id', $item_id);
             $this->db->update('ip_quote_item_amounts', $db_array);
-        } else {
+        }
+        else
+        {
             $this->db->insert('ip_quote_item_amounts', $db_array);
         }
     }
