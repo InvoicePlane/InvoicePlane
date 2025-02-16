@@ -69,12 +69,17 @@
                     <label for="email_template"><?php _trans('email_template'); ?></label>
                     <select name="email_template" id="email_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
-                        <?php foreach ($email_templates as $email_template): ?>
-                            <option value="<?php echo $email_template->email_template_id; ?>"
-                                <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
-                                <?php _htmlsc($email_template->email_template_title); ?>
-                            </option>
-                        <?php endforeach; ?>
+<?php
+foreach ($email_templates as $email_template)
+{
+?>
+                        <option value="<?php echo $email_template->email_template_id; ?>"
+                            <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
+                            <?php _htmlsc($email_template->email_template_title); ?>
+                        </option>
+<?php
+}
+?>
                     </select>
                 </div>
 
@@ -86,7 +91,7 @@
 
                 <div class="form-group">
                     <label for="from_email"><?php _trans('from_email'); ?></label>
-                    <input type="email" name="from_email" id="from_email" class="form-control"
+                    <input type="email" name="from_email" id="from_email" class="form-control" required
                            value="<?php echo $quote->user_email; ?>">
                 </div>
 
@@ -110,12 +115,17 @@
                     <label for="pdf_template"><?php _trans('pdf_template'); ?></label>
                     <select name="pdf_template" id="pdf_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
-                        <?php foreach ($pdf_templates as $pdf_template): ?>
-                            <option value="<?php echo $pdf_template; ?>"
-                                <?php check_select($selected_pdf_template, $pdf_template); ?>>
-                                <?php echo $pdf_template; ?>
-                            </option>
-                        <?php endforeach; ?>
+<?php
+foreach ($pdf_templates as $pdf_template)
+{
+?>
+                        <option value="<?php echo $pdf_template; ?>"
+                            <?php check_select($selected_pdf_template, $pdf_template); ?>>
+                            <?php echo $pdf_template; ?>
+                        </option>
+<?php
+}
+ ?>
                     </select>
                 </div>
 

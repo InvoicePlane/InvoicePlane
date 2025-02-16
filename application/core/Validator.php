@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -36,8 +36,8 @@ class Validator extends MY_Model
             return null;
         }
 
-        if (!is_date($value)) {
-            $this->form_validation->set_message('validate_date', 'Invalid date');
+        if (! is_date($value)) {
+            $this->form_validation->set_message('validate_date', trans('invalid_date'));
             return false;
         }
 

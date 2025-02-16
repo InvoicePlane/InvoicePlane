@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -42,6 +42,9 @@ function phpmail_send(
     $mail          = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
+
+    // Set msg from PHPMailer in user lang. Only work with 2 letters. See phpmailer.lang-fr.php (in vendor dir).
+    $mail->setLanguage(trans('cldr')); // Default ($langcode = 'en', $lang_path = '')
 
     switch (get_setting('email_send_method')) {
         case 'smtp':
