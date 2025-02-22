@@ -94,6 +94,11 @@ function pdf_create(
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
+    // Check if PDF page numbering is enabled
+    if (get_setting('pdf_page_numbers')) {
+        $mpdf->SetFooter('{PAGENO}/{nbpg}');   
+    }
+
     // Watermark
     if (get_setting('pdf_watermark')) {
         $mpdf->showWatermarkText = true;
