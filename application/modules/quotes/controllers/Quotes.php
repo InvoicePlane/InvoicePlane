@@ -84,13 +84,18 @@ class Quotes extends Admin_Controller
     public function view($quote_id)
     {
         $this->load->helper('custom_values');
-        $this->load->model('mdl_quote_items');
-        $this->load->model('tax_rates/mdl_tax_rates');
-        $this->load->model('units/mdl_units');
-        $this->load->model('mdl_quote_tax_rates');
-        $this->load->model('custom_fields/mdl_custom_fields');
-        $this->load->model('custom_values/mdl_custom_values');
-        $this->load->model('custom_fields/mdl_quote_custom');
+        $this->load->model(
+            [
+                'quotes/mdl_quote_items',
+                'tax_rates/mdl_tax_rates',
+                'units/mdl_units',
+                'mdl_quote_tax_rates',
+                'custom_fields/mdl_custom_fields',
+                'custom_values/mdl_custom_values',
+                'custom_fields/mdl_quote_custom',
+                'upload/mdl_uploads',
+            ]
+        );
 
         $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
         $this->db->reset_query();

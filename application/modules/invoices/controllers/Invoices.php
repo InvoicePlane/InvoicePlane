@@ -137,21 +137,19 @@ class Invoices extends Admin_Controller
     {
         $this->load->model(
             [
-                'mdl_items',
+                'invoices/mdl_items',
+                'invoices/mdl_invoice_tax_rates',
                 'tax_rates/mdl_tax_rates',
                 'payment_methods/mdl_payment_methods',
-                'mdl_invoice_tax_rates',
                 'custom_fields/mdl_custom_fields',
+                'custom_values/mdl_custom_values',
+                'custom_fields/mdl_invoice_custom',
+                'units/mdl_units',
+                'upload/mdl_uploads',
             ]
         );
-
-        $this->load->helper('custom_values');
-        $this->load->helper('client');
-        $this->load->model('units/mdl_units');
+        $this->load->helper(['custom_values', 'client']);
         $this->load->module('payments');
-
-        $this->load->model('custom_values/mdl_custom_values');
-        $this->load->model('custom_fields/mdl_invoice_custom');
 
         $this->db->reset_query();
 

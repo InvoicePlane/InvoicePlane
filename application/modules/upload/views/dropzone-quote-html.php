@@ -6,8 +6,11 @@
 
     <div class="panel-body clearfix">
         <!-- The fileinput-button span is used to style the file input field as button -->
-        <button type="button" class="btn btn-default fileinput-button">
+        <button type="button" class="btn btn-sm btn-default fileinput-button">
             <i class="fa fa-plus"></i> <?php _trans('add_files'); ?>
+        </button>
+        <button type="button" class="btn btn-sm btn-danger removeAllFiles-button pull-right hidden">
+            <i class="fa fa-trash-o"></i> <?php _trans('delete_attachments'); ?>
         </button>
 
         <!-- dropzone -->
@@ -30,36 +33,33 @@
                     <div id="template" class="file-row">
                         <!-- This is used as the file preview template -->
                         <div>
-                                            <span class="preview">
-                                                <img data-dz-thumbnail/>
-                                            </span>
+                            <span class="preview"><img data-dz-thumbnail/></span>
                         </div>
                         <div>
-                            <p class="name" data-dz-name>
-                            </p>
-                            <strong class="error text-danger" data-dz-errormessage>
-                            </strong>
+                            <p class="name" data-dz-name></p>
+                            <strong class="error text-danger" data-dz-errormessage></strong>
                         </div>
                         <div>
-                            <p class="size" data-dz-size>
-                            </p>
-                            <div class="progress progress-striped active"
-                                 role="progressbar" aria-valuemin="0"
+                            <p class="size" data-dz-size></p>
+                            <div class="progress progress-striped active" role="progressbar"
+                                 aria-valuemin="0"
                                  aria-valuemax="100" aria-valuenow="0">
-                                <div class="progress-bar progress-bar-success"
-                                     style="" data-dz-uploadprogress>
+                                <div class="progress-bar progress-bar-success" style="width:0%"
+                                     data-dz-uploadprogress>
                                 </div>
                             </div>
                         </div>
-                        <div class="pull-left btn-group">
-                            <button data-dz-download class="btn btn-sm btn-primary">
-                                <i class="fa fa-download"></i>
-                                <span><?php _trans('download'); ?></span>
-                            </button>
-                            <button data-dz-remove class="btn btn-danger btn-sm delete">
-                                <i class="fa fa-trash-o"></i>
-                                <span><?php _trans('delete'); ?></span>
-                            </button>
+                        <div>
+                            <div class="pull-right btn-group">
+                                <button data-dz-download class="btn btn-sm btn-primary">
+                                    <i class="fa fa-download"></i>
+                                    <span><?php _trans('download'); ?></span>
+                                </button>
+                                <button data-dz-remove class="btn btn-sm btn-danger delete">
+                                    <i class="fa fa-trash-o"></i>
+                                    <span><?php _trans('delete'); ?></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -48,38 +48,45 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $this->load->model('invoices/mdl_templates');
-        $this->load->model('invoices/mdl_invoices');
-        $this->load->model('email_templates/mdl_email_templates');
+        $this->load->model(
+            [
+                'email_templates/mdl_email_templates',
+                'custom_fields/mdl_custom_fields',
+                'invoices/mdl_templates',
+                'invoices/mdl_invoices',
+                'upload/mdl_uploads',
+            ]
+        );
+
         $this->load->helper('template');
 
-        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice           = $this->mdl_invoices->get_by_id($invoice_id);
         $email_template_id = select_email_invoice_template($invoice);
+        $email_template    = '{}';
 
         if ($email_template_id)
         {
-            $email_template = $this->mdl_email_templates->get_by_id($email_template_id);
-            $this->layout->set('email_template', json_encode($email_template));
-        }
-        else
-        {
-            $this->layout->set('email_template', '{}');
+            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
         }
 
         // Get all custom fields
-        $this->load->model('custom_fields/mdl_custom_fields');
         $custom_fields = [];
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table)
         {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
 
-        $this->layout->set('selected_pdf_template', select_pdf_invoice_template($invoice));
-        $this->layout->set('selected_email_template', $email_template_id);
-        $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result());
-        $this->layout->set('invoice', $invoice);
-        $this->layout->set('custom_fields', $custom_fields);
-        $this->layout->set('pdf_templates', $this->mdl_templates->get_invoice_templates());
+        $this->layout->set(
+            [
+                'selected_email_template' => $email_template_id,
+                'selected_pdf_template'   => select_pdf_invoice_template($invoice),
+                'email_templates'         => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'email_template'          => $email_template,
+                'custom_fields'           => $custom_fields,
+                'pdf_templates'           => $this->mdl_templates->get_invoice_templates(),
+                'invoice'                 => $invoice,
+            ]
+        );
         $this->layout->buffer('content', 'mailer/invoice');
         $this->layout->render();
     }
@@ -94,37 +101,42 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $this->load->model('invoices/mdl_templates');
-        $this->load->model('quotes/mdl_quotes');
-        $this->load->model('upload/mdl_uploads');
-        $this->load->model('email_templates/mdl_email_templates');
+        $this->load->model(
+            [
+                'email_templates/mdl_email_templates',
+                'custom_fields/mdl_custom_fields',
+                'invoices/mdl_templates',
+                'quotes/mdl_quotes',
+                'upload/mdl_uploads',
+            ]
+        );
 
         $email_template_id = get_setting('email_quote_template');
+        $email_template = '{}';
 
         if ($email_template_id)
         {
-            $email_template = $this->mdl_email_templates->get_by_id($email_template_id);
-            $this->layout->set('email_template', json_encode($email_template));
-        }
-        else
-        {
-            $this->layout->set('email_template', '{}');
+            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
         }
 
         // Get all custom fields
-        $this->load->model('custom_fields/mdl_custom_fields');
         $custom_fields = [];
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table)
         {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
 
-        $this->layout->set('selected_pdf_template', get_setting('pdf_quote_template'));
-        $this->layout->set('selected_email_template', $email_template_id);
-        $this->layout->set('email_templates', $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result());
-        $this->layout->set('quote', $this->mdl_quotes->get_by_id($quote_id));
-        $this->layout->set('custom_fields', $custom_fields);
-        $this->layout->set('pdf_templates', $this->mdl_templates->get_quote_templates());
+        $this->layout->set(
+            [
+                'selected_email_template' => $email_template_id,
+                'selected_pdf_template'   => get_setting('pdf_quote_template'),
+                'email_templates'         => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
+                'email_template'          => $email_template,
+                'custom_fields'           => $custom_fields,
+                'pdf_templates'           => $this->mdl_templates->get_quote_templates(),
+                'quote'                   => $this->mdl_quotes->get_by_id($quote_id),
+            ]
+        );
         $this->layout->buffer('content', 'mailer/quote');
         $this->layout->render();
 
