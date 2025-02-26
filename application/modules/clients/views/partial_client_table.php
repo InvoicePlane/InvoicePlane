@@ -6,14 +6,18 @@
             <th><?php _trans('client_name'); ?></th>
             <th><?php _trans('email_address'); ?></th>
             <th><?php echo ' e-' . trans('invoicing') . ' ' . ucfirst(trans('version')); ?></th>
-            <th><?php  echo ' e-' . trans('invoicing') . ' ' . trans('active'); ?></th>
+            <th><?php echo ' e-' . trans('invoicing') . ' ' . trans('active'); ?></th>
             <th><?php _trans('phone_number'); ?></th>
             <th class="amount last"><?php _trans('balance'); ?></th>
             <th><?php _trans('options'); ?></th>
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($records as $client) : ?>
+<?php
+$class_checks = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning']; // e-invoice
+foreach ($records as $client)
+{
+?>
             <tr>
                 <td>
                     <?php echo ($client->client_active) ? '<span class="label active">' . trans('yes') . '</span>' : '<span class="label inactive">' . trans('no') . '</span>'; ?>
@@ -22,11 +26,20 @@
                 <td><?php _htmlsc($client->client_email); ?></td>
                 <td><?php _htmlsc($client->client_einvoicing_version); ?></td>
                 <td>
-                    <?php if ($client->client_einvoicing_active == 1) { ?>
-                        <i class="fa fa-check-square-o" style="font-size:16px; color:green"></i>
-                    <?php } elseif ($client->client_einvoicing_version != '') { ?>
-                        <i class="fa fa-edit" style="font-size:16px; color:red"></i>
-                    <?php } ?>
+<?php
+if ($client->client_einvoicing_active == 1)
+{
+?>
+                    <i class="<?php echo $class_checks[0] ?>"></i>
+<?php
+}
+elseif ($client->client_einvoicing_version != '')
+{
+?>
+                    <i class="<?php echo $class_checks[1] ?>"></i>
+<?php
+}
+?>
                 </td>
                 <td><?php _htmlsc($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : '')); ?></td>
                 <td class="amount last"><?php echo format_currency($client->client_invoice_balance); ?></td>
@@ -72,7 +85,9 @@
                     </div>
                 </td>
             </tr>
-        <?php endforeach; ?>
+<?php
+} // End foreach
+?>
         </tbody>
     </table>
 </div>

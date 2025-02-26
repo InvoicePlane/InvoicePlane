@@ -1,50 +1,9 @@
 <?php
-$cv = $this->controller->view_data["custom_values"];
+if ($this->config->item('disable_read_only') == true) {
+    $invoice->is_read_only = 0;
+}
 ?>
 <script>
-    function getIcon(fullname) {
-        var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
-        if (fileFormat) {
-            fileFormat = fileFormat[1];
-        }
-        else {
-            fileFormat = "";
-        }
-
-        var fileIcon = "default";
-
-        switch (fileFormat) {
-            case "pdf":
-                fileIcon = "file-pdf";
-                break;
-
-            case "mp3":
-            case "wav":
-            case "ogg":
-                fileIcon = "file-audio";
-                break;
-
-            case "doc":
-            case "docx":
-            case "odt":
-                fileIcon = "file-document";
-                break;
-
-            case "xls":
-            case "xlsx":
-            case "ods":
-                fileIcon = "file-spreadsheet";
-                break;
-
-            case "ppt":
-            case "pptx":
-            case "odp":
-                fileIcon = "file-presentation";
-                break;
-        }
-        return fileIcon;
-    }
-
     $(function () {
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load(
@@ -186,16 +145,11 @@ $cv = $this->controller->view_data["custom_values"];
 <?php
 echo $modal_delete_invoice;
 echo $modal_add_invoice_tax;
-if ($this->config->item('disable_read_only') == true) {
-    $invoice->is_read_only = 0;
-}
 ?>
 
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <?php
-        echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
-        ?>
+        <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id); ?>
     </h1>
 
     <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
@@ -206,29 +160,39 @@ if ($this->config->item('disable_read_only') == true) {
                 <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
-                <?php if ($invoice->is_read_only != 1) { ?>
-                    <li>
-                        <a href="#add-invoice-tax" data-toggle="modal">
-                            <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
-                        </a>
-                    </li>
-                <?php } ?>
+<?php
+if ($invoice->is_read_only != 1)
+{
+?>
+                <li>
+                    <a href="#add-invoice-tax" data-toggle="modal">
+                        <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
+                    </a>
+                </li>
+<?php
+}
+?>
                 <li>
                     <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->invoice_balance != 0) : ?>
-                    <li>
-                        <a href="#" class="invoice-add-payment"
-                           data-invoice-id="<?php echo $invoice_id; ?>"
-                           data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
-                            <i class="fa fa-credit-card fa-margin"></i>
-                            <?php _trans('enter_payment'); ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
+<?php
+if ($invoice->invoice_balance != 0)
+{
+?>
+                <li>
+                    <a href="#" class="invoice-add-payment"
+                       data-invoice-id="<?php echo $invoice_id; ?>"
+                       data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                       data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
+                        <i class="fa fa-credit-card fa-margin"></i>
+                        <?php _trans('enter_payment'); ?>
+                    </a>
+                </li>
+<?php
+}
+ ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -264,39 +228,59 @@ if ($this->config->item('disable_read_only') == true) {
                         <?php _trans('copy_invoice'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
-                    <li>
-                        <a href="#delete-invoice" data-toggle="modal">
-                            <i class="fa fa-trash-o fa-margin"></i>
-                            <?php _trans('delete'); ?>
-                        </a>
-                    </li>
-                <?php } ?>
+<?php
+if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1))
+{
+?>
+                <li>
+                    <a href="#delete-invoice" data-toggle="modal">
+                        <i class="fa fa-trash-o fa-margin"></i>
+                        <?php _trans('delete'); ?>
+                    </a>
+                </li>
+<?php
+}
+?>
             </ul>
         </div>
 
-        <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
-            <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
-                <i class="fa fa-check"></i> <?php _trans('save'); ?>
-            </a>
-        <?php } ?>
+<?php
+if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4)
+{
+?>
+        <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
+            <i class="fa fa-check"></i> <?php _trans('save'); ?>
+        </a>
+<?php
+}
+?>
     </div>
 
     <div class="headerbar-item invoice-labels pull-right">
-        <?php if ($invoice->invoice_is_recurring) { ?>
-            <span class="label label-info"><?php _trans('recurring'); ?></span>
-        <?php } ?>
-        <?php if ($invoice->is_read_only == 1) { ?>
-            <span class="label label-danger">
-                <i class="fa fa-read-only"></i> <?php _trans('read_only'); ?>
-            </span>
-        <?php } ?>
+<?php
+if ($invoice->invoice_is_recurring)
+{
+?>
+        <span class="label label-info"><?php _trans('recurring'); ?></span>
+<?php
+}
+if ($invoice->is_read_only == 1)
+{
+?>
+        <span class="label label-danger">
+            <i class="fa fa-read-only"></i> <?php _trans('read_only'); ?>
+        </span>
+<?php
+}
+?>
     </div>
 
 </div>
 
 <div id="content">
+
     <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <div id="invoice_form">
         <div class="invoice">
             <div class="cf row">
@@ -304,11 +288,16 @@ if ($this->config->item('disable_read_only') == true) {
                     <div class="col-md-6">
                         <h2>
                             <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo format_client($invoice) ?></a>
-                            <?php if ($invoice->invoice_status_id == 1) { ?>
+<?php
+if ($invoice->invoice_status_id == 1)
+{
+?>
                                 <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
                                       data-toggle="tooltip" data-placement="bottom"
                                       title="<?php echo htmlentities(trans('change_client'), ENT_COMPAT); ?>"></span>
-                            <?php } ?>
+<?php
+}
+?>
                         </h2><br>
                         <span>
                             <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
@@ -318,36 +307,24 @@ if ($this->config->item('disable_read_only') == true) {
                             <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
                             <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
                         </span>
-                        <?php if ($invoice->client_phone || $invoice->client_email) : ?>
+<?php if ($invoice->client_phone || $invoice->client_email) : ?>
                             <hr>
-                        <?php endif; ?>
-                        <?php if ($invoice->client_phone): ?>
-                            <div>
-                                <?php _trans('phone'); ?>:&nbsp;
-                                <?php _htmlsc($invoice->client_phone); ?>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($invoice->client_email): ?>
-                            <div>
-                                <?php _trans('email'); ?>:&nbsp;
-                                <?php _auto_link($invoice->client_email); ?>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($invoice->client_birthdate || $invoice->client_gender) : ?>
+<?php endif; ?>
+<?php if ($invoice->client_phone): ?>
+                            <div><?php _trans('phone'); ?>:&nbsp;<?php _htmlsc($invoice->client_phone); ?></div>
+<?php endif; ?>
+<?php if ($invoice->client_email): ?>
+                            <div><?php _trans('email'); ?>:&nbsp;<?php _auto_link($invoice->client_email); ?></div>
+<?php endif; ?>
+<?php if ($invoice->client_birthdate || $invoice->client_gender) : ?>
                             <hr>
-                        <?php endif; ?>
-                        <?php if ($invoice->client_birthdate): ?>
-                            <div>
-                                <?php _trans('birthdate'); ?>:&nbsp;
-                                <?php echo format_date($invoice->client_birthdate); ?>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($invoice->client_gender): ?>
-                            <div>
-                                <?php _trans('birthdate'); ?>:&nbsp;
-                                <?php echo format_gender($invoice->client_gender); ?>
-                            </div>
-                        <?php endif; ?>
+<?php endif; ?>
+<?php if ($invoice->client_birthdate): ?>
+                            <div><?php _trans('birthdate'); ?>:&nbsp;<?php echo format_date($invoice->client_birthdate); ?></div>
+<?php endif; ?>
+<?php if ($invoice->client_gender): ?>
+                            <div><?php _trans('birthdate'); ?>:&nbsp;<?php echo format_gender($invoice->client_gender); ?></div>
+<?php endif; ?>
                     </div>
                     <div class="col-md-6">
                         <h3><?php _trans('treatment'); ?></h3>
@@ -382,20 +359,25 @@ if ($this->config->item('disable_read_only') == true) {
                                             <span class="input-group-addon"><?php _trans('reason'); ?></span>
                                             <select name="invoice_sumex_reason" id="invoice_sumex_reason"
                                                     class="form-control input-sm simple-select">
-                                                <?php $reasons = [
-                                                    'disease',
-                                                    'accident',
-                                                    'maternity',
-                                                    'prevention',
-                                                    'birthdefect',
-                                                    'unknown'
-                                                ]; ?>
-                                                <?php foreach ($reasons as $key => $reason): ?>
-                                                    <?php $selected = ($invoice->sumex_reason == $key ? " selected" : ""); ?>
-                                                    <option value="<?php echo $key; ?>"<?php echo $selected; ?>>
-                                                        <?php _trans('reason_' . $reason); ?>
-                                                    </option>
-                                                <?php endforeach; ?>
+<?php
+$reasons = [
+    'disease',
+    'accident',
+    'maternity',
+    'prevention',
+    'birthdefect',
+    'unknown'
+];
+foreach ($reasons as $key => $reason)
+{
+    $selected = ($invoice->sumex_reason == $key ? " selected" : "");
+?>
+                                                <option value="<?php echo $key; ?>"<?php echo $selected; ?>>
+                                                    <?php _trans('reason_' . $reason); ?>
+                                                </option>
+<?php
+} // End foreach
+?>
                                             </select>
                                         </div>
                                     </td>
@@ -444,16 +426,18 @@ if ($this->config->item('disable_read_only') == true) {
 
                         <div class=" row">
 
-                            <?php if ($invoice->invoice_sign == -1) { ?>
-                                <div class="col-xs-12">
+<?php
+if ($invoice->invoice_sign == -1)
+{
+    $credit_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $invoice->creditinvoice_parent_id);
+?>
+                            <div class="col-xs-12">
                                 <span class="label label-warning">
                                     <i class="fa fa-credit-invoice"></i>&nbsp;
-                                    <?php echo trans('credit_invoice_for_invoice') . ' ';
-                                    echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id,
-                                        $invoice->creditinvoice_parent_id) ?>
+                                    <?php echo trans('credit_invoice_for_invoice') . ' ' . $credit_link;?>
                                 </span>
-                                </div>
-                            <?php } ?>
+                            </div>
+<?php } ?>
 
                             <div class="col-xs-12 col-sm-12">
 
@@ -466,15 +450,20 @@ if ($this->config->item('disable_read_only') == true) {
                                     </label>
                                     <select name="invoice_status_id" id="invoice_status_id"
                                             class="form-control simple-select"
-                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
-                                            echo 'disabled="disabled"';
-                                        } ?>>
-                                        <?php foreach ($invoice_statuses as $key => $status) { ?>
-                                            <option value="<?php echo $key; ?>"
-                                                    <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
-                                                <?php echo $status['label']; ?>
-                                            </option>
-                                        <?php } ?>
+                                            <?php echo ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) ? 'disabled="disabled"' : '';?>
+                                    >
+<?php
+foreach ($invoice_statuses as $key => $status)
+{
+?>
+                                        <option value="<?php echo $key; ?>"
+                                                <?php echo ($key == $invoice->invoice_status_id) ? 'selected="selected"' ''; ?>
+                                        >
+                                            <?php echo $status['label']; ?>
+                                        </option>
+<?php
+}
+?>
                                     </select>
                                 </div>
 
@@ -487,9 +476,8 @@ if ($this->config->item('disable_read_only') == true) {
                                         <?php else : ?>
                                             placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>
-                                        <?php if ($invoice->is_read_only == 1) {
-                                            echo 'disabled="disabled"';
-                                        } ?>>
+                                        <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                    >
                                 </div>
 
                                 <div class="invoice-properties has-feedback">
@@ -499,9 +487,8 @@ if ($this->config->item('disable_read_only') == true) {
                                         <input name="invoice_date_created" id="invoice_date_created"
                                                class="form-control datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
-                                            <?php if ($invoice->is_read_only == 1) {
-                                                echo 'disabled="disabled"';
-                                            } ?>>
+                                               <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                        >
                                         <span class="input-group-addon">
                                         <i class="fa fa-calendar fa-fw"></i>
                                     </span>
@@ -515,22 +502,22 @@ if ($this->config->item('disable_read_only') == true) {
                                         <input name="invoice_date_due" id="invoice_date_due"
                                                class="form-control datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
-                                            <?php if ($invoice->is_read_only == 1) {
-                                                echo 'disabled="disabled"';
-                                            } ?>>
+                                               <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                        >
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar fa-fw"></i>
                                         </span>
                                     </div>
                                 </div>
-
-                                <!-- Custom fields -->
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 1) {
-                                        continue;
-                                    } ?>
-                                    <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                <?php endforeach; ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 1)
+    {
+        print_field($this->mdl_invoices, $custom_field, $custom_values);
+    }
+}
+?>
                             </div>
                         </div>
                     </div>
@@ -546,256 +533,67 @@ if ($this->config->item('disable_read_only') == true) {
                 <div class="col-xs-12 col-sm-4">
 
                     <label><?php _trans('sumex_observations'); ?></label>
-                    <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control"
-                              rows="3"
-                        <?php if ($invoice->is_read_only == 1) {
-                            echo 'disabled="disabled"';
-                        } ?>
+                    <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
+                              <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
                     ><?php echo $invoice->sumex_observations; ?></textarea>
 
                 </div>
 
                 <div class="col-xs-12 col-sm-8">
 
-                    <label class="control-label"><?php _trans('attachments'); ?></label>
-                    <br/>
-                    <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="btn btn-default fileinput-button">
-                        <i class="fa fa-plus"></i>
-                        <span><?php _trans('add_files'); ?></span>
-                    </span>
+                    <?php $this->layout->load_view('upload/dropzone-invoice-html'); ?>
 
-                    <!-- dropzone -->
-                    <div class="row">
-                        <div id="actions" class="col-xs-12 col-sm-12">
-                            <div class="col-lg-7"></div>
-                            <div class="col-lg-5">
-                                <!-- The global file processing state -->
-                                <div class="fileupload-process">
-                                    <div id="total-progress" class="progress progress-striped active" role="progressbar"
-                                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                                        <div class="progress-bar progress-bar-success" style="width:0%;"
-                                             data-dz-uploadprogress></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="previews" class="table table-condensed table-striped files">
-                                <div id="template" class="file-row">
-                                    <!-- This is used as the file preview template -->
-                                    <div>
-                                        <span class="preview"><img data-dz-thumbnail/></span>
-                                    </div>
-                                    <div>
-                                        <p class="name" data-dz-name></p>
-                                        <strong class="error text-danger" data-dz-errormessage></strong>
-                                    </div>
-                                    <div>
-                                        <p class="size" data-dz-size></p>
-
-                                        <div class="progress progress-striped active" role="progressbar"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100" aria-valuenow="0">
-                                            <div class="progress-bar progress-bar-success" style="..."
-                                                 data-dz-uploadprogress></div>
-                                        </div>
-                                    </div>
-                                    <div class="pull-left btn-group">
-                                        <button data-dz-download class="btn btn-sm btn-primary">
-                                            <i class="fa fa-download"></i>
-                                            <span><?php _trans('download'); ?></span>
-                                        </button>
-                                        <?php if ($invoice->is_read_only != 1) { ?>
-                                            <button data-dz-remove class="btn btn-danger btn-sm delete">
-                                                <i class="fa fa-trash-o"></i>
-                                                <span><?php _trans('delete'); ?></span>
-                                            </button>
-                                        <?php } ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- stop dropzone -->
-                    </div>
                 </div>
+
             </div>
 
-            <?php if ($custom_fields): ?>
-                <?php $cv = $this->controller->view_data["custom_values"]; ?>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <fieldset>
-                            <legend><?php _trans('custom_fields'); ?></legend>
-                            <div class="col-xs-6">
-                                <?php $i = 0; ?>
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 0) {
-                                        continue;
-                                    } ?>
-                                    <?php $i++; ?>
-                                    <?php if ($i % 2 != 0): ?>
-                                        <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </div>
+<?php
+if ($custom_fields)
+{
+?>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
 
-                            <div class="col-xs-6">
-                                <?php $i = 0; ?>
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 0) {
-                                        continue;
-                                    } ?>
-                                    <?php $i++; ?>
-                                    <?php if ($i % 2 == 0): ?>
-                                        <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
+                    <hr>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
+                        <div class="panel-body">
+                            <div class="row">
+<?php
+    $classes = ['control-label col-xs-12 col-sm-4 col-md-2 col-lg-1', 'controls col-xs-12 col-sm-8 col-md-4 col-lg-5', '', 'form-horizontal'];
+    foreach ($custom_fields as $custom_field)
+    {
+        if (! $custom_field->custom_field_location) // == 0
+        {
+            print_field($this->mdl_invoices, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+        }
+    }
+?>
                             </div>
-                        </fieldset>
+                        </div>
                     </div>
+
                 </div>
-            <?php endif; ?>
+            </div>
+<?php
+} // End if custom_fields
+?>
 
-
-            <?php if ($invoice->invoice_status_id != 1) { ?>
+<?php
+if ($invoice->invoice_status_id != 1)
+{
+?>
                 <p class="padded">
                     <?php _trans('guest_url'); ?>:
                     <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
                 </p>
-            <?php } ?>
+<?php
+}
+?>
 
         </div>
-
     </div>
-
 </div>
-<script>
-    // Get the template HTML and remove it from the document
-    var previewNode = document.querySelector("#template");
-    previewNode.id = "";
-    var previewTemplate = previewNode.parentNode.innerHTML;
-    previewNode.parentNode.removeChild(previewNode);
 
-    var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: "<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>",
-        params: {
-    <?php echo $this->config->item('csrf_token_name'); ?>:
-    Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
-    },
-    thumbnailWidth: 80,
-        thumbnailHeight
-    :
-    80,
-        parallelUploads
-    :
-    20,
-        uploadMultiple
-    :
-    false,
-        dictRemoveFileConfirmation
-    :
-    '<?php _trans('delete_attachment_warning'); ?>',
-        previewTemplate
-    :
-    previewTemplate,
-        autoQueue
-    :
-    true, // Make sure the files aren't queued until manually added
-        previewsContainer
-    :
-    "#previews", // Define the container to display the previews
-        clickable
-    :
-    ".fileinput-button", // Define the element that should be used as click trigger to select files.
-        init
-    :
-
-    function () {
-        thisDropzone = this;
-        $.getJSON("<?php echo site_url('upload/upload_file/' . $invoice->client_id . '/' . $invoice->invoice_url_key) ?>", function (data) {
-            $.each(data, function (index, val) {
-                var mockFile = {fullname: val.fullname, size: val.size, name: val.name};
-
-                thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                createDownloadButton(mockFile, '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
-
-                if (val.fullname.match(/\.(jpg|jpeg|png|gif)$/)) {
-                    thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                        '<?php echo site_url('upload/get_file'); ?>/' + val.fullname);
-                } else {
-                    fileIcon = getIcon(val.fullname);
-
-                    thisDropzone.options.thumbnail.call(thisDropzone, mockFile,
-                        '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
-                }
-
-                thisDropzone.emit("complete", mockFile);
-                thisDropzone.emit("success", mockFile);
-            });
-        });
-    }
-    })
-    ;
-
-    myDropzone.on("success", function (file, response) {
-        <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
-        if (typeof response !== 'undefined') {
-            response = JSON.parse(response);
-            if (response.success !== true) {
-                alert(response.message);
-            }
-        }
-    });
-
-    myDropzone.on("addedfile", function (file) {
-        var fileIcon = getIcon(file.name);
-        myDropzone.emit("thumbnail", file,
-            '<?php echo base_url('assets/core/img/file-icons/'); ?>' + fileIcon + '.svg');
-        createDownloadButton(file, '<?php echo site_url('upload/get_file/' . $invoice->invoice_url_key . '_') ?>' + file.name.replace(/\s+/g, '_'));
-    });
-
-    // Update the total progress bar
-    myDropzone.on("totaluploadprogress", function (progress) {
-        document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
-    });
-
-    myDropzone.on("sending", function (file) {
-        // Show the total progress bar when upload starts
-        document.querySelector("#total-progress").style.opacity = "1";
-    });
-
-    // Hide the total progress bar when nothing's uploading anymore
-    myDropzone.on("queuecomplete", function (progress) {
-        document.querySelector("#total-progress").style.opacity = "0";
-    });
-
-    myDropzone.on("removedfile", function (file) {
-        $.post({
-            url: "<?php echo site_url('upload/delete_file/' . $invoice->invoice_url_key) ?>",
-            data: {
-                'name': file.name.replace(/\s+/g, '_'),
-        <?php echo $this->config->item('csrf_token_name'); ?>:
-        Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>')
-    }
-    },
-
-        function (response) {
-            <?php echo(IP_DEBUG ? 'console.log(response);' : ''); ?>
-        }
-
-    )
-        ;
-    });
-
-    function createDownloadButton(file, fileUrl) {
-        var downloadButtonList = file.previewElement.querySelectorAll("[data-dz-download]");
-        for (var $i = 0; $i < downloadButtonList.length; $i++) {
-            downloadButtonList[$i].addEventListener("click", function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                window.open(fileUrl);
-                return false;
-            });
-        }
-    }
-</script>
+<?php $this->layout->load_view('upload/dropzone-invoice-scripts'); ?>

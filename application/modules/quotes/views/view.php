@@ -1,6 +1,3 @@
-<?php
-$cv = $this->controller->view_data["custom_values"];
-?>
 <script>
 
     $(function () {
@@ -317,15 +314,15 @@ $cv = $this->controller->view_data["custom_values"];
                                         </span>
                                     </div>
                                 </div>
-
-                                <!-- Custom fields -->
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 1) {
-                                        continue;
-                                    } ?>
-                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                <?php endforeach; ?>
-
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 1)
+    {
+        print_field($this->mdl_quotes, $custom_field, $custom_values);
+    }
+}
+?>
                             </div>
                             <div class="col-xs-12 col-md-6">
 
@@ -375,12 +372,7 @@ $cv = $this->controller->view_data["custom_values"];
 
         </div>
 
-        <?php if (get_setting('show_responsive_itemlist') == 1) {
-             $this->layout->load_view('quotes/partial_itemlist_responsive');
-           } else {
-             $this->layout->load_view('quotes/partial_itemlist_table');
-           }
-         ?>
+<?php $this->layout->load_view('quotes/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table'));?>
 
         <hr/>
 
@@ -388,12 +380,9 @@ $cv = $this->controller->view_data["custom_values"];
             <div class="col-xs-12 col-md-6">
 
                 <div class="panel panel-default no-margin">
-                    <div class="panel-heading">
-                        <?php _trans('notes'); ?>
-                    </div>
+                    <div class="panel-heading"><?php _trans('notes'); ?></div>
                     <div class="panel-body">
-                        <textarea name="notes" id="notes" rows="3"
-                                  class="input-sm form-control"><?php _htmlsc($quote->notes); ?></textarea>
+                        <textarea name="notes" id="notes" rows="3" class="input-sm form-control"><?php _htmlsc($quote->notes); ?></textarea>
                     </div>
                 </div>
 
@@ -402,53 +391,42 @@ $cv = $this->controller->view_data["custom_values"];
             </div>
             <div class="col-xs-12 col-md-6">
 
-                <?php $this->layout->load_view('upload/dropzone-quote-html'); ?>
+                <?php $this->layout->load_view('upload/dropzone-quote-html'); ?>quotes
 
-                <?php if ($custom_fields): ?>
-                    <?php $cv = $this->controller->view_data["custom_values"]; ?>
-                    <div class="row">
-                        <div class="col-xs-12">
+            </div>
+        </div>
+<?php
+if ($custom_fields)
+{
+?>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
 
-                            <hr>
+                <hr>
 
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <?php _trans('custom_fields'); ?>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-xs-6">
-                                            <?php $i = 0; ?>
-                                            <?php foreach ($custom_fields as $custom_field): ?>
-                                                <?php if ($custom_field->custom_field_location != 0) {
-                                                    continue;
-                                                } ?>
-                                                <?php $i++; ?>
-                                                <?php if ($i % 2 != 0): ?>
-                                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <?php $i = 0; ?>
-                                            <?php foreach ($custom_fields as $custom_field): ?>
-                                                <?php if ($custom_field->custom_field_location != 0) {
-                                                    continue;
-                                                } ?>
-                                                <?php $i++; ?>
-                                                <?php if ($i % 2 == 0): ?>
-                                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
+                    <div class="panel-body">
+                        <div class="row">
+<?php
+    $classes = ['control-label col-xs-12 col-sm-4 col-md-2 col-lg-1', 'controls col-xs-12 col-sm-8 col-md-4 col-lg-5', '', 'form-horizontal'];
+    foreach ($custom_fields as $custom_field)
+    {
+        if (! $custom_field->custom_field_location) // == 0
+        {
+            print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+        }
+    }
+?>
                         </div>
                     </div>
-                <?php endif; ?>
+                </div>
+
             </div>
+        </div>
+<?php
+} // End if custom_fields
+?>
     </div>
-</div>
 
 <?php $this->layout->load_view('upload/dropzone-quote-scripts'); ?>

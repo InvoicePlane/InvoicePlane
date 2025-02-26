@@ -57,14 +57,18 @@
 
 <?php
 $locations = [];
-        foreach ($custom_fields as $custom_field) {
-            if (array_key_exists($custom_field->custom_field_location, $locations)) {
-                $locations[$custom_field->custom_field_location] += 1;
-            } else {
-                $locations[$custom_field->custom_field_location] = 1;
-            }
-        }
-        ?>
+foreach ($custom_fields as $custom_field)
+{
+    if (array_key_exists($custom_field->custom_field_location, $locations))
+    {
+        $locations[$custom_field->custom_field_location] += 1;
+    }
+    else
+    {
+        $locations[$custom_field->custom_field_location] = 1;
+    }
+}
+?>
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _htmlsc(format_client($client)); ?></h1>
@@ -96,26 +100,16 @@ $locations = [];
 </div>
 
 <ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
-    <li<?php if ($activeTab === 'detail') {
-        echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
-    <li<?php if ($activeTab === 'quotes') {
-        echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
-    <li<?php if ($activeTab === 'invoices') {
-        echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
-    <li<?php if ($activeTab === 'payments') {
-        echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
+    <li<?php echo $activeTab == 'detail' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
+    <li<?php echo $activeTab == 'quotes' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
+    <li<?php echo $activeTab == 'invoices' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
+    <li<?php echo $activeTab == 'payments' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
     <div class="tab-content no-padding">
 
-        <div id="clientDetails" class="tab-pane tab-rich-content <?php if ($activeTab === 'detail') {
-            echo ' active';
-        } ?>">
+        <div id="clientDetails" class="tab-pane tab-rich-content<?php echo $activeTab == 'detail' ? ' active' : ''; ?>">
 
             <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -123,45 +117,27 @@ $locations = [];
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
 
                     <h3><?php _htmlsc(format_client($client)); ?></h3>
-                    <p>
-                        <?php $this->layout->load_view('clients/partial_client_address'); ?>
-                    </p>
+                    <p><?php $this->layout->load_view('clients/partial_client_address'); ?></p>
 
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
 
                     <table class="table table-bordered no-margin">
                         <tr>
-                            <th>
-                                <?php _trans('language'); ?>
-                            </th>
-                            <td class="td-amount">
-                                <?php echo ucfirst($client->client_language); ?>
-                            </td>
+                            <th><?php _trans('language'); ?></th>
+                            <td class="td-amount"><?php echo ucfirst($client->client_language); ?></td>
                         </tr>
                         <tr>
-                            <th>
-                                <?php _trans('total_billed'); ?>
-                            </th>
-                            <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_total); ?>
-                            </td>
+                            <th><?php _trans('total_billed'); ?></th>
+                            <td class="td-amount"><?php echo format_currency($client->client_invoice_total); ?></td>
                         </tr>
                         <tr>
-                            <th>
-                                <?php _trans('total_paid'); ?>
-                            </th>
-                            <th class="td-amount">
-                                <?php echo format_currency($client->client_invoice_paid); ?>
-                            </th>
+                            <th><?php _trans('total_paid'); ?></th>
+                            <th class="td-amount"><?php echo format_currency($client->client_invoice_paid); ?></th>
                         </tr>
                         <tr>
-                            <th>
-                                <?php _trans('total_balance'); ?>
-                            </th>
-                            <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_balance); ?>
-                            </td>
+                            <th><?php _trans('total_balance'); ?></th>
+                            <td class="td-amount"><?php echo format_currency($client->client_invoice_balance); ?></td>
                         </tr>
                     </table>
 
@@ -177,56 +153,59 @@ $locations = [];
                         <div class="panel-heading"><?php _trans('contact_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
-                                <?php if ($client->client_invoicing_contact) { ?>
-                                    <tr>
-                                        <th><?php echo trans('invoicing') . ' ' . trans('contact'); ?></th>
-                                        <td><?php _htmlsc($client->client_invoicing_contact); ?></td>
-                                    </tr>
-                                <?php } ?>
-                                <?php if ($client->client_email) { ?>
-                                    <tr>
-                                        <th><?php _trans('email'); ?></th>
-                                        <td><?php _auto_link($client->client_email, 'email'); ?></td>
-                                    </tr>
-                                <?php } ?>
-                                <?php if ($client->client_phone) { ?>
-                                    <tr>
-                                        <th><?php _trans('phone'); ?></th>
-                                        <td><?php _htmlsc($client->client_phone); ?></td>
-                                    </tr>
-                                <?php } ?>
-                                <?php if ($client->client_mobile) { ?>
-                                    <tr>
-                                        <th><?php _trans('mobile'); ?></th>
-                                        <td><?php _htmlsc($client->client_mobile); ?></td>
-                                    </tr>
-                                <?php } ?>
-                                <?php if ($client->client_fax) { ?>
-                                    <tr>
-                                        <th><?php _trans('fax'); ?></th>
-                                        <td><?php _htmlsc($client->client_fax); ?></td>
-                                    </tr>
-                                <?php } ?>
-                                <?php if ($client->client_web) { ?>
-                                    <tr>
-                                        <th><?php _trans('web'); ?></th>
-                                        <td><?php _auto_link($client->client_web, 'url', true); ?></td>
-                                    </tr>
-                                <?php } ?>
+<?php if ($client->client_invoicing_contact) { ?>
+                                <tr>
+                                    <th><?php _trans('contact'); ?> (<?php _trans('invoicing'); ?>)</th>
+                                    <td><?php _htmlsc($client->client_invoicing_contact); ?></td>
+                                </tr>
+<?php } ?>
+<?php if ($client->client_email) { ?>
+                                <tr>
+                                    <th><?php _trans('email'); ?></th>
+                                    <td><?php _auto_link($client->client_email, 'email'); ?></td>
+                                </tr>
+<?php } ?>
+<?php if ($client->client_phone) { ?>
+                                <tr>
+                                    <th><?php _trans('phone'); ?></th>
+                                    <td><?php _htmlsc($client->client_phone); ?></td>
+                                </tr>
+<?php } ?>
+<?php if ($client->client_mobile) { ?>
+                                <tr>
+                                    <th><?php _trans('mobile'); ?></th>
+                                    <td><?php _htmlsc($client->client_mobile); ?></td>
+                                </tr>
+<?php } ?>
+<?php if ($client->client_fax) { ?>
+                                <tr>
+                                    <th><?php _trans('fax'); ?></th>
+                                    <td><?php _htmlsc($client->client_fax); ?></td>
+                                </tr>
+<?php } ?>
+<?php if ($client->client_web) { ?>
+                                <tr>
+                                    <th><?php _trans('web'); ?></th>
+                                    <td><?php _auto_link($client->client_web, 'url', true); ?></td>
+                                </tr>
+<?php } ?>
 
-                                <?php foreach ($custom_fields as $custom_field) { ?>
-                                    <?php if ($custom_field->custom_field_location != 2) {
-                                        continue;
-                                    } ?>
-                                    <tr>
-                                        <?php
-                                        $column = $custom_field->custom_field_label;
-                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                    ?>
-                                        <th><?php _htmlsc($column); ?></th>
-                                        <td><?php _htmlsc($value); ?></td>
-                                    </tr>
-                                <?php } ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 2)
+    {
+        $column = $custom_field->custom_field_label;
+        $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+?>
+                                <tr>
+                                    <th><?php _htmlsc($column); ?></th>
+                                    <td><?php _htmlsc($value); ?></td>
+                                </tr>
+<?php
+    }
+}
+?>
                             </table>
                         </div>
                     </div>
@@ -238,36 +217,39 @@ $locations = [];
                         <div class="panel-heading"><?php _trans('tax_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
-                                    <tr>
-                                        <th><?php _trans('company'); ?></th>
-                                        <td><?php echo ($client->client_company) ? _htmlsc($client->client_company) : ''; ?></td>
-                                    </tr>
-                                <?php if ($client->client_vat_id) { ?>
-                                    <tr>
-                                        <th><?php _trans('vat_id'); ?></th>
-                                        <td><?php _htmlsc($client->client_vat_id); ?></td>
-                                    </tr>
-                                <?php } ?>
-                                <?php if ($client->client_tax_code) { ?>
-                                    <tr>
-                                        <th><?php _trans('tax_code'); ?></th>
-                                        <td><?php _htmlsc($client->client_tax_code); ?></td>
-                                    </tr>
-                                <?php } ?>
+                                <tr>
+                                    <th><?php _trans('company'); ?></th>
+                                    <td><?php _htmlsc($client->client_company ? $client->client_company : ''); ?></td>
+                                </tr>
+<?php if ($client->client_vat_id) { ?>
+                                <tr>
+                                    <th><?php _trans('vat_id'); ?></th>
+                                    <td><?php _htmlsc($client->client_vat_id); ?></td>
+                                </tr>
+<?php } ?>
+<?php if ($client->client_tax_code) { ?>
+                                <tr>
+                                    <th><?php _trans('tax_code'); ?></th>
+                                    <td><?php _htmlsc($client->client_tax_code); ?></td>
+                                </tr>
+<?php } ?>
 
-                                <?php foreach ($custom_fields as $custom_field) { ?>
-                                    <?php if ($custom_field->custom_field_location != 4) {
-                                        continue;
-                                    } ?>
-                                    <tr>
-                                        <?php
-                                        $column = $custom_field->custom_field_label;
-                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                    ?>
-                                        <th><?php _htmlsc($column); ?></th>
-                                        <td><?php _htmlsc($value); ?></td>
-                                    </tr>
-                                <?php } ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 4)
+    {
+        $column = $custom_field->custom_field_label;
+        $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+?>
+                                <tr>
+                                    <th><?php _htmlsc($column); ?></th>
+                                    <td><?php _htmlsc($value); ?></td>
+                                </tr>
+<?php
+    }
+}
+?>
                             </table>
                         </div>
 
@@ -282,22 +264,27 @@ $locations = [];
                         <div class="panel-body table-content">
 
                             <table class="table no-margin">
-                                    <tr>
-                                        <th><?php echo trans('send') . ' e-' . trans('invoice') . ' ' . trans('version'); ?></th>
-                                        <td><?php echo ($client->client_einvoicing_version) ? get_xml_full_name($client->client_einvoicing_version) : trans('none'); ?></td>
-                                    </tr>
+                                <tr>
+                                    <th><?php echo trans('send') . ' e-' . trans('invoice') . ' ' . trans('version'); ?></th>
+                                    <td><?php echo ($client->client_einvoicing_version) ? get_xml_full_name($client->client_einvoicing_version) : trans('none'); ?></td>
+                                </tr>
                             </table>
 
-                            <?php if ($req_einvoicing['einvoicing_empty_fields'] > 0 && $client->client_einvoicing_version != '') { ?>
-                                <div class="alert alert-warning small" style="margin: 0px 10px 10px;">
-                                    <table>
-                                        <tr>
-                                            <td><i class="fa fa-exclamation-triangle fa-2x"></i>&emsp;</td>
-                                            <td><?php echo trans('einvoicing_no_creation_hint'); ?></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            <?php } ?>
+<?php
+if ($req_einvoicing->einvoicing_empty_fields > 0 && $client->client_einvoicing_version != '')
+{
+?>
+                            <div class="alert alert-warning small" style="margin: 0px 10px 10px;">
+                                <table>
+                                    <tr>
+                                        <td><i class="fa fa-exclamation-triangle fa-2x"></i>&emsp;</td>
+                                        <td><?php echo trans('einvoicing_no_creation_hint'); ?></td>
+                                    </tr>
+                                </table>
+                            </div>
+<?php
+}
+?>
 
                         </div>
                     </div>
@@ -306,98 +293,110 @@ $locations = [];
 
             </div>
 
-            <?php if ($client->client_surname != '') { // Client is not a company?>
-                <hr>
+<?php
+if ($client->client_surname != '') // Client is not a company
+{
+?>
+            <hr>
 
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
 
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <?php _trans('personal_information'); ?>
-                            </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><?php _trans('personal_information'); ?></div>
 
-                            <div class="panel-body table-content">
-                                <table class="table no-margin">
-                                    <tr>
-                                        <th><?php _trans('birthdate'); ?></th>
-                                        <td><?php echo format_date($client->client_birthdate); ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th><?php _trans('gender'); ?></th>
-                                        <td><?php echo format_gender($client->client_gender) ?></td>
-                                    </tr>
-                                    <?php if ($this->mdl_settings->setting('sumex') == '1') { ?>
-                                        <tr>
-                                            <th><?php _trans('sumex_ssn'); ?></th>
-                                            <td><?php echo format_avs($client->client_avs) ?></td>
-                                        </tr>
+                        <div class="panel-body table-content">
+                            <table class="table no-margin">
+                                <tr>
+                                    <th><?php _trans('birthdate'); ?></th>
+                                    <td><?php echo format_date($client->client_birthdate); ?></td>
+                                </tr>
+                                <tr>
+                                    <th><?php _trans('gender'); ?></th>
+                                    <td><?php echo format_gender($client->client_gender) ?></td>
+                                </tr>
+<?php
+    if ($this->mdl_settings->setting('sumex') == '1')
+    {
+?>
+                                <tr>
+                                    <th><?php _trans('sumex_ssn'); ?></th>
+                                    <td><?php echo format_avs($client->client_avs) ?></td>
+                                </tr>
 
-                                        <tr>
-                                            <th><?php _trans('sumex_insurednumber'); ?></th>
-                                            <td><?php _htmlsc($client->client_insurednumber) ?></td>
-                                        </tr>
+                                <tr>
+                                    <th><?php _trans('sumex_insurednumber'); ?></th>
+                                    <td><?php _htmlsc($client->client_insurednumber) ?></td>
+                                </tr>
 
-                                        <tr>
-                                            <th><?php _trans('sumex_veka'); ?></th>
-                                            <td><?php _htmlsc($client->client_veka) ?></td>
-                                        </tr>
-                                    <?php } ?>
+                                <tr>
+                                    <th><?php _trans('sumex_veka'); ?></th>
+                                    <td><?php _htmlsc($client->client_veka) ?></td>
+                                </tr>
+<?php
+    } // fi sumex
 
-                                    <?php foreach ($custom_fields as $custom_field) { ?>
-                                        <?php if ($custom_field->custom_field_location != 3) {
-                                            continue;
-                                        } ?>
-                                        <tr>
-                                            <?php
-                                            $column = $custom_field->custom_field_label;
-                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                        ?>
-                                            <th><?php _htmlsc($column); ?></th>
-                                            <td><?php _htmlsc($value); ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </table>
-                            </div>
+    foreach ($custom_fields as $custom_field)
+    {
+        if ($custom_field->custom_field_location == 3)
+        {
+            $column = $custom_field->custom_field_label;
+            $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+?>
+                                <tr>
+                                    <th><?php _htmlsc($column); ?></th>
+                                    <td><?php _htmlsc($value); ?></td>
+                                </tr>
+<?php
+        }
+    }
+?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+<?php
+} // fi client->client_surname
+
+if ($custom_fields)
+{
+?>
+            <hr>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="panel panel-default no-margin">
+
+                        <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
+                        <div class="panel-body table-content">
+                            <table class="table no-margin">
+<?php
+    foreach ($custom_fields as $custom_field)
+    {
+        if (! $custom_field->custom_field_location) // == 0
+        {
+            $column = $custom_field->custom_field_label;
+            $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+?>
+                                <tr>
+                                    <th><?php _htmlsc($column); ?></th>
+                                    <td><?php _htmlsc($value); ?></td>
+                                </tr>
+<?php
+        }
+    }
+?>
+                            </table>
                         </div>
 
                     </div>
                 </div>
-            <?php } ?>
-
-            <?php
-            if ($custom_fields) { ?>
-                <hr>
-
-                <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div class="panel panel-default no-margin">
-
-                            <div class="panel-heading">
-                                <?php _trans('custom_fields'); ?>
-                            </div>
-                            <div class="panel-body table-content">
-                                <table class="table no-margin">
-                                    <?php foreach ($custom_fields as $custom_field) { ?>
-                                        <?php if ($custom_field->custom_field_location != 0) {
-                                            continue;
-                                        } ?>
-                                        <tr>
-                                            <?php
-                                            $column = $custom_field->custom_field_label;
-                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
-                                        ?>
-                                            <th><?php _htmlsc($column); ?></th>
-                                            <td><?php _htmlsc($value); ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
+            </div>
+<?php
+} // fi custom_fields
+?>
 
             <hr>
 
@@ -426,9 +425,7 @@ $locations = [];
 
         </div>
 
-        <div id="clientQuotes" class="tab-pane table-content<?php if ($activeTab === 'quotes') {
-            echo ' active';
-        } ?>">
+        <div id="clientQuotes" class="tab-pane table-content<?php echo $activeTab == 'quotes' ? ' active' : ''; ?>">
             <?php echo $quote_table; ?>
 
             <div class="container-fluid">
@@ -438,9 +435,7 @@ $locations = [];
             </div>
         </div>
 
-        <div id="clientInvoices" class="tab-pane table-content<?php if ($activeTab === 'invoices') {
-            echo ' active';
-        } ?>">
+        <div id="clientInvoices" class="tab-pane table-content<?php echo $activeTab == 'invoices' ? ' active' : ''; ?>">
             <?php echo $invoice_table; ?>
 
             <div class="container-fluid">
@@ -450,9 +445,7 @@ $locations = [];
             </div>
         </div>
 
-        <div id="clientPayments" class="tab-pane table-content<?php if ($activeTab === 'payments') {
-            echo ' active';
-        } ?>">
+        <div id="clientPayments" class="tab-pane table-content<?php echo $activeTab == 'payments' ? ' active' : ''; ?>">
             <?php echo $payment_table; ?>
 
             <div class="container-fluid">

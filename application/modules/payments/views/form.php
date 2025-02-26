@@ -155,11 +155,11 @@ else
         </div>
 
 <?php
-        $cv = $this->controller->view_data["custom_values"];
-        foreach ($custom_fields as $custom_field)
-        {
-            print_field($this->mdl_payments, $custom_field, $cv, "col-xs-12 col-sm-2 text-right text-left-xs", "col-xs-12 col-sm-6");
-        }
+$classes = ['col-xs-12 col-sm-2 text-right text-left-xs', 'col-xs-12 col-sm-6', 'control-label', 'form-group'];
+foreach ($custom_fields as $custom_field)
+{
+	print_field($this->mdl_payments, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+}
 ?>
 
     </div>

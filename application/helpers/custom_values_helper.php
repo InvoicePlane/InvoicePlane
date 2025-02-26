@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -128,14 +128,15 @@ function format_fallback($txt)
  * @param $cv
  * @param string $class_top
  * @param string $class_bottom
- * @param string $label_class
+ * @param string $class_label
+ * @param string $class_group
  */
-function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $label_class = '')
+function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $class_label = '', $class_group = 'form-group')
 {
-    ?>
-    <div class="form-group">
+?>
+    <div class="<?php echo $class_group; ?>">
         <div class="<?php echo $class_top; ?>">
-            <label<?php echo($label_class != '' ? " class='" . $label_class . "'" : ''); ?>
+            <label<?php echo $class_label ? ' class="' . $class_label . '"' : ''; ?>
                     for="custom[<?php echo $custom_field->custom_field_id; ?>]">
                 <?php _htmlsc($custom_field->custom_field_label); ?>
             </label>
@@ -206,5 +207,5 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
             <?php } ?>
         </div>
     </div>
-    <?php
+<?php
 }

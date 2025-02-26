@@ -1,7 +1,7 @@
 <?php
-$cv = $this->controller->view_data['custom_values'];
+$client_active = $this->mdl_clients->form_value('client_active');
+$active = ($client_active == 1 || ! is_numeric($client_active)) ? ' checked="checked"' : '';
 ?>
-
 <script type="text/javascript">
     $(function () {
         $("#client_country").select2({
@@ -9,7 +9,8 @@ $cv = $this->controller->view_data['custom_values'];
             allowClear: true
         });
 
-        <?php $this->layout->load_view('clients/js/script_select_client_title.js'); ?>
+<?php $this->layout->load_view('clients/js/script_select_client_title.js'); ?>
+
     });
 
 </script>
@@ -39,12 +40,7 @@ $cv = $this->controller->view_data['custom_values'];
                         <div class="pull-right">
                             <label for="client_active" class="control-label">
                                 <?php _trans('active_client'); ?>
-                                <input id="client_active" name="client_active" type="checkbox" value="1"
-                                    <?php if ($this->mdl_clients->form_value('client_active') == 1
-                                        || ! is_numeric($this->mdl_clients->form_value('client_active'))
-                                    ) {
-                                        echo 'checked="checked"';
-                                    } ?>>
+                                <input id="client_active" name="client_active" type="checkbox" value="1"<?php echo $active; ?>>
                             </label>
                         </div>
                     </div>
@@ -72,14 +68,18 @@ $cv = $this->controller->view_data['custom_values'];
                                 <option value="system">
                                     <?php _trans('use_system_language') ?>
                                 </option>
-                                <?php foreach ($languages as $language) {
-                                    $client_lang = $this->mdl_clients->form_value('client_language');
-                                    ?>
-                                    <option value="<?php echo $language; ?>"
-                                        <?php check_select($client_lang, $language) ?>>
-                                        <?php echo ucfirst($language); ?>
-                                    </option>
-                                <?php } ?>
+<?php
+foreach ($languages as $language)
+{
+    $client_lang = $this->mdl_clients->form_value('client_language');
+?>
+                                <option value="<?php echo $language; ?>"
+                                    <?php check_select($client_lang, $language) ?>>
+                                    <?php echo ucfirst($language); ?>
+                                </option>
+<?php
+}
+?>
                             </select>
                         </div>
                     </div>
@@ -157,13 +157,15 @@ $cv = $this->controller->view_data['custom_values'];
                             </div>
                         </div>
 
-                        <!-- Custom Fields -->
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php if ($custom_field->custom_field_location != 1) {
-                                continue;
-                            } ?>
-                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                        <?php endforeach; ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 1)
+    {
+        print_field($this->mdl_clients, $custom_field, $custom_values);
+    }
+}
+?>
                     </div>
 
                 </div>
@@ -179,7 +181,7 @@ $cv = $this->controller->view_data['custom_values'];
 
                     <div class="panel-body">
                         <div class="form-group">
-                            <label for="client_invoicing_contact"><?php echo trans('invoicing') . ' ' . trans('contact'); ?></label>
+                            <label for="client_invoicing_contact"><?php _trans('contact'); ?> (<?php _trans('invoicing'); ?>)</label>
 
                             <div class="controls">
                                 <input type="text" name="client_invoicing_contact" id="client_invoicing_contact" class="form-control"
@@ -232,13 +234,15 @@ $cv = $this->controller->view_data['custom_values'];
                             </div>
                         </div>
 
-                        <!-- Custom fields -->
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php if ($custom_field->custom_field_location != 2) {
-                                continue;
-                            } ?>
-                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                        <?php endforeach; ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 2)
+    {
+        print_field($this->mdl_clients, $custom_field, $custom_values);
+    }
+}
+?>
                     </div>
 
                 </div>
@@ -256,9 +260,8 @@ $cv = $this->controller->view_data['custom_values'];
 
                     <div class="panel-body">
                         <div class="form-group">
-                            <label for="client_company">
-                                <?php _trans('client_company'); ?>
-                            </label>
+                            <label for="client_company"><?php _trans('client_company'); ?></label>
+
                             <div class="controls">
                                 <input id="client_company" name="client_company" type="text" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_company', true); ?>">
@@ -282,17 +285,17 @@ $cv = $this->controller->view_data['custom_values'];
                             </div>
                         </div>
 
-                        <!-- Custom fields -->
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php if ($custom_field->custom_field_location != 4) {
-                                continue;
-                            } ?>
-                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                        <?php endforeach; ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 4)
+    {
+        print_field($this->mdl_clients, $custom_field, $custom_values);
+    }
+}
+?>
                     </div>
-
                 </div>
-
             </div>
             <div class="col-xs-12 col-sm-6">
 
@@ -303,14 +306,21 @@ $cv = $this->controller->view_data['custom_values'];
                     </div>
 
                     <div class="panel-body">
-                        <?php if ($this->mdl_clients->form_value('client_id')) { ?>
-                            <?php $this->layout->load_view('clients/partial_client_einvoicing'); ?>
-                        <?php } else { ?>
-                            <div class="alert alert-warning small" style="font-size:medium;">
-                                <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
-                                <?php echo trans('einvoicing_no_enabled_hint'); ?>
-                            </div>
-                        <?php } ?>
+<?php
+if ($this->mdl_clients->form_value('client_id'))
+{
+    $this->layout->load_view('clients/partial_client_einvoicing');
+}
+else
+{
+?>
+                        <div class="alert alert-warning small" style="font-size:medium;">
+                            <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
+                            <?php _trans('einvoicing_no_enabled_hint'); ?>
+                        </div>
+<?php
+} // End if
+?>
                     </div>
                 </div>
 
@@ -330,38 +340,45 @@ $cv = $this->controller->view_data['custom_values'];
                             <div class="controls">
                                 <select name="client_gender" id="client_gender"
                                         class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                    <?php
-                                    $genders = [
-                                        trans('gender_male'),
-                                        trans('gender_female'),
-                                        trans('gender_other'),
-                                    ];
-foreach ($genders as $key => $val) { ?>
-                                        <option
-                                            value=" <?php echo $key; ?>" <?php check_select($key, $this->mdl_clients->form_value('client_gender')) ?>>
-                                            <?php echo $val; ?>
-                                        </option>
-                                    <?php } ?>
+<?php
+$genders = [
+    trans('gender_male'),
+    trans('gender_female'),
+    trans('gender_other'),
+];
+$client_gender = $this->mdl_clients->form_value('client_gender');
+foreach ($genders as $key => $val) {
+?>
+                                    <option value=" <?php echo $key; ?>" <?php check_select($key, $client_gender) ?>>
+                                        <?php echo $val; ?>
+                                    </option>
+<?php
+}
+?>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <?php $client_title    = $this->mdl_clients->form_value('client_title'); ?>
-                            <?php $is_custom_title = null === ClientTitleEnum::tryFrom($client_title) ?>
+<?php
+$client_title    = $this->mdl_clients->form_value('client_title');
+$is_custom_title = null === ClientTitleEnum::tryFrom($client_title);
+?>
                             <label for="client_title"><?php _trans('client_title'); ?></label>
                             <select name="client_title" id="client_title" class="form-control simple-select">
-                                <?php foreach ($client_title_choices as $client_title_choice) : ?>
-                                    <option
-                                        value="<?php echo $client_title_choice; ?>"
-                                        <?php echo $client_title === $client_title_choice ? 'selected' : '' ?>
-                                        <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM
-        ? 'selected'
-        : ''
-                                    ?>
-                                    >
-                                        <?php echo ucfirst(trans($client_title_choice)); ?>
-                                    </option>
-                                <?php endforeach; ?>
+<?php
+foreach ($client_title_choices as $client_title_choice)
+{
+?>
+                                <option
+                                    value="<?php echo $client_title_choice; ?>"
+                                    <?php echo $client_title === $client_title_choice ? 'selected' : ''; ?>
+                                    <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM ? 'selected' : ''; ?>
+                                >
+                                    <?php echo ucfirst(trans($client_title_choice)); ?>
+                                </option>
+<?php
+}
+?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -376,13 +393,9 @@ foreach ($genders as $key => $val) { ?>
                         </div>
                         <div class="form-group has-feedback">
                             <label for="client_birthdate"><?php _trans('birthdate'); ?></label>
-                            <?php
-                            $bdate = $this->mdl_clients->form_value('client_birthdate');
-if ($bdate && $bdate != '0000-00-00') {
-    $bdate = date_from_mysql($bdate);
-} else {
-    $bdate = '';
-}
+<?php
+$bdate = $this->mdl_clients->form_value('client_birthdate');
+$bdate = ($bdate && $bdate != '0000-00-00') ? date_from_mysql($bdate) : '';
 ?>
                             <div class="input-group">
                                 <input type="text" name="client_birthdate" id="client_birthdate"
@@ -394,76 +407,91 @@ if ($bdate && $bdate != '0000-00-00') {
                             </div>
                         </div>
 
-                        <?php if ($this->mdl_settings->setting('sumex') == '1'): ?>
+<?php
+if ($this->mdl_settings->setting('sumex') == '1')
+{
+    $avs = format_avs($this->mdl_clients->form_value('client_avs'));
+    $insuredNumber = $this->mdl_clients->form_value('client_insurednumber');
+    $veka = $this->mdl_clients->form_value('client_veka');
+?>
 
-                            <div class="form-group">
-                                <label for="client_avs"><?php _trans('sumex_ssn'); ?></label>
-                                <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
-                                <div class="controls">
-                                    <input type="text" name="client_avs" id="client_avs" class="form-control"
-                                        value="<?php echo htmlspecialchars(format_avs($avs), ENT_COMPAT); ?>">
-                                </div>
+                        <div class="form-group">
+                            <label for="client_avs"><?php _trans('sumex_ssn'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_avs" id="client_avs" class="form-control"
+                                    value="<?php _htmlsc($avs); ?>">
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="client_insurednumber"><?php _trans('sumex_insurednumber'); ?></label>
-                                <?php $insuredNumber = $this->mdl_clients->form_value('client_insurednumber'); ?>
-                                <div class="controls">
-                                    <input type="text" name="client_insurednumber" id="client_insurednumber"
-                                        class="form-control"
-                                        value="<?php echo htmlentities($insuredNumber, ENT_COMPAT); ?>">
-                                </div>
+                        <div class="form-group">
+                            <label for="client_insurednumber"><?php _trans('sumex_insurednumber'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_insurednumber" id="client_insurednumber"
+                                    class="form-control"
+                                    value="<?php _htmle($insuredNumber); ?>">
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="client_veka"><?php _trans('sumex_veka'); ?></label>
-                                <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
-                                <div class="controls">
-                                    <input type="text" name="client_veka" id="client_veka" class="form-control"
-                                        value="<?php echo htmlentities($veka, ENT_COMPAT); ?>">
-                                </div>
+                        <div class="form-group">
+                            <label for="client_veka"><?php _trans('sumex_veka'); ?></label>
+                            <div class="controls">
+                                <input type="text" name="client_veka" id="client_veka" class="form-control"
+                                    value="<?php _htmle($veka); ?>">
                             </div>
+                        </div>
 
-                        <?php endif; ?>
+<?php
+} // End if sumex
+?>
 
-                        <!-- Custom fields -->
-                        <?php foreach ($custom_fields as $custom_field): ?>
-                            <?php if ($custom_field->custom_field_location != 3) {
-                                continue;
-                            } ?>
-                            <?php print_field($this->mdl_clients, $custom_field, $cv); ?>
-                        <?php endforeach; ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 3)
+    {
+        print_field($this->mdl_clients, $custom_field, $custom_values);
+    }
+}
+?>
                     </div>
 
-                    </div>
+                </div>
 
             </div>
 
         </div>
 
-        <?php if ($custom_fields): ?>
+<?php
+if ($custom_fields)
+{
+?>
             <div class="row">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12">
+
+                    <hr>
 
                     <div class="panel panel-default">
-
-                        <div class="panel-heading">
-                            <?php _trans('custom_fields'); ?>
-                        </div>
-
+                        <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
                         <div class="panel-body">
-                            <?php foreach ($custom_fields as $custom_field): ?>
-                                <?php if ($custom_field->custom_field_location != 0) {
-                                    continue;
-                                }
-                                print_field($this->mdl_clients, $custom_field, $cv);
-                                ?>
-                            <?php endforeach; ?>
+                            <div class="row">
+<?php
+    $classes = ['control-label col-xs-12 col-sm-4 col-md-2 col-lg-1', 'controls col-xs-12 col-sm-8 col-md-4 col-lg-5', '', 'form-horizontal'];
+    foreach ($custom_fields as $custom_field)
+    {
+        if (! $custom_field->custom_field_location) // == 0
+        {
+            print_field($this->mdl_clients, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+        }
+    }
+?>
+                            </div>
                         </div>
-
                     </div>
+
                 </div>
             </div>
-        <?php endif; ?>
+<?php
+} // End if custom_fields
+?>
     </div>
 </form>
