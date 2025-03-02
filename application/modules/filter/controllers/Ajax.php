@@ -192,6 +192,28 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('projects/partial_projects_table', $data);
     }
 
+    public function filter_tasks()
+    {
+        $this->load->model('tasks/mdl_tasks');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                // Column 'project_id' in where clause is ambiguous
+                $this->mdl_tasks->like("CONCAT_WS('^',task_id,ip_tasks.project_id,LOWER(task_name),LOWER(task_description),LOWER(task_price),task_finish_date,LOWER(task_status),LOWER(tax_rate_id))", $keyword);
+            }
+        }
+
+        $data = [
+            'tasks' => $this->mdl_tasks->get()->result()
+        ];
+
+        $this->layout->load_view('tasks/partial_tasks_table', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
