@@ -243,6 +243,7 @@ $lang = [
     'filter_custom_values'                         => 'Filter Values',
     'filter_invoices'                              => 'Filter Invoices',
     'filter_payments'                              => 'Filter Payments',
+    'filter_products'                              => 'Filter Products',
     'filter_projects'                              => 'Filter Projects',
     'filter_quotes'                                => 'Filter Quotes',
     'filter_tasks'                                 => 'Filter Tasks',

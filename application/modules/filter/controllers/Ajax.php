@@ -214,6 +214,28 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('tasks/partial_tasks_table', $data);
     }
 
+    public function filter_products()
+    {
+        $this->load->model('products/mdl_products');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        // Columns 'tax_rate_id' & 'unit_id' in where clause is ambiguous
+/        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_products->like("CONCAT_WS('^',product_id,LOWER(family_name),product_sku,LOWER(product_name),LOWER(product_description),product_price,purchase_price,LOWER(provider_name),LOWER(tax_rate_name),LOWER(unit_name_plrl),product_tariff)", $keyword);
+            }
+        }
+
+        $data = [
+            'products' => $this->mdl_products->get()->result()
+        ];
+
+        $this->layout->load_view('products/partial_products_table', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
