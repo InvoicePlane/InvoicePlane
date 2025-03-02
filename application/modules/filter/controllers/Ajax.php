@@ -142,7 +142,7 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('custom_values/partial_custom_values_table', $data);
     }
 
-    // $this->layout->load_view('custom_values/partial_custom_values_field', ['id' => $id, 'elements' => $elements]);
+
     public function filter_custom_values_field()
     {
         $this->load->model('custom_values/mdl_custom_values');
@@ -170,6 +170,28 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('custom_values/partial_custom_values_field', $data);
     }
 
+    public function filter_projects()
+    {
+        $this->load->model('projects/mdl_projects');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                // client_id : Column 'client_id' in where clause is ambiguous (ip_clients.client_id or ip_project.client_id
+                $this->mdl_projects->like("CONCAT_WS('^',project_id,LOWER(client_name),LOWER(project_name))", $keyword);
+            }
+        }
+
+        $data = array(
+            'projects' => $this->mdl_projects->get()->result()
+        );
+
+        $this->layout->load_view('projects/partial_projects_table', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
@@ -184,9 +206,9 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
+        $data = [
             'payments' => $this->mdl_payments->get()->result()
-        );
+        ];
 
         $this->layout->load_view('payments/partial_payment_table', $data);
     }

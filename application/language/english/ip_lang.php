@@ -243,6 +243,7 @@ $lang = [
     'filter_custom_values'                         => 'Filter Values',
     'filter_invoices'                              => 'Filter Invoices',
     'filter_payments'                              => 'Filter Payments',
+    'filter_projects'                              => 'Filter Projects',
     'filter_quotes'                                => 'Filter Quotes',
     'first'                                        => 'First',
     'first_day_of_week'                            => 'First day of week',

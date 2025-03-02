@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,7 +35,14 @@ class Projects extends Admin_Controller
         $this->mdl_projects->paginate(site_url('projects/index'), $page);
         $projects = $this->mdl_projects->result();
 
-        $this->layout->set('projects', $projects);
+        $this->layout->set(
+            [
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_projects'),
+                'filter_method'      => 'filter_projects',
+                'projects' => $projects
+            ]
+        );
         $this->layout->buffer('content', 'projects/index');
         $this->layout->render();
     }
@@ -65,6 +73,7 @@ class Projects extends Admin_Controller
 
         $this->layout->set(
             [
+                'project' => $this->mdl_projects->get_by_id($id),
                 'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
             ]
         );
@@ -92,8 +101,8 @@ class Projects extends Admin_Controller
         $this->load->model('tasks/mdl_tasks');
 
         $this->layout->set([
-            'project' => $project,
-            'tasks' => $this->mdl_projects->get_tasks($project->project_id),
+            'project'       => $project,
+            'tasks'         => $this->mdl_projects->get_tasks($project->project_id),
             'task_statuses' => $this->mdl_tasks->statuses(),
         ]);
         $this->layout->buffer('content', 'projects/view');
