@@ -271,6 +271,18 @@ class Clients extends Admin_Controller
      */
     public function view($client_id, $activeTab = 'detail', $page = 0): void
     {
+        $client = $this->mdl_clients
+            ->with_total()
+            ->with_total_balance()
+            ->with_total_paid()
+            ->where('ip_clients.client_id', $client_id)
+            ->get()->row();
+
+        if (! $client)
+        {
+            show_404();
+        }
+
         $this->load->model(
             [
                 'clients/mdl_client_notes',
@@ -283,13 +295,6 @@ class Clients extends Admin_Controller
         );
 
         $this->load->helper('e-invoice'); // eInvoicing++
-
-        $client = $this->mdl_clients
-            ->with_total()
-            ->with_total_balance()
-            ->with_total_paid()
-            ->where('ip_clients.client_id', $client_id)
-            ->get()->row();
 
         // check if required (e-invoicing) fields are filled in?
         $req_fields                   = new stdClass;
@@ -333,18 +338,36 @@ class Clients extends Admin_Controller
         }
         $this->db->update('ip_clients');
 
-        $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
-
-        $this->mdl_client_custom->prep_form($client_id);
-
-        if (! $client)
+        // Change page only for one url (tab) system
+        $p = ['invoices' => 0, 'quotes' => 0, 'payments' => 0]; // Default
+        // Session key
+        $key = 'clientview';
+        // When detail (from menu)
+        if($activeTab == 'detail')
         {
-            show_404();
+            // Clear temp + session
+            $this->session->unmark_temp($key);
+            unset($_SESSION[$key]);
+        }
+        else
+        {
+            // Set pages saved in session
+            isset($_SESSION[$key]) && $p = $_SESSION[$key];
+            // Up Actual page num
+            $p[$activeTab] = $page;
+            // Save in session
+            $_SESSION[$key] = $p;
+            // For 300 seconds
+            $this->session->mark_as_temp($key);
         }
 
-        $this->mdl_invoices->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/invoices'), $page, 5);
-        $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
-        $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
+        $base_url = site_url('clients/view/' . $client_id);
+        $this->mdl_invoices->by_client($client_id)->paginate($base_url . '/invoices', $p['invoices'], 5);
+        $this->mdl_quotes->by_client($client_id)->paginate($base_url . '/quotes', $p['quotes'], 5);
+        $this->mdl_payments->by_client($client_id)->paginate($base_url . '/payments', $p['payments'], 5);
+
+        $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
+        $this->mdl_client_custom->prep_form($client_id);
 
         $this->layout->set(
             [

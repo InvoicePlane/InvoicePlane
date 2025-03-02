@@ -100,16 +100,16 @@ foreach ($custom_fields as $custom_field)
 </div>
 
 <ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
-    <li<?php echo $activeTab == 'detail' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
-    <li<?php echo $activeTab == 'quotes' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
-    <li<?php echo $activeTab == 'invoices' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
-    <li<?php echo $activeTab == 'payments' ? ' class="active"' : ''; ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
+    <li<?php echo $activeTab == 'detail' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-details"><?php _trans('details'); ?></a></li>
+    <li<?php echo $activeTab == 'quotes' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-quotes"><?php _trans('quotes'); ?></a></li>
+    <li<?php echo $activeTab == 'invoices' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-invoices"><?php _trans('invoices'); ?></a></li>
+    <li<?php echo $activeTab == 'payments' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-payments"><?php _trans('payments'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
     <div class="tab-content no-padding">
 
-        <div id="clientDetails" class="tab-pane tab-rich-content<?php echo $activeTab == 'detail' ? ' active' : ''; ?>">
+        <div id="client-details" class="tab-pane tab-rich-content<?php echo $activeTab == 'detail' ? ' active' : ''; ?>">
 
             <?php $this->layout->load_view('layout/alerts'); ?>
 
@@ -425,7 +425,7 @@ if ($custom_fields)
 
         </div>
 
-        <div id="clientQuotes" class="tab-pane table-content<?php echo $activeTab == 'quotes' ? ' active' : ''; ?>">
+        <div id="client-quotes" class="tab-pane table-content<?php echo $activeTab == 'quotes' ? ' active' : ''; ?>">
             <?php echo $quote_table; ?>
 
             <div class="container-fluid">
@@ -435,7 +435,7 @@ if ($custom_fields)
             </div>
         </div>
 
-        <div id="clientInvoices" class="tab-pane table-content<?php echo $activeTab == 'invoices' ? ' active' : ''; ?>">
+        <div id="client-invoices" class="tab-pane table-content<?php echo $activeTab == 'invoices' ? ' active' : ''; ?>">
             <?php echo $invoice_table; ?>
 
             <div class="container-fluid">
@@ -445,7 +445,7 @@ if ($custom_fields)
             </div>
         </div>
 
-        <div id="clientPayments" class="tab-pane table-content<?php echo $activeTab == 'payments' ? ' active' : ''; ?>">
+        <div id="client-payments" class="tab-pane table-content<?php echo $activeTab == 'payments' ? ' active' : ''; ?>">
             <?php echo $payment_table; ?>
 
             <div class="container-fluid">
