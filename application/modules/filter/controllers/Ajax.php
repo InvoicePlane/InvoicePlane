@@ -236,6 +236,33 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('products/partial_products_table', $data);
     }
 
+    public function filter_users()
+    {
+        $this->load->model('users/mdl_users');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        // Not used: user_id	user_type	user_active	user_date_modified	user_language	user_password	user_psalt	user_passwordreset_token
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_users->like("CONCAT_WS('^',
+user_date_created,LOWER(user_name),LOWER(user_company),LOWER(user_address_1),LOWER(user_address_2),LOWER(user_city),LOWER(user_state),LOWER(user_zip),LOWER(user_country),
+LOWER(user_invoicing_contact),LOWER(user_phone),LOWER(user_fax),LOWER(user_mobile),LOWER(user_email),LOWER(user_web),
+LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subscribernumber),LOWER(user_bank),LOWER(user_iban),LOWER(user_bic),LOWER(user_remittance_tmpl),LOWER(user_gln),LOWER(user_rcc)
+                )", $keyword);
+            }
+        }
+
+        $data = [
+            'users'      => $this->mdl_users->get()->result(),
+            'user_types' => $this->mdl_users->user_types(),
+        ];
+
+        $this->layout->load_view('users/partial_users_table', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
