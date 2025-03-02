@@ -4,6 +4,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="NOINDEX,NOFOLLOW">
+<meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
+<meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
 
 <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 

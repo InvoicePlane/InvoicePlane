@@ -1,0 +1,169 @@
+
+/*
+|   =========================================================
+|   Overide default styles of inputs like bootstrap .input-sm
+|   =========================================================
+*/
+button, input, optgroup, select, textarea {
+  &.form-control {
+    padding: 5px 10px;
+    line-height: 1.5;
+    border-radius: 3px;
+  }
+}
+button, input, optgroup, select {
+  &.form-control {
+    height: 30px;
+  }
+}
+
+/*
+|   =========================================================
+|   Overide default height of select2 (same of .input-sm)
+|   =========================================================
+*/
+.select2-container {
+  .select2-selection {
+    &--single, &--multiple {
+      height: 30px;
+      padding: 0 3px;
+      line-height: 1.5;
+    }
+  }
+}
+
+/*
+|   =========================================================
+|   Overide colors select2 of default Theme
+|   =========================================================
+*/
+.select2-container--default {
+
+  // Single
+  .select2-selection--single {
+    background-color: $input-bg;
+    border-color: $input-border;
+
+    .select2-selection__rendered {
+      color: $input-color;
+      // line-height: 30px;
+    }
+
+    .select2-selection__placeholder {
+      color: $input-bg-disabled;
+    }
+
+    .select2-selection__arrow {
+      height: 28px;
+
+      b {
+        border-color: $input-border transparent transparent transparent;
+      }
+
+    }
+  }
+
+  &.select2-container--disabled {
+    .select2-selection--single {
+      background-color:$input-bg;
+    }
+  }
+
+  &.select2-container--open {
+    .select2-selection--single {
+      .select2-selection__arrow {
+        b {
+          border-color: transparent transparent $input-border transparent;
+        }
+      }
+    }
+  }
+
+  // Multiple
+  .select2-selection--multiple {
+    background-color: $input-bg;
+    border-color: $input-border;
+
+    .select2-selection__placeholder {
+      color: $input-color;
+    }
+
+    .select2-selection__choice {
+      background-color: $input-bg;
+      border-color: $input-border;
+      margin-top: 3px;
+    }
+
+    .select2-selection__choice__remove {
+      color: $input-color;
+      &:hover {
+        color: $gray-base;
+      }
+    }
+  }
+
+  // Global
+  &.select2-container--focus {
+    .select2-selection--single {
+      border-color: $input-border-focus;
+    }
+    .select2-selection--multiple {
+      border-color: $input-border-focus;
+    }
+   }
+
+  &.select2-container--disabled {
+    .select2-selection--single {
+      background-color: $input-bg-disabled;
+    }
+    .select2-selection--multiple {
+      background-color: $input-bg-disabled;
+    }
+  }
+
+  .select2-dropdown {
+    background-color: $input-bg;
+    border-color: $input-border-focus;
+  }
+
+  .select2-search--dropdown {
+    background-color: $input-bg;
+
+    .select2-search__field {
+      border-color: $input-border;
+    }
+  }
+
+  .select2-search--inline {
+    .select2-search__field {
+      background: transparent;
+    }
+  }
+
+  .select2-results__option {
+
+    &[aria-disabled=true] {
+      background-color: $input-bg-disabled;
+      color: $input-color;
+    }
+
+    &[aria-selected=true] {
+      background-color: $input-bg-disabled;
+    }
+
+    &--selected {
+      background-color: $brand-success;
+    }
+
+    &--highlighted[aria-selected] {
+      background-color: $brand-info;
+      color: $input-color;
+    }
+  }
+
+  .select2-results > .select2-results__options {
+    background-color: $input-bg;
+    color: $input-color;
+  }
+
+}

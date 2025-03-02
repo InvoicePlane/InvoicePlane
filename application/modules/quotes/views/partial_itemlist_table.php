@@ -33,19 +33,19 @@
 
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('item'); ?></span>
-                    <input type="text" name="item_name" class="input-sm form-control" value="">
+                    <input type="text" name="item_name" class="form-control" value="">
                 </div>
             </td>
             <td class="td-amount td-quantity">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('quantity'); ?></span>
-                    <input type="text" name="item_quantity" class="input-sm form-control amount" value="">
+                    <input type="text" name="item_quantity" class="form-control amount" value="">
                 </div>
             </td>
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('price'); ?></span>
-                    <input type="text" name="item_price" class="input-sm form-control amount" value="">
+                    <input type="text" name="item_price" class="form-control amount" value="">
                     <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                 </div>
             </td>
@@ -58,7 +58,7 @@
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
-                    <select name="item_tax_rate_id" class="form-control input-sm">
+                    <select name="item_tax_rate_id" class="form-control">
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>">
@@ -84,14 +84,14 @@
             <td class="td-textarea">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('description'); ?></span>
-                    <textarea name="item_description" class="input-sm form-control"></textarea>
+                    <textarea name="item_description" class="form-control"></textarea>
                 </div>
             </td>
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('product_unit'); ?></span>
                     <select name="item_product_unit_id"
-                            class="form-control input-sm">
+                            class="form-control">
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
                             <option value="<?php echo $unit->unit_id; ?>">
@@ -139,21 +139,21 @@
 
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('item'); ?></span>
-                        <input type="text" name="item_name" class="input-sm form-control"
+                        <input type="text" name="item_name" class="form-control"
                                value="<?php _htmlsc($item->item_name); ?>">
                     </div>
                 </td>
                 <td class="td-amount td-quantity">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('quantity'); ?></span>
-                        <input type="text" name="item_quantity" class="input-sm form-control amount"
+                        <input type="text" name="item_quantity" class="form-control amount"
                                value="<?php echo format_quantity($item->item_quantity); ?>">
                     </div>
                 </td>
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('price'); ?></span>
-                        <input type="text" name="item_price" class="input-sm form-control amount"
+                        <input type="text" name="item_price" class="form-control amount"
                                value="<?php echo format_amount($item->item_price); ?>">
                         <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                     </div>
@@ -167,7 +167,7 @@
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
-                        <select name="item_tax_rate_id" class="form-control input-sm">
+                        <select name="item_tax_rate_id" class="form-control">
                             <option value="0"><?php _trans('none'); ?></option>
                             <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -195,7 +195,7 @@
                 <td class="td-textarea">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('description'); ?></span>
-                        <textarea name="item_description" class="input-sm form-control"
+                        <textarea name="item_description" class="form-control"
                         ><?php echo htmlsc($item->item_description); ?></textarea>
                     </div>
                 </td>
@@ -203,7 +203,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('product_unit'); ?></span>
                         <select name="item_product_unit_id"
-                                class="form-control input-sm">
+                                class="form-control">
                             <option value="0"><?php _trans('none'); ?></option>
                             <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"

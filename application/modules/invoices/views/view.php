@@ -383,7 +383,6 @@ if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
                 <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1">
                     <div class="details-box panel panel-default panel-body">
                         <div class="row">
-
 <?php
 if ($invoice->invoice_sign == -1)
 {
@@ -392,7 +391,7 @@ if ($invoice->invoice_sign == -1)
 ?>
                             <div class="col-xs-12">
                                 <div class="alert alert-warning small">
-                                    <i class="fa fa-credit-invoice"></i>&nbsp;<?php echo trans('credit_invoice_for_invoice') . ' ' . $view_link; ?>
+                                    <i class="fa fa-credit-invoice"></i>&nbsp;<?php _trans('credit_invoice_for_invoice') . ' ' . $view_link; ?>
                                 </div>
                             </div>
 <?php
@@ -403,7 +402,7 @@ if ($invoice->invoice_sign == -1)
 
                                 <div class="invoice-properties">
                                     <label><?php _trans('invoice'); ?> #</label>
-                                    <input type="text" id="invoice_number" class="form-control input-sm"
+                                    <input type="text" id="invoice_number" class="form-control"
 <?php if ($invoice->invoice_number) : ?>
                                            value="<?php echo $invoice->invoice_number; ?>"
 <?php else : ?>
@@ -418,7 +417,7 @@ if ($invoice->invoice_sign == -1)
 
                                     <div class="input-group">
                                         <input name="invoice_date_created" id="invoice_date_created"
-                                               class="form-control input-sm datepicker"
+                                               class="form-control datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
                                                <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>>
                                         <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
@@ -430,21 +429,12 @@ if ($invoice->invoice_sign == -1)
 
                                     <div class="input-group">
                                         <input name="invoice_date_due" id="invoice_date_due"
-                                               class="form-control input-sm datepicker"
+                                               class="form-control datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
                                                <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>>
                                         <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
                                     </div>
                                 </div>
-<?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 1)
-    {
-        print_field($this->mdl_invoices, $custom_field, $custom_values);
-    }
-}
-?>
                             </div>
 
                             <div class="col-xs-12 col-md-6">
@@ -457,7 +447,7 @@ foreach ($custom_fields as $custom_field)
                                         } ?>
                                     </label>
                                     <select name="invoice_status_id" id="invoice_status_id"
-                                            class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity"
+                                            class="form-control simple-select" data-minimum-results-for-search="Infinity"
                                             <?php echo ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) ? 'disabled="disabled"' : ''; ?>
                                     >
 <?php
@@ -477,7 +467,7 @@ foreach ($invoice_statuses as $key => $status)
                                 <div class="invoice-properties">
                                     <label><?php _trans('payment_method'); ?></label>
                                     <select name="payment_method" id="payment_method"
-                                            class="form-control input-sm simple-select"
+                                            class="form-control simple-select"
                                             <?php echo ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) ? 'disabled="disabled"' : ''; ?>
                                     >
                                         <option value="0"><?php _trans('select_payment_method'); ?></option>
@@ -497,17 +487,28 @@ foreach ($payment_methods as $payment_method)
 
                                 <div class="invoice-properties">
                                     <label><?php _trans('invoice_password'); ?></label>
-                                    <input type="text" id="invoice_password" class="form-control input-sm"
+                                    <input type="text" id="invoice_password" class="form-control"
                                            value="<?php _htmlsc($invoice->invoice_password); ?>"
                                            <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>>
                                 </div>
                             </div>
 
 <?php
+$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 1)
+    {
+        print_field($this->mdl_invoices, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+    }
+}
+?>
+
+<?php
 if ($invoice->invoice_status_id != 1)
 {
 ?>
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12">
                                 <div class="form-group">
                                     <label for="invoice-guest-url"><?php _trans('guest_url'); ?></label>
                                     <div class="input-group">

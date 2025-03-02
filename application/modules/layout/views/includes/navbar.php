@@ -113,7 +113,7 @@
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
                 <form class="navbar-form navbar-left" role="search" onsubmit="return false;">
                     <div class="form-group">
-                        <input id="filter" type="text" class="search-query form-control input-sm"
+                        <input id="filter" type="text" class="search-query form-control"
                                placeholder="<?php echo $filter_placeholder; ?>">
                     </div>
                 </form>

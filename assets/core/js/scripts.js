@@ -141,21 +141,29 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
-$(document).ready(function () {
-
-    // Automatical CSRF protection for all POST requests
+// Get crsf names from ipconfig (config_item) on meta tags
+const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content');   // Default: _ip_csrf
+const csrf_cookie_name = document.querySelector('meta[name="csrf_cookie_name"]').getAttribute('content'); // Default: ip_csrf_cookie
+$(function () {
+    // Automatical CSRF protection for
+    // All jquery POST requests
     $.ajaxPrefilter(function (options) {
         if (options.type === 'post' || options.type === 'POST' || options.type === 'Post') {
             if (options.data === '') {
-                options.data += '?_ip_csrf=' + Cookies.get('ip_csrf_cookie');
+                options.data += '?' + csrf_token_name + '=' + Cookies.get(csrf_cookie_name);
             } else {
-                options.data += '&_ip_csrf=' + Cookies.get('ip_csrf_cookie');
+                options.data += '&' + csrf_token_name + '=' + Cookies.get(csrf_cookie_name);
             }
         }
     });
-
     $(document).ajaxComplete(function () {
-        $('[name="_ip_csrf"]').val(Cookies.get('ip_csrf_cookie'));
+        $('[name="' + csrf_token_name + '"]').val(Cookies.get(csrf_cookie_name));
+    });
+    // All Classical POST requests
+    // Helper to Fix multiple submit with target = _blank
+    // Like report after first pdf generation need reload page to get the new token val, with that, no.
+    $('input[name="btn_submit"]').on('click', function(){
+        $('input[name="' + csrf_token_name + '"]').prop('value', Cookies.get(csrf_cookie_name));
     });
 
     // Correct the height of the content area
@@ -181,6 +189,27 @@ $(document).ready(function () {
 
     // Select2 for all select inputs
     $('.simple-select').select2();
+
+    // Select2 for all multiple select inputs (customs)
+    $('select.multiple-select').select2()
+    .on('select2:select', function (e) {
+        var $element = $(e.params.data.element);
+        if($element.val() == '') { // none selected
+            $(this).val('').trigger('change.select2'); // reset all & set to none
+        }
+        else {
+            var vals = $(this).select2('val'); // options (array)
+            if(vals.length && vals[0] == '') { // have none inside
+                $(this).val(vals.slice(1)).trigger('change.select2'); // remove none & set
+            }
+        }
+    })
+    .on('select2:unselect', function(e) {
+        if(! $(this).select2('val').length) { // zero option
+            $(this).val('').trigger('change.select2'); // set to none
+            // todo? how to prevent open
+        }
+    });
 
     // Enable clipboard toggles
     var clipboards = new ClipboardJS('.to-clipboard');

@@ -336,7 +336,7 @@ if ($invoice->invoice_status_id == 1)
                                         <div class="input-group">
                                             <span class="input-group-addon"><?php _trans('start'); ?></span>
                                             <input id="invoice_sumex_treatmentstart" name="sumex_treatmentstart"
-                                                   class="input-sm form-control datepicker"
+                                                   class="form-control datepicker"
                                                    value="<?php echo date_from_mysql($invoice->sumex_treatmentstart); ?>"
                                                    type="text">
                                         </div>
@@ -347,7 +347,7 @@ if ($invoice->invoice_status_id == 1)
                                         <div class="input-group">
                                             <span class="input-group-addon"><?php _trans('end'); ?></span>
                                             <input id="invoice_sumex_treatmentend" name="sumex_treatmentend"
-                                                   class="input-sm form-control datepicker"
+                                                   class="form-control datepicker"
                                                    value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>"
                                                    type="text">
                                         </div>
@@ -358,7 +358,7 @@ if ($invoice->invoice_status_id == 1)
                                         <div class="input-group">
                                             <span class="input-group-addon"><?php _trans('reason'); ?></span>
                                             <select name="invoice_sumex_reason" id="invoice_sumex_reason"
-                                                    class="form-control input-sm simple-select">
+                                                    class="form-control simple-select">
 <?php
 $reasons = [
     'disease',
@@ -387,7 +387,7 @@ foreach ($reasons as $key => $reason)
                                         <div class="input-group">
                                             <span class="input-group-addon"><?php _trans('case_date'); ?></span>
                                             <input id="invoice_sumex_casedate" name="sumex_casedate"
-                                                   class="input-sm form-control datepicker"
+                                                   class="form-control datepicker"
                                                    value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>"
                                                    type="text">
                                         </div>
@@ -398,7 +398,7 @@ foreach ($reasons as $key => $reason)
                                         <div class="input-group">
                                             <span class="input-group-addon"><?php _trans('case_number'); ?></span>
                                             <input id="invoice_sumex_casenumber" name="sumex_casenumber"
-                                                   class="input-sm form-control"
+                                                   class="form-control"
                                                    value="<?php echo htmlentities($invoice->sumex_casenumber, ENT_COMPAT); ?>"
                                                    type="text">
                                         </div>
@@ -409,7 +409,7 @@ foreach ($reasons as $key => $reason)
                                         <div class="input-group">
                                             <span class="input-group-addon"><?php _trans('invoice_sumex_diagnosis'); ?></span>
                                             <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis"
-                                                   class="input-sm form-control"
+                                                   class="form-control"
                                                    value="<?php echo htmlentities($invoice->sumex_diagnosis, ENT_COMPAT); ?>"
                                                    type="text" maxlength="500">
                                         </div>
@@ -470,7 +470,7 @@ foreach ($invoice_statuses as $key => $status)
                                 <div class="invoice-properties">
                                     <label><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number"
-                                           class="input-sm form-control"
+                                           class="form-control"
                                         <?php if ($invoice->invoice_number) : ?>
                                             value="<?php echo $invoice->invoice_number; ?>"
                                         <?php else : ?>

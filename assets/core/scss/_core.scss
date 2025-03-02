@@ -7,6 +7,12 @@
 |   properly. Only edit them if you know what you are doing!
 |   =========================================================
 */
+/*
+|   =========================================================
+|   Select2 and inputs Style for good height and colors
+|   =========================================================
+*/
+@import "inputs-style";
 
 /*
 |   =========================================================
@@ -175,6 +181,12 @@ textarea {
   }
 }
 
+div#item_table {
+  textarea {
+    height: 13.5rem;
+  }
+}
+
 /*
 |   =========================================================
 |   Navigation
@@ -225,8 +237,13 @@ textarea {
   margin: 0;
 
   .dropdown-menu {
+    min-width: 100%;
     right: 0;
     left: auto;
+    // Overide bs
+    &> li > a {
+      padding: 3px 10px;
+    }
   }
 }
 
@@ -234,7 +251,7 @@ textarea {
 .dropdown-button {
   // Same style as a normal link item
   display: block;
-  padding: 3px 20px;
+  padding: 3px 10px;
   width: 100%;
   clear: both;
   font-weight: normal;
@@ -479,7 +496,7 @@ div.table-content {
 }
 
 #actions {
-  margin: 15px 0 0;
+  margin: 5px 0 0;
 
   /* Mimic table appearance */
   div.table {
@@ -1113,3 +1130,4 @@ body.error {
     margin-left: 0;
   }
 }
+

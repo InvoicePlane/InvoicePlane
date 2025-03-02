@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -20,34 +21,34 @@ class Mdl_Custom_Values extends MY_Model
     public $primary_key = 'ip_custom_values.custom_values_id';
 
     /**
-     * @return string[]
+     * @return array
      */
     public static function custom_types()
     {
-        return array_merge(Mdl_Custom_Values::user_input_types(), Mdl_Custom_Values::custom_value_fields());
+        return array_merge(self::user_input_types(), self::custom_value_fields());
     }
 
     /**
-     * @return string[]
+     * @return array
      */
     public static function user_input_types()
     {
-        return array(
+        return [
             'TEXT',
             'DATE',
             'BOOLEAN'
-        );
+        ];
     }
 
     /**
-     * @return string[]
+     * @return array
      */
     public static function custom_value_fields()
     {
-        return array(
+        return [
             'SINGLE-CHOICE',
             'MULTIPLE-CHOICE'
-        );
+        ];
     }
 
     /**
@@ -60,7 +61,7 @@ class Mdl_Custom_Values extends MY_Model
         $this->load->module('custom_fields');
         $field_custom = $this->mdl_custom_fields->get_by_id($fid);
 
-        if (!$field_custom) {
+        if (! $field_custom) {
             return;
         }
 
@@ -75,13 +76,13 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function validation_rules()
     {
-        return array(
-            'custom_values_value' => array(
+        return [
+            'custom_values_value' => [
                 'field' => 'custom_values_value',
                 'label' => 'Value',
                 'rules' => 'required'
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -89,13 +90,65 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function custom_tables()
     {
-        return array(
-            'ip_client_custom' => 'client',
+        return [
+            'ip_client_custom'  => 'client',
             'ip_invoice_custom' => 'invoice',
             'ip_payment_custom' => 'payment',
-            'ip_quote_custom' => 'quote',
-            'ip_user_custom' => 'user'
-        );
+            'ip_quote_custom'   => 'quote',
+            'ip_user_custom'    => 'user'
+        ];
+    }
+
+    /**
+     * @param int $id
+     * @param bool $get
+     * @return null|object
+     */
+    public function used($id = null, $get = true)
+    {
+        if( ! $id) return;
+
+        $this->load->model('custom_fields/mdl_custom_fields');
+        $cv = $this->get_by_id($id)->row();
+        $cf = $this->mdl_custom_fields->get_by_id($cv->custom_values_field);
+        unset($cv);
+        $base = strtr($cf->custom_field_table,['ip_' => '']) . '_fieldvalue';
+
+        // Get values [SINGLE|MULTIPLE]-CHOICE
+        $this->db->from($cf->custom_field_table);
+        if('SINGLE-CHOICE' == $cf->custom_field_type)
+        {
+            $this->db->where($base, $id);
+        }
+        else
+        {
+            $this->db->or_like($base, $id . ',')
+                     ->or_like($base, ',' . $id)
+                     ->or_where($base, $id);
+        }
+        return $get ? $this->db->get()->result() : $this->db;
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function delete($id)
+    {
+        if ( ! $this->used($id))
+        {
+            parent::delete($id);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param $id
+     */
+    public function delete_all_fid($id)
+    {
+        $this->db->where('custom_values_field', $id)->delete($this->table);
     }
 
     /**
@@ -104,8 +157,7 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function get_by_fid($id)
     {
-        $this->where('custom_values_field', $id);
-        return $this->get();
+        return $this->where('custom_values_field', $id)->get();
     }
 
     /**
@@ -114,13 +166,12 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function get_by_column($id)
     {
-        $this->where('custom_field_id', $id);
-        return $this->get();
+        return $this->where('custom_field_id', $id)->get();
     }
 
     /**
      * @param $id
-     * @return mixed
+     * @return $this
      */
     public function get_by_id($id)
     {
@@ -129,10 +180,14 @@ class Mdl_Custom_Values extends MY_Model
 
     /**
      * @param $ids
-     * @return mixed
+     * @return null|object
      */
     public function get_by_ids($ids)
     {
+        if (empty($ids))
+        {
+            return null;
+        }
         $ids = is_array($ids) ? $ids : explode(',', $ids);
         return $this->where_in('custom_values_id', $ids)->get();
     }
@@ -147,20 +202,18 @@ class Mdl_Custom_Values extends MY_Model
         $this->where('custom_field_id', $fid);
         $this->where('custom_values_id', $id);
         $this->get();
-        if ($this->num_rows()) {
-            return true;
-        }
-        return false;
+        return boolval($this->num_rows());
     }
 
     /**
      * @return $this
      */
-    public function get_grouped()
+    public function grouped()
     {
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*,ip_custom_values.*', false);
         $this->db->select('count(custom_field_label) as count');
         $this->db->group_by('ip_custom_fields.custom_field_id');
-        return $this->get();
+        return $this;
     }
 
     public function default_select()
@@ -175,7 +228,7 @@ class Mdl_Custom_Values extends MY_Model
 
     public function default_order_by()
     {
-        //$this->db->group_by('ip_custom_fields.custom_field_label');
+        $this->db->order_by('ip_custom_values.custom_values_value');
     }
 
     public function default_group_by()

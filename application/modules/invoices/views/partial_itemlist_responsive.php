@@ -27,17 +27,17 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                         <div class="col-xs-12 col-sm-11">
                             <div class="input-group">
                                 <label for="item_name" class="input-group-addon ig-addon-aligned"><?php _trans('item'); ?></label>
-                                <input type="text" name="item_name" id="item_name" class="input-sm form-control" value="">
+                                <input type="text" name="item_name" id="item_name" class="form-control" value="">
                             </div>
                             <?php if ($invoice->sumex_id == ""): ?>
                                 <div class="input-group">
                                     <label for="item_description" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
-                                    <textarea name="item_description" id="item_description" class="input-sm form-control h135rem"></textarea>
+                                    <textarea name="item_description" id="item_description" class="form-control"></textarea>
                                 </div>
                             <?php else: ?>
                                 <div class="input-group">
                                     <label for="item_date" class="input-group-addon ig-addon-aligned"><?php _trans('date'); ?></label>
-                                    <input type="text" name="item_date" id="item_date" class="input-sm form-control datepicker"
+                                    <input type="text" name="item_date" id="item_date" class="form-control datepicker"
                                            value="<?php echo format_date(@$item->item_date); ?>"<?php echo $invoice_disabled; ?>>
                                 </div>
                             <?php endif; ?>
@@ -50,11 +50,11 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                         <div class="col-xs-12 col-lg-6">
                             <div class="input-group">
                                 <label for="item_quantity" class="input-group-addon ig-addon-aligned"><?php _trans('quantity'); ?></label>
-                                <input type="text" name="item_quantity" id="item_quantity" class="input-sm form-control" value="">
+                                <input type="text" name="item_quantity" id="item_quantity" class="form-control" value="">
                             </div>
                             <div class="input-group">
                                 <label for="item_product_unit_id" class="input-group-addon ig-addon-aligned"><?php _trans('product_unit'); ?></label>
-                                <select name="item_product_unit_id" id="item_product_unit_id" class="form-control input-sm">
+                                <select name="item_product_unit_id" id="item_product_unit_id" class="form-control">
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($units as $unit) { ?>
                                         <option value="<?php echo $unit->unit_id; ?>">
@@ -65,7 +65,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                             </div>
                             <div class="input-group">
                                 <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
-                                <input type="text" name="item_price" id="item_price" class="input-sm form-control" value="">
+                                <input type="text" name="item_price" id="item_price" class="form-control" value="">
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
 <?php
@@ -76,7 +76,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 ?>
                             <div class="input-group">
                                 <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
-                                <select name="item_tax_rate_id" id="item_tax_rate_id" class="form-control input-sm">
+                                <select name="item_tax_rate_id" id="item_tax_rate_id" class="form-control">
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($tax_rates as $tax_rate) { ?>
                                         <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -185,17 +185,17 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 
                                 <div class="input-group">
                                     <label for="item_name_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('item'); ?></label>
-                                    <input type="text" name="item_name" id="item_name_<?php echo $item->item_id; ?>" class="input-sm form-control" value="<?php echo _htmlsc($item->item_name); ?>"<?php echo $invoice_disabled; ?>>
+                                    <input type="text" name="item_name" id="item_name_<?php echo $item->item_id; ?>" class="form-control" value="<?php echo _htmlsc($item->item_name); ?>"<?php echo $invoice_disabled; ?>>
                                 </div>
                                 <?php if ($invoice->sumex_id == "") : ?>
                                     <div class="input-group">
                                         <label for="item_description_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
-                                        <textarea name="item_description" id="item_description_<?php echo $item->item_id; ?>" class="input-sm form-control h135rem"<?php echo $invoice_disabled; ?>><?php echo htmlsc($item->item_description); ?></textarea>
+                                        <textarea name="item_description" id="item_description_<?php echo $item->item_id; ?>" class="form-control"<?php echo $invoice_disabled; ?>><?php echo htmlsc($item->item_description); ?></textarea>
                                     </div>
                                 <?php else: ?>
                                     <div class="input-group">
                                         <label for="item_date_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('date'); ?></label>
-                                        <input type="text" name="item_date" id="item_date_<?php echo $item->item_id; ?>" class="input-sm form-control datepicker" value="<?php echo format_date($item->item_date); ?>"<?php echo $invoice_disabled; ?>>
+                                        <input type="text" name="item_date" id="item_date_<?php echo $item->item_id; ?>" class="form-control datepicker" value="<?php echo format_date($item->item_date); ?>"<?php echo $invoice_disabled; ?>>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -207,11 +207,11 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                             <div class="col-xs-12 col-lg-6">
                                 <div class="input-group">
                                     <label for="item_quantity_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('quantity'); ?></label>
-                                    <input type="text" name="item_quantity" id="item_quantity_<?php echo $item->item_id; ?>" class="input-sm form-control" value="<?php echo format_quantity($item->item_quantity); ?>"<?php echo $invoice_disabled; ?>>
+                                    <input type="text" name="item_quantity" id="item_quantity_<?php echo $item->item_id; ?>" class="form-control" value="<?php echo format_quantity($item->item_quantity); ?>"<?php echo $invoice_disabled; ?>>
                                 </div>
                                 <div class="input-group">
                                     <label for="item_product_unit_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('product_unit'); ?></label>
-                                    <select name="item_product_unit_id" id="item_product_unit_id_<?php echo $item->item_id; ?>" class="form-control input-sm"<?php echo $invoice_disabled; ?>>
+                                    <select name="item_product_unit_id" id="item_product_unit_id_<?php echo $item->item_id; ?>" class="form-control"<?php echo $invoice_disabled; ?>>
                                         <option value="0"><?php _trans('none'); ?></option>
                                         <?php foreach ($units as $unit) { ?>
                                             <option value="<?php echo $unit->unit_id; ?>"
@@ -223,7 +223,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                                 </div>
                                 <div class="input-group">
                                     <label for="item_price_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
-                                    <input type="text" name="item_price" id="item_price_<?php echo $item->item_id; ?>" class="input-sm form-control"
+                                    <input type="text" name="item_price" id="item_price_<?php echo $item->item_id; ?>" class="form-control"
                                            value="<?php echo format_amount($item->item_price); ?>"<?php echo $invoice_disabled; ?>>
                                     <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                                 </div>
@@ -235,7 +235,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 ?>
                                 <div class="input-group">
                                     <label for="item_tax_rate_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
-                                    <select name="item_tax_rate_id" id="item_tax_rate_id_<?php echo $item->item_id; ?>" class="form-control input-sm"<?php echo $invoice_disabled; ?>>
+                                    <select name="item_tax_rate_id" id="item_tax_rate_id_<?php echo $item->item_id; ?>" class="form-control"<?php echo $invoice_disabled; ?>>
                                         <option value="0"><?php _trans('none'); ?></option>
                                         <?php foreach ($tax_rates as $tax_rate) { ?>
                                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"

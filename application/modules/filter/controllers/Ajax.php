@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -81,6 +81,93 @@ class Ajax extends Admin_Controller
         );
 
         $this->layout->load_view('clients/partial_client_table', $data);
+    }
+
+    public function filter_custom_fields()
+    {
+        // custom table option name Normaly always here (it's ajax). Old school but work.
+        $name = empty($_SERVER['HTTP_REFERER']) ? 'all' : basename($_SERVER['HTTP_REFERER']); // Todo: With CI?
+
+        $this->load->model('custom_fields/mdl_custom_fields');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                // custom_field_location, custom_field_order
+                $this->mdl_custom_fields->like("CONCAT_WS('^',custom_field_id, LOWER(custom_field_table), LOWER(custom_field_label), LOWER(custom_field_type))", $keyword);
+            }
+        }
+
+        // Determine which name of table custom field to load
+        $custom_tables = $this->mdl_custom_fields->custom_tables();
+        if ($name != 'all' && in_array($name, $custom_tables))
+        {
+            $this->mdl_custom_fields->by_table_name($name);
+        }
+        $custom_fields = $this->mdl_custom_fields->get()->result();
+
+        $this->load->model('custom_values/mdl_custom_values');
+        $data = [
+                'custom_fields'       => $custom_fields,
+                'custom_tables'       => $custom_tables,
+                'custom_value_fields' => $this->mdl_custom_values->custom_value_fields(),
+        ];
+
+        $this->layout->load_view('custom_fields/partial_custom_fields_table', $data);
+    }
+
+    public function filter_custom_values()
+    {
+        // custom values id Normaly always here (it's ajax). Old school but work.
+        $id = empty($_SERVER['HTTP_REFERER']) ? 0 : basename($_SERVER['HTTP_REFERER']); // Todo: With CI?
+
+        $this->load->model('custom_values/mdl_custom_values');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_custom_values->like("CONCAT_WS('^',LOWER(custom_values_value))", $keyword);
+            }
+        }
+        $this->mdl_custom_values->grouped(); // ->paginate(site_url('custom_values/index'), $page);
+        $custom_values = $this->mdl_custom_values->get()->result();
+
+        $data = ['id' => $id, 'custom_values' => $custom_values];
+        $this->layout->load_view('custom_values/partial_custom_values_table', $data);
+    }
+
+    // $this->layout->load_view('custom_values/partial_custom_values_field', ['id' => $id, 'elements' => $elements]);
+    public function filter_custom_values_field()
+    {
+        $this->load->model('custom_values/mdl_custom_values');
+
+        // custom values id Normaly always here (it's ajax). Old school but work.
+        $id = empty($_SERVER['HTTP_REFERER']) ? 0 : basename($_SERVER['HTTP_REFERER']); // Todo: With CI?
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_custom_values->like("CONCAT_WS('^',LOWER(custom_values_value))", $keyword);
+            }
+        }
+
+        $elements = $this->mdl_custom_values->get_by_fid($id)->result();
+        // $this->load->model('custom_fields/mdl_custom_fields');
+        $data = [
+            'id'       => $id,
+            'elements' => $elements,
+            // 'custom_field_usage' => $this->mdl_custom_fields->used($id),
+        ];
+        $this->layout->load_view('custom_values/partial_custom_values_field', $data);
     }
 
     public function filter_payments()

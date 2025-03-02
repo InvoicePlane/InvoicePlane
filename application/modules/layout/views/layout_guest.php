@@ -17,10 +17,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
     <meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
+    <meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
+    <meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-    <link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>" type="text/css">
+    <link rel="stylesheet" href="<?php _theme_asset('css/style.min.css'); ?>" type="text/css">
     <link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>" type="text/css">
 
 <?php if (get_setting('monospace_amounts') == 1) { ?>
@@ -70,9 +72,7 @@
 
 <div id="main-area">
 
-    <div class="sidebar hidden-xs <?php if (get_setting('disable_sidebar') == 1) {
-        echo 'hidden';
-    } ?>">
+    <div class="sidebar hidden-xs<?php echo get_setting('disable_sidebar') == 1 ? ' hidden' : ''; ?>">
         <ul>
             <li>
                 <a href="<?php echo site_url('guest'); ?>" title="<?php _trans('dashboard'); ?>" class="tip"

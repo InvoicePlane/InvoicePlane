@@ -45,8 +45,8 @@
                             <div class="input-group">
                                 <input name="to_date" id="to_date" class="form-control datepicker">
                                 <span class="input-group-addon">
-									<i class="fa fa-calendar fa-fw"></i>
-							    </span>
+                                    <i class="fa fa-calendar fa-fw"></i>
+                                </span>
                             </div>
                         </div>
 

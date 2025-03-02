@@ -283,7 +283,7 @@
                                     <label for="quote_number">
                                         <?php _trans('quote'); ?> #
                                     </label>
-                                    <input type="text" id="quote_number" class="form-control input-sm"
+                                    <input type="text" id="quote_number" class="form-control"
                                         <?php if ($quote->quote_number) : ?> value="<?php echo $quote->quote_number; ?>"
                                         <?php else : ?> placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>>
@@ -294,7 +294,7 @@
                                     </label>
                                     <div class="input-group">
                                         <input name="quote_date_created" id="quote_date_created"
-                                               class="form-control input-sm datepicker"
+                                               class="form-control datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_created); ?>"/>
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar fa-fw"></i>
@@ -307,22 +307,13 @@
                                     </label>
                                     <div class="input-group">
                                         <input name="quote_date_expires" id="quote_date_expires"
-                                               class="form-control input-sm datepicker"
+                                               class="form-control datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar fa-fw"></i>
                                         </span>
                                     </div>
                                 </div>
-<?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 1)
-    {
-        print_field($this->mdl_quotes, $custom_field, $custom_values);
-    }
-}
-?>
                             </div>
                             <div class="col-xs-12 col-md-6">
 
@@ -331,7 +322,7 @@ foreach ($custom_fields as $custom_field)
                                         <?php _trans('status'); ?>
                                     </label>
                                     <select name="quote_status_id" id="quote_status_id"
-                                            class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
+                                            class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                         <?php foreach ($quote_statuses as $key => $status) { ?>
                                             <option value="<?php echo $key; ?>"
                                                     <?php if ($key == $quote->quote_status_id) { ?>selected="selected"
@@ -345,7 +336,7 @@ foreach ($custom_fields as $custom_field)
                                     <label for="quote_password">
                                         <?php _trans('quote_password'); ?>
                                     </label>
-                                    <input type="text" id="quote_password" class="form-control input-sm"
+                                    <input type="text" id="quote_password" class="form-control"
                                            value="<?php _htmlsc($quote->quote_password) ?>">
                                 </div>
 
@@ -364,7 +355,16 @@ foreach ($custom_fields as $custom_field)
                                 <?php } ?>
 
                             </div>
-
+<?php
+$classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-md-6'];
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 1)
+    {
+        print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+    }
+}
+?>
                         </div>
                     </div>
                 </div>
@@ -382,7 +382,7 @@ foreach ($custom_fields as $custom_field)
                 <div class="panel panel-default no-margin">
                     <div class="panel-heading"><?php _trans('notes'); ?></div>
                     <div class="panel-body">
-                        <textarea name="notes" id="notes" rows="3" class="input-sm form-control"><?php _htmlsc($quote->notes); ?></textarea>
+                        <textarea name="notes" id="notes" rows="3" class="form-control"><?php _htmlsc($quote->notes); ?></textarea>
                     </div>
                 </div>
 

@@ -19,11 +19,11 @@
                         <div class="col-xs-12 col-sm-11">
                             <div class="input-group">
                                 <label for="item_name" class="input-group-addon ig-addon-aligned"><?php _trans('item'); ?></label>
-                                <input type="text" name="item_name" id="item_name" class="input-sm form-control" value="">
+                                <input type="text" name="item_name" id="item_name" class="form-control" value="">
                             </div>
                             <div class="input-group">
                                 <label for="item_description" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
-                                <textarea name="item_description" id="item_description" class="input-sm form-control h135rem"></textarea>
+                                <textarea name="item_description" id="item_description" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
@@ -33,11 +33,11 @@
                         <div class="col-xs-12 col-lg-6">
                             <div class="input-group">
                                 <label for="item_quantity" class="input-group-addon ig-addon-aligned"><?php _trans('quantity'); ?></label>
-                                <input type="text" name="item_quantity" id="item_quantity" class="input-sm form-control" value="">
+                                <input type="text" name="item_quantity" id="item_quantity" class="form-control" value="">
                             </div>
                             <div class="input-group">
                                 <label for="item_product_unit_id" class="input-group-addon ig-addon-aligned"><?php _trans('product_unit'); ?></label>
-                                <select name="item_product_unit_id" id="item_product_unit_id" class="form-control input-sm">
+                                <select name="item_product_unit_id" id="item_product_unit_id" class="form-control">
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($units as $unit) { ?>
                                         <option value="<?php echo $unit->unit_id; ?>">
@@ -48,7 +48,7 @@
                             </div>
                             <div class="input-group">
                                 <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
-                                <input type="text" name="item_price" id="item_price" class="input-sm form-control" value="">
+                                <input type="text" name="item_price" id="item_price" class="form-control" value="">
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
 <?php
@@ -59,7 +59,7 @@
 ?>
                             <div class="input-group">
                                 <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
-                                <select name="item_tax_rate_id" id="item_tax_rate_id" class="form-control input-sm">
+                                <select name="item_tax_rate_id" id="item_tax_rate_id" class="form-control">
                                     <option value="0"><?php _trans('none'); ?></option>
                                     <?php foreach ($tax_rates as $tax_rate) { ?>
                                         <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -148,11 +148,11 @@
                                 <input type="hidden" name="item_product_id" value="<?php echo $item->item_product_id; ?>">
                                 <div class="input-group">
                                     <label for="item_name_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('item'); ?></label>
-                                    <input type="text" name="item_name" id="item_name_<?php echo $item->item_id; ?>" class="input-sm form-control" value="<?php echo _htmlsc($item->item_name); ?>">
+                                    <input type="text" name="item_name" id="item_name_<?php echo $item->item_id; ?>" class="form-control" value="<?php echo _htmlsc($item->item_name); ?>">
                                 </div>
                                 <div class="input-group">
                                     <label for="item_description_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
-                                    <textarea name="item_description" id="item_description_<?php echo $item->item_id; ?>" class="input-sm form-control h135rem"><?php echo htmlsc($item->item_description); ?></textarea>
+                                    <textarea name="item_description" id="item_description_<?php echo $item->item_id; ?>" class="form-control"><?php echo htmlsc($item->item_description); ?></textarea>
                                 </div>
                             </div>
                         </div>
@@ -162,11 +162,11 @@
                             <div class="col-xs-12 col-lg-6">
                                 <div class="input-group">
                                     <label for="item_quantity_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('quantity'); ?></label>
-                                    <input type="text" name="item_quantity" id="item_quantity_<?php echo $item->item_id; ?>" class="input-sm form-control" value="<?php echo format_quantity($item->item_quantity); ?>" >
+                                    <input type="text" name="item_quantity" id="item_quantity_<?php echo $item->item_id; ?>" class="form-control" value="<?php echo format_quantity($item->item_quantity); ?>" >
                                 </div>
                                 <div class="input-group">
                                     <label for="item_product_unit_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('product_unit'); ?></label>
-                                    <select name="item_product_unit_id" id="item_product_unit_id_<?php echo $item->item_id; ?>" class="form-control input-sm">
+                                    <select name="item_product_unit_id" id="item_product_unit_id_<?php echo $item->item_id; ?>" class="form-control">
                                         <option value="0"><?php _trans('none'); ?></option>
                                         <?php foreach ($units as $unit) { ?>
                                             <option value="<?php echo $unit->unit_id; ?>"
@@ -178,7 +178,7 @@
                                 </div>
                                 <div class="input-group">
                                     <label for="item_price_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
-                                    <input type="text" name="item_price" id="item_price_<?php echo $item->item_id; ?>" class="input-sm form-control"
+                                    <input type="text" name="item_price" id="item_price_<?php echo $item->item_id; ?>" class="form-control"
                                            value="<?php echo format_amount($item->item_price); ?>">
                                     <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                                 </div>
@@ -190,7 +190,7 @@
 ?>
                                 <div class="input-group">
                                     <label for="item_tax_rate_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
-                                    <select name="item_tax_rate_id" id="item_tax_rate_id_<?php echo $item->item_id; ?>" class="form-control input-sm">
+                                    <select name="item_tax_rate_id" id="item_tax_rate_id_<?php echo $item->item_id; ?>" class="form-control">
                                         <option value="0"><?php _trans('none'); ?></option>
                                         <?php foreach ($tax_rates as $tax_rate) { ?>
                                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"

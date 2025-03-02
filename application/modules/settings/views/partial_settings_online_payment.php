@@ -92,7 +92,7 @@
                                 <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]">
                                     <?php _trans('online_payment_' . $key, '', $setting['label']); ?>
                                 </label>
-                                <input type="<?php echo $setting['type']; ?>" class="input-sm form-control"
+                                <input type="<?php echo $setting['type']; ?>" class="form-control"
                                     name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     id="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     <?php if ($setting['type'] == 'password') { ?>
@@ -118,7 +118,7 @@
                         </label>
                         <select name="settings[gateway_<?php echo $d; ?>_currency]"
                             id="settings[gateway_<?php echo $d; ?>_currency]"
-                            class="input-sm form-control simple-select">
+                            class="form-control simple-select">
                             <?php foreach ($gateway_currency_codes as $val => $key) { ?>
                                 <option value="<?php echo $val; ?>"
                                     <?php check_select(get_setting('gateway_' . $d . '_currency') ?: get_setting('currency_code'), $val); ?>>
@@ -134,7 +134,7 @@
                         </label>
                         <select name="settings[gateway_<?php echo $d; ?>_payment_method]"
                             id="settings[gateway_<?php echo $d; ?>_payment_method]"
-                            class="input-sm form-control simple-select">
+                            class="form-control simple-select">
                             <option value=""><?php _trans('none'); ?></option>
                             <?php foreach ($payment_methods as $payment_method) { ?>
                                 <option value="<?php echo $payment_method->payment_method_id; ?>"

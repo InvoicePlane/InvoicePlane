@@ -44,19 +44,19 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('item'); ?></span>
-                    <input type="text" name="item_name" class="input-sm form-control" value="">
+                    <input type="text" name="item_name" class="form-control" value="">
                 </div>
             </td>
             <td class="td-amount td-quantity">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('quantity'); ?></span>
-                    <input type="text" name="item_quantity" class="input-sm form-control amount" value="">
+                    <input type="text" name="item_quantity" class="form-control amount" value="">
                 </div>
             </td>
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('price'); ?></span>
-                    <input type="text" name="item_price" class="input-sm form-control amount" value="">
+                    <input type="text" name="item_price" class="form-control amount" value="">
                     <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                 </div>
             </td>
@@ -69,7 +69,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
-                    <select name="item_tax_rate_id" class="form-control input-sm">
+                    <select name="item_tax_rate_id" class="form-control">
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -97,14 +97,14 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <td class="td-textarea">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('description'); ?></span>
-                        <textarea name="item_description" class="input-sm form-control"></textarea>
+                        <textarea name="item_description" class="form-control"></textarea>
                     </div>
                 </td>
             <?php else: ?>
                 <td class="td-date">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('date'); ?></span>
-                        <input type="text" name="item_date" class="input-sm form-control datepicker"
+                        <input type="text" name="item_date" class="form-control datepicker"
                                value="<?php echo format_date(@$item->item_date); ?>"<?php echo $invoice_disabled; ?>>
                     </div>
                 </td>
@@ -112,7 +112,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
             <td class="td-amount">
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('product_unit'); ?></span>
-                    <select name="item_product_unit_id" class="form-control input-sm">
+                    <select name="item_product_unit_id" class="form-control">
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
                             <option value="<?php echo $unit->unit_id; ?>">
@@ -179,21 +179,21 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('item'); ?></span>
-                        <input type="text" name="item_name" class="input-sm form-control"
+                        <input type="text" name="item_name" class="form-control"
                                value="<?php _htmlsc($item->item_name); ?>"<?php echo $invoice_disabled; ?>>
                     </div>
                 </td>
                 <td class="td-amount td-quantity">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('quantity'); ?></span>
-                        <input type="text" name="item_quantity" class="input-sm form-control amount"
+                        <input type="text" name="item_quantity" class="form-control amount"
                                value="<?php echo format_quantity($item->item_quantity); ?>"<?php echo $invoice_disabled; ?>>
                     </div>
                 </td>
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('price'); ?></span>
-                        <input type="text" name="item_price" class="input-sm form-control amount"
+                        <input type="text" name="item_price" class="form-control amount"
                                value="<?php echo format_amount($item->item_price); ?>"<?php echo $invoice_disabled; ?>>
                         <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                     </div>
@@ -207,7 +207,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
-                        <select name="item_tax_rate_id" class="form-control input-sm"<?php echo $invoice_disabled; ?>>
+                        <select name="item_tax_rate_id" class="form-control"<?php echo $invoice_disabled; ?>>
                             <option value="0"><?php _trans('none'); ?></option>
                             <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
@@ -239,7 +239,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                     <td class="td-textarea">
                         <div class="input-group">
                             <span class="input-group-addon"><?php _trans('description'); ?></span>
-                            <textarea name="item_description" class="input-sm form-control"<?php echo $invoice_disabled; ?>
+                            <textarea name="item_description" class="form-control"<?php echo $invoice_disabled; ?>
                             ><?php echo htmlsc($item->item_description); ?></textarea>
                         </div>
                     </td>
@@ -247,7 +247,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                     <td class="td-date">
                         <div class="input-group">
                             <span class="input-group-addon"><?php _trans('date'); ?></span>
-                            <input type="text" name="item_date" class="input-sm form-control datepicker"
+                            <input type="text" name="item_date" class="form-control datepicker"
                                    value="<?php echo format_date($item->item_date); ?>"<?php echo $invoice_disabled; ?>>
                         </div>
                     </td>
@@ -256,7 +256,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('product_unit'); ?></span>
-                        <select name="item_product_unit_id" class="form-control input-sm">
+                        <select name="item_product_unit_id" class="form-control">
                             <option value="0"><?php _trans('none'); ?></option>
                             <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"
