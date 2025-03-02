@@ -12,12 +12,16 @@
             <p><?php _trans('setup_choose_language_message'); ?></p>
 
             <select name="ip_lang" class="form-control simple-select">
-                <?php foreach ($languages as $language) { ?>
-                    <option value="<?php echo $language; ?>"
-                            <?php if ($language == 'english') { ?>selected="selected"<?php } ?>>
-                        <?php echo ucfirst(str_replace('/', '', $language)); ?>
-                    </option>
-                <?php } ?>
+<?php
+foreach ($languages as $language)
+{
+?>
+                <option value="<?php echo $language; ?>"<?php echo $language == 'english' ? ' selected="selected"' : '' ;?>><?php
+                    echo ucfirst(str_replace('/', '', $language));
+                ?></option>
+<?php
+}
+?>
             </select>
 
             <br/>

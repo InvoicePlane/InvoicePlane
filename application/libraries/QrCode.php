@@ -25,7 +25,7 @@ class QrCode
 
     public function __construct($params)
     {
-        $CI = &get_instance();
+        $CI = & get_instance();
 
         $CI->load->helper('template');
 

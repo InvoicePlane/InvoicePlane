@@ -228,9 +228,9 @@ class MY_Model extends CI_Model
         $this->next_offset = $this->offset + $per_page;
 
         $config = [
-            'base_url' => $base_url,
+            'base_url'   => $base_url,
             'total_rows' => $this->total_rows,
-            'per_page' => $per_page,
+            'per_page'   => $per_page,
         ];
 
         $this->last_offset = ($this->total_pages * $per_page) - $per_page;

@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -29,14 +29,16 @@ class Base_Controller extends MX_Controller
         $this->config->load('invoice_plane');
 
         // Don't allow non-ajax requests to ajax controllers
-        if ($this->ajax_controller && ! $this->input->is_ajax_request()) {
+        if ($this->ajax_controller && ! $this->input->is_ajax_request())
+        {
             exit;
         }
 
         $this->load->helper('url');
 
         // Globally disallow GET requests to delete methods
-        if (mb_strstr(current_url(), 'delete') && $this->input->method() !== 'post') {
+        if (mb_strstr(current_url(), 'delete') && $this->input->method() !== 'post')
+        {
             show_404();
         }
 
@@ -45,9 +47,12 @@ class Base_Controller extends MX_Controller
         $this->load->helper('redirect');
 
         // Check if database has been configured
-        if ( ! env_bool('SETUP_COMPLETED')) {
+        if ( ! env_bool('SETUP_COMPLETED'))
+        {
             redirect('/welcome');
-        } else {
+        }
+        else
+        {
             $this->load->library('encryption');
             $this->load->library('form_validation');
             $this->load->library('session');
@@ -64,17 +69,20 @@ class Base_Controller extends MX_Controller
 
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
-            if ($this->mdl_settings != null) {
+            if ($this->mdl_settings != null)
+            {
                 $this->mdl_settings->load_settings();
             }
             $this->load->helper('settings');
 
             // Load the language based on user config, fall back to system if needed
             $user_lang = $this->session->userdata('user_language');
-
-            if (empty($user_lang) || $user_lang == 'system') {
+            if (empty($user_lang) || $user_lang == 'system')
+            {
                 set_language(get_setting('default_language'));
-            } else {
+            }
+            else
+            {
                 set_language($user_lang);
             }
 

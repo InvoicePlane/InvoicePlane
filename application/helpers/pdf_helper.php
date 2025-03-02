@@ -60,17 +60,25 @@ function discount_global_print_in_pdf($obj, $show_item_discounts, $is = 'invoice
  */
 function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null)
 {
-    $CI = &get_instance();
+    $CI = & get_instance();
 
-    $CI->load->model('invoices/mdl_items');
-    $CI->load->model('invoices/mdl_invoices');
-    $CI->load->model('invoices/mdl_invoice_tax_rates');
-    $CI->load->model('custom_fields/mdl_custom_fields');
-    $CI->load->model('payment_methods/mdl_payment_methods');
+    $CI->load->model(
+        [
+            'invoices/mdl_items',
+            'invoices/mdl_invoices',
+            'invoices/mdl_invoice_tax_rates',
+            'custom_fields/mdl_custom_fields',
+            'payment_methods/mdl_payment_methods',
+        ]
+    );
 
-    $CI->load->helper('country');
-    $CI->load->helper('client');
-    $CI->load->helper('e-invoice');   // eInvoicing++
+    $CI->load->helper(
+        [
+            'country',
+            'client',
+            'e-invoice', // eInvoicing++
+        ]
+    );
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
@@ -176,13 +184,13 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $CI->load->helper('mpdf');
 
     $retval = pdf_create(
-        html: $html,
-        filename: trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number),
-        stream: $stream,
-        password: $invoice->invoice_password,
-        isInvoice: true,
-        is_guest: $is_guest,
-        embed_xml: $embed_xml,
+        html:             $html,
+        filename:         trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number),
+        stream:           $stream,
+        password:         $invoice->invoice_password,
+        isInvoice:        true,
+        is_guest:         $is_guest,
+        embed_xml:        $embed_xml,
         associated_files: $associatedFiles
     );
 
@@ -203,11 +211,13 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     if ($xml_id != '' && $embed_xml != 'true')
     {
         // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!
-        if (get_setting('change_filename_prefix') == 0) {
+        if (get_setting('change_filename_prefix') == 0)
+        {
             $filename = date('Y-m-d') . '_' . $filename;
         }
 
-        if ($invoice->client_einvoicing_active == 1) {
+        if ($invoice->client_einvoicing_active == 1)
+        {
             generate_xml_invoice_file($invoice, $items, $generator, $filename);
         }
     }
@@ -218,7 +228,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
 {
-    $CI = &get_instance();
+    $CI = & get_instance();
 
     $CI->load->model('invoices/mdl_items');
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
@@ -334,12 +344,20 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 {
     $CI = &get_instance();
 
-    $CI->load->model('quotes/mdl_quotes');
-    $CI->load->model('quotes/mdl_quote_items');
-    $CI->load->model('quotes/mdl_quote_tax_rates');
-    $CI->load->model('custom_fields/mdl_custom_fields');
-    $CI->load->helper('country');
-    $CI->load->helper('client');
+    $CI->load->model(
+        [
+            'quotes/mdl_quotes',
+            'quotes/mdl_quote_items',
+            'quotes/mdl_quote_tax_rates',
+            'custom_fields/mdl_custom_fields',
+        ]
+    );
+    $CI->load->helper(
+        [
+            'country',
+            'client',
+        ]
+    );
 
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
 
