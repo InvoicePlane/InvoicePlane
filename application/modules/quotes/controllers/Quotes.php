@@ -83,7 +83,6 @@ class Quotes extends Admin_Controller
      */
     public function view($quote_id)
     {
-        $this->load->helper('custom_values');
         $this->load->model(
             [
                 'quotes/mdl_quote_items',
@@ -96,6 +95,8 @@ class Quotes extends Admin_Controller
                 'upload/mdl_uploads',
             ]
         );
+
+        $this->load->helper(['custom_values', 'dropzone']);
 
         $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
         $this->db->reset_query();

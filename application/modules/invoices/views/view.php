@@ -556,7 +556,7 @@ if ($invoice->invoice_status_id != 1)
                 </div>
                 <div class="col-xs-12 col-md-6">
 
-                    <?php $this->layout->load_view('upload/dropzone-invoice-html'); ?>
+                    <?php _dropzone_html($invoice->is_read_only); ?>
 
                 </div>
             </div>
@@ -599,4 +599,4 @@ if ($custom_fields)
     </div>
 </div>
 
-<?php $this->layout->load_view('upload/dropzone-invoice-scripts'); ?>
+<?php _dropzone_script($invoice->invoice_url_key, $invoice->client_id); ?>

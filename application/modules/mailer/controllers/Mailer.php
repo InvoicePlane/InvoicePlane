@@ -58,7 +58,7 @@ class Mailer extends Admin_Controller
             ]
         );
 
-        $this->load->helper('template');
+        $this->load->helper(['template', 'dropzone']);
 
         $invoice           = $this->mdl_invoices->get_by_id($invoice_id);
         $email_template_id = select_email_invoice_template($invoice);
@@ -111,6 +111,8 @@ class Mailer extends Admin_Controller
             ]
         );
 
+       $this->load->helper('dropzone');
+
         $email_template_id = get_setting('email_quote_template');
         $email_template = '{}';
 
@@ -125,6 +127,7 @@ class Mailer extends Admin_Controller
         {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
+
 
         $this->layout->set(
             [

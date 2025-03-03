@@ -391,7 +391,7 @@ foreach ($custom_fields as $custom_field)
             </div>
             <div class="col-xs-12 col-md-6">
 
-                <?php $this->layout->load_view('upload/dropzone-quote-html'); ?>quotes
+                <?php _dropzone_html(false); ?>
 
             </div>
         </div>
@@ -429,4 +429,4 @@ if ($custom_fields)
 ?>
     </div>
 
-<?php $this->layout->load_view('upload/dropzone-quote-scripts'); ?>
+<?php _dropzone_script($quote->quote_url_key, $quote->client_id); ?>

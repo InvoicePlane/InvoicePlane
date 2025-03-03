@@ -207,7 +207,7 @@ foreach ($pdf_templates as $pdf_template)
             <div class="col-xs-12 col-md-8 col-md-offset-2">
 
                 <div class="form-group">
-                    <?php $this->layout->load_view('upload/dropzone-quote-html'); ?>
+                    <?php _dropzone_html(false); ?>
                 </div>
 
                 <div class="form-group">
@@ -229,4 +229,4 @@ foreach ($pdf_templates as $pdf_template)
 
 </form>
 
-<?php $this->layout->load_view('upload/dropzone-quote-scripts'); ?>
+<?php _dropzone_script($quote->quote_url_key, $quote->client_id); ?>

@@ -223,7 +223,7 @@ foreach ($pdf_templates as $pdf_template)
             <div class="col-xs-12 col-md-8 col-md-offset-2">
 
                 <div class="form-group">
-                    <?php $this->layout->load_view('upload/dropzone-invoice-html'); ?>
+                    <?php _dropzone_html($invoice->is_read_only); ?>
                 </div>
 
                 <div class="form-group"><label for="invoice-guest-url"><?php _trans('guest_url'); ?></label>
@@ -242,4 +242,4 @@ foreach ($pdf_templates as $pdf_template)
     </div>
 </form>
 
-<?php $this->layout->load_view('upload/dropzone-invoice-scripts'); ?>
+<?php _dropzone_script($invoice->invoice_url_key, $invoice->client_id); ?>

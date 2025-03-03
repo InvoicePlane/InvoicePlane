@@ -1,13 +1,152 @@
+<?php
+
+if (! defined('BASEPATH'))
+{
+    exit('No direct script access allowed');
+}
+
+/*
+ * InvoicePlane
+ *
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2025 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
+ */
+
+/**
+ * Show html for dropzone (upload module)
+ * @param $read_only : Like $invoice->is_read_only
+ * @return void
+ * */
+function _dropzone_html($read_only = true)
+{
+?>
+<div class="panel panel-default no-margin">
+
+    <div class="panel-heading"><?php _trans('attachments'); ?></div>
+
+    <div class="panel-body clearfix">
+        <!-- The fileinput-button span is used to style the file input field as button -->
+        <button type="button" class="btn btn-sm btn-default fileinput-button">
+            <i class="fa fa-plus"></i> <?php _trans('add_files'); ?>
+        </button>
+<?php
+if ( ! $read_only)
+{
+?>
+        <button type="button" class="btn btn-sm btn-danger removeAllFiles-button pull-right hidden">
+            <i class="fa fa-trash-o"></i> <?php _trans('delete_attachments'); ?>
+        </button>
+<?php
+}
+?>
+        <!-- dropzone -->
+        <div class="row">
+            <div id="actions" class="col-xs-12">
+                <div class="col-lg-7"></div>
+                <div class="col-lg-5">
+                    <!-- The global file processing state -->
+                    <div class="fileupload-process">
+                        <div id="total-progress" class="progress progress-striped active"
+                             role="progressbar"
+                             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                            <div class="progress-bar progress-bar-success" style="width:0%;"
+                                 data-dz-uploadprogress>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="previews" class="table table-condensed files no-margin">
+                    <div id="template" class="file-row">
+                        <!-- This is used as the file preview template -->
+                        <div>
+                            <span class="preview"><img data-dz-thumbnail/></span>
+                        </div>
+                        <div>
+                            <p class="name" data-dz-name></p>
+                            <strong class="error text-danger" data-dz-errormessage></strong>
+                        </div>
+                        <div>
+                            <p class="size" data-dz-size></p>
+                            <div class="progress progress-striped active" role="progressbar"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100" aria-valuenow="0">
+                                <div class="progress-bar progress-bar-success" style="width:0%"
+                                     data-dz-uploadprogress>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="pull-right btn-group">
+                                <button data-dz-download class="btn btn-sm btn-primary">
+                                    <i class="fa fa-download"></i>
+                                    <span><?php _trans('download'); ?></span>
+                                </button>
+<?php
+if ( ! $read_only)
+{
+?>
+                                <button data-dz-remove class="btn btn-sm btn-danger delete">
+                                    <i class="fa fa-trash-o"></i>
+                                    <span><?php _trans('delete'); ?></span>
+                                </button>
+<?php
+}
+?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- stop dropzone -->
+
+    </div>
+</div>
+
+
+<?php
+}
+
+/*
+ * Show script for dropzone (upload module)
+ * @param str $url_key   : Like $quote->quote_url_key, $invoice->invoice_url_key
+ * @param str $client_id : Like $quote->client_id, $invoice->client_id
+ * @param str $site_url  : upload/ (module by Default)
+ * @param arr $acceptedExts
+ * @return void
+ * */
+function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acceptedExts = null)
+{
+    $site_url = site_url(empty($site_url) ? 'upload/' : (rtrim($site_url, '/') . '/'));
+
+    // Allow extentions system
+    $content_types = [];
+    if ($acceptedExts === null)
+    {
+        // Default
+        $CI = & get_instance();
+        $CI->load->model('upload/mdl_uploads');
+        $content_types = array_keys($CI->mdl_uploads->content_types);
+    }
+    elseif (is_array($acceptedExts))
+    {
+        // User Overide
+        $content_types = $acceptedExts;
+    }
+?>
 <script>
 const
-site_url = '<?php echo site_url('upload/'); ?>',
-url_key         = '/<?php echo $quote->quotee_url_key; ?>',
-client_id       = '/<?php echo $quote->client_id; ?>',
+site_url        = '<?php echo $site_url; ?>',
+client_id       = '/<?php echo $client_id; ?>',
+url_key         = '/<?php echo $url_key; ?>',
 url_get_file    = site_url + 'get_file'    + url_key,
 url_show_file   = site_url + 'show_files'  + url_key,
 url_delete_file = site_url + 'delete_file' + url_key,
 url_upload_file = site_url + 'upload_file' + client_id + url_key,
-acceptedExts    = '.<?php echo implode(',.', array_keys($this->mdl_uploads->content_types)); ?>'; // allowed .ext1,.ext2,.ext3, ...
+acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .ext1,.ext2,.ext3, ...
 
     function getIcon(fullname) {
         var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
@@ -125,7 +264,7 @@ acceptedExts    = '.<?php echo implode(',.', array_keys($this->mdl_uploads->cont
     // File accepted, start upload
     myDropzone.on('sending', function (file, xhr, formData) {
         // Get new crsf_token for multiple upload on same page
-        formData.append('<?php echo $this->config->item('csrf_token_name'); ?>', Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>'));
+        formData.append('<?php echo config_item('csrf_token_name'); ?>', Cookies.get('<?php echo config_item('csrf_cookie_name'); ?>'));
         // Show the total progress bar
         document.querySelector('#total-progress').style.opacity = '1';
     });
@@ -228,3 +367,6 @@ acceptedExts    = '.<?php echo implode(',.', array_keys($this->mdl_uploads->cont
         }
     }
 </script>
+
+<?php
+} // End function _dropzone_script
