@@ -41,7 +41,7 @@ function pdf_create(
     bool $embed_xml = false,    // eInvoicing++
     ?array $associated_files = []
 ) {
-    $CI = &get_instance();
+    $CI = & get_instance();
 
     // Get the invoice from the archive if available
     $invoice_array = [];
@@ -57,6 +57,8 @@ function pdf_create(
     $mpdf->autoVietnamese   = true;
     $mpdf->autoArabic       = true;
     $mpdf->autoLangToFont   = true;
+    // Page number in footer by {PAGENO} See mpdf.github.io/paging/page-numbering.html
+    $mpdf->setFooter('<p align="center">(' . str_replace('_', ' ', $filename) . ') ' . trans('page') . ' {PAGENO}</p>');
 
     if (IP_DEBUG) {
         // Enable image error logging
