@@ -1,4 +1,14 @@
 <script>
+const
+site_url = '<?php echo site_url('upload/'); ?>',
+url_key         = '/<?php echo $quote->quotee_url_key; ?>',
+client_id       = '/<?php echo $quote->client_id; ?>',
+url_get_file    = site_url + 'get_file'    + url_key,
+url_show_file   = site_url + 'show_files'  + url_key,
+url_delete_file = site_url + 'delete_file' + url_key,
+url_upload_file = site_url + 'upload_file' + client_id + url_key,
+acceptedExts    = '.<?php echo implode(',.', array_keys($this->mdl_uploads->content_types)); ?>'; // allowed .ext1,.ext2,.ext3, ...
+
     function getIcon(fullname) {
         var fileFormat = fullname.match(/\.([A-z0-9]{1,5})$/);
         if (fileFormat) {
@@ -56,7 +66,7 @@
     previewNode.parentNode.removeChild(previewNode);
 
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: '<?php echo site_url('upload/upload_file/' . $quote->client_id . '/' . $quote->quote_url_key) ?>',
+        url: url_upload_file,
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
@@ -65,14 +75,14 @@
         dictFileSizeUnits: {<?php _trans('upload_dz_size_units'); ?>},
         dictRemoveFileConfirmation: `<?php _trans('delete_attachment_warning'); ?>`,
         dictInvalidFileType: `<?php _trans('upload_dz_invalid_file_type'); ?>`,
-        acceptedFiles: '.<?php echo implode(',.', array_keys($this->mdl_uploads->content_types)); ?>', // allowed .ext1,.ext2,.ext3, ...
+        acceptedFiles: acceptedExts, // allowed .ext1,.ext2,.ext3, ...
         previewTemplate: previewTemplate,
         autoQueue: true, // Make sure the files aren't queued until manually added
         previewsContainer: '#previews', // Define the container to display the previews
         clickable: '.fileinput-button', // Define the element that should be used as click trigger to select files.
         init: function () {
             thisDropzone = this;
-            $.getJSON('<?php echo site_url('upload/show_files/' . $quote->client_id . '/' . $quote->quote_url_key) ?>',
+            $.getJSON(url_show_file,
                 function (data) {
                     $.each(data, function (index, val) {
                         displayExistingFile(val);
@@ -134,7 +144,7 @@
         removeAllFilesButton.disabled = true;
         var val = file; // Make global: Need in function if response status 410 (undeletable file)
         $.post({
-            url: '<?php echo site_url('upload/delete_file/' . $quote->quote_url_key) ?>',
+            url: url_delete_file,
             data: {
                 name: encodeURIComponent(sanitizeName(file.name))
             },
@@ -167,12 +177,12 @@
         var name = sanitizeName(val.name);
         var imageUrl = ! name.match(/\.(avif|gif|jpe?g|png|svg|webp)$/i)
             ? getIcon(name)
-            : '<?php echo site_url('upload/get_file/' . $quote->quote_url_key . '_'); ?>' + encodeURIComponent(name);
+            : url_get_file + '_'  + encodeURIComponent(name);
 
         var mockFile = {
             size: val.size,
             name: name,
-            imageUrl: '<?php echo site_url('upload/get_file/' . $quote->quote_url_key . '_'); ?>' + encodeURIComponent(name)
+            imageUrl: url_get_file + '_' + encodeURIComponent(name)
         };
 
         // mockFile needs to have these attributes { name: 'name', size: 12345, imageUrl: '' }
@@ -211,8 +221,7 @@
                 function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    location.href = '<?php echo site_url('upload/get_file/' . $quote->quote_url_key . '_') ?>' +
-                        encodeURIComponent(sanitizeName(file.name));
+                    location.href = url_get_file + '_' + encodeURIComponent(sanitizeName(file.name));
                     return false;
                 }
             );

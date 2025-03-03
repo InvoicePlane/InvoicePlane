@@ -37,7 +37,7 @@ class Upload extends Admin_Controller
         // Show files Legacy (obsolete)
         if (empty($_FILES['file']))
         {
-            $this->show_files($customerId, $url_key);
+            $this->show_files($url_key);
         }
         elseif (empty($_FILES['file']['name']))
         {
@@ -70,7 +70,7 @@ class Upload extends Admin_Controller
         return true;
     }
 
-    public function show_files($customerId = null, $url_key = null): void
+    public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
         if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key))
