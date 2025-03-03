@@ -8,14 +8,14 @@ if (! defined('BASEPATH'))
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
- * Output the amount as a currency amount, e.g. 1.234,56 €.
+ * Return a formated amount as a currency based on the system settings, e.g. 1.234,56 €.
  *
  * @param $amount
  *
@@ -24,23 +24,29 @@ if (! defined('BASEPATH'))
 function format_currency($amount)
 {
     $CI = & get_instance();
-    $amount = floatval($amount); // prevent null format
-    $currency_symbol = $CI->mdl_settings->setting('currency_symbol');
+    $currency_symbol           = $CI->mdl_settings->setting('currency_symbol');
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
-    $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
-    $decimal_point = $CI->mdl_settings->setting('decimal_point');
+    $thousands_separator       = $CI->mdl_settings->setting('thousands_separator');
+    $decimal_point             = $CI->mdl_settings->setting('decimal_point');
+    $decimals                  = $decimal_point ? (int) $CI->mdl_settings->setting('tax_rate_decimal_places') : 0;
+    $amount                    = floatval(is_numeric($amount) ? $amount : standardize_amount($amount)); // prevent null format
 
-    if ($currency_symbol_placement == 'before') {
-        return $currency_symbol . number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
-    } elseif ($currency_symbol_placement == 'afterspace') {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . '&nbsp;' . $currency_symbol;
-    } else {
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator) . $currency_symbol;
+    if ($currency_symbol_placement == 'before')
+    {
+        return $currency_symbol . number_format($amount, $decimals, $decimal_point, $thousands_separator);
+    }
+    elseif ($currency_symbol_placement == 'afterspace')
+    {
+        return number_format($amount, $decimals, $decimal_point, $thousands_separator) . '&nbsp;' . $currency_symbol;
+    }
+    else
+    {
+        return number_format($amount, $decimals, $decimal_point, $thousands_separator) . $currency_symbol;
     }
 }
 
 /**
- * Output the amount as a currency amount, e.g. 1.234,56.
+ * Return a formated amount based on the system settings, e.g. 1.234,56
  *
  * @param null $amount
  *
@@ -48,18 +54,21 @@ function format_currency($amount)
  */
 function format_amount($amount = null)
 {
-    if ($amount) {
+    if ($amount)
+    {
         $CI = & get_instance();
         $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
-        $decimal_point = $CI->mdl_settings->setting('decimal_point');
+        $decimal_point       = $CI->mdl_settings->setting('decimal_point');
+        $decimals            = $decimal_point ? (int) $CI->mdl_settings->setting('tax_rate_decimal_places') : 0;
+        $amount              = is_numeric($amount) ? $amount : standardize_amount($amount);
 
-        return number_format($amount, ($decimal_point) ? 2 : 0, $decimal_point, $thousands_separator);
+        return number_format($amount, $decimals, $decimal_point, $thousands_separator);
     }
     return null;
 }
 
 /**
- * Output the amount as a currency amount, e.g. 1.234,56.
+ * Return a formated amount as a quantity based on the system settings, e.g. 1.234,56
  *
  * @param null $amount
  *
@@ -67,18 +76,21 @@ function format_amount($amount = null)
  */
 function format_quantity($amount = null)
 {
-    if ($amount) {
+    if ($amount)
+    {
         $CI = & get_instance();
         $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
-        $decimal_point = $CI->mdl_settings->setting('decimal_point');
+        $decimal_point       = $CI->mdl_settings->setting('decimal_point');
+        $decimals            = $decimal_point ? (int) $CI->mdl_settings->setting('default_item_decimals') : 0;
+        $amount              = is_numeric($amount) ? $amount : standardize_amount($amount);
 
-        return number_format($amount, ($decimal_point) ? (int) get_setting('default_item_decimals') : 0, $decimal_point, $thousands_separator);
+        return number_format($amount, $decimals, $decimal_point, $thousands_separator);
     }
     return null;
 }
 
 /**
- * Standardize an amount for database based on the system settings
+ * Return a standardized amount for database based on the system settings, e.g. 1234.56
  *
  * @param $amount
  *

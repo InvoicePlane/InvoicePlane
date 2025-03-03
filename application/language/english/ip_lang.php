@@ -594,6 +594,7 @@ $lang = [
     'tax_information'                              => 'Taxes Information',
     'tax_rate'                                     => 'Tax Rate',
     'tax_rate_decimal_places'                      => 'Tax Rate Decimal Places',
+    'tax_rate_decimal_places_hint'                 => 'Sets decimal places for amounts',
     'tax_rate_form'                                => 'Tax Rate Form',
     'tax_rate_name'                                => 'Tax Rate Name',
     'tax_rate_percent'                             => 'Tax Rate Percent',

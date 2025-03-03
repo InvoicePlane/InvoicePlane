@@ -196,6 +196,8 @@
                                     3
                                 </option>
                             </select>
+                            <p class="help-block"><?php _trans('tax_rate_decimal_places_hint'); ?></p>
+
                         </div>
                     </div>
                 </div>
