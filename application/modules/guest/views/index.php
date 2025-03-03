@@ -4,6 +4,8 @@
 
 <div id="content">
 
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <div class="panel panel-default">
 
         <div class="panel-heading"><?php _trans('quotes_requiring_approval'); ?></div>

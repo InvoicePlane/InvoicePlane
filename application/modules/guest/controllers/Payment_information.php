@@ -34,15 +34,19 @@ class Payment_Information extends Base_Controller
 
         if (! $invoice)
         {
-            show_404();
+            $this->session->set_flashdata('alert_error', lang('invoice_not_found'));
+            redirect('guest'); // /invoices
         }
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance == 0)
         {
-            $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
+            if ($this->session->user_id)
+            {
+                $this->session->set_flashdata('alert_info', lang('invoice_already_paid'));
+                redirect('guest'); // /invoices
+            }
             $disable_form = true;
-            show_404();
         }
 
         // Get all payment gateways
@@ -51,18 +55,21 @@ class Payment_Information extends Base_Controller
         $gateways = $this->config->item('payment_gateways');
 
         $available_drivers = [];
-        foreach ($gateways as $driver => $fields)
+        if (! $disable_form)
         {
-            $d = strtolower($driver);
-
-            if (get_setting('gateway_' . $d . '_enabled') == 1)
+            foreach ($gateways as $driver => $fields)
             {
-                $invoice_payment_method = $invoice->payment_method;
-                $driver_payment_method = get_setting('gateway_' . $d . '_payment_method');
+                $d = strtolower($driver);
 
-                if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method)
+                if (get_setting('gateway_' . $d . '_enabled') == 1)
                 {
-                    array_push($available_drivers, $driver);
+                    $invoice_payment_method = $invoice->payment_method;
+                    $driver_payment_method = get_setting('gateway_' . $d . '_payment_method');
+
+                    if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method)
+                    {
+                        array_push($available_drivers, $driver);
+                    }
                 }
             }
         }

@@ -38,45 +38,29 @@ foreach ($quotes as $quote)
     }
 ?>
                 </td>
-                <td>
-                    <?php echo date_from_mysql($quote->quote_date_created); ?>
-                </td>
-                <td>
-                    <?php echo date_from_mysql($quote->quote_date_expires); ?>
-                </td>
-                <td>
-                    <?php _htmlsc($quote->client_name); ?>
-                </td>
-                <td>
-                    <?php echo format_currency($quote->quote_total); ?>
-                </td>
+                <td><?php echo date_from_mysql($quote->quote_date_created); ?></td>
+                <td><?php echo date_from_mysql($quote->quote_date_expires); ?></td>
+                <td><?php _htmlsc($quote->client_name); ?></td>
+                <td><?php echo format_currency($quote->quote_total); ?></td>
                 <td>
                     <div class="options btn-group btn-group-sm">
 <?php
     if (in_array($quote->quote_status_id, [2, 3])) {
 ?>
-                        <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
-                           class="btn btn-success">
-                            <i class="fa fa-check"></i>
-                            <?php _trans('approve'); ?>
+                        <a class="btn btn-success" href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>">
+                            <i class="fa fa-check"></i> <?php _trans('approve'); ?>
                         </a>
-                        <a href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>"
-                           class="btn btn-danger">
-                            <i class="fa fa-ban"></i>
-                            <?php _trans('reject'); ?>
+                        <a class="btn btn-danger" href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>">
+                            <i class="fa fa-ban"></i> <?php _trans('reject'); ?>
                         </a>
 <?php
     }
 ?>
-                        <a href="<?php echo site_url('guest/quotes/view/' . $quote->quote_id); ?>"
-                           class="btn btn-default">
-                            <i class="fa fa-eye"></i>
-                            <?php _trans('view'); ?>
+                        <a class="btn btn-default" href="<?php echo site_url('guest/quotes/view/' . $quote->quote_id); ?>">
+                            <i class="fa fa-eye"></i> <?php _trans('view'); ?>
                         </a>
-                        <a href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote->quote_id); ?>"
-                           class="btn btn-default" target="_blank">
-                            <i class="fa fa-print"></i>
-                            <?php _trans('pdf'); ?>
+                        <a class="btn btn-default" target="_blank" href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote->quote_id); ?>">
+                            <i class="fa fa-print"></i> <?php _trans('pdf'); ?>
                         </a>
                     </div>
                 </td>
