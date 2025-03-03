@@ -28,7 +28,7 @@ function _dropzone_html($read_only = true)
 
     <div class="panel-body clearfix">
         <!-- The fileinput-button span is used to style the file input field as button -->
-        <button type="button" class="btn btn-sm btn-default fileinput-button">
+        <button type="button" class="btn btn-sm btn-default fileinput-button<?php echo $read_only ? ' hide" readonly="readonly' : '' ; ?>">
             <i class="fa fa-plus"></i> <?php _trans('add_files'); ?>
         </button>
 <?php
@@ -44,8 +44,8 @@ if ( ! $read_only)
         <!-- dropzone -->
         <div class="row">
             <div id="actions" class="col-xs-12">
-                <div class="col-lg-7"></div>
-                <div class="col-lg-5">
+                <div class="col-xs-12 col-md-6 col-lg-7"></div>
+                <div class="col-xs-12 col-md-6 col-lg-5">
                     <!-- The global file processing state -->
                     <div class="fileupload-process">
                         <div id="total-progress" class="progress progress-striped active"
@@ -59,18 +59,14 @@ if ( ! $read_only)
                 </div>
 
                 <div id="previews" class="table table-condensed files no-margin">
-                    <div id="template" class="file-row">
+                    <div id="template" class="row file-row">
                         <!-- This is used as the file preview template -->
-                        <div>
-                            <span class="preview"><img data-dz-thumbnail/></span>
+                        <div class="col-xs-3 col-md-4">
+                            <span class="preview pull-left"><img data-dz-thumbnail/></span>
                         </div>
-                        <div>
-                            <p class="name" data-dz-name></p>
-                            <strong class="error text-danger" data-dz-errormessage></strong>
-                        </div>
-                        <div>
-                            <p class="size" data-dz-size></p>
-                            <div class="progress progress-striped active" role="progressbar"
+                        <div class="col-xs-5 col-md-4">
+                            <p class="size pull-left" data-dz-size></p>
+                            <div class="progress progress-striped active pull-right" role="progressbar"
                                  aria-valuemin="0"
                                  aria-valuemax="100" aria-valuenow="0">
                                 <div class="progress-bar progress-bar-success" style="width:0%"
@@ -78,7 +74,7 @@ if ( ! $read_only)
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div class="col-xs-4 col-md-4">
                             <div class="pull-right btn-group">
                                 <button data-dz-download class="btn btn-sm btn-primary">
                                     <i class="fa fa-download"></i>
@@ -97,6 +93,11 @@ if ( ! $read_only)
 ?>
                             </div>
                         </div>
+                        <div class="col-xs-12 col-md-8">
+                            <p class="name pull-left" data-dz-name></p>
+                            <strong class="error text-danger pull-right" data-dz-errormessage></strong>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -136,6 +137,8 @@ function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acce
         // User Overide
         $content_types = $acceptedExts;
     }
+
+    $guest = $acceptedExts === false ? 'true' : 'false';
 ?>
 <script>
 const
@@ -197,6 +200,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
         return filename.trim().replace(/[^\p{L}\p{N}\s\-_'’.]/gu, '');
     }
 
+    const is_guest = <?php echo $guest; ?>;
     const removeAllFilesButton = document.querySelector('.removeAllFiles-button');
     // Get the template HTML and remove it from the document
     var previewNode = document.querySelector('#template');
@@ -226,12 +230,11 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
                     $.each(data, function (index, val) {
                         displayExistingFile(val);
                     });
-                    thisDropzone.files.length && removeAllFilesButtonShow(true);
+                    thisDropzone.files.length && ! is_guest && removeAllFilesButtonShow(true);
                 }
             );
         },
     });
-
     // Uploading process complete
     myDropzone.on('complete', function (file) {
         // Check if logged out (303) redirected to sessions/login. .
@@ -261,6 +264,10 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
         document.querySelector('#total-progress .progress-bar').style.width = progress + '%';
     });
 
+<?php
+    if ($acceptedExts !== false)
+    {
+?>
     // File accepted, start upload
     myDropzone.on('sending', function (file, xhr, formData) {
         // Get new crsf_token for multiple upload on same page
@@ -312,6 +319,20 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
         });
     });
 
+    removeAllFilesButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        confirm(`<?php _trans('delete_attachments_warning'); ?>`) && myDropzone.removeAllFiles();
+    });
+    function removeAllFilesButtonShow(show) {
+        if(show) removeAllFilesButton.classList.remove('hidden');
+        else removeAllFilesButton.classList.add('hidden');
+    }
+
+<?php
+    } // End if $acceptedExts === false
+?>
+
     function displayExistingFile(val) {
         var name = sanitizeName(val.name);
         var imageUrl = ! name.match(/\.(avif|gif|jpe?g|png|svg|webp)$/i)
@@ -334,16 +355,6 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
         );
         myDropzone.files.push(mockFile); // Important (Need for delete attachements)
         myDropzone.emit('success', mockFile); // Hide progress
-    }
-
-    removeAllFilesButton.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        confirm(`<?php _trans('delete_attachments_warning'); ?>`) && myDropzone.removeAllFiles();
-    });
-    function removeAllFilesButtonShow(show) {
-        if(show) removeAllFilesButton.classList.remove('hidden');
-        else removeAllFilesButton.classList.add('hidden');
     }
 
     // Update the name to reflect same after sanitized by php

@@ -228,5 +228,10 @@ foreach ($items as $i => $item)
             </table>
         </div>
     </div>
+    <div class="col-xs-12 col-md-6">
 
+        <?php _dropzone_html(); ?>
+
+    </div>
 </div>
+<?php _dropzone_script($quote->quote_url_key, $quote->client_id, 'guest/get', false); ?>

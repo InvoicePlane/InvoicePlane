@@ -17,7 +17,7 @@ if ($invoice_tax_rates)
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
 <?php
-if ($invoice->invoice_status_id == 4)
+if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id != 4)
 {
 ?>
             <button class="btn btn-success disabled">
@@ -220,20 +220,25 @@ foreach ($items as $i => $item)
                 </table>
             </div>
 
+            <div class="col-xs-12 col-md-6">
+
+                <?php _dropzone_html(); ?>
+
+            </div>
 <?php
 if ($invoice->invoice_terms)
 {
 ?>
-            <p>
+            <div class="col-xs-12 col-md-6">
                 <strong><?php _trans('invoice_terms'); ?></strong><br/>
                 <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
-            </p>
+            </div>
 <?php
 }
  ?>
-
         </div>
 
     </form>
 
 </div>
+<?php _dropzone_script($invoice->invoice_url_key, $invoice->client_id, 'guest/get', false); ?>

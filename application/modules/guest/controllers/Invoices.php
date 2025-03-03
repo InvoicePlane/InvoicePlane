@@ -85,8 +85,15 @@ class Invoices extends Guest_Controller
 
         $this->mdl_invoices->mark_viewed($invoice->invoice_id);
 
-        $this->load->model('invoices/mdl_items');
-        $this->load->model('invoices/mdl_invoice_tax_rates');
+        $this->load->model(
+            [
+                'invoices/mdl_items',
+                'invoices/mdl_invoice_tax_rates',
+                'upload/mdl_uploads',
+            ]
+        );
+
+        $this->load->helper('dropzone');
 
         $this->layout->set(
             [
@@ -110,8 +117,6 @@ class Invoices extends Guest_Controller
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {
-        $this->load->helper('pdf');
-
         $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
         if (! $invoice)
@@ -120,6 +125,8 @@ class Invoices extends Guest_Controller
         }
 
         $this->mdl_invoices->mark_viewed($invoice_id);
+
+        $this->load->helper('pdf');
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, true);
     }
@@ -131,8 +138,6 @@ class Invoices extends Guest_Controller
      */
     public function generate_sumex_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {
-        $this->load->helper('pdf');
-
         $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
         if (! $invoice)
@@ -141,6 +146,8 @@ class Invoices extends Guest_Controller
         }
 
         $this->mdl_invoices->mark_viewed($invoice_id);
+
+        $this->load->helper('pdf');
 
         generate_invoice_sumex($invoice_id);
     }

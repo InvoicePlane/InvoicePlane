@@ -91,8 +91,14 @@ class Quotes extends Guest_Controller
 
         $this->mdl_quotes->mark_viewed($quote->quote_id);
 
-        $this->load->model('quotes/mdl_quote_items');
-        $this->load->model('quotes/mdl_quote_tax_rates');
+        $this->load->model(
+            [
+                'quotes/mdl_quote_items',
+                'quotes/mdl_quote_tax_rates',
+            ]
+        );
+
+        $this->load->helper('dropzone');
 
         $this->layout->set(
             [

@@ -19,8 +19,12 @@ class Guest extends Guest_Controller
 {
     public function index()
     {
-        $this->load->model('quotes/mdl_quotes');
-        $this->load->model('invoices/mdl_invoices');
+        $this->load->model(
+            [
+                'quotes/mdl_quotes',
+                'invoices/mdl_invoices'
+            ]
+        );
 
         $this->layout->set(
             [

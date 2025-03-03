@@ -148,7 +148,7 @@ class Invoices extends Admin_Controller
                 'upload/mdl_uploads',
             ]
         );
-        $this->load->helper(['custom_values', 'client']);
+        $this->load->helper(['custom_values', 'client', 'dropzone']);
         $this->load->module('payments');
 
         $this->db->reset_query();

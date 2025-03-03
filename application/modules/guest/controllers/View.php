@@ -36,10 +36,15 @@ class View extends Base_Controller
             show_404();
         }
 
-        $this->load->model('invoices/mdl_items');
-        $this->load->model('invoices/mdl_invoice_tax_rates');
-        $this->load->model('payment_methods/mdl_payment_methods');
-        $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model(
+            [
+                'invoices/mdl_items',
+                'invoices/mdl_invoice_tax_rates',
+                'payment_methods/mdl_payment_methods',
+                'custom_fields/mdl_custom_fields',
+                'upload/mdl_uploads',
+            ]
+        );
         $this->load->helper('template');
 
         $invoice = $invoice->row();
@@ -83,9 +88,37 @@ class View extends Base_Controller
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
     }
 
-    private function get_attachments($key)
+    /**
+     * Retail since 1.6.3
+     * @param $url_key
+     * @return array
+     */
+    private function get_attachments($url_key)
     {
-        $path = UPLOADS_FOLDER . '/customer_files';
+        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $url_key . "'");
+
+        $names = [];
+
+        if ($query->num_rows() > 0)
+        {
+            foreach ($query->result() as $row)
+            {
+                $names[] =
+                [
+                    'name'     => $row->file_name_original,
+                    'fullname' => $row->file_name_new,
+                    'size'     => filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new),
+                ];
+            }
+        }
+
+        return $names;
+    }
+
+    // get_attachments by file system (Original renamed. For memo)
+    private function get_attachments_files($key)
+    {
+        $path = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . '/customer_files' fix ²slashe
         $files = scandir($path);
         $attachments = [];
 
