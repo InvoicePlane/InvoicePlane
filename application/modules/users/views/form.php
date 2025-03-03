@@ -351,8 +351,8 @@ if ($this->mdl_settings->setting('sumex') == '1')
 
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <label for="user_invoicing_contact">
-                                        <?php echo trans('invoicing') . ' ' . trans('contact'); ?>
+                                    <label for="user_invoicing_con>tact">
+                                        <?php _trans('contact'); ?> (<?php _trans('invoicing'); ?>)
                                     </label>
                                     <input type="text" name="user_invoicing_contact" id="user_invoicing_contact" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_invoicing_contact', true); ?>">
@@ -390,8 +390,11 @@ if ($this->mdl_settings->setting('sumex') == '1')
                                            value="<?php echo $this->mdl_users->form_value('user_web', true); ?>">
                                 </div>
 <?php
+$default_custom = false;
 foreach ($custom_fields as $custom_field)
 {
+    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+
     if ($custom_field->custom_field_location == 4)
     {
         print_field($this->mdl_users, $custom_field, $custom_values);
@@ -404,7 +407,7 @@ foreach ($custom_fields as $custom_field)
                         </div>
 
 <?php
-if ($custom_fields)
+if ($default_custom)
 {
 ?>
                         <div class="row">
@@ -417,7 +420,7 @@ if ($custom_fields)
                                     <div class="panel-body">
                                         <div class="row form-horizontal">
 <?php
-    $classes = ['control-label col-xs-12 col-sm-4 col-md-2 col-lg-1', 'controls col-xs-12 col-sm-8 col-md-4 col-lg-5', '', 'form-horizontal'];
+    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields as $custom_field)
     {
         if (! $custom_field->custom_field_location) // == 0

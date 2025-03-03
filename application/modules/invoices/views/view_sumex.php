@@ -510,8 +510,11 @@ foreach ($invoice_statuses as $key => $status)
                                     </div>
                                 </div>
 <?php
+$default_custom = false;
 foreach ($custom_fields as $custom_field)
 {
+    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+
     if ($custom_field->custom_field_location == 1)
     {
         print_field($this->mdl_invoices, $custom_field, $custom_values);
@@ -548,7 +551,7 @@ foreach ($custom_fields as $custom_field)
             </div>
 
 <?php
-if ($custom_fields)
+if ($default_custom)
 {
 ?>
             <div class="row">
@@ -561,7 +564,7 @@ if ($custom_fields)
                         <div class="panel-body">
                             <div class="row">
 <?php
-    $classes = ['control-label col-xs-12 col-sm-4 col-md-2 col-lg-1', 'controls col-xs-12 col-sm-8 col-md-4 col-lg-5', '', 'form-horizontal'];
+    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields as $custom_field)
     {
         if (! $custom_field->custom_field_location) // == 0

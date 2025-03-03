@@ -232,7 +232,9 @@
 </div>
 
 <div id="content">
+
     <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <div id="quote_form">
         <div class="quote">
 
@@ -340,25 +342,32 @@
                                            value="<?php _htmlsc($quote->quote_password) ?>">
                                 </div>
 
-                                <?php if ($quote->quote_status_id != 1) { ?>
-                                    <div class="quote-properties">
-                                        <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>
-                                        <div class="input-group">
-                                            <input type="text" id="quote-guest-url" readonly class="form-control"
-                                                   value="<?php echo site_url('guest/view/quote/' . $quote->quote_url_key); ?>">
-                                            <span class="input-group-addon to-clipboard cursor-pointer"
-                                                  data-clipboard-target="#quote-guest-url">
-                                                <i class="fa fa-clipboard fa-fw"></i>
-                                            </span>
-                                        </div>
+<?php
+if ($quote->quote_status_id != 1)
+{
+?>
+                                <div class="quote-properties">
+                                    <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>
+                                    <div class="input-group">
+                                        <input type="text" id="quote-guest-url" readonly class="form-control"
+                                               value="<?php echo site_url('guest/view/quote/' . $quote->quote_url_key); ?>">
+                                        <span class="input-group-addon to-clipboard cursor-pointer"
+                                              data-clipboard-target="#quote-guest-url">
+                                            <i class="fa fa-clipboard fa-fw"></i>
+                                        </span>
                                     </div>
-                                <?php } ?>
+                                </div>
+<?php
+}
+?>
 
                             </div>
 <?php
+$default_custom = false;
 $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field)
 {
+    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
     if ($custom_field->custom_field_location == 1)
     {
         print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
@@ -396,7 +405,7 @@ foreach ($custom_fields as $custom_field)
             </div>
         </div>
 <?php
-if ($custom_fields)
+if ($default_custom)
 {
 ?>
         <div class="row">
@@ -409,7 +418,7 @@ if ($custom_fields)
                     <div class="panel-body">
                         <div class="row">
 <?php
-    $classes = ['control-label col-xs-12 col-sm-4 col-md-2 col-lg-1', 'controls col-xs-12 col-sm-8 col-md-4 col-lg-5', '', 'form-horizontal'];
+    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields as $custom_field)
     {
         if (! $custom_field->custom_field_location) // == 0
