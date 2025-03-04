@@ -336,8 +336,10 @@ if ($client->client_surname != '') // Client is not a company
 <?php
     } // fi sumex
 
+    $default_custom = false;
     foreach ($custom_fields as $custom_field)
     {
+        if (! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
         if ($custom_field->custom_field_location == 3)
         {
             $column = $custom_field->custom_field_label;
@@ -360,7 +362,7 @@ if ($client->client_surname != '') // Client is not a company
 <?php
 } // fi client->client_surname
 
-if ($custom_fields)
+if ($default_custom)
 {
 ?>
             <hr>
@@ -424,35 +426,21 @@ if ($custom_fields)
             </div>
 
         </div>
-
-        <div id="client-quotes" class="tab-pane table-content<?php echo $activeTab == 'quotes' ? ' active' : ''; ?>">
-            <?php echo $quote_table; ?>
-
+<?php
+foreach (explode(' ', 'quote invoice payment') as $what)
+{
+    $table = $what . '_table'; // dynamic var name
+?>
+        <div id="client-<?php echo $what; ?>s" class="tab-pane table-content<?php echo $activeTab == $what . 's' ? ' active' : ''; ?>">
             <div class="container-fluid">
-                <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/quotes'), 'mdl_quotes'); ?>
+                <div class="pull-right" style="margin:.5rem 0 -1.5rem 0">
+                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/' . $what . 's'), 'mdl_' . $what . 's'); ?>
                 </div>
             </div>
+            <?php echo $$table; ?>
         </div>
-
-        <div id="client-invoices" class="tab-pane table-content<?php echo $activeTab == 'invoices' ? ' active' : ''; ?>">
-            <?php echo $invoice_table; ?>
-
-            <div class="container-fluid">
-                <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/invoices'), 'mdl_invoices'); ?>
-                </div>
-            </div>
-        </div>
-
-        <div id="client-payments" class="tab-pane table-content<?php echo $activeTab == 'payments' ? ' active' : ''; ?>">
-            <?php echo $payment_table; ?>
-
-            <div class="container-fluid">
-                <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/payments'), 'mdl_payments'); ?>
-                </div>
-            </div>
-        </div>
+<?php
+}
+?>
     </div>
 </div>
