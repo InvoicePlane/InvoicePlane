@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -32,10 +32,37 @@ class Ajax extends Admin_Controller
         if ($this->mdl_quotes->run_validation('validation_rules_save_quote')) {
             $items = json_decode($this->input->post('items'));
 
+            $items_subtotal = 0.0;
+            if ($this->input->post('quote_discount_amount') === '') {
+                $quote_discount_amount = 0.0;
+            } else {
+                $quote_discount_amount = $this->input->post('quote_discount_amount');
+                foreach ($items as $item) {
+                    if (!empty($item->item_name)) {
+                        $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
+                    }
+                }
+            }
+            // todo? on client side (only one) / server side (2 are possible)
+            if ($this->input->post('quote_discount_percent') === '') {
+                $quote_discount_percent = 0.0;
+            } else {
+                $quote_discount_percent = $this->input->post('quote_discount_percent');
+            }
+
+            // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+            $global_discount =
+            [
+                'amount'         => $quote_discount_amount ? standardize_amount($quote_discount_amount) : 0.0,
+                'percent'        => $quote_discount_percent ? standardize_amount($quote_discount_percent) : 0.0,
+                'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
+                'items_subtotal' => $items_subtotal,
+            ];
+
             foreach ($items as $item) {
                 if ($item->item_name) {
-                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : 0.0);
+                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : 0.0);
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
                     $item->item_product_unit_id = ($item->item_product_unit_id ? $item->item_product_unit_id : null);
@@ -44,20 +71,8 @@ class Ajax extends Admin_Controller
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
 
-                    $this->mdl_quote_items->save($item_id, $item);
+                    $this->mdl_quote_items->save($item_id, $item, $global_discount);
                 }
-            }
-
-            if ($this->input->post('quote_discount_amount') === '') {
-                $quote_discount_amount = floatval(0);
-            } else {
-                $quote_discount_amount = $this->input->post('quote_discount_amount');
-            }
-
-            if ($this->input->post('quote_discount_percent') === '') {
-                $quote_discount_percent = floatval(0);
-            } else {
-                $quote_discount_percent = $this->input->post('quote_discount_percent');
             }
 
             // Generate new quote number if needed
@@ -67,6 +82,13 @@ class Ajax extends Admin_Controller
             if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
                 $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
+            }
+
+            // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
+            if(! config_item('legacy_calculation') && $quote_discount_amount && $quote_discount_amount != $global_discount['item'])
+            {
+                // Adjust amount to reflect real calculation (cents)
+                $quote_discount_amount = $global_discount['item'];
             }
 
             $db_array = [
@@ -80,11 +102,14 @@ class Ajax extends Admin_Controller
                 'quote_discount_percent' => standardize_amount($quote_discount_percent),
             ];
 
-            $this->mdl_quotes->save($quote_id, $db_array);
+            $this->mdl_quotes->save($quote_id, $db_array, $global_discount);
 
-            // Recalculate for discounts
-            $this->load->model('quotes/mdl_quote_amounts');
-            $this->mdl_quote_amounts->calculate($quote_id);
+            if(config_item('legacy_calculation'))
+            {
+                // Recalculate for discounts
+                $this->load->model('quotes/mdl_quote_amounts');
+                $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
+            }
 
             $response = [
                 'success' => 1,
@@ -96,7 +121,6 @@ class Ajax extends Admin_Controller
                 'validation_errors' => json_errors(),
             ];
         }
-
 
         // Save all custom fields
         if ($this->input->post('custom')) {
@@ -316,9 +340,9 @@ class Ajax extends Admin_Controller
             [
                 'invoices/mdl_invoices',
                 'invoices/mdl_items',
+                'invoices/mdl_invoice_tax_rates',
                 'quotes/mdl_quotes',
                 'quotes/mdl_quote_items',
-                'invoices/mdl_invoice_tax_rates',
                 'quotes/mdl_quote_tax_rates',
             ]
         );
@@ -340,6 +364,15 @@ class Ajax extends Admin_Controller
             $this->db->set('invoice_id', $invoice_id);
             $this->db->update('ip_quotes');
 
+            // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+            $global_discount = [
+                'amount'         => $quote->quote_discount_amount,
+                'percent'        => $quote->quote_discount_percent,
+                'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
+                'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($quote->quote_id),
+            ];
+            unset($quote); // Free memory
+
             $quote_items = $this->mdl_quote_items->where('quote_id', $this->input->post('quote_id'))->get()->result();
 
             foreach ($quote_items as $quote_item) {
@@ -357,12 +390,10 @@ class Ajax extends Admin_Controller
                     'item_order' => $quote_item->item_order,
                 ];
 
-                $this->mdl_items->save(null, $db_array);
+                $this->mdl_items->save(null, $db_array, $global_discount);
             }
 
-            $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))
-                ->get()
-                ->result();
+            $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))->get()->result();
 
             foreach ($quote_tax_rates as $quote_tax_rate) {
                 $db_array = [
@@ -399,10 +430,10 @@ class Ajax extends Admin_Controller
         $item_id = $this->input->post('item_id');
         $this->load->model('mdl_quotes');
 
-        // Only continue if the invoice exists or no item id was provided
+        // Only continue if the quote exists or no item id was provided
         if ($this->mdl_quotes->get_by_id($quote_id) || empty($item_id)) {
 
-            // Delete invoice item
+            // Delete quote item
             $this->load->model('mdl_quote_items');
             $item = $this->mdl_quote_items->delete($item_id);
 

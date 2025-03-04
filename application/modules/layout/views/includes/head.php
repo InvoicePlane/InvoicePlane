@@ -1,19 +1,21 @@
 <?php
 $pg = explode('index.php/',@$_SERVER['REQUEST_URI']);
 $pg = (isset($pg[1]))? ' : ' . implode(' - ', explode('/', $pg[1])): '';
-?><title><?php echo (get_setting('custom_title', null, true) ?: 'InvoicePlane') . $pg;?></title>
+?><title><?php echo get_setting('custom_title', 'InvoicePlane', true) . $pg; ?></title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="NOINDEX,NOFOLLOW">
+<meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
+<meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
 
-<link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
+<link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-<link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>">
-<link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>">
+<link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>" type="text/css">
+<link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>" type="text/css">
 
 <?php if (get_setting('monospace_amounts') == 1) { ?>
-    <link rel="stylesheet" href="<?php _theme_asset('css/monospace.css'); ?>">
+    <link rel="stylesheet" href="<?php _theme_asset('css/monospace.css'); ?>" type="text/css">
 <?php } ?>
 
 <!--[if lt IE 9]>

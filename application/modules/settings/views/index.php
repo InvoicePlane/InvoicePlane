@@ -44,8 +44,7 @@
 
 <form method="post" id="form-settings" enctype="multipart/form-data">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div class="tabbable tabs-below">
 

@@ -15,7 +15,10 @@
         </thead>
 
         <tbody>
-        <?php foreach ($payments as $payment) { ?>
+<?php
+foreach ($payments as $payment)
+{
+?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
                 <td><?php echo date_from_mysql($payment->invoice_date_created); ?></td>
@@ -55,7 +58,9 @@
                     </div>
                 </td>
             </tr>
-        <?php } ?>
+<?php
+} // End foreach
+?>
         </tbody>
 
     </table>

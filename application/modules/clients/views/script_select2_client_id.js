@@ -9,7 +9,7 @@ $(".client-id-select").select2({
                 query: params.term,
                 permissive_search_clients: $('input#input_permissive_search_clients').val(),
                 page: params.page,
-                _ip_csrf: Cookies.get('ip_csrf_cookie')
+                <?php echo config_item('csrf_token_name'); ?>: Cookies.get('<?php echo config_item('csrf_cookie_name'); ?>')
             };
         },
         processResults: function (data) {

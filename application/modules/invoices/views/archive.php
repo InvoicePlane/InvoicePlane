@@ -7,7 +7,7 @@
            <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
                    value="<?php echo $this->security->get_csrf_hash() ?>">
             <div class="input-group">
-                <input name="invoice_number" id="invoice_number" type="text" class="form-control input-sm">
+                <input name="invoice_number" id="invoice_number" type="text" class="form-control">
                 <span class="input-group-btn">
                     <button class="btn btn-default btn-sm"
                             type="submit"><?php _trans('filter_invoices'); ?></button>

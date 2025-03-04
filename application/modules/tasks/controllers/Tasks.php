@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,8 +34,15 @@ class Tasks extends Admin_Controller
         $this->mdl_tasks->paginate(site_url('tasks/index'), $page);
         $tasks = $this->mdl_tasks->result();
 
-        $this->layout->set('tasks', $tasks);
-        $this->layout->set('task_statuses', $this->mdl_tasks->statuses());
+        $this->layout->set(
+            [
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_tasks'),
+                'filter_method'      => 'filter_tasks',
+                'tasks'              => $tasks,
+                'task_statuses'      => $this->mdl_tasks->statuses()
+            ]
+        );
         $this->layout->buffer('content', 'tasks/index');
         $this->layout->render();
     }

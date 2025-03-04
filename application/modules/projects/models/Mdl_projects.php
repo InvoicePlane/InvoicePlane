@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -62,16 +63,16 @@ class Mdl_Projects extends Response_Model
     {
         $result = array();
 
-        if (!$project_id) {
+        if (!$project_id)
+        {
             return $result;
         }
 
         $this->load->model('tasks/mdl_tasks');
-        $query = $this->mdl_tasks
-            ->where('ip_tasks.project_id', $project_id)
-            ->get();
+        $query = $this->mdl_tasks->where('ip_tasks.project_id', $project_id)->get();
 
-        foreach ($query->result() as $row) {
+        foreach ($query->result() as $row)
+        {
             $result[] = $row;
         }
 

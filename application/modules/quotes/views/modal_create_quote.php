@@ -3,7 +3,7 @@
         // Display the create quote modal
         $('#create-quote').modal('show');
 
-        // Enable select2 for all selects
+        // Select2 for all select inputs
         $('.simple-select').select2();
 
         <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
@@ -29,7 +29,6 @@
 
         // Creates the quote
         $('#quote_create_confirm').click(function () {
-             <?php echo(IP_DEBUG ? 'console.log("clicked");' : ''); ?>;
             // Posts the data to validate and create the quote;
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/create'); ?>", {
@@ -40,7 +39,7 @@
                     invoice_group_id: $('#invoice_group_id').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful and quote was created

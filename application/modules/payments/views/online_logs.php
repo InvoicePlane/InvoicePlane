@@ -28,7 +28,10 @@
                 </thead>
 
                 <tbody>
-                <?php foreach ($payment_logs as $log) { ?>
+<?php
+foreach ($payment_logs as $log)
+{
+?>
                     <tr>
                         <td><?php echo $log->merchant_response_id; ?></td>
                         <td>
@@ -51,7 +54,9 @@
                         </td>
                         <td><?php echo $log->merchant_response_reference; ?></td>
                     </tr>
-                <?php } ?>
+<?php
+} // End foreach
+?>
                 </tbody>
 
             </table>

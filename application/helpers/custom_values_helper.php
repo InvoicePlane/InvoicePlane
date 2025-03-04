@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -101,12 +101,12 @@ function format_boolean($txt)
 
 /**
  * @param $txt
- * @return string
+ * @return string|null
  */
 function format_avs($txt)
 {
-    if (empty($txt) || !preg_match('/(\d{3})(\d{4})(\d{4})(\d{2})/', $txt, $matches)) {
-        return $txt;
+    if (! $txt || ! preg_match('/(\d{3})(\d{4})(\d{4})(\d{2})/', $txt, $matches)) {
+        return $txt; // do noting or null
     }
     return $matches[1] . "." . $matches[2] . "." . $matches[3] . "." . $matches[4];
 
@@ -128,83 +128,97 @@ function format_fallback($txt)
  * @param $cv
  * @param string $class_top
  * @param string $class_bottom
- * @param string $label_class
+ * @param string $class_label
+ * @param string $class_group
  */
-function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $label_class = '')
+function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $class_label = '', $class_group = 'form-group')
 {
-    ?>
-    <div class="form-group">
+    $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']');
+?>
+    <div class="<?php echo $class_group; ?>">
         <div class="<?php echo $class_top; ?>">
-            <label<?php echo($label_class != '' ? " class='" . $label_class . "'" : ''); ?>
-                    for="custom[<?php echo $custom_field->custom_field_id; ?>]">
+            <label class="<?php echo $class_label; ?>"
+                   for="custom[<?php echo $custom_field->custom_field_id; ?>]">
                 <?php _htmlsc($custom_field->custom_field_label); ?>
             </label>
         </div>
-        <?php $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']'); ?>
+
         <div class="<?php echo $class_bottom; ?>">
-            <?php
-            switch ($custom_field->custom_field_type) {
-            case 'DATE':
+<?php
+    switch ($custom_field->custom_field_type)
+    {
+        case 'DATE':
                 $dateValue = ($fieldValue == "" ? "" : date_from_mysql($fieldValue));
-                ?>
-            <input type="text" class="form-control input-sm datepicker"
+?>
+            <input type="text" class="form-control datepicker"
                    name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                    id="<?php echo $custom_field->custom_field_id; ?>"
                    value="<?php echo $dateValue; ?>">
-            <?php
-            break;
-            case 'SINGLE-CHOICE':
+<?php
+        break;
+        case 'SINGLE-CHOICE':
             $choices = $cv[$custom_field->custom_field_id];
-            ?>
-                <select class="form-control simple-select" name="custom[<?php echo $custom_field->custom_field_id; ?>]"
-                        id="<?php echo $custom_field->custom_field_id; ?>">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($choices as $val): ?>
-                        <option value="<?php echo $val->custom_values_id; ?>"
-                            <?php check_select($val->custom_values_id, $fieldValue); ?>>
+?>
+                <select id="custom<?php echo $custom_field->custom_field_id; ?>"
+                        name="custom[<?php echo $custom_field->custom_field_id; ?>]"
+                        class="form-control simple-select">
+                    <option value="" <?php check_select('', $fieldValue); ?>><?php _trans('none'); ?></option>
+<?php
+            foreach ($choices as $val)
+            {
+?>
+                        <option value="<?php echo $val->custom_values_id; ?>" <?php check_select($val->custom_values_id, $fieldValue); ?>>
                             <?php _htmlsc($val->custom_values_value); ?>
                         </option>
-                    <?php endforeach; ?>
+<?php
+            } // End foreach
+?>
                 </select>
-            <?php
-            break;
-            case 'MULTIPLE-CHOICE':
+<?php
+        break;
+        case 'MULTIPLE-CHOICE':
             $choices = $cv[$custom_field->custom_field_id];
-            $selChoices = explode(',', $fieldValue); ?>
-                <select id="<?php echo $custom_field->custom_field_id; ?>"
+            $selChoices = explode(',', $fieldValue);
+?>
+                <select id="custom<?php echo $custom_field->custom_field_id; ?>"
                         name="custom[<?php echo $custom_field->custom_field_id; ?>][]"
                         multiple="multiple"
-                        class="form-control">
-                    <option value=""><?php echo trans('none'); ?></option>
-                    <?php foreach ($choices as $choice): ?>
+                        class="form-control multiple-select">
+                    <option value="" <?php check_select('', $fieldValue); ?>><?php echo trans('none'); ?></option>
+<?php
+            foreach ($choices as $choice)
+            {
+?>
                         <option value="<?php echo $choice->custom_values_id; ?>" <?php check_select(in_array($choice->custom_values_id, $selChoices)); ?>>
                             <?php _htmlsc($choice->custom_values_value); ?>
                         </option>
-                    <?php endforeach; ?>
+<?php
+            } // End foreach
+?>
                 </select>
-                <script>
-                    $('#<?php echo $custom_field->custom_field_id; ?>').select2();
-                </script>
-            <?php
-            break;
-            case 'BOOLEAN':
-            ?>
-                <select id="<?php echo $custom_field->custom_field_id; ?>"
+<?php
+        break;
+        case 'BOOLEAN':
+?>
+                <select id="custom<?php echo $custom_field->custom_field_id; ?>"
                         name="custom[<?php echo $custom_field->custom_field_id; ?>]"
-                        class="form-control">
-                    <option value="0" <?php check_select($fieldValue, '0'); ?>><?php echo trans('false'); ?></option>
-                    <option value="1" <?php check_select($fieldValue, '1'); ?>><?php echo trans('true'); ?></option>
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                    <option value="" <?php check_select($fieldValue, ''); ?>><?php _trans('none'); ?></option>
+                    <option value="0" <?php check_select($fieldValue, '0'); ?>><?php _trans('false'); ?></option>
+                    <option value="1" <?php check_select($fieldValue, '1'); ?>><?php _trans('true'); ?></option>
                 </select>
-            <?php
-            break;
-            default:
-            ?>
+<?php
+        break;
+        default:
+?>
             <input type="text" class="form-control"
                    name="custom[<?php echo $custom_field->custom_field_id; ?>]"
-                   id="<?php echo $custom_field->custom_field_id; ?>"
+                   id="custom<?php echo $custom_field->custom_field_id; ?>"
                    value="<?php _htmlsc($fieldValue); ?>">
-            <?php } ?>
+<?php
+    } // End switch
+?>
         </div>
     </div>
-    <?php
+<?php
 }

@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -23,7 +24,7 @@ if (! defined('BASEPATH')) {
  */
 function get_setting($setting_key, $default = '', $escape = false)
 {
-    $CI = &get_instance();
+    $CI = & get_instance();
     $value = $CI->mdl_settings->setting($setting_key, $default);
     return $escape ? htmlsc($value) : $value;
 }
@@ -36,7 +37,7 @@ function get_setting($setting_key, $default = '', $escape = false)
  */
 function get_gateway_settings($gateway)
 {
-    $CI = &get_instance();
+    $CI = & get_instance();
     return $CI->mdl_settings->gateway_settings($gateway);
 }
 
@@ -62,12 +63,14 @@ function check_select($value1, $value2 = null, $operator = '==', $checked = fals
     $select = $checked ? 'checked="checked"' : 'selected="selected"';
 
     // Instant-validate if $value1 is a bool value
-    if (is_bool($value1) && $value2 === null) {
+    if (is_bool($value1) && $value2 === null)
+    {
         echo $value1 ? $select : '';
         return;
     }
 
-    switch ($operator) {
+    switch ($operator)
+    {
         case '==':
             $echo_selected = $value1 == $value2 ? true : false;
             break;
