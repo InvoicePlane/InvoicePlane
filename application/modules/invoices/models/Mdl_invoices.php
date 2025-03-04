@@ -477,6 +477,26 @@ class Mdl_Invoices extends Response_Model
     }
 
     /**
+     * @return array
+     */
+    public function get_archives($invoice_number): array
+    {
+        $invoice_array = [];
+
+        if ( ! empty($invoice_number)) {
+            $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*' . '_*' . $invoice_number . '*.pdf');
+        } else {
+            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
+                array_push($invoice_array, $file);
+            }
+            rsort($invoice_array);
+        }
+
+        return $invoice_array;
+    }
+
+
+    /**
      * @param int $invoice_id
      */
     public function delete($invoice_id)

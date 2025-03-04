@@ -238,6 +238,7 @@ $lang = [
     'fax_abbr'                                     => 'F',
     'fax_number'                                   => 'Fax Number',
     'field'                                        => 'Field',
+    'filter_archives'                              => 'Filter by number',
     'filter_clients'                               => 'Filter Clients',
     'filter_custom_fields'                         => 'Filter Fields',
     'filter_custom_values'                         => 'Filter Values',

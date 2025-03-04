@@ -344,6 +344,17 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('payments/partial_online_logs_table', $data);
     }
 
+    public function filter_archives()
+    {
+        $this->load->model('invoices/mdl_invoices');
+
+        $data = [
+            'invoices_archive' => $this->mdl_invoices->get_archives($this->input->post('filter_query')),
+        ];
+
+        $this->layout->load_view('invoices/partial_invoice_archive', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
