@@ -10,8 +10,12 @@
 <html class="no-js" lang="<?php _trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
-    <title><?php echo get_setting('custom_title', 'InvoicePlane', true); ?></title>
-
+<?php
+$pg = explode('index.php/',@$_SERVER['REQUEST_URI']);
+$pg = (isset($pg[1]))? explode('/', $pg[1]) : '';
+$pg = $pg ? ' : ' . implode(' - ', array_map(function($v){return ! is_numeric($v) ? trans($v) : $v;}, $pg)) : '';
+?>
+    <title><?php echo get_setting('custom_title', 'InvoicePlane', true) . $pg; ?></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
