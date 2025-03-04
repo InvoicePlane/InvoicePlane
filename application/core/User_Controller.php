@@ -30,6 +30,7 @@ class User_Controller extends Base_Controller
 
         if ($this->session->userdata($required_key) != $required_val)
         {
+            session_destroy();
             redirect('sessions/login');
         }
     }
