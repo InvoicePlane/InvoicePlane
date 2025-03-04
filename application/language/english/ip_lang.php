@@ -244,6 +244,7 @@ $lang = [
     'filter_families'                              => 'Filter Families',
     'filter_invoices'                              => 'Filter Invoices',
     'filter_invoices_recuring'                     => 'Filter Recuring Invoices',
+    'filter_online_logs'                           => 'Filter Payment Logs',
     'filter_payments'                              => 'Filter Payments',
     'filter_products'                              => 'Filter Products',
     'filter_projects'                              => 'Filter Projects',

@@ -323,6 +323,27 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('invoices/partial_invoices_recurring_table', $data);
     }
 
+    public function filter_online_logs()
+    {
+        $this->load->model('payments/mdl_payment_logs');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_payment_logs->like("CONCAT_WS('^',merchant_response_id,LOWER(invoice_number),merchant_response_successful,merchant_response_date,LOWER(merchant_response_driver),LOWER(merchant_response),LOWER(merchant_response_reference))", $keyword);
+            }
+        }
+
+        $data = [
+            'payment_logs' => $this->mdl_payment_logs->get()->result()
+        ];
+
+        $this->layout->load_view('payments/partial_online_logs_table', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
@@ -341,7 +362,7 @@ class Ajax extends Admin_Controller
             'payments' => $this->mdl_payments->get()->result()
         ];
 
-        $this->layout->load_view('payments/partial_payment_table', $data);
+        $this->layout->load_view('payments/partial_payments_table', $data);
     }
 
 }

@@ -8,10 +8,10 @@ if (! defined('BASEPATH'))
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -37,10 +37,10 @@ class Payments extends Admin_Controller
 
         $this->layout->set(
             [
-                'payments' => $payments,
-                'filter_display' => true,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_payments'),
-                'filter_method' => 'filter_payments',
+                'filter_method'      => 'filter_payments',
+                'payments'           => $payments,
             ]
         );
 
@@ -178,14 +178,17 @@ class Payments extends Admin_Controller
      */
     public function online_logs($page = 0)
     {
-        $this->load->model('mdl_payment_logs');
+        $this->load->model('payments/mdl_payment_logs');
 
         $this->mdl_payment_logs->paginate(site_url('payments/online_logs'), $page);
         $payment_logs = $this->mdl_payment_logs->result();
 
         $this->layout->set(
             [
-                'payment_logs' => $payment_logs,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_online_logs'),
+                'filter_method'      => 'filter_online_logs',
+                'payment_logs'       => $payment_logs,
             ]
         );
 
