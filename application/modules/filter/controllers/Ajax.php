@@ -222,7 +222,7 @@ class Ajax extends Admin_Controller
         $keywords = explode(' ', $query);
 
         // Columns 'tax_rate_id' & 'unit_id' in where clause is ambiguous
-/        foreach ($keywords as $keyword) {
+        foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
                 $this->mdl_products->like("CONCAT_WS('^',product_id,LOWER(family_name),product_sku,LOWER(product_name),LOWER(product_description),product_price,purchase_price,LOWER(provider_name),LOWER(tax_rate_name),LOWER(unit_name_plrl),product_tariff)", $keyword);
