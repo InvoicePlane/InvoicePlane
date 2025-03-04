@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,8 +34,13 @@ class Recurring extends Admin_Controller
         $this->mdl_invoices_recurring->paginate(site_url('invoices/recurring'), $page);
         $recurring_invoices = $this->mdl_invoices_recurring->result();
 
-        $this->layout->set('recur_frequencies', $this->mdl_invoices_recurring->recur_frequencies);
-        $this->layout->set('recurring_invoices', $recurring_invoices);
+        $this->layout->set([
+            'filter_display'     => true,
+            'filter_placeholder' => trans('filter_invoices_recuring'),
+            'filter_method'      => 'filter_invoices_recuring',
+            'recur_frequencies'  => $this->mdl_invoices_recurring->recur_frequencies,
+            'recurring_invoices' => $recurring_invoices,
+        ]);
         $this->layout->buffer('content', 'invoices/index_recurring');
         $this->layout->render();
     }

@@ -300,6 +300,29 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('families/partial_families_table', $data);
     }
 
+    public function filter_invoices_recuring()
+    {
+        $this->load->model('invoices/mdl_invoices_recurring');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        // invoice_recurring_id invoice_id
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_invoices_recurring->like("CONCAT_WS('^',recur_start_date,recur_end_date,recur_next_date,recur_frequency,LOWER(invoice_number),LOWER(client_name),LOWER(client_surname))", $keyword);
+            }
+        }
+
+        $data = [
+            'recur_frequencies'  => $this->mdl_invoices_recurring->recur_frequencies,
+            'recurring_invoices' => $this->mdl_invoices_recurring->get()->result(),
+        ];
+
+        $this->layout->load_view('invoices/partial_invoices_recurring_table', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
