@@ -35,7 +35,7 @@ $table = strtr($field->custom_field_table, ['ip_' => '', '_custom' => '']);
             <div class="form-group">
                 <div id="filter_results">
 <?php
-$this->layout->load_view('custom_values/partial_custom_values_field', ['id' => $id, 'elements' => $elements]);
+$this->layout->load_view('custom_values/partial_custom_values_field');
 ?>
                 </div>
             </div>

@@ -18,11 +18,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
-        <?php $this->layout->load_view('products/partial_products_table',
-            [
-                'products' => $products,
-            ]
-        ); ?>
+        <?php $this->layout->load_view('products/partial_products_table'); ?>
     </div>
 
 </div>

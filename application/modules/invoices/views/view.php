@@ -495,7 +495,7 @@ foreach ($payment_methods as $payment_method)
 
 <?php
 $default_custom = false;
-$classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-md-6'];
+$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field)
 {
     if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
