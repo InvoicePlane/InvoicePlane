@@ -241,6 +241,7 @@ $lang = [
     'filter_clients'                               => 'Filter Clients',
     'filter_custom_fields'                         => 'Filter Fields',
     'filter_custom_values'                         => 'Filter Values',
+    'filter_families'                              => 'Filter Families',
     'filter_invoices'                              => 'Filter Invoices',
     'filter_payments'                              => 'Filter Payments',
     'filter_products'                              => 'Filter Products',

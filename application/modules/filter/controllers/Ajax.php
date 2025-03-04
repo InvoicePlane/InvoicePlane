@@ -272,6 +272,28 @@ LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subsc
         $this->layout->load_view('users/partial_users_table', $data);
     }
 
+    public function filter_families()
+    {
+        $this->load->model('families/mdl_families');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                // family_id,
+                $this->mdl_families->like("CONCAT_WS('^',LOWER(family_name))", $keyword);
+            }
+        }
+
+        $data = [
+            'families' => $this->mdl_families->get()->result()
+        ];
+
+        $this->layout->load_view('families/partial_families_table', $data);
+    }
+
     public function filter_payments()
     {
         $this->load->model('payments/mdl_payments');
