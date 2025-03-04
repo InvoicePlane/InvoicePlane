@@ -1,6 +1,3 @@
-<?php
-$cv = $this->controller->view_data["custom_values"];
-?>
 <script>
     $(function () {
         show_fields();
@@ -11,24 +8,24 @@ $cv = $this->controller->view_data["custom_values"];
 
         function show_fields() {
             $('#administrator_fields').hide();
-            $('#guest_fields').hide();
+            $('#guest_fields').hide(); // Todo this id missing
 
             var user_type = $('#user_type').val();
 
             if (user_type === '1') {
                 $('#administrator_fields').show();
             } else if (user_type === '2') {
-                $('#guest_fields').show();
+                $('#guest_fields').show(); // Todo this id missing
             }
         }
 
-        $("#user_country").select2({
-            placeholder: "<?php _trans('country'); ?>",
+        $('#user_country').select2({
+            placeholder: '<?php _trans('country'); ?>',
             allowClear: true
         });
 
         $('#add-user-client-modal').click(function () {
-            <?php $user_id = isset($id) ? $id : ''; ?>
+            <?php $user_id = $id ?? ''; ?>
             $('#modal-placeholder').load("<?php echo site_url('users/ajax/modal_add_user_client/' . $user_id); ?>");
         });
     });
@@ -36,8 +33,7 @@ $cv = $this->controller->view_data["custom_values"];
 
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('user_form'); ?></h1>
@@ -80,29 +76,38 @@ $cv = $this->controller->view_data["custom_values"];
                                        value="<?php echo $this->mdl_users->form_value('user_email', true); ?>" required>
                             </div>
 
-                            <?php if (!$id) { ?>
-                                <div class="form-group">
-                                    <label for="user_password">
-                                        <?php _trans('password'); ?>
-                                    </label>
-                                    <input type="password" name="user_password" id="user_password" class="form-control" required>
-                                </div>
+<?php // New user
+if ( ! $id)
+{
+?>
+                            <div class="form-group">
+                                <label for="user_password">
+                                    <?php _trans('password'); ?>
+                                </label>
+                                <input type="password" name="user_password" id="user_password" class="form-control" required>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="user_password">
-                                        <?php _trans('verify_password'); ?>
-                                    </label>
-                                    <input type="password" name="user_passwordv" id="user_passwordv"
-                                           class="form-control" required>
-                                </div>
-                            <?php } else { ?>
-                                <div class="form-group">
-                                    <a href="<?php echo site_url('users/change_password/' . $id); ?>"
-                                       class="btn btn-default">
-                                        <?php _trans('change_password'); ?>
-                                    </a>
-                                </div>
-                            <?php } ?>
+                            <div class="form-group">
+                                <label for="user_password">
+                                    <?php _trans('verify_password'); ?>
+                                </label>
+                                <input type="password" name="user_passwordv" id="user_passwordv"
+                                       class="form-control" required>
+                            </div>
+<?php
+}
+else // Edit user
+{
+?>
+                            <div class="form-group">
+                                <a href="<?php echo site_url('users/change_password/' . $id); ?>"
+                                   class="btn btn-default">
+                                    <?php _trans('change_password'); ?>
+                                </a>
+                            </div>
+<?php
+}
+?>
 
                             <div class="form-group">
                                 <label for="user_language">
@@ -112,14 +117,17 @@ $cv = $this->controller->view_data["custom_values"];
                                     <option value="system">
                                         <?php echo trans('use_system_language') ?>
                                     </option>
-                                    <?php foreach ($languages as $language) {
-                                        $usr_lang = $this->session->userdata('user_language');
-                                        ?>
-                                        <option value="<?php echo $language; ?>"
-                                            <?php check_select($usr_lang, $language); ?>>
-                                            <?php echo ucfirst($language); ?>
-                                        </option>
-                                    <?php } ?>
+<?php
+$usr_lang = $this->session->userdata('user_language');
+foreach ($languages as $language)
+{
+?>
+                                    <option value="<?php echo $language; ?>" <?php check_select($usr_lang, $language); ?>>
+                                        <?php echo ucfirst($language); ?>
+                                    </option>
+<?php
+}
+?>
                                 </select>
                             </div>
 
@@ -128,12 +136,17 @@ $cv = $this->controller->view_data["custom_values"];
                                     <?php _trans('user_type'); ?>
                                 </label>
                                 <select name="user_type" id="user_type" class="form-control simple-select" required>
-                                    <?php foreach ($user_types as $key => $type) { ?>
-                                        <option value="<?php echo $key; ?>"
-                                            <?php check_select($this->mdl_users->form_value('user_type'), $key); ?>>
-                                            <?php echo $type; ?>
-                                        </option>
-                                    <?php } ?>
+<?php
+$user_type = $this->mdl_users->form_value('user_type');
+foreach ($user_types as $key => $type)
+{
+?>
+                                    <option value="<?php echo $key; ?>" <?php check_select($user_type, $key); ?>>
+                                        <?php echo $type; ?>
+                                    </option>
+<?php
+}
+?>
                                 </select>
                             </div>
                         </div>
@@ -191,28 +204,28 @@ $cv = $this->controller->view_data["custom_values"];
                                     </label>
                                     <select name="user_country" id="user_country" class="form-control">
                                         <option value=""><?php _trans('none'); ?></option>
-                                        <?php foreach ($countries as $cldr => $country) { ?>
-                                            <option value="<?php echo $cldr; ?>"
-                                                <?php check_select($selected_country, $cldr); ?>>
-                                                <?php echo $country ?>
-                                            </option>
-                                        <?php } ?>
+<?php
+foreach ($countries as $cldr => $country)
+{
+?>
+                                        <option value="<?php echo $cldr; ?>"
+                                            <?php check_select($selected_country, $cldr); ?>>
+                                            <?php echo $country ?>
+                                        </option>
+<?php
+}
+?>
                                     </select>
                                 </div>
-
-                                <!-- Custom fields -->
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 2) {
-                                        continue;
-                                    } ?>
-                                    <?php
-                                    print_field(
-                                        $this->mdl_users,
-                                        $custom_field,
-                                        $cv
-                                    );
-                                    ?>
-                                <?php endforeach; ?>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 2)
+    {
+        print_field($this->mdl_users, $custom_field, $custom_values);
+    }
+}
+?>
                             </div>
 
                         </div>
@@ -238,14 +251,6 @@ $cv = $this->controller->view_data["custom_values"];
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_iban">
-                                        <?php _trans('user_iban'); ?>
-                                    </label>
-                                    <input type="text" name="user_iban" id="user_iban" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
-                                </div>
-
-                                <div class="form-group">
                                     <label for="user_subscribernumber">
                                         <?php _trans('user_subscriber_number'); ?>
                                     </label>
@@ -253,56 +258,106 @@ $cv = $this->controller->view_data["custom_values"];
                                            class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_subscribernumber', true); ?>">
                                 </div>
+<?php
+foreach ($custom_fields as $custom_field)
+{
+    if ($custom_field->custom_field_location == 3)
+    {
+        print_field($this->mdl_users, $custom_field, $custom_values);
+    }
+}
+?>
 
-                                <!-- Custom fields -->
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 3) {
-                                        continue;
-                                    } ?>
-                                    <?php
-                                    print_field(
-                                        $this->mdl_users,
-                                        $custom_field,
-                                        $cv
-                                    );
-                                    ?>
-                                <?php endforeach; ?>
                             </div>
 
                         </div>
 
-                        <?php if ($this->mdl_settings->setting('sumex') == '1'): ?>
+                        <!-- e-Invoicing++ -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><?php _trans('bank_information'); ?></div>
 
-                            <div class="panel panel-default">
-                                <div class="panel-heading"><?php _trans('sumex_information'); ?></div>
-
-                                <div class="panel-body">
-                                    <div class="form-group">
-                                        <label for="user_gln">
-                                            <?php _trans('gln'); ?>
-                                        </label>
-                                        <input type="text" name="user_gln" id="user_gln" class="form-control"
-                                               value="<?php echo $this->mdl_users->form_value('user_gln', true); ?>">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="user_rcc">
-                                            <?php _trans('sumex_rcc'); ?>
-                                        </label>
-                                        <input type="text" name="user_rcc" id="user_rcc" class="form-control"
-                                               value="<?php echo $this->mdl_users->form_value('user_rcc', true); ?>">
-                                    </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_bank">
+                                        <?php _trans('bank'); ?>
+                                    </label>
+                                    <input type="text" name="user_bank" id="user_bank" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="user_iban">
+                                        <?php echo 'IBAN'; ?>
+                                    </label>
+                                    <input type="text" name="user_iban" id="user_iban" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_bic">
+                                        <?php echo 'BIC'; ?>
+                                    </label>
+                                    <input type="text" name="user_bic" id="user_bic"
+                                           class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_bic', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_remittance_tmpl">
+                                        <?php _trans('user_remittance_tmpl'); ?>
+                                    </label>
+                                    <input type="text" name="user_remittance_tmpl" id="user_remittance_tmpl" class="form-control" placeholder="{{{invoice_number}}} {{{invoice_date_due}}}"
+                                           value="<?php echo $this->mdl_users->form_value('user_remittance_tmpl', true); ?>">
+                                </div>
                             </div>
 
-                        <?php endif; ?>
+                        </div>
+
+<?php
+if ($this->mdl_settings->setting('sumex') == '1')
+{
+?>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><?php _trans('sumex_information'); ?></div>
+
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_gln">
+                                        <?php _trans('gln'); ?>
+                                    </label>
+                                    <input type="text" name="user_gln" id="user_gln" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_gln', true); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user_rcc">
+                                        <?php _trans('sumex_rcc'); ?>
+                                    </label>
+                                    <input type="text" name="user_rcc" id="user_rcc" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_rcc', true); ?>">
+                                </div>
+                            </div>
+
+                        </div>
+
+<?php
+} // Endif sumex
+?>
 
                         <div class="panel panel-default">
 
                             <div class="panel-heading"><?php _trans('contact_information'); ?></div>
 
                             <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="user_invoicing_con>tact">
+                                        <?php _trans('contact'); ?> (<?php _trans('invoicing'); ?>)
+                                    </label>
+                                    <input type="text" name="user_invoicing_contact" id="user_invoicing_contact" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_invoicing_contact', true); ?>">
+                                </div>
+
                                 <div class="form-group">
                                     <label for="user_phone">
                                         <?php _trans('phone_number'); ?>
@@ -334,51 +389,59 @@ $cv = $this->controller->view_data["custom_values"];
                                     <input type="text" name="user_web" id="user_web" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_web', true); ?>">
                                 </div>
+<?php
+$default_custom = false;
+foreach ($custom_fields as $custom_field)
+{
+    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
 
-                                <!-- Custom fields -->
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 4) {
-                                        continue;
-                                    } ?>
-                                    <?php
-                                    print_field(
-                                        $this->mdl_users,
-                                        $custom_field,
-                                        $cv
-                                    );
-                                    ?>
-                                <?php endforeach; ?>
+    if ($custom_field->custom_field_location == 4)
+    {
+        print_field($this->mdl_users, $custom_field, $custom_values);
+    }
+}
+?>
+
                             </div>
 
                         </div>
-                        <?php if ($custom_fields) : ?>
-                            <div class="panel panel-default">
-                                <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
 
-                                <div class="panel-body">
-                                    <?php
-                                    $cv = $this->controller->view_data["custom_values"];
-                            foreach ($custom_fields as $custom_field) {
-                                if ($custom_field->custom_field_location != 0) {
-                                    continue;
-                                }
-                                print_field(
-                                    $this->mdl_users,
-                                    $custom_field,
-                                    $cv
-                                );
-                            } ?>
+<?php
+if ($default_custom)
+{
+?>
+                        <div class="row">
+                            <div class="col-xs-12">
+
+                                <hr>
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
+                                    <div class="panel-body">
+                                        <div class="row form-horizontal">
+<?php
+    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
+    foreach ($custom_fields as $custom_field)
+    {
+        if (! $custom_field->custom_field_location) // == 0
+        {
+            print_field($this->mdl_users, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+        }
+    }
+?>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
-                        <?php endif; ?>
-
-                    </div>
-
+                        </div>
+<?php
+} // End if custom_fields
+?>
+                   </div> <!-- end administrator_fields -->
                 </div>
 
             </div>
         </div>
     </div>
-
 </form>

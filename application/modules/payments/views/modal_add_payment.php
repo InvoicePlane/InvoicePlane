@@ -25,12 +25,12 @@
                         if ($('#payment_cf_exist').val() === 'yes') {
                             // There are payment custom fields, display the payment form
                             // to allow completing the custom fields
-						    window.location = "<?php echo site_url('payments/form'); ?>/" + response.payment_id;
-						}
-						else {
+                            window.location = "<?php echo site_url('payments/form'); ?>/" + response.payment_id;
+                        }
+                        else {
                             // There are no payment custom fields, return to invoice view
-							window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
-						}
+                            window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
+                        }
                     }
                     else {
                         // The validation was not successful
@@ -88,25 +88,32 @@
                     <label for="payment_method_id"><?php _trans('payment_method'); ?></label>
 
                     <div class="controls">
-
-                        <?php
-                        // Add a hidden input field if a payment method was set to pass the disabled attribute
-                        if ($this->mdl_payments->form_value('payment_method_id')) { ?>
-                            <input type="hidden" name="payment_method_id" class="hidden"
-                                   value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
-                        <?php } ?>
-
+<?php
+// Add a hidden input field if a payment method was set to pass the disabled attribute
+if ($this->mdl_payments->form_value('payment_method_id'))
+{
+?>
+                        <input type="hidden" name="payment_method_id" class="hidden"
+                               value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
+<?php
+}
+?>
                         <select name="payment_method_id" id="payment_method_id" class="form-control simple-select"
-                            <?php echo(!empty($invoice_payment_method) ? 'disabled="disabled"' : ''); ?>>
+                                <?php echo(! empty($invoice_payment_method) ? 'disabled="disabled"' : ''); ?>>
                             <option value=""><?php _trans('none'); ?></option>
-                            <?php foreach ($payment_methods as $payment_method) { ?>
-                                <option value="<?php echo $payment_method->payment_method_id; ?>"
+<?php
+foreach ($payment_methods as $payment_method)
+{
+?>
+                            <option value="<?php echo $payment_method->payment_method_id; ?>"
                                     <?php check_select(isset($invoice_payment_method)
                                         && $invoice_payment_method == $payment_method->payment_method_id
                                     ); ?>>
-                                    <?php _htmlsc($payment_method->payment_method_name); ?>
-                                </option>
-                            <?php } ?>
+                                <?php _htmlsc($payment_method->payment_method_name); ?>
+                            </option>
+<?php
+} // End foreach
+?>
                         </select>
                     </div>
                 </div>
@@ -120,8 +127,7 @@
                 </div>
 
                 <!-- Add a hidden input field to pass whether payment custom fields have been create -->
-                <input type="hidden" name="payment_cf_exist" id="payment_cf_exist"
-                    value="<?php echo $payment_cf_exist; ?>">
+                <input type="hidden" name="payment_cf_exist" id="payment_cf_exist" value="<?php echo $payment_cf_exist; ?>">
 
             </form>
         </div>

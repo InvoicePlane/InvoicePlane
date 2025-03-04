@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -33,11 +34,38 @@ class Ajax extends Admin_Controller
         if ($this->mdl_invoices->run_validation('validation_rules_save_invoice')) {
             $items = json_decode($this->input->post('items'));
 
+            $items_subtotal = 0.0;
+            if ($this->input->post('invoice_discount_amount') === '') {
+                $invoice_discount_amount = 0.0;
+            } else {
+                $invoice_discount_amount = $this->input->post('invoice_discount_amount');
+                foreach ($items as $item) {
+                    if (!empty($item->item_name)) {
+                        $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
+                    }
+                }
+            }
+            // todo? on client side (only one) / server side (2 are possible)
+            if ($this->input->post('invoice_discount_percent') === '') {
+                $invoice_discount_percent = 0.0;
+            } else {
+                $invoice_discount_percent = $this->input->post('invoice_discount_percent');
+            }
+
+            // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+            $global_discount =
+            [
+                'amount'         => $invoice_discount_amount ? standardize_amount($invoice_discount_amount) : 0.0,
+                'percent'        => $invoice_discount_percent ? standardize_amount($invoice_discount_percent) : 0.0,
+                'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
+                'items_subtotal' => $items_subtotal,
+            ];
+
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
                 if (!empty($item->item_name)) {
-                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : floatval(0));
-                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : floatval(0));
+                    $item->item_quantity = ($item->item_quantity ? standardize_amount($item->item_quantity) : 0.0);
+                    $item->item_price = ($item->item_price ? standardize_amount($item->item_price) : 0.0);
                     $item->item_discount_amount = ($item->item_discount_amount) ? standardize_amount($item->item_discount_amount) : null;
                     $item->item_product_id = ($item->item_product_id ? $item->item_product_id : null);
                     if (property_exists($item, 'item_date')) {
@@ -55,7 +83,8 @@ class Ajax extends Admin_Controller
                         $this->mdl_tasks->update_status(4, $item->item_task_id);
                     }
 
-                    $this->mdl_items->save($item_id, $item);
+                    $this->mdl_items->save($item_id, $item, $global_discount);
+
                 } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
                     // Throw an error message and use the form validation for that
                     $this->load->library('form_validation');
@@ -76,24 +105,19 @@ class Ajax extends Admin_Controller
 
             $invoice_status = $this->input->post('invoice_status_id');
 
-            if ($this->input->post('invoice_discount_amount') === '') {
-                $invoice_discount_amount = floatval(0);
-            } else {
-                $invoice_discount_amount = $this->input->post('invoice_discount_amount');
-            }
-
-            if ($this->input->post('invoice_discount_percent') === '') {
-                $invoice_discount_percent = floatval(0);
-            } else {
-                $invoice_discount_percent = $this->input->post('invoice_discount_percent');
-            }
-
             // Generate new invoice number if needed
             $invoice_number = $this->input->post('invoice_number');
 
             if (empty($invoice_number) && $invoice_status != 1) {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
                 $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
+            }
+
+            // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
+            if(! config_item('legacy_calculation') && $invoice_discount_amount && $invoice_discount_amount != $global_discount['item'])
+            {
+                // Adjust amount to reflect real calculation (cents)
+                $invoice_discount_amount = $global_discount['item'];
             }
 
             $db_array = [
@@ -109,13 +133,12 @@ class Ajax extends Admin_Controller
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($this->config->item('disable_read_only') === false) {
-                if ($invoice_status == get_setting('read_only_toggle')) {
-                    $db_array['is_read_only'] = 1;
-                }
+            if ($this->config->item('disable_read_only') === false && $invoice_status == get_setting('read_only_toggle')) {
+                $db_array['is_read_only'] = 1;
             }
 
             $this->mdl_invoices->save($invoice_id, $db_array);
+
             $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
 
             if ($sumexInvoice >= 1) {
@@ -132,9 +155,12 @@ class Ajax extends Admin_Controller
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
             }
 
-            // Recalculate for discounts
-            $this->load->model('invoices/mdl_invoice_amounts');
-            $this->mdl_invoice_amounts->calculate($invoice_id);
+            if(config_item('legacy_calculation'))
+            {
+                // Recalculate for discounts
+                $this->load->model('invoices/mdl_invoice_amounts');
+                $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
+            }
 
             $response = [
                 'success' => 1,

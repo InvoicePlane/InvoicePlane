@@ -1,16 +1,17 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if (! defined('BASEPATH'))
+{
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -43,10 +44,10 @@ class Mdl_Units extends Response_Model
             $units = $this->get()->result();
             foreach ($units as $unit) {
                 if ($unit->unit_id == $unit_id) {
-                    if ($quantity == -1 || $quantity == 1) {
-                        return $unit->unit_name;
-                    } else {
+                    if ($quantity < -1 || $quantity > 1) { // Fix 0
                         return $unit->unit_name_plrl;
+                    } else {
+                        return $unit->unit_name;
                     }
                 }
             }
@@ -59,16 +60,16 @@ class Mdl_Units extends Response_Model
     public function validation_rules()
     {
         return array(
-            'unit_name' => array(
+            'unit_name' => [
                 'field' => 'unit_name',
                 'label' => trans('unit_name'),
                 'rules' => 'required'
-            ),
-            'unit_name_plrl' => array(
+            ],
+            'unit_name_plrl' => [
                 'field' => 'unit_name_plrl',
                 'label' => trans('unit_name_plrl'),
                 'rules' => 'required'
-            )
+            ]
         );
     }
 

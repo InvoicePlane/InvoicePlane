@@ -21,8 +21,7 @@
                     <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>"
                         <?php echo get_setting('reports_in_new_tab', false) ? 'target="_blank"' : ''; ?>>
 
-                        <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-                               value="<?php echo $this->security->get_csrf_hash() ?>">
+                        <?php _csrf_field(); ?>
 
                         <div class="form-group has-feedback">
                             <label for="from_date">
@@ -46,8 +45,8 @@
                             <div class="input-group">
                                 <input name="to_date" id="to_date" class="form-control datepicker">
                                 <span class="input-group-addon">
-									<i class="fa fa-calendar fa-fw"></i>
-							    </span>
+                                    <i class="fa fa-calendar fa-fw"></i>
+                                </span>
                             </div>
                         </div>
 

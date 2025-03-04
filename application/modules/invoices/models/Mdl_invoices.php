@@ -75,7 +75,7 @@ class Mdl_Invoices extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoices.invoice_id DESC');
+        $this->db->order_by('ip_invoices.invoice_date_created DESC');
     }
 
     public function default_join()
@@ -219,6 +219,16 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
+        // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+        $invoice = $this->get_by_id($source_id); // This is the original invoice
+        $global_discount = [
+            'amount'         => $invoice->invoice_discount_amount,
+            'percent'        => $invoice->invoice_discount_percent,
+            'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
+            'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+        ];
+        unset($invoice); // Free memory
+
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
@@ -240,7 +250,7 @@ class Mdl_Invoices extends Response_Model
             ];
 
             if ( ! $copy_recurring_items_only || $invoice_item->item_is_recurring) {
-                $this->mdl_items->save(null, $db_array);
+                $this->mdl_items->save(null, $db_array, $global_discount);
             }
         }
 
@@ -280,6 +290,16 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
+        // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+        $invoice = $this->get_by_id($source_id); // This is the original invoice
+        $global_discount = [
+            'amount'         => $invoice->invoice_discount_amount,
+            'percent'        => $invoice->invoice_discount_percent,
+            'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
+            'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+        ];
+        unset($invoice); // Free memory
+
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_items as $invoice_item) {
@@ -299,7 +319,7 @@ class Mdl_Invoices extends Response_Model
                 'item_product_unit_id' => $invoice_item->item_product_unit_id,
             ];
 
-            $this->mdl_items->save(null, $db_array);
+            $this->mdl_items->save(null, $db_array, $global_discount);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -471,6 +491,7 @@ class Mdl_Invoices extends Response_Model
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', [2, 3]);
+        $this->filter_where('invoice_balance <> "0.00"');
 
         return $this;
     }
@@ -514,6 +535,7 @@ class Mdl_Invoices extends Response_Model
     public function is_paid()
     {
         $this->filter_where('invoice_status_id', 4);
+        $this->filter_or_where('invoice_balance', '0.00');
 
         return $this;
     }
