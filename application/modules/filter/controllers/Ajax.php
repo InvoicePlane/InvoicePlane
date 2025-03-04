@@ -32,10 +32,10 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
-            'invoices' => $this->mdl_invoices->get()->result(),
-            'invoice_statuses' => $this->mdl_invoices->statuses()
-        );
+        $data = [
+            'invoices'         => $this->mdl_invoices->get()->result(),
+            'invoice_statuses' => $this->mdl_invoices->statuses(),
+        ];
 
         $this->layout->load_view('invoices/partial_invoice_table', $data);
     }
@@ -54,10 +54,10 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
+        $data = [
             'quotes' => $this->mdl_quotes->get()->result(),
-            'quote_statuses' => $this->mdl_quotes->statuses()
-        );
+            'quote_statuses' => $this->mdl_quotes->statuses(),
+        ];
 
         $this->layout->load_view('quotes/partial_quote_table', $data);
     }
@@ -76,9 +76,9 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
-            'records' => $this->mdl_clients->with_total_balance()->get()->result()
-        );
+        $data = [
+            'records' => $this->mdl_clients->with_total_balance()->get()->result(),
+       ];
 
         $this->layout->load_view('clients/partial_client_table', $data);
     }
@@ -114,6 +114,7 @@ class Ajax extends Admin_Controller
                 'custom_fields'       => $custom_fields,
                 'custom_tables'       => $custom_tables,
                 'custom_value_fields' => $this->mdl_custom_values->custom_value_fields(),
+                'positions'           => $this->mdl_custom_fields->get_positions(true),
         ];
 
         $this->layout->load_view('custom_fields/partial_custom_fields_table', $data);
@@ -124,7 +125,12 @@ class Ajax extends Admin_Controller
         // custom values id Normaly always here (it's ajax). Old school but work.
         $id = empty($_SERVER['HTTP_REFERER']) ? 0 : basename($_SERVER['HTTP_REFERER']); // Todo: With CI?
 
-        $this->load->model('custom_values/mdl_custom_values');
+        $this->load->model(
+            [
+                'custom_values/mdl_custom_values',
+                'custom_fields/mdl_custom_fields',
+            ]
+        );
 
         $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
@@ -132,13 +138,18 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                $this->mdl_custom_values->like("CONCAT_WS('^',LOWER(custom_values_value))", $keyword);
+                $this->mdl_custom_values->like("CONCAT_WS('^',LOWER(custom_values_value), LOWER(custom_field_table), LOWER(custom_field_label), LOWER(custom_field_type))", $keyword);
             }
         }
-        $this->mdl_custom_values->grouped(); // ->paginate(site_url('custom_values/index'), $page);
+        $this->mdl_custom_values->grouped();
         $custom_values = $this->mdl_custom_values->get()->result();
 
-        $data = ['id' => $id, 'custom_values' => $custom_values];
+        $data = [
+            'id'            => $id,
+            'custom_values' => $custom_values,
+            'custom_tables' => $this->mdl_custom_fields->custom_tables(),
+            'positions'     => $this->mdl_custom_fields->get_positions(true),
+        ];
         $this->layout->load_view('custom_values/partial_custom_values_table', $data);
     }
 
@@ -156,16 +167,14 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                $this->mdl_custom_values->like("CONCAT_WS('^',LOWER(custom_values_value))", $keyword);
+                $this->mdl_custom_values->like("CONCAT_WS('^',custom_values_id,LOWER(custom_values_value))", $keyword);
             }
         }
 
         $elements = $this->mdl_custom_values->get_by_fid($id)->result();
-        // $this->load->model('custom_fields/mdl_custom_fields');
         $data = [
             'id'       => $id,
             'elements' => $elements,
-            // 'custom_field_usage' => $this->mdl_custom_fields->used($id),
         ];
         $this->layout->load_view('custom_values/partial_custom_values_field', $data);
     }
@@ -185,9 +194,9 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $data = array(
-            'projects' => $this->mdl_projects->get()->result()
-        );
+        $data = [
+            'projects' => $this->mdl_projects->get()->result(),
+        ];
 
         $this->layout->load_view('projects/partial_projects_table', $data);
     }
