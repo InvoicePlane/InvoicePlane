@@ -32,6 +32,10 @@ button, input, optgroup, select {
   }
 }
 
+// Make select2 Responsive
+.form-group .select2-container {
+    width: 100% !important;
+}
 /*
 |   =========================================================
 |   Overide colors select2 of default Theme
