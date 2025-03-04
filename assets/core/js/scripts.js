@@ -159,10 +159,8 @@ $(function () {
     $(document).ajaxComplete(function () {
         $('[name="' + csrf_token_name + '"]').val(Cookies.get(csrf_cookie_name));
     });
-    // All Classical POST requests
-    // Helper to Fix multiple submit with target = _blank
-    // Like report after first pdf generation need reload page to get the new token val, with that, no.
-    $('input[name="btn_submit"]').on('click', function(){
+    // Update crsf on all submit way's
+    $('form').on('submit', function(){
         $('input[name="' + csrf_token_name + '"]').prop('value', Cookies.get(csrf_cookie_name));
     });
 
