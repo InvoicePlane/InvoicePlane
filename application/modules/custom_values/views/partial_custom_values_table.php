@@ -7,6 +7,8 @@
             <th><?php _trans('id'); ?></th>
             <th><?php _trans('field'); ?></th>
             <th><?php _trans('elements'); ?></th>
+            <th><?php _trans('table'); ?></th>
+            <th><?php _trans('position'); ?></th>
             <th><?php _trans('type'); ?></th>
             <th><?php _trans('options'); ?></th>
         </tr>
@@ -16,13 +18,16 @@
 <?php
 foreach ($custom_values as $custom_values)
 {
-    $href = site_url('custom_fields/form/' . $custom_values->custom_field_id);
-    $alpha = str_replace("-", "_", strtolower($custom_values->custom_field_type));
+    $href     = site_url('custom_fields/form/' . $custom_values->custom_field_id);
+    $alpha    = str_replace("-", "_", strtolower($custom_values->custom_field_type));
+    $position = $positions[ $custom_values->custom_field_table ][ $custom_values->custom_field_location ];
 ?>
             <tr>
                 <td><?php echo anchor($href, $custom_values->custom_field_id, ' title="'. trans('edit') . '"'); ?></td>
                 <td><?php echo anchor($href, '<i class="fa fa-edit fa-margin"></i> ' . htmlsc($custom_values->custom_field_label), ' class="btn btn-sm btn-default"'); ?></td>
                 <td><?php echo $custom_values->count; ?></td>
+                <td><?php _trans($custom_tables[$custom_values->custom_field_table]); ?></td>
+                <td><?php echo $position; ?></td>
                 <td><?php _trans($alpha); ?></td>
                 <td>
                     <div class="options btn-group">

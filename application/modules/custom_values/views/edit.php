@@ -16,8 +16,9 @@ $table = strtr($value->custom_field_table, ['ip_' => '', '_custom' => '']);
                                 <i class="fa fa-eye fa-margin"></i> <?php _trans('values'); ?></a>
         </div>
         <div class="visible-sm visible-md visible-lg headerbar-item pull-right">
-            <div class="badge"><?php _trans('type'); ?>: <?php _trans($alpha); ?></div>
             <div class="badge"><?php _trans('table'); ?>: <?php _trans($table); ?></div>
+            <div class="badge"><?php _trans('position'); ?>: <?php echo $position; ?></div>
+            <div class="badge"><?php _trans('type'); ?>: <?php _trans($alpha); ?></div>
             <?php _trans('field'); ?>: <?php echo $link; ?>
         </div>
     </div>
@@ -41,12 +42,16 @@ $table = strtr($value->custom_field_table, ['ip_' => '', '_custom' => '']);
                         <div class="form-group"><?php _trans('field'); ?>: <?php echo $link; ?></div>
                     </div>
 
-                    <div class="col-xs-6">
-                        <div class="form-group badge"><?php _trans('type'); ?>: <?php _trans($alpha); ?></div>
+                    <div class="col-xs-12">
+                        <div class="form-group badge"><?php _trans('table'); ?>: <?php _trans($table); ?></div>
                     </div>
 
-                    <div class="col-xs-6">
-                        <div class="form-group badge"><?php _trans('table'); ?>: <?php _trans($table); ?></div>
+                    <div class="col-xs-12">
+                        <div class="form-group badge"><?php _trans('position'); ?>: <?php echo $position; ?></div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="form-group badge"><?php _trans('type'); ?>: <?php _trans($alpha); ?></div>
                     </div>
                 </div>
 

@@ -3,8 +3,9 @@
 
         <thead>
         <tr>
-            <th><?php _trans('table'); ?></th>
             <th><?php _trans('label'); ?></th>
+            <th><?php _trans('table'); ?></th>
+            <th><?php _trans('position'); ?></th>
             <th><?php _trans('type'); ?></th>
             <th><?php _trans('order'); ?></th>
             <th><?php _trans('options'); ?></th>
@@ -15,11 +16,13 @@
 <?php
 foreach ($custom_fields as $custom_field)
 {
-    $alpha = str_replace("-", "_", strtolower($custom_field->custom_field_type));
+    $alpha    = str_replace("-", "_", strtolower($custom_field->custom_field_type));
+    $position = $positions[ $custom_field->custom_field_table ][ $custom_field->custom_field_location ];
 ?>
             <tr>
-                <td><?php _trans($custom_tables[$custom_field->custom_field_table]); ?></td>
                 <td><?php _htmlsc($custom_field->custom_field_label); ?></td>
+                <td><?php _trans($custom_tables[$custom_field->custom_field_table]); ?></td>
+                <td><?php echo $position; ?></td>
                 <td><?php _trans($alpha); ?></td>
                 <td><?php echo $custom_field->custom_field_order; ?></td>
                 <td>

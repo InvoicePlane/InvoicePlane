@@ -29,6 +29,11 @@ if ($disabled)
         <div class="col-xs-12 col-md-6 col-md-offset-3">
 
             <?php $this->layout->load_view('layout/alerts'); ?>
+            <div class="form-group">
+                <label for="custom_field_label"><?php _trans('label'); ?></label>
+                <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
+                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label', true); ?>" required>
+            </div>
 
             <div class="form-group">
                 <label for="custom_field_table"><?php _trans('table'); ?></label>
@@ -45,9 +50,8 @@ foreach ($custom_field_tables as $table => $label)
             </div>
 
             <div class="form-group">
-                <label for="custom_field_label"><?php _trans('label'); ?></label>
-                <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
-                       value="<?php echo $this->mdl_custom_fields->form_value('custom_field_label', true); ?>" required>
+                <label for="custom_field_location"><?php _trans('position'); ?></label>
+                <select name="custom_field_location" id="custom_field_location" class="form-control simple-select"></select>
             </div>
 
             <div class="form-group">
@@ -69,32 +73,6 @@ foreach ($custom_field_types as $type)
                 <label for="custom_field_order"><?php _trans('order'); ?></label>
                 <input type="number" name="custom_field_order" id="custom_field_order" class="form-control"
                        value="<?php echo $this->mdl_custom_fields->form_value('custom_field_order', true); ?>">
-            </div>
-
-            <div class="form-group">
-                <label for="custom_field_location"><?php _trans('position'); ?></label>
-
-<?php
-$custom_field_location = $this->mdl_custom_fields->form_value('custom_field_location');
-$positions = [
-    'client'  => Mdl_client_custom::$positions,
-    'invoice' => Mdl_invoice_custom::$positions,
-    'payment' => Mdl_payment_custom::$positions,
-    'quote'   => Mdl_quote_custom::$positions,
-    'user'    => Mdl_user_custom::$positions,
-];
-
-foreach ($positions as $key => $val)
-{
-    foreach ($val as $key2 => $val2)
-    {
-        $val[$key2] = trans($val2);
-    }
-    $positions[$key] = $val;
-}
-?>
-
-                <select name="custom_field_location" id="custom_field_location" class="form-control simple-select"></select>
             </div>
 
         </div>

@@ -121,6 +121,45 @@ class Mdl_Custom_Fields extends MY_Model
     }
 
     /**
+     * @param $table_name
+     * @return array
+     */
+    public function get_positions($table_name = false)
+    {
+         $this->load->model(
+            [
+                'custom_fields/mdl_client_custom',
+                'custom_fields/mdl_invoice_custom',
+                'custom_fields/mdl_payment_custom',
+                'custom_fields/mdl_quote_custom',
+                'custom_fields/mdl_user_custom',
+            ]
+        );
+
+        $p = $table_name ? 'ip_' : '';
+        $s = $table_name ? '_custom' : '';
+
+        $positions = [
+            $p . 'client'   . $s => Mdl_client_custom::$positions,
+            $p . 'invoice'  . $s => Mdl_invoice_custom::$positions,
+            $p . 'payment'  . $s => Mdl_payment_custom::$positions,
+            $p . 'quote'    . $s => Mdl_quote_custom::$positions,
+            $p . 'user'     . $s => Mdl_user_custom::$positions,
+        ];
+
+        foreach ($positions as $key => $val)
+        {
+            foreach ($val as $key2 => $val2)
+            {
+                $val[$key2] = trans($val2);
+            }
+            $positions[$key] = $val;
+        }
+
+        return $positions;
+    }
+
+    /**
      * @param $column
      * @return $this
      */
