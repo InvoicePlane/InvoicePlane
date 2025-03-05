@@ -38,22 +38,21 @@ class PDF417Barcode {
     $CI = &get_instance();
     $invoice = $CI->mdl_invoices->get_by_id($this->invoice->invoice_id);
 
-    $paymentData  = "HRVHUB30\n";                                                           // Zaglavlje
-    $paymentData .= "EUR\n";                                                                // Valuta
-    $paymentData .= sprintf('%015d', $invoice->invoice_total*100) . "\n";   // Iznos
-    $paymentData .= "$invoice->client_name\n";                                              // Platitelj
-    $paymentData .= "$invoice->client_address_1\n";                                         // Adresa platitelja (ulica i broj)
-    $paymentData .= "$invoice->client_zip $invoice->client_city\n";                         // Adresa platitelja (poštanski broj i mjesto)
-    $paymentData .= "$this->recipient\n";                                                   // Primatelj
-    $paymentData .= "$invoice->user_address_1\n";                                           // Adresa primatelja (ulica i broj)
-    $paymentData .= "$invoice->user_zip $invoice->user_city\n";                             // Adresa primatelja (poštanski broj i mjesto)
-    $paymentData .= "$this->iban\n";                                                        // Broj računa primatelja (IBAN)
-    $paymentData .= "HR00\n";                                                               // Model kontrole poziva na broj primatelja
-    $paymentData .= "$this->remittance_text\n";                                             // Poziv na broj primatelja
-    $paymentData .= "\n";                                                                   // Šifra namjene
-    $paymentData .= "Placanje po racunu $this->remittance_text\n";                          // Opis plaćanja
+    $paymentData  = "HRVHUB30\n";                                                                          // Zaglavlje
+    $paymentData .= "EUR\n";                                                                               // Valuta
+    $paymentData .= sprintf('%015d', intval($invoice->invoice_total*100)) . "\n";   // Iznos
+    $paymentData .= "$invoice->client_name\n";                                                             // Platitelj
+    $paymentData .= "$invoice->client_address_1\n";                                                        // Adresa platitelja (ulica i broj)
+    $paymentData .= "$invoice->client_zip $invoice->client_city\n";                                        // Adresa platitelja (poštanski broj i mjesto)
+    $paymentData .= "$this->recipient\n";                                                                  // Primatelj
+    $paymentData .= "$invoice->user_address_1\n";                                                          // Adresa primatelja (ulica i broj)
+    $paymentData .= "$invoice->user_zip $invoice->user_city\n";                                            // Adresa primatelja (poštanski broj i mjesto)
+    $paymentData .= "$this->iban\n";                                                                       // Broj računa primatelja (IBAN)
+    $paymentData .= "HR00\n";                                                                              // Model kontrole poziva na broj primatelja
+    $paymentData .= "$this->remittance_text\n";                                                            // Poziv na broj primatelja
+    $paymentData .= "\n";                                                                                  // Šifra namjene
+    $paymentData .= "Placanje po racunu $this->remittance_text\n";                                         // Opis plaćanja
     
-
     return $paymentData;
   }
 

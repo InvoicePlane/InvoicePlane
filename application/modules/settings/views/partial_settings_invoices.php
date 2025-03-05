@@ -412,6 +412,174 @@
             </div>
         </div>
 
+        <div class="panel panel-default" id="panel-pdf417-barcode-settings">
+            <div class="panel-heading">
+                <?php _trans('pdf417_barcode_settings'); ?>
+            </div>
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input
+                                type="hidden"
+                                name="settings[pdf417_barcode]"
+                                value="0"
+                            >
+                            <input
+                                type="checkbox"
+                                name="settings[pdf417_barcode]"
+                                id="settings[pdf417_barcode]"
+                                value="1"
+                                <?php check_select(get_setting('pdf417_barcode'), 1, '==', true) ?>
+                            >
+                            <?php _trans('pdf417_barcode_settings_enable'); ?>
+                        </label>
+                        <p class="help-block"><?php _trans('pdf417_barcode_settings_enable_hint'); ?></p>
+                    </div>
+                </div>
+
+                <div class="row <?php echo ! get_setting('pdf417_barcode') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_recipient_street_name]">
+                                <?php _trans('pdf417_barcode_settings_recipient_street_name'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_recipient_street_name]"
+                                id="settings[pdf417_barcode_settings_recipient_street_name]"
+                                class="form-control"
+                                value="<?php echo get_setting('pdf417_barcode_settings_recipient_street_name'); ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_recipient_name]">
+                                <?php _trans('pdf417_barcode_settings_recipient_name'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_recipient_name]"
+                                id="settings[pdf417_barcode_settings_recipient_name]"
+                                class="form-control"
+                                value="<?php echo get_setting('pdf417_barcode_settings_recipient_name'); ?>"
+                            >
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="row <?php echo ! get_setting('pdf417_barcode') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_recipient_street_number]">
+                                <?php _trans('pdf417_barcode_settings_recipient_street_number'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_recipient_street_number]"
+                                id="settings[pdf417_barcode_settings_recipient_street_number]"
+                                class="form-control"
+                                value="<?php echo get_setting('pdf417_barcode_settings_recipient_street_number'); ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_recipient_iban]">
+                                <?php _trans('pdf417_barcode_settings_recipient_iban'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_recipient_iban]"
+                                id="settings[pdf417_barcode_settings_recipient_iban]"
+                                class="form-control"
+                                value="<?php echo get_setting('pdf417_barcode_settings_recipient_iban'); ?>"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row <?php echo ! get_setting('pdf417_barcode') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_recipient_city]">
+                                <?php _trans('pdf417_barcode_settings_recipient_city'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_recipient_city]"
+                                id="settings[pdf417_barcode_settings_recipient_city]"
+                                class="form-control"
+                                value="<?php echo get_setting('pdf417_barcode_settings_recipient_city'); ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_recipient_bic]">
+                                <?php _trans('pdf417_barcode_settings_recipient_bic'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_recipient_bic]"
+                                id="settings[pdf417_barcode_settings_recipient_bic]"
+                                class="form-control"
+                                value="<?php echo get_setting('pdf417_barcode_settings_recipient_bic'); ?>"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <div class="row <?php echo ! get_setting('pdf417_barcode') ? 'hidden' : ''; ?>">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_recipient_zip_code]">
+                                <?php _trans('pdf417_barcode_settings_recipient_zip_code'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_recipient_zip_code]"
+                                id="settings[pdf417_barcode_settings_recipient_zip_code]"
+                                class="form-control"
+                                value="<?php echo get_setting('pdf417_barcode_settings_recipient_zip_code'); ?>"
+                            >
+                        </div>
+                    </div>
+
+
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[pdf417_barcode_settings_remittance_text]">
+                                <?php _trans('pdf417_barcode_settings_remittance_text'); ?>
+                            </label>
+                            <input
+                                type="text"
+                                name="settings[pdf417_barcode_settings_remittance_text]"
+                                id="settings[pdf417_barcode_settings_remittance_text]"
+                                class="form-control taggable"
+                                value="<?php echo get_setting('pdf417_barcode_settings_remittance_text'); ?>"
+                                placeholder="{{{invoice_number}}}"
+                            >
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php _trans('pdf417_barcode_settings_remittance_text_tags'); ?>
+                            </div>
+                            <div class="panel-body">
+                                <?php $this->layout->load_view('email_templates/template-tags-invoices'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('email_settings'); ?>
