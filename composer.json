@@ -19,6 +19,7 @@
     "mpdf/mpdf": "^8.2",
     "paragonie/random_compat": "^2.0.21",
     "phpmailer/phpmailer": "^6.8.1",
+    "radoid/pdf417": "^1.0",
     "setasign/fpdf": "^1.8.6",
     "smhg/sepa-qr-data": "^1.2",
     "stripe/stripe-php": "^14.4",

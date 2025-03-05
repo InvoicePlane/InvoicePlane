@@ -128,10 +128,41 @@ function invoice_qrcode($invoice_id)
         && $CI->mdl_settings->setting('qr_code_bic')
     ) {
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-        $CI->load->library('QrCode', ['invoice' => $invoice]);
-        $qrcode_data_uri = $CI->qrcode->generate();
 
-        return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        if($invoice->client_country == 'HR') {
+            $CI->load->library('PDF417Barcode', [ 'invoice' => $invoice ]);
+            $pdf417barcode_data_uri = $CI->pdf417barcode->generate();
+            return '<img src="' . $pdf417barcode_data_uri . '" alt="PDF 417 Barcode" id="invoice-pdf417-barcode">';
+        } else {
+            $CI->load->library('QrCode', [ 'invoice' => $invoice ]);
+            $qrcode_data_uri = $CI->qrcode->generate();
+            return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        }
+    }
+
+    return '';
+}
+
+/**
+ * Returns a pdf 417 barcode code for invoice payments
+ *
+ * @param number invoice-id
+ * @return string
+ */
+function invoice_pdf417barcode($invoice_id) 
+{
+    $CI = &get_instance();
+    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+
+    if ($CI->mdl_settings->setting('qr_code')
+        && $CI->mdl_settings->setting('qr_code_iban')
+        && $CI->mdl_settings->setting('qr_code_bic')
+        && ($invoice->client_country == 'HR')
+    ) {
+        $CI->load->library('PDF417Barcode', [ 'invoice' => $invoice ]);
+        $pdf417barcode_data_uri = $CI->pdf417barcode->generate();
+
+        return '<img src="' . $pdf417barcode_data_uri . '" alt="PDF 417 Barcode" id="invoice-pdf417-barcode">';
     }
 
     return '';
