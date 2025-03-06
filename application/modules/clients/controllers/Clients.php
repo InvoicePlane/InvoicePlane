@@ -396,7 +396,7 @@ class Clients extends Admin_Controller
                 ],
                 [
                     'payment_table',
-                    'payments/partial_payment_table',
+                    'payments/partial_payments_table',
                 ],
                 [
                     'partial_notes',
