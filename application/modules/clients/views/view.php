@@ -235,8 +235,12 @@ foreach ($custom_fields as $custom_field)
 <?php } ?>
 
 <?php
+
+$default_custom = false;
 foreach ($custom_fields as $custom_field)
 {
+    if (! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+
     if ($custom_field->custom_field_location == 4)
     {
         $column = $custom_field->custom_field_label;
@@ -260,12 +264,12 @@ foreach ($custom_fields as $custom_field)
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                     <div class="panel panel-default no-margin">
 
-                        <div class="panel-heading"><?php echo 'e-' . ucfirst(trans('invoicing')) . ' ' . trans('information'); ?></div>
+                        <div class="panel-heading">e-<?php _htmlsc(ucfirst(trans('invoicing')) . ' (' . trans('information')); ?>)</div>
                         <div class="panel-body table-content">
 
                             <table class="table no-margin">
                                 <tr>
-                                    <th><?php echo trans('send') . ' e-' . trans('invoice') . ' ' . trans('version'); ?></th>
+                                    <th>e-<?php _htmlsc(trans('invoice') . ' ' . trans('version') . ' (' . trans('send')); ?>)</th>
                                     <td><?php echo ($client->client_einvoicing_version) ? get_xml_full_name($client->client_einvoicing_version) : trans('none'); ?></td>
                                 </tr>
                             </table>
@@ -336,10 +340,8 @@ if ($client->client_surname != '') // Client is not a company
 <?php
     } // fi sumex
 
-    $default_custom = false;
     foreach ($custom_fields as $custom_field)
     {
-        if (! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
         if ($custom_field->custom_field_location == 3)
         {
             $column = $custom_field->custom_field_label;
