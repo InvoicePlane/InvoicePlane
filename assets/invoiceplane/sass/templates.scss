@@ -15,6 +15,15 @@ $color_red: #ea5340;
 $color_green: #77b632;
 
 /*=========================================================*/
+/*
+|   =========================================================
+|   InvoicePlane Templates Sass Stylesheet - since 1.6.3
+|   https://invoiceplane.com
+|   =========================================================
+|   The following styles are needed to display html Invoices
+|   and Quotes. Used in templates to make pdf
+|   Import InvoicePlane default Stamp and template Styles
+|   =========================================================
+*/
 
 @import "../../core/scss/templates";
-@import "../../core/scss/stamp";

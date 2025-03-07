@@ -144,6 +144,7 @@ button, input, optgroup, select {
     }
   }
 
+  // chosen and hover colors styles
   .select2-results__option {
 
     &[aria-disabled=true] {
@@ -153,15 +154,19 @@ button, input, optgroup, select {
 
     &[aria-selected=true] {
       background-color: $input-bg-disabled;
+      color: darken($input-color, 33%);
     }
 
+    // selected
     &--selected {
-      background-color: $brand-success;
+      background-color: lighten($brand-success, 33%);
+      color: darken($input-color, 33%);
     }
 
+    // hover
     &--highlighted[aria-selected] {
-      background-color: $brand-info;
-      color: $input-color;
+      background-color: lighten($brand-info, 33%);
+      color: darken($input-color, 33%);
     }
   }
 
