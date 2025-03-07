@@ -288,6 +288,10 @@
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
             </tr>
+<?php
+            if ($legacy_calculation)
+            {
+?>
             <tr>
                 <td><?php _trans('quote_tax'); ?></td>
                 <td>
@@ -313,8 +317,6 @@
                 </td>
             </tr>
 <?php
-            if ($legacy_calculation)
-            {
                 $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
             }
 ?>

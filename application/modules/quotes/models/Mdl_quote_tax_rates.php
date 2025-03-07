@@ -39,7 +39,8 @@ class Mdl_Quote_Tax_Rates extends Response_Model
      */
     public function save($id = null, $db_array = null)
     {
-        parent::save($id, $db_array);
+        // Only appliable in legacy calculation - since 1.6.3
+        config_item('legacy_calculation') && parent::save($id, $db_array);
 
         $this->load->model('quotes/mdl_quote_amounts');
 
@@ -66,23 +67,23 @@ class Mdl_Quote_Tax_Rates extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'quote_id' => array(
+        return [
+            'quote_id' => [
                 'field' => 'quote_id',
                 'label' => trans('quote'),
-                'rules' => 'required'
-            ),
-            'tax_rate_id' => array(
+                'rules' => 'required',
+            ],
+            'tax_rate_id' => [
                 'field' => 'tax_rate_id',
                 'label' => trans('tax_rate'),
-                'rules' => 'required'
-            ),
-            'include_item_tax' => array(
+                'rules' => 'required',
+            ],
+            'include_item_tax' => [
                 'field' => 'include_item_tax',
                 'label' => trans('tax_rate_placement'),
-                'rules' => 'required'
-            )
-        );
+                'rules' => 'required',
+            ],
+        ];
     }
 
 }

@@ -164,8 +164,10 @@
     });
 </script>
 
-<?php echo $modal_delete_quote; ?>
-<?php echo $modal_add_quote_tax; ?>
+<?php
+echo $modal_delete_quote;
+echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have global taxes - since v1.6.3
+?>
 
 <div id="headerbar">
     <h1 class="headerbar-title">
@@ -181,12 +183,20 @@
                 <?php _trans('options'); ?> <i class="fa fa-chevron-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-right">
+<?php
+// Legacy calculation have global taxes - since v1.6.3
+if ($legacy_calculation)
+{
+?>
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
                         <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
+<?php
+}
+?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
@@ -368,6 +378,7 @@ $classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field)
 {
     if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+
     if ($custom_field->custom_field_location == 1)
     {
         print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);

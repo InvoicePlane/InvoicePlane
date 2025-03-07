@@ -144,7 +144,7 @@ if ($this->config->item('disable_read_only') == true) {
 
 <?php
 echo $modal_delete_invoice;
-echo $modal_add_invoice_tax;
+echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation have global taxes - since v1.6.3
 ?>
 
 <div id="headerbar">
@@ -161,7 +161,7 @@ echo $modal_add_invoice_tax;
             </a>
             <ul class="dropdown-menu">
 <?php
-if ($invoice->is_read_only != 1)
+if ($legacy_calculation && $invoice->is_read_only != 1) // Legacy calculation have global taxes - since v1.6.3
 {
 ?>
                 <li>

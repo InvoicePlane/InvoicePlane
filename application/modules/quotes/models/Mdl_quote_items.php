@@ -97,10 +97,11 @@ class Mdl_Quote_Items extends Response_Model
     {
         $id = parent::save($id, $db_array);
 
-        $this->load->model('quotes/mdl_quote_item_amounts');
+        $this->load->model([
+            'quotes/mdl_quote_item_amounts',
+            'quotes/mdl_quote_amounts',
+        ]);
         $this->mdl_quote_item_amounts->calculate($id, $global_discount);
-
-        $this->load->model('quotes/mdl_quote_amounts');
 
         if (is_object($db_array) && isset($db_array->quote_id))
         {
@@ -149,13 +150,14 @@ class Mdl_Quote_Items extends Response_Model
     }
 
     /**
+     * legacy_calculation false: Need to recalculate quote amounts - since v1.6.3
+     *
      * @param $quote_id
      *
      * return items_subtotal
      */
     public function get_items_subtotal($quote_id)
     {
-        // Needed to recalculate quote amounts (if legacy_calculation is false)
         $row = $this->db->query("
             SELECT SUM(item_subtotal) AS items_subtotal
             FROM ip_quote_item_amounts

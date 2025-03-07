@@ -337,6 +337,10 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
             </tr>
+<?php
+            if ($legacy_calculation)
+            {
+?>
             <tr>
                 <td><?php _trans('invoice_tax'); ?></td>
                 <td>
@@ -362,8 +366,6 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 </td>
             </tr>
 <?php
-            if ($legacy_calculation)
-            {
                 $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
             }
 ?>

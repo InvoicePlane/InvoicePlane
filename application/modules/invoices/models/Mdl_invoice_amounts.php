@@ -17,6 +17,13 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Mdl_Invoice_Amounts extends CI_Model
 {
+    public $decimal_places = 2;
+
+    public function __construct()
+    {
+        $this->decimal_places = (int) get_setting('tax_rate_decimal_places');
+    }
+
     /**
      * IP_INVOICE_AMOUNTS
      * invoice_amount_id
@@ -59,13 +66,13 @@ class Mdl_Invoice_Amounts extends CI_Model
         if (config_item('legacy_calculation'))
         {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
-            $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
-            $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
+            $invoice_subtotal      = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total         = $this->calculate_discount($invoice_id, $invoice_subtotal);
         }
         else
         {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount - $global_discount['item'];
-            $invoice_total = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total         = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
         }
 
         // Get the amount already paid
@@ -142,32 +149,34 @@ class Mdl_Invoice_Amounts extends CI_Model
         $this->db->where('invoice_id', $invoice_id);
         $invoice_data = $this->db->get('ip_invoices')->row();
 
-        if ($invoice_data->invoice_discount_amount==null) {
+        $invoice_data->invoice_discount_percent = $invoice_data->invoice_discount_percent == null ? 0.0 : $invoice_data->invoice_discount_percent;
+        $invoice_data->invoice_discount_amount  = $invoice_data->invoice_discount_amount  == null ? 0.0 : $invoice_data->invoice_discount_amount;
+
+        // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
+        if ($invoice_data->invoice_discount_percent && $invoice_data->invoice_discount_amount)
+        {
             $invoice_data->invoice_discount_amount = 0.0;
         }
 
-        if ($invoice_data->invoice_discount_percent==null) {
-            $invoice_data->invoice_discount_percent = 0.0;
-        }
-
-        $total = (float)number_format($invoice_total, 2, '.', '');
-        $discount_amount = (float)number_format($invoice_data->invoice_discount_amount, 2, '.', '');
-        $discount_percent = (float)number_format($invoice_data->invoice_discount_percent, 2, '.', '');
+        $total            = (float)number_format($invoice_total,                          $this->decimal_places, '.', '');
+        $discount_amount  = (float)number_format($invoice_data->invoice_discount_amount,  $this->decimal_places, '.', '');
+        $discount_percent = (float)number_format($invoice_data->invoice_discount_percent, $this->decimal_places, '.', '');
 
         $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), 2);
+        $total = $total - round(($total / 100 * $discount_percent), $this->decimal_places);
 
         return $total;
     }
 
     /**
+     * legacy_calculation false: Need global_discount to recalculate invoice amounts - since v1.6.3
+     *
      * @param $invoice_id
      *
      * return global_discount
      */
     public function get_global_discount($invoice_id)
     {
-        // The global_discount amounts is needed to recalculate invoice amounts (if legacy_calculation is false)
         $row = $this->db->query("
             SELECT SUM(item_subtotal) - (SUM(item_total) - SUM(item_tax_total) + SUM(item_discount)) AS global_discount
             FROM ip_invoice_item_amounts
@@ -185,7 +194,8 @@ class Mdl_Invoice_Amounts extends CI_Model
     {
         // First check to see if there are any invoice taxes applied
         $this->load->model('invoices/mdl_invoice_tax_rates');
-        $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result();
+        // Only appliable in legacy calculation - since 1.6.3
+        $invoice_tax_rates = config_item('legacy_calculation') ? $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result() : null;
 
         if ($invoice_tax_rates)
         {
@@ -196,10 +206,13 @@ class Mdl_Invoice_Amounts extends CI_Model
             // Loop through the invoice taxes and update the amount for each of the applied invoice taxes
             foreach ($invoice_tax_rates as $invoice_tax_rate)
             {
-                if ($invoice_tax_rate->include_item_tax) {
+                if ($invoice_tax_rate->include_item_tax)
+                {
                     // The invoice tax rate should include the applied item tax
                     $invoice_tax_rate_amount = ($invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total) * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
-                } else {
+                }
+                else
+                {
                     // The invoice tax rate should not include the applied item tax
                     $invoice_tax_rate_amount = $invoice_amount->invoice_item_subtotal * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
                 }
@@ -227,7 +240,7 @@ class Mdl_Invoice_Amounts extends CI_Model
             // Recalculate the invoice total and balance
             $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
 
-            // Discounts calculation - since v1.6.3
+            // Legacy calculation need recalculate global discounts - New calculation not! & deactivated before here - Only for memo - Todo?: idea settings: calculation mode - since v1.6.3
             if(config_item('legacy_calculation'))
             {
                 $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);

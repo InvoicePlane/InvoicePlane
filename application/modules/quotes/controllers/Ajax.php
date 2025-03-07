@@ -44,6 +44,7 @@ class Ajax extends Admin_Controller
                 $quote_discount_amount = 0.0;
             }
 
+            // New discounts (for legacy_calculation false) - since v1.6.3 Need if taxes applied after discounts
             $items_subtotal = 0.0;
             if ($quote_discount_amount)
             {
@@ -56,7 +57,7 @@ class Ajax extends Admin_Controller
                 }
             }
 
-            // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+            // New discounts (for legacy_calculation false) - since v1.6.3 Need if taxes applied after discounts
             $global_discount =
             [
                 'amount'         => $quote_discount_amount ? standardize_amount($quote_discount_amount) : 0.0,
@@ -204,7 +205,8 @@ class Ajax extends Admin_Controller
 
         if ($this->mdl_quote_tax_rates->run_validation())
         {
-            $this->mdl_quote_tax_rates->save();
+            // Only Legacy calculation have global taxes - since v1.6.3 -yep
+            config_item('legacy_calculation') && $this->mdl_quote_tax_rates->save();
 
             $response = [
                 'success' => 1,
