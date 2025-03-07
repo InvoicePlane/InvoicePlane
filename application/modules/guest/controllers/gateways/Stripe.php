@@ -73,53 +73,102 @@ class Stripe extends Base_Controller
      * @param  string  $checkout_session_id
      * @return void
      */
-    public function callback($checkout_session_id)
-    {
-        try {
-            $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
+public function callback($checkout_session_id)
+{
+    try {
+        // 1) Retrieve the Checkout Session from Stripe
+        $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
 
-            //get invoice id
-            $invoice_id = $session->client_reference_id;
+        // 2) Determine which invoice we’re dealing with
+        $invoice_id = $session->client_reference_id;
+        $this->load->model('invoices/mdl_invoices');
+        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)
+            ->get()->row();
 
-            $this->load->model('invoices/mdl_invoices');
+        // 3) DEBUG LOGGING (optional but recommended)
+        //    Make sure your PHP error log is set up (log_errors=On in php.ini)
+        error_log("Stripe callback reached. Checkout session id: " . $checkout_session_id);
+        error_log("Stripe session payment_status: " . $session->payment_status);
 
-            //retrieve the invoice
-            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)
-                ->get()->row();
+        // 4) Check the session status before marking paid
+        if ($session->payment_status === 'paid') {
 
-            $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+            // ----------------------
+            // SUCCESS FLOW
+            // ----------------------
+            // a) Show success message
+            $this->session->set_flashdata(
+                'alert_success',
+                sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number)
+            );
             $this->session->keep_flashdata('alert_success');
 
-            //record the payment
+            // b) Record the payment in the invoiceplane DB
             $this->load->model('payments/mdl_payments');
-
             $this->mdl_payments->save(null, [
-                'invoice_id' => $invoice_id,
-                'payment_date' => date('Y-m-d'),
-                'payment_amount' => $session->amount_total / 100,
+                'invoice_id'        => $invoice_id,
+                'payment_date'      => date('Y-m-d'),
+                'payment_amount'    => $session->amount_total / 100,
                 'payment_method_id' => get_setting('gateway_stripe_payment_method'),
-                'payment_note' => 'payment intent ID: ' . $session->payment_intent,
+                'payment_note'      => 'payment intent ID: ' . $session->payment_intent,
             ]);
 
-            //record the online payment
+            // c) Record the “merchant response”
             $this->db->insert('ip_merchant_responses', [
-                'invoice_id' => $invoice_id,
+                'invoice_id'                   => $invoice_id,
                 'merchant_response_successful' => true,
-                'merchant_response_date' => date('Y-m-d'),
-                'merchant_response_driver' => 'stripe',
-                'merchant_response' => '',
-                'merchant_response_reference' => 'payment intent ID: ' . $session->payment_intent,
+                'merchant_response_date'       => date('Y-m-d'),
+                'merchant_response_driver'     => 'stripe',
+                'merchant_response'            => '',
+                'merchant_response_reference'  => 'payment intent ID: ' . $session->payment_intent,
             ]);
 
+            // d) Redirect back to invoice view
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
-        } catch (Error|Exception|ErrorException $e) {
-            //TODO: log error
 
+        } else {
+
+            // ----------------------
+            // FAILURE / CANCELLED FLOW
+            // ----------------------
+            // a) Show an error or “payment not completed” notice to the user
+            //    (Adjust text as you wish)
             $this->session->set_flashdata('alert_error',
-                trans('online_payment_payment_failed') . '<br/>' . $$e->getMessage());
+                sprintf(trans('online_payment_payment_failed')) .
+                '<br/>' .
+                'Payment was not completed. Stripe session status: ' . $session->payment_status
+            );
             $this->session->keep_flashdata('alert_error');
 
+            // b) Optionally record a “failed” or “canceled” merchant response
+            //    (This helps you keep track of incomplete attempts)
+            $this->db->insert('ip_merchant_responses', [
+                'invoice_id'                   => $invoice_id,
+                'merchant_response_successful' => false,
+                'merchant_response_date'       => date('Y-m-d'),
+                'merchant_response_driver'     => 'stripe',
+                'merchant_response'            => 'Transaction not completed or canceled',
+                'merchant_response_reference'  => 'payment intent ID: ' . $session->payment_intent,
+            ]);
+
+            // c) Redirect back to invoice view
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
         }
+
+    } catch (Error|Exception|ErrorException $e) {
+        // LOG THE ERROR so you can debug
+        error_log("Stripe callback exception: " . $e->getMessage());
+
+        // Show the user an error message
+        $this->session->set_flashdata(
+            'alert_error',
+            trans('online_payment_payment_failed') . '<br/>' . $e->getMessage()
+        );
+        $this->session->keep_flashdata('alert_error');
+
+        // attempt to redirect them to the invoice
+        // (optional defensive: in case $invoice is undefined or $invoice->invoice_url_key is empty)
+        redirect(site_url('guest/view/invoices'));
     }
+}
 }
