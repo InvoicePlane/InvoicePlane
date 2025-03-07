@@ -94,7 +94,7 @@ class Paypal extends Base_Controller
                 'payment_date'      => date('Y-m-d'),
                 'payment_amount'    => $amount,
                 'payment_method_id' => get_setting('gateway_paypal_payment_method'),
-                'payment_note'      => '', // ???
+                'payment_note'      => '', // why is empty?
             ]);
 
             $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();

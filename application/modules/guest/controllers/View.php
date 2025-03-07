@@ -118,7 +118,7 @@ class View extends Base_Controller
     // get_attachments by file system (Original renamed. For memo)
     private function get_attachments_files($key)
     {
-        $path = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . '/customer_files' fix ²slashe
+        $path = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/'
         $files = scandir($path);
         $attachments = [];
 

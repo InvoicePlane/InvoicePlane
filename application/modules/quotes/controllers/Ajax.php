@@ -416,7 +416,7 @@ class Ajax extends Admin_Controller
             'quote'          => $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row(),
         ];
 
-        $this->load->view('quotes/modal_quote_to_quote', $data);
+        $this->load->view('quotes/modal_quote_to_invoice', $data);
     }
 
     public function quote_to_invoice()
@@ -482,13 +482,13 @@ class Ajax extends Admin_Controller
             foreach ($quote_tax_rates as $quote_tax_rate)
             {
                 $db_array = [
-                    'invoice_id'            => $invoice_id,
-                    'tax_rate_id'           => $quote_tax_rate->tax_rate_id,
-                    'include_item_tax'      => $quote_tax_rate->include_item_tax,
-                    'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount,
+                    'invoice_id'              => $invoice_id,
+                    'tax_rate_id'             => $quote_tax_rate->tax_rate_id,
+                    'include_item_tax'        => $quote_tax_rate->include_item_tax,
+                    'invoice_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount,
                 ];
 
-                $this->mdl_quote_tax_rates->save(null, $db_array);
+                $this->mdl_invoice_tax_rates->save(null, $db_array);
             }
 
             $response = [

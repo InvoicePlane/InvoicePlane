@@ -242,7 +242,7 @@ class Mdl_Import extends Response_Model
                     $db_array['invoice_url_key'] = $this->mdl_invoices->get_url_key();
 
                     // Assign the final value to the array
-                    $db_array[$header] = ($data[$key] != null) ? $data[$key] : '';
+                    $db_array[$header] = ($data[$key] != 'null') ? $data[$key] : '';
                 }
 
                 // Check for any record errors
@@ -337,7 +337,7 @@ class Mdl_Import extends Response_Model
                     }
 
                     // Assign the final value to the array
-                    $db_array[$header] = ($data[$key] != null) ? $data[$key] : '';
+                    $db_array[$header] = ($data[$key] != 'null') ? $data[$key] : '';
                 }
 
                 if ( ! $record_error)
@@ -427,7 +427,7 @@ class Mdl_Import extends Response_Model
                         }
                     }
 
-                    $db_array[$header] = ($data[$key] != null) ? $data[$key] : '';
+                    $db_array[$header] = ($data[$key] != 'null') ? $data[$key] : '';
                 }
 
                 if (!$record_error)
