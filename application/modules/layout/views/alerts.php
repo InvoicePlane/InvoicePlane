@@ -18,6 +18,10 @@ if ($this->session->flashdata('alert_success')) {
 if ($this->session->flashdata('alert_info')) {
     echo '<div class="' . $alert_class . ' alert-info">' . $this->session->flashdata('alert_info') . '</div>';
 }
+// Get warning messages
+if ($this->session->flashdata('alert_warning')) {
+    echo '<div class="' . $alert_class . ' alert-warning">' . $this->session->flashdata('alert_warning') . '</div>';
+}
 // Get error messages
 if ($this->session->flashdata('alert_error')) {
     echo '<div class="' . $alert_class . ' alert-danger">' . $this->session->flashdata('alert_error') . '</div>';

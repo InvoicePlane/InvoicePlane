@@ -159,15 +159,19 @@ class Invoices extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
         $custom_values = [];
-        foreach ($custom_fields as $custom_field) {
-            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[$custom_field->custom_field_id] = $values;
+        foreach ($custom_fields as $custom_field)
+        {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+            {
+                $values                                          = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[ $custom_field->custom_field_id ] = $values;
             }
         }
 
-        foreach ($custom_fields as $cfield) {
-            foreach ($fields as $fvalue) {
+        foreach ($custom_fields as $cfield)
+        {
+            foreach ($fields as $fvalue)
+            {
                 if ($fvalue->invoice_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_invoices->set_form_value(
@@ -183,10 +187,15 @@ class Invoices extends Admin_Controller
         $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
 
+        $items            = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+
+        // Legacy calculation false: helper to Alert id not standard taxes (number_helper) - since 1.6.3
+        $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
+
         $this->layout->set(
             [
                 'invoice'           => $invoice,
-                'items'             => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+                'items'             => $items,
                 'invoice_id'        => $invoice_id,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),

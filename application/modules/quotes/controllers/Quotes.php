@@ -115,23 +115,27 @@ class Quotes extends Admin_Controller
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-
         if (!$quote) {
             show_404();
         }
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result();
         $custom_values = [];
-        foreach ($custom_fields as $custom_field) {
-            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
+        foreach ($custom_fields as $custom_field)
+        {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+            {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
 
-        foreach ($custom_fields as $cfield) {
-            foreach ($fields as $fvalue) {
-                if ($fvalue->quote_custom_fieldid == $cfield->custom_field_id) {
+        foreach ($custom_fields as $cfield)
+        {
+            foreach ($fields as $fvalue)
+            {
+                if ($fvalue->quote_custom_fieldid == $cfield->custom_field_id)
+                {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_quotes->set_form_value(
                         'custom[' . $cfield->custom_field_id . ']',
@@ -142,10 +146,15 @@ class Quotes extends Admin_Controller
             }
         }
 
+        $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
+
+        // Legacy calculation false: helper to Alert id not standard taxes (number_helper) - since 1.6.3
+        $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
+
         $this->layout->set(
             [
                 'quote'           => $quote,
-                'items'           => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
+                'items'           => $items,
                 'quote_id'        => $quote_id,
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),

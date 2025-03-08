@@ -327,6 +327,7 @@ $lang = [
     'item_name'                                    => 'Item Name',
     'item_tax'                                     => 'Item Tax',
     'item_tax_rate'                                => 'Item Tax Rate',
+    'items_tax_usages_bad_set'                     => 'One or More Tax Rate fields need your attention to be a valid e-invoice!<br>Please set or reset Tax Rates on necessary fields.',
     'label'                                        => 'Label',
     'language'                                     => 'Language',
     'last'                                         => 'Last',

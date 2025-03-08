@@ -141,9 +141,46 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
-// Get crsf names from ipconfig (config_item) on meta tags
+// Get crsf names from ipconfig (config_item) on meta tags - since v1.6.3
 const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content');   // Default: _ip_csrf
 const csrf_cookie_name = document.querySelector('meta[name="csrf_cookie_name"]').getAttribute('content'); // Default: ip_csrf_cookie
+
+const legacy_calculation = parseInt(document.querySelector('meta[name="legacy_calculation"]').getAttribute('content')); // Default: 1 (legacy on)
+
+// For Quote & Invoice views. Verify and set alert on item tax fields. All or not rule - since v1.6.3
+function check_items_tax_usages(e){
+    if (legacy_calculation) return; // Not for legacy (todo? global taxes?)
+
+    let x; // Loop index
+    let oks = [0,0]; // Counters: No tax, Tax.
+    let taxfield = document.querySelectorAll('.item select[name="item_tax_rate_id"]'); // get all tax selects
+
+    for (x = 0; x < taxfield.length; x++) {
+        if (taxfield[x].value != 0) {
+            oks[1]++; // +1 for Tax
+        }
+        else {
+            oks[0]++; // +1 for No
+        }
+     // taxfield[x].classList.add('alert-success'); // dbg! But Idea** green2ok. Todo?: same thing for all inputs amount.
+        taxfield[x].classList.remove('alert-danger');
+
+        // Have already event? Not: Add listener to Old&New fields to check when value change
+        if ( ! $(taxfield[x]).data('hasTaxEvent')) {
+            $(taxfield[x]).on('change', check_items_tax_usages).data('hasTaxEvent', true);
+        }
+    }
+    // Zero with 0 == error. Need One == 0 to be valid (Why not an alert-success with Idea**)
+    if (oks[0] != 0 && oks[1] != 0) {
+        for (x = 0; x < taxfield.length; x++) {
+            taxfield[x].classList.add('alert-danger'); // redNo0k
+         // taxfield[x].classList.remove('alert-success'); // Idea** (Todo?: like for all inputs amount?)
+        }
+        // Only true, not from event. Set focus 1st tax selector (See items_tax_usages_bad() in number_helper)
+        'undefined' != typeof(e) && e === true && taxfield[0].focus();
+     }
+}
+
 $(function () {
     // Automatical CSRF protection for
     // All jquery POST requests

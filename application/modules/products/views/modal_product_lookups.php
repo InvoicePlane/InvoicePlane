@@ -16,7 +16,7 @@
             $.post("<?php echo site_url('products/ajax/process_product_selections'); ?>", {
                 product_ids: product_ids
             }, function (data) {
-                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                 var items = JSON.parse(data);
 
                 for (var key in items) {
@@ -39,6 +39,9 @@
 
                     $('#modal-choose-items').modal('hide');
                 }
+
+                // Legacy:no: check items tax usage is correct (ReLoad on change) - since 1.6.3
+                check_items_tax_usages();
             });
         });
 

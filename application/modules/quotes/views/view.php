@@ -1,5 +1,4 @@
 <script>
-
     $(function () {
         $('.btn_add_product').click(function () {
             $('#modal-placeholder').load(
@@ -10,6 +9,8 @@
 
         $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            // Legacy:no: check items tax usage is correct (ReLoad on change)
+            check_items_tax_usages();
         });
 
         $('#quote_change_client').click(function () {
@@ -22,6 +23,9 @@
         <?php if (!$items) { ?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         <?php } ?>
+
+        // Legacy:no: check items tax usage is correct (Load on change)
+        $(document).on('loaded', check_items_tax_usages());
 
         $('#btn_save_quote').click(function () {
             var items = [];
