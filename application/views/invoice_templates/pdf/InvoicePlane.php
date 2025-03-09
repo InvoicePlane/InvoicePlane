@@ -274,14 +274,20 @@
     </table>
 <?php } ?>
 
-<footer>
+<div class="invoice-terms">
     <?php if ($invoice->invoice_terms) { ?>
         <div class="notes">
             <b><?php _trans('terms'); ?></b><br/>
             <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
         </div>
     <?php } ?>
-</footer>
+</div>
+
+<htmlpagefooter name="footer">
+    <footer>
+        <?php _trans('page'); ?> {PAGENO} / {nbpg}
+    </footer>
+</htmlpagefooter>
 
 </body>
 </html>

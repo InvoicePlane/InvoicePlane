@@ -249,14 +249,20 @@
 
 <watermarktext content="<?php _trans('paid'); ?>" alpha="0.3" />
 
-<footer>
+<div class="invoice-terms">
     <?php if ($invoice->invoice_terms) : ?>
         <div class="notes">
             <b><?php _trans('terms'); ?></b><br/>
             <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
         </div>
     <?php endif; ?>
-</footer>
+</div>
+
+<htmlpagefooter name="footer">
+    <footer>
+        <?php _trans('page'); ?> {PAGENO} / {nbpg}
+    </footer>
+</htmlpagefooter>
 
 </body>
 </html>
