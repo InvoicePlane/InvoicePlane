@@ -430,7 +430,7 @@
                                 <?php _trans('show_responsive_itemlist'); ?>
                             </label>
                             <select name="settings[show_responsive_itemlist]" id="settings[show_responsive_itemlist]"
-                                    class="form-control simple-select">
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <option value="0">
                                     <?php _trans('no'); ?>
                                 </option>

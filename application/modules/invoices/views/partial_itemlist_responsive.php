@@ -298,7 +298,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
     </div>
 </div>
 
-<br/>
+<br>
 
 <div class="row">
     <div class="col-xs-12 col-md-4">

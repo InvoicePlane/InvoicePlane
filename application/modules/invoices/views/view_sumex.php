@@ -13,11 +13,16 @@ if ($this->config->item('disable_read_only') == true) {
 
         $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            // Legacy:no: check items tax usage is correct (ReLoad on change)
+            check_items_tax_usages();
         });
 
         <?php if (!$items) { ?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
         <?php } ?>
+
+        // Legacy:no: check items tax usage is correct (Load on change)
+        $(document).on('loaded', check_items_tax_usages());
 
         $('#btn_create_recurring').click(function () {
             $('#modal-placeholder').load(

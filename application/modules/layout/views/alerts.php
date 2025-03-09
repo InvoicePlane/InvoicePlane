@@ -10,19 +10,15 @@ if (function_exists('validation_errors')) {
     }
 }
 
-// Get success messages
-if ($this->session->flashdata('alert_success')) {
-    echo '<div class="' . $alert_class . ' alert-success">' . $this->session->flashdata('alert_success') . '</div>';
-}
-// Get info messages
-if ($this->session->flashdata('alert_info')) {
-    echo '<div class="' . $alert_class . ' alert-info">' . $this->session->flashdata('alert_info') . '</div>';
-}
-// Get warning messages
-if ($this->session->flashdata('alert_warning')) {
-    echo '<div class="' . $alert_class . ' alert-warning">' . $this->session->flashdata('alert_warning') . '</div>';
-}
-// Get error messages
-if ($this->session->flashdata('alert_error')) {
-    echo '<div class="' . $alert_class . ' alert-danger">' . $this->session->flashdata('alert_error') . '</div>';
+// Get flash alert_*type* messages and show them
+$types = explode(' ', 'success info warning error');
+$class = explode(' ', 'success info warning danger');
+$icons = explode(' ', 'info-circle info-circle exclamation-circle warning');
+foreach ($types as $x => $type) {
+    if ($this->session->flashdata('alert_' . $type)) {
+        echo '<div class="' . $alert_class . ' alert-' . $class[$x]. ' alert-dismissible" role="alert">'
+        . '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        . '<i class="fa fa-fw fa-lg fa-' . $icons[$x] . '"></i><span>'
+        . $this->session->flashdata('alert_' . $type) . '</span></div>' . PHP_EOL;
+    }
 }
