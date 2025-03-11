@@ -87,8 +87,8 @@ public function callback($checkout_session_id)
 
         // 3) DEBUG LOGGING (optional but recommended)
         //    Make sure your PHP error log is set up (log_errors=On in php.ini)
-        error_log("Stripe callback reached. Checkout session id: " . $checkout_session_id);
-        error_log("Stripe session payment_status: " . $session->payment_status);
+        log_message('debug', 'Stripe callback reached. Checkout session id: ' . $checkout_session_id);
+		log_message('debug', 'Stripe session payment_status: ' . $session->payment_status);
 
         // 4) Check the session status before marking paid
         if ($session->payment_status === 'paid') {
@@ -134,10 +134,10 @@ public function callback($checkout_session_id)
             // a) Show an error or “payment not completed” notice to the user
             //    (Adjust text as you wish)
             $this->session->set_flashdata('alert_error',
-                sprintf(trans('online_payment_payment_failed')) .
-                '<br/>' .
-                'Payment was not completed. Stripe session status: ' . $session->payment_status
-            );
+    sprintf(trans('online_payment_payment_failed')) . '<br/>' .
+    sprintf(trans('online_payment_incomplete'), $session->payment_status)
+);
+
             $this->session->keep_flashdata('alert_error');
 
             // b) Optionally record a “failed” or “canceled” merchant response
@@ -147,7 +147,7 @@ public function callback($checkout_session_id)
                 'merchant_response_successful' => false,
                 'merchant_response_date'       => date('Y-m-d'),
                 'merchant_response_driver'     => 'stripe',
-                'merchant_response'            => 'Transaction not completed or canceled',
+                'merchant_response' => trans('online_payment_transaction_not_completed'),
                 'merchant_response_reference'  => 'payment intent ID: ' . $session->payment_intent,
             ]);
 
@@ -157,7 +157,7 @@ public function callback($checkout_session_id)
 
     } catch (Error|Exception|ErrorException $e) {
         // LOG THE ERROR so you can debug
-        error_log("Stripe callback exception: " . $e->getMessage());
+        log_message('error', 'Stripe callback exception: ' . $e->getMessage());
 
         // Show the user an error message
         $this->session->set_flashdata(
