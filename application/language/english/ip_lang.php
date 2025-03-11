@@ -747,3 +747,9 @@ $lang = [
     'true'  => 'True',
     'false' => 'False',
 ];
+
+// Stripe online payment messages
+$lang['online_payment_payment_successful'] = 'Payment successful for invoice %s';
+$lang['online_payment_payment_failed'] = 'Payment failed';
+$lang['online_payment_incomplete'] = 'Payment was not completed. Stripe session status: %s';
+$lang['online_payment_transaction_not_completed'] = 'Transaction not completed or canceled';
