@@ -306,7 +306,7 @@
                             <span class="text-muted">
                                 <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) ?>
                             </span>
-                            <button type="submit" class="btn btn-xs btn-link" onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
+                            <button type="submit" class="btn btn-xs btn-link" onclick="var Y=confirm('<?php _trans('delete_tax_warning'); ?>');if(Y)show_loader();return Y;">
                                 <i class="fa fa-trash-o"></i>
                             </button>
                         </form>

@@ -24,6 +24,9 @@
         <div class="form-group has-feedback">
             <label for="client_id"><?php _trans('client'); ?></label>
             <div class="input-group">
+                <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                    <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
+                </span>
                 <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus">
 <?php
 $permissive = get_setting('enable_permissive_search_users');
@@ -35,9 +38,6 @@ if (! empty($project->client_id))
 }
 ?>
                 </select>
-                <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
-                    <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
-                </span>
             </div>
         </div>
 

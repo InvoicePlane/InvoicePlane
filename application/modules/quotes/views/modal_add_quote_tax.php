@@ -1,9 +1,12 @@
 <script>
     $(function () {
         $('#quote_tax_submit').click(function () {
+            var tax_rate_id = $('#tax_rate_id').val();
+            if ('0' == tax_rate_id) return;
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('quotes/ajax/save_quote_tax_rate'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
-                    tax_rate_id: $('#tax_rate_id').val(),
+                    tax_rate_id: tax_rate_id,
                     include_item_tax: $('#include_item_tax').val()
                 },
                 function (data) {
@@ -12,7 +15,9 @@
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
                     }
-                });
+                    // close_loader(); No error returned (show go to wiki if not success after 10s)  Todo: else // The validation was not successful
+                }
+            );
         });
     });
 </script>

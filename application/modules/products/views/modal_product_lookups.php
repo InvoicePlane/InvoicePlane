@@ -12,6 +12,8 @@
             $("input[name='product_ids[]']:checked").each(function () {
                 product_ids.push(parseInt($(this).val()));
             });
+            // No Check No post
+            if ( ! product_ids.length) return; // todo: why not animate checkboxes
 
             $.post("<?php echo site_url('products/ajax/process_product_selections'); ?>", {
                 product_ids: product_ids
@@ -46,7 +48,7 @@
         });
 
         // Toggle checkbox when click on row
-        $(document).on('click', '.product', function (event) {
+        $('#products_table tr').click(function (event) {
             if (event.target.type !== 'checkbox') {
                 $(':checkbox', this).trigger('click');
             }

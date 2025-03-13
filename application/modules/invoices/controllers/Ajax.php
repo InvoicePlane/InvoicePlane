@@ -369,7 +369,7 @@ class Ajax extends Admin_Controller
             'users'      => $this->mdl_users->get_latest(),
         ];
 
-        $this->layout->load_view('invoices/modal_change_user', $data);
+        $this->layout->load_view('layout/ajax/modal_change_user_client', $data);
     }
 
     public function change_user()
@@ -420,7 +420,7 @@ class Ajax extends Admin_Controller
             'clients'    => $this->mdl_clients->get_latest(),
         ];
 
-        $this->layout->load_view('invoices/modal_change_client', $data);
+        $this->layout->load_view('layout/ajax/modal_change_user_client', $data);
     }
 
     public function change_client()

@@ -289,7 +289,32 @@ $(function () {
         update_email_template_preview();
     });
 
-    // Fullpage loader (spinner)
+    // Spinner loader helper (global scope access)
+    window.fullpage_loader = $('#fullpage-loader');
+    window.loader_error = $('#loader-error');
+    window.loader_icon = $('#loader-icon');
+    window.reset_loader = function () {
+        loader_error.hide();
+        loader_icon.addClass('fa-spin').removeClass('text-danger');
+        clearTimeout(window.fullpageloaderTimeout);
+    }
+    window.close_loader = function () {
+        fullpage_loader.fadeOut(200);
+        reset_loader();
+    }
+    window.show_loader = function (timeout) {
+        timeout = timeout ? parseInt(timeout) : 10000; // 10s by default
+        // Reset
+        reset_loader();
+        // Show
+        fullpage_loader.fadeIn(200);
+        window.fullpageloaderTimeout = window.setTimeout(function () {
+            loader_error.fadeIn(200);
+            loader_icon.removeClass('fa-spin').addClass('text-danger');
+        }, timeout);
+    }
+
+    // Fullpage loader (Open spinner) From FORM? Only valid
     $(document).on('click', '.ajax-loader', function () {
 
         // Get parent form of clicked element
@@ -298,21 +323,14 @@ $(function () {
         if (form.length && !form[0].checkValidity()) {
             return; // No valid, don't show spinner.
         }
-
         // Show loader
-        $('#fullpage-loader').fadeIn(200);
-        window.fullpageloaderTimeout = window.setTimeout(function () {
-            $('#loader-error').fadeIn(200);
-            $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
-        }, 10000);
+        show_loader();
 
     });
 
+    // Fullpage loader (Close spinner) by red cross (top right)
     $(document).on('click', '.fullpage-loader-close', function () {
-        $('#fullpage-loader').fadeOut(200);
-        $('#loader-error').hide();
-        $('#loader-icon').addClass('fa-spin').removeClass('text-danger');
-        clearTimeout(window.fullpageloaderTimeout);
+        close_loader();
     });
 
     var password_input = $('.passwordmeter-input');

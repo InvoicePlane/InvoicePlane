@@ -2,6 +2,7 @@
     $(function () {
         $('#modal-create-credit-invoice').modal('show');
         $('#create-credit-confirm').click(function () {
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('invoices/ajax/create_credit'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     client_id: $('#client_id').val(),
@@ -19,12 +20,14 @@
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
                         }
                     }
-                });
+                }
+            );
         });
     });
 </script>

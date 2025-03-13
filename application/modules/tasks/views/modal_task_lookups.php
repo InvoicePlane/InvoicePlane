@@ -25,13 +25,15 @@
             $('#task-modal-submit').hide();
         }
 
-        // Creates the invoice
+        // Creates the invoice item
         $('.select-items-confirm').click(function () {
             var task_ids = [];
 
             $("input[name='task_ids[]']:checked").each(function () {
                 task_ids.push(parseInt($(this).val()));
             });
+            // No Check No post
+            if ( ! task_ids.length) return; // todo: why not animate checkboxes
 
             $.post("<?php echo site_url('tasks/ajax/process_task_selections'); ?>", {
                 task_ids: task_ids

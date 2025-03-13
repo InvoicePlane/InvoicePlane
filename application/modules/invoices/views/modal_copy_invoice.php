@@ -10,6 +10,7 @@
 
         // Creates the invoice
         $('#copy_invoice_confirm').click(function () {
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('invoices/ajax/copy_invoice'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     client_id: $('#copy_invoice_client_id').val(),
@@ -28,6 +29,7 @@
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
@@ -57,14 +59,16 @@
 
             <div class="form-group has-feedback">
                 <label for="copy_invoice_client_id"><?php _trans('client'); ?></label>
-                <select name="client_id" id="copy_invoice_client_id" class="client-id-select form-control" autofocus="autofocus">
-                <?php if ( ! empty($client)) : ?>
+                <div class="input-group">
+                    <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                        <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
+                    </span>
+                    <select name="client_id" id="copy_invoice_client_id" class="client-id-select form-control" autofocus="autofocus">
+<?php if ( ! empty($client)) : ?>
                         <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
-                    <?php endif; ?>
-                </select>
-                <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
-                    <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
-                </span>
+<?php endif; ?>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group has-feedback">

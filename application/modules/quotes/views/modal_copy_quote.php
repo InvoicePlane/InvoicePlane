@@ -9,6 +9,7 @@
 
         // Creates the quote
         $('#copy_quote_confirm').click(function () {
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
                     client_id: $('#create_quote_client_id').val(),
@@ -24,12 +25,14 @@
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
                         }
                     }
-                });
+                }
+            );
         });
     });
 

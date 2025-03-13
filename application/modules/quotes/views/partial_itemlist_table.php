@@ -297,8 +297,7 @@
                             <form method="POST" class="form-inline"
                                   action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>
-                                <button type="submit" class="btn btn-xs btn-link"
-                                        onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
+                                    <button type="submit" class="btn btn-xs btn-link" onclick="var Y=confirm('<?php _trans('delete_tax_warning'); ?>');if(Y)show_loader();return Y;">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
                                 <span class="text-muted">
