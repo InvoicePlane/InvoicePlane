@@ -38,14 +38,24 @@
             <h4 class="panel-title"><?php _trans('change_client'); ?></h4>
         </div>
         <div class="modal-body">
-
-            <div class="form-group">
+<?php
+$permissive = get_setting('enable_permissive_search_users');
+?>
+            <div class="form-group has-feedback">
                 <label for="change_client_id"><?php _trans('client'); ?></label>
-                <select name="client_id" id="change_client_id" class="client-id-select form-control"
-                        autofocus="autofocus"></select>
+                <div class="input-group">
+                    <select name="client_id" id="change_client_id" class="client-id-select form-control"
+                            autofocus="autofocus"></select>
+                    <span id="toggle_permissive_search_clients" class="input-group-addon"
+                          title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                        <i class="fa fa-toggle-<?php echo $permissive ? 'on' : 'off' ?> fa-fw" ></i>
+                    </span>
+                </div>
             </div>
 
             <input class="hidden" id="quote_id" value="<?php echo $quote_id; ?>">
+            <input class="hidden" id="input_permissive_search_clients"
+                   value="<?php echo $permissive; ?>">
 
         </div>
 

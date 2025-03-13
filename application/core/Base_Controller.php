@@ -65,6 +65,7 @@ class Base_Controller extends MX_Controller
             $this->load->helper('date');
             $this->load->helper('form');
             $this->load->helper('echo');
+            $this->load->helper('user');
             $this->load->helper('client');
 
             // Load setting model and load settings

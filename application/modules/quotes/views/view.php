@@ -1,3 +1,9 @@
+<?php
+// Little helper
+$its_mine = $this->session->__get('user_id') == $quote->user_id;
+$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-
+?>
+
 <script>
     $(function () {
         $('.btn_add_product').click(function () {
@@ -13,6 +19,17 @@
             check_items_tax_usages();
         });
 
+        <?php if (!$items) { ?>
+        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+        <?php } ?>
+
+        // Legacy:no: check items tax usage is correct (Load on change)
+        $(document).on('loaded', check_items_tax_usages());
+<?php
+if ($quote->quote_status_id == 1)
+{
+?>
+
         $('#quote_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
                 quote_id: <?php echo $quote_id; ?>,
@@ -20,12 +37,15 @@
             });
         });
 
-        <?php if (!$items) { ?>
-        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
-        <?php } ?>
-
-        // Legacy:no: check items tax usage is correct (Load on change)
-        $(document).on('loaded', check_items_tax_usages());
+        $('#quote_change_user').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_user'); ?>", {
+                quote_id: <?php echo $quote_id; ?>,
+                user_id: "<?php echo $this->db->escape_str($quote->user_id); ?>",
+            });
+        });
+<?php
+} // End if
+?>
 
         $('#btn_save_quote').click(function () {
             var items = [];
@@ -172,21 +192,37 @@
 echo $modal_delete_quote;
 echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have global taxes - since v1.6.3
 ?>
-
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <?php
-        echo trans('quote') . ' ';
-        echo($quote->quote_number ? '#' . $quote->quote_number : $quote->quote_id);
-        ?>
+        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing') ;?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
+            <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . $quote->quote_number : trans('id') . ': ' . $quote->quote_id); ?>
+        </span>
+
+        <a data-toggle="tooltip" data-placement="bottom"
+           title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>"
+           href="<?php echo site_url('users/form/' . $quote->user_id); ?>">
+            <i class="fa fa-xs fa-user text-<?php echo $my_class; ?>"></i>
+                <span class="hidden-xs"><?php _htmlsc($quote->user_name); ?></span>
+        </a>
+<?php
+if ($quote->quote_status_id == 1)
+{
+?>
+
+        <span id="quote_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
+              data-toggle="tooltip" data-placement="bottom"
+              title="<?php _trans('change_user'); ?>"></span>
+<?php
+} // End if
+?>
     </h1>
 
-    <div class="headerbar-item pull-right">
-        <div class="btn-group btn-group-sm">
+    <div class="headerbar-item pull-right btn-group">
+        <div class="options btn-group btn-group-sm">
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                <?php _trans('options'); ?> <i class="fa fa-chevron-down"></i>
+                <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
-            <ul class="dropdown-menu dropdown-menu-right">
+            <ul class="dropdown-menu">
 <?php
 // Legacy calculation have global taxes - since v1.6.3
 if ($legacy_calculation)

@@ -1,19 +1,19 @@
 <script>
     $(function () {
-        // Display the change invoice client modal
-        $('#change-client').modal('show');
+        // Display change invoice modal
+        $('#change-user').modal('show');
 
-        <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
+        <?php $this->layout->load_view('users/script_select2_user_id.js'); ?>
 
-        // Change the client
-        $('#client_change_confirm').click(function () {
+        // Change the user
+        $('#user_change_confirm').click(function () {
             // Posts the data to validate
-            $.post("<?php echo site_url('invoices/ajax/change_client'); ?>", {
-                    client_id: $('#change_client_id').val(),
+            $.post("<?php echo site_url('invoices/ajax/change_user'); ?>", {
+                    user_id: $('#change_user_id').val(),
                     invoice_id: $('#invoice_id').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful and invoice was Updated
@@ -31,43 +31,45 @@
     });
 </script>
 
-<div id="change-client" class="modal modal-lg" role="dialog" aria-labelledby="modal_change_client" aria-hidden="true">
+<div id="change-user" class="modal modal-lg" role="dialog" aria-labelledby="modal_change_user" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="panel-title"><?php _trans('change_client'); ?></h4>
+            <h4 class="panel-title"><?php _trans('change_user'); ?></h4>
         </div>
         <div class="modal-body">
 
+
             <div class="form-group has-feedback">
-                <label for="change_client_id"><?php _trans('client'); ?></label>
+                <label for="change_user_id"><?php _trans('user'); ?></label>
                 <div class="input-group">
-                    <select name="client_id" id="change_client_id" class="client-id-select form-control"
+                    <select name="user_id" id="change_user_id" class="user-id-select form-control"
                             autofocus="autofocus" required>
 <?php
+$user_id = isset($user->user_id) ? $user->user_id : $this->input->post('user_id');
 $permissive = get_setting('enable_permissive_search_users');
-$client_id = isset($client->client_id) ? $client->client_id : $this->input->post('client_id');
-if ($client_id)
+if ($user_id)
 {
 ?>
-                        <option value="<?php echo $client_id; ?>"><?php _htmlsc(empty($client->client_name) ? format_client($client_id) : $client->client_name); ?></option>
+                            <option value="<?php echo $user_id; ?>"><?php _htmlsc(empty($user->user_name) ? format_user($user_id) : $user->user_name); ?></option>
 <?php
 }
 ?>
                     </select>
-                    <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
-                        <i class="fa fa-toggle-<?php echo $permissive ? 'on' : 'off' ?> fa-fw" ></i>
+                    <span id="toggle_permissive_search_users" class="input-group-addon"
+                          title="<?php _trans('enable_permissive_search_users'); ?>" style="cursor:pointer;">
+                        <i class="fa fa-toggle-<?php echo $permissive ? 'on' : 'off' ?> fa-fw"></i>
                     </span>
                 </div>
             </div>
 
             <input class="hidden" id="invoice_id" value="<?php echo $invoice_id; ?>">
-            <input class="hidden" id="input_permissive_search_clients" value="<?php echo $permissive; ?>">
+            <input class="hidden" id="input_permissive_search_users" value="<?php echo $permissive; ?>">
         </div>
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-success" id="client_change_confirm" type="button">
+                <button class="btn btn-success" id="user_change_confirm" type="button">
                     <i class="fa fa-check"></i> <?php _trans('submit'); ?>
                 </button>
                 <button class="btn btn-danger" type="button" data-dismiss="modal">

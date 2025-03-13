@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -151,6 +151,21 @@ class Mdl_Users extends Response_Model
                 'field' => 'user_rcc',
             ],
         ];
+    }
+
+    /**
+     * @param int $amount
+     *
+     * @return mixed
+     */
+    public function get_latest($amount = 20)
+    {
+        return $this->mdl_users
+            ->where('user_active', 1)
+            ->order_by('user_id', 'DESC')
+            ->limit($amount)
+            ->get()
+            ->result();
     }
 
     /**

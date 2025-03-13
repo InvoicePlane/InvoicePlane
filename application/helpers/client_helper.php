@@ -14,11 +14,21 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * @param object $client
+ * @param mixed object $client (or id - since 1.6.3)
  * @return string
  */
-function format_client($client)
+function format_client($client) :string
 {
+    // Get an id
+    if ($client && is_numeric($client)) {
+        $CI = & get_instance();
+        if ( ! property_exists($CI, 'mdl_clients'))
+            $CI->load->model('clients/mdl_clients');
+        $client = $CI->mdl_clients->get_by_id($client);
+    }
+    // Not exist or find, Stop.
+    if (empty($client->client_name)) return '';
+
     $client_title='';
     if(property_exists($client, 'client_title')){
         $client_title = $client->client_title === 'custom' ? '' : $client->client_title ?? '';

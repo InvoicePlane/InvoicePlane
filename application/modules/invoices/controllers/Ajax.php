@@ -358,15 +358,66 @@ class Ajax extends Admin_Controller
         exit(json_encode($response));
     }
 
+    public function modal_change_user()
+    {
+        $this->load->module('layout');
+        $this->load->model('users/mdl_users');
+
+        $data = [
+            'user_id'    => $this->security->xss_clean($this->input->post('user_id')),
+            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
+            'users'      => $this->mdl_users->get_latest(),
+        ];
+
+        $this->layout->load_view('invoices/modal_change_user', $data);
+    }
+
+    public function change_user()
+    {
+        $this->load->model([
+            'invoices/mdl_invoices',
+            'users/mdl_users',
+        ]);
+
+        // Get the user ID
+        $user_id = $this->security->xss_clean($this->input->post('user_id'));
+        $user = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
+
+        if (!empty($user)) {
+            $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
+
+            $db_array = [
+                'user_id' => $user_id,
+            ];
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->update('ip_invoices', $db_array);
+
+            $response = [
+                'success'    => 1,
+                'invoice_id' => $this->security->xss_clean($invoice_id),
+            ];
+        }
+        else
+        {
+            $this->load->helper('json_error');
+            $response = [
+                'success'           => 0,
+                'validation_errors' => json_errors(),
+            ];
+        }
+
+        exit(json_encode($response));
+    }
+
     public function modal_change_client()
     {
         $this->load->module('layout');
         $this->load->model('clients/mdl_clients');
 
         $data = [
-            'client_id' => $this->security->xss_clean($this->input->post('client_id')),
+            'client_id'  => $this->security->xss_clean($this->input->post('client_id')),
             'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
-            'clients' => $this->mdl_clients->get_latest(),
+            'clients'    => $this->mdl_clients->get_latest(),
         ];
 
         $this->layout->load_view('invoices/modal_change_client', $data);
