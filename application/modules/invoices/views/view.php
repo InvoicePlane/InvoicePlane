@@ -19,16 +19,11 @@ $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert
         });
 
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_task').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" +
-                Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
@@ -45,12 +40,9 @@ $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert
         $(document).on('loaded', check_items_tax_usages());
 
         $('#btn_create_recurring').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>",
-                {
-                    invoice_id: <?php echo $invoice_id; ?>
-                }
-            );
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>", {
+                invoice_id: <?php echo $invoice_id; ?>
+            });
         });
 <?php
 if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
@@ -425,11 +417,11 @@ if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
 if ($invoice->invoice_sign == -1)
 {
     $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-    $view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
+    $view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . $parent_invoice_number);
 ?>
                             <div class="col-xs-12">
                                 <div class="alert alert-warning small">
-                                    <i class="fa fa-credit-invoice"></i>&nbsp;<?php _trans('credit_invoice_for_invoice') . ' ' . $view_link; ?>
+                                    <i class="fa fa-credit-invoice"></i>&nbsp;<?php echo $view_link; ?>
                                 </div>
                             </div>
 <?php
@@ -439,15 +431,23 @@ if ($invoice->invoice_sign == -1)
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
-                                    <label><?php _trans('invoice'); ?> #</label>
+<?php if ($einvoice_name) : ?>
+                                    <span class="pull-right"
+                                          data-toggle="tooltip" data-placement="bottom"
+                                          title="e-<?php echo trans('invoice') . ' ' . trans('version') . PHP_EOL . $einvoice_name; ?>  🗸"
+                                    >
+                                    <i class="fa fa-file-code-o"></i>&nbsp;<?php echo $einvoice_name; ?>&nbsp;<i class="fa fa-check-square-o text-success"></i></span>
+<?php endif; ?>
+                                    <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control"
 <?php if ($invoice->invoice_number) : ?>
-                                           value="<?php echo $invoice->invoice_number; ?>"
+                                                value="<?php echo $invoice->invoice_number; ?>"
 <?php else : ?>
-                                           placeholder="<?php _trans('not_set'); ?>"
+                                                placeholder="<?php _trans('not_set'); ?>"
 <?php endif; ?>
-                                        <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                           <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
                                     >
+
                                 </div>
 
                                 <div class="invoice-properties has-feedback">

@@ -205,7 +205,7 @@ class Clients extends Admin_Controller
             }
         }
 
-        $this->load->helper(['country', 'custom_values', 'e-invoice']); // e-invoice - since 1.6.3
+        $this->load->helper(['custom_values', 'e-invoice']); // e-invoice - since 1.6.3
 
         $this->layout->set(
             [

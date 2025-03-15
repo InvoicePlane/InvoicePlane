@@ -51,7 +51,7 @@ class Settings extends Admin_Controller
                 );
             }
 
-            // Save the submitted settings
+            // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
             foreach ($settings as $key => $value) {
                 if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
                     // Skip all meta fields
@@ -136,8 +136,6 @@ class Settings extends Admin_Controller
             'invoices/mdl_templates',
             'custom_fields/mdl_invoice_custom',
         ]);
-
-        $this->load->helper('country');
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');

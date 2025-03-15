@@ -8,14 +8,14 @@
 
         function show_fields() {
             $('#administrator_fields').hide();
-            $('#guest_fields').hide(); // Todo this id missing
+            $('#guest_fields').hide(); // Todo this id missing (IMO: It's for old? modal user-client). (Idea* Why not a new user `type` system)
 
             var user_type = $('#user_type').val();
 
             if (user_type === '1') {
                 $('#administrator_fields').show();
             } else if (user_type === '2') {
-                $('#guest_fields').show(); // Todo this id missing
+                $('#guest_fields').show(); // Todo this id missing. (Idea* For a new user type, like company? Need new module?)
             }
         }
 
@@ -53,25 +53,22 @@
 
                         <div class="panel-body">
                             <div class="form-group">
-                                <label for="user_name">
-                                    <?php _trans('name'); ?>
-                                </label>
+                                <label for="user_name"><?php _trans('name'); ?></label>
                                 <input type="text" name="user_name" id="user_name" class="form-control"
                                        value="<?php echo $this->mdl_users->form_value('user_name', true); ?>">
                             </div>
 
-                            <div class="form-group">
-                                <label for="user_company">
-                                    <?php _trans('company'); ?>
-                                </label>
-                                <input type="text" name="user_company" id="user_company" class="form-control"
-                                       value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
-                            </div>
+                            <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?>  (B2B <?php _trans('required_field'); ?>)">
+                                <label for="user_company"><?php _trans('company'); ?></label>
+                                 <div class="controls input-group">
+                                    <input type="text" name="user_company" id="user_company" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
+                                    <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                </div>
+                           </div>
 
                             <div class="form-group">
-                                <label for="user_email">
-                                    <?php _trans('email_address'); ?>
-                                </label>
+                                <label for="user_email"><?php _trans('email_address'); ?></label>
                                 <input type="text" name="user_email" id="user_email" class="form-control"
                                        value="<?php echo $this->mdl_users->form_value('user_email', true); ?>" required>
                             </div>
@@ -110,9 +107,7 @@ else // Edit user
 ?>
 
                             <div class="form-group">
-                                <label for="user_language">
-                                    <?php _trans('language'); ?>
-                                </label>
+                                <label for="user_language"><?php _trans('language'); ?></label>
                                 <select name="user_language" id="user_language" class="form-control simple-select" required>
                                     <option value="system">
                                         <?php echo trans('use_system_language') ?>
@@ -132,9 +127,7 @@ foreach ($languages as $language)
                             </div>
 
                             <div class="form-group">
-                                <label for="user_type">
-                                    <?php _trans('user_type'); ?>
-                                </label>
+                                <label for="user_type"><?php _trans('user_type'); ?></label>
                                 <select name="user_type" id="user_type" class="form-control simple-select" required>
 <?php
 $user_type = $this->mdl_users->form_value('user_type');
@@ -158,64 +151,70 @@ foreach ($user_types as $key => $type)
                             <div class="panel-heading"><?php _trans('address'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group">
-                                    <label for="user_address_1">
-                                        <?php _trans('street_address'); ?>
-                                    </label>
-                                    <input type="text" name="user_address_1" id="user_address_1" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_address_1', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                                    <label for="user_address_1"><?php _trans('street_address'); ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_address_1" id="user_address_1" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_address_1', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="user_address_2">
-                                        <?php _trans('street_address_2'); ?>
-                                    </label>
-                                    <input type="text" name="user_address_2" id="user_address_2" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_address_2', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('optional'); ?>)">
+                                    <label for="user_address_2"><?php _trans('street_address_2'); ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_address_2" id="user_address_2" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_address_2', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="user_city">
-                                        <?php _trans('city'); ?>
-                                    </label>
-                                    <input type="text" name="user_city" id="user_city" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_city', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                                    <label for="user_city"><?php _trans('city'); ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_city" id="user_city" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_city', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="user_state">
-                                        <?php _trans('state'); ?>
-                                    </label>
-                                    <input type="text" name="user_state" id="user_state" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_state', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                                    <label for="user_state"><?php _trans('state'); ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_state" id="user_state" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_state', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="user_zip">
-                                        <?php _trans('zip_code'); ?>
-                                    </label>
-                                    <input type="text" name="user_zip" id="user_zip" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_zip', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                                    <label for="user_zip"><?php _trans('zip_code'); ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_zip" id="user_zip" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_zip', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="user_country">
-                                        <?php _trans('country'); ?>
-                                    </label>
-                                    <select name="user_country" id="user_country" class="form-control">
-                                        <option value=""><?php _trans('none'); ?></option>
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                                    <label for="user_country"><?php _trans('country'); ?></label>
+                                    <div class="controls input-group">
+                                        <select name="user_country" id="user_country" class="form-control">
+                                            <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($countries as $cldr => $country)
 {
 ?>
-                                        <option value="<?php echo $cldr; ?>"
-                                            <?php check_select($selected_country, $cldr); ?>>
-                                            <?php echo $country ?>
-                                        </option>
+                                            <option value="<?php echo $cldr; ?>"
+                                                <?php check_select($selected_country, $cldr); ?>>
+                                                <?php echo $country ?>
+                                            </option>
 <?php
 }
 ?>
-                                    </select>
+                                        </select>
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 <?php
 foreach ($custom_fields as $custom_field)
@@ -227,33 +226,29 @@ foreach ($custom_fields as $custom_field)
 }
 ?>
                             </div>
-
                         </div>
 
                         <div class="panel panel-default">
                             <div class="panel-heading"><?php _trans('tax_information'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group">
-                                    <label for="user_vat_id">
-                                        <?php _trans('vat_id'); ?>
-                                    </label>
-                                    <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (B2B <?php _trans('required_field'); ?>)">
+                                    <label for="user_vat_id"><?php _trans('vat_id'); ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_tax_code">
-                                        <?php _trans('tax_code'); ?>
-                                    </label>
+                                    <label for="user_tax_code"><?php _trans('tax_code'); ?></label>
                                     <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_subscribernumber">
-                                        <?php _trans('user_subscriber_number'); ?>
-                                    </label>
+                                    <label for="user_subscribernumber"><?php _trans('user_subscriber_number'); ?></label>
                                     <input type="text" name="user_subscribernumber" id="user_subscribernumber"
                                            class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_subscribernumber', true); ?>">
@@ -277,36 +272,35 @@ foreach ($custom_fields as $custom_field)
                             <div class="panel-heading"><?php _trans('bank_information'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group">
-                                    <label for="user_bank">
-                                        <?php _trans('bank'); ?>
-                                    </label>
-                                    <input type="text" name="user_bank" id="user_bank" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                                    <label for="user_bank"><?php _trans('bank'); ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_bank" id="user_bank" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                                    <label for="user_iban"><?php echo 'IBAN'; ?></label>
+                                    <div class="controls input-group">
+                                        <input type="text" name="user_iban" id="user_iban" class="form-control"
+                                               value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
+                                        <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_iban">
-                                        <?php echo 'IBAN'; ?>
-                                    </label>
-                                    <input type="text" name="user_iban" id="user_iban" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="user_bic">
-                                        <?php echo 'BIC'; ?>
-                                    </label>
+                                    <label for="user_bic"><?php echo 'BIC'; ?></label>
                                     <input type="text" name="user_bic" id="user_bic"
                                            class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_bic', true); ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_remittance_tmpl">
-                                        <?php _trans('user_remittance_tmpl'); ?>
-                                    </label>
-                                    <input type="text" name="user_remittance_tmpl" id="user_remittance_tmpl" class="form-control" placeholder="{{{invoice_number}}} {{{invoice_date_due}}}"
+                                    <label for="user_remittance_tmpl"><?php _trans('user_remittance_tmpl'); ?></label>
+                                    <input type="text" name="user_remittance_tmpl" id="user_remittance_tmpl" class="form-control"
+                                           placeholder="{{{invoice_number}}} {{{invoice_date_due}}}"
                                            value="<?php echo $this->mdl_users->form_value('user_remittance_tmpl', true); ?>">
                                 </div>
                             </div>
@@ -323,17 +317,13 @@ if ($this->mdl_settings->setting('sumex') == '1')
 
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <label for="user_gln">
-                                        <?php _trans('gln'); ?>
-                                    </label>
+                                    <label for="user_gln"><?php _trans('gln'); ?></label>
                                     <input type="text" name="user_gln" id="user_gln" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_gln', true); ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_rcc">
-                                        <?php _trans('sumex_rcc'); ?>
-                                    </label>
+                                    <label for="user_rcc"><?php _trans('sumex_rcc'); ?></label>
                                     <input type="text" name="user_rcc" id="user_rcc" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_rcc', true); ?>">
                                 </div>
@@ -351,41 +341,31 @@ if ($this->mdl_settings->setting('sumex') == '1')
 
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <label for="user_invoicing_con>tact">
-                                        <?php _trans('contact'); ?> (<?php _trans('invoicing'); ?>)
-                                    </label>
+                                    <label for="user_invoicing_con>tact"><?php _trans('contact'); ?> (<?php _trans('invoicing'); ?>)</label>
                                     <input type="text" name="user_invoicing_contact" id="user_invoicing_contact" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_invoicing_contact', true); ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_phone">
-                                        <?php _trans('phone_number'); ?>
-                                    </label>
+                                    <label for="user_phone"><?php _trans('phone_number'); ?></label>
                                     <input type="text" name="user_phone" id="user_phone" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_phone', true); ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_fax">
-                                        <?php _trans('fax_number'); ?>
-                                    </label>
+                                    <label for="user_fax"><?php _trans('fax_number'); ?></label>
                                     <input type="text" name="user_fax" id="user_fax" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_fax', true); ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_mobile">
-                                        <?php _trans('mobile_number'); ?>
-                                    </label>
+                                    <label for="user_mobile"><?php _trans('mobile_number'); ?></label>
                                     <input type="text" name="user_mobile" id="user_mobile" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_mobile', true); ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="user_web">
-                                        <?php _trans('web_address'); ?>
-                                    </label>
+                                    <label for="user_web"><?php _trans('web_address'); ?></label>
                                     <input type="text" name="user_web" id="user_web" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_web', true); ?>">
                                 </div>
@@ -439,9 +419,10 @@ if ($default_custom)
 } // End if custom_fields
 ?>
                    </div> <!-- end administrator_fields -->
-                </div>
 
-            </div>
-        </div>
-    </div>
+                </div><!-- userinfo -->
+
+            </div><!-- col -->
+        </div><!-- row -->
+    </div><!-- content -->
 </form>

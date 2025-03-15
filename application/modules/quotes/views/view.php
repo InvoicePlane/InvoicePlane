@@ -7,10 +7,7 @@ $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert
 <script>
     $(function () {
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" +
-                    Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
@@ -19,9 +16,9 @@ $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert
             check_items_tax_usages();
         });
 
-        <?php if (!$items) { ?>
+<?php if (!$items) { ?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
-        <?php } ?>
+<?php } ?>
 
         // Legacy:no: check items tax usage is correct (Load on change)
         $(document).on('loaded', check_items_tax_usages());

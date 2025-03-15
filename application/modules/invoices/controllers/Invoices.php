@@ -133,7 +133,7 @@ class Invoices extends Admin_Controller
                 'upload/mdl_uploads',
             ]
         );
-        $this->load->helper(['custom_values', 'dropzone']);
+        $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
         $this->load->module('payments');
 
         $this->db->reset_query();
@@ -192,11 +192,16 @@ class Invoices extends Admin_Controller
         // Legacy calculation false: helper to Alert id not standard taxes (number_helper) - since 1.6.3
         $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
 
+        // Name of e-invoice library or false
+        $einvoice_name = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
+        $einvoice_name = $einvoice_name ? get_xml_full_name($invoice->client_einvoicing_version) : false;
+
         $this->layout->set(
             [
                 'invoice'           => $invoice,
                 'items'             => $items,
                 'invoice_id'        => $invoice_id,
+                'einvoice_name'     => $einvoice_name,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units'             => $this->mdl_units->get()->result(),

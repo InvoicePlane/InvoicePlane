@@ -123,7 +123,6 @@ class Users extends Admin_Controller
                 'custom_values/mdl_custom_values'
             ]
         );
-        $this->load->helper('country');
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
         $custom_values = [];
