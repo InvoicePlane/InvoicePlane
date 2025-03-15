@@ -131,11 +131,20 @@ table.item-table {
   }
 }
 
-footer {
+.invoice-terms {
   color: $color_base_lighter;
   width: 100%;
   border-top: 2px solid $color_base_lighter;
   padding: 8px 0;
+}
+
+@page {
+  footer: html_footer;
+}
+
+footer {
+  text-align: center;
+  font-size: 12px;
 }
 
 .text-right {

@@ -58,7 +58,7 @@ function pdf_create(
     $mpdf->autoArabic       = true;
     $mpdf->autoLangToFont   = true;
     // Page number in footer by {PAGENO} See mpdf.github.io/paging/page-numbering.html
-    $mpdf->setFooter('<p align="center">(' . str_replace('_', ' ', $filename) . ') ' . trans('page') . ' {PAGENO}</p>');
+    $mpdf->setFooter('<p align="center">' . str_replace('_', ' ', $filename) . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p>');
 
     if (IP_DEBUG) {
         // Enable image error logging

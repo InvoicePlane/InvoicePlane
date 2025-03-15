@@ -242,14 +242,20 @@ if($add_table_and_head_for_sums)
     </table>
 </main>
 
-<footer>
+<div class="invoice-terms">
     <?php if ($quote->notes) : ?>
         <div class="notes">
             <b><?php _trans('notes'); ?></b><br/>
             <?php echo nl2br(htmlsc($quote->notes)); ?>
         </div>
     <?php endif; ?>
-</footer>
+</div>
+
+<htmlpagefooter name="footer">
+    <footer>
+        <?php _trans('quote'); ?> <?php echo $quote->quote_number;?> - <?php _trans('page'); ?> {PAGENO} / {nbpg}
+    </footer>
+</htmlpagefooter>
 
 </body>
 </html>
