@@ -89,8 +89,8 @@ class Validator extends MY_Model
      */
     public function validate_multiplechoice($values, $id)
     {
-        // Fix unresetable (Origin $value == '')
-        if ($values[0] == '') {
+        // Fix unresetable (Origin only == '')
+        if ($values == '' || $values[0] == '') { // work with str, array & null: See https://www.php.net/manual/function.is-null.php#87355
             return null;
         }
 
