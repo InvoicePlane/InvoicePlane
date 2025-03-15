@@ -512,6 +512,7 @@ $lang = [
     'remove_logo'                                  => 'Remove Logo',
     'report_options'                               => 'Report Options',
     'reports'                                      => 'Reports',
+    'required_field'                               => 'Required field',
     'required_fields'                              => 'Required fields',
     'reset'                                        => 'Reset',
     'reset_password'                               => 'Reset password',

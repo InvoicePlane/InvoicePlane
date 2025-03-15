@@ -2,7 +2,7 @@
     $(function () {
         // Cache jQuery selectors
         const $client_start_einvoicing = $('#client_start_einvoicing');
-        const $div_show_einvoicing = $('#div_show_einvoicing');
+        const $toggle_einvoicing = $('.toggle_einvoicing');
 
         // Initial toggle based on current value
         toggle_einvoicing();
@@ -17,9 +17,9 @@
             const start_einvoicing = $client_start_einvoicing.val();
 
             if (start_einvoicing === '1') {
-                $div_show_einvoicing.show();
+                $toggle_einvoicing.show();
             } else {
-                $div_show_einvoicing.hide();
+                $toggle_einvoicing.hide();
             }
         }
     });
@@ -43,9 +43,10 @@
                 </option>
             </select>
 <?php
-$disabled = ''; // hint
+$disabled = ''; // hint (And little tweak  for .help-block)
 $client_einvoicing_version = $this->mdl_clients->form_value('client_einvoicing_version');
-if ($req_einvoicing->show_table > 0)
+// Check logged user e-invoice fields (show_table 0 = ok, 1 = no)
+if ($req_einvoicing->users[$_SESSION['user_id']]->show_table > 0)
 {
     $disabled = ' disabled="disabled"';
 ?>
@@ -57,7 +58,7 @@ if ($req_einvoicing->show_table > 0)
 
     </div>
 
-    <div id="div_show_einvoicing">
+    <div class="toggle_einvoicing">
         <div class="col-xs-12 col-md-6">
 
             <div class="form-group">
@@ -82,88 +83,77 @@ foreach ($xml_templates as $xml_key => $xml_template)
                 </p>
             </div>
         </div>
-
 <?php
-$class_checks = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning'];
-$user_link = anchor('/users/form/' . $req_einvoicing->user_id, trans('user'));
+$class_checks = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning']; // Checkboxe icons
+$base         = 'address_1 zip city country company vat_id'; // Field names
+$keys         = explode(' ', $base); // To array
+$lang         = explode(' ', strtr($base, ['_1' => ''])); // Translation vars name
+// Users loop
+foreach($req_einvoicing->users as $user_id => $user)
+{
+    if ($user->show_table)
+    {
+        $title_tip = ' data-toggle="tooltip" data-placement="bottom" title="' . trans('edit'); // Tooltip helper ! Need add: . '"'
+        $user_link = anchor('/users/form/' . $user_id, trans('user'), $title_tip . ' ' . htmlsc($user->user_name) . '"'); // ! Need add: . '"'
+        $open      = $user_id == $_SESSION['user_id'] && $req_einvoicing->users[$_SESSION['user_id']]->show_table;
+        $me        = $user_id == $_SESSION['user_id'];
 ?>
         <!-- check if mandatory e-invoicing fields are empty -->
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
+        <div class="col-xs-12 col-md-6 einvoice-user-check-lists collapse<?php echo $open ? ' in" aria-expanded="true' : '" aria-expanded="false'; ?>">
+            <div class="form-group" data-toggle="tooltip" data-placement="top" title="<?php _htmlsc($user->user_name); ?>">
                 <div class="table-responsive">
-                <table class="table table-hover table-condensed table-bordered no-margin<?php echo $disabled ? '' : ' hidden'; ?>">
-                    <thead>
-                        <tr>
-                            <th><?php _trans('required_fields'); ?></th>
-                            <th style="min-width: 20%; text-align: center;"><?php echo $user_link; ?></th>
-                            <th style="min-width: 20%; text-align: center;"><?php _trans('client'); ?></th>
-                        </tr>
-                    </thead>
+                    <table class="table table-hover table-condensed table-bordered no-margin">
+                        <thead class="text-center">
+                            <tr>
+                                <th><?php _trans('required_fields'); ?></th>
+                                <th class="text-center" style="min-width:20%;"><?php _trans('client'); ?></th>
+                                <th class="text-center" style="min-width:20%;"><?php echo $user_link; ?></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-center alert-<?php echo $me ? 'danger' : 'warning'; ?>" title="<?php _trans('username'); ?>">
+                                    <small class="te te-1 dib"><i class="fa fa-fw fa-user"></i><?php _htmlsc($user->user_name); ?></small>
+                                </th>
+                            </tr>
+                        </tfoot>
 
-                    <tbody>
-                        <tr<?php echo $req_einvoicing->tr_show_address_1 ? '' : ' class="hidden"'; ?>>
-                            <td><?php echo trans('street_address'); ?></td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->user_address_1] ?>"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->client_address_1] ?>"></i>
-                            </td>
-                        </tr>
-
-                        <tr<?php echo $req_einvoicing->tr_show_zip ? '' : ' class="hidden"'; ?>>
-                            <td><?php _trans('zip_code'); ?></td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->user_zip] ?>"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->client_zip] ?>"></i>
-                            </td>
-                        </tr>
-
-                        <tr<?php echo $req_einvoicing->tr_show_city ? '' : ' class="hidden"'; ?>>
-                            <td><?php _trans('city'); ?></td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->user_city] ?>"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->client_city] ?>"></i>
-                            </td>
-                        </tr>
-
-                        <tr<?php echo $req_einvoicing->tr_show_country ? '' : ' class="hidden"'; ?>>
-                            <td><?php _trans('country'); ?></td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->user_country] ?>"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->client_country] ?>"></i>
-                            </td>
-                        </tr>
-
-                        <tr<?php echo $req_einvoicing->tr_show_company ? '' : ' class="hidden"'; ?>>
-                            <td><?php echo trans('company') . ' ' . trans('name'); ?></td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->user_company] ?>"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->client_company] ?>"></i>
-                            </td>
-                        </tr>
-
-                        <tr<?php echo $req_einvoicing->tr_show_vat_id ? '' : ' class="hidden"'; ?>>
-                            <td><?php _trans('vat_id'); ?></td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->user_vat_id] ?>"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="<?php echo $class_checks[$req_einvoicing->client_vat_id] ?>"></i>
-                            </td>
-                        </tr>
-                    </tbody>
+                        <tbody>
+<?php
+        // Loop on required keys
+        foreach($keys as $l => $key)
+        {
+            // tr_show_* (attr name)
+            $tr_show_key = 'tr_show_' . $key;
+            // Show it in Errors (1)
+            if ($user->$tr_show_key)
+            {
+                // Prepare some stuff
+                $c_icon = '<i class="' . $class_checks[$req_einvoicing->clients[$client_id]->$key] . '"></i>';
+                $u_icon = '<i class="' . $class_checks[$user->$key] . '"></i>';
+?>
+                            <tr>
+                                <td><?php _trans($lang[$l]); ?></td>
+                                <td class="text-center">
+                                    <?php echo anchor('clients/form/' . $client_id . '#client_' . $key, $c_icon, $title_tip  . ' #' . trans($lang[$l]). ' (' . trim(trans('field')) . ')"'); ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo anchor('users/form/' . $user_id . '#user_' . $key, $u_icon, $title_tip . ' ' . htmlsc($user->user_name) . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'); ?>
+                                </td>
+                            </tr>
+<?php
+            } // tr show
+        } // End Foreach $keys
+?>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
+<?php
+    } // End if user->show_table
+} // End foreach einvoicing->users
+
+?>
     </div>
 </div>

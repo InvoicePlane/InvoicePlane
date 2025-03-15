@@ -9,9 +9,21 @@
 */
 /*
 |   =========================================================
+|   BS3 fix block table .collapse.in e-invoice in client view
+|   =========================================================
+*/
+
+table.collapse.in{
+  display:table;
+}
+
+
+/*
+|   =========================================================
 |   Select2 and inputs Style for good height and colors
 |   =========================================================
 */
+
 @import "inputs-style";
 
 /*
@@ -45,6 +57,33 @@ img {
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
+}
+
+/*
+|   =========================================================
+|   Text Ellipsis helper
+|   =========================================================
+*/
+.dib {
+  display:inline-block;
+}
+
+.db {
+  display:block;
+}
+
+.te {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  max-width: 160px;
+  @for $i from 1 to 10 {
+    // do stuff
+    &.te-#{$i} {
+      max-width: #{$i}0vw;
+    }
+  }
+
 }
 
 /*
