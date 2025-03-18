@@ -17,7 +17,7 @@ if ($invoice_tax_rates)
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
 <?php
-if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id != 4)
+if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id >= 4)
 {
 ?>
             <button class="btn btn-success disabled">
