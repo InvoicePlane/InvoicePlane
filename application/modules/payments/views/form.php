@@ -18,11 +18,6 @@
                 $('#payment_method_id').prop('disabled', false);
             }
         });
-
-        $(document).ready(function(){
-            $('#btn-cancel').attr('onclick', "window.location.href = '<?php echo site_url() ?>/payments'");
-        });
-
     });
 </script>
 
@@ -41,7 +36,7 @@ if ($payment_id)
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('payment_form'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons'); ?>
+        <?php $this->layout->load_view('layout/header_buttons', ['attribute_cancel' => 'onclick="window.location.href = `' . site_url('payments') . '`;"']); ?>
     </div>
 
     <div id="content">
