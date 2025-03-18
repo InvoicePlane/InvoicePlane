@@ -32,7 +32,14 @@ foreach ($invoices as $invoice)
                         <td><?php echo format_currency($invoice->invoice_balance); ?></td>
                         <td>
                             <div class="options btn-group btn-group-sm">
-<?php // fix 404 when balance = 0.00
+                                <a class="btn btn-default" href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-eye"></i> <?php _trans('view'); ?>
+                                </a>
+                                <a class="btn btn-default" target="_blank" href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-print"></i> <?php _trans('pdf'); ?>
+                                </a>
+<?php
+    // fix 404 when balance = 0.00
     if ($enable_online_payments && $invoice->invoice_balance > 0 && $invoice->invoice_status_id != 4)
     {
 ?>
@@ -51,12 +58,6 @@ foreach ($invoices as $invoice)
     }
 ?>
 
-                                <a class="btn btn-default" href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>">
-                                    <i class="fa fa-eye"></i> <?php _trans('view'); ?>
-                                </a>
-                                <a class="btn btn-default" target="_blank" href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>">
-                                    <i class="fa fa-print"></i> <?php _trans('pdf'); ?>
-                                </a>
                             </div>
                         </td>
                     </tr>
