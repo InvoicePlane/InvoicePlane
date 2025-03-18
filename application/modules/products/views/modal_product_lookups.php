@@ -47,12 +47,15 @@
             });
         });
 
-        // Toggle checkbox when click on row
-        $('#products_table tr').click(function (event) {
-            if (event.target.type !== 'checkbox') {
-                $(':checkbox', this).trigger('click');
-            }
-        });
+        // Add on rows a click event to Toggle they checkbox
+        function addClickTrToggleCheck (){
+            $('#products_table tr').click(function (event) {
+                if (event.target.type !== 'checkbox') {
+                    $(':checkbox', this).trigger('click');
+                }
+            });
+        }
+        addClickTrToggleCheck(); // init row click event ! important
 
         // Reset the form
         $('#product-reset-button').click(function () {
@@ -64,9 +67,9 @@
             lookup_url += Math.floor(Math.random() * 1000) + '/?';
             lookup_url += "&reset_table=true";
 
-            // Reload modal with settings
+            // Reload to default & add rows click event
             window.setTimeout(function () {
-                product_table.load(lookup_url);
+                product_table.load(lookup_url, addClickTrToggleCheck);
             }, 250);
         });
 
@@ -99,9 +102,9 @@
                 lookup_url += "&filter_product=" + filter_product;
             }
 
-            // Reload modal with settings
+            // Reload by filtered & add rows click event
             window.setTimeout(function () {
-                product_table.load(lookup_url);
+                product_table.load(lookup_url, addClickTrToggleCheck);
             }, 250);
         }
 
