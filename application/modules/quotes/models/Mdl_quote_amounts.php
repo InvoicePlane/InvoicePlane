@@ -105,19 +105,11 @@ class Mdl_Quote_Amounts extends CI_Model
     {
         $this->db->where('quote_id', $quote_id);
         $quote_data = $this->db->get('ip_quotes')->row();
-
-        $quote_data->quote_discount_percent = $quote_data->quote_discount_percent == null ? 0.0 : $quote_data->quote_discount_percent;
-        $quote_data->quote_discount_amount  = $quote_data->quote_discount_amount  == null ? 0.0 : $quote_data->quote_discount_amount;
-
-        // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
-        if ($quote_data->quote_discount_percent && $quote_data->quote_discount_amount)
-        {
-            $quote_data->quote_discount_amount = 0.0;
-        }
-
-        $total            = (float)number_format($quote_total,                        $this->decimal_places, '.', '');
-        $discount_amount  = (float)number_format($quote_data->quote_discount_amount,  $this->decimal_places, '.', '');
-        $discount_percent = (float)number_format($quote_data->quote_discount_percent, $this->decimal_places, '.', '');
+// not my job to cntrl & fix '0.00' is not 0.0 && discount amount allways 0.00 (legacy.on)
+        // Prevent NULL in number format
+        $total            = (float)number_format((float)$quote_total,                        $this->decimal_places, '.', '');
+        $discount_amount  = (float)number_format((float)$quote_data->quote_discount_amount,  $this->decimal_places, '.', '');
+        $discount_percent = (float)number_format((float)$quote_data->quote_discount_percent, $this->decimal_places, '.', '');
 
         $total = $total - $discount_amount;
         $total = $total - round(($total / 100 * $discount_percent), $this->decimal_places);

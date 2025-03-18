@@ -148,19 +148,10 @@ class Mdl_Invoice_Amounts extends CI_Model
     {
         $this->db->where('invoice_id', $invoice_id);
         $invoice_data = $this->db->get('ip_invoices')->row();
-
-        $invoice_data->invoice_discount_percent = $invoice_data->invoice_discount_percent == null ? 0.0 : $invoice_data->invoice_discount_percent;
-        $invoice_data->invoice_discount_amount  = $invoice_data->invoice_discount_amount  == null ? 0.0 : $invoice_data->invoice_discount_amount;
-
-        // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
-        if ($invoice_data->invoice_discount_percent && $invoice_data->invoice_discount_amount)
-        {
-            $invoice_data->invoice_discount_amount = 0.0;
-        }
-
-        $total            = (float)number_format($invoice_total,                          $this->decimal_places, '.', '');
-        $discount_amount  = (float)number_format($invoice_data->invoice_discount_amount,  $this->decimal_places, '.', '');
-        $discount_percent = (float)number_format($invoice_data->invoice_discount_percent, $this->decimal_places, '.', '');
+        // Prevent NULL in number_format
+        $total            = (float)number_format((float)$invoice_total,                          $this->decimal_places, '.', '');
+        $discount_amount  = (float)number_format((float)$invoice_data->invoice_discount_amount,  $this->decimal_places, '.', '');
+        $discount_percent = (float)number_format((float)$invoice_data->invoice_discount_percent, $this->decimal_places, '.', '');
 
         $total = $total - $discount_amount;
         $total = $total - round(($total / 100 * $discount_percent), $this->decimal_places);
