@@ -229,6 +229,12 @@ class Mdl_Invoices extends Response_Model
         ];
         unset($invoice); // Free memory
 
+        // Update the discounts - since v1.6.3
+        $this->where('invoice_id', $target_id)->update('ip_invoices', [
+            'invoice_discount_percent' => $global_discount['percent'],
+            'invoice_discount_amount'  => $global_discount['amount'],
+        ]);
+
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
@@ -268,6 +274,8 @@ class Mdl_Invoices extends Response_Model
             $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
 
+
+
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
         $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
@@ -276,6 +284,7 @@ class Mdl_Invoices extends Response_Model
         foreach ($custom_fields as $field) {
             $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
+
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
@@ -293,11 +302,18 @@ class Mdl_Invoices extends Response_Model
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
         $invoice = $this->get_by_id($source_id); // This is the original invoice
         $global_discount = [
-            'amount'         => $invoice->invoice_discount_amount,
-            'percent'        => $invoice->invoice_discount_percent,
+            'amount'         => 0 - $invoice->invoice_discount_amount,
+            'percent'        => 0 - $invoice->invoice_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
         ];
+
+        // Update the discounts - since v1.6.3
+        $this->where('invoice_id', $target_id)->update('ip_invoices', [
+            'invoice_discount_percent' => $global_discount['percent'],
+            'invoice_discount_amount'  => $global_discount['amount'],
+        ]);
+
         unset($invoice); // Free memory
 
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();

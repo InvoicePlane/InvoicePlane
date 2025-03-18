@@ -202,6 +202,12 @@ class Mdl_Quotes extends Response_Model
         ];
         unset($quote); // Free memory
 
+        // Update the discounts - since v1.6.3
+        $this->where('quote_id', $target_id)->update('ip_quotes', [
+            'quote_discount_percent' => $global_discount['percent'],
+            'quote_discount_amount'  => $global_discount['amount'],
+        ]);
+
         $quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
 
         foreach ($quote_items as $quote_item) {
