@@ -201,6 +201,9 @@ $(function () {
         $('input[name="' + csrf_token_name + '"]').prop('value', Cookies.get(csrf_cookie_name));
     });
 
+    // Set the default options for all instances of Select2
+    $.fn.select2.defaults.set('selectionCssClass', ':all:');
+
     // Correct the height of the content area
     var $content = $('#content'),
         $html = $('html');

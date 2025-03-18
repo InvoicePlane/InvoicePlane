@@ -36,6 +36,13 @@ button, input, optgroup, select {
 .form-group .select2-container {
     width: 100% !important;
 }
+
+// Applying bootstrap has-error styling to a select2 element
+.has-error .select2-selection {
+    border-color: $state-danger-text !important;
+    background-color: $state-danger-bg !important;
+}
+
 /*
 |   =========================================================
 |   Overide colors select2 of default Theme
