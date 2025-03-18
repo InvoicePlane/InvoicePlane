@@ -125,7 +125,7 @@ class Ajax extends Admin_Controller
             // Generate new invoice number if needed
             $invoice_number = $this->input->post('invoice_number');
 
-            if (empty($invoice_number) && $invoice_status != 1)
+            if (empty($invoice_number) && $invoice_status_id != 1)
             {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
                 $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
