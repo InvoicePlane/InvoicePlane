@@ -44,14 +44,13 @@ class Mdl_Quote_Item_Amounts extends CI_Model
         else
         {
             $item_discount = 0.0; // For total & tax calculation after all discounts applied Proportionally by item
-            if($global_discount['percent'] > 0)
-            {
-                $item_discount = round(($item_subtotal * ($global_discount['percent'] / 100)), 2);
-            }
-
-            if($global_discount['amount'] > 0 && $global_discount['items_subtotal'] != 0) // Prevent divide per 0
+            if($global_discount['amount'] != 0 && $global_discount['items_subtotal'] != 0) // Prevent divide per 0
             {
                 $item_discount = round($global_discount['amount'] * ($item_subtotal / $global_discount['items_subtotal']), 2);
+            }
+            if($global_discount['percent'] != 0) // Percent per default
+            {
+                $item_discount = round(($item_subtotal * ($global_discount['percent'] / 100)), 2);
             }
 
             $global_discount['item'] += $item_discount; // for Mdl_quote_amounts calculation

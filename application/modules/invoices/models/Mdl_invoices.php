@@ -302,8 +302,8 @@ class Mdl_Invoices extends Response_Model
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
         $invoice = $this->get_by_id($source_id); // This is the original invoice
         $global_discount = [
-            'amount'         => 0 - $invoice->invoice_discount_amount,
-            'percent'        => 0 - $invoice->invoice_discount_percent,
+            'amount'         => $invoice->invoice_discount_amount,
+            'percent'        => $invoice->invoice_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
         ];
