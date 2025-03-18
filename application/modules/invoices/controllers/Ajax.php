@@ -37,8 +37,8 @@ class Ajax extends Admin_Controller
         {
             $items = json_decode($this->input->post('items'));
 
-            $invoice_discount_percent = $this->input->post('invoice_discount_percent') === '' ? 0.0 : $this->input->post('invoice_discount_percent');
-            $invoice_discount_amount  = $this->input->post('invoice_discount_amount')  === '' ? 0.0 : $this->input->post('invoice_discount_amount');
+            $invoice_discount_percent = (float) $this->input->post('invoice_discount_percent');
+            $invoice_discount_amount  = (float) $this->input->post('invoice_discount_amount');
 
             // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
             if ($invoice_discount_percent && $invoice_discount_amount)
@@ -62,7 +62,7 @@ class Ajax extends Admin_Controller
             // New discounts (for legacy_calculation false) - since v1.6.3 Need if taxes applied after discounts
             $global_discount =
             [
-                'amount'         => $invoice_discount_amount ? standardize_amount($invoice_discount_amount) : 0.0,
+                'amount'         => $invoice_discount_amount  ? standardize_amount($invoice_discount_amount)  : 0.0,
                 'percent'        => $invoice_discount_percent ? standardize_amount($invoice_discount_percent) : 0.0,
                 'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
                 'items_subtotal' => $items_subtotal,
@@ -128,7 +128,7 @@ class Ajax extends Admin_Controller
             if (empty($invoice_number) && $invoice_status_id != 1)
             {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
-                $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
+                $invoice_number   = $this->mdl_invoices->get_invoice_number($invoice_group_id);
             }
 
             // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard

@@ -35,8 +35,8 @@ class Ajax extends Admin_Controller
         if ($this->mdl_quotes->run_validation('validation_rules_save_quote')) {
             $items = json_decode($this->input->post('items'));
 
-            $quote_discount_percent = $this->input->post('quote_discount_percent') === '' ? 0.0 : $this->input->post('quote_discount_percent');
-            $quote_discount_amount  = $this->input->post('quote_discount_amount')  === '' ? 0.0 : $this->input->post('quote_discount_amount');
+            $quote_discount_percent = (float) $this->input->post('quote_discount_percent');
+            $quote_discount_amount  = (float) $this->input->post('quote_discount_amount');
 
             // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
             if ($quote_discount_percent && $quote_discount_amount)
@@ -205,7 +205,7 @@ class Ajax extends Admin_Controller
 
         if ($this->mdl_quote_tax_rates->run_validation())
         {
-            // Only Legacy calculation have global taxes - since v1.6.3 -yep
+            // Only Legacy calculation have global taxes - since v1.6.3
             config_item('legacy_calculation') && $this->mdl_quote_tax_rates->save();
 
             $response = [
@@ -485,9 +485,12 @@ class Ajax extends Admin_Controller
         ]);
 
         if ($this->mdl_invoices->run_validation()) {
-            // Get the quote
-            $quote = $this->mdl_quotes->get_by_id($this->input->post('quote_id'));
 
+            // Get the quote
+            $quote_id = $this->input->post('quote_id');
+            $quote    = $this->mdl_quotes->get_by_id($quote_id);
+
+            // Create new invoice
             $invoice_id = $this->mdl_invoices->create(null, false);
 
             // Update the discounts
@@ -497,7 +500,7 @@ class Ajax extends Admin_Controller
             $this->db->update('ip_invoices');
 
             // Save the invoice id to the quote
-            $this->db->where('quote_id', $this->input->post('quote_id'));
+            $this->db->where('quote_id', $quote_id);
             $this->db->set('invoice_id', $invoice_id);
             $this->db->update('ip_quotes');
 
