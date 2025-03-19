@@ -61,7 +61,7 @@
                     </span>
                     <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus">
 <?php if ( ! empty($client)) : ?>
-                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
+                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
 <?php endif; ?>
                     </select>
                 </div>
