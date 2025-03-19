@@ -14,10 +14,11 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * @param mixed object $client (or id - since 1.6.3)
+ * @param obj|int $client (or id - since 1.6.3)
+ * @param bool    $show_title - since 1.6.3 (todo: false in modal change/find client) not in search (SQL)
  * @return string
  */
-function format_client($client) :string
+function format_client($client, $show_title = true) :string
 {
     // Get an id
     if ($client && is_numeric($client)) {
@@ -29,12 +30,12 @@ function format_client($client) :string
     // Not exist or find, Stop.
     if (empty($client->client_name)) return '';
 
-    $client_title='';
-    if(property_exists($client, 'client_title')){
-        $client_title = $client->client_title === 'custom' ? '' : $client->client_title ?? '';
+    $client_title = '';
+    if($show_title && property_exists($client, 'client_title')){
+        $client_title = $client->client_title != 'custom' ? ucfirst(trans($client->client_title)) . ' ' : ''; // Fixed: Could not find the language line "" (in client_helper when the (new(162)) 'client_title' is empty
     }
 
-    return ucfirst(trans($client_title)) . ' ' . $client->client_name . (empty($client->client_surname) ? '' : ' ' . $client->client_surname);
+    return $client_title . $client->client_name . (empty($client->client_surname) ? '' : ' ' . $client->client_surname);
 }
 
 /**

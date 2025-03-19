@@ -57,10 +57,9 @@
                                     autofocus="autofocus" required>
                                 <?php
                                 foreach ($clients as $client) {
-                                    echo '<option value="' . $client->client_id . '">';
-                                    echo htmlsc(format_client($client)) . '</option>';
+                                    echo '<option value="' . $client->client_id . '">' . htmlsc(format_client($client)) . '</option>';
                                 }
-    ?>
+?>
                             </select>
                         </div>
 

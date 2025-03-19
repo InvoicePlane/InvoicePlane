@@ -30,7 +30,7 @@ foreach ($recurring_invoices as $invoice)
                                 <?php echo $invoice->invoice_number; ?>
                             </a>
                         </td>
-                        <td><?php echo anchor('clients/view/' . $invoice->client_id, format_client($invoice)); ?></td>
+                        <td><?php echo anchor('clients/view/' . $invoice->client_id, htmlsc(format_client($invoice))); ?></td>
                         <td><?php echo date_from_mysql($invoice->recur_start_date); ?></td>
                         <td><?php echo date_from_mysql($invoice->recur_end_date); ?></td>
                         <td><?php _trans($recur_frequencies[$invoice->recur_frequency]); ?></td>

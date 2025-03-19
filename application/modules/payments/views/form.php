@@ -57,7 +57,7 @@ if (! $payment_id)
 ?>
                         <option value="<?php echo $invoice->invoice_id; ?>"
                                 <?php check_select($this->mdl_payments->form_value('invoice_id'), $invoice->invoice_id); ?>>
-                            <?php echo $invoice->invoice_number . ' - ' . format_client($invoice) . ' - ' . format_currency($invoice->invoice_balance); ?>
+                            <?php echo $invoice->invoice_number . ' - ' . htmlsc(format_client($invoice)) . ' - ' . format_currency($invoice->invoice_balance); ?>
                         </option>
 <?php
     } // End foreach
@@ -66,7 +66,7 @@ else
 {
 ?>
                     <option value="<?php echo $payment->invoice_id; ?>">
-                        <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance); ?>
+                        <?php echo $payment->invoice_number . ' - ' . htmlsc(format_client($payment)) . ' - ' . format_currency($payment->invoice_balance); ?>
                     </option>
 <?php
 }
