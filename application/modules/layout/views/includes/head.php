@@ -62,7 +62,11 @@
 
         $(document).on('click', '#btn_copy_invoice', function () {
             var invoice_id = $(this).data('invoice-id');
-            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
+            var client_id = $(this).data('client-id');
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {
+                invoice_id: invoice_id,
+                client_id: client_id
+            });
         });
 
         $(document).on('click', '#btn_create_credit', function () {

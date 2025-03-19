@@ -313,7 +313,8 @@ if ($invoice->invoice_balance != 0)
                 </li>
                 <li>
                     <a href="#" id="btn_copy_invoice"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-invoice-id="<?php echo $invoice_id; ?>"
+                       data-client-id="<?php echo $invoice->client_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_invoice'); ?>
                     </a>

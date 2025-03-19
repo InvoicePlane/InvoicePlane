@@ -317,6 +317,7 @@ class Ajax extends Admin_Controller
             'invoices/mdl_invoices',
             'invoice_groups/mdl_invoice_groups',
             'tax_rates/mdl_tax_rates',
+            'clients/mdl_clients',
         ]);
 
         $data = [
@@ -324,6 +325,7 @@ class Ajax extends Admin_Controller
             'tax_rates'      => $this->mdl_tax_rates->get()->result(),
             'invoice_id'     => $this->security->xss_clean($this->input->post('invoice_id')),
             'invoice'        => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))->get()->row(),
+            'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
         ];
 
         $this->layout->load_view('invoices/modal_copy_invoice', $data);
