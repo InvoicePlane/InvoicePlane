@@ -107,7 +107,7 @@ foreach ($languages as $language)
                 <div class="panel panel-default"><!-- eInvoicing panel -->
 
                     <div class="panel-heading">
-                        e-<?php _htmlsc(ucfirst(trans('invoicing')) . ' (' . trans('information')); ?>)
+                        e-<?php _trans('invoicing'); ?>
                         <span class="pull-right toggle_einvoicing<?php
                               echo ! $req_einvoicing->show_table
                                    ? ''

@@ -270,7 +270,7 @@ foreach ($custom_fields as $custom_field)
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
-                            e-<?php _htmlsc(ucfirst(trans('invoicing')) . ' (' . trans('information')); ?>)
+                            e-<?php _trans('invoicing'); ?>
 <?php
 // Panel e-Invoicing checks
 $title_tip = ' data-toggle="tooltip" data-placement="bottom" title="' . trans('edit'); // Tooltip helper ! Need add: . '"'
