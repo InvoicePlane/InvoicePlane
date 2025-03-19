@@ -59,7 +59,7 @@ elseif ($enable_online_payments)
                 <div class="col-xs-12 col-md-9 clearfix">
                     <div class="pull-left">
 
-                        <h3><?php _htmlcs(format_client($invoice)); ?></h3>
+                        <h3><?php _htmlsc(format_client($invoice)); ?></h3>
 
                         <div class="client-address">
                             <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
