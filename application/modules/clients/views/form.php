@@ -108,7 +108,7 @@ foreach ($languages as $language)
 
                     <div class="panel-heading">
                         e-<?php _trans('invoicing'); ?>
-                        <span class="pull-right toggle_einvoicing<?php
+                        <span class="<?php echo $client_id ? 'pull-right' : 'hidden'; ?> toggle_einvoicing<?php
                               echo ! $req_einvoicing->show_table
                                    ? ''
                                    : ' btn btn-xs btn-default cursor-pointer alert-' . $user_toggle . '"

@@ -128,12 +128,8 @@ class Clients extends Admin_Controller
             redirect('clients/' . $where . '/' . $id);
         }
 
-        $req_einvoicing = new stdClass();
-        if ($id)
-        {
-            // Get a check of filled Required (client and users) fields for e-invoicing
-            $req_einvoicing = $this->get_req_fields_einvoice($this->db->from('ip_clients')->where('client_id', $id)->get()->row());
-        }
+        // Get a check of filled Required (client and users) fields for e-Invoicing
+        $req_einvoicing = $this->get_req_fields_einvoice(($new_client || ! $id) ? null : $this->db->from('ip_clients')->where('client_id', $id)->get()->row());
 
         if ($id && ! $this->input->post('btn_submit'))
         {
@@ -386,16 +382,17 @@ class Clients extends Admin_Controller
      * @param int $user_id : get result only with it (or all if null)
      * @return object $req_fields
      */
-    public function get_req_fields_einvoice($client, $user_id = ''): object
+    public function get_req_fields_einvoice($client = null, $user_id = ''): object
     {
+        $cid = empty($client->client_id) ? 0 : $client->client_id; // Client is New (form) or exist
         $c = new stdClass;
         // check if required (e-invoicing) fields are filled in?
-        $c->address_1 = $client->client_address_1 != '' ? 0 : 1;
-        $c->zip       = $client->client_zip       != '' ? 0 : 1;
-        $c->city      = $client->client_city      != '' ? 0 : 1;
-        $c->country   = $client->client_country   != '' ? 0 : 1;
-        $c->company   = $client->client_company   != '' ? 0 : 1;
-        $c->vat_id    = $client->client_vat_id    != '' ? 0 : 1;
+        $c->address_1 = $cid ? ($client->client_address_1 != '' ? 0 : 1) : 0;
+        $c->zip       = $cid ? ($client->client_zip       != '' ? 0 : 1) : 0;
+        $c->city      = $cid ? ($client->client_city      != '' ? 0 : 1) : 0;
+        $c->country   = $cid ? ($client->client_country   != '' ? 0 : 1) : 0;
+        $c->company   = $cid ? ($client->client_company   != '' ? 0 : 1) : 0;
+        $c->vat_id    = $cid ? ($client->client_vat_id    != '' ? 0 : 1) : 0;
         // little tweak to run with or without vat_id
         if ($c->company + $c->vat_id == 2)
         {
@@ -410,11 +407,11 @@ class Clients extends Admin_Controller
         }
 
         $c->einvoicing_empty_fields = $total_empty_fields_client;
-        $c->show_table = ! $c->einvoicing_empty_fields;
+        $c->show_table              = ! $c->einvoicing_empty_fields;
 
         // Begin to save results
         $req_fields = new stdClass;
-        $req_fields->clients[$client->client_id] = $c;
+        $req_fields->clients[$cid] = $c;
         // Init user in session (tricks to make it 1st)
         $req_fields->users[$_SESSION['user_id']] = null;
 
