@@ -71,10 +71,9 @@ $user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : '
                         <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (B2B <?php _trans('required_field'); ?>)">
                             <label for="client_company"><?php _trans('client_company'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <input id="client_company" name="client_company" type="text" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_company', true); ?>">
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
                         <div class="form-group no-margin">
@@ -159,57 +158,52 @@ else
                         <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
                             <label for="client_address_1"><?php _trans('street_address'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <input type="text" name="client_address_1" id="client_address_1" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_address_1', true); ?>">
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
 
                         <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('optional'); ?>)">
                             <label for="client_address_2"><?php _trans('street_address_2'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <input type="text" name="client_address_2" id="client_address_2" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_address_2', true); ?>">
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
 
                         <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
                             <label for="client_city"><?php _trans('city'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <input type="text" name="client_city" id="client_city" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_city', true); ?>">
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
 
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('optional'); ?>)">
+                        <div class="form-group">
                             <label for="client_state"><?php _trans('state'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <input type="text" name="client_state" id="client_state" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_state', true); ?>">
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
 
                         <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
                             <label for="client_zip"><?php _trans('zip_code'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <input type="text" name="client_zip" id="client_zip" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_zip', true); ?>">
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
 
                         <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
                             <label for="client_country"><?php _trans('country'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <select name="client_country" id="client_country" class="form-control">
                                     <option value=""><?php _trans('none'); ?></option>
                                     <?php foreach ($countries as $cldr => $country) { ?>
@@ -218,10 +212,8 @@ else
                                         ><?php echo $country ?></option>
                                     <?php } ?>
                                 </select>
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
-
 <?php
 foreach ($custom_fields as $custom_field)
 {
@@ -327,10 +319,9 @@ foreach ($custom_fields as $custom_field)
                         <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (B2B <?php _trans('required_field'); ?>)">
                             <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
 
-                            <div class="controls input-group">
+                            <div class="controls">
                                 <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_vat_id', true); ?>">
-                                <span class="input-group-addon">e-<?php _trans('invoicing'); ?></span>
                             </div>
                         </div>
 
