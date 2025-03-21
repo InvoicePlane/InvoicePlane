@@ -15,7 +15,7 @@ if ( ! defined('BASEPATH')) {
 
 /**
  * @param obj|int $client (or id - since 1.6.3)
- * @param bool    $show_title - since 1.6.3 (todo: false in modal change/find client) not in search (SQL)
+ * @param bool    $show_title - since 1.6.3
  * @return string
  */
 function format_client($client, $show_title = true) :string
@@ -31,8 +31,8 @@ function format_client($client, $show_title = true) :string
     if (empty($client->client_name)) return '';
 
     $client_title = '';
-    if($show_title && property_exists($client, 'client_title')){
-        $client_title = $client->client_title != 'custom' ? ucfirst(trans($client->client_title)) . ' ' : ''; // Fixed: Could not find the language line "" (in client_helper when the (new(162)) 'client_title' is empty
+    if($show_title && ! empty($client->client_title)) {
+        $client_title = $client->client_title != 'custom' ? ucfirst(trans($client->client_title)) . ' ' : '';
     }
 
     return $client_title . $client->client_name . (empty($client->client_surname) ? '' : ' ' . $client->client_surname);
