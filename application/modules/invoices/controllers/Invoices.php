@@ -189,12 +189,14 @@ class Invoices extends Admin_Controller
 
         $items            = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
 
-        // Legacy calculation false: helper to Alert id not standard taxes (number_helper) - since 1.6.3
-        $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
-
         // Name of e-invoice library or false
         $einvoice_name = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
         $einvoice_name = $einvoice_name ? get_xml_full_name($invoice->client_einvoicing_version) : false;
+
+        if ($einvoice_name) {
+            // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
+            $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
+        }
 
         $this->layout->set(
             [

@@ -5,7 +5,7 @@ if ($this->config->item('disable_read_only') == true)
 }
 // Little helper
 $its_mine = $this->session->__get('user_id') == $invoice->user_id;
-$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-
+$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
 ?>
 
 <script>
@@ -433,7 +433,7 @@ if ($invoice->invoice_sign == -1)
 
                                 <div class="invoice-properties">
 <?php if ($einvoice_name) : ?>
-                                    <span class="pull-right"
+                                    <span class="pull-right" id="e_invoice_active"
                                           data-toggle="tooltip" data-placement="bottom"
                                           title="e-<?php echo trans('invoice') . ' ' . trans('version') . PHP_EOL . $einvoice_name; ?>  🗸"
                                     >
@@ -442,9 +442,9 @@ if ($invoice->invoice_sign == -1)
                                     <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control"
 <?php if ($invoice->invoice_number) : ?>
-                                                value="<?php echo $invoice->invoice_number; ?>"
+                                           value="<?php echo $invoice->invoice_number; ?>"
 <?php else : ?>
-                                                placeholder="<?php _trans('not_set'); ?>"
+                                           placeholder="<?php _trans('not_set'); ?>"
 <?php endif; ?>
                                            <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
                                     >

@@ -144,8 +144,9 @@ const csrf_cookie_name = document.querySelector('meta[name="csrf_cookie_name"]')
 const legacy_calculation = parseInt(document.querySelector('meta[name="legacy_calculation"]').getAttribute('content')); // Default: 1 (legacy on)
 
 // For Quote & Invoice views. Verify and set alert on item tax fields. All or not rule - since v1.6.3
-function check_items_tax_usages(e){
-    if (legacy_calculation) return; // Not for legacy (todo? global taxes?)
+function check_items_tax_usages(e) {
+    // Not for legacy & only when e-Ivoice active(todo? global taxes?)
+    if (legacy_calculation || ! document.querySelector('#e_invoice_active')) return;
 
     let x; // Loop index
     let oks = [0,0]; // Counters: No tax, Tax.

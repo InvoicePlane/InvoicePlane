@@ -1,7 +1,7 @@
 <?php
 // Little helper
 $its_mine = $this->session->__get('user_id') == $quote->user_id;
-$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-
+$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
 ?>
 
 <script>
@@ -16,7 +16,7 @@ $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert
             check_items_tax_usages();
         });
 
-<?php if (!$items) { ?>
+<?php if ( ! $items) { ?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
 <?php } ?>
 
@@ -329,13 +329,21 @@ if ($legacy_calculation)
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="quote-properties">
-                                    <label for="quote_number">
-                                        <?php _trans('quote'); ?> #
-                                    </label>
+<?php if ($einvoice_name) : ?>
+                                    <span class="pull-right" id="e_invoice_active"
+                                          data-toggle="tooltip" data-placement="bottom"
+                                          title="e-<?php echo trans('invoice') . ' ' . trans('version') . PHP_EOL . $einvoice_name; ?>  🗸"
+                                    >
+                                    <i class="fa fa-file-code-o"></i>&nbsp;<?php echo $einvoice_name; ?>&nbsp;<i class="fa fa-check-square-o text-success"></i></span>
+<?php endif; ?>
+                                    <label for="quote_number"><?php _trans('quote'); ?> #</label>
                                     <input type="text" id="quote_number" class="form-control"
-                                        <?php if ($quote->quote_number) : ?> value="<?php echo $quote->quote_number; ?>"
-                                        <?php else : ?> placeholder="<?php _trans('not_set'); ?>"
-                                        <?php endif; ?>>
+<?php if ($quote->quote_number) : ?>
+                                           value="<?php echo $quote->quote_number; ?>"
+<?php else : ?>
+                                           placeholder="<?php _trans('not_set'); ?>"
+<?php endif; ?>
+                                    >
                                 </div>
                                 <div class="quote-properties has-feedback">
                                     <label for="quote_date_created">

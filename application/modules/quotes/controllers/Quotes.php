@@ -96,7 +96,7 @@ class Quotes extends Admin_Controller
             ]
         );
 
-        $this->load->helper(['custom_values', 'dropzone']);
+        $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
 
         $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
         $this->db->reset_query();
@@ -148,14 +148,21 @@ class Quotes extends Admin_Controller
 
         $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 
-        // Legacy calculation false: helper to Alert id not standard taxes (number_helper) - since 1.6.3
-        $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
+        // Name of e-invoice library or false
+        $einvoice_name = ($quote->client_einvoicing_active > 0 && $quote->client_einvoicing_version != '');
+        $einvoice_name = $einvoice_name ? get_xml_full_name($quote->client_einvoicing_version) : false;
+
+        if ($einvoice_name) {
+            // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
+            $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
+        }
 
         $this->layout->set(
             [
                 'quote'           => $quote,
                 'items'           => $items,
                 'quote_id'        => $quote_id,
+                'einvoice_name'   => $einvoice_name,
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
