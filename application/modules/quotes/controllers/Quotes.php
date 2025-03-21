@@ -157,12 +157,18 @@ class Quotes extends Admin_Controller
             $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
         }
 
+
+        // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
+        $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
+        $change_user = $change_user->user_type > 1;
+
         $this->layout->set(
             [
                 'quote'           => $quote,
                 'items'           => $items,
                 'quote_id'        => $quote_id,
                 'einvoice_name'   => $einvoice_name,
+                'change_user'       => $change_user,
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),

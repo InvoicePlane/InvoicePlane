@@ -94,7 +94,7 @@ class Invoices extends Admin_Controller
     {
         $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
 
-        $fileName = basename($invoice); // Strip directory traversal sequences
+        $fileName = urldecode(basename($invoice)); // Strip directory traversal sequences
         $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
 
         if ($filePath === false || ! str_starts_with($filePath, $safeBaseDir)) {
@@ -198,12 +198,17 @@ class Invoices extends Admin_Controller
             $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
         }
 
+        // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
+        $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
+        $change_user = $change_user->user_type > 1;
+
         $this->layout->set(
             [
                 'invoice'           => $invoice,
                 'items'             => $items,
                 'invoice_id'        => $invoice_id,
                 'einvoice_name'     => $einvoice_name,
+                'change_user'       => $change_user,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units'             => $this->mdl_units->get()->result(),

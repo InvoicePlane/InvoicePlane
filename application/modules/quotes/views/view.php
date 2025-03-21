@@ -194,7 +194,11 @@ echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have
         <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing') ;?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
             <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . $quote->quote_number : trans('id') . ': ' . $quote->quote_id); ?>
         </span>
-
+<?php
+// Nb Admins > 1 only
+if ($change_user)
+{
+?>
         <a data-toggle="tooltip" data-placement="bottom"
            title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>"
            href="<?php echo site_url('users/form/' . $quote->user_id); ?>">
@@ -210,7 +214,8 @@ if ($quote->quote_status_id == 1)
               data-toggle="tooltip" data-placement="bottom"
               title="<?php _trans('change_user'); ?>"></span>
 <?php
-} // End if
+    } // End if draft
+} // End if change_user
 ?>
     </h1>
 

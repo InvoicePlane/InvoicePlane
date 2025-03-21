@@ -229,7 +229,11 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
         <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing') ;?>: <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>">
             <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : trans('id') . ': ' . $invoice->invoice_id); ?>
         </span>
-
+<?php
+// Nb Admins > 1 only
+if ($change_user)
+{
+?>
         <a data-toggle="tooltip" data-placement="bottom"
            title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>"
            href="<?php echo site_url('users/form/' . $invoice->user_id); ?>">
@@ -237,15 +241,16 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
                 <span class="hidden-xs"><?php _htmlsc($invoice->user_name); ?></span>
         </a>
 <?php
-if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
-{
+    if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id)
+    {
 ?>
 
         <span id="invoice_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
               data-toggle="tooltip" data-placement="bottom"
               title="<?php _trans('change_user'); ?>"></span>
 <?php
-} // End if
+    } // End if draft
+} // End if change_user
 ?>
     </h1>
 
