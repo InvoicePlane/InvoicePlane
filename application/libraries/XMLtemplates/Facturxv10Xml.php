@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+defined('BASEPATH') || exit('No direct script access allowed');
 
 /*
  * InvoicePlane
@@ -8,46 +9,28 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @copyright   Copyright (c) 2012 - 2025 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
- * @Note        Zugferd 2.3 & Factur-X 1.0.7 compatibility
+ * @Note        Zugferd 2.3 & Factur-X 1.0.7 compatibible
  *
  * @Important   Need LEGACY_CALCULATION=false (In ip_config)
  *               For embeded xml are valid (discounts calculation)
- *
- * @todos?
- *  settings('default_item_decimals')
- *  settings('tax_rate_decimal_places')
- *  Like in (and/or calls) currencyElement, facturxFormatedFloat functions
  */
 
 /**
  * Class Facturxv10Xml
  */
-class Facturxv10Xml
-{
-    public $invoice;
-    public $items;
-    public $doc;
-    public $filename;
-    public $currencyCode;
-    public $root;
-    public $notax;
-    public $itemsSubtotalGroupedByTaxPercent = [];
 
+include_once 'BaseXml.php'; // ! important
+
+class Facturxv10Xml extends BaseXml
+{
     public function __construct($params)
     {
-        $this->invoice = $params['invoice'];
-        $this->items = $params['items'];
-        $this->filename = $params['filename'];
-        $this->currencyCode = get_setting('currency_code');
-        $this->set_invoice_discount_amount_total();
-        $this->setItemsSubtotalGroupedByTaxPercent();
-        $this->notax = empty($this->itemsSubtotalGroupedByTaxPercent);
+        parent::__construct($params);
     }
 
-    public function xml()
+    public function xml(): void
     {
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
-        $this->doc->formatOutput = true;
+        parent::xml();
 
         $this->root = $this->xmlRoot();
         $this->root->appendChild($this->xmlExchangedDocumentContext());
@@ -55,7 +38,7 @@ class Facturxv10Xml
         $this->root->appendChild($this->xmlSupplyChainTradeTransaction());
 
         $this->doc->appendChild($this->root);
-        $this->doc->save(UPLOADS_FOLDER . 'temp/' . $this->filename . '.xml');
+        $this->doc->save(UPLOADS_TEMP_FOLDER . $this->filename . '.xml');
         // return $this->doc->saveXML();
     }
 
@@ -235,7 +218,7 @@ class Facturxv10Xml
         $node->appendChild($this->xmlSpecifiedTradeSettlementPaymentMeans());
 
         // taxes
-        if( ! $this->notax) // #wip: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of VAT
+        if( ! $this->notax) // hard? todo? legacy_calculation: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of global VAT's
         {
             foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal)
             {
@@ -280,7 +263,7 @@ class Facturxv10Xml
     // helper to make SpecifiedTradeAllowanceCharge 's
     protected function addSpecifiedTradeAllowanceCharge_discount( & $node)
     {
-        // note: If empty itemsSubtotalGroupedByTaxPercent ($this->notax) Only one `SpecifiedTradeAllowanceCharge` ;)
+        // Note: If empty itemsSubtotalGroupedByTaxPercent ($this->notax) Only one `SpecifiedTradeAllowanceCharge` ;)
         if($this->invoice->invoice_discount_amount_total > 0 && $this->itemsSubtotalGroupedByTaxPercent)
         {
             $category = 'S';
@@ -331,61 +314,6 @@ class Facturxv10Xml
         }
     }
 
-    /*
-     * Add missing discount invoice vars [for factur-x validation](ecosio.com/en/peppol-and-xml-document-validator)
-     *
-     * invoice_subtotal                    Scope TaxBasisTotalAmount
-     * invoice_discount_amount_total       Scope addSpecifiedTradeAllowanceCharge_discount()
-     * invoice_discount_amount_subtotal    Scope SpecifiedTradeAllowanceCharge > ActualAmount>
-     */
-    protected function set_invoice_discount_amount_total()
-    {
-        $item_discount = $item_subtotal = $discount = 0.0;
-
-        foreach ($this->items as $item)
-        {
-            $item_discount += $item->item_discount;
-            $item_subtotal += $item->item_subtotal;
-        }
-
-        if($this->invoice->invoice_discount_amount > 0)
-        {
-            $discount = $this->invoice->invoice_discount_amount;
-        }
-        elseif($this->invoice->invoice_discount_percent > 0)
-        {
-            $discount = $item_subtotal * ($this->invoice->invoice_discount_percent / 100);
-        }
-        $this->invoice->invoice_subtotal = $this->formattedFloat($item_subtotal);
-        $this->invoice->invoice_discount_amount_total = $this->formattedFloat($item_discount + $discount);
-        $this->invoice->invoice_discount_amount_subtotal = $this->formattedFloat($discount);
-     }
-
-    protected function setItemsSubtotalGroupedByTaxPercent()
-    {
-        $result = [];
-        foreach ($this->items as $item)
-        {
-            if ($item->item_tax_rate_percent == 0)
-            {
-                continue;
-            }
-
-            if ( ! isset($result[$item->item_tax_rate_percent]))
-            {
-                $result[$item->item_tax_rate_percent] = [0, 0];
-            }
-
-            $result[$item->item_tax_rate_percent] =
-            [
-                $result[$item->item_tax_rate_percent][0] += ($item->item_total - $item->item_tax_total),
-                $result[$item->item_tax_rate_percent][1] += $item->item_subtotal, // without discounts
-            ];
-
-        }
-        $this->itemsSubtotalGroupedByTaxPercent = $result; // help to dispatch invoice global discount tax rate + same for vat's of invoices
-    }
-
     protected function xmlApplicableTradeTax($percent, $subtotal, $category = 'S')
     {
         $node = $this->doc->createElement('ram:ApplicableTradeTax');
@@ -409,14 +337,13 @@ class Facturxv10Xml
     /**
      * @param string $name
      * @param number $amount
-     * @param int    $nb_decimals
      * @param bool   $add_code
      *
      * return node
      */
-    protected function currencyElement($name, $amount, $nb_decimals = 2, $add_code = false)
+    protected function currencyElement($name, $amount, $add_code = false)
     {
-        $el = $this->doc->createElement($name, $this->formattedFloat($amount, $nb_decimals));
+        $el = $this->doc->createElement($name, $this->formattedFloat($amount, $this->decimal_places));
         if($add_code)
         {
             $el->setAttribute('currencyID', $this->currencyCode);
@@ -427,24 +354,6 @@ class Facturxv10Xml
     // ===========================================================================
     // elements helpers
     // ===========================================================================
-
-    /**
-     * @return string|null
-     */
-    function formattedDate($date)
-    {
-        if ($date)
-        {
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-            return $date->format('Ymd');
-        }
-        return '';
-    }
-
-    function formattedFloat($amount, $nb_decimals = 2)
-    {
-        return number_format(floatval($amount), $nb_decimals, '.', '');
-    }
 
     protected function xmlSpecifiedTradeSettlementPaymentMeans()
     {
@@ -482,7 +391,7 @@ class Facturxv10Xml
         }
         // TaxBasisTotalAmount (montant total hors TVA)
         $node->appendChild($this->currencyElement('ram:TaxBasisTotalAmount', $invoiceTotal)); // ApplicableTradeTax>CategoryCode= O || S FIX
-        $node->appendChild($this->currencyElement('ram:TaxTotalAmount', $this->invoice->invoice_item_tax_total, 2, true));
+        $node->appendChild($this->currencyElement('ram:TaxTotalAmount', $this->invoice->invoice_item_tax_total, true));
         $node->appendChild($this->currencyElement('ram:GrandTotalAmount', $this->invoice->invoice_total));
         $node->appendChild($this->currencyElement('ram:TotalPrepaidAmount', $this->invoice->invoice_paid));
         $node->appendChild($this->currencyElement('ram:DuePayableAmount', $this->invoice->invoice_balance));
@@ -555,10 +464,11 @@ class Facturxv10Xml
 
     /**
      * @param string $name
+     * @param mixed  $quantity
      */
     protected function quantityElement($name, $quantity)
     {
-        $el = $this->doc->createElement($name, $this->formattedFloat($quantity, 4));
+        $el = $this->doc->createElement($name, $this->formattedFloat($quantity, $this->item_decimals));
         $el->setAttribute('unitCode', 'C62');
         return $el;
     }
