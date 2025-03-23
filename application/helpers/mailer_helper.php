@@ -77,6 +77,7 @@ function email_invoice(
     $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
     // Check parsed emails before phpmail - since v1.6.3
+    $errors = [];
     if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
@@ -141,6 +142,7 @@ function email_quote(
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
     // Check parsed emails before phpmail - since v1.6.3
+    $errors = [];
     if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
