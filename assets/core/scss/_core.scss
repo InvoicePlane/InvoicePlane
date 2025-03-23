@@ -13,10 +13,19 @@
 |   =========================================================
 */
 
-table.collapse.in{
-  display:table;
+table.collapse.in {
+  display: table;
 }
 
+/*
+|   =========================================================
+|   Fix alert error from CI core return a paragraph (block)
+|   =========================================================
+*/
+
+.alert-dismissible p {
+  display: inline;
+}
 
 /*
 |   =========================================================
