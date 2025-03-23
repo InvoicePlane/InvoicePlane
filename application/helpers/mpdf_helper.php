@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  *
  * eInvoicing add-ons by Verony
  */
@@ -24,8 +24,8 @@ if ( ! defined('BASEPATH')) {
  * @param null $password
  * @param null $isInvoice
  * @param null $is_guest
- * @param bool $embed_xml
- * @param null $associated_files
+ * @param bool $embed_xml        (eInvoicing)
+ * @param null $associated_files (eInvoicing)
  *
  * @return string
  *
@@ -38,7 +38,7 @@ function pdf_create(
     $password = null,
     $isInvoice = null,
     $is_guest = null,
-    bool $embed_xml = false,    // eInvoicing++
+    bool $embed_xml = false,
     ?array $associated_files = []
 ) {
     $CI = & get_instance();
@@ -65,15 +65,15 @@ function pdf_create(
         $mpdf->showImageErrors = true;
     }
 
-    // Include (embedded) XML if enabled for the client     // eInvoicing++
-    if ($embed_xml) {                                       // eInvoicing++
-        $CI->load->helper('e-invoice');             // eInvoicing++
+    // eInvoicing: Include (embedded) XML if enabled for the client
+    if ($embed_xml) {
+        $CI->load->helper('e-invoice');
         // mpdf only creates PDF/A-1b files and cannot create the required PDF/A-3b files!
         $mpdf->pdf_version = '1.7';
         $mpdf->PDFA        = true;
         $mpdf->PDFAauto    = true;
         $mpdf->SetAssociatedFiles($associated_files);
-        $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files[0]['name']));          // eInvoicing++
+        $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files[0]['name']));
     }
 
     // Set a password if set for the voucher
@@ -108,7 +108,7 @@ function pdf_create(
     $mpdf->WriteHTML((string) $html);
 
     if ($isInvoice) {
-        $pdfFiles = glob(UPLOADS_TEMP_FOLDER . '*' . $filename . '.pdf');
+        $pdfFiles = glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf');
 
         foreach ($pdfFiles as $file) {
             $invoice_array[] = $file;
@@ -124,13 +124,7 @@ function pdf_create(
             return $invoice_array[0];
         }
 
-        // eInvoicing++
-        $archived_file = UPLOADS_TEMP_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
-        if (get_setting('change_filename_prefix') == 1) {
-            $archived_file = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
-        }
-        // eInvoicing++
-
+        $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
         $mpdf->Output($archived_file, 'F');
 
         if ($stream) {

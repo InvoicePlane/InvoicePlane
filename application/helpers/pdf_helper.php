@@ -124,22 +124,13 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $invoice->quote_id);
     }
 
-    // START eInvoicing++ changes
-    $CI->load->helper('settings');
-    $file_prefix = date('Y-m-d') . '_' . trans('invoice');
-    $replace     = ['.', ' ', '/', '\\', '#'];
-
-    if (get_setting('change_filename_prefix') == 1)
-    {
-        $user_item   = get_setting('add_filename_prefix');
-        $file_prefix = str_replace($replace, '', $invoice->$user_item);
-    }
-    $filename = $file_prefix . '_' . str_replace($replace, '', $invoice->invoice_number);
+    // START eInvoicing
+    $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
 
     // Generate the appropriate UBL/CII
     $xml_id    = $invoice->client_einvoicing_version;
     $generator = $xml_id;
-    $embed_xml = '';
+    $embed_xml = false;
     $path      = APPPATH . 'helpers/XMLconfigs/';
     if (file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php')
     {
@@ -161,11 +152,6 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             'path'           => generate_xml_invoice_file($invoice, $items, $generator, $filename),
         ]];
     }
-    else
-    {
-        // Do not embed the XML file if the client e-Invoicing is not active
-        $embed_xml = false;
-    }
 
     $data = [
         'invoice'             => $invoice,
@@ -185,7 +171,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $retval = pdf_create(
         html:             $html,
-        filename:         trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number),
+        filename:         $filename,
         stream:           $stream,
         password:         $invoice->invoice_password,
         isInvoice:        true,
@@ -203,26 +189,23 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . $filename . '.xml'))
     {
-        // delete the tmp CII-XML file
+        // Delete the tmp CII-XML file
         unlink(UPLOADS_TEMP_FOLDER . $filename . '.xml');
     }
 
-    // Create the UBL XML file
-    if ($xml_id != '' && $embed_xml != 'true')
+    // Create the UBL XML file if not embed & the client e-Invoicing active
+    if ($xml_id != '' && $embed_xml !== true)
     {
         // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!
-        if (get_setting('change_filename_prefix') == 0)
-        {
-            $filename = date('Y-m-d') . '_' . $filename;
-        }
+        $filename = date('Y-m-d') . '_' . $filename;
 
         if ($invoice->client_einvoicing_active == 1)
         {
             generate_xml_invoice_file($invoice, $items, $generator, $filename);
         }
     }
+    // END eInvoicing
 
-    // END eInvoicing++ changes
     return $retval;
 }
 
