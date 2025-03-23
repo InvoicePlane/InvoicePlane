@@ -67,7 +67,7 @@ class Validator extends MY_Model
      * @param str $value
      * @param int $key
      *
-     * @return booln|ull
+     * @return bool|null
      */
     public function validate_singlechoice($value, $key)
     {

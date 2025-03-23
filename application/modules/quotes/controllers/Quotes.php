@@ -168,7 +168,7 @@ class Quotes extends Admin_Controller
                 'items'           => $items,
                 'quote_id'        => $quote_id,
                 'einvoice_name'   => $einvoice_name,
-                'change_user'       => $change_user,
+                'change_user'     => $change_user,
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),

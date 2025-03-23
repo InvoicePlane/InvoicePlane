@@ -120,10 +120,7 @@ foreach ($languages as $language)
                             </span>
                             <i id="einvoice_users_check_fa_toggle" class="fa fa-<?php echo $nb ? 'user' . ($me ? '' : 's') : 'file-code-o'; ?> fa-margin"></i>
                         </span>
-
-
                     </div>
-
 
                     <div class="panel-body">
 <?php

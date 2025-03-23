@@ -121,18 +121,18 @@ else
 ?>
 
                 <select id="payment_method_id" name="payment_method_id"
-                    class="form-control simple-select" data-minimum-results-for-search="Infinity"
-                    <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity"
+                        <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
 <?php
-                    foreach ($payment_methods as $payment_method)
-                    {
+                foreach ($payment_methods as $payment_method)
+                {
 ?>
-                        <option value="<?php echo $payment_method->payment_method_id; ?>"
-                                <?php echo $this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id ? 'selected="selected"' : ''; ?>>
-                            <?php echo $payment_method->payment_method_name; ?>
-                        </option>
+                    <option value="<?php echo $payment_method->payment_method_id; ?>"
+                            <?php echo $this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id ? 'selected="selected"' : ''; ?>>
+                        <?php echo $payment_method->payment_method_name; ?>
+                    </option>
 <?php
-                    }
+                }
 ?>
                 </select>
             </div>
