@@ -37,14 +37,14 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
     return $path;
 }
 
-function include_rdf($embedXml)
+function include_rdf($embedXml, $urn = 'factur-x')
 {
-    $rdf = '<rdf:Description rdf:about="" xmlns:zf="urn:zugferd:pdfa:CrossIndustryDocument:invoice:1p0#">' . "\n";
-    $rdf .= '  <zf:DocumentType>INVOICE</zf:DocumentType>' . "\n";
-    $rdf .= '  <zf:DocumentFileName>' . $embedXml . '</zf:DocumentFileName>' . "\n";
-    $rdf .= '  <zf:Version>1.0</zf:Version>' . "\n";
-    $rdf .= '  <zf:ConformanceLevel>COMFORT</zf:ConformanceLevel>' . "\n";
-    $rdf .= '</rdf:Description>' . "\n";
+    $rdf = '<rdf:Description rdf:about="" xmlns:zf="urn:' . $urn . ':pdfa:CrossIndustryDocument:invoice:1p0#">' . "\n"
+         . '  <zf:DocumentType>INVOICE</zf:DocumentType>' . "\n"
+         . '  <zf:DocumentFileName>' . $embedXml . '</zf:DocumentFileName>' . "\n"
+         . '  <zf:Version>1.0</zf:Version>' . "\n"
+         . '  <zf:ConformanceLevel>COMFORT</zf:ConformanceLevel>' . "\n"
+         . '</rdf:Description>' . "\n";
 
     return $rdf;
 }
