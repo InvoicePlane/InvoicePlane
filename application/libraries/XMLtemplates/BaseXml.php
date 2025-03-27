@@ -30,16 +30,19 @@ class BaseXml extends stdClass
     public $notax;
     public $item_decimals = 2;
     public $decimal_places = 2;
+    public $legacy_calculation = false;
     public $itemsSubtotalGroupedByTaxPercent = [];
 
     public function __construct($params)
     {
-        $this->invoice        = $params['invoice'];
-        $this->items          = $params['items'];
-        $this->filename       = $params['filename'];
-        $this->currencyCode   = get_setting('currency_code');
-        $this->item_decimals  = get_setting('default_item_decimals');
-        $this->decimal_places = get_setting('tax_rate_decimal_places');
+        $this->invoice            = $params['invoice'];
+        $this->items              = $params['items'];
+        $this->filename           = $params['filename'];
+        $this->currencyCode       = get_setting('currency_code');
+        $this->item_decimals      = get_setting('default_item_decimals');
+        $this->decimal_places     = get_setting('tax_rate_decimal_places');
+        $this->legacy_calculation = config_item('legacy_calculation');
+
         $this->set_invoice_discount_amount_total();
         $this->setItemsSubtotalGroupedByTaxPercent();
         $this->notax = empty($this->itemsSubtotalGroupedByTaxPercent);
@@ -53,7 +56,9 @@ class BaseXml extends stdClass
     }
 
     /*
-     * Add missing discount invoice vars [for factur-x validation](ecosio.com/en/peppol-and-xml-document-validator)
+     * Add missing some discount invoice vars
+     * [for factur-x validation](ecosio.com/en/peppol-and-xml-document-validator)
+     * [for ubl 2.4 validation](validator.invoice-portal.de)
      *
      * invoice_subtotal                    Scope TaxBasisTotalAmount
      * invoice_discount_amount_total       Scope addSpecifiedTradeAllowanceCharge_discount()
@@ -78,6 +83,7 @@ class BaseXml extends stdClass
             $discount = $item_subtotal * ($this->invoice->invoice_discount_percent / 100);
         }
         $this->invoice->invoice_subtotal                 = $this->formattedFloat($item_subtotal);
+        $this->invoice->items_discount_amount_total      = $this->formattedFloat($item_discount); // ublv24
         $this->invoice->invoice_discount_amount_total    = $this->formattedFloat($item_discount + $discount);
         $this->invoice->invoice_discount_amount_subtotal = $this->formattedFloat($discount);
     }
@@ -97,8 +103,7 @@ class BaseXml extends stdClass
                 $result[$item->item_tax_rate_percent] = [0, 0];
             }
 
-            $result[$item->item_tax_rate_percent] =
-            [
+            $result[$item->item_tax_rate_percent] = [
                 $result[$item->item_tax_rate_percent][0] += ($item->item_total - $item->item_tax_total),
                 $result[$item->item_tax_rate_percent][1] += $item->item_subtotal, // without discounts
             ];

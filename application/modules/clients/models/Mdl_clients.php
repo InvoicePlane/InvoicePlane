@@ -105,6 +105,9 @@ class Mdl_Clients extends Response_Model
             'client_tax_code' => [
                 'field' => 'client_tax_code',
             ],
+            'client_ubl_eas_code' => [
+                'field' => 'client_ubl_eas_code',
+            ],
             'client_invoicing_contact' => [
                 'field' => 'client_invoicing_contact',
                 'rules' => 'trim',

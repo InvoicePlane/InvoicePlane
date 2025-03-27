@@ -8,7 +8,7 @@ if ( ! defined('BASEPATH')) {
  * InvoicePlane
  *
  * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @copyright   Copyright (c) 2012 - 2025 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  *
@@ -68,14 +68,17 @@ function get_xml_template_files()
 
         if (file_exists($path . $xml_config_files[$key] . '.php') && include $path . $xml_config_files[$key] . '.php')
         {
+            // By default config filename
             $generator = $xml_config_files[$key];
+            // Use other template? (Optional)
             if ( ! empty($xml_setting['generator']))
             {
-                $generator = $xml_setting['generator']; // Optionnal
+                $generator = $xml_setting['generator'];
             }
-
+            // The template to generate the e-invoice file exist?
             if (file_exists(APPPATH . 'libraries/XMLtemplates/' . $generator . 'Xml.php'))
             {
+                // Add the name in list + translated country
                 $xml_template_items[$xml_config_files[$key]] = $xml_setting['full-name']
                 . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
             }
@@ -90,7 +93,7 @@ function get_xml_template_files()
  *
  * @param $xml_Id
  *
- * @scope modules/clients/views/view.php
+ * @scope modules/clients/views/(form|view).php
  *
  * @return mixed
  */
@@ -102,4 +105,20 @@ function get_xml_full_name($xml_id)
 
         return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
     }
+}
+
+/**
+ * @return array
+ */
+
+function get_ubl_eas_codes()
+{
+    $ubl_eas_codes = APPPATH . 'config' . DIRECTORY_SEPARATOR . 'peppol_eas_code_list.csv';
+    $rows          = array_map(function($v){return str_getcsv($v, ";");}, file($ubl_eas_codes));
+    $header        = array_shift($rows);
+    $csv           = [];
+    foreach($rows as $row) {
+        $csv[] = array_combine($header, $row);
+    }
+    return $csv;
 }

@@ -331,6 +331,22 @@ foreach ($custom_fields as $custom_field)
                             </div>
                         </div>
 
+                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (UBL <?php _trans('required_field'); ?>)">
+                            <label for="client_ubl_eas_code"><?php _trans('ubl_eas_code'); ?></label>
+<?php
+$eas_code = $this->mdl_clients->form_value('client_ubl_eas_code', true);
+?>
+                            <select name="client_ubl_eas_code" id="client_ubl_eas_code"
+                                class="form-control simple-select">
+                                <?php foreach ($ubl_eas_codes as $code) { ?>
+                                    <option value="<?php echo $code['Code']; ?>" <?php check_select($eas_code, $code['Code']); ?>>
+                                        <?php echo $code['Code']; ?> <?php echo $code['Code name']; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                            <p class="help-block"><?php _trans('ubl_eas_code_help'); ?></p>
+                        </div>
+
 <?php
 foreach ($custom_fields as $custom_field)
 {

@@ -1,0 +1,106 @@
+Code;Source;Deprecated;First version;Last version;Code name;Remark
+0002;ICD;FALSE;1;;System Information et Repertoire des Entreprise et des Etablissements: SIRENE;
+0007;ICD;FALSE;1;;Organisationsnummer;
+0009;ICD;FALSE;1;;SIRET-CODE;
+0037;ICD;FALSE;1;;LY-tunnus;
+0060;ICD;FALSE;1;;Data Universal Numbering System (D-U-N-S Number);
+0088;ICD;FALSE;1;;EAN Location Code;
+0096;ICD;FALSE;1;;DANISH CHAMBER OF COMMERCE Scheme (EDIRA compliant);
+0097;ICD;FALSE;1;;FTI - Ediforum Italia, (EDIRA compliant);
+0106;ICD;FALSE;1;;Vereniging van Kamers van Koophandel en Fabrieken in Nederland (Association of Chambers of Commerce and Industry in the Netherlands), Scheme (EDIRA compliant);
+0130;ICD;FALSE;4;;Directorates of the European Commission;
+0135;ICD;FALSE;1;;SIA Object Identifiers;
+0142;ICD;FALSE;1;;SECETI Object Identifiers;
+0147;ICD;FALSE;9;;Standard Company Code;
+0151;ICD;FALSE;2;;Australian Business Number (ABN) Scheme;
+0170;ICD;FALSE;9;;Teikoku Company Code;
+0177;ICD;FALSE;13;;Odette International Limited ;
+0183;ICD;FALSE;3;;Numéro d'identification suisse des enterprises (IDE), Swiss Unique Business Identification Number (UIDB) ;
+0184;ICD;FALSE;1;;DIGSTORG;
+0188;ICD;FALSE;9;;Corporate Number of The Social Security and Tax Number System;
+0190;ICD;FALSE;1;;Dutch Originator's Identification Number;Replaces 9954
+0191;ICD;FALSE;1;;Centre of Registers and Information Systems of the Ministry of Justice;
+0192;ICD;FALSE;1;;Enhetsregisteret ved Bronnoysundregisterne ;Replaces 9908
+0193;ICD;FALSE;1;;UBL.BE party identifier;
+0194;ICD;FALSE;5;;KOIOS Open Technical Dictionary;
+0195;ICD;FALSE;1;;Singapore UEN identifier;
+0196;ICD;FALSE;1;;Kennitala - Iceland legal id for individuals and legal entities;Replaces 9917
+0198;ICD;FALSE;2;;ERSTORG;
+0199;ICD;FALSE;2;;Legal Entity Identifier (LEI);
+0200;ICD;FALSE;2;;Legal entity code (Lithuania);
+0201;ICD;FALSE;3;;Codice Univoco Unità Organizzativa iPA;Replaces 9921
+0202;ICD;FALSE;3;;Indirizzo di Posta Elettronica Certificata;
+0203;ICD;FALSE;4;;eDelivery Network Participant identifier;
+0204;ICD;FALSE;4;;Leitweg-ID;Replaces 9958
+0205;ICD;FALSE;9;;CODDEST;
+0208;ICD;FALSE;6;;Numero d'entreprise / ondernemingsnummer / Unternehmensnummer;Replaces 9956
+0209;ICD;FALSE;7;;GS1 identification keys;
+0210;ICD;FALSE;8;;CODICE FISCALE;Replaces 9907
+0211;ICD;FALSE;8;;PARTITA IVA;Replaces 9906
+0212;ICD;FALSE;8;;Finnish Organization Identifier;
+0213;ICD;FALSE;8;;Finnish Organization Value Add Tax Identifier;
+0215;ICD;FALSE;9;;Net service ID;
+0216;ICD;FALSE;9;;OVTcode;
+0217;ICD;FALSE;11;; The Netherlands Chamber of Commerce and Industry establishment number;
+0218;ICD;FALSE;12;;Unified registration number (Latvia);
+0221;ICD;FALSE;11;;The registered number of the qualified invoice issuer;
+0225;ICD;FALSE;11;;FRCTC ELECTRONIC ADDRESS;
+0230;ICD;FALSE;11;;National e-Invoicing Framework;
+0235;ICD;FALSE;13;;UAE Tax Identification Number (TIN);
+9901;PEPPOL;FALSE;2;;Danish Ministry of the Interior and Health;
+9902;PEPPOL;TRUE;1;1;The Danish Commerce and Companies Agency ;
+9904;PEPPOL;TRUE;1;1;Danish Ministry of Taxation, Central Customs and Tax Administration;
+9905;PEPPOL;TRUE;1;1;Danish VANS providers ;
+9906;PEPPOL;TRUE;1;9;Ufficio responsabile gestione partite IVA ;Replaced by 0211
+9907;PEPPOL;TRUE;1;9;TAX Authority ;Replaced by 0210
+9910;PEPPOL;FALSE;1;;Hungary VAT number;
+9913;PEPPOL;FALSE;1;;Business Registers Network ;
+9914;PEPPOL;FALSE;1;;Österreichische Umsatzsteuer-Identifikationsnummer ;
+9915;PEPPOL;FALSE;1;;Österreichisches Verwaltungs bzw. Organisationskennzeichen;
+9917;PEPPOL;TRUE;1;3;Kennitala - Iceland legal id for organizations and individuals;Replaced by 0196
+9918;PEPPOL;FALSE;1;;SOCIETY FOR WORLDWIDE INTERBANK FINANCIAL, TELECOMMUNICATION S.W.I.F.T;
+9919;PEPPOL;FALSE;1;;Kennziffer des Unternehmensregisters ;
+9920;PEPPOL;FALSE;1;;Agencia Española de Administración Tributaria ;
+9921;PEPPOL;TRUE;1;3;Indice delle Pubbliche Amministrazioni ;Replaced by 0201
+9922;PEPPOL;FALSE;1;;Andorra VAT number;
+9923;PEPPOL;FALSE;1;;Albania VAT number;
+9924;PEPPOL;FALSE;1;;Bosnia and Herzegovina VAT number;
+9925;PEPPOL;FALSE;1;;Belgium VAT number;
+9926;PEPPOL;FALSE;1;;Bulgaria VAT number;
+9927;PEPPOL;FALSE;1;;Switzerland VAT number;
+9928;PEPPOL;FALSE;1;;Cyprus VAT number;
+9929;PEPPOL;FALSE;1;;Czech Republic VAT number;
+9930;PEPPOL;FALSE;1;;Germany VAT number;
+9931;PEPPOL;FALSE;1;;Estonia VAT number;
+9932;PEPPOL;FALSE;1;;United Kingdom VAT number;
+9933;PEPPOL;FALSE;1;;Greece VAT number;
+9934;PEPPOL;FALSE;1;;Croatia VAT number;
+9935;PEPPOL;FALSE;1;;Ireland VAT number;
+9936;PEPPOL;FALSE;1;;Liechtenstein VAT number;
+9937;PEPPOL;FALSE;1;;Lithuania VAT number;
+9938;PEPPOL;FALSE;1;;Luxemburg VAT number;
+9939;PEPPOL;FALSE;1;;Latvia VAT number;
+9940;PEPPOL;FALSE;1;;Monaco VAT number;
+9941;PEPPOL;FALSE;1;;Montenegro VAT number;
+9942;PEPPOL;FALSE;1;;Macedonia, the former Yugoslav Republic of VAT number;
+9943;PEPPOL;FALSE;1;;Malta VAT number;
+9944;PEPPOL;FALSE;1;;Netherlands VAT number;
+9945;PEPPOL;FALSE;1;;Poland VAT number;
+9946;PEPPOL;FALSE;1;;Portugal VAT number;
+9947;PEPPOL;FALSE;1;;Romania VAT number;
+9948;PEPPOL;FALSE;1;;Serbia VAT number;
+9949;PEPPOL;FALSE;1;;Slovenia VAT number;
+9950;PEPPOL;FALSE;1;;Slovakia VAT number;
+9951;PEPPOL;FALSE;1;;San Marino VAT number;
+9952;PEPPOL;FALSE;1;;Turkey VAT number;
+9953;PEPPOL;FALSE;1;;Holy See (Vatican City State) VAT number;
+9955;PEPPOL;TRUE;1;10;Swedish VAT number;
+9956;PEPPOL;TRUE;1;7;Belgian Crossroad Bank of Enterprises ;Replaced by 0208
+9957;PEPPOL;FALSE;1;;French VAT number;
+9958;PEPPOL;TRUE;1;6;German Leitweg ID;Replaced by 0204
+9959;PEPPOL;FALSE;10;;Employer Identification Number (EIN, USA);
+AN;UNECE3155;0;2;;O.F.T.P. (ODETTE File Transfer Protocol);
+AQ ;UNECE3155;0;2;;X.400 address for mail text;
+AS ;UNECE3155;0;2;;AS2 exchange ;
+AU ;UNECE3155;0;2;;File Transfer Protocol;
+EM;UNECE3155;0;2;;Electronic mail;SMTP email

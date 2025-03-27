@@ -622,6 +622,8 @@ $lang = [
     'total_paid'                                   => 'Total Paid',
     'try_again'                                    => 'Try Again',
     'type'                                         => 'Type',
+    'ubl_eas_code'                                 => 'EAS code used in the UBL XML file (Electronic Address Scheme)',
+    'ubl_eas_code_help'                            => 'Choose a SchemeID code related to the previous field for the validity of the EndpointID in the PEPPOL BIS 3 XML file. <a target="_blank" href="https://docs.peppol.eu/poacc/billing/3.0/codelist/eas/">More information</a>',
     'unknown'                                      => 'Unknown',
     'updatecheck'                                  => 'Updatecheck',
     'updatecheck_failed'                           => 'Updatecheck failed! Check your network connection.',

@@ -216,17 +216,28 @@ foreach ($custom_fields as $custom_field)
                                            value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (UBL <?php _trans('required_field'); ?>)">
                                     <label for="user_tax_code"><?php _trans('tax_code'); ?></label>
                                     <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="user_subscribernumber"><?php _trans('user_subscriber_number'); ?></label>
-                                    <input type="text" name="user_subscribernumber" id="user_subscribernumber" class="form-control"
-                                           value="<?php echo $this->mdl_users->form_value('user_subscribernumber', true); ?>">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (UBL <?php _trans('required_field'); ?>)">
+                                    <label for="user_ubl_eas_code"><?php _trans('ubl_eas_code'); ?></label>
+<?php
+$eas_code = $this->mdl_users->form_value('user_ubl_eas_code', true);
+?>
+                                    <select name="user_ubl_eas_code" id="user_ubl_eas_code"
+                                        class="form-control simple-select">
+                                        <?php foreach ($ubl_eas_codes as $code) { ?>
+                                            <option value="<?php echo $code['Code']; ?>" <?php check_select($eas_code, $code['Code']); ?>>
+                                                <?php echo $code['Code']; ?> <?php echo $code['Code name']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                    <p class="help-block"><?php _trans('ubl_eas_code_help'); ?></p>
                                 </div>
+
 <?php
 foreach ($custom_fields as $custom_field)
 {
@@ -240,7 +251,7 @@ foreach ($custom_fields as $custom_field)
                             </div>
                         </div>
 
-                        <!-- e-Invoicing++ -->
+                        <!-- e-Invoicing -->
                         <div class="panel panel-default">
                             <div class="panel-heading"><?php _trans('bank_information'); ?></div>
 
@@ -283,6 +294,13 @@ if ($this->mdl_settings->setting('sumex') == '1')
                             <div class="panel-heading"><?php _trans('sumex_information'); ?></div>
 
                             <div class="panel-body">
+
+                                <div class="form-group">
+                                    <label for="user_subscribernumber"><?php _trans('user_subscriber_number'); ?></label>
+                                    <input type="text" name="user_subscribernumber" id="user_subscribernumber" class="form-control"
+                                           value="<?php echo $this->mdl_users->form_value('user_subscribernumber', true); ?>">
+                                </div>
+
                                 <div class="form-group">
                                     <label for="user_gln"><?php _trans('gln'); ?></label>
                                     <input type="text" name="user_gln" id="user_gln" class="form-control"
