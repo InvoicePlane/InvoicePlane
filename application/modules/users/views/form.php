@@ -109,7 +109,7 @@ else // Edit user
                                         <?php echo trans('use_system_language') ?>
                                     </option>
 <?php
-$usr_lang = $this->session->userdata('user_language');
+$usr_lang = $this->mdl_users->form_value('user_language');
 foreach ($languages as $language)
 {
 ?>
