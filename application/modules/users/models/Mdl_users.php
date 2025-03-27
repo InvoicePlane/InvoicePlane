@@ -121,8 +121,8 @@ class Mdl_Users extends Response_Model
             'user_tax_code' => [
                 'field' => 'user_tax_code',
             ],
-            'user_subscribernumber' => [
-                'field' => 'user_subscribernumber',
+            'user_ubl_eas_code' => [
+                'field' => 'user_ubl_eas_code',
             ],
             'user_invoicing_contact' => [
                 'field' => 'user_invoicing_contact',
@@ -144,6 +144,9 @@ class Mdl_Users extends Response_Model
                 'rules' => 'trim|xss_clean',
             ],
             // SUMEX
+            'user_subscribernumber' => [
+                'field' => 'user_subscribernumber',
+            ],
             'user_gln' => [
                 'field' => 'user_gln',
             ],
