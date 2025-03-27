@@ -113,12 +113,14 @@ function get_xml_full_name($xml_id)
 
 function get_ubl_eas_codes()
 {
-    $ubl_eas_codes = APPPATH . 'config' . DIRECTORY_SEPARATOR . 'peppol_eas_code_list.csv';
-    $rows          = array_map(function($v){return str_getcsv($v, ";");}, file($ubl_eas_codes));
-    $header        = array_shift($rows);
-    $csv           = [];
+    $file = APPPATH . 'config' . DIRECTORY_SEPARATOR . 'peppol_eas_code_list.csv';
+    $rows = array_map(function($v){return str_getcsv($v, ";");}, file($file));
+    $head = array_shift($rows);
+    $eas  = [];
     foreach($rows as $row) {
-        $csv[] = array_combine($header, $row);
+        if ($row[1] == 'ICD') {
+            $eas[] = array_combine($head, $row);
+        }
     }
-    return $csv;
+    return $eas;
 }
