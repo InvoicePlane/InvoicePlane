@@ -10,7 +10,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  *
- * @Note        Valid with https://test.peppolautoriteit.nl/validate & https://validator.invoice-portal.de/ & ecosio
+ * @Note        Valid with https://test.peppolautoriteit.nl/validate & https://validator.invoice-portal.de/
+ *                    & ecosio with OpenPeppol UBL Invoice (2024.11) (aka BIS Billing 3.0.18) rules
  * @Info        github.com/OpenPEPPOL/peppol-bis-invoice-3/blob/master/rules/examples
  *              docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/
  *

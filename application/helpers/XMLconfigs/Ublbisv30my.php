@@ -1,10 +1,10 @@
 <?php
-
+// OpenPeppol UBL Invoice (2024.11) (aka BIS Billing 3.0.18)
 defined('BASEPATH') || exit('No direct script access allowed');
 
 $xml_setting = [
-    'full-name'   => 'UBL PEPPOL v2.4',
-    'countrycode' => 'FR',
+    'full-name'   => 'UBL BIS Billing 3 (PEPPOL)',
+    'countrycode' => 'MY',
     'embedXML'    => false,
     'XMLname'     => 'e-invoice.xml',
     'generator'   => 'Ublv24',

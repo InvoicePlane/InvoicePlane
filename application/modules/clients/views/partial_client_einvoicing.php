@@ -64,7 +64,7 @@ if ($req_einvoicing->users[$_SESSION['user_id']]->show_table > 0)
             <div class="form-group">
                 <label for="client_einvoicing_version"><?php echo 'UBL / CII ' . trans('version'); ?></label>
 
-                <select name="client_einvoicing_version" id="client_einvoicing_version" class="form-control"<?php echo $disabled; ?>>
+                <select name="client_einvoicing_version" id="client_einvoicing_version" class="form-control simple-select"<?php echo $disabled; ?>>
                     <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($xml_templates as $xml_key => $xml_template)
