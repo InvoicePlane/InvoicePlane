@@ -1,7 +1,7 @@
 # Feature Request IP-939 Add e-invoice flow system
 ALTER TABLE `ip_users`
     ADD COLUMN user_ubl_eas_code VARCHAR(50) DEFAULT NULL AFTER `user_tax_code`,
-    ADD COLUMN user_bank VARCHAR(50) DEFAULT NULL AFTER `user_subscribernumber`,
+    ADD COLUMN user_bank VARCHAR(100) DEFAULT NULL AFTER `user_subscribernumber`,
     ADD COLUMN user_bic VARCHAR(11) DEFAULT NULL AFTER `user_iban`,
     ADD COLUMN user_remittance_tmpl VARCHAR(105) DEFAULT NULL AFTER `user_bic`,
     ADD COLUMN user_invoicing_contact VARCHAR(50) DEFAULT NULL AFTER `user_country`;

@@ -10,10 +10,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  *
- * @Note        Valid with https://test.peppolautoriteit.nl/validate & https://validator.invoice-portal.de/
- *                    & ecosio with OpenPeppol UBL Invoice (2024.11) (aka BIS Billing 3.0.18) rules
- * @Info        github.com/OpenPEPPOL/peppol-bis-invoice-3/blob/master/rules/examples
- *              docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/
+ * @Info        https://www.datypic.com/sc/ubl21
  *
  * Todo:        Why not for Credit note (but need positive amounts) and (maybe) little retail xml head
  */
@@ -34,6 +31,14 @@ class Ublv24Xml extends BaseXml
         $this->root = $this->xmlRoot();
         $this->root->appendChild($this->xmlAccountingSupplierParty());
         $this->root->appendChild($this->xmlAccountingCustomerParty());
+        // CIUS PT : [BR-CIUS-PT-66]-An Invoice shall at least have one Deliver to address group (BG-15).
+        if ( ! empty($this->options['Delivery'])) {
+            $nodeDelivery = $this->doc->createElement('cac:Delivery');
+            $nodeLocation = $this->doc->createElement('cac:DeliveryLocation');
+            $nodeLocation->appendChild($this->xmlAddress('client', 'Address'));
+            $nodeDelivery->appendChild($nodeLocation);
+            $this->root->appendChild($nodeDelivery);
+        }
         $this->root->appendChild($this->xmlPaymentMeans());
         $this->xmlPaymentTerms($this->root);
         // Invoice global discount (Optional)
@@ -57,19 +62,65 @@ class Ublv24Xml extends BaseXml
         $node->setAttribute('xmlns:cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
         $node->setAttribute('xmlns:cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
         $node->setAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
-        $node->appendChild($this->doc->createElement('cbc:CustomizationID', 'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0'));
-        $node->appendChild($this->doc->createElement('cbc:ProfileID', 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0'));
-        $node->appendChild($this->doc->createElement('cbc:ID', trans('invoice') . ' #' . $this->invoice->invoice_number)); // $this->filename Snippet1
+        // BIS 3:  urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0
+        $custom = 'urn:cen.eu:en16931:2017';
+        if ( ! empty($id = @$this->options['CustomizationID'])) {
+            $custom = $id;
+        }
+        $node->appendChild($this->doc->createElement('cbc:CustomizationID', $custom));
+        // Default ProfileID
+        $profile = 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0';
+        if ( ! empty($id = @$this->options['ProfileID'])) {
+            $profile = $id;
+        }
+        $node->appendChild($this->doc->createElement('cbc:ProfileID', $profile));
+        $invoiceNumber = trans('invoice') . ' #' . $this->invoice->invoice_number;
+        $node->appendChild($this->doc->createElement('cbc:ID', $invoiceNumber)); // $this->filename Snippet1
         $node->appendChild($this->doc->createElement('cbc:IssueDate', $this->formattedDate($this->invoice->invoice_date_created)));
         $node->appendChild($this->doc->createElement('cbc:DueDate', $this->formattedDate($this->invoice->invoice_date_due)));
-        $node->appendChild($this->doc->createElement('cbc:InvoiceTypeCode', '380'));
+        $node->appendChild($this->doc->createElement('cbc:InvoiceTypeCode', '380')); // 380 invoice, 381 credit note
         $node->appendChild($this->doc->createElement('cbc:DocumentCurrencyCode', $this->currencyCode));
-        // $node->appendChild($this->doc->createElement('cbc:AccountingCost', 'N/A')); // Optional : https://docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/cbc-AccountingCost/
-        // $node->appendChild($this->doc->createElement('cbc:BuyerReference', 'N/A')); // Optional : https://docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/cbc-BuyerReference/
+//      $node->appendChild($this->doc->createElement('cbc:AccountingCost', 'N/A')); // Optional : https://docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/cbc-AccountingCost/
+        if ( ! empty($this->options['BuyerReference'])) {
+            // Todo: where are these reference in InvoicePlane?
+            $node->appendChild($this->doc->createElement('cbc:BuyerReference', 'N/A')); // Optional : https://docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/cbc-BuyerReference/
+        }
         $ID = $this->doc->createElement('cbc:ID', 'N/A');
         $OrderReference = $this->doc->createElement('cac:OrderReference');
         $OrderReference->appendChild($ID);
         $node->appendChild($OrderReference);
+
+        // [ubl-BE-01]-At least two AdditionalDocumentReference elements must be present.
+        if ( ! empty($aRef = @$this->options['DocumentReference'])) {
+            if (is_array($aRef)) {
+                foreach ($aRef as $ref) {
+                    $docRefNode = $this->doc->createElement('cac:AdditionalDocumentReference');
+                    if ($ref[0] != 'url') {
+                        $docRefIdNode   = $this->doc->createElement('cbc:ID', $ref[0]);
+                        $docRefDescNode = $this->doc->createElement('cbc:DocumentDescription', $ref[1]);
+                    }
+                    elseif ($ref[0] == 'url') {
+                        $docRefIdNode   = $this->doc->createElement('cbc:ID', $invoiceNumber);
+                        $type = $this->invoice->invoice_sign > 0 ? 0 : 1; // 0 Invoice 1 CreditNote
+                        $docRefDescNode = $this->doc->createElement('cbc:DocumentDescription', $ref[1][$type]);
+
+                        $docAttachNode = $this->doc->createElement('cac:Attachment');
+                        $docExtRefNode = $this->doc->createElement('cac:ExternalReference');
+                        $docUriNode = $this->doc->createElement('cbc:URI', site_url('guest/view/invoice/' . $this->invoice->invoice_url_key));
+
+                        $docExtRefNode->appendChild($docUriNode);
+                        $docAttachNode->appendChild($docExtRefNode);
+                    }
+                    $docRefNode->appendChild($docRefIdNode);
+                    $docRefNode->appendChild($docRefDescNode);
+                    if (isset($docAttachNode)) {
+                        $docRefNode->appendChild($docAttachNode);
+                        unset($docAttachNode);
+                    }
+                    $node->appendChild($docRefNode);
+                }
+            }
+        }
 
         return $node;
     }
@@ -87,26 +138,33 @@ class Ublv24Xml extends BaseXml
     protected function xmlParty($who)
     {
         $node = $this->doc->createElement('cac:Party');
-        $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'ubl_eas_code tax_code')));
+        $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'ubl_eas_code vat_id tax_code')));
         $schm = $this->invoice->{$prop[0]}; // *_ubl_eas_code
-        $ninb = $this->invoice->{$prop[1]}; // *_tax_code
+        $vat  = $this->invoice->{$prop[1]}; // *_vat_id
+        $nin  = $this->invoice->{$prop[2]}; // *_tax_code National identification number (Like SIRET in France)
 
         $schemeID = $schm; // AES code (Electronic Address Scheme) : https://docs.peppol.eu/poacc/billing/3.0/codelist/eas/
-        $id       = $ninb; // National identification number (Like SIRET in France)
+        $id       = $vat;  //
 
-        // https://docs.peppol.eu/pint/pint-eu/pint-eu/trn-invoice/syntax/cac-AccountingSupplierParty/cac-Party/cbc-EndpointID/schemeID/
-        $nodeEndpointID = $this->doc->createElement('cbc:EndpointID', $id);
-        $nodeEndpointID->setAttribute('schemeID', $schemeID);
+        if ( ! empty($this->options['EndpointID'])) {
+            // https://docs.peppol.eu/pint/pint-eu/pint-eu/trn-invoice/syntax/cac-AccountingSupplierParty/cac-Party/cbc-EndpointID/schemeID/
+            $prop           = $who . '_' . $this->options['EndpointID']; // *_tax_id / *_tax_code
+            $nodeEndpointID = $this->doc->createElement('cbc:EndpointID', $this->invoice->$prop);
+            $nodeEndpointID->setAttribute('schemeID', $schemeID);
+            $node->appendChild($nodeEndpointID); //
+        }
+        if ( ! empty($this->options['PartyIdentification'])) {
+            $node->appendChild($this->xmlPartyIdentification($who, $id, $schemeID));
+        }
 
-        $node->appendChild($nodeEndpointID); //
-
-        $node->appendChild($this->xmlPartyIdentification($who, $id, $schemeID));
         $node->appendChild($this->xmlPartyName($who)); // company (or name)
-        $node->appendChild($this->xmlPostalAddress($who));
+        $node->appendChild($this->xmlAddress($who)); // PostalAddress by default
         if ( ! $this->notax) {
             $node->appendChild($this->xmlPartyTaxScheme($who)); // need vat_id
         }
-        $node->appendChild($this->xmlPartyLegalEntity($who, $id, $schemeID)); // company or name
+        if ( ! empty($this->options['PartyLegalEntity'])) {
+            $node->appendChild($this->xmlPartyLegalEntity($who, $id, $schemeID)); // company or name
+        }
         if ($NodeContact = $this->xmlContact($who)) {
             $node->appendChild($NodeContact); // optional
         }
@@ -119,6 +177,7 @@ class Ublv24Xml extends BaseXml
     {
         $node = $this->doc->createElement('cac:PartyTaxScheme');
         $prop = $who . '_vat_id';
+
         $nodeID = $this->doc->createElement('cbc:CompanyID', $this->invoice->$prop);
         $node->appendChild($nodeID);
 
@@ -138,6 +197,15 @@ class Ublv24Xml extends BaseXml
         $name = $this->invoice->{$prop[0]} ? $this->invoice->{$prop[0]} : $this->invoice->{$prop[1]}; // *_company (Or *_name if empty)
         $nodeName = $this->doc->createElement('cbc:RegistrationName', $name);
         $node->appendChild($nodeName);
+
+        if ( ! empty($this->options['PartyLegalEntity']['CompanyID'])) {
+            $prop = $who . '_' . $this->options['PartyLegalEntity']['CompanyID']; // *_tax_id / *_tax_code
+            $nodeName = $this->doc->createElement('cbc:CompanyID', $this->invoice->$prop);
+            if ( ! empty($this->options['PartyLegalEntity']['SchemeID'])) {
+                $nodeName->setAttribute('schemeID', $schemeID);
+            }
+            $node->appendChild($nodeName);
+        }
 
         return $node;
     }
@@ -168,11 +236,11 @@ class Ublv24Xml extends BaseXml
         return $node;
     }
 
-    // xmlParty helper
-    protected function xmlPostalAddress($who)
+    // xmlParty helper & optional Delivery (cac:Delivery>cac:DeliveryLocation)
+    protected function xmlAddress($who, $what = 'PostalAddress')
     {
         $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'address_1 address_2 city zip country')));
-        $node = $this->doc->createElement('cac:PostalAddress');
+        $node = $this->doc->createElement('cac:' . $what);
         $node->appendChild($this->doc->createElement('cbc:StreetName', $this->invoice->{$prop[0]})); // *_address_1
         if ( ! empty($this->invoice->{$prop[1]})) {
             $node->appendChild($this->doc->createElement('cbc:AdditionalStreetName', $this->invoice->{$prop[1]})); // *_address_2
@@ -222,7 +290,10 @@ class Ublv24Xml extends BaseXml
     {
         $node = $this->doc->createElement('cac:PaymentMeans');
         $nodePMC = $this->doc->createElement('cbc:PaymentMeansCode', '30'); // docs.peppol.eu/poacc/billing/3.0/codelist/UNCL4461/
-        $nodePMC->setAttribute('name', 'Credit transfer');
+        // Not For NL : [BR-NL-29] The use of a payment means text (cac:PaymentMeans/cbc:PaymentMeansCode/@name) is not recommended
+        if (empty($this->options['NoPaymentMeansName'])) {
+            $nodePMC->setAttribute('name', 'Credit transfer');
+        }
         $node->appendChild($nodePMC);
         // Bank name (Optional)
         if ($this->invoice->user_bank) {
@@ -286,6 +357,11 @@ class Ublv24Xml extends BaseXml
 
         $nodeTaxCategory = $this->doc->createElement('cac:TaxCategory');
         $nodeTaxCategory->appendChild($this->doc->createElement('cbc:ID', $category));
+        // [ubl-BE-15]-cac:ClassifiedTaxCategory/cbc:Name must be present.
+        if ( ! empty($this->options['TaxName'])) {
+            $taxName = $this->options['TaxName'][intval($percent)][0];
+            $nodeTaxCategory->appendChild($this->doc->createElement('cbc:Name', $taxName));
+        }
         // Subject to VAT
         if ($category == 'S') {
             $nodeTaxCategory->appendChild($this->doc->createElement('cbc:Percent', $percent));
@@ -362,6 +438,10 @@ class Ublv24Xml extends BaseXml
         $category = $this->notax ? 'O' : 'S'; // VAT or Not
         $nodeTax = $this->doc->createElement('cac:ClassifiedTaxCategory');
         $nodeTax->appendChild($this->doc->createElement('cbc:ID', $category));
+        // [ubl-BE-15]-cac:ClassifiedTaxCategory/cbc:Name must be present.
+        if ( ! empty($this->options['TaxName'])) {
+            $nodeTax->appendChild($this->doc->createElement('cbc:Name', $category));
+        }
         // Subject to VAT
         if ($category == 'S') {
             $nodeTax->appendChild($this->doc->createElement('cbc:Percent', $item->item_tax_rate_percent)); // O Document MUST not contain empty elements.
@@ -370,8 +450,13 @@ class Ublv24Xml extends BaseXml
         $ID = $this->doc->createElement('cbc:ID', 'VAT');
         $taxSheme->appendChild($ID);
         $nodeTax->appendChild($taxSheme);
-
         $nodeItem->appendChild($nodeTax);
+        // [ubl-BE-14]-Invoice/cac:InvoiceLine/cac:TaxTotal/cbc:TaxAmount is Mandatory.
+        if ( ! empty($this->options['InvoiceLineTaxTotal'])) {
+            $nodetaxTotal = $this->doc->createElement('cac:TaxTotal');
+            $nodetaxTotal->appendChild($this->currencyElement('cbc:TaxAmount', $item->item_tax_total));
+            $node->appendChild($nodetaxTotal);
+        }
 
         $node->appendChild($nodeItem);
         $nodePrice = $this->doc->createElement('cac:Price');
@@ -387,7 +472,10 @@ class Ublv24Xml extends BaseXml
         // docs.peppol.eu/poacc/billing/3.0/codelist/UNCL5189/
         $node = $this->doc->createElement('cac:AllowanceCharge');
         $node->appendChild($this->doc->createElement('cbc:ChargeIndicator', 'false'));
-        $node->appendChild($this->doc->createElement('cbc:AllowanceChargeReasonCode', '95'));
+        // Not For NL : [BR-NL-32] The use of an allowance reason code (cac:AllowanceCharge/cbc:AllowanceChargeReasonCode) is not recommended
+        if (empty($this->options['NoReasonCode'])) {
+            $node->appendChild($this->doc->createElement('cbc:AllowanceChargeReasonCode', '95'));
+        }
         $node->appendChild($this->doc->createElement('cbc:AllowanceChargeReason', rtrim(trans('discount'), ' '))); // todo curious chars ' ' not a space (found in French ip_lang)
         $node->appendChild($this->currencyElement('cbc:Amount', $amount));
 
