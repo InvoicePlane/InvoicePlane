@@ -129,6 +129,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // Generate the appropriate UBL/CII
     $xml_id    = $invoice->client_einvoicing_version;
+    $options   = [];
     $generator = $xml_id;
     $embed_xml = false;
     $path      = APPPATH . 'helpers/XMLconfigs/';
@@ -136,6 +137,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     {
         $embed_xml = $xml_setting['embedXML'];
         $XMLname   = $xml_setting['XMLname'];
+        $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
         $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
     }
 
@@ -149,7 +151,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             'mime'           => 'text/xml',
             'description'    => $xml_id . ' CII Invoice',
             'AFRelationship' => 'Alternative',
-            'path'           => generate_xml_invoice_file($invoice, $items, $generator, $filename),
+            'path'           => generate_xml_invoice_file($invoice, $items, $generator, $filename, $options),
         ]];
     }
 
@@ -201,7 +203,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
         if ($invoice->client_einvoicing_active == 1)
         {
-            generate_xml_invoice_file($invoice, $items, $generator, $filename);
+            generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
         }
     }
     // END eInvoicing

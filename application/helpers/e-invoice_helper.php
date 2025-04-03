@@ -22,7 +22,7 @@ if ( ! defined('BASEPATH')) {
  *
  * @return string
  */
-function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
+function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename, $options)
 {
     $CI = &get_instance();
 
@@ -30,6 +30,7 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename)
         'invoice'  => $invoice,
         'items'    => $items,
         'filename' => $filename,
+        'options'  => $options,
     ], 'ublciixml');
     $CI->ublciixml->xml();
     $path = UPLOADS_TEMP_FOLDER . $filename . '.xml';

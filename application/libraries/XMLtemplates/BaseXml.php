@@ -28,6 +28,7 @@ class BaseXml extends stdClass
     public $currencyCode;
     public $root;
     public $notax;
+    public $options = []; // CustomizationID, Endpoint, ...
     public $item_decimals = 2;
     public $decimal_places = 2;
     public $legacy_calculation = false;
@@ -38,6 +39,7 @@ class BaseXml extends stdClass
         $this->invoice            = $params['invoice'];
         $this->items              = $params['items'];
         $this->filename           = $params['filename'];
+        $this->options            = $params['options'];
         $this->currencyCode       = get_setting('currency_code');
         $this->item_decimals      = get_setting('default_item_decimals');
         $this->decimal_places     = get_setting('tax_rate_decimal_places');
