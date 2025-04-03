@@ -56,11 +56,23 @@ class Facturxv10Xml extends BaseXml
     protected function xmlExchangedDocumentContext()
     {
         $node = $this->doc->createElement('rsm:ExchangedDocumentContext');
+        // XRechnung-CII-validation
+        if ( ! empty($id = @$this->options['BusinessProcessSpecifiedDocumentContextParameterID'])) {
+            $businessNode = $this->doc->createElement('ram:BusinessProcessSpecifiedDocumentContextParameter');
+            $businessNode->appendChild($this->doc->createElement('ram:ID', $id));
+            $node->appendChild($businessNode);
+        }
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         // urn:cen.eu:en16931:2017#compliant#urn:(zugferd:2.3 | factur-x.eu):1p0:(basic | en16931) ::: en16931 = COMFORT (profil)
         // urn:cen.eu:en16931:2017#conformant#urn:(zugferd:2.3 | factur-x.eu):1p0:extended
-        $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:cen.eu:en16931:2017')); // KISS
+        $id = 'urn:cen.eu:en16931:2017'; // KISS
+        // XRechnung-CII-validation
+        if ( ! empty($cid = @$this->options['GuidelineSpecifiedDocumentContextParameterID'])) {
+            $id = $cid;
+        }
+        $guidelineNode->appendChild($this->doc->createElement('ram:ID', $id));
         $node->appendChild($guidelineNode);
+
         return $node;
     }
 
@@ -98,6 +110,7 @@ class Facturxv10Xml extends BaseXml
         $node->appendChild($this->xmlApplicableHeaderTradeAgreement());
         $node->appendChild($this->xmlApplicableHeaderTradeDelivery());
         $node->appendChild($this->xmlApplicableHeaderTradeSettlement());
+
         return $node;
     }
 
@@ -117,6 +130,12 @@ class Facturxv10Xml extends BaseXml
     protected function xmlApplicableHeaderTradeAgreement()
     {
         $node = $this->doc->createElement('ram:ApplicableHeaderTradeAgreement');
+
+        // XRechnung-CII-validation ram:BuyerReference
+        if ( ! empty($this->options['CII'])) {
+            $node->appendChild($this->doc->createElement('ram:BuyerReference', 'N/A'));
+        }
+
         $node->appendChild($this->xmlSellerTradeParty());
         $node->appendChild($this->xmlBuyerTradeParty());
         return $node;
@@ -125,26 +144,7 @@ class Facturxv10Xml extends BaseXml
     protected function xmlSellerTradeParty()
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
-        $node->appendChild($this->doc->createElement('ram:ID', $this->invoice->user_id)); // zugferd 2 : SELLER123
-        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
-
-        // PostalTradeAddress
-        $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
-        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->user_zip)));
-        $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->user_address_1)));
-        if($this->invoice->user_address_2)
-        {
-            $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->user_address_2)));
-        }
-        $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->user_city)));
-        $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->user_country)));
-        $node->appendChild($addressNode);
-
-        // SpecifiedTaxRegistration
-        if( ! $this->notax)
-        {
-            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->user_vat_id)); // zugferd 2
-        }
+        $this->xmlTradeParty($node, 'user');
 
         return $node;
     }
@@ -152,27 +152,73 @@ class Facturxv10Xml extends BaseXml
     protected function xmlBuyerTradeParty()
     {
         $node = $this->doc->createElement('ram:BuyerTradeParty');
-        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->client_name)));
+        $this->xmlTradeParty($node, 'client');
+
+        return $node;
+    }
+
+    // xml(Seller|Buyer)TradeParty helper
+    protected function xmlTradeParty(& $node, $who)
+    {
+        $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'id name zip address_1 address_2 city country vat_id')));
+        if ($who == 'user') {
+            $node->appendChild($this->doc->createElement('ram:ID', $this->invoice->{$prop[0]})); // *_id zugferd 2 : SELLER123
+        }
+        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->{$prop[1]}))); // *_name
+
+        // XRechnung-CII-validation
+        if ( ! empty($this->options['CII'])) {
+
+            $ciip = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'tax_code ubl_eas_code invoicing_contact phone mobile email')));
+
+            // Tax code (national identification number)
+            $ciiNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
+            $idNode  = $this->doc->createElement('ram:ID', $this->invoice->{$ciip[0]}); // *_tax_code
+            $idNode->setAttribute('schemeID', $this->invoice->{$ciip[1]}); // *_ubl_eas_code
+            $ciiNode->appendChild($idNode);
+            $node->appendChild($ciiNode);
+            // Contact name
+            $ciiNode = $this->doc->createElement('ram:DefinedTradeContact');
+            $ciiNode->appendChild($this->doc->createElement('ram:PersonName', $this->invoice->{$ciip[2]})); // *_invoicing_contact
+            // Phone
+            $telNode = $this->doc->createElement('ram:TelephoneUniversalCommunication');
+            $tel = $this->invoice->{$ciip[3]} ? $this->invoice->{$ciip[3]} : $this->invoice->{$ciip[4]}; // *_phone or *_mobile
+            $telNode->appendChild($this->doc->createElement('ram:CompleteNumber', $tel));
+            $ciiNode->appendChild($telNode);
+            // E-mail
+            $melNode = $this->doc->createElement('ram:EmailURIUniversalCommunication');
+            $melNode->appendChild($this->doc->createElement('ram:URIID', $this->invoice->{$ciip[5]})); // *_email
+            $ciiNode->appendChild($melNode);
+
+            $node->appendChild($ciiNode);
+        }
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
-        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->client_zip)));
-        $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->client_address_1)));
-        if($this->invoice->client_address_2)
-        {
-            $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->client_address_2)));
+        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->{$prop[2]}))); // *_zip
+        $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->{$prop[3]}))); // *_address_1
+        if($addr = $this->invoice->{$prop[4]}) { // *_address_2
+            $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($addr))); // *_address_2
         }
-        $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->client_city)));
-        $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->client_country)));
+        $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->{$prop[5]}))); // *_city
+        $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->{$prop[6]}))); // *_country
         $node->appendChild($addressNode);
 
-        // SpecifiedTaxRegistration
-        if( ! $this->notax)
-        {
-            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->client_vat_id)); // zugferd 2
+        // XRechnung-CII-validation    URIUniversalCommunicationURIID
+        if ( ! empty($this->options['CII'])) {
+            // ram:URIUniversalCommunication/ram:URIID
+            $uriNode = $this->doc->createElement('ram:URIUniversalCommunication');
+            $idNode = $this->doc->createElement('ram:URIID', $this->invoice->{$ciip[5]}); // *_email
+            $idNode->setAttribute('schemeID', 'EM'); // todo $schemeID
+            $uriNode->appendChild($idNode);
+            $node->appendChild($uriNode);
         }
 
-        return $node;
+        // SpecifiedTaxRegistration
+        if( ! $this->notax) {
+            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->{$prop[7]})); // *_vat_id zugferd 2
+        }
+
     }
 
     /**
@@ -291,7 +337,10 @@ class Facturxv10Xml extends BaseXml
             $discountNode->appendChild($indicatorNode);
 
             $discountNode->appendChild($this->currencyElement('ram:ActualAmount', $amount)); // of discount of vat rate
-            $discountNode->appendChild($this->doc->createElement('ram:ReasonCode', '95'));
+            // Not For NLCIUS CII 1.0.3.9 : [BR-NL-32] / [BR-NL-34] The use of an allowance reason code or charge reason code (ram:SpecifiedTradeAllowanceCharge/ram:ReasonCode) are not recommended, both on document level and on line level.
+            if (empty($this->options['NoReasonCode'])) {
+                $discountNode->appendChild($this->doc->createElement('ram:ReasonCode', '95'));
+            }
             $discountNode->appendChild($this->doc->createElement('ram:Reason', rtrim(trans('discount'), ' '))); // todo curious chars ' ' not a space (found in French ip_lang)
 
             $taxNode = $this->doc->createElement('ram:CategoryTradeTax');
@@ -314,17 +363,22 @@ class Facturxv10Xml extends BaseXml
         $node = $this->doc->createElement('ram:ApplicableTradeTax');
         $node->appendChild($this->currencyElement('ram:CalculatedAmount', $subtotal * $percent / 100));
         $node->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
+        // For NLCIUS CII 1.0.3.9 : Fatal [BR-O-10]-A VAT Breakdown (BG-23) with VAT Category code (BT-118) " Not subject to VAT" shall have a VAT exemption reason code (BT-121), meaning " Not subject to VAT" or a VAT exemption reason text (BT-120) " Not subject to VAT" (or the equivalent standard text in another language).
+        if ($category == 'O' && ! empty($ExemptionReason = @$this->options['ExemptionReason'])) {
+            $node->appendChild($this->doc->createElement('ram:ExemptionReason', $ExemptionReason));
+        }
         $node->appendChild($this->currencyElement('ram:BasisAmount', $subtotal));
         $node->appendChild($this->doc->createElement('ram:CategoryCode', $category));
 
-        if ($category == 'S')
-        {
+        if ($category == 'S') {
             $node->appendChild($this->currencyElement('ram:RateApplicablePercent', $percent));
         }
-        else
-        {
+        else {
             // For auto entreprises not subject to VAT (Catégory 'O') see https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/ubl/schematron/codelist/EN16931-UBL-codes.sch#L133
-            $node->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O'));
+            // Not For NLCIUS CII 1.0.3.9 : Warning for [BR-NL-35] ram:ExemptionReasonCode is not recommended
+            if (empty($this->options['NoReasonCode'])) {
+                $node->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); // vatex-eu-132-1a
+            }
         }
 
         return $node;
@@ -360,8 +414,10 @@ class Facturxv10Xml extends BaseXml
         // PayeePartyCreditorFinancialAccount
         $payeeNode = $this->doc->createElement('ram:PayeePartyCreditorFinancialAccount');
         $payeeNode->appendChild($this->doc->createElement('ram:IBANID', $this->invoice->user_iban));
-        // LOC BANK ACCOUNT
-        $payeeNode->appendChild($this->doc->createElement('ram:ProprietaryID', $this->invoice->user_bank));
+        // LOC BANK ACCOUNT (Document should not contain empty elements.)
+        if ($this->invoice->user_bank) {
+            $payeeNode->appendChild($this->doc->createElement('ram:ProprietaryID', $this->invoice->user_bank));
+        }
 
         $node->appendChild($payeeNode);
 
@@ -453,9 +509,17 @@ class Facturxv10Xml extends BaseXml
             $grossPriceNode->appendChild($discountNode);
         }
 
+        $price = $item->item_price;
+
+        // XRechnung-CII-validation
+        if ( ! empty($this->options['CII'])) {
+            // Item net price MUST equal (Gross price - Allowance amount) when gross price is provided.
+            $price -= $item->item_discount_amount;
+        }
+
         // NetPriceProductTradePrice
         $netPriceNode = $this->doc->createElement('ram:NetPriceProductTradePrice');
-        $netPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price));
+        $netPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $price));
         $node->appendChild($netPriceNode);
 
         return $node;
