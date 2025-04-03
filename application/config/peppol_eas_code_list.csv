@@ -100,7 +100,7 @@ Code;Source;Deprecated;First version;Last version;Code name;Remark
 9958;PEPPOL;TRUE;1;6;German Leitweg ID;Replaced by 0204
 9959;PEPPOL;FALSE;10;;Employer Identification Number (EIN, USA);
 AN;UNECE3155;0;2;;O.F.T.P. (ODETTE File Transfer Protocol);
-AQ ;UNECE3155;0;2;;X.400 address for mail text;
-AS ;UNECE3155;0;2;;AS2 exchange ;
-AU ;UNECE3155;0;2;;File Transfer Protocol;
+AQ;UNECE3155;0;2;;X.400 address for mail text;
+AS;UNECE3155;0;2;;AS2 exchange ;
+AU;UNECE3155;0;2;;File Transfer Protocol;
 EM;UNECE3155;0;2;;Electronic mail;SMTP email
