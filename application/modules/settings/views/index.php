@@ -32,6 +32,9 @@
         <a data-toggle="tab" href="#settings-email"><?php _trans('email'); ?></a>
     </li>
     <li>
+        <a data-toggle="tab" href="#settings-clicksend"><?php _trans('Clicksend'); ?></a>
+    </li>
+    <li>
         <a data-toggle="tab" href="#settings-online-payment"><?php echo lang('online_payment'); ?></a>
     </li>
     <li>
@@ -73,6 +76,10 @@
 
             <div id="settings-email" class="tab-pane">
                 <?php $this->layout->load_view('settings/partial_settings_email'); ?>
+            </div>
+
+            <div id="settings-clicksend" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_clicksend'); ?>
             </div>
 
             <div id="settings-online-payment" class="tab-pane">
