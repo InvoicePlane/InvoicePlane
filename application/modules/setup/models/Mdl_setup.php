@@ -1,18 +1,19 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Setup
- */
+#[AllowDynamicProperties]
 class Mdl_Setup extends CI_Model
 {
     public $errors = array();
@@ -47,10 +48,17 @@ class Mdl_Setup extends CI_Model
         $commands = explode(';', $contents);
 
         foreach ($commands as $command) {
-            if (trim($command)) {
-                if (!$this->db->query(trim($command) . ';')) {
-                    $this->errors[] = $this->db->_error_message();
-                }
+            if (!trim($command)) {
+                continue;
+            }
+
+            $this->db->db_debug = IP_DEBUG;
+
+            $this->db->query(trim($command) . ';');
+
+            $error = $this->db->error();
+            if ($error['code'] !== 0) {
+                $this->errors[] = $error['message'];
             }
         }
     }
@@ -156,28 +164,28 @@ class Mdl_Setup extends CI_Model
 
         // Loop through the files and take appropriate action
         foreach ($sql_files as $sql_file) {
-            if (substr($sql_file, -4) == '.sql') {
-                // $this->db->select('COUNT(*) AS update_applied');
-                $this->db->where('version_file', $sql_file);
-                // $update_applied = $this->db->get('ip_versions')->row()->update_applied;
-                $update_applied = $this->db->get('ip_versions');
-
-                // if (!$update_applied)
-                if (!$update_applied->num_rows()) {
-                    $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
-
-                    $this->execute_contents($file_contents);
-
-                    $this->save_version($sql_file);
-
-                    // Check for any required upgrade methods
-                    $upgrade_method = 'upgrade_' . str_replace('.', '_', substr($sql_file, 0, -4));
-
-                    if (method_exists($this, $upgrade_method)) {
-                        $this->$upgrade_method();
-                    }
-                }
+            if (substr($sql_file, -4) !== '.sql') {
+                continue;
             }
+
+            $this->db->where('version_file', $sql_file);
+            $update_applied = $this->db->get('ip_versions');
+
+            if ($update_applied->num_rows()) {
+                continue;
+            }
+
+            $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
+            $this->execute_contents($file_contents);
+            $this->save_version($sql_file);
+
+            $upgrade_method = 'upgrade_' . str_replace('.', '_', substr($sql_file, 0, -4));
+
+            if (!method_exists($this, $upgrade_method)) {
+                continue;
+            }
+
+            $this->$upgrade_method();
         }
 
         if ($this->errors) {
@@ -365,5 +373,38 @@ class Mdl_Setup extends CI_Model
         $this->load->helper('settings');
 
         $this->mdl_settings->save('pdf_quote_footer', get_setting('pdf_invoice_footer'));
+    }
+
+    public function upgrade_036_1_6()
+    {
+        //upgrade the recurring invoices data and replace 0000-00-00 invalid date with null in order to be compliant
+        //with the MySQL >= 5.8 defautl SQL Strict mode that is activated by default.
+        //migrate the dates data from 0000-00-00 to NULL in order to allow SQL Strict mode. Because the new
+        //mysql default mode, the change must be done by PHP logic.
+
+        //**recur_end_date**
+        $rows_recur_end_date = $this->db->query('SELECT * FROM `ip_invoices_recurring`');
+        foreach($rows_recur_end_date->result() as $row)
+        {
+            if($row->recur_end_date == '0000-00-00')
+            {
+                $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+            }
+            if($row->recur_next_date == '0000-00-00')
+            {
+                $this->db->set('recur_next_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+
+            }
+        }
+
+        //**client_bdate**
+        $rows_client_bdate = $this->db->query('SELECT * FROM `ip_clients`');
+        foreach($rows_client_bdate->result() as $row_bdate)
+        {
+            if($row_bdate->client_birthdate == '0000-00-00')
+            {
+                $this->db->set('client_birthdate',NULL)->where('client_id',$row_bdate->client_id)->update('ip_clients');
+            }
+        }
     }
 }

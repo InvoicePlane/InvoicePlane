@@ -52,7 +52,7 @@ $cv = $this->controller->view_data["custom_values"];
         $('#btn_save_invoice').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tbody.item').each(function () {
+            $('#item_table .item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -127,20 +127,39 @@ $cv = $this->controller->view_data["custom_values"];
                 });
         });
 
-        <?php if ($invoice->is_read_only != 1): ?>
-        var fixHelper = function (e, tr) {
-            var $originals = tr.children();
-            var $helper = tr.clone();
-            $helper.children().each(function (index) {
-                $(this).width($originals.eq(index).width());
-            });
-            return $helper;
-        };
+        <?php if ($invoice->is_read_only != 1):
+          if (get_setting('show_responsive_itemlist') == 1) { ?>
+             function UpR(k) {
+               var parent = k.parents('.item');
+               var pos = parent.prev();
+               parent.insertBefore(pos);
+             }
+             function DownR(k) {
+               var parent = k.parents('.item');
+               var pos = parent.next();
+               parent.insertAfter(pos);
+             }
+             $(document).on('click', '.up', function () {
+               UpR($(this));
+             });
+             $(document).on('click', '.down', function () {
+               DownR($(this));
+             });
+        <?php } else { ?>
+            var fixHelper = function (e, tr) {
+                var $originals = tr.children();
+                var $helper = tr.clone();
+                $helper.children().each(function (index) {
+                    $(this).width($originals.eq(index).width());
+                });
+                return $helper;
+            };
 
-        $('#item_table').sortable({
-            items: 'tbody',
-            helper: fixHelper,
-        });
+            $('#item_table').sortable({
+                items: 'tbody',
+                helper: fixHelper,
+            });
+        <?php } ?>
 
         if ($('#invoice_discount_percent').val().length > 0) {
             $('#invoice_discount_amount').prop('disabled', true);
@@ -225,7 +244,7 @@ if ($this->config->item('disable_read_only') == true) {
                            data-invoice-id="<?php echo $invoice_id; ?>"
                            data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
                            data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
-                           data-payment-cf-exist="<?php echo $payment_cf_exist; ?>">
+                           data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
                             <i class="fa fa-credit-card fa-margin"></i>
                             <?php _trans('enter_payment'); ?>
                         </a>
@@ -494,7 +513,12 @@ if ($this->config->item('disable_read_only') == true) {
 
             <br>
 
-            <?php $this->layout->load_view('invoices/partial_item_table'); ?>
+            <?php if (get_setting('show_responsive_itemlist') == 1) {
+                    $this->layout->load_view('invoices/partial_itemlist_responsive');
+                  } else {
+                    $this->layout->load_view('invoices/partial_itemlist_table');
+                  }
+            ?>
 
             <hr/>
 

@@ -25,9 +25,7 @@ We have a community forum and a Slack channel so please use them:
   * Getting Started with Development
   * Contributing Code
 
-
 ---
-
 
 ### Development Guidelines
 
@@ -64,6 +62,8 @@ We do use [SemVer](https://semver.org/) to version InvoicePlane which means:
   * New features or larger improvements go into feature versions like `v1.4.0` or `v1.6.0`.
 
 
+**Please note**: Branching will change in the near future/
+
 The InvoicePlane branch structure consists of four different branch types
 
   * `master`  This branch contains the current stable version of the application.
@@ -84,9 +84,7 @@ The InvoicePlane branch structure consists of four different branch types
               not fit into another branch. Only push code to these branches if you are
               requested to do so.
 
-
 ---
-
 
 ### Getting Started with Development
 
@@ -101,7 +99,6 @@ the PHP dependencies with the help of the `composer.json` file.
   3. Make sure your editor or IDE has the correct code formatting settings set.
   4. That's it. You are good to go.
 
-
 #### Styles and Scripts Development
 
 To change the actual styling of the application or scripts you may have to install
@@ -113,7 +110,7 @@ This main repository ONLY manages core styles and scripts. If you want to develo
 theme please use the InvoicePlane Themes repository.
 
   * InvoicePlane requires Node and NPM: [Install both](https://nodejs.org/en/download/)  
-    Make sure to use the latest LTS version which is version 8 at the moment.
+    Make sure to use the latest LTS version which is version 14 at the moment.
   * Install Grunt globally by running `npm install -g grunt-cli`.
   
 If you have prepared your machine, run `npm install` to install all dependencies.
@@ -129,7 +126,6 @@ After that there are two commands available for development:
                   also minifies all assets to make sure pages load faster. Normally this
                   command is not used for development.
 
-
 ---
 
 
@@ -138,7 +134,7 @@ After that there are two commands available for development:
 **Read this carefully to prevent your pull request from being rejected!**
 
 1. Before you submit any code to the repository please take a look at the
-    [issue tracker](https://development.invoiceplane.com) and search for a
+    [issue tracker](https://github.com/InvoicePlane/InvoicePlane/issues) and search for a
      corresponding issue! There should be no changes to the code without an issue
      filed.
 
@@ -147,7 +143,7 @@ After that there are two commands available for development:
     * If no issue exists, contact the InvoicePlane team via the forums or the Slack channel first!
       We would like to discuss what you want to do before you start to work.
 
-2. ALWAYS reference the issue ID (e.g. IP-317) in all commits you create for this issue.
+2. ALWAYS reference the issue ID (e.g. #1337 or GH-1337) in all commits you create for this issue.
 
 3. BEFORE you create a pull request, rebase from the corresponding branch. This is very important
    to make sure that there are no duplicate commits and you do not revert any previous changes.
@@ -163,7 +159,6 @@ After that there are two commands available for development:
 
 Please ask questions related to this process if you are unsure. Asking before doing anything
 will save both your and our time.
-
 
 ---
 

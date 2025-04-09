@@ -8,7 +8,7 @@
         $invoice_id.change(function () {
             var invoice_identifier = "invoice" + $('#invoice_id').val();
             $('#payment_amount').val(amounts[invoice_identifier].replace("&nbsp;", " "));
-            $('#payment_method_id').find('option[value="' + invoice_payment_methods[invoice_identifier] + '"]').prop('selected', true);
+            $('#payment_method_id').val(invoice_payment_methods[invoice_identifier]).trigger('change');
 
             if (invoice_payment_methods[invoice_identifier] != 0) {
                 $('.payment-method-wrapper').append("<input type='hidden' name='payment_method_id' id='payment-method-id-hidden' class='hidden' value='" + invoice_payment_methods[invoice_identifier] + "'>");
@@ -17,6 +17,10 @@
                 $('#payment-method-id-hidden').remove();
                 $('#payment_method_id').prop('disabled', false);
             }
+        });
+
+        $(document).ready(function(){
+            $('#btn-cancel').attr('onclick', "window.location.href = '<?php echo site_url() ?>/payments'");
         });
 
     });
@@ -45,7 +49,7 @@
                 <label for="invoice_id" class="control-label"><?php _trans('invoice'); ?></label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                <select name="invoice_id" id="invoice_id" class="form-control simple-select">
+                <select name="invoice_id" id="invoice_id" class="form-control simple-select" required>
                     <?php if (!$payment_id) { ?>
                         <?php foreach ($open_invoices as $invoice) { ?>
                             <option value="<?php echo $invoice->invoice_id; ?>"
@@ -70,7 +74,7 @@
                 <div class="input-group">
                     <input name="payment_date" id="payment_date"
                            class="form-control datepicker"
-                           value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>">
+                           value="<?php echo date_from_mysql($this->mdl_payments->form_value('payment_date')); ?>" required>
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>
@@ -84,7 +88,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="payment_amount" id="payment_amount" class="form-control"
-                       value="<?php echo format_amount($this->mdl_payments->form_value('payment_amount')); ?>">
+                       value="<?php echo format_amount(standardize_amount($this->mdl_payments->form_value('payment_amount'))); ?>" required>
             </div>
         </div>
 

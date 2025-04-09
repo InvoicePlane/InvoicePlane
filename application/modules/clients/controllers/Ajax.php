@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link        https://invoiceplane.com
  */
 
-/**
- * Class Ajax
- */
+#[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
 
@@ -52,7 +53,7 @@ class Ajax extends Admin_Controller
         foreach ($clients as $client) {
             $response[] = [
                 'id' => $client->client_id,
-                'text' => htmlsc(format_client($client)),
+                'text' => (format_client($client)),
             ];
         }
 
@@ -99,6 +100,37 @@ class Ajax extends Admin_Controller
 
         $this->mdl_settings->save('enable_permissive_search_clients', $permissiveSearchClients);
     }
+
+    /**
+     * Delete client note id
+     */
+    public function delete_client_note()
+    {
+        $success = 0;
+        $client_note_id = $this->input->post('client_note_id');
+        $this->load->model('mdl_client_notes');
+
+        // Only continue if the note exists or no item id was provided
+        if ($this->mdl_client_notes->get_by_id($client_note_id) || empty($client_note_id)) {
+
+            // Delete invoice item
+            $this->load->model('mdl_client_notes');
+            $item = $this->mdl_client_notes->delete($client_note_id);
+
+            // Check if deletion was successful
+            if ($item) {
+                $success = 1;
+            }
+
+        }
+
+        // Return the response
+        echo json_encode([
+            'success' => $success,
+        ]);
+    }
+
+
 
     public function save_client_note()
     {

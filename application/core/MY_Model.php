@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -33,6 +34,8 @@ if (!defined('BASEPATH')) {
  * THE SOFTWARE.
  *
  */
+
+#[AllowDynamicProperties]
 class MY_Model extends CI_Model
 {
 

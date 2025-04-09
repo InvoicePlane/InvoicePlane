@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -36,7 +39,8 @@ function invoice_logo_pdf()
     $CI = &get_instance();
 
     if ($CI->mdl_settings->setting('invoice_logo')) {
-        return '<img src="file://' . getcwd() . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
+        $absolutePath = dirname(dirname(__DIR__));
+        return '<img src="' . $absolutePath . '/uploads/' . $CI->mdl_settings->setting('invoice_logo') . '" id="invoice-logo">';
     }
 
     return '';
@@ -103,4 +107,28 @@ function invoice_recMod10($in)
     }
 
     return (10 - $carry) % 10;
+}
+
+/**
+ * Returns a QR code for invoice payments
+ *
+ * @param number invoice-id
+ * @return string
+ */
+function invoice_qrcode($invoice_id) {
+    $CI = &get_instance();
+
+    if (
+        $CI->mdl_settings->setting('qr_code')
+        && $CI->mdl_settings->setting('qr_code_iban')
+        && $CI->mdl_settings->setting('qr_code_bic')
+    ) {
+        $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+        $CI->load->library('QrCode', [ 'invoice' => $invoice ]);
+        $qrcode_data_uri = $CI->qrcode->generate();
+
+        return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+    }
+
+    return '';
 }

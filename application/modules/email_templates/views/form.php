@@ -27,7 +27,7 @@
                     <label for="email_template_title" class="control-label"><?php _trans('title'); ?></label>
                     <input type="text" name="email_template_title" id="email_template_title"
                            value="<?php echo $this->mdl_email_templates->form_value('email_template_title', true); ?>"
-                           class="form-control">
+                           class="form-control" required>
                 </div>
 
                 <div class="form-group">
@@ -159,9 +159,12 @@
                                 </span>
                             </div>
 
-                            <textarea name="email_template_body" id="email_template_body" rows="8"
-                                      class="email-template-body form-control taggable"><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?>
-                            </textarea>
+                            <textarea
+                                name="email_template_body"
+                                id="email_template_body"
+                                rows="8"
+                                class="email-template-body form-control taggable"
+                            ><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?></textarea>
 
                             <br>
 

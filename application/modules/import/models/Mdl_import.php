@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link        https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Import
- */
+#[AllowDynamicProperties]
 class Mdl_Import extends Response_Model
 {
     public $table = 'ip_imports';
@@ -72,8 +73,7 @@ class Mdl_Import extends Response_Model
      */
     public function __construct()
     {
-        // Provides better line ending detection
-        ini_set("auto_detect_line_endings", true);
+
     }
 
     public function default_select()

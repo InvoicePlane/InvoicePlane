@@ -280,7 +280,11 @@
                                         <?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?>
                                     </td>
                                     <td>
-                                        <?php echo anchor('clients/view/' . $project->client_id, htmlsc(format_client($project))); ?>
+                                        <?php if ($project->client_id != null): ?>
+                                            <?php echo anchor('clients/view/' . $project->client_id, htmlsc(format_client($project))); ?>
+                                        <?php else: ?>
+                                            -
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -320,8 +324,8 @@
                             <?php foreach ($tasks as $task) { ?>
                                 <tr>
                                     <td>
-                                    <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
-                                        <?php echo $task_statuses["$task->task_status"]['label']; ?>
+                                    <span class="label <?php if (isset($task_statuses["$task->task_status"]['class'])) echo $task_statuses["$task->task_status"]['class']; ?>">
+                                        <?php if (isset($task_statuses["$task->task_status"]['label'])) echo $task_statuses["$task->task_status"]['label']; ?>
                                     </span>
                                     </td>
                                     <td>

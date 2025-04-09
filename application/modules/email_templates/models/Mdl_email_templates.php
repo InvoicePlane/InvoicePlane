@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Email_Templates
- */
+#[AllowDynamicProperties]
 class Mdl_Email_Templates extends Response_Model
 {
     public $table = 'ip_email_templates';
@@ -49,7 +50,8 @@ class Mdl_Email_Templates extends Response_Model
             ),
             'email_template_from_name' => array(
                 'field' => 'email_template_from_name',
-                'label' => trans('from_name')
+                'label' => trans('from_name'),
+                'rules' => 'trim'
             ),
             'email_template_from_email' => array(
                 'field' => 'email_template_from_email',

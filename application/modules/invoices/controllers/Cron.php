@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link        https://invoiceplane.com
  */
 
-/**
- * Class Cron
- */
+#[AllowDynamicProperties]
 class Cron extends Base_Controller
 {
     /**
@@ -25,6 +26,7 @@ class Cron extends Base_Controller
             if (IP_DEBUG) {
                 log_message('error', 'Wrong cron key provided!');
             }
+            show_error(trans('Wrong cron key provided!'), 500);
             exit('Wrong cron key!');
         }
 
@@ -35,8 +37,27 @@ class Cron extends Base_Controller
 
         // Gather a list of recurring invoices to generate
         $invoices_recurring = $this->mdl_invoices_recurring->active()->get()->result();
-
+        $recurInfo = [];
         foreach ($invoices_recurring as $invoice_recurring) {
+
+            $recurInfo = [
+                'invoice_id' => $invoice_recurring->invoice_id,
+                'client_id' => $invoice_recurring->client_id,
+                'invoice_group_id' => $invoice_recurring->invoice_group_id,
+                'invoice_status_id' => $invoice_recurring->invoice_status_id,
+                'invoice_number' => $invoice_recurring->invoice_number,
+                'invoice_recurring_id' => $invoice_recurring->invoice_recurring_id,
+                'recur_start_date' => $invoice_recurring->recur_start_date,
+                'recur_end_date' => $invoice_recurring->recur_end_date,
+                'recur_frequency' => $invoice_recurring->recur_frequency,
+                'recur_next_date' => $invoice_recurring->recur_next_date,
+                'recur_status' => $invoice_recurring->recur_status,
+            ];
+
+            if (IP_DEBUG) {
+                log_message('debug', 'v1.6.1: Recurring Info: '. json_encode($recurInfo, JSON_PRETTY_PRINT));
+            }
+
             // This is the original invoice id
             $source_id = $invoice_recurring->invoice_id;
 
@@ -52,17 +73,28 @@ class Cron extends Base_Controller
                 'user_id' => $invoice->user_id,
                 'invoice_number' => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
                 'invoice_url_key' => $this->mdl_invoices->get_url_key(),
-                'invoice_terms' => $invoice->invoice_terms
+                'invoice_terms' => $invoice->invoice_terms,
+                'invoice_discount_amount' => $invoice->invoice_discount_amount,
+                'invoice_discount_percent' => $invoice->invoice_discount_percent
             );
 
             // This is the new invoice id
             $target_id = $this->mdl_invoices->create($db_array, false);
+            if (IP_DEBUG) {
+                log_message('debug', 'v1.6.1: Recurring Invoice with id '. $target_id . ' was created');
+            }
 
             // Copy the original invoice to the new invoice
             $this->mdl_invoices->copy_invoice($source_id, $target_id, false);
+            if (IP_DEBUG) {
+                log_message('debug', 'v1.6.1: Recurring Invoice with sourceId '. $source_id .' was copied to id '. $target_id);
+            }
 
             // Update the next recur date for the recurring invoice
             $this->mdl_invoices_recurring->set_next_recur_date($invoice_recurring->invoice_recurring_id);
+            if (IP_DEBUG) {
+                log_message('debug', 'v1.6.1: Next Recurring date was set');
+            }
 
             // Email the new invoice if applicable
             if (get_setting('automatic_email_on_recur') && mailer_configured()) {
@@ -92,9 +124,9 @@ class Cron extends Base_Controller
                 // Prepare the body
                 $body = $tpl->email_template_body;
                 if (strlen($body) != strlen(strip_tags($body))) {
-                    $body = htmlspecialchars_decode($body);
+                    $body = htmlspecialchars_decode($body, ENT_COMPAT);
                 } else {
-                    $body = htmlspecialchars_decode(nl2br($body));
+                    $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
                 }
 
                 $from = !empty($tpl->email_template_from_email) ?
@@ -118,10 +150,10 @@ class Cron extends Base_Controller
                 } else {
                     log_message('error', '[Recurring Invoices] Invoice ' . $target_id . 'could not be sent. Please review your Email settings.');
                 }
+            } else {
+                log_message('error', 'v1.6.1: automatic_email_on_recur was not set or mailer was not configured');
             }
         }
-
         log_message('debug', '[Recurring Invoices] ' . count($invoices_recurring) . ' recurring invoices processed');
     }
-
 }

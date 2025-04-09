@@ -170,7 +170,7 @@
                                 <td><?php _htmlsc($item->item_name); ?></td>
                                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                                 <td class="amount">
-                                    <?php echo format_amount($item->item_quantity); ?>
+                                    <?php echo format_quantity($item->item_quantity); ?>
                                     <?php if ($item->item_product_unit) : ?>
                                         <br>
                                         <small><?php _htmlsc($item->item_product_unit); ?></small>
@@ -252,6 +252,36 @@
             </div><!-- .invoice-items -->
 
             <hr>
+
+            <?php if (get_setting('qr_code')) : ?>
+                <table class="invoice-qr-code-table">
+                    <tr>
+                        <td>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
+                                <?php echo get_setting('qr_code_recipient'); ?>
+                            </div>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
+                                <?php echo get_setting('qr_code_iban'); ?>
+                            </div>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
+                                <?php echo get_setting('qr_code_bic'); ?>
+                            </div>
+                            <div>
+                                <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
+                                <?php echo parse_template($invoice, get_setting('qr_code_remittance_text')); ?>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <?php echo invoice_qrcode($invoice->invoice_id); ?>
+                        </td>
+                    </tr>
+                </table>
+
+                <hr>
+            <?php endif; ?>
 
             <div class="row">
 

@@ -8,6 +8,8 @@ $cv = $this->controller->view_data['custom_values'];
             placeholder: "<?php _trans('country'); ?>",
             allowClear: true
         });
+
+        <?php $this->layout->load_view('clients/js/script_select_client_title.js'); ?>
     });
 </script>
 
@@ -39,7 +41,6 @@ $cv = $this->controller->view_data['custom_values'];
                 <div class="panel panel-default">
                     <div class="panel-heading form-inline clearfix">
                         <?php _trans('personal_information'); ?>
-
                         <div class="pull-right">
                             <label for="client_active" class="control-label">
                                 <?php _trans('active_client'); ?>
@@ -52,18 +53,15 @@ $cv = $this->controller->view_data['custom_values'];
                             </label>
                         </div>
                     </div>
-
                     <div class="panel-body">
-
                         <div class="form-group">
                             <label for="client_name">
                                 <?php _trans('client_name'); ?>
                             </label>
-                            <input id="client_name" name="client_name" type="text" class="form-control" required
+                            <input id="client_name" name="client_name" type="text" class="form-control"
                                    autofocus
-                                   value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>">
+                                   value="<?php echo $this->mdl_clients->form_value('client_name', true); ?>" required>
                         </div>
-
                         <div class="form-group">
                             <label for="client_surname">
                                 <?php _trans('client_surname_optional'); ?>
@@ -71,7 +69,6 @@ $cv = $this->controller->view_data['custom_values'];
                             <input id="client_surname" name="client_surname" type="text" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_surname', true); ?>">
                         </div>
-
                         <div class="form-group no-margin">
                             <label for="client_language">
                                 <?php _trans('language'); ?>
@@ -90,7 +87,6 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php } ?>
                             </select>
                         </div>
-
                     </div>
                 </div>
 
@@ -258,10 +254,9 @@ $cv = $this->controller->view_data['custom_values'];
                     <div class="panel-body">
                         <div class="form-group">
                             <label for="client_gender"><?php _trans('gender'); ?></label>
-
                             <div class="controls">
                                 <select name="client_gender" id="client_gender"
-                                	class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                        class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                     <?php
                                     $genders = array(
                                         trans('gender_male'),
@@ -269,14 +264,43 @@ $cv = $this->controller->view_data['custom_values'];
                                         trans('gender_other'),
                                     );
                                     foreach ($genders as $key => $val) { ?>
-                                        <option value=" <?php echo $key; ?>" <?php check_select($key, $this->mdl_clients->form_value('client_gender')) ?>>
+                                        <option
+                                            value=" <?php echo $key; ?>" <?php check_select($key, $this->mdl_clients->form_value('client_gender')) ?>>
                                             <?php echo $val; ?>
                                         </option>
                                     <?php } ?>
                                 </select>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <?php $client_title = $this->mdl_clients->form_value('client_title'); ?>
+                            <?php $is_custom_title = is_null(ClientTitleEnum::tryFrom($client_title)) ?>
+                            <label for="client_title"><?php _trans('client_title'); ?></label>
+                            <select name="client_title" id="client_title" class="form-control simple-select">
+                                <?php foreach ($client_title_choices as $client_title_choice) : ?>
+                                    <option
+                                        value="<?php echo $client_title_choice; ?>"
+                                        <?php echo $client_title === $client_title_choice ? 'selected' : '' ?>
+                                        <?php echo $is_custom_title && $client_title_choice === ClientTitleEnum::CUSTOM
+                                            ? 'selected'
+                                            : ''
+                                        ?>
+                                    >
+                                        <?php echo ucfirst(trans($client_title_choice)); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input
+                                id="client_title_custom"
+                                name="client_title_custom"
+                                type="text"
+                                class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM || $is_custom_title ? '' : 'hidden' ?>"
+                                placeholder=<?php echo trans('custom_title') ?>
+                                value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
+                            />
+                        </div>
                         <div class="form-group has-feedback">
                             <label for="client_birthdate"><?php _trans('birthdate'); ?></label>
                             <?php
@@ -304,7 +328,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $avs = $this->mdl_clients->form_value('client_avs'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_avs" id="client_avs" class="form-control"
-                                           value="<?php echo htmlspecialchars(format_avs($avs)); ?>">
+                                           value="<?php echo htmlspecialchars(format_avs($avs), ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -314,7 +338,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <div class="controls">
                                     <input type="text" name="client_insurednumber" id="client_insurednumber"
                                            class="form-control"
-                                           value="<?php echo htmlentities($insuredNumber); ?>">
+                                           value="<?php echo htmlentities($insuredNumber, ENT_COMPAT); ?>">
                                 </div>
                             </div>
 
@@ -323,7 +347,7 @@ $cv = $this->controller->view_data['custom_values'];
                                 <?php $veka = $this->mdl_clients->form_value('client_veka'); ?>
                                 <div class="controls">
                                     <input type="text" name="client_veka" id="client_veka" class="form-control"
-                                           value="<?php echo htmlentities($veka); ?>">
+                                           value="<?php echo htmlentities($veka, ENT_COMPAT); ?>">
                                 </div>
                             </div>
 

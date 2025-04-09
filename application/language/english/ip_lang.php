@@ -1,5 +1,5 @@
 <?php
-$lang = array(
+$lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
@@ -86,6 +86,7 @@ $lang = array(
     'client_access'                                => 'Client Access',
     'client_already_exists'                        => 'Client already exists!',
     'client_form'                                  => 'Client Form',
+    'client_title'                                 => 'Title',
     'client_name'                                  => 'Client Name',
     'client_surname'                               => 'Client Surname',
     'client_surname_optional'                      => 'Client Surname (Optional)',
@@ -149,6 +150,7 @@ $lang = array(
     'default_invoice_group'                        => 'Default Invoice Group',
     'default_invoice_tax_rate'                     => 'Default Invoice Tax Rate',
     'default_invoice_tax_rate_placement'           => 'Default Invoice Tax Rate Placement',
+    'default_item_decimals'                        => 'Default decimals for items',
     'default_item_tax_rate'                        => 'Default Item Tax Rate',
     'default_list_limit'                           => 'Number of Items in Lists',
     'default_notes'                                => 'Default Notes',
@@ -287,6 +289,7 @@ $lang = array(
     'invoice_tax_rate'                             => 'Invoice Tax Rate',
     'invoice_template'                             => 'Invoice Template',
     'invoice_templates'                            => 'Invoice Templates',
+    'invoice_templates_info'                       => 'You can extend the available templates by downloading other templates provided by the community (see <a href="https://www.invoiceplane.com/themes" target="_blank">www.invoiceplane.com/themes</a>).',
     'invoice_terms'                                => 'Invoice Terms',
     'invoiced'                                     => 'Invoiced',
     'invoiceplane_news'                            => 'InvoicePlane News',
@@ -331,6 +334,8 @@ $lang = array(
     'monospaced_font_for_amounts'                  => 'Use a Monospace font for amounts',
     'month'                                        => 'Month',
     'month_prefix'                                 => 'Month Prefix',
+    'move_down'                                    => 'move down',
+    'move_up'                                      => 'move up',
     'multiple_choice'                              => 'Multiple Choice',
     'name'                                         => 'Name',
     'new'                                          => 'New',
@@ -343,6 +348,7 @@ $lang = array(
     'no_overdue_invoices'                          => 'No overdue Invoices',
     'no_quotes_requiring_approval'                 => 'There are no quotes requiring approval.',
     'no_updates_available'                         => 'No updates available.',
+		'no_update_invoice_due_date_mail'							 => 'Disable the change of invoice date and due date before emailing',
     'none'                                         => 'None',
     'note'                                         => 'Note',
     'notes'                                        => 'Notes',
@@ -385,6 +391,7 @@ $lang = array(
     'payment_method_form'                          => 'Payment Method Form',
     'payment_methods'                              => 'Payment Methods',
     'payments'                                     => 'Payments',
+    'percentage'                                   => 'Percentage',
     'per_item'                                     => 'per Item',
     'pdf'                                          => 'PDF',
     'pdf_invoice_footer'                           => 'PDF Footer',
@@ -432,6 +439,14 @@ $lang = array(
     'Q2'                                           => 'Q2',
     'Q3'                                           => 'Q3',
     'Q4'                                           => 'Q4',
+    'qr_code_settings'                             => 'QR Code Settings',
+    'qr_code_settings_bic'                         => 'BIC',
+    'qr_code_settings_enable'                      => 'Enable QR Code',
+    'qr_code_settings_enable_hint'                 => 'Enabling this option will include a QR code for invoice PDFs. You have to fill out recipient, IBAN and a <em>correct</em> BIC down below to work correctly. Otherwise the QR code won\'t be displayed.',
+    'qr_code_settings_iban'                        => 'IBAN',
+    'qr_code_settings_recipient'                   => 'Recipient',
+    'qr_code_settings_remittance_text'             => 'Remittance Text',
+    'qr_code_settings_remittance_text_tags'        => 'Remittance Text Tags',
     'qty'                                          => 'Qty',
     'quantity'                                     => 'Quantity',
     'quarter'                                      => 'Quarter',
@@ -528,6 +543,7 @@ $lang = array(
     'setup_v120_alert'                             => '<strong>Attention!</strong><br>It\'s very important that you read <a href="https://go.invoiceplane.com/v120update" target="_blank">this update notice</a> about some significant changes of the InvoicePlane application.',
     'setup_v147_alert'                             => '<strong>Attention!</strong><br>Please open the file <code>application/config/config.php</code> and change the line <code>$config[\'sess_use_database\'] = false;</code> to <code>$config[\'sess_use_database\'] = true;</code>.<br>More details can be found <a href="https://go.invoiceplane.com/v147update" target="_blank">here</a>',
     'set_to_read_only'                             => 'Set the Invoice to read-only on',
+    'show_responsive_itemlist'                     => 'Display responsive item list in quotes/invoices instead of table',
     'single_choice'                                => 'Single Choice',
     'six_months'                                   => 'Six Months',
     'smtp_password'                                => 'SMTP Password',
@@ -731,10 +747,17 @@ $lang = array(
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
 
+    // Clients/Enums/ClientTitleEnum
+    'mr'                                           => 'mr',
+    'mrs'                                          => 'mrs',
+    'doctor'                                       => 'doctor',
+    'professor'                                    => 'professor',
+    'custom'                                       => 'custom',
+
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
     // Types
     'true'                                         => 'True',
     'false'                                        => 'False'
-);
+];

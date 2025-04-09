@@ -1,43 +1,42 @@
 {
-  "name": "invoiceplane",
-  "version": "1.5.11",
-  "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/InvoicePlane/InvoicePlane.git"
-  },
-  "author": "InvoicePlane Developers & Contributors",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://development.invoiceplane.com"
-  },
-  "homepage": "https://www.invoiceplane.com",
-  "devDependencies": {
-    "autoprefixer": "^9.7.3",
-    "bootstrap-datepicker": "^1.9.0",
-    "bootstrap-sass": "^3.4.1",
-    "clipboard": "^2.0.4",
-    "dropzone": "^5.5.1",
-    "font-awesome": "^4.7.0",
-    "grunt": "^1.0.4",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-uglify": "^4.0.1",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-postcss": "^0.9.0",
-    "grunt-sass": "^2.1.0",
-    "html5shiv": "^3.7.3",
-    "jquery": "~3.4.1",
-    "jquery-ui": "^1.12.1",
-    "js-cookie": "^2.2.1",
-    "load-grunt-tasks": "^5.1.0",
-    "node-sass": "^4.13.0",
-    "postcss": "^7.0.26",
-    "select2": "^4.0.12",
-    "zxcvbn": "^4.4.2"
-  },
-  "scripts": {
-    "build": "grunt build"
-  }
+    "name": "invoiceplane",
+    "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/InvoicePlane/InvoicePlane.git"
+    },
+    "author": "InvoicePlane Developers & Contributors",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/InvoicePlane/InvoicePlane/issues"
+    },
+    "homepage": "https://www.invoiceplane.com",
+    "devDependencies": {
+        "autoprefixer": "9.8.8",
+        "bootstrap-datepicker": "1.10",
+        "bootstrap-sass": "3.4.1",
+        "clipboard": "2.0.11",
+        "dropzone": "5.9.3",
+        "font-awesome": "4.7",
+        "grunt": "1.6",
+        "grunt-contrib-clean": "2.0",
+        "grunt-contrib-concat": "2.1",
+        "grunt-contrib-copy": "1.0",
+        "grunt-contrib-uglify": "5.2",
+        "grunt-contrib-watch": "1.1",
+        "grunt-postcss": "0.9",
+        "grunt-sass": "3.1",
+        "html5shiv": "3.7",
+        "jquery": "3.7.1",
+        "jquery-ui": "1.14.1",
+        "js-cookie": "2.2",
+        "load-grunt-tasks": "5.1",
+        "node-sass": "9.0",
+        "postcss": "8.4",
+        "select2": "4.1.0-rc.0",
+        "zxcvbn": "4.4"
+    },
+    "scripts": {
+        "build": "grunt build"
+    }
 }

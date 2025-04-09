@@ -2,7 +2,7 @@
 /**
  * Contains the language translations for the payment gateways
  */
-$lang = array(
+$lang = [
     // General strings
     'online_payment'                     => 'Online Payment',
     'online_payments'                    => 'Online Payments',
@@ -70,4 +70,4 @@ $lang = array(
     'online_payment_payment_successful'  => 'Payment for Invoice %s successful!',
     'online_payment_payment_redirect'    => 'Please wait while we redirect you to the payment page...',
     'online_payment_3dauth_redirect'     => 'Please wait while we redirect you to your card issuer for authentication...'
-);
+];

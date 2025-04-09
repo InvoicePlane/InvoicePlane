@@ -45,9 +45,7 @@ function inject_email_template(template_fields, email_template) {
         key = key.replace("email_template_", "");
         // if key is in template_fields, apply value to form field
         if (val && template_fields.indexOf(key) > -1) {
-            if (key === 'body') {
-                $("#" + key).html(val);
-            } else if (key === 'pdf_template') {
+            if (key === 'pdf_template') {
                 $("#" + key).val(val).trigger('change');
             } else {
                 $("#" + key).val(val);
@@ -228,12 +226,27 @@ $(document).ready(function () {
     });
 
     // Fullpage loader
-    $(document).on('click', '.ajax-loader', function () {
-        $('#fullpage-loader').fadeIn(200);
-        window.fullpageloaderTimeout = window.setTimeout(function () {
-            $('#loader-error').fadeIn(200);
-            $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
-        }, 10000);
+    $(document).on('click', '.ajax-loader', function (event) {
+        var requiredFieldsFilledIn = true;
+
+        $('input[required], textarea[required], select[required]').each(function () {
+            if ($(this).val().trim() === '') {
+                requiredFieldsFilledIn = false;
+            }
+        });
+
+        // Checks if required fields are filled it. If not, don't display spinner.
+        if (!requiredFieldsFilledIn) {
+            return;
+        }
+
+        $(document).on('click', '.ajax-loader', function () {
+            $('#fullpage-loader').fadeIn(200);
+            window.fullpageloaderTimeout = window.setTimeout(function () {
+                $('#loader-error').fadeIn(200);
+                $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
+            }, 10000);
+        });
     });
 
     $(document).on('click', '.fullpage-loader-close', function () {
@@ -254,6 +267,36 @@ $(document).ready(function () {
             } else if (strength.score === 3) {
                 $('.passmeter-2').show();
             }
+        });
+    }
+
+    // Detect Ctrl + S on the whole document
+    $(document).on('keydown', function (e) {
+        if (e.ctrlKey && e.key === 's') {
+            // Detect if modal is open
+            if ($('.modal-footer .btn-success').length) {
+                e.preventDefault();
+                $('.modal-footer .btn-success').click();
+            } else if ($('#headerbar .btn-success').length) {
+                e.preventDefault();
+                $('#headerbar .btn-success').click();
+            }
+        }
+    });
+
+    // Open/close QR code settings depending on checked QR code checkbox
+    const checkboxQrCode = document.getElementById('settings[qr_code]');
+    const panelQrCodeSettings = document.getElementById('panel-qr-code-settings');
+
+    if (checkboxQrCode && panelQrCodeSettings) {
+        checkboxQrCode.addEventListener('click', () => {
+            panelQrCodeSettings.querySelectorAll('.row').forEach((row) => {
+                if (checkboxQrCode.checked) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
         });
     }
 });
