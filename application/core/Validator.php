@@ -98,7 +98,7 @@ class Validator extends MY_Model
         $this->custom_value->where('custom_field_id', $id);
         $dbvals = $this->custom_value->where_in('custom_values_id', $values)->get();
 
-        if ($dbvals->num_rows() == sizeof($values)) {
+        if ($dbvals->num_rows() == count($values)) {
             return true;
         }
 
@@ -195,7 +195,7 @@ class Validator extends MY_Model
             }
         }
 
-        if (sizeof($errors) == 0)
+        if (count($errors) == 0)
         {
             $this->_formdata = $db_array;
             $this->fixinput();

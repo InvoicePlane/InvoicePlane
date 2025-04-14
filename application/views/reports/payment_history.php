@@ -31,7 +31,7 @@ foreach ($results as $result)
             <td class="amount"><?php echo format_currency($result->payment_amount); ?></td>
         </tr>
 <?php
-    $sum = $sum + $result->payment_amount;
+    $sum += $result->payment_amount;
 }
 
 if (!empty($results))

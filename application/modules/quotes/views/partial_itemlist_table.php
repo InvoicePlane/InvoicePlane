@@ -293,7 +293,7 @@
                 <td><?php _trans('quote_tax'); ?></td>
                 <td>
                     <?php if ($quote_tax_rates) {
-                        foreach ($quote_tax_rates as $index => $quote_tax_rate) { ?>
+                        foreach ($quote_tax_rates as $quote_tax_rate) { ?>
                             <form method="POST" class="form-inline"
                                   action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>

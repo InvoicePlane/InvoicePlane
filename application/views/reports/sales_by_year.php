@@ -56,7 +56,7 @@ foreach ($results as $result)
 
     if ($contRows == 0)
     {
-        $numRows = $numRows + ($numYears * 4);
+        $numRows += $numYears * 4;
         $contRows = 1;
     }
 ?>

@@ -341,7 +341,7 @@ class Sumex
         $referenceNumber .= sprintf("%010d", $this->invoice->invoice_id);
         $referenceNumber .= sprintf("%09d", date("Ymd", strtotime($this->invoice->invoice_date_modified)));
         $refCsum = invoice_recMod10($referenceNumber);
-        $referenceNumber = $referenceNumber . $refCsum;
+        $referenceNumber .= $refCsum;
 
         if (!preg_match("/\d{27}/", $referenceNumber)) {
             throw new Error("Invalid reference number!");

@@ -402,7 +402,7 @@ class Clients extends Admin_Controller
         }
 
         $total_empty_fields_client = 0;
-        foreach ($c as $key => $val)
+        foreach ($c as $val)
         {
             $total_empty_fields_client += $val;
         }
@@ -440,7 +440,7 @@ class Clients extends Admin_Controller
             }
 
             $total_empty_fields_user = 0;
-            foreach ($u as $key => $val)
+            foreach ($u as $val)
             {
                 $total_empty_fields_user += $val;
             }

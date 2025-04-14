@@ -38,7 +38,7 @@ if ($custom_field_usage)
         $CI->load->model($what . 's/' . $model);
     }
 
-    foreach ($custom_field_usage as $key => $obj)
+    foreach ($custom_field_usage as $obj)
     {
         $fid = $what . '_id'; // Like invoice_id
         $id = $obj->$fid;

@@ -111,8 +111,8 @@ class Mdl_Quote_Amounts extends CI_Model
         $discount_amount  = (float)number_format((float)$quote_data->quote_discount_amount,  $this->decimal_places, '.', '');
         $discount_percent = (float)number_format((float)$quote_data->quote_discount_percent, $this->decimal_places, '.', '');
 
-        $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), $this->decimal_places);
+        $total -= $discount_amount;
+        $total -= round(($total / 100 * $discount_percent), $this->decimal_places);
 
         return $total;
     }

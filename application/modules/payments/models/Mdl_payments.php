@@ -102,7 +102,7 @@ class Mdl_Payments extends Response_Model
         {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
 
-            $invoice_balance = $invoice_balance + (float)$payment->payment_amount;
+            $invoice_balance += (float)$payment->payment_amount;
         }
 
         $invoice_balance = (float)$invoice_balance;

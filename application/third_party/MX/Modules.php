@@ -126,7 +126,7 @@ class Modules
             $path = APPPATH . 'controllers/' . CI::$APP->router->directory;
 
             /* load the controller class */
-            $class = $class . CI::$APP->config->item('controller_suffix');
+            $class .= CI::$APP->config->item('controller_suffix');
             self::load_file(ucfirst($class), $path);
 
             /* create and register the new controller */
