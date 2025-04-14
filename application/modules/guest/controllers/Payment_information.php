@@ -87,7 +87,7 @@ class Payment_Information extends Base_Controller
             $payment_method = null;
         }
 
-        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
+        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
 
         // Return the view
         $data =

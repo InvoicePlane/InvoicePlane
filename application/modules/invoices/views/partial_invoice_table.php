@@ -25,7 +25,7 @@
                 $invoice->is_read_only = 0;
             }
             // Convert the dropdown menu to a dropup if invoice is after the invoice split
-            $dropup = $invoice_idx > $invoice_list_split ? true : false;
+            $dropup = $invoice_idx > $invoice_list_split;
             ?>
             <tr>
                 <td>

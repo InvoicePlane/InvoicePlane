@@ -70,7 +70,7 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($invoice_url_key);
 
-        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
+        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
 
         $data = [
             'invoice'            => $invoice,
@@ -240,7 +240,7 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
 
-        $is_expired = (strtotime($quote->quote_date_expires) < time() ? true : false);
+        $is_expired = (strtotime($quote->quote_date_expires) < time());
 
         $data =
         [

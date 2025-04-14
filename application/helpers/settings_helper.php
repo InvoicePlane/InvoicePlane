@@ -72,19 +72,19 @@ function check_select($value1, $value2 = null, $operator = '==', $checked = fals
     switch ($operator)
     {
         case '==':
-            $echo_selected = $value1 == $value2 ? true : false;
+            $echo_selected = $value1 == $value2;
             break;
         case '!=':
-            $echo_selected = $value1 != $value2 ? true : false;
+            $echo_selected = $value1 != $value2;
             break;
         case 'e':
-            $echo_selected = empty($value1) ? true : false;
+            $echo_selected = empty($value1);
             break;
         case '!e':
-            $echo_selected = empty($value1) ? true : false;
+            $echo_selected = empty($value1);
             break;
         default:
-            $echo_selected = $value1 ? true : false;
+            $echo_selected = (bool) $value1;
             break;
     }
 

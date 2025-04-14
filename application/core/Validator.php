@@ -97,12 +97,7 @@ class Validator extends MY_Model
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
         $this->custom_value->where('custom_field_id', $id);
         $dbvals = $this->custom_value->where_in('custom_values_id', $values)->get();
-
-        if ($dbvals->num_rows() == count($values)) {
-            return true;
-        }
-
-        return false;
+        return $dbvals->num_rows() == count($values);
     }
 
     /**

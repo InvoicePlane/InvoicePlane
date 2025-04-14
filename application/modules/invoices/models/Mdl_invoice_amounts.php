@@ -111,7 +111,7 @@ class Mdl_Invoice_Amounts extends CI_Model
         // Get invoice status
         $this->load->model('invoices/mdl_invoices');
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
-        $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0 ? true : false);
+        $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0);
 
         // Set to paid if balance is zero
         if ($invoice->invoice_balance == 0) {

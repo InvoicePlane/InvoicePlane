@@ -409,7 +409,7 @@ class Setup extends MX_Controller
         $db_object = $this->load->database($db, true);
 
         // Try to initialize the database connection
-        $can_connect = $db_object->conn_id ? true : false;
+        $can_connect = (bool) $db_object->conn_id;
 
         if ( ! $can_connect) {
             $this->errors += 1;
