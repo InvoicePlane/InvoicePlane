@@ -24,7 +24,9 @@ class Mdl_Client_Custom extends Validator
         'personal_information',
         'tax_information',
     ];
+
     public $table = 'ip_client_custom';
+
     public $primary_key = 'ip_client_custom.client_custom_id';
 
     public function default_select()

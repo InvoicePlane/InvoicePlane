@@ -122,6 +122,7 @@ class MX_Router extends CI_Router
 
                                 return array_slice($segments, 2);
                             }
+
                             $this->located = -1;
                         }
                     } else {
@@ -130,6 +131,7 @@ class MX_Router extends CI_Router
 
                             return array_slice($segments, 1);
                         }
+
                         $this->located = -1;
                     }
                 }
@@ -240,6 +242,7 @@ class MX_Router extends CI_Router
         if ($suffix && strpos($class, $suffix) === false) {
             $class .= $suffix;
         }
+
         parent::set_class($class);
     }
 }

@@ -107,6 +107,7 @@ class Custom_Values extends Admin_Controller
             $this->mdl_custom_values->save($id);
             redirect('custom_values/field/' . $fid);
         }
+
         $this->load->model('custom_fields/mdl_custom_fields');
         $positions = $this->mdl_custom_fields->get_positions(true);
         $position = $positions[ $value->custom_field_table ][ $value->custom_field_location ];
@@ -176,7 +177,7 @@ class Custom_Values extends Admin_Controller
     {
         if ( ! $this->mdl_custom_values->delete($id))
         {
-            $this->session->set_flashdata('alert_info', trans('id') . " \"{$id}\" " . trans('custom_values_used_not_deletable'));
+            $this->session->set_flashdata('alert_info', trans('id') . sprintf(' "%s" ', $id) . trans('custom_values_used_not_deletable'));
         }
 
         $fid = $this->input->post('custom_field_id');

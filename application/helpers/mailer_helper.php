@@ -81,15 +81,19 @@ function email_invoice(
     if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
+
     if (! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'from_email';
     }
+
     if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'cc_email';
     }
+
     if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'bcc_email';
     }
+
     check_mail_errors($errors, 'mailer/invoice/' . $invoice_id);
 
     $message = (empty($message) ? ' ' : $message);
@@ -146,15 +150,19 @@ function email_quote(
     if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
+
     if (! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'from_email';
     }
+
     if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'cc_email';
     }
+
     if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'bcc_email';
     }
+
     check_mail_errors($errors, 'mailer/quote/' . $quote_id);
 
     $message = (empty($message) ? ' ' : $message);
@@ -217,6 +225,7 @@ function check_mail_errors($errors = [], $redirect = '')
         {
             $errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
         }
+
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
         $redirect = empty($redirect) ? (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']) : $redirect;
         redirect($redirect);

@@ -18,7 +18,9 @@ if (! defined('BASEPATH'))
 class Mdl_Payment_Custom extends Validator
 {
     public static $positions = ['custom_fields'];
+
     public $table = 'ip_payment_custom';
+
     public $primary_key = 'ip_payment_custom.payment_custom_id';
 
     public function default_select()

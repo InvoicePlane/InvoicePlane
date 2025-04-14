@@ -32,6 +32,7 @@ class Mdl_Custom_Fields extends MY_Model
         {
             return strtolower(str_replace('-', '', $element));
         }
+
         return 'fallback';
     }
 
@@ -153,6 +154,7 @@ class Mdl_Custom_Fields extends MY_Model
             {
                 $val[$key2] = trans($val2);
             }
+
             $positions[$key] = $val;
         }
 
@@ -258,6 +260,7 @@ class Mdl_Custom_Fields extends MY_Model
                 $this->load->model('custom_values/mdl_custom_values');
                 $this->mdl_custom_values->delete_all_fid($id);
             }
+
             // Remove reference in custom table
             $base = strtr($custom_field->custom_field_table,['ip_' => '']) . '_field';
             $this->db->from($custom_field->custom_field_table)->where($base . 'id', $id)->delete($custom_field->custom_field_table);
@@ -265,6 +268,7 @@ class Mdl_Custom_Fields extends MY_Model
             parent::delete($id);
             return true;
         }
+
         return false;
     }
 

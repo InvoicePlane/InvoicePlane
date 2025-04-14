@@ -87,6 +87,7 @@ class Sessions extends Base_Controller
                 $this->_login_log_addfailure($email_address);
             }
         }
+
         return false;
     }
 
@@ -315,6 +316,7 @@ class Sessions extends Base_Controller
                 return null;
             }
         }
+
         return $login_log_query;
     }
 

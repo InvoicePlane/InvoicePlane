@@ -74,8 +74,8 @@ foreach ($tasks as $task)
                                 <tr>
                                     <td><?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?></td>
                                     <td>
-                                        <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
-                                            <?php echo $task_statuses["$task->task_status"]['label']; ?>
+                                        <span class="label <?php echo $task_statuses[$task->task_status]['class']; ?>">
+                                            <?php echo $task_statuses[$task->task_status]['label']; ?>
                                         </span>
                                     </td>
                                     <td>

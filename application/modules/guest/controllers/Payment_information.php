@@ -46,6 +46,7 @@ class Payment_Information extends Base_Controller
                 $this->session->set_flashdata('alert_info', lang('invoice_already_paid'));
                 redirect('guest'); // /invoices
             }
+
             $disable_form = true;
         }
 

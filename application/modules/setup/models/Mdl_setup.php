@@ -326,16 +326,16 @@ class Mdl_Setup extends CI_Model
                     $escaped_table_type = $this->db->escape($row->{$table_type . '_id'});
                     $escaped_column = $this->db->escape($row->{$value['column']});
 
-                    $query = "INSERT INTO $table_name
+                    $query = "INSERT INTO {$table_name}
                         (" . $table_type . "_id, " . $table_type . "_custom_fieldid, " . $table_type . "_custom_fieldvalue)
                         VALUES (
-                            $escaped_table_type,
+                            {$escaped_table_type},
                             (
                                 SELECT custom_field_id
                                 FROM ip_custom_fields
                                 WHERE ip_custom_fields.custom_field_column = " . $this->db->escape($value['column']) . "
                             ),
-                            $escaped_column
+                            {$escaped_column}
                         )";
 
                     $this->db->query($query);
@@ -390,6 +390,7 @@ class Mdl_Setup extends CI_Model
             {
                 $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
+
             if($row->recur_next_date == '0000-00-00')
             {
                 $this->db->set('recur_next_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');

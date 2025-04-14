@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Families extends Response_Model
 {
     public $table = 'ip_families';
+
     public $primary_key = 'ip_families.family_id';
 
     public function default_select()

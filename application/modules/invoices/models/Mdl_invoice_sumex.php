@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_invoice_sumex extends Response_Model
 {
     public $table = 'ip_invoice_sumex';
+
     public $primary_key = 'ip_invoice_sumex.sumex_id';
 
     public function default_select()

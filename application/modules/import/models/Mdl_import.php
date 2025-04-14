@@ -18,7 +18,9 @@ if (! defined('BASEPATH'))
 class Mdl_Import extends Response_Model
 {
     public $table = 'ip_imports';
+
     public $primary_key = 'ip_imports.import_id';
+
     public $expected_headers = [
         'clients.csv' => [
             'client_name',
@@ -62,6 +64,7 @@ class Mdl_Import extends Response_Model
             'payment_note'
         ],
     ];
+
     public $primary_keys = [
         'ip_clients'       => 'client_id',
         'ip_invoices'      => 'invoice_id',
@@ -131,6 +134,7 @@ class Mdl_Import extends Response_Model
                         return false;
                     }
                 }
+
                 $fileheaders = $data;
             }
             elseif ($row > 1)
@@ -238,6 +242,7 @@ class Mdl_Import extends Response_Model
                             $data[$key] = $this->db->insert_id();
                         }
                     }
+
                     // Each invoice needs a url key
                     $db_array['invoice_url_key'] = $this->mdl_invoices->get_url_key();
 

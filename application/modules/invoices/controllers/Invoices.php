@@ -98,14 +98,14 @@ class Invoices extends Admin_Controller
         $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
 
         if ($filePath === false || ! str_starts_with($filePath, $safeBaseDir)) {
-            log_message('error', "Invalid file access attempt: {$fileName}");
+            log_message('error', 'Invalid file access attempt: ' . $fileName);
             show_404();
 
             return;
         }
 
         if ( ! file_exists($filePath)) {
-            log_message('error', "While downloading: File not found: {$filePath}");
+            log_message('error', 'While downloading: File not found: ' . $filePath);
             show_404();
 
             return;

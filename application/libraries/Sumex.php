@@ -30,6 +30,7 @@ class Sumex
         'naturopathictherapist',
         'other'
     ];
+
     const PLACES = [
         'practice',
         'hospital',
@@ -37,6 +38,7 @@ class Sumex
         'association',
         'company'
     ];
+
     const CANTONS = [
         "AG",
         "AI",
@@ -70,18 +72,31 @@ class Sumex
         "F",
         "I"
     ];
+
     public $invoice;
+
     public $doc;
+
     public $root;
+
     public $_lang = "it";
+
     public $_mode = "production";
+
     public $_copy = "0";
+
     public $_storno = "0";
+
     public $_role = "physiotherapist";
+
     public $_place = "practice";
+
     public $_currency = "CHF";
+
     public $_paymentperiod = "P30D";
+
     public $_canton = "TI";
+
     public $_esrType = "9";
 
     public $_patient = [
@@ -97,7 +112,9 @@ class Sumex
     ];
 
     public $_casedate = "1970-01-01";
+
     public $_casenumber = "0";
+
     public $_insuredid = '1234567';
 
     public $_treatment = [
@@ -141,6 +158,7 @@ class Sumex
         if (!is_array(@$params['options'])) {
             $params['options'] = [];
         }
+
         $this->_options = array_merge($this->_options, $params['options']);
 
         $this->_storno = $this->_options['storno'];
@@ -310,6 +328,7 @@ class Sumex
         if ($this->_treatment['observations'] != "") {
             $node->appendChild($remark);
         }
+
         $node->appendChild($balance);
         $node->appendChild($esr);
         $node->appendChild($tiersGarant);
@@ -577,6 +596,7 @@ class Sumex
         $telecom = $this->doc->createElement('invoice:telecom');
         $phone = $this->doc->createElement('invoice:phone');
         $phone->nodeValue = $phoneNr;
+
         $telecom->appendChild($phone);
         return $telecom;
     }

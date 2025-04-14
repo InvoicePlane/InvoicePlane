@@ -229,6 +229,7 @@ class MX_Loader extends CI_Loader
 
             $this->_ci_classes[$class] = $_alias;
         }
+
         return $this;
     }
 
@@ -240,6 +241,7 @@ class MX_Loader extends CI_Loader
                 (is_int($library)) ? $this->library($alias) : $this->library($library, null, $alias);
 	    }
 	}
+
         return $this;
     }
 
@@ -269,6 +271,7 @@ class MX_Loader extends CI_Loader
                 if ($connect === true) {
                     $connect = '';
                 }
+
                 $this->database($connect, false, true);
             }
 
@@ -279,6 +282,7 @@ class MX_Loader extends CI_Loader
 
             $this->_ci_models[] = $_alias;
         }
+
         return $this;
     }
 
@@ -288,6 +292,7 @@ class MX_Loader extends CI_Loader
         foreach ($models as $model => $alias) {
             (is_int($model)) ? $this->model($alias) : $this->model($model, $alias);
         }
+
         return $this;
     }
 
@@ -309,6 +314,7 @@ class MX_Loader extends CI_Loader
         foreach ($modules as $_module) {
             $this->module($_module);
         }
+
         return $this;
     }
 
@@ -355,6 +361,7 @@ class MX_Loader extends CI_Loader
         foreach ($helpers as $_helper) {
             $this->helper($_helper);
         }
+
         return $this;
     }
 
@@ -363,6 +370,7 @@ class MX_Loader extends CI_Loader
         foreach ($languages as $_language) {
             $this->language($_language);
         }
+
         return $this;
     }
 
@@ -387,7 +395,7 @@ class MX_Loader extends CI_Loader
         list($path, $_plugin) = Modules::find($plugin . '_pi', $this->_module, 'plugins/');
 
         if ($path === false && !is_file($_plugin = APPPATH . 'plugins/' . $_plugin . EXT)) {
-            show_error("Unable to locate the plugin file: {$_plugin}");
+            show_error('Unable to locate the plugin file: ' . $_plugin);
         }
 
         Modules::load_file($_plugin, $path);
@@ -401,6 +409,7 @@ class MX_Loader extends CI_Loader
         foreach ($plugins as $_plugin) {
             $this->plugin($_plugin);
         }
+
         return $this;
     }
 
@@ -449,6 +458,7 @@ class MX_Loader extends CI_Loader
                     $_ci_path = $view;
                     break;
                 }
+
                 if (!$cascade) {
                     break;
                 }

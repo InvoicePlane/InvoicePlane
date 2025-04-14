@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Tasks extends Response_Model
 {
     public $table = 'ip_tasks';
+
     public $primary_key = 'ip_tasks.task_id';
 
     public function default_select()
@@ -201,6 +202,7 @@ class Mdl_Tasks extends Response_Model
         if (!$invoice_id) {
             return;
         }
+
         $query = $this->db->select($this->table . '.*')
             ->from($this->table)
             ->join('ip_invoice_items', 'ip_invoice_items.item_task_id = ' . $this->table . '.task_id')

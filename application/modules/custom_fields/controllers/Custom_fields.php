@@ -26,6 +26,7 @@ class Custom_Fields extends Admin_Controller
 
         $this->load->model('mdl_custom_fields');
     }
+
     public function index(): void
     {
         // Display all custom_fields tables by default
@@ -44,6 +45,7 @@ class Custom_Fields extends Admin_Controller
         {
             $this->mdl_custom_fields->by_table_name($name);
         }
+
         // Paginate before result
         $this->mdl_custom_fields->paginate(site_url('custom_fields/name/' . $name), $page);
         $custom_fields = $this->mdl_custom_fields->result();
@@ -112,8 +114,9 @@ class Custom_Fields extends Admin_Controller
     {
         if( ! $this->mdl_custom_fields->delete($id))
         {
-            $this->session->set_flashdata('alert_info', trans('id') . " \"{$id}\" " . trans('custom_fields_used_not_deletable'));
+            $this->session->set_flashdata('alert_info', trans('id') . sprintf(' "%s" ', $id) . trans('custom_fields_used_not_deletable'));
         }
+
         // Return to page number of custom values or fields
         $r = empty($_SERVER['HTTP_REFERER']) ? 'custom_fields' : $_SERVER['HTTP_REFERER'];
         redirect($r);

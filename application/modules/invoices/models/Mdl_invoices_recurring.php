@@ -17,7 +17,9 @@ if (! defined('BASEPATH')) {
 class Mdl_Invoices_Recurring extends Response_Model
 {
     public $table = 'ip_invoices_recurring';
+
     public $primary_key = 'ip_invoices_recurring.invoice_recurring_id';
+
     public $recur_frequencies = [
         '1D' => 'calendar_day_1',
         '2D' => 'calendar_day_2',

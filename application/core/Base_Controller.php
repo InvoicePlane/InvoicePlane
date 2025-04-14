@@ -64,6 +64,7 @@ class Base_Controller extends MX_Controller
             {
                 $this->mdl_settings->load_settings();
             }
+
             $this->load->helper('settings');
 
             // Load the language based on user config, fall back to system if needed

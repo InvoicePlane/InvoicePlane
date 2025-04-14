@@ -57,6 +57,7 @@ class Invoices extends Guest_Controller
 
         $this->mdl_invoices->where_in('ip_invoices.client_id', $this->user_clients);
         $this->mdl_invoices->paginate(site_url('guest/invoices/status/' . $status), $page);
+
         $invoices = $this->mdl_invoices->result();
 
         $this->layout->set(

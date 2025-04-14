@@ -86,7 +86,7 @@ class Modules
             }
         }
 
-        log_message('error', "Module controller failed to run: {$module}/{$method}");
+        log_message('error', sprintf('Module controller failed to run: %s/%s', $module, $method));
     }
 
     /** Load a module controller **/
@@ -145,21 +145,23 @@ class Modules
 
         if ($type === 'other') {
             if (class_exists($file, false)) {
-                log_message('debug', "File already loaded: {$location}");
+                log_message('debug', 'File already loaded: ' . $location);
                 return $result;
             }
+
             include_once $location;
         } else {
             /* load config or language array */
             include $location;
 
             if (!isset($$type) OR !is_array($$type)) {
-                show_error("{$location} does not contain a valid {$type} array");
+                show_error(sprintf('%s does not contain a valid %s array', $location, $type));
             }
 
             $result = $$type;
         }
-        log_message('debug', "File loaded: {$location}");
+
+        log_message('debug', 'File loaded: ' . $location);
         return $result;
     }
 
@@ -177,6 +179,7 @@ class Modules
                 include_once $location;
                 return;
             }
+
             show_error('Failed to load MX core class: ' . $class);
         }
 
@@ -215,6 +218,7 @@ class Modules
                 if (strpos($val, '$') !== false AND strpos($key, '(') !== false) {
                     $val = preg_replace('#^' . $key . '$#', $val, $uri);
                 }
+
                 return explode('/', $module . '/' . $val);
             }
         }

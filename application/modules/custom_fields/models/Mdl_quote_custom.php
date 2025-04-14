@@ -21,7 +21,9 @@ class Mdl_Quote_Custom extends Validator
         'custom_fields',
         'properties',
     ];
+
     public $table = 'ip_quote_custom';
+
     public $primary_key = 'ip_quote_custom.quote_custom_id';
 
     public function default_select()

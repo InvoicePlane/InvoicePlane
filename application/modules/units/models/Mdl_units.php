@@ -18,6 +18,7 @@ if (! defined('BASEPATH'))
 class Mdl_Units extends Response_Model
 {
     public $table = 'ip_units';
+
     public $primary_key = 'ip_units.unit_id';
 
     public function default_select()

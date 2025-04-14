@@ -17,7 +17,9 @@ if (! defined('BASEPATH'))
 class Get extends Base_Controller
 {
     public $targetPath;
+
     public $ctype_default = 'application/octet-stream';
+
     public $content_types = [];
 
     /**

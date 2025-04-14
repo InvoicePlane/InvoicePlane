@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Email_Templates extends Response_Model
 {
     public $table = 'ip_email_templates';
+
     public $primary_key = 'ip_email_templates.email_template_id';
 
     public function default_select()

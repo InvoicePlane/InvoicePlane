@@ -8,9 +8,13 @@ if (! defined('BASEPATH')) {
 class ClientTitleEnum
 {
     const MISTER    = 'mr';
+
     const MISSUS    = 'mrs';
+
     const DOCTOR    = 'doctor';
+
     const PROFESSOR = 'professor';
+
     const CUSTOM    = 'custom';
 
     private static function getValues() {

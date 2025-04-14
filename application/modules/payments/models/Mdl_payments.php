@@ -17,7 +17,9 @@ if (! defined('BASEPATH')) {
 class Mdl_Payments extends Response_Model
 {
     public $table = 'ip_payments';
+
     public $primary_key = 'ip_payments.payment_id';
+
     public $validation_rules = 'validation_rules';
 
     public function default_select()
@@ -180,6 +182,7 @@ class Mdl_Payments extends Response_Model
         // Get the invoice id before deleting payment
         $this->db->select('invoice_id');
         $this->db->where('payment_id', $id);
+
         $invoice_id = $this->db->get('ip_payments')->row()->invoice_id;
 
         // Delete the payment
@@ -193,6 +196,7 @@ class Mdl_Payments extends Response_Model
         // Change invoice status back to sent
         $this->db->select('invoice_status_id');
         $this->db->where('invoice_id', $invoice_id);
+
         $invoice = $this->db->get('ip_invoices')->row();
 
         if ($invoice->invoice_status_id == 4)

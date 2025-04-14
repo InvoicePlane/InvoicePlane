@@ -22,16 +22,27 @@ defined('BASEPATH') || exit('No direct script access allowed');
 class BaseXml extends stdClass
 {
     public $invoice;
+
     public $items;
+
     public $doc;
+
     public $filename;
+
     public $currencyCode;
+
     public $root;
+
     public $notax;
-    public $options = []; // CustomizationID, Endpoint, ...
+
+    public $options = [];
+     // CustomizationID, Endpoint, ...
     public $item_decimals = 2;
+
     public $decimal_places = 2;
+
     public $legacy_calculation = false;
+
     public $itemsSubtotalGroupedByTaxPercent = [];
 
     public function __construct($params)
@@ -68,8 +79,9 @@ class BaseXml extends stdClass
      */
     public function set_invoice_discount_amount_total()
     {
-        $item_discount = $item_subtotal = $discount = 0.0;
-
+        $item_discount = 0.0;
+        $item_subtotal = 0.0;
+        $discount = 0.0;
         foreach ($this->items as $item)
         {
             $item_discount += $item->item_discount;
@@ -84,6 +96,7 @@ class BaseXml extends stdClass
         {
             $discount = $item_subtotal * ($this->invoice->invoice_discount_percent / 100);
         }
+
         $this->invoice->invoice_subtotal                 = $this->formattedFloat($item_subtotal);
         $this->invoice->items_discount_amount_total      = $this->formattedFloat($item_discount); // ublv24
         $this->invoice->invoice_discount_amount_total    = $this->formattedFloat($item_discount + $discount);
@@ -111,6 +124,7 @@ class BaseXml extends stdClass
             ];
 
         }
+
         $this->itemsSubtotalGroupedByTaxPercent = $result; // help to dispatch invoice global discount tax rate + same for vat's of invoices
     }
 
@@ -128,6 +142,7 @@ class BaseXml extends stdClass
             $date = DateTime::createFromFormat('Y-m-d', $date);
             return $date->format($format);
         }
+
         return '';
     }
 

@@ -36,7 +36,7 @@ class Ajax extends Admin_Controller
         }
 
         // Search for chars "in the middle" of users names
-        $permissiveSearchUsers ? $moreUsersQuery = '%' : $moreUsersQuery = '';
+        $moreUsersQuery = $permissiveSearchUsers ? '%' : '';
 
         // Search for users $type
         $escapedQuery = $this->db->escape_str($query);
@@ -45,9 +45,9 @@ class Ajax extends Admin_Controller
         $users = $this->mdl_users
             ->where('user_active', 1)
             ->where('user_type', $type)
-            ->having('user_name LIKE \'' . $moreUsersQuery . $escapedQuery . '%\'')
-            ->or_having('user_company LIKE \'' . $moreUsersQuery . $escapedQuery . '%\'')
-            ->or_having('user_invoicing_contact LIKE \'' . $moreUsersQuery . $escapedQuery . '%\'')
+            ->having("user_name LIKE '" . $moreUsersQuery . $escapedQuery . "%'")
+            ->or_having("user_company LIKE '" . $moreUsersQuery . $escapedQuery . "%'")
+            ->or_having("user_invoicing_contact LIKE '" . $moreUsersQuery . $escapedQuery . "%'")
             ->order_by('user_name')
             ->get()
             ->result();

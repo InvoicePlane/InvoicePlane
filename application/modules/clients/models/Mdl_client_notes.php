@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Client_Notes extends Response_Model
 {
     public $table = 'ip_client_notes';
+
     public $primary_key = 'ip_client_notes.client_note_id';
 
     public function default_order_by()

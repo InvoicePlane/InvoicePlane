@@ -36,16 +36,17 @@ class Ajax extends Admin_Controller
         }
 
         // Search for chars "in the middle" of clients names
-        $permissiveSearchClients ? $moreClientsQuery = '%' : $moreClientsQuery = '';
+        $moreClientsQuery = $permissiveSearchClients ? '%' : '';
 
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
         $escapedQuery = str_replace("%", "", $escapedQuery);
+
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having('client_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->having("client_name LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->or_having("client_surname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->or_having("client_fullname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
             ->order_by('client_name')
             ->get()
             ->result();

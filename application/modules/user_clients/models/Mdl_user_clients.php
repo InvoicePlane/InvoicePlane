@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_User_Clients extends MY_Model
 {
     public $table = 'ip_user_clients';
+
     public $primary_key = 'ip_user_clients.user_client_id';
 
     public function default_select()

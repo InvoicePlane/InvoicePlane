@@ -84,6 +84,7 @@ function set_language($language)
     {
         $CI->lang->load('custom', $new_language);
     }
+
     $CI->lang->load('gateway', $new_language);
 }
 

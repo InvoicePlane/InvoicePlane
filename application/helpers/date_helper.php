@@ -93,8 +93,10 @@ function date_from_mysql($date, $ignore_post_check = false)
                 return '';
             }
         }
+
         return $date;
     }
+
     return '';
 }
 
@@ -121,6 +123,7 @@ function date_to_mysql($date)
     if ($date == null) {
         return '';
     }
+
     $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
     return $date->format('Y-m-d');
 }
@@ -201,6 +204,7 @@ function increment_date($date, $increment)
     if ($date==null) {
         return '';
     }
+
     $new_date = new DateTime($date);
     $new_date->add(new DateInterval('P' . $increment));
     return $new_date->format('Y-m-d');

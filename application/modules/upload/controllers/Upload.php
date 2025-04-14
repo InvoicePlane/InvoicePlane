@@ -18,7 +18,9 @@ if (! defined('BASEPATH'))
 class Upload extends Admin_Controller
 {
     public $targetPath;
+
     public $ctype_default = 'application/octet-stream';
+
     public $content_types = [];
 
     /**
@@ -67,6 +69,7 @@ class Upload extends Admin_Controller
         {
             return mkdir($path, $chmod);
         }
+
         return true;
     }
 
@@ -97,6 +100,7 @@ class Upload extends Admin_Controller
                 $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
             }
         }
+
         $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
         $this->respond_message(410, 'upload_error_file_delete', $finalPath . $ref);
     }
@@ -188,6 +192,7 @@ class Upload extends Admin_Controller
         {
             echo PHP_EOL . PHP_EOL . '"' . basename(UPLOADS_FOLDER) . DIRECTORY_SEPARATOR . basename($this->targetPath) . '"';
         }
+
         exit;
     }
 }

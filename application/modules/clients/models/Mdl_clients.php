@@ -166,6 +166,7 @@ class Mdl_Clients extends Response_Model
             if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
                 return $matches[1] . $matches[2] . $matches[3] . $matches[4];
             }
+
             if (preg_match('/^\d{13}$/', $input)) {
                 return $input;
             }

@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Invoice_Tax_Rates extends Response_Model
 {
     public $table = 'ip_invoice_tax_rates';
+
     public $primary_key = 'ip_invoice_tax_rates.invoice_tax_rate_id';
 
     public function default_select()

@@ -18,6 +18,7 @@ if (! defined('BASEPATH'))
 class Mdl_Custom_Values extends MY_Model
 {
     public $table = 'ip_custom_values';
+
     public $primary_key = 'ip_custom_values.custom_values_id';
 
     /**
@@ -126,6 +127,7 @@ class Mdl_Custom_Values extends MY_Model
                      ->or_like($base, ',' . $id)
                      ->or_where($base, $id);
         }
+
         return $get ? $this->db->get()->result() : $this->db;
     }
 
@@ -140,6 +142,7 @@ class Mdl_Custom_Values extends MY_Model
             parent::delete($id);
             return true;
         }
+
         return false;
     }
 
@@ -188,6 +191,7 @@ class Mdl_Custom_Values extends MY_Model
         {
             return null;
         }
+
         $ids = is_array($ids) ? $ids : explode(',', $ids);
         return $this->where_in('custom_values_id', $ids)->get();
     }

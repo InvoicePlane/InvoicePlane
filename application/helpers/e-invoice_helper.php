@@ -33,6 +33,7 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename, $optio
         'options'  => $options,
     ], 'ublciixml');
     $CI->ublciixml->xml();
+
     $path = UPLOADS_TEMP_FOLDER . $filename . '.xml';
 
     return $path;
@@ -76,6 +77,7 @@ function get_xml_template_files()
             {
                 $generator = $xml_setting['generator'];
             }
+
             // The template to generate the e-invoice file exist?
             if (file_exists(APPPATH . 'libraries/XMLtemplates/' . $generator . 'Xml.php'))
             {
@@ -123,5 +125,6 @@ function get_ubl_eas_codes()
             $eas[] = array_combine($head, $row);
         }
     }
+
     return $eas;
 }

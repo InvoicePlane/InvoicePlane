@@ -359,6 +359,7 @@ class Mdl_Invoices extends Response_Model
         foreach ($custom_fields as $field) {
             $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
+
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
@@ -505,6 +506,7 @@ class Mdl_Invoices extends Response_Model
             foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
                 array_push($invoice_array, $file);
             }
+
             rsort($invoice_array);
         }
 

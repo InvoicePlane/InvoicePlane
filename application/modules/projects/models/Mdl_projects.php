@@ -18,6 +18,7 @@ if (! defined('BASEPATH'))
 class Mdl_Projects extends Response_Model
 {
     public $table = 'ip_projects';
+
     public $primary_key = 'ip_projects.project_id';
 
     public function default_select()

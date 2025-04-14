@@ -462,7 +462,7 @@ foreach ($invoice_statuses as $key => $status)
 {
 ?>
                                         <option value="<?php echo $key; ?>"
-                                                <?php echo ($key == $invoice->invoice_status_id) ? 'selected="selected"' ''; ?>
+                                                <?php echo $key == $invoice->invoice_status_id ? 'selected="selected"' : ''; ?>
                                         >
                                             <?php echo $status['label']; ?>
                                         </option>

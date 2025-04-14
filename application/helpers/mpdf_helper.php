@@ -139,6 +139,7 @@ function pdf_create(
     if ($stream) {
         return $mpdf->Output($filename . '.pdf', 'I');
     }
+
     $mpdf->Output(UPLOADS_TEMP_FOLDER . $filename . '.pdf', 'F');
 
     return UPLOADS_TEMP_FOLDER . $filename . '.pdf';

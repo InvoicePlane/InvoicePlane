@@ -67,6 +67,7 @@ class Email_Templates extends Admin_Controller
             if (!$this->mdl_email_templates->prep_form($id)) {
                 show_404();
             }
+
             $this->mdl_email_templates->set_form_value('is_update', true);
         }
 

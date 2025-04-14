@@ -24,7 +24,9 @@ class Mdl_User_Custom extends Validator
         'tax_information',
         'contact_information',
     ];
+
     public $table = 'ip_user_custom';
+
     public $primary_key = 'ip_user_custom.user_custom_id';
 
     public function default_select()
@@ -80,6 +82,7 @@ class Mdl_User_Custom extends Validator
 
                 parent::save($user_custom_id, $db_array);
             }
+
             return true;
         }
 

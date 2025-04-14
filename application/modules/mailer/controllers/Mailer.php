@@ -18,6 +18,7 @@ if (! defined('BASEPATH'))
 class Mailer extends Admin_Controller
 {
     private $mailer_configured;
+
     private $errors = [];
 
     /**
@@ -164,6 +165,7 @@ class Mailer extends Admin_Controller
         $from = $this->input->post('from_email', true);
 
         $from         = [$from, $this->input->post('from_name')];
+
         $pdf_template = $this->input->post('pdf_template', true);
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
@@ -191,6 +193,7 @@ class Mailer extends Admin_Controller
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
             redirect('invoices/view/' . $invoice_id);
         }
+
         redirect('mailer/invoice/' . $invoice_id);
     }
 
@@ -213,6 +216,7 @@ class Mailer extends Admin_Controller
         $from = $this->input->post('from_email');
 
         $from         = [$from, $this->input->post('from_name')];
+
         $pdf_template = $this->input->post('pdf_template');
         $subject      = $this->input->post('subject');
 
@@ -240,6 +244,7 @@ class Mailer extends Admin_Controller
 
             redirect('quotes/view/' . $quote_id);
         }
+
         redirect('mailer/quote/' . $quote_id);
     }
 

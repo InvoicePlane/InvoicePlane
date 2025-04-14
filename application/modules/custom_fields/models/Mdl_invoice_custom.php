@@ -22,7 +22,9 @@ class Mdl_Invoice_Custom extends Validator
         'custom_fields',
         'properties',
     ];
+
     public $table = 'ip_invoice_custom';
+
     public $primary_key = 'ip_invoice_custom.invoice_custom_id';
 
     public function default_select()

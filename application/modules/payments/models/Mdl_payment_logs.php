@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Payment_Logs extends Response_Model
 {
     public $table = 'ip_merchant_responses';
+
     public $primary_key = 'ip_merchant_responses.merchant_response_id';
 
     public function default_select()

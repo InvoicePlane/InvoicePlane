@@ -101,12 +101,14 @@ class Clients extends Admin_Controller
                 $_POST[self::CLIENT_TITLE] = $client_title_custom;
                 $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
             }
+
             // fix e-invoice reset
             if ($this->input->post('client_start_einvoicing') == '0')
             {
                 $_POST['client_einvoicing_version'] = '';
                 $this->mdl_clients->set_form_value('client_einvoicing_version', '');
             }
+
             $id = $this->mdl_clients->save($id);
 
             if ($new_client)
@@ -125,6 +127,7 @@ class Clients extends Admin_Controller
                 $this->session->set_flashdata('alert_success', null);
                 $where = 'form';
             }
+
             redirect('clients/' . $where . '/' . $id);
         }
 
@@ -265,6 +268,7 @@ class Clients extends Admin_Controller
         {
             $client->client_einvoicing_active = 0; // update view
         }
+
         // Update db if need
         if ($o != $client->client_einvoicing_active)
         {
@@ -375,6 +379,7 @@ class Clients extends Admin_Controller
         {
             $where['user_id'] = $user_id;
         }
+
         return $this->db->from('ip_users')->where($where)->get()->result();
     }
 
@@ -469,6 +474,7 @@ class Clients extends Admin_Controller
             $req_fields->users[$o->user_id] = $u;
             $show_table += $u->show_table;
         }
+
         $req_fields->show_table = $show_table;
 
         return $req_fields;

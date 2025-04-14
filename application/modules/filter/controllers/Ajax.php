@@ -107,6 +107,7 @@ class Ajax extends Admin_Controller
         {
             $this->mdl_custom_fields->by_table_name($name);
         }
+
         $custom_fields = $this->mdl_custom_fields->get()->result();
 
         $this->load->model('custom_values/mdl_custom_values');
@@ -141,6 +142,7 @@ class Ajax extends Admin_Controller
                 $this->mdl_custom_values->like("CONCAT_WS('^',LOWER(custom_values_value), LOWER(custom_field_table), LOWER(custom_field_label), LOWER(custom_field_type))", $keyword);
             }
         }
+
         $this->mdl_custom_values->grouped();
         $custom_values = $this->mdl_custom_values->get()->result();
 

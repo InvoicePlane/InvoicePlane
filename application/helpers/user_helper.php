@@ -24,8 +24,10 @@ function format_user($user) :string
         $CI = & get_instance();
         if ( ! property_exists($CI, 'mdl_users'))
             $CI->load->model('users/mdl_users');
+
         $user = $CI->mdl_users->get_by_id($user);
     }
+
     // Not exist or find, Stop.
     if (empty($user->user_name)) return '';
 

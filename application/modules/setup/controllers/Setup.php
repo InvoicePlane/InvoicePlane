@@ -271,6 +271,7 @@ class Setup extends MX_Controller
         } else {
             $update = false;
         }
+
         $this->layout->set('update', $update);
 
         $this->layout->buffer('content', 'setup/complete');

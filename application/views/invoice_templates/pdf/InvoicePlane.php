@@ -9,7 +9,11 @@ $add_table_and_head_for_sums = 1; // Set to 0/false/null/'', return to original 
 
 // Init some vars (edit if you know what you're doing)
 $colspan = $show_item_discounts ? 5 : 4;
-$text_class = $text_class_date = $text_class_balance = $watermark = $stamp = '';
+$text_class = '';
+$text_class_date = '';
+$text_class_balance = '';
+$watermark = '';
+$stamp = '';
 $show_qrcode = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
 $invoice_mode = isset($invoice_mode) ? $invoice_mode : 'default'; // from template - overdue / paid.php
 

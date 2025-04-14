@@ -63,6 +63,7 @@ class Quotes extends Guest_Controller
 
         $this->mdl_quotes->where_in('ip_quotes.client_id', $this->user_clients);
         $this->mdl_quotes->paginate(site_url('guest/quotes/status/' . $status), $page);
+
         $quotes = $this->mdl_quotes->result();
 
         $this->layout->set(

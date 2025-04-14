@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Payment_Methods extends Response_Model
 {
     public $table = 'ip_payment_methods';
+
     public $primary_key = 'ip_payment_methods.payment_method_id';
 
     public function default_select()

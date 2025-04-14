@@ -193,6 +193,7 @@ class Users extends Admin_Controller
         if ($id != 1) {
             $this->mdl_users->delete($id);
         }
+
         redirect('users');
     }
 

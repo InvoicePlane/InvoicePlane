@@ -34,12 +34,17 @@ if (! defined('BASEPATH')) {
 class Cryptor
 {
     private $cipher_algo;
+
     private $hash_algo;
+
     private $iv_num_bytes;
+
     private $format;
 
     const FORMAT_RAW = 0;
+
     const FORMAT_B64 = 1;
+
     const FORMAT_HEX = 2;
 
     /**
@@ -56,12 +61,12 @@ class Cryptor
 
         if (!in_array($cipher_algo, openssl_get_cipher_methods(true)))
         {
-            throw new \Exception("Cryptor:: - unknown cipher algo {$cipher_algo}");
+            throw new \Exception('Cryptor:: - unknown cipher algo ' . $cipher_algo);
         }
 
         if (!in_array($hash_algo, openssl_get_md_methods(true)))
         {
-            throw new \Exception("Cryptor:: - unknown hash algo {$hash_algo}");
+            throw new \Exception('Cryptor:: - unknown hash algo ' . $hash_algo);
         }
 
         $this->iv_num_bytes = openssl_cipher_iv_length($cipher_algo);
@@ -145,7 +150,7 @@ class Cryptor
         if (strlen($raw) < $this->iv_num_bytes)
         {
             throw new \Exception('Cryptor::decryptString() - ' .
-                'data length ' . strlen($raw) . " is less than iv length {$this->iv_num_bytes}");
+                'data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
         // Extract the initialisation vector and encrypted data

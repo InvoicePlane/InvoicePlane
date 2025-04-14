@@ -48,6 +48,7 @@ class Mdl_Item_Amounts extends CI_Model
             {
                 $item_discount = round($global_discount['amount'] * ($item_subtotal / $global_discount['items_subtotal']), 2);
             }
+
             if($global_discount['percent'] != 0) // Percent per default
             {
                 $item_discount = round(($item_subtotal * ($global_discount['percent'] / 100)), 2);

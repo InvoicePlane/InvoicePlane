@@ -67,6 +67,7 @@ class Payment_Methods extends Admin_Controller
             if ( ! $this->mdl_payment_methods->prep_form($id)) {
                 show_404();
             }
+
             $this->mdl_payment_methods->set_form_value('is_update', true);
         }
 

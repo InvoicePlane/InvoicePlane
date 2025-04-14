@@ -60,6 +60,7 @@ class CI
         if (!$LANG instanceof MX_Lang) {
             $LANG = new MX_Lang;
         }
+
         if (!$CFG instanceof MX_Config) {
             $CFG = new MX_Config;
         }

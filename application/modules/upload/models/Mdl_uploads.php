@@ -18,8 +18,11 @@ if (! defined('BASEPATH'))
 class Mdl_Uploads extends Response_Model
 {
     public $table = 'ip_uploads';
+
     public $primary_key = 'ip_uploads.upload_id';
+
     public $date_modified_field = 'uploaded_date';
+
     public $content_types =
     [
         'avif' => 'image/avif',
@@ -140,6 +143,7 @@ class Mdl_Uploads extends Response_Model
                     $this->delete_file($url_key, $row->file_name_original);
                     continue;
                 }
+
                 $result[] =
                 [
                     'name' => $row->file_name_original,
@@ -147,6 +151,7 @@ class Mdl_Uploads extends Response_Model
                 ];
             }
         }
+
         return $result;
     }
 

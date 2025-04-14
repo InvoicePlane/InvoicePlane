@@ -33,6 +33,7 @@ function redirect_to($fallback_url_string, $redirect = true)
     {
         redirect($redirect_url);
     }
+
     return $redirect_url;
 }
 

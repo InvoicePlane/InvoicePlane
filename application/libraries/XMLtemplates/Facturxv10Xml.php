@@ -62,6 +62,7 @@ class Facturxv10Xml extends BaseXml
             $businessNode->appendChild($this->doc->createElement('ram:ID', $id));
             $node->appendChild($businessNode);
         }
+
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         // urn:cen.eu:en16931:2017#compliant#urn:(zugferd:2.3 | factur-x.eu):1p0:(basic | en16931) ::: en16931 = COMFORT (profil)
         // urn:cen.eu:en16931:2017#conformant#urn:(zugferd:2.3 | factur-x.eu):1p0:extended
@@ -70,6 +71,7 @@ class Facturxv10Xml extends BaseXml
         if ( ! empty($cid = @$this->options['GuidelineSpecifiedDocumentContextParameterID'])) {
             $id = $cid;
         }
+
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', $id));
         $node->appendChild($guidelineNode);
 
@@ -86,6 +88,7 @@ class Facturxv10Xml extends BaseXml
         // IssueDateTime
         $dateNode = $this->doc->createElement('ram:IssueDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+
         $node->appendChild($dateNode);
 
         return $node;
@@ -122,6 +125,7 @@ class Facturxv10Xml extends BaseXml
         {
             $PaymentTerms .= PHP_EOL . trans('terms') . PHP_EOL . $terms;
         }
+
         $node = $this->doc->createElement('ram:SpecifiedTradePaymentTerms');
         $node->appendChild($this->doc->createElement('ram:Description', $PaymentTerms));
         return $node;
@@ -164,6 +168,7 @@ class Facturxv10Xml extends BaseXml
         if ($who == 'user') {
             $node->appendChild($this->doc->createElement('ram:ID', $this->invoice->{$prop[0]})); // *_id zugferd 2 : SELLER123
         }
+
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->{$prop[1]}))); // *_name
 
         // XRechnung-CII-validation
@@ -200,8 +205,10 @@ class Facturxv10Xml extends BaseXml
         if($addr = $this->invoice->{$prop[4]}) { // *_address_2
             $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($addr))); // *_address_2
         }
+
         $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->{$prop[5]}))); // *_city
-        $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->{$prop[6]}))); // *_country
+        $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->{$prop[6]})));
+         // *_country
         $node->appendChild($addressNode);
 
         // XRechnung-CII-validation    URIUniversalCommunicationURIID
@@ -230,6 +237,7 @@ class Facturxv10Xml extends BaseXml
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
         $el = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
+
         $node->appendChild($el);
         return $node;
     }
@@ -242,6 +250,7 @@ class Facturxv10Xml extends BaseXml
         $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
         $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+
         $eventNode->appendChild($dateNode);
 
         $node->appendChild($eventNode);
@@ -278,10 +287,12 @@ class Facturxv10Xml extends BaseXml
         // StartDateTime
         $dateNode = $this->doc->createElement('ram:StartDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+
         $period->appendChild($dateNode);
         // EndDateTime
         $dateNode = $this->doc->createElement('ram:EndDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_due));
+
         $period->appendChild($dateNode);
         $node->appendChild($period);
 
@@ -341,6 +352,7 @@ class Facturxv10Xml extends BaseXml
             if (empty($this->options['NoReasonCode'])) {
                 $discountNode->appendChild($this->doc->createElement('ram:ReasonCode', '95'));
             }
+
             $discountNode->appendChild($this->doc->createElement('ram:Reason', rtrim(trans('discount'), ' '))); // todo curious chars ' ' not a space (found in French ip_lang)
 
             $taxNode = $this->doc->createElement('ram:CategoryTradeTax');
@@ -367,6 +379,7 @@ class Facturxv10Xml extends BaseXml
         if ($category == 'O' && ! empty($ExemptionReason = @$this->options['ExemptionReason'])) {
             $node->appendChild($this->doc->createElement('ram:ExemptionReason', $ExemptionReason));
         }
+
         $node->appendChild($this->currencyElement('ram:BasisAmount', $subtotal));
         $node->appendChild($this->doc->createElement('ram:CategoryCode', $category));
 
@@ -398,6 +411,7 @@ class Facturxv10Xml extends BaseXml
         {
             $el->setAttribute('currencyID', $this->currencyCode);
         }
+
         return $el;
     }
 
@@ -442,6 +456,7 @@ class Facturxv10Xml extends BaseXml
         {
             $invoiceTotal = $this->invoice->invoice_item_subtotal;
         }
+
         // TaxBasisTotalAmount (total amount excluding VAT)
         $node->appendChild($this->currencyElement('ram:TaxBasisTotalAmount', $invoiceTotal)); // ApplicableTradeTax>CategoryCode= O || S FIX
         $node->appendChild($this->currencyElement('ram:TaxTotalAmount', $this->invoice->invoice_item_tax_total, true));
@@ -462,6 +477,7 @@ class Facturxv10Xml extends BaseXml
         // AssociatedDocumentLineDocument
         $lineNode = $this->doc->createElement('ram:AssociatedDocumentLineDocument');
         $lineNode->appendChild($this->doc->createElement('ram:LineID', $lineNumber));
+
         $node->appendChild($lineNode);
 
         // SpecifiedTradeProduct
@@ -476,6 +492,7 @@ class Facturxv10Xml extends BaseXml
         // SpecifiedLineTradeDelivery
         $deliveyNode = $this->doc->createElement('ram:SpecifiedLineTradeDelivery');
         $deliveyNode->appendChild($this->quantityElement('ram:BilledQuantity', $item->item_quantity));
+
         $node->appendChild($deliveyNode);
 
         // SpecifiedLineTradeSettlement
@@ -491,6 +508,7 @@ class Facturxv10Xml extends BaseXml
         // GrossPriceProductTradePrice
         $grossPriceNode = $this->doc->createElement('ram:GrossPriceProductTradePrice');
         $grossPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price));
+
         $node->appendChild($grossPriceNode);
 
         if($item->item_discount != 0)
@@ -520,6 +538,7 @@ class Facturxv10Xml extends BaseXml
         // NetPriceProductTradePrice
         $netPriceNode = $this->doc->createElement('ram:NetPriceProductTradePrice');
         $netPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $price));
+
         $node->appendChild($netPriceNode);
 
         return $node;
@@ -553,12 +572,14 @@ class Facturxv10Xml extends BaseXml
         {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O'));
         }
+
         $node->appendChild($taxNode);
 
         // SpecifiedTradeSettlementLineMonetarySummation
         $sumNode = $this->doc->createElement('ram:SpecifiedTradeSettlementLineMonetarySummation');
         // ApplicableTradeTax>CategoryCode=O OR S
         $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $item->item_subtotal - $item->item_discount));
+
         $node->appendChild($sumNode);
 
         return $node;

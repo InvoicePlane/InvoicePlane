@@ -243,6 +243,7 @@ class Validator extends MY_Model
                         if ($value == '') {
                             $this->_formdata[$key] = null;
                         }
+
                         break;
                 }
             }
