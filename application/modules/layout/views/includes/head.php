@@ -43,7 +43,8 @@
                 format: '<?php echo date_format_datepicker(); ?>',
                 language: '<?php _trans('cldr'); ?>',
                 weekStart: '<?php echo get_setting('first_day_of_week'); ?>',
-                todayBtn: "linked"
+                todayHighlight: true,
+                todayBtn: 'linked'
             });
         });
 
