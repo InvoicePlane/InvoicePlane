@@ -26,11 +26,7 @@ class Mdl_Clients extends Response_Model
 
     public function default_select(): void
     {
-        $this->db->select(
-            'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname',
-            false
-        );
+        $this->db->select('SQL_CALC_FOUND_ROWS ' . $this->table . '.*, CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname', false);
     }
 
     public function default_order_by(): void

@@ -137,8 +137,7 @@ class Cryptor
 
         // and do an integrity check on the size.
         if (strlen($raw) < $this->iv_num_bytes) {
-            throw new \Exception('Cryptor::decryptString() - ' .
-                'data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
+            throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
         // Extract the initialisation vector and encrypted data

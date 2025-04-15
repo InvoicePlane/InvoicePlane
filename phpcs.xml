@@ -7,6 +7,11 @@
     <exclude-pattern>./vendor/*</exclude-pattern>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+    <rule ref="Generic.ControlStructures.InlineControlStructure"/>
+    <rule ref="Generic.PHP.DeprecatedFunctions"/>
+    <rule ref="Generic.Strings.UnnecessaryStringConcat"/>
+    <!-- There MUST NOT be more than one statement per line. -->
+    <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
     <!-- Character Encoding PHP code MUST use only UTF-8 without BOM. -->
     <rule ref="Generic.Files.ByteOrderMark"/>
 </ruleset>
