@@ -6,4 +6,7 @@
     <exclude-pattern>./application/logs/*</exclude-pattern>
     <exclude-pattern>./vendor/*</exclude-pattern>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+    <!-- Character Encoding PHP code MUST use only UTF-8 without BOM. -->
+    <rule ref="Generic.Files.ByteOrderMark"/>
 </ruleset>

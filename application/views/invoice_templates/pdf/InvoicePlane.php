@@ -144,7 +144,7 @@ switch ($invoice_mode) {
     <div class="invoice-details clearfix">
         <table class="large">
             <tr>
-                <td rowspan="<?= $payment_method ? 5 : 4 ?>" style="width:40%;text-align:left;"><?php echo $stamp ?></td>
+                <td rowspan="<?php echo $payment_method ? 5 : 4 ?>" style="width:40%;text-align:left;"><?php echo $stamp ?></td>
             </tr>
             <tr>
                 <td><?php _trans('invoice_date'); ?>:</td>
